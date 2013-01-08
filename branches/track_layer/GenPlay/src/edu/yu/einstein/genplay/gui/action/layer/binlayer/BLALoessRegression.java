@@ -28,13 +28,12 @@ import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLOLoessRegression;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.dialog.GenomeWidthChooser;
-import edu.yu.einstein.genplay.gui.old.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.old.track.BinListTrack;
-
+import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
+import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 
 
 /**
- * Computes a Loess regression on the selected {@link BinListTrack}
+ * Computes a Loess regression on the selected {@link BinLayer}
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -43,8 +42,8 @@ public final class BLALoessRegression extends TrackListActionOperationWorker<Bin
 	private static final long serialVersionUID = 6749094444366905914L;	// generated ID
 	private static final String 	ACTION_NAME = "Loess Regression";	// action name
 	private static final String 	DESCRIPTION = 
-		"Compute a Loess regression on the selected track";				// tooltip
-	private BinListTrack 			selectedTrack;						// selected track
+		"Compute a Loess regression on the selected layer";				// tooltip
+	private BinLayer 				selectedLayer;						// selected layer
 
 	
 	/**
@@ -66,9 +65,9 @@ public final class BLALoessRegression extends TrackListActionOperationWorker<Bin
 
 	@Override
 	public Operation<BinList> initializeOperation() {
-		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
-		if (selectedTrack != null) {
-			BinList binList = selectedTrack.getData();
+		selectedLayer = (BinLayer) getValue("Layer");
+		if (selectedLayer != null) {
+			BinList binList = selectedLayer.getData();
 			int windowSize = binList.getBinSize();
 			if(windowSize > 0) {
 				Integer movingWindowWidth = GenomeWidthChooser.getMovingWindowSize(getRootPane(), windowSize);
@@ -91,7 +90,7 @@ public final class BLALoessRegression extends TrackListActionOperationWorker<Bin
 	@Override
 	protected void doAtTheEnd(BinList actionResult) {
 		if (actionResult != null) {
-			selectedTrack.setData(actionResult, operation.getDescription());
-		}		
+			selectedLayer.setData(actionResult, operation.getDescription());
+		}
 	}
 }

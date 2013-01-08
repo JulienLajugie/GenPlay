@@ -23,7 +23,7 @@ package edu.yu.einstein.genplay.gui.old.action.SCWListTrack;
 
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoTrackMethod;
+import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoLayerMethod;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOTwoTracks;
@@ -52,7 +52,7 @@ public final class SCWLATwoTracks extends TrackListActionOperationWorker<Chromos
 	private Track<?> 						selectedTrack;									// selected track
 	private Track<?> 						otherTrack = null;								// other track
 	private Track<?>						resultTrack = null;								// result track
-	private ScoreCalculationTwoTrackMethod 	scm;
+	private ScoreCalculationTwoLayerMethod 	scm;
 
 
 	/**

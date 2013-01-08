@@ -31,13 +31,12 @@ import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLOIndex;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
-import edu.yu.einstein.genplay.gui.old.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.old.track.BinListTrack;
-
+import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
+import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 
 
 /**
- * Indexes the selected {@link BinListTrack}
+ * Indexes the selected {@link BinLayer}
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -46,8 +45,9 @@ public final class BLAIndex extends TrackListActionOperationWorker<BinList> {
 	private static final long serialVersionUID = -4566157311251154991L; // generated ID
 	private static final String 	ACTION_NAME = "Indexation";			// action name
 	private static final String 	DESCRIPTION = 
-		"Index the selected track";		 								// tooltip
-	private BinListTrack 			selectedTrack;						// selected track
+		"Index the selected layer";	 									// tooltip
+	private BinLayer 				selectedLayer;						// selected layer
+
 
 	/**
 	 * key of the action in the {@link ActionMap}
@@ -68,21 +68,21 @@ public final class BLAIndex extends TrackListActionOperationWorker<BinList> {
 
 	@Override
 	public Operation<BinList> initializeOperation() {
-		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
-		if (selectedTrack != null) {			
-			if (selectedTrack.getData().getPrecision() == DataPrecision.PRECISION_1BIT) {
-				JOptionPane.showMessageDialog(getRootPane(), "Error, indexation is not available for 1-Bit tracks", "Error", JOptionPane.ERROR_MESSAGE);
+		selectedLayer = (BinLayer) getValue("Layer");
+		if (selectedLayer != null) {
+			if (selectedLayer.getData().getPrecision() == DataPrecision.PRECISION_1BIT) {
+				JOptionPane.showMessageDialog(getRootPane(), "Error, indexation is not available for 1-Bit data", "Error", JOptionPane.ERROR_MESSAGE);
 			}
 			Number indexMin = NumberOptionPane.getValue(getRootPane(), "Minimum", "New minimum score:", new DecimalFormat("0.0"), -1000000, 1000000, 0);
 			if (indexMin != null) {
 				Number indexMax = NumberOptionPane.getValue(getRootPane(), "Maximum", "New maximum score:", new DecimalFormat("0.0"), -1000000, 1000000, 100);
 				if(indexMax != null) {
-					BinList binList = selectedTrack.getData();
+					BinList binList = selectedLayer.getData();
 					Operation<BinList> operation = new BLOIndex(binList, indexMin.doubleValue(), indexMax.doubleValue());
 					return operation;
 				}
 			}
-		}	
+		}
 		return null;
 	}
 
@@ -90,7 +90,7 @@ public final class BLAIndex extends TrackListActionOperationWorker<BinList> {
 	@Override
 	protected void doAtTheEnd(BinList actionResult) {
 		if (actionResult != null) {
-			selectedTrack.setData(actionResult, operation.getDescription());
-		}	
+			selectedLayer.setData(actionResult, operation.getDescription());
+		}
 	}
 }

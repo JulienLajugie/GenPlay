@@ -30,20 +30,18 @@ import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLOFindIslands;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLOFindPeaksDensity;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLOFindPeaksStDev;
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.peakFinderDialog.PeakFinderDialog;
-import edu.yu.einstein.genplay.gui.old.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.old.track.BinListTrack;
-import edu.yu.einstein.genplay.gui.old.track.Track;
+import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
 import edu.yu.einstein.genplay.gui.trackChooser.TrackChooser;
 import edu.yu.einstein.genplay.util.colors.Colors;
-import edu.yu.einstein.genplay.util.colors.TrackColor;
 
 
 
 /**
- * Searches the peaks of a track.
+ * Searches the peaks of a {@link BinLayer}.
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -52,8 +50,8 @@ public final class BLAFindPeaks extends TrackListActionOperationWorker<BinList[]
 	private static final long serialVersionUID = 1524662321569310278L;  // generated ID
 	private static final String 	ACTION_NAME = "Find Peaks";			// action name
 	private static final String 	DESCRIPTION = 
-		"Search the peaks of the selected track";						// tooltip
-	private BinListTrack 			selectedTrack;						// selected track
+		"Search the peaks of the selected layer";						// tooltip
+	private BinLayer 				selectedLayer;						// selected layer
 
 
 	/**
@@ -75,9 +73,9 @@ public final class BLAFindPeaks extends TrackListActionOperationWorker<BinList[]
 
 	@Override
 	public Operation<BinList[]> initializeOperation() throws InterruptedException, ExecutionException {
-		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
-		if (selectedTrack != null) {
-			BinList binList = selectedTrack.getData();
+		selectedLayer = (BinLayer) getValue("Layer");
+		if (selectedLayer != null) {
+			BinList binList = selectedLayer.getData();
 			BLOFindPeaksDensity bloDensity = new BLOFindPeaksDensity(binList);
 			BLOFindPeaksStDev bloStdev = new BLOFindPeaksStDev(binList);
 			BLOFindIslands bloIsland = new BLOFindIslands(binList);			
@@ -110,17 +108,15 @@ public final class BLAFindPeaks extends TrackListActionOperationWorker<BinList[]
 		BLOFindIslands bloFindIslands = (BLOFindIslands) operation;
 		for (int i=0; i < actionResult.length; i++) {	// we have to treat all actions result
 			if (actionResult[i] != null){
-				Track<?> resultTrack = TrackChooser.getTracks(getRootPane(),
+				Track resultTrack = TrackChooser.getTracks(getRootPane(),
 						"Choose A Track", 
 						"Generate the " + bloFindIslands.getResultTypes()[i].toString() + " result on track:", 
-						getTrackList().getEmptyTracks());	// purposes tracks
+						getTrackListPanel().getModel().getTracks());	// purposes tracks
 				if (resultTrack != null) {
-					int index = resultTrack.getTrackNumber() - 1;
-					BinListTrack newTrack = new BinListTrack(index + 1, actionResult[i]);
-					newTrack.setTrackColor(TrackColor.getTrackColor());
-					newTrack.getHistory().add(operation.getDescription() + ", Result Type: " + bloFindIslands.getResultTypes()[i].toString(), Colors.GREY);
-					newTrack.getHistory().add("Window Size = " + actionResult[i].getBinSize() + "bp, Precision = " + actionResult[i].getPrecision(), Colors.GREY);
-					getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), "peaks of " + selectedTrack.getName() + ", " + bloFindIslands.getResultTypes()[i].toString(),	selectedTrack.getMask(), selectedTrack.getStripesList(), selectedTrack.getFiltersList());
+					BinLayer newLayer = new BinLayer(resultTrack, actionResult[i], "Islands of " + selectedLayer.getName());
+					newLayer.getHistory().add(operation.getDescription() + ", Result Type: " + bloFindIslands.getResultTypes()[i].toString(), Colors.GREY);
+					newLayer.getHistory().add("Window Size = " + actionResult[i].getBinSize() + "bp, Precision = " + actionResult[i].getPrecision(), Colors.GREY);
+					resultTrack.getLayers().add(newLayer);
 				}
 			}
 		}
@@ -132,14 +128,12 @@ public final class BLAFindPeaks extends TrackListActionOperationWorker<BinList[]
 	 * @param actionResult the output BinList from the operation 
 	 */
 	private void doAtTheEndDefaultFinder(BinList actionResult) {
-		Track<?> resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackList().getEmptyTracks());	// purposes tracks
+		Track resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackListPanel().getModel().getTracks());	// purposes tracks
 		if (resultTrack != null) {
-			int index = resultTrack.getTrackNumber() - 1;
-			BinListTrack newTrack = new BinListTrack(index + 1, actionResult);
-			newTrack.setTrackColor(TrackColor.getTrackColor());
-			newTrack.getHistory().add(operation.getDescription(), Colors.GREY);
-			newTrack.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Color.GRAY);
-			getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), "peaks of " + selectedTrack.getName(), selectedTrack.getMask(), selectedTrack.getStripesList(), selectedTrack.getFiltersList());
+			BinLayer newLayer = new BinLayer(resultTrack, actionResult, "Peaks of " + selectedLayer.getName());
+			newLayer.getHistory().add(operation.getDescription(), Colors.GREY);
+			newLayer.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Color.GRAY);
+			resultTrack.getLayers().add(newLayer);
 		}
 	}
 }

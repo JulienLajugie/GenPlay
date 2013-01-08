@@ -30,14 +30,13 @@ import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLOLogOnAvgWithDamper;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
-import edu.yu.einstein.genplay.gui.old.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.old.track.BinListTrack;
+import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
+import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.util.Utils;
 
 
-
 /**
- * Applies a log function to the scores of the selected {@link BinListTrack}
+ * Applies a log function to the scores of the selected {@link BinLayer}
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -47,8 +46,8 @@ public final class BLALogOnAvgWithDamper extends TrackListActionOperationWorker<
 	private static final String 	ACTION_NAME = "Log With Damper";	// action name
 	private static final String 	DESCRIPTION = 
 		"Apply a log + dumper function to the scores of " +
-		"the selected track";											// tooltip
-	private BinListTrack 			selectedTrack;						// selected track
+		"the selected layer";											// tooltip
+	private BinLayer	 			selectedLayer;						// selected layer
 
 
 	/**
@@ -70,13 +69,13 @@ public final class BLALogOnAvgWithDamper extends TrackListActionOperationWorker<
 
 	@Override
 	public Operation<BinList> initializeOperation() {
-		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
-		if (selectedTrack != null) {
+		selectedLayer = (BinLayer) getValue("Layer");
+		if (selectedLayer != null) {
 			LogBase logBase = Utils.chooseLogBase(getRootPane());
 			if (logBase != null) {
 				Number damper = NumberOptionPane.getValue(getRootPane(), "Damper", "Enter a value for damper where: f(x) = log((x + damper) / (avg + damper))", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
 				if(damper != null) {
-					BinList binList = selectedTrack.getData();
+					BinList binList = selectedLayer.getData();
 					Operation<BinList> operation = new BLOLogOnAvgWithDamper(binList, logBase, damper.doubleValue());
 					return operation;
 				}
@@ -89,7 +88,7 @@ public final class BLALogOnAvgWithDamper extends TrackListActionOperationWorker<
 	@Override
 	protected void doAtTheEnd(BinList actionResult) {
 		if (actionResult != null) {
-			selectedTrack.setData(actionResult, operation.getDescription());
-		}		
+			selectedLayer.setData(actionResult, operation.getDescription());
+		}
 	}
 }

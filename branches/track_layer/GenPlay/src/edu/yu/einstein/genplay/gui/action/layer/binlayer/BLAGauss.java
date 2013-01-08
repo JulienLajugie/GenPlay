@@ -28,13 +28,12 @@ import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLOGauss;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.dialog.GenomeWidthChooser;
-import edu.yu.einstein.genplay.gui.old.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.old.track.BinListTrack;
-
+import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
+import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 
 
 /**
- * Gausses the selected {@link BinListTrack}
+ * Gausses the selected {@link BinLayer}
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -43,8 +42,8 @@ public final class BLAGauss extends TrackListActionOperationWorker<BinList> {
 	private static final long serialVersionUID = -4566157311251154991L; // generated ID
 	private static final String 	ACTION_NAME = "Gauss";				// action name
 	private static final String 	DESCRIPTION = 
-		"Apply a gaussian filter on the selected track";		 		// tooltip
-	private BinListTrack 			selectedTrack;						// selected track
+		"Apply a gaussian filter on the selected layer";		 		// tooltip
+	private BinLayer				selectedLayer;						// selected layer
 
 	
 	/**
@@ -66,9 +65,9 @@ public final class BLAGauss extends TrackListActionOperationWorker<BinList> {
 
 	@Override
 	public Operation<BinList> initializeOperation() {
-		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
-		if (selectedTrack != null) {
-			BinList binList = selectedTrack.getData();
+		selectedLayer = (BinLayer) getValue("Layer");
+		if (selectedLayer != null) {
+			BinList binList = selectedLayer.getData();
 			int windowSize = binList.getBinSize();
 			if(windowSize > 0) {
 				Integer sigma = GenomeWidthChooser.getSigma(getRootPane(), windowSize);
@@ -91,7 +90,7 @@ public final class BLAGauss extends TrackListActionOperationWorker<BinList> {
 	@Override
 	protected void doAtTheEnd(BinList actionResult) {
 		if (actionResult != null) {
-			selectedTrack.setData(actionResult, operation.getDescription());
-		}		
+			selectedLayer.setData(actionResult, operation.getDescription());
+		}
 	}
 }

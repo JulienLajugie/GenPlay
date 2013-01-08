@@ -30,7 +30,7 @@ import edu.yu.einstein.genplay.core.list.binList.BinList;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public enum ScoreCalculationTwoTrackMethod {
+public enum ScoreCalculationTwoLayerMethod {
 
 	/**
 	 * Addition operation
@@ -64,10 +64,10 @@ public enum ScoreCalculationTwoTrackMethod {
 	private final String name;	// name of the method of score calculation
 	
 	/**
-	 * Private constructor. Creates an instance of a {@link ScoreCalculationTwoTrackMethod}
+	 * Private constructor. Creates an instance of a {@link ScoreCalculationTwoLayerMethod}
 	 * @param name name of the method of score calculation
 	 */
-	private ScoreCalculationTwoTrackMethod(String name) {
+	private ScoreCalculationTwoLayerMethod(String name) {
 		this.name = name;
 	}
 	
@@ -78,10 +78,10 @@ public enum ScoreCalculationTwoTrackMethod {
 	
 	
 	/**
-	 * @return the operation between two tracks
+	 * @return the operation between two layers
 	 */
-	public ScoreCalculationTwoTrackMethod[] getOperationTwoTracks() {
-		ScoreCalculationTwoTrackMethod[] result = {ADDITION, DIVISION};
+	public ScoreCalculationTwoLayerMethod[] getOperationTwoLayers() {
+		ScoreCalculationTwoLayerMethod[] result = {ADDITION, DIVISION};
 		return result;
 	}
 }

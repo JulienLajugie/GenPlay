@@ -29,13 +29,12 @@ import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLOMultiplyConstant;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
-import edu.yu.einstein.genplay.gui.old.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.old.track.BinListTrack;
-
+import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
+import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 
 
 /**
- * Multiplies the scores of the selected {@link BinListTrack} by a constant
+ * Multiplies the scores of the selected {@link BinLayer} by a constant
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -44,8 +43,8 @@ public class BLAMultiplyConstant extends TrackListActionOperationWorker<BinList>
 	private static final long serialVersionUID = 8340235965333128192L;	// generated ID
 	private static final String 	ACTION_NAME = "Multiplication (Constant)";// action name
 	private static final String 	DESCRIPTION = 
-		"Multiply the scores of the selected track by a constant";		// tooltip
-	private BinListTrack 			selectedTrack;						// selected track
+		"Multiply the scores of the selected layer by a constant";		// tooltip
+	private BinLayer 				selectedLayer;						// selected layer
 
 	/**
 	 * key of the action in the {@link ActionMap}
@@ -66,11 +65,11 @@ public class BLAMultiplyConstant extends TrackListActionOperationWorker<BinList>
 
 	@Override
 	public Operation<BinList> initializeOperation() {
-		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
-		if (selectedTrack != null) {
-			Number constant = NumberOptionPane.getValue(getRootPane(), "Constant", "Multiply the score of the track by", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
+		selectedLayer = (BinLayer) getValue("Layer");
+		if (selectedLayer != null) {
+			Number constant = NumberOptionPane.getValue(getRootPane(), "Constant", "Multiply the score of the layer by", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
 			if ((constant != null) && (constant.doubleValue() != 0) && (constant.doubleValue() != 1)) {
-				BinList binList = ((BinListTrack)selectedTrack).getData();
+				BinList binList = selectedLayer.getData();
 				Operation<BinList> operation = new BLOMultiplyConstant(binList, constant.doubleValue());
 				return operation;
 			}
@@ -82,7 +81,7 @@ public class BLAMultiplyConstant extends TrackListActionOperationWorker<BinList>
 	@Override
 	protected void doAtTheEnd(BinList actionResult) {
 		if (actionResult != null) {
-			selectedTrack.setData(actionResult, operation.getDescription());
+			selectedLayer.setData(actionResult, operation.getDescription());
 		}
 	}
 }

@@ -27,7 +27,7 @@ import java.util.List;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoTrackMethod;
+import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoLayerMethod;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
@@ -60,7 +60,7 @@ public class SCWLTwoTracksManagement implements Serializable, Stoppable {
 	 */
 	public SCWLTwoTracksManagement (	ChromosomeListOfLists<?> list1,
 			ChromosomeListOfLists<?> list2,
-			ScoreCalculationTwoTrackMethod scm) {
+			ScoreCalculationTwoLayerMethod scm) {
 		this.projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		this.scwList = new ArrayList<ChromosomeListOfLists<?>>();
 		this.scwList.add(list1);

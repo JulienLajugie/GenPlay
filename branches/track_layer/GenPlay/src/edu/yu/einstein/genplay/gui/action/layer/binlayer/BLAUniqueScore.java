@@ -29,22 +29,21 @@ import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLOUniqueScore;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
-import edu.yu.einstein.genplay.gui.old.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.old.track.BinListTrack;
-
+import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
+import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 
 
 /**
- * Adds a constant to the scores of the selected {@link BinListTrack}
+ * Adds a constant to the scores of the selected {@link BinLayer}
  * @author Julien Lajugie
  * @version 0.1
  */
 public final class BLAUniqueScore extends TrackListActionOperationWorker<BinList> {
 
 	private static final long serialVersionUID = 4027173438789911860L; 	// generated ID
-	private static final String 	ACTION_NAME = "Unique Score (Constant)";// action name
-	private static final String 	DESCRIPTION = "Set a unique score for all windows.";			// tooltip
-	private BinListTrack 			selectedTrack;						// selected track
+	private static final String 	ACTION_NAME = "Unique Score (Constant)";			// action name
+	private static final String 	DESCRIPTION = "Set a unique score for all windows.";// tooltip
+	private BinLayer 				selectedLayer;						// selected layer
 
 
 	/**
@@ -66,11 +65,11 @@ public final class BLAUniqueScore extends TrackListActionOperationWorker<BinList
 
 	@Override
 	public Operation<BinList> initializeOperation() {
-		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
-		if (selectedTrack != null) {
+		selectedLayer = (BinLayer) getValue("Layer");
+		if (selectedLayer != null) {
 			Number constant = NumberOptionPane.getValue(getRootPane(), "Unique Score", "Enter a score for all windows", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
 			if ((constant != null) && (constant.doubleValue() != 0)) {
-				BinList binList = selectedTrack.getData();
+				BinList binList = selectedLayer.getData();
 				operation = new BLOUniqueScore(binList, constant.doubleValue());
 				return operation;
 			}
@@ -82,7 +81,7 @@ public final class BLAUniqueScore extends TrackListActionOperationWorker<BinList
 	@Override
 	protected void doAtTheEnd(BinList actionResult) {
 		if (actionResult != null) {
-			selectedTrack.setData(actionResult, operation.getDescription());
+			selectedLayer.setData(actionResult, operation.getDescription());
 		}
 	}
 }

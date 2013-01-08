@@ -31,19 +31,20 @@ import javax.swing.ActionMap;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLORepartition;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
-import edu.yu.einstein.genplay.gui.old.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.old.track.BinListTrack;
-import edu.yu.einstein.genplay.gui.old.track.CurveTrack;
-import edu.yu.einstein.genplay.gui.old.track.Track;
+import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
 import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotData;
 import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotPane;
-import edu.yu.einstein.genplay.gui.trackChooser.MultiTrackChooser;
-
+import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
+import edu.yu.einstein.genplay.gui.track.layer.ColoredLayer;
+import edu.yu.einstein.genplay.gui.track.layer.Layer;
+import edu.yu.einstein.genplay.gui.track.layer.LayerType;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
- * Generates an array containing the repartition of the score values of the selected {@link BinListTrack}
+ * Generates an array containing the repartition of the score values of the selected {@link BinLayer}
  * @author Chirag Gorasia
  * @version 0.1
  */
@@ -52,10 +53,10 @@ public final class BLARepartition extends TrackListActionOperationWorker<double 
 	private static final long serialVersionUID = -7166030548181210580L; // generated ID
 	private static final String 	ACTION_NAME = "Show Repartition";	// action name
 	private static final String 	DESCRIPTION = 
-		"Generate a plot showing the repartition of the scores of the selected track";	// tooltip
-	private Track<?>[] 				selectedTracks;
+			"Generate a plot showing the repartition of the scores of the selected layers";	// tooltip
+	private Layer<?>[] 				selectedLayers;
 	private List<ScatterPlotData> 	scatPlotData;
-	
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
@@ -75,21 +76,30 @@ public final class BLARepartition extends TrackListActionOperationWorker<double 
 
 	@Override
 	public Operation<double [][][]> initializeOperation() {
-		BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
-		if (selectedTrack != null) {
+		BinLayer selectedLayer = (BinLayer) getValue("Layer");
+		if (selectedLayer != null) {
 			Number scoreBin = NumberOptionPane.getValue(getRootPane(), "Size", "Enter the size of the bin of score:", new DecimalFormat("0.0#####"), 0 + Double.MIN_NORMAL, 1000, 1);
-			if (scoreBin != null) {	
+			if (scoreBin != null) {
 				// we ask the user to choose the tracks for the repartition only if there is more than one track
-				if (getTrackList().getBinListTracks().length > 1) {
-					selectedTracks = MultiTrackChooser.getSelectedTracks(getRootPane(), getTrackList().getBinListTracks());
+				LayerType[] availalbleLayerTypes = {LayerType.BIN_LAYER};
+				Layer<?>[] binLayers = Utils.getLayers(getTrackListPanel().getModel().getTracks(), availalbleLayerTypes);
+				if (binLayers.length > 1) {
+					LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
+					layerChooserDialog.setLayers(getTrackListPanel().getAllLayers());
+					LayerType[] selectableLayers = {LayerType.BIN_LAYER};
+					layerChooserDialog.setSelectableLayers(selectableLayers);
+					layerChooserDialog.setMultiselectable(true);
+					if (layerChooserDialog.showDialog(getRootPane()) == LayerChooserDialog.APPROVE_OPTION) {
+						selectedLayers = layerChooserDialog.getSelectedLayers().toArray(selectedLayers);
+					}
 				} else {
-					selectedTracks = getTrackList().getBinListTracks();
+					selectedLayers = binLayers;
 				}
-				if ((selectedTracks != null)) {
-					BinList[] binListArray = new BinList[selectedTracks.length];
-					for (int i = 0; i < selectedTracks.length; i++) {
-						binListArray[i] = ((BinListTrack)selectedTracks[i]).getData();						
-					}	
+				if ((selectedLayers != null)) {
+					BinList[] binListArray = new BinList[selectedLayers.length];
+					for (int i = 0; i < selectedLayers.length; i++) {
+						binListArray[i] = ((BinLayer)selectedLayers[i]).getData();
+					}
 					if (binListArray.length > 0) {
 						Operation<double[][][]> operation = new BLORepartition(binListArray, scoreBin.doubleValue());
 						return operation;
@@ -100,14 +110,14 @@ public final class BLARepartition extends TrackListActionOperationWorker<double 
 		return null;
 	}
 
-	
+
 	@Override
 	protected void doAtTheEnd(double[][][] actionResult) {
-		if (actionResult != null && selectedTracks.length != 0) {
+		if (actionResult != null && selectedLayers.length != 0) {
 			scatPlotData = new ArrayList<ScatterPlotData>();
 			for (int k = 0; k < actionResult.length; k++) {
-				Color trackColor = ((CurveTrack<?>) selectedTracks[k]).getTrackColor(); // retrieve the color of the track
-				scatPlotData.add(new ScatterPlotData(actionResult[k], selectedTracks[k].toString(), trackColor));
+				Color trackColor = ((ColoredLayer) selectedLayers[k]).getColor(); // retrieve the color of the track
+				scatPlotData.add(new ScatterPlotData(actionResult[k], selectedLayers[k].toString(), trackColor));
 			}
 			ScatterPlotPane.showDialog(getRootPane(), "Score", "Bin Count", scatPlotData);
 		}

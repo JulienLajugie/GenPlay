@@ -29,25 +29,24 @@ import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLOSubtractConstant;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
-import edu.yu.einstein.genplay.gui.old.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.old.track.BinListTrack;
-
+import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
+import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 
 
 /**
- * Subtracts a constant from the scores of the selected {@link BinListTrack}
+ * Subtracts a constant from the scores of the selected {@link BinLayer}
  * @author Julien Lajugie
  * @version 0.1
  */
 public class BLASubtractConstant extends TrackListActionOperationWorker<BinList> {
 
-	private static final long serialVersionUID = 9085714881046182620L;	// generated ID
-	private static final String 	ACTION_NAME = "Subtraction (Constant)";// action name
+	private static final long serialVersionUID = 9085714881046182620L;		// generated ID
+	private static final String 	ACTION_NAME = "Subtraction (Constant)";	// action name
 	private static final String 	DESCRIPTION = 
-		"Subtract a constant from the scores of the selected track";	// tooltip
-	private BinListTrack 			selectedTrack;						// selected track
+		"Subtract a constant from the scores of the selected layer";		// tooltip
+	private BinLayer 				selectedLayer;							// selected layer
 
-	
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
@@ -67,11 +66,11 @@ public class BLASubtractConstant extends TrackListActionOperationWorker<BinList>
 
 	@Override
 	public Operation<BinList> initializeOperation() {
-		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
-		if (selectedTrack != null) {
+		selectedLayer = (BinLayer) getValue("Layer");
+		if (selectedLayer != null) {
 			Number constant = NumberOptionPane.getValue(getRootPane(), "Constant", "Enter a value C to subtract: f(x)=x - C", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
 			if ((constant != null) && (constant.doubleValue() != 0)) {
-				BinList binList = ((BinListTrack)selectedTrack).getData();
+				BinList binList = selectedLayer.getData();
 				Operation<BinList> operation = new BLOSubtractConstant(binList, constant.doubleValue());
 				return operation;
 			}
@@ -83,7 +82,7 @@ public class BLASubtractConstant extends TrackListActionOperationWorker<BinList>
 	@Override
 	protected void doAtTheEnd(BinList actionResult) {
 		if (actionResult != null) {
-			selectedTrack.setData(actionResult, operation.getDescription());
+			selectedLayer.setData(actionResult, operation.getDescription());
 		}
 	}
 }

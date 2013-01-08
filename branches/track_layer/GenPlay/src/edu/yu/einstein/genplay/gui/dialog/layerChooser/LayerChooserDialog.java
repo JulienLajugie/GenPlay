@@ -66,7 +66,7 @@ public class LayerChooserDialog extends JDialog {
 			Component renderedComponent = table.getDefaultRenderer(value.getClass()).getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 			renderedComponent.setEnabled(true);
 			LayerType layerType = (LayerType)layerTable.getValueAt(row, LAYER_TYPE_INDEX);
-			if (!isSelectableType(layerType, selectableLayerTypes)) {
+			if ((selectableLayerTypes != null) && !layerType.isContainedIn(selectableLayerTypes)) {
 				renderedComponent.setEnabled(false);
 			}
 			return renderedComponent;
@@ -141,26 +141,6 @@ public class LayerChooserDialog extends JDialog {
 			return null;
 		} else {
 			return selectedLayers.get(0);
-		}
-	}
-
-
-	/**
-	 * @param layerType a type of layer
-	 * @param selectableLayerTypes array containing all the selectable layer types
-	 * @return true if the specified layer type is one of the specified selectable {@link LayerType}.
-	 * Note: if the selectable layer type property has not been set, this function returns true
-	 */
-	protected static boolean isSelectableType(LayerType layerType, LayerType[] selectableLayerTypes) {
-		if (selectableLayerTypes == null) {
-			return true;
-		} else {
-			for (LayerType currentType: selectableLayerTypes) {
-				if (currentType == layerType) {
-					return true;
-				}
-			}
-			return false;
 		}
 	}
 

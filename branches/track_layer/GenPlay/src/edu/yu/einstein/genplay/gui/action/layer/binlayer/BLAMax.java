@@ -28,13 +28,12 @@ import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLOMax;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.dialog.ChromosomeChooser;
-import edu.yu.einstein.genplay.gui.old.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.old.track.BinListTrack;
-
+import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
+import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 
 
 /**
- * Shows the maximum score of the selected {@link BinListTrack}
+ * Shows the maximum score of the selected {@link BinLayer}
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -43,8 +42,8 @@ public final class BLAMax extends TrackListActionOperationWorker<Double> {
 	private static final long serialVersionUID = -3864460354387970028L;	// generated ID
 	private static final String 	ACTION_NAME = "Maximum";			// action name
 	private static final String 	DESCRIPTION = 
-		"Show the maximum score of the selected track";					// tooltip
-	private BinListTrack 			selectedTrack;						// selected track
+		"Show the maximum score of the selected layer";					// tooltip
+	private BinLayer	 			selectedLayer;						// selected layer
 
 	/**
 	 * key of the action in the {@link ActionMap}
@@ -65,14 +64,14 @@ public final class BLAMax extends TrackListActionOperationWorker<Double> {
 
 	@Override
 	public Operation<Double> initializeOperation() {
-		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
-		if (selectedTrack != null) {
+		selectedLayer = (BinLayer) getValue("Layer");
+		if (selectedLayer != null) {
 			boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane());
 			if (selectedChromo != null) {
-				BinList binList = selectedTrack.getData();
+				BinList binList = selectedLayer.getData();
 				Operation<Double> operation = new BLOMax(binList, selectedChromo);
 				return operation;
-			}		
+			}
 		}
 		return null;
 	}
@@ -81,7 +80,7 @@ public final class BLAMax extends TrackListActionOperationWorker<Double> {
 	@Override
 	protected void doAtTheEnd(Double actionResult) {
 		if (actionResult != null) {
-			JOptionPane.showMessageDialog(getRootPane(), actionResult, "Maximum of \"" + selectedTrack.getName() +"\":", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(getRootPane(), actionResult, "Maximum of \"" + selectedLayer.getName() +"\":", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 }

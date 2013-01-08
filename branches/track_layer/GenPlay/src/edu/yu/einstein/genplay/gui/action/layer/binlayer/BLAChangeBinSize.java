@@ -48,7 +48,7 @@ public class BLAChangeBinSize extends TrackListActionOperationWorker<BinList> {
 	private static final String 	DESCRIPTION = 
 		"Change the size of the bins of the selected layer ";				// tooltip
 
-	private BinLayer 				selectedLayer;							// selected track
+	private BinLayer 				selectedLayer;							// selected layer
 
 	/**
 	 * key of the action in the {@link ActionMap}

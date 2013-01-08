@@ -47,9 +47,9 @@ public class BLADensity extends TrackListActionOperationWorker<BinList> {
 	private static final long serialVersionUID = 8669677084318132021L;	// generated ID
 	private static final String 	ACTION_NAME = "Density";			// action name
 	private static final String 	DESCRIPTION = 
-		"Computes the densities of none null bins of the selected track";// tooltip
+		"Computes the densities of none null bins of the selected layer";// tooltip
 	private BinLayer 				selectedLayer;						// selected layer
-	private Track	 				resultTrack;						// result layer
+	private Track	 				resultTrack;						// result track
 	private Number 					halfWidth;							// half width
 
 
@@ -91,7 +91,7 @@ public class BLADensity extends TrackListActionOperationWorker<BinList> {
 	@Override
 	protected void doAtTheEnd(BinList actionResult) {
 		if (actionResult != null) {
-			BinLayer newLayer = new BinLayer(resultTrack, actionResult, selectedLayer.getName());
+			BinLayer newLayer = new BinLayer(resultTrack, actionResult, "Densities of " + selectedLayer.getName());
 			// add info to the history
 			newLayer.getHistory().add("Result of the density calculation of " + selectedLayer.getName() + ", Half Width = " + halfWidth);
 			newLayer.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Colors.GREY);

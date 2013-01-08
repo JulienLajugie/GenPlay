@@ -45,7 +45,7 @@ import edu.yu.einstein.genplay.core.enums.IslandResultType;
 import edu.yu.einstein.genplay.core.enums.LogBase;
 import edu.yu.einstein.genplay.core.enums.SaturationType;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoTrackMethod;
+import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoLayerMethod;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.Variant;
 import edu.yu.einstein.genplay.gui.fileFilter.BedFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.BedGraphFilter;
@@ -62,6 +62,9 @@ import edu.yu.einstein.genplay.gui.fileFilter.SOAPsnpFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.SerializedBinListFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.TwoBitFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.WiggleFilter;
+import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.track.layer.Layer;
+import edu.yu.einstein.genplay.gui.track.layer.LayerType;
 
 
 
@@ -304,15 +307,15 @@ public class Utils {
 	 * @param parentComponent the parent Component for the dialog
 	 * @return a {@link ScoreCalculationMethod}
 	 */
-	public static ScoreCalculationTwoTrackMethod chooseScoreCalculationTwoTrackMethod(Component parentComponent) {
-		return (ScoreCalculationTwoTrackMethod)JOptionPane.showInputDialog(
+	public static ScoreCalculationTwoLayerMethod chooseScoreCalculationTwoTrackMethod(Component parentComponent) {
+		return (ScoreCalculationTwoLayerMethod)JOptionPane.showInputDialog(
 				parentComponent,
 				"Choose a method for the calculation of the score",
 				"Score Calculation",
 				JOptionPane.QUESTION_MESSAGE,
 				null,
-				ScoreCalculationTwoTrackMethod.values(),
-				ScoreCalculationTwoTrackMethod.ADDITION);
+				ScoreCalculationTwoLayerMethod.values(),
+				ScoreCalculationTwoLayerMethod.ADDITION);
 	}
 
 
@@ -409,6 +412,25 @@ public class Utils {
 	public static ExtendedFileFilter[] getReadableStripeFileFilters() {
 		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new GTFFilter(), new WiggleFilter(), new PSLFilter()};
 		return filters;
+	}
+
+
+	/**
+	 * @param tracks a list of {@link Track}
+	 * @param layerTypes a list of {@link LayerType}
+	 * @return all the layer from the list of tracks that are in the specified list of the {@link LayerType}
+	 */
+	public static Layer<?>[] getLayers(Track[] tracks, LayerType[] layerTypes) {
+		List<Layer<?>> layerList = new ArrayList<Layer<?>>();
+		for (Track currentTrack: tracks) {
+			for (Layer<?> currentLayer: currentTrack.getLayers()) {
+				if (currentLayer.getType().isContainedIn(layerTypes)) {
+					layerList.add(currentLayer);
+				}
+			}
+		}
+		Layer<?>[] returnLayers = new Layer<?>[layerList.size()];
+		return layerList.toArray(returnLayers);
 	}
 
 

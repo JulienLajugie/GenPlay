@@ -14,50 +14,47 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.action.layer.binlayer;
+package edu.yu.einstein.genplay.gui.action.layer.SCWLayer;
 
 import java.text.DecimalFormat;
 
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
-import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.core.list.binList.operation.BLOSumScore;
+import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOWindowCount;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.dialog.ChromosomeChooser;
-import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
-import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
+import edu.yu.einstein.genplay.gui.old.action.TrackListActionOperationWorker;
+import edu.yu.einstein.genplay.gui.old.track.SCWListTrack;
 
 
 /**
- * Returns the sum of the scores on the selected chromosomes of the selected {@link BinLayer}
- * @author Julien Lajugie
- * @version 0.1
+ * Counts the number of windows in a {@link ScoredChromosomeWindowList}
+ * @author Nicolas Fourel
  */
-public final class BLASumScore extends TrackListActionOperationWorker<Double> {
+public class SCWLAWindowCount extends TrackListActionOperationWorker<Long> {
 
-	private static final long serialVersionUID = -7198642565173540167L;	// generated ID
-	private static final String 	ACTION_NAME = "Score Count";		// action name
-	private static final String 	DESCRIPTION = 
-		"Return the sum of the scores on the " +
-		"selected chromosomes of the selected layer";					// tooltip
+	private static final long serialVersionUID = -1773399821513504625L;						// generated ID
+	private static final String 	ACTION_NAME = "Window Count";					// action name
+	private static final String 	DESCRIPTION = "Sum of the total number of windows";		// tooltip
 
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "BLASumScore";
+	public static final String ACTION_KEY = "SCWLACountWindows";
 
 
 	/**
-	 * Creates an instance of {@link BLASumScore}
+	 * Creates an instance of {@link SCWLAWindowCount}
 	 */
-	public BLASumScore() {
+	public SCWLAWindowCount() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -66,13 +63,13 @@ public final class BLASumScore extends TrackListActionOperationWorker<Double> {
 
 
 	@Override
-	public Operation<Double> initializeOperation() {
-		BinLayer selectedLayer = (BinLayer) getValue("Layer");
-		if (selectedLayer != null) {
+	public Operation<Long> initializeOperation() {
+		SCWListTrack selectedTrack = (SCWListTrack) getTrackList().getSelectedTrack();
+		if (selectedTrack != null) {
 			boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane());
 			if (selectedChromo != null) {
-				BinList binList = selectedLayer.getData();
-				Operation<Double> operation = new BLOSumScore(binList, selectedChromo);
+				ScoredChromosomeWindowList scwList = selectedTrack.getData();
+				Operation<Long> operation = new SCWLOWindowCount(scwList, selectedChromo);
 				return operation;
 			}
 		}
@@ -81,9 +78,9 @@ public final class BLASumScore extends TrackListActionOperationWorker<Double> {
 
 
 	@Override
-	protected void doAtTheEnd(Double actionResult) {
+	protected void doAtTheEnd(Long actionResult) {
 		if (actionResult != null) {
-			JOptionPane.showMessageDialog(getRootPane(), "Score count: \n" + new DecimalFormat("###,###,###,###,###,###,###.###").format(actionResult), "Score Count", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(getRootPane(), "Total number of windows: \n" + new DecimalFormat("###,###,###,###").format(actionResult), "Windows number", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 }

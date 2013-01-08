@@ -28,7 +28,7 @@ import java.util.List;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleScoredChromosomeWindow;
-import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoTrackMethod;
+import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoLayerMethod;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
@@ -50,7 +50,7 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 	private static final long serialVersionUID = 2965349494486829320L;
 	private final 	List<ChromosomeListOfLists<?>> 		list;				//list containing originals lists
 	private final 	List<ScoredChromosomeWindow> 		newScwList;			//new list
-	private final	ScoreCalculationTwoTrackMethod		scm;				//operation to apply
+	private final	ScoreCalculationTwoLayerMethod		scm;				//operation to apply
 	private 		Chromosome 							chromosome;
 	private			boolean[]							isSCWList;			//stores the instance class of the lists
 	private			boolean[]							onStart;			//stores the position on the current window
@@ -66,7 +66,7 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 	 * 
 	 * @param scm		operation
 	 */
-	public SCWLTwoTracksEngine (ScoreCalculationTwoTrackMethod scm) {
+	public SCWLTwoTracksEngine (ScoreCalculationTwoLayerMethod scm) {
 		this.list = new ArrayList<ChromosomeListOfLists<?>>();
 		this.newScwList = new ArrayList<ScoredChromosomeWindow>();
 		this.scm = scm;

@@ -281,11 +281,7 @@ public class BinLayer extends AbstractVersionedLayer<BinList> implements Layer<B
 	public Double getCurrentScoreToDisplay() {
 		if (getData() != null) {
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-			short currentChromosome = ProjectManager.getInstance().getProjectChromosome().getIndex(projectWindow.getGenomeWindow().getChromosome());
-			int indexMid = (int) (projectWindow.getGenomeWindow().getMiddlePosition() / (double) getData().getBinSize());
-			if ((getData().get(currentChromosome) != null) && (indexMid < getData().size(currentChromosome))) {
-				return getData().get(currentChromosome, indexMid);
-			}
+			return getData().getScore((int) projectWindow.getGenomeWindow().getMiddlePosition());
 		}
 		return 0d;
 	}

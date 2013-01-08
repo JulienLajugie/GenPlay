@@ -24,7 +24,7 @@ package edu.yu.einstein.genplay.gui.old.action.maskTrack;
 
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoTrackMethod;
+import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoLayerMethod;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOTwoTracks;
@@ -52,7 +52,7 @@ public final class MTAApplyMask extends TrackListActionOperationWorker<Chromosom
 	private static final String 			DESCRIPTION = "Apply mask on track";	// tooltip
 	private Track<?> 						selectedTrack;									// selected track								// other track
 	private Track<?>						resultTrack = null;								// result track
-	private ScoreCalculationTwoTrackMethod 	scm;
+	private ScoreCalculationTwoLayerMethod 	scm;
 
 
 	/**
@@ -80,7 +80,7 @@ public final class MTAApplyMask extends TrackListActionOperationWorker<Chromosom
 			ChromosomeListOfLists<?> mask = selectedTrack.getMask();
 			resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackList().getEmptyTracks());
 			if (resultTrack != null) {
-				this.scm = ScoreCalculationTwoTrackMethod.MULTIPLICATION;
+				this.scm = ScoreCalculationTwoLayerMethod.MULTIPLICATION;
 				operation = new SCWLOTwoTracks(data, mask, this.scm);
 				return operation;
 			}

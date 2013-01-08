@@ -30,36 +30,36 @@ import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLOIntervalsScoring;
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
-import edu.yu.einstein.genplay.gui.old.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.old.track.BinListTrack;
-import edu.yu.einstein.genplay.gui.old.track.Track;
+import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
+import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
+import edu.yu.einstein.genplay.gui.track.layer.LayerType;
 import edu.yu.einstein.genplay.gui.trackChooser.TrackChooser;
 import edu.yu.einstein.genplay.util.Utils;
 import edu.yu.einstein.genplay.util.colors.Colors;
-import edu.yu.einstein.genplay.util.colors.TrackColor;
-
 
 
 /**
- * Computes the average, sum or max of the selected track on intervals defined by another track
+ * Computes the average, sum or max of the selected layer on intervals defined by another layer
  * @author Julien Lajugie
  * @version 0.1
  */
 public class BLAIntervalsScoring extends TrackListActionOperationWorker<BinList> {
 
 	private static final long serialVersionUID = -3736735803307616477L;			// generated ID
-	private static final String 	ACTION_NAME = "Intervals Scoring";	// action name
+	private static final String 	ACTION_NAME = "Intervals Scoring";			// action name
 	private static final String 	DESCRIPTION =
 			"Compute the average, the sum or the max of the " +
-					"selected track on intervals defined by another track";					// tooltip
-	private BinListTrack 			selectedTrack;		// selected track
-	private Track<?> 				intervalTrack;		// track defining the intervals
+					"selected layer on intervals defined by another layer";		// tooltip
+
+	private BinLayer	 			selectedLayer;		// selected layer
+	private BinLayer				intervalLayer;		// layer defining the intervals
 	private Number 					percentage;			// percentage of the greatest values
 	private ScoreCalculationMethod 	method;				// method of calculation
-	private Track<?> 				resultTrack;		// result track
+	private Track 					resultTrack;		// result track
 
 
 	/**
@@ -81,22 +81,29 @@ public class BLAIntervalsScoring extends TrackListActionOperationWorker<BinList>
 
 	@Override
 	public Operation<BinList> initializeOperation() {
-		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
-		if (selectedTrack != null) {
-			intervalTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Choose the track defining the intervals:", getTrackList().getBinListTracks());
-			if(intervalTrack != null) {
-				percentage = NumberOptionPane.getValue(getRootPane(), "Enter a percentage", "Perform the calculation on the x% greatest values of each interval:", new DecimalFormat("0"), 0, 100, 100);
-				if (percentage != null) {
-					method = Utils.chooseScoreCalculation(getRootPane());
-					if (method != null) {
-						resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackList().getEmptyTracks());
-						if (resultTrack != null) {
-							DataPrecision precision = Utils.choosePrecision(getRootPane());;
-							if (precision != null) {
-								BinList valueBinList = selectedTrack.getData();
-								BinList scoringBinList = ((BinListTrack)intervalTrack).getData();
-								Operation<BinList> operation = new BLOIntervalsScoring(scoringBinList, valueBinList, percentage.intValue(), method, precision);
-								return operation;
+		selectedLayer = (BinLayer) getValue("Layer");
+		if (selectedLayer != null) {
+			LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
+			layerChooserDialog.setLayers(getTrackListPanel().getAllLayers());
+			LayerType[] selectableLayers = {LayerType.BIN_LAYER};
+			layerChooserDialog.setSelectableLayers(selectableLayers);
+			layerChooserDialog.setMultiselectable(false);
+			if (layerChooserDialog.showDialog(getRootPane()) == LayerChooserDialog.APPROVE_OPTION) {
+				intervalLayer = (BinLayer) layerChooserDialog.getSelectedLayer();
+				if(intervalLayer != null) {
+					percentage = NumberOptionPane.getValue(getRootPane(), "Enter a percentage", "Perform the calculation on the x% greatest values of each interval:", new DecimalFormat("0"), 0, 100, 100);
+					if (percentage != null) {
+						method = Utils.chooseScoreCalculation(getRootPane());
+						if (method != null) {
+							resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackListPanel().getModel().getTracks());
+							if (resultTrack != null) {
+								DataPrecision precision = Utils.choosePrecision(getRootPane());;
+								if (precision != null) {
+									BinList valueBinList = selectedLayer.getData();
+									BinList scoringBinList = intervalLayer.getData();
+									Operation<BinList> operation = new BLOIntervalsScoring(scoringBinList, valueBinList, percentage.intValue(), method, precision);
+									return operation;
+								}
 							}
 						}
 					}
@@ -110,13 +117,11 @@ public class BLAIntervalsScoring extends TrackListActionOperationWorker<BinList>
 	@Override
 	protected void doAtTheEnd(BinList actionResult) {
 		if (actionResult != null) {
-			int index = resultTrack.getTrackNumber() - 1;
-			BinListTrack newTrack = new BinListTrack(index + 1, actionResult);
-			newTrack.setTrackColor(TrackColor.getTrackColor());
+			BinLayer newLayer = new BinLayer(resultTrack, actionResult, method + " of " + selectedLayer.getName() + " from intervals of  " + intervalLayer.getName());
 			// add info to the history
-			newTrack.getHistory().add("Result of the " + method + " of " + selectedTrack.getName() + " calculated on the intervals defined by " + intervalTrack.getName() + " on the " + percentage + "% greatest values", Color.GRAY);
-			newTrack.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Colors.GREY);
-			getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), "average of " + selectedTrack.getName() + " from intervals of  " + intervalTrack.getName(), null, null, null);
+			newLayer.getHistory().add("Result of the " + method + " of " + selectedLayer.getName() + " calculated on the intervals defined by " + intervalLayer.getName() + " on the " + percentage + "% greatest values", Color.GRAY);
+			newLayer.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Colors.GREY);
+			resultTrack.getLayers().add(newLayer);
 		}
 	}
 }

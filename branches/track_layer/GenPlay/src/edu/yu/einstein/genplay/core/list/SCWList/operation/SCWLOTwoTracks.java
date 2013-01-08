@@ -29,7 +29,7 @@ import java.util.concurrent.Callable;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleScoredChromosomeWindow;
-import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoTrackMethod;
+import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoLayerMethod;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
@@ -49,7 +49,7 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
  */
 public class SCWLOTwoTracks implements Operation<ChromosomeListOfLists<?>>, Stoppable {
 
-	private final ScoreCalculationTwoTrackMethod 	scm;
+	private final ScoreCalculationTwoLayerMethod 	scm;
 	private final SCWLTwoTracksManagement 		twoTracks;			// manage the operation between two tracks
 
 
@@ -57,11 +57,11 @@ public class SCWLOTwoTracks implements Operation<ChromosomeListOfLists<?>>, Stop
 	 * Adds a specified constant to the scores of each window of a {@link SimpleScoredChromosomeWindow}
 	 * @param list1 1st input list
 	 * @param list2 2nd input list
-	 * @param scm {@link ScoreCalculationTwoTrackMethod}
+	 * @param scm {@link ScoreCalculationTwoLayerMethod}
 	 */
 	public SCWLOTwoTracks(	ChromosomeListOfLists<?> list1,
 			ChromosomeListOfLists<?> list2,
-			ScoreCalculationTwoTrackMethod scm) {
+			ScoreCalculationTwoLayerMethod scm) {
 		this.scm = scm;
 		twoTracks = new SCWLTwoTracksManagement(list1, list2, scm);
 	}

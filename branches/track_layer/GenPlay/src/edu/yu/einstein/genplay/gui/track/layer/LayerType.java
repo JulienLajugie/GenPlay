@@ -88,6 +88,20 @@ public enum LayerType {
 	}
 
 
+	/**
+	 * @param layerTypes an array of {@link LayerType}
+	 * @return true if the current object is part of the specified layer types
+	 */
+	public boolean isContainedIn(LayerType[] layerTypes) {
+		for (LayerType currentType: layerTypes) {
+			if (currentType == this) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+
 	@Override
 	public String toString() {
 		return getName();

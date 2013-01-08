@@ -29,13 +29,12 @@ import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLONormalize;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
-import edu.yu.einstein.genplay.gui.old.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.old.track.BinListTrack;
-
+import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
+import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 
 
 /**
- * Computes a Standard Score normalization on a {@link BinList}
+ * Computes a Standard Score normalization on a {@link BinLayer}
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -44,8 +43,8 @@ public final class BLANormalize extends TrackListActionOperationWorker<BinList> 
 	private static final long serialVersionUID = 1672001436769889976L;	// generated ID
 	private static final String 	ACTION_NAME = "Normalize";			// action name
 	private static final String 	DESCRIPTION = 
-		"Normalize the scores of the selected track";					// tooltip
-	private BinListTrack 			selectedTrack;						// selected track
+		"Normalize the scores of the selected layer";					// tooltip
+	private BinLayer 				selectedLayer;						// selected layer
 
 	
 	/**
@@ -67,11 +66,11 @@ public final class BLANormalize extends TrackListActionOperationWorker<BinList> 
 
 	@Override
 	public Operation<BinList> initializeOperation() {
-		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
-		if (selectedTrack != null) {		
+		selectedLayer = (BinLayer) getValue("Layer");
+		if (selectedLayer != null) {
 			Number factor = NumberOptionPane.getValue(getRootPane(), "Multiplicative constant", "Enter a factor of X:", new DecimalFormat("###,###,###,###"), 0, 1000000000, 10000000);
 			if(factor != null) {
-				BinList binList = selectedTrack.getData();
+				BinList binList = selectedLayer.getData();
 				Operation<BinList> operation = new BLONormalize(binList, factor.doubleValue());
 				return operation;
 			}	
@@ -83,7 +82,7 @@ public final class BLANormalize extends TrackListActionOperationWorker<BinList> 
 	@Override
 	protected void doAtTheEnd(BinList actionResult) {
 		if (actionResult != null) {
-			selectedTrack.setData(actionResult, operation.getDescription());
+			selectedLayer.setData(actionResult, operation.getDescription());
 		}
 	}
 }

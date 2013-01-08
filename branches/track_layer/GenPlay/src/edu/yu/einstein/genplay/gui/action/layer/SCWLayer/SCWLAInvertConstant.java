@@ -14,51 +14,50 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.action.layer.binlayer;
+package edu.yu.einstein.genplay.gui.action.layer.SCWLayer;
 
 import java.text.DecimalFormat;
 
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
-import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.core.list.binList.operation.BLOInvertConstant;
+import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOInvertConstant;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
-import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
+import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 
 
 /**
- * Inverts the values of the selected layer
+ * Adds a constant to the scores of the selected {@link SCWLayer}
  * @author Julien Lajugie
  * @version 0.1
  */
-public class BLAInvertConstant extends TrackListActionOperationWorker<BinList> {
+public final class SCWLAInvertConstant extends TrackListActionOperationWorker<ScoredChromosomeWindowList> {
 
 	private static final long serialVersionUID = 4027173438789911860L; 	// generated ID
 	private static final String 	ACTION_NAME = "Invert (Constant)";	// action name
-	private static final String 	DESCRIPTION = 
-		"Invert the values of the selected layer";						// tooltip
-
-	private BinLayer 				selectedLayer;						// selected layer
+	private static final String 	DESCRIPTION =
+			"Invert the values of the selected layer";					// tooltip
+	private SCWLayer 			selectedLayer;							// selected layer
 
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "BLAInvertConstant";
+	public static final String ACTION_KEY = "SCWLAInvertConstant";
 
 
 	/**
-	 * Creates an instance of {@link BLAInvertConstant}
+	 * Creates an instance of {@link SCWLAInvertConstant}
 	 */
-	public BLAInvertConstant() {
+	public SCWLAInvertConstant() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -67,26 +66,26 @@ public class BLAInvertConstant extends TrackListActionOperationWorker<BinList> {
 
 
 	@Override
-	public Operation<BinList> initializeOperation() {
-		selectedLayer = (BinLayer) getValue("Layer");
+	public Operation<ScoredChromosomeWindowList> initializeOperation() {
+		selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			Number constant = NumberOptionPane.getValue(getRootPane(), "Constant", "Enter a value C in: f(x)= C / x", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 1);
-			if (constant != null) {
+			if ((constant != null) && (constant.doubleValue() != 0)) {
 				if (constant.doubleValue() == 0) {
 					JOptionPane.showMessageDialog(getRootPane(), "The constant must be different from 0", "Invalid Parameter", JOptionPane.WARNING_MESSAGE);
 				} else {
-					BinList binList = selectedLayer.getData();
-					operation = new BLOInvertConstant(binList, constant.doubleValue());
+					ScoredChromosomeWindowList scwList = selectedLayer.getData();
+					operation = new SCWLOInvertConstant(scwList, constant.doubleValue());
 					return operation;
 				}
 			}
 		}
 		return null;
 	}
-	
-	
+
+
 	@Override
-	protected void doAtTheEnd(BinList actionResult) {
+	protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
 		if (actionResult != null) {
 			selectedLayer.setData(actionResult, operation.getDescription());
 		}

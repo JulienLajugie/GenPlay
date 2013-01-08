@@ -14,52 +14,50 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.action.layer.binlayer;
+package edu.yu.einstein.genplay.gui.action.layer.SCWLayer;
 
 import javax.swing.ActionMap;
-import javax.swing.JOptionPane;
 
-import edu.yu.einstein.genplay.core.enums.DataPrecision;
-import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.core.list.binList.operation.BLOFilterBandStop;
-import edu.yu.einstein.genplay.core.list.binList.operation.BLOFilterCount;
-import edu.yu.einstein.genplay.core.list.binList.operation.BLOFilterPercentage;
-import edu.yu.einstein.genplay.core.list.binList.operation.BLOFilterThreshold;
+import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOFilterBandStop;
+import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOFilterCount;
+import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOFilterPercentage;
+import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOFilterThreshold;
 import edu.yu.einstein.genplay.core.operation.Operation;
-import edu.yu.einstein.genplay.gui.dialog.filterDialog.FilterDialog;
-import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
+import edu.yu.einstein.genplay.gui.dialog.filterDialog.FilterDialog;
+import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 
 
 /**
- * Filters the selected {@link BinLayer}
+ * Filters the {@link SCWLayer}.
+ * Different kind of filters are availables
  * @author Julien Lajugie
- * @version 0.1
  */
-public class BLAFilter extends TrackListActionOperationWorker<BinList> {
+public class SCWLAFilter extends TrackListActionOperationWorker<ScoredChromosomeWindowList> {
 
-	private static final long serialVersionUID = 2935767531786922267L; 	// generated ID
+	private static final long serialVersionUID = 960963269753754801L;	// generated ID
 	private static final String 	ACTION_NAME = "Filter";				// action name
-	private static final String 	DESCRIPTION = 
-		"Filter the selected layer";									// tooltip
-	private BinLayer				selectedLayer;						// selected layer
+	private static final String 	DESCRIPTION =
+			"Filter the selected layer";								// tooltip
+	private SCWLayer				selectedLayer;						// selected layer
 
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "BLAFilter";
+	public static final String ACTION_KEY = "SCWLAFilter";
 
 
 	/**
-	 * Creates an instance of {@link BLAFilter}
+	 * Creates an instance of {@link SCWLAFilter}
 	 */
-	public BLAFilter() {
+	public SCWLAFilter() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -67,27 +65,24 @@ public class BLAFilter extends TrackListActionOperationWorker<BinList> {
 	}
 
 	@Override
-	public Operation<BinList> initializeOperation() {
-		selectedLayer = (BinLayer) getValue("Layer");
+	public Operation<ScoredChromosomeWindowList> initializeOperation() {
+		selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
-			if (selectedLayer.getData().getPrecision() == DataPrecision.PRECISION_1BIT) {
-				JOptionPane.showMessageDialog(getRootPane(), "Error, not filter available for 1-Bit data", "Error", JOptionPane.ERROR_MESSAGE);
-			}
 			FilterDialog filterDialog = new FilterDialog();
 			if (filterDialog.showFilterDialog(getRootPane()) == FilterDialog.APPROVE_OPTION) {
-				BinList binList = selectedLayer.getData();
+				ScoredChromosomeWindowList list = selectedLayer.getData();
 				Number min = filterDialog.getMinInput();
 				Number max = filterDialog.getMaxInput();
-				boolean isSaturation = filterDialog.isSaturation(); 
+				boolean isSaturation = filterDialog.isSaturation();
 				switch (filterDialog.getFilterType()) {
 				case COUNT:
-					return new BLOFilterCount(binList, min.intValue(), max.intValue(), isSaturation);
+					return new SCWLOFilterCount(list, min.intValue(), max.intValue(), isSaturation);
 				case PERCENTAGE:
-					return new BLOFilterPercentage(binList, min.doubleValue(), max.doubleValue(), isSaturation);
+					return new SCWLOFilterPercentage(list, min.doubleValue(), max.doubleValue(), isSaturation);
 				case THRESHOLD:
-					return new BLOFilterThreshold(binList, min.doubleValue(), max.doubleValue(), isSaturation);
+					return new SCWLOFilterThreshold(list, min.doubleValue(), max.doubleValue(), isSaturation);
 				case BANDSTOP:
-					return new BLOFilterBandStop(binList, min.doubleValue(), max.doubleValue());
+					return new SCWLOFilterBandStop(list, min.doubleValue(), max.doubleValue());
 				default:
 					throw new IllegalArgumentException("Invalid Saturation Type");
 				}
@@ -99,7 +94,7 @@ public class BLAFilter extends TrackListActionOperationWorker<BinList> {
 
 
 	@Override
-	protected void doAtTheEnd(BinList actionResult) {
+	protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
 		if (actionResult != null) {
 			selectedLayer.setData(actionResult, operation.getDescription());
 		}

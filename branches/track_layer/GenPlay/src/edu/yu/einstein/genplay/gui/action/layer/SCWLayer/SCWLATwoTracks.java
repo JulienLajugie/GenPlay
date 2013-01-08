@@ -19,23 +19,17 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.action.layer.binlayer;
-
+package edu.yu.einstein.genplay.gui.action.layer.SCWLayer;
 
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.enums.DataPrecision;
-import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoTrackMethod;
+import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoLayerMethod;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOTwoTracks;
-import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.core.list.binList.operation.BLOTwoTracks;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.old.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.old.track.BinListTrack;
-import edu.yu.einstein.genplay.gui.old.track.CurveTrack;
 import edu.yu.einstein.genplay.gui.old.track.SCWListTrack;
 import edu.yu.einstein.genplay.gui.old.track.Track;
 import edu.yu.einstein.genplay.gui.trackChooser.TrackChooser;
@@ -46,19 +40,19 @@ import edu.yu.einstein.genplay.util.colors.TrackColor;
 
 
 /**
- * Adds a constant to the scores of the selected {@link SCWListTrack}
- * @author Julien Lajugie
+ * Realizes operation on two tracks
+ * @author Nicolas Fourel
  * @version 0.1
  */
-public final class BLATwoTracks extends TrackListActionOperationWorker<ChromosomeListOfLists<?>> {
+public final class SCWLATwoTracks extends TrackListActionOperationWorker<ChromosomeListOfLists<?>> {
 
-	private static final long 				serialVersionUID = 4027173438789911860L; 		// generated ID
+	private static final long 				serialVersionUID = 4027173438789911860L; 				// generated ID
 	private static final String 			ACTION_NAME = "Two Tracks Operation";			// action name
 	private static final String 			DESCRIPTION = "Run operation on two trakcs";	// tooltip
 	private Track<?> 						selectedTrack;									// selected track
 	private Track<?> 						otherTrack = null;								// other track
 	private Track<?>						resultTrack = null;								// result track
-	private ScoreCalculationTwoTrackMethod 	scm;
+	private ScoreCalculationTwoLayerMethod 	scm;
 
 
 	/**
@@ -68,9 +62,9 @@ public final class BLATwoTracks extends TrackListActionOperationWorker<Chromosom
 
 
 	/**
-	 * Creates an instance of {@link BLATwoTracks}
+	 * Creates an instance of {@link SCWLATwoTracks}
 	 */
-	public BLATwoTracks() {
+	public SCWLATwoTracks() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -88,19 +82,9 @@ public final class BLATwoTracks extends TrackListActionOperationWorker<Chromosom
 				if (resultTrack != null) {
 					this.scm = Utils.chooseScoreCalculationTwoTrackMethod(getRootPane());
 					if (scm != null) {
-						if (isSCWList()) {
-							operation = new SCWLOTwoTracks(	(ChromosomeListOfLists<?>)selectedTrack.getData(),
-									(ChromosomeListOfLists<?>)otherTrack.getData(),
-									this.scm);
-						} else {
-							DataPrecision precision = Utils.choosePrecision(getRootPane());
-							if (precision != null) {
-								operation = new BLOTwoTracks(	((BinListTrack)selectedTrack).getData(),
-										((BinListTrack)otherTrack).getData(),
-										precision,
-										scm);
-							}
-						}
+						operation = new SCWLOTwoTracks(	(ChromosomeListOfLists<?>)selectedTrack.getData(),
+								(ChromosomeListOfLists<?>)otherTrack.getData(),
+								this.scm);
 						return operation;
 					}
 				}
@@ -114,12 +98,7 @@ public final class BLATwoTracks extends TrackListActionOperationWorker<Chromosom
 	protected void doAtTheEnd(ChromosomeListOfLists<?> actionResult) {
 		if (actionResult != null) {
 			int index = resultTrack.getTrackNumber() - 1;
-			CurveTrack<?> newTrack;
-			if (isSCWList()) {
-				newTrack = new SCWListTrack(index + 1, (ScoredChromosomeWindowList)actionResult);
-			} else {
-				newTrack = new BinListTrack(index + 1, (BinList)actionResult);
-			}
+			SCWListTrack newTrack = new SCWListTrack(index + 1, (ScoredChromosomeWindowList)actionResult);
 			newTrack.setTrackColor(TrackColor.getTrackColor());
 			// add info to the history
 			newTrack.getHistory().add("Operation on two tracks", Colors.GREY);
@@ -128,14 +107,5 @@ public final class BLATwoTracks extends TrackListActionOperationWorker<Chromosom
 			newTrack.getHistory().add("Second track: " + this.otherTrack.getName(), Colors.GREY);
 			getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), selectedTrack.getName() + " & " + otherTrack.getName(), null, null, null);
 		}
-	}
-
-	private boolean isSCWList () {
-		if ((selectedTrack.getData() instanceof BinList) & (otherTrack.getData() instanceof BinList)) {
-			if (((BinList)selectedTrack.getData()).getBinSize() == ((BinList)otherTrack.getData()).getBinSize()) {
-				return false;
-			}
-		}
-		return true;
 	}
 }

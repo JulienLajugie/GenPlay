@@ -27,14 +27,13 @@ import edu.yu.einstein.genplay.core.enums.LogBase;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLOLog;
 import edu.yu.einstein.genplay.core.operation.Operation;
-import edu.yu.einstein.genplay.gui.old.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.old.track.BinListTrack;
+import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
+import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
 import edu.yu.einstein.genplay.util.Utils;
 
 
-
 /**
- * Applies a log function to the scores of the selected {@link BinListTrack}
+ * Applies a log function to the scores of the selected {@link BinLayer}
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -43,8 +42,8 @@ public final class BLALog extends TrackListActionOperationWorker<BinList> {
 	private static final long serialVersionUID = -7633526345952471304L; // generated ID
 	private static final String 	ACTION_NAME = "Log";				// action name
 	private static final String 	DESCRIPTION = 
-		"Apply a log function to the scores of the selected track";	// tooltip
-	private BinListTrack			selectedTrack;						// selected track
+		"Apply a log function to the scores of the selected layer";		// tooltip
+	private BinLayer				selectedLayer;						// selected layer
 
 	
 	/**
@@ -66,11 +65,11 @@ public final class BLALog extends TrackListActionOperationWorker<BinList> {
 
 	@Override
 	public Operation<BinList> initializeOperation() {
-		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
-		if (selectedTrack != null) {
+		selectedLayer = (BinLayer) getValue("Layer");
+		if (selectedLayer != null) {
 			LogBase logBase = Utils.chooseLogBase(getRootPane());
 			if (logBase != null) {
-				BinList binList = selectedTrack.getData();
+				BinList binList = selectedLayer.getData();
 				Operation<BinList> operation = new BLOLog(binList, logBase);
 				return operation;
 			}
@@ -82,7 +81,7 @@ public final class BLALog extends TrackListActionOperationWorker<BinList> {
 	@Override
 	protected void doAtTheEnd(BinList actionResult) {
 		if (actionResult != null)	{
-			selectedTrack.setData(actionResult, operation.getDescription());
+			selectedLayer.setData(actionResult, operation.getDescription());
 		}
 	}
 }
