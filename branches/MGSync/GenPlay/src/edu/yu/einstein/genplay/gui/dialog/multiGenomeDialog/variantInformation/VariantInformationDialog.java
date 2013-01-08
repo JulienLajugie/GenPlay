@@ -26,7 +26,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -34,12 +33,11 @@ import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
-import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
-import edu.yu.einstein.genplay.core.multiGenome.data.display.VariantDisplayListIterator;
+import edu.yu.einstein.genplay.core.multiGenome.data.display.VariantDisplayMultiListScanner;
+import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.MixVariant;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
-import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLineDialog.VCFLineDialog;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.drawer.multiGenome.MultiGenomeDrawer;
@@ -58,13 +56,11 @@ public class VariantInformationDialog extends JDialog {
 	/** Dialog width */
 	public static final int WIDTH = 250; // width of the dialog
 
-	private final MultiGenomeDrawer multiGenomeDrawer;
 	private final VCFLineDialog vcfLineDialog;
-	private List<Variant> variantList; // a list of displayable variant
+	private VariantDisplayMultiListScanner iterator;
 
 	private Variant currentVariant; // the current variant object to display
 	private VCFLine currentLine; // the current variant object to display
-	private int currentIndex;
 
 	private final JButton jbFullLine; // button to show the full line
 	private SearchOption options;
@@ -80,7 +76,6 @@ public class VariantInformationDialog extends JDialog {
 	 */
 	public VariantInformationDialog(MultiGenomeDrawer multiGenomeDrawer) {
 		super(MainFrame.getInstance());
-		this.multiGenomeDrawer = multiGenomeDrawer;
 		this.vcfLineDialog = new VCFLineDialog();
 		options = new SearchOption();
 		int trackNumber = MainFrame.getInstance().getTrackList().getTrackNumberFromMGGenomeDrawer(multiGenomeDrawer);
@@ -142,14 +137,13 @@ public class VariantInformationDialog extends JDialog {
 
 	/**
 	 * Method for showing the dialog box.
-	 * @param variantList the current variant list
-	 * @param variant the variant to focus on
+	 * @param iterator the multi list iterator
 	 * @param X X position on the screen
 	 * @param Y Y position on the screen
 	 */
-	public void show(VariantDisplayListIterator iterator, Variant variant, int X, int Y) {
-		this.variantList = variantList;
-		this.currentVariant = variant;
+	public void show(VariantDisplayMultiListScanner iterator, int X, int Y) {
+		this.iterator = iterator;
+		this.currentVariant = iterator.getCurrentVariants().get(0);
 		refreshDialog();
 		setLocation(X, Y);
 		setVisible(true);
@@ -163,13 +157,11 @@ public class VariantInformationDialog extends JDialog {
 		// Initialize the current variant
 		if (currentVariant == null) {
 			currentLine = null;
-			currentIndex = -1;
 		} else {
 			this.currentLine = currentVariant.getVCFLine();
 			if (currentLine != null) {
 				this.currentLine.processForAnalyse();
 			}
-			this.currentIndex = getVariantIndex(currentVariant);
 		}
 
 		// Initialize the content of the dialog
@@ -183,18 +175,20 @@ public class VariantInformationDialog extends JDialog {
 	 * Initializes the content of the dialog box according to a variant.
 	 */
 	private void initContent() {
+		String genomeName = getCurrentGenomeName();
 		VariantInfo variantInfo;
 		VariantFormat variantFormat;
 
 		if (currentLine == null) {
 			variantInfo = new VariantInfo(null);
-			variantFormat = new VariantFormat(null, null);
+			variantFormat = new VariantFormat(null, null, null);
 		} else {
 			variantInfo = new VariantInfo(currentLine);
-			variantFormat = new VariantFormat(currentVariant, currentLine);
+			variantFormat = new VariantFormat(currentVariant, currentLine, genomeName);
 		}
 
-		updatePanel(headerPanel, new GlobalInformationPanel(currentVariant, currentLine));
+
+		updatePanel(headerPanel, new GlobalInformationPanel(currentVariant, currentLine, genomeName));
 		updatePanel(infoPanel, variantInfo.getPane());
 		updatePanel(formatPanel, variantFormat.getPane());
 		NavigationPanel newNavigationPanel = new NavigationPanel(this);
@@ -224,18 +218,6 @@ public class VariantInformationDialog extends JDialog {
 		ProjectManager.getInstance().getProjectWindow().setGenomeWindow(genomeWindow);
 	}
 
-	/**
-	 * @param variant the current variant
-	 * @return the index in the variant list of the variant
-	 */
-	private int getVariantIndex(Variant variant) {
-		for (int i = 0; i < variantList.size(); i++) {
-			if (variantList.get(i).equals(variant)) {
-				return i;
-			}
-		}
-		return -1;
-	}
 
 	/**
 	 * Updates a panel with another one
@@ -259,13 +241,10 @@ public class VariantInformationDialog extends JDialog {
 	 * @return true if it moves to the next variant, false otherwise
 	 */
 	protected boolean goToNextVariant() {
-		for (int i = currentIndex + 1; i < variantList.size(); i++) {
-			Variant tmpVariant = variantList.get(i);
-			if (isVariantValid(tmpVariant)) {
-				currentVariant = tmpVariant;
-				refreshDialog();
-				return true;
-			}
+		if (iterator.hasNext()) {
+			currentVariant = iterator.next().get(0);
+			refreshDialog();
+			return true;
 		}
 		return false;
 	}
@@ -275,55 +254,14 @@ public class VariantInformationDialog extends JDialog {
 	 * @return true if it moves to the previous variant, false otherwise
 	 */
 	protected boolean goToPreviousVariant() {
-		for (int i = currentIndex - 1; i >= 0; i--) {
-			Variant tmpVariant = variantList.get(i);
-			if (isVariantValid(tmpVariant)) {
-				currentVariant = tmpVariant;
-				refreshDialog();
-				return true;
-			}
+		if (iterator.hasPrevious()) {
+			currentVariant = iterator.previous().get(0);
+			refreshDialog();
+			return true;
 		}
 		return false;
 	}
 
-	/**
-	 * @return true if the variant is valid according to the search options, false otherwise
-	 */
-	private boolean isVariantValid(Variant variant) {
-		if (multiGenomeDrawer.isVariantShown(variant)) {
-			boolean variantResult = false;
-			boolean genotypeResult = false;
-			VariantType type = variant.getType();
-
-			if (type == VariantType.MIX) {
-				variantResult = true;
-				genotypeResult = true;
-			} else {
-				if (((type == VariantType.INSERTION) && options.includeInsertion) || ((type == VariantType.DELETION) && options.includeDeletion) || ((type == VariantType.SNPS) && options.includeSNP)
-						|| (options.includeReference && ((type == VariantType.REFERENCE_INSERTION) || (type == VariantType.REFERENCE_DELETION) || (type == VariantType.REFERENCE_SNP)))) {
-					variantResult = true;
-				}
-				Variant source = variant.getSource();
-				if (source != null) {
-					VCFLine line = source.getVCFLine();
-					if (line != null) {
-						line.processForAnalyse();
-						String rawName = FormattedMultiGenomeName.getRawName(variant.getSource().getGenomeName());
-
-						if (line.genomeHasNoCall(rawName) && options.includeNoCall) {
-							variantResult = true;
-						}
-
-						if ((line.isHeterozygote(rawName) && options.includeHeterozygote) || (line.isHomozygote(rawName) && options.includeHomozygote)) {
-							genotypeResult = true;
-						}
-					}
-				}
-			}
-			return variantResult && genotypeResult;
-		}
-		return false;
-	}
 
 	/**
 	 * Shows the vcf line dialog
@@ -346,4 +284,12 @@ public class VariantInformationDialog extends JDialog {
 		this.options = options;
 	}
 
+
+	private String getCurrentGenomeName () {
+		if ((currentVariant == null) || (currentVariant instanceof MixVariant)) {
+			return null;
+		}
+
+		return iterator.getCurrentVariantDisplayList(currentVariant).getGenomeName();
+	}
 }

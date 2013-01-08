@@ -55,7 +55,7 @@ public class MGDisplaySettings implements Serializable {
 	public static final int NO_MG_OPTION = 0;
 
 	/** Draw the variant that have been filtered */
-	public static int DRAW_FILTERED_VARIANT = YES_MG_OPTION;
+	public static int DRAW_FILTERED_VARIANT = NO_MG_OPTION;
 
 	/** Insertion stripes can be drawn with an edge line */
 	public static int DRAW_INSERTION_EDGE = YES_MG_OPTION;
@@ -318,7 +318,7 @@ public class MGDisplaySettings implements Serializable {
 			return true;
 		}
 
-		if (display == VariantDisplayList.FILTER) {
+		if (display == VariantDisplayList.FILTER_SHOW) {
 			if (DRAW_FILTERED_VARIANT == YES_MG_OPTION) {
 				return true;
 			}
@@ -333,7 +333,7 @@ public class MGDisplaySettings implements Serializable {
 	 * @return true if the display is filtered, false otherwise
 	 */
 	public boolean isFilter (byte display) {
-		return display == VariantDisplayList.FILTER;
+		return display == VariantDisplayList.FILTER_SHOW;
 	}
 
 

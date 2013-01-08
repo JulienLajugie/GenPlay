@@ -206,11 +206,13 @@ public abstract class Variant implements Serializable {
 		int referencePosition = getReferenceGenomePosition();
 		VCFFile file = ProjectManager.getInstance().getMultiGenomeProject().getFileContentManager().getFile(chromosome, chromosomeContent);
 		List<String> results = null;
+
 		try {
-			results = file.getReader().query(chromosome.getName(), referencePosition, referencePosition);
+			results = file.getReader().query(chromosome.getName(), referencePosition - 1, referencePosition);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 
 		if ((results != null) && (results.size() > 0)) {
 			return new VCFLine(results.get(0), file.getHeader());

@@ -51,7 +51,7 @@ public class VariantFormat {
 	 * @param formatHeader string containing header information about the FORMAT field of the variant information
 	 * @param formatValues string containing values information about the FORMAT field of the variant information according to a specific genome
 	 */
-	protected VariantFormat (Variant variant, VCFLine line) {
+	protected VariantFormat (Variant variant, VCFLine line, String genomeName) {
 		title = "Format";
 
 		if ((line == null) || (variant instanceof ReferenceVariant)) {
@@ -62,7 +62,7 @@ public class VariantFormat {
 			description = new ArrayList<String>();
 
 			String[] headerElements = line.getFormat();
-			String[] valueElements = line.getFormatValues(FormattedMultiGenomeName.getRawName(variant.getSource().getGenomeName()));
+			String[] valueElements = line.getFormatValues(FormattedMultiGenomeName.getRawName(genomeName));
 
 			VCFHeader header = null;
 			if (line.getGenomeIndexer() instanceof VCFHeader) {

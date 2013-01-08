@@ -34,11 +34,13 @@ import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics.VCFFileStatistics;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.VariantDisplayList;
+import edu.yu.einstein.genplay.core.multiGenome.data.display.VariantDisplayMultiListScanner;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.filters.FiltersData;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.variantInformation.VariantInformationDialog;
 import edu.yu.einstein.genplay.gui.track.TrackGraphics;
 
 /**
@@ -57,7 +59,8 @@ public class MultiGenomeDrawer {
 
 	private final MultiGenomeVariantDrawer variantDrawer;
 	private final MultiGenomeListHandler handler;
-	private Variant variantUnderMouse;;
+	private List<VariantInformationDialog> variantDialogs;
+	private Variant variantUnderMouse;
 	private Chromosome chromosome;
 
 
@@ -71,7 +74,9 @@ public class MultiGenomeDrawer {
 		statistics = null;
 		variantDrawer = new MultiGenomeVariantDrawer(this);
 		handler = new MultiGenomeListHandler();
+		variantDialogs = new ArrayList<VariantInformationDialog>();
 		variantUnderMouse = null;
+		chromosome = getCurrentChromosome();
 	}
 
 
@@ -85,8 +90,13 @@ public class MultiGenomeDrawer {
 		boolean generateLists = false;
 		boolean filtersHaveChanged = false;
 
-
-		if (hasChromosomeChanged()) {
+		if (hasToReset(variantDataList)) {
+			this.variantDataList = new ArrayList<VariantData>();
+			variantDisplayList = new ArrayList<VariantDisplayList>();
+			statistics = null;
+			variantUnderMouse = null;
+			handler.initialize(variantDisplayList);
+		} else if (hasChromosomeChanged()) {
 			this.chromosome = getCurrentChromosome();
 			generateLists = true;
 			if (variantDisplayList.size() > 0) {
@@ -102,16 +112,23 @@ public class MultiGenomeDrawer {
 			filtersHaveChanged = updateFilter(filtersList);
 		}
 
-
 		if (generateLists || filtersHaveChanged || haveOptionsChanged()) {
+			//System.out.println("MultiGenomeDrawer.updateMultiGenomeInformation() initialize");
 			statistics = null;
 			for (VariantDisplayList currentList: variantDisplayList) {
-				currentList.updateDisplay(filtersList);
+				currentList.updateDisplay(filtersList, showReference);
 			}
 			handler.initialize(variantDisplayList);
 		}
 	}
 
+
+	private boolean hasToReset (List<VariantData> variantDataList) {
+		if ((this.variantDataList.size() > 0) && (variantDataList.size() == 0)) {
+			return true;
+		}
+		return false;
+	}
 
 
 	private boolean updateVariant (List<VariantData> variantDataList) {
@@ -212,6 +229,8 @@ public class MultiGenomeDrawer {
 		boolean showFiltered = MGDisplaySettings.DRAW_FILTERED_VARIANT == MGDisplaySettings.YES_MG_OPTION;
 
 		if ((this.showReference != showReference) || (this.showFiltered != showFiltered)) {
+			this.showReference = showReference;
+			this.showFiltered = showFiltered;
 			return true;
 		}
 
@@ -225,10 +244,6 @@ public class MultiGenomeDrawer {
 		return ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome();
 	}
 	/////////////////////////////////////////////////////////////////////
-
-
-
-
 
 
 
@@ -278,8 +293,17 @@ public class MultiGenomeDrawer {
 	}
 
 	public void toolTipStripe(int height, MouseEvent e) {
-		// TODO Auto-generated method stub
-
+		if (ProjectManager.getInstance().isMultiGenomeProject()) { // we must be in a multi genome project
+			if (isOverVariant(height, e)) {
+				VariantInformationDialog toolTip = new VariantInformationDialog(this); // we create the information dialog
+				variantDialogs.add(toolTip);
+				int pos = (int) Math.round(ProjectManager.getInstance().getProjectWindow().screenXPosToGenomePos(TrackGraphics.getTrackGraphicsWidth(), e.getX())); // we translate the position on the screen into a position on the genome
+				VariantDisplayMultiListScanner iterator = new VariantDisplayMultiListScanner(variantDisplayList);
+				iterator.initializeDiploide();
+				iterator.setPosition(pos);
+				toolTip.show(iterator, e.getXOnScreen(), e.getYOnScreen()); // we show it
+			}
+		}
 	}
 
 	public boolean hasToBeRepaintAfterExit() {
@@ -364,6 +388,14 @@ public class MultiGenomeDrawer {
 	public boolean isVariantShown(Variant variant) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+
+	private void killStripesDialogs() {
+		for (VariantInformationDialog dialog : variantDialogs) {
+			dialog.dispose();
+		}
+		variantDialogs = new ArrayList<VariantInformationDialog>();
 	}
 
 }

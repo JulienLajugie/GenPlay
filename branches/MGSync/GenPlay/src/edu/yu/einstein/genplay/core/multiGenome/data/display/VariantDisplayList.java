@@ -32,6 +32,7 @@ import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.content.MGFileContentManager;
+import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.ReferenceVariant;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFFilter;
@@ -46,11 +47,17 @@ public class VariantDisplayList implements Serializable {
 	private static final long serialVersionUID = 2664998644351746289L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
 	/** When a variant is shown */
-	public static byte SHOW = 0;
-	/** When a variant is hidden */
-	public static byte HIDE = -1;
-	/** When a variant is filtered */
-	public static byte FILTER = 1;
+	public static byte SHOW = 1;
+	/** When a variant is filtered but shown */
+	public static byte FILTER_SHOW = 2;
+
+	/** When a variant is filtered but hidden because of all options */
+	public static byte FILTER_HIDE_ALL = -1;
+	/** When a variant is filtered but hidden because filtered variants must be hidden */
+	public static byte FILTER_HIDE_FILTER = -2;
+	/** When a variant is filtered but hidden because references must be hidden (case of a filtered homozygote reference) */
+	public static byte FILTER_HIDE_REFERENCE = -3;
+
 
 	private List<List<Variant>> variants;
 	private byte[][] display;
@@ -122,17 +129,30 @@ public class VariantDisplayList implements Serializable {
 	 * Update the display policy using the list of filters
 	 * @param filters list of {@link MGFilter}
 	 */
-	public void updateDisplay (List<MGFilter> filters) {
+	public void updateDisplay (List<MGFilter> filters, boolean includeReference) {
 		initialyzeDisplay();
+		updateDisplayForFilters(filters);
+	}
+
+
+	private void initialyzeDisplay () {
+		display = new byte[variants.size()][];
+		for (int i = 0; i < variants.size(); i++) {
+			List<Variant> currentVariantList = variants.get(i);
+			display[i] = new byte[currentVariantList.size()];
+		}
+	}
+
+
+	private void updateDisplayForFilters (List<MGFilter> filters) {
 		MGFileContentManager contentManager = ProjectManager.getInstance().getMultiGenomeProject().getFileContentManager();
 		Chromosome currentChromosome = ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome();
 		for (int i = 0; i < variants.size(); i++) {
 			List<Variant> currentVariantList = variants.get(i);
 			for (int j = 0; j < currentVariantList.size(); j++) {
 				Variant currentVariant = currentVariantList.get(j);
-				VCFFile file = contentManager.getFile(currentChromosome, currentVariant.getChromosomeContent());
-
 				boolean valid = true;
+				VCFFile file = contentManager.getFile(currentChromosome, currentVariant.getChromosomeContent());
 				for (MGFilter filter: filters) {
 					if (filter instanceof VCFFilter) {
 						VCFFilter currentFilter = (VCFFilter) filter;
@@ -146,7 +166,7 @@ public class VariantDisplayList implements Serializable {
 				}
 				byte display = SHOW;
 				if (!valid) {
-					display = FILTER;
+					display = FILTER_SHOW;
 				}
 				this.display[i][j] = display;
 			}
@@ -154,13 +174,25 @@ public class VariantDisplayList implements Serializable {
 	}
 
 
-	private void initialyzeDisplay () {
-		display = new byte[variants.size()][];
-		for (int i = 0; i < variants.size(); i++) {
-			List<Variant> currentVariantList = variants.get(i);
-			display[i] = new byte[currentVariantList.size()];
+	private void updateDisplayForOption (boolean showReference, boolean showFilter) {
+		if ((variants.size() > 0) && (variants.get(0).size() > 0)) {
+			int alleleNumber = variants.size();
+			int variantNumber = variants.get(0).size();
+
+			for (int i = 0; i < variantNumber; i++) {
+				boolean isFullReference = true;
+				for (int j = 0; j < alleleNumber; j++) {
+					if (!(variants.get(j).get(i) instanceof ReferenceVariant)) {
+						isFullReference = false;
+						break;
+					}
+				}
+				//if (isFullReference)
+			}
+
 		}
 	}
+
 
 
 	/**
@@ -190,7 +222,7 @@ public class VariantDisplayList implements Serializable {
 	/**
 	 * Recursive function. Returns the index where the value is found or -1 if the exact value is not found.
 	 * @param list
-	 * @param value	value
+	 * @param value	a position on the meta genome
 	 * @return the index where the start value of the window is found or -1 if the value is not found
 	 */
 	public int getIndex (List<Variant> list, int value) {

@@ -281,12 +281,12 @@ public abstract class Track<T> extends JPanel implements GenomeWindowListener, T
 	 * These information are about:
 	 * - stripes
 	 * - filters
-	 * @param stripesList list of stripes
+	 * @param variantList list of stripes
 	 * @param filtersList list of filters
 	 */
-	public void updateMultiGenomeInformation (List<VariantData> stripesList, List<MGFilter> filtersList) {
+	public void updateMultiGenomeInformation (List<VariantData> variantList, List<MGFilter> filtersList) {
 		if (trackGraphics.getMultiGenomeDrawer() != null) {
-			trackGraphics.getMultiGenomeDrawer().updateMultiGenomeInformation(stripesList, filtersList);
+			trackGraphics.getMultiGenomeDrawer().updateMultiGenomeInformation(variantList, filtersList);
 		}
 	}
 

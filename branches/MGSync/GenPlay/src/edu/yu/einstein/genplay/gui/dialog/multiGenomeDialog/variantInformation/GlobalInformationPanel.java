@@ -63,6 +63,7 @@ public class GlobalInformationPanel extends JPanel {
 	private static final int VALUE_WIDTH = 100;		// width of a label used to display a value
 	private final Variant variant;
 	private final VCFLine variantInformation;			// the variant to display the information of
+	private final String genomeName;
 	private final GridBagConstraints gbc;
 
 
@@ -70,9 +71,10 @@ public class GlobalInformationPanel extends JPanel {
 	 * Constructor of {@link GlobalInformationPanel}
 	 * Initializes all label and put them on the panel, this is the main method.
 	 */
-	protected GlobalInformationPanel (Variant variantDisplay, VCFLine variantInformation) {
+	protected GlobalInformationPanel (Variant variantDisplay, VCFLine variantInformation, String genomeName) {
 		this.variant = variantDisplay;
 		this.variantInformation = variantInformation;
+		this.genomeName = genomeName;
 
 		//Dimension dimension = new Dimension(WIDTH, getPanelHeight());
 		//setPreferredSize(dimension);
@@ -166,10 +168,9 @@ public class GlobalInformationPanel extends JPanel {
 				}
 
 				// Genome names
-				if (!isMix) {
-					String fullGenomeName = variant.getSource().getVariantListForDisplay().getAlleleForDisplay().getGenomeInformation().getName();
-					genome = FormattedMultiGenomeName.getUsualName(fullGenomeName) + " (" + FormattedMultiGenomeName.getRawName(fullGenomeName) + ")";
-					group = FormattedMultiGenomeName.getGroupName(fullGenomeName);
+				if (genomeName != null) {
+					genome = FormattedMultiGenomeName.getUsualName(genomeName) + " (" + FormattedMultiGenomeName.getRawName(genomeName) + ")";
+					group = FormattedMultiGenomeName.getGroupName(genomeName);
 				}
 
 				// Reference

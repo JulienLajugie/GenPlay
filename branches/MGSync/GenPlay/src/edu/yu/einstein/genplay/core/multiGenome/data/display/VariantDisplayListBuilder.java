@@ -129,9 +129,6 @@ public class VariantDisplayListBuilder {
 	}
 
 
-
-
-
 	private List<List<Variant>> getVariantList () {
 		List<List<Variant>> result = getEmptyVariantList(currentContent);
 

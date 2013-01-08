@@ -64,6 +64,9 @@ public class MultiGenomeListHandler {
 	 */
 	public void initialize (List<VariantDisplayList> variantList) {
 		cache.initialize();
+		if (variantList == null) {
+			variantList = new ArrayList<VariantDisplayList>();
+		}
 		this.variantList = variantList;
 		fullList = new ArrayList<List<Variant>>();
 		fullList.add(new ArrayList<Variant>());
@@ -79,7 +82,7 @@ public class MultiGenomeListHandler {
 	}
 
 
-	// /////////////////////////////////////////////////////////////////// Interface methods
+	///////////////////////////////////////////////////////////////////// Interface methods
 
 	/**
 	 * @param window the genome window
@@ -199,6 +202,9 @@ public class MultiGenomeListHandler {
 		fittedList.add(new ArrayList<Variant>());
 		fitToScreen(0);
 		fitToScreen(1);
+		/*if (fittedXRatio > 1) {
+			System.out.println("MultiGenomeListHandler.fitToScreen()");
+		}*/
 		cache.setData(fittedXRatio, fittedList);
 	}
 
@@ -208,9 +214,14 @@ public class MultiGenomeListHandler {
 	 */
 	private void fitToScreen (int allele) {
 		VariantDisplayMultiListScanner scanner = new VariantDisplayMultiListScanner(variantList);
-		scanner.initialize(allele);
+		scanner.initializeOneAllele(allele);
+		scanner.setDisplayDependancy(true);
 
 		if (fittedXRatio > 1) {
+			List<Variant> firstVariants = scanner.getCurrentVariants();
+			if (firstVariants.size() > 0) {
+				fittedList.get(allele).add(firstVariants.get(0));
+			}
 			while (scanner.hasNext()) {
 				List<Variant> variants = scanner.next();
 				fittedList.get(allele).add(variants.get(0));
@@ -220,8 +231,17 @@ public class MultiGenomeListHandler {
 			int start = -1;
 			int stop = -1;
 			Variant currentVariant = null;
-			if (scanner.hasNext()) {
-				currentVariant = scanner.next().get(0);
+
+			// Insert first variant
+			List<Variant> currentVariants = scanner.getCurrentVariants();
+			if (currentVariants.size() > 0) {
+				currentVariant = currentVariants.get(0);
+			} else {
+				if (scanner.hasNext()) {
+					currentVariant = scanner.next().get(0); // Get the next position
+				}
+			}
+			if (currentVariant != null) {
 				start = currentVariant.getStart();
 				stop = currentVariant.getStop();
 			}
@@ -262,7 +282,7 @@ public class MultiGenomeListHandler {
 		}
 	}
 
-	// ///////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////
 
 
 }

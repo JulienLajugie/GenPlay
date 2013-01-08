@@ -347,7 +347,8 @@ public class VCFHeader implements VCFGenomeIndexer, Serializable {
 	/**
 	 * @return the columnNames
 	 */
-	public List<String> getRawGenomesNames() {
+	@Override
+	public List<String> getGenomeRawNames() {
 		if (genomeRawNames == null) {
 			List<String> list = new ArrayList<String>();
 			for (String s: columnNames) {
@@ -609,8 +610,5 @@ public class VCFHeader implements VCFGenomeIndexer, Serializable {
 	}
 
 
-	@Override
-	public List<String> getGenomeRawNames() {
-		return genomeRawNames;
-	}
+
 }

@@ -86,8 +86,8 @@ public class MGATrackDisplayRefresh extends TrackListActionWorker<Boolean> {
 			Track<?>[] tracks = getTrackList().getTrackList();
 			for (Track<?> track: tracks) {
 				List<MGFilter> filtersList = settings.getFilterSettings().getMGFiltersForTrack(track);
-				List<VariantData> stripesList = settings.getVariantSettings().getVariantsForTrack(track);
-				track.updateMultiGenomeInformation(stripesList, filtersList);
+				List<VariantData> variantList = settings.getVariantSettings().getVariantsForTrack(track);
+				track.updateMultiGenomeInformation(variantList, filtersList);
 			}
 
 			return true;

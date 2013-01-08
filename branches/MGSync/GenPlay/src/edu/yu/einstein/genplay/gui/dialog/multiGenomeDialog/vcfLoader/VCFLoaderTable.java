@@ -130,7 +130,7 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener, Ac
 				} else {
 					File file = (File) getValueAt(row, VCFData.FILE_INDEX);
 					VCFFile vcfFile = getVCFFile(file);
-					List<String> rawGenomeNames = vcfFile.getHeader().getRawGenomesNames();
+					List<String> rawGenomeNames = vcfFile.getHeader().getGenomeRawNames();
 					combo = new RawNameComboBox(rawGenomeNames.toArray());
 					combo.addActionListener(this);
 					rawComboList.add(combo);
@@ -243,7 +243,7 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener, Ac
 			} else {
 				File file = new File(value.toString());
 				VCFFile vcfFile = getVCFFile(file);
-				rawGenomeNames = vcfFile.getHeader().getRawGenomesNames();
+				rawGenomeNames = vcfFile.getHeader().getGenomeRawNames();
 				temporaryFileAndGenomeNameMap.put(filePath, rawGenomeNames);
 			}
 			if (rawGenomeNames != null) {
