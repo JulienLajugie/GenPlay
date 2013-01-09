@@ -19,17 +19,39 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.old.action.actionWaiting;
+package edu.yu.einstein.genplay.gui.popupMenu.layerMenu;
+
+import javax.swing.Action;
+
+import edu.yu.einstein.genplay.gui.action.layer.maskLayer.MLAApplyMask;
+import edu.yu.einstein.genplay.gui.action.layer.maskLayer.MLAInvertMask;
+import edu.yu.einstein.genplay.gui.track.layer.Layer;
+import edu.yu.einstein.genplay.gui.track.layer.MaskLayer;
 
 /**
- * @author Nicolas Fourel
- * @version 0.1
+ * Menu containing all the actions available for a {@link MaskLayer}
+ * @author Julien Lajugie
  */
-public interface ActionWaiter {
+public class MaskLayerMenu extends AbstractLayerMenu {
+
+	private static final long serialVersionUID = -9125382499402284968L; // generated ID
+
 
 	/**
-	 * Method to execute at the end of an action
+	 * Creates an instance of {@link MaskLayerMenu}
+	 * @param layer
 	 */
-	public void doAtTheEnd ();
+	public MaskLayerMenu(Layer<?> layer) {
+		super(layer);
+	}
 
+	
+	@Override
+	protected Action[] getLayerMenuActions() {
+		Action[] actions = {
+				new MLAApplyMask(),
+				new MLAInvertMask()
+		};
+		return actions;
+	}
 }

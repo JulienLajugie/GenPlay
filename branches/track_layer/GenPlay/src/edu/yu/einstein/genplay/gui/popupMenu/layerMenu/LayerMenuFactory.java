@@ -36,26 +36,22 @@ public class LayerMenuFactory {
 	 * @return a 
 	 * @throws IllegalArgumentException
 	 */
-	public static AbstractLayerMenu createLayerMenu(Layer<?> layer) throws IllegalArgumentException {
+	public static AbstractLayerMenu createLayerMenu(Layer<?> layer) {
 		switch (layer.getType()) {
-		case BACKGROUND_LAYER:
-			return null;
 		case BIN_LAYER:
 			return new BinLayerMenu(layer);
-		case FOREGROUND_LAYER:
-			return null;
 		case GENE_LAYER:
-			return null;
+			return new GeneLayerMenu(layer);
 		case MASK_LAYER:
-			return null;
+			return new MaskLayerMenu(layer);
 		case NUCLEOTIDE_LAYER:
 			return null;
 		case REPEAT_FAMILY_LAYER:
-			return null;
+			return new RepeatLayerMenu(layer);
 		case SCW_LAYER:
-			return null;
+			return new SCWLayerMenu(layer);
 		default :
-			throw new IllegalArgumentException("Unknown layer type: " + layer.getType().getName());
+			return null;
 		}
 	}
 }

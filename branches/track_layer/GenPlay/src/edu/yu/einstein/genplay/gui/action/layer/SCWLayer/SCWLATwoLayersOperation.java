@@ -112,6 +112,7 @@ public final class SCWLATwoLayersOperation extends TrackListActionOperationWorke
 			newLayer.getHistory().add("First track: " + this.selectedLayer.getName(), Colors.GREY);
 			newLayer.getHistory().add("Second track: " + this.otherLayer.getName(), Colors.GREY);
 			resultTrack.getLayers().add(newLayer);
+			resultTrack.setActiveLayer(newLayer);
 		}
 	}
 }

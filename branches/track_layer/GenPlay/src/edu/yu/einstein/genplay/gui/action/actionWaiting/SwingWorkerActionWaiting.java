@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.old.action.actionWaiting;
+package edu.yu.einstein.genplay.gui.action.actionWaiting;
 
 import java.util.List;
 

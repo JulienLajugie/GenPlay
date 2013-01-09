@@ -79,7 +79,7 @@ public class TAAddLayer extends TrackListAction {
 	public void actionPerformed(ActionEvent evt) {
 		Track selectedTrack = getTrackListPanel().getSelectedTrack();
 		if (selectedTrack != null) {
-			LayerType[] layerTypes = {LayerType.BIN_LAYER, LayerType.SCW_LAYER, LayerType.GENE_LAYER, LayerType.REPEAT_FAMILY_LAYER, LayerType.NUCLEOTIDE_LAYER};
+			LayerType[] layerTypes = {LayerType.BIN_LAYER, LayerType.SCW_LAYER, LayerType.MASK_LAYER, LayerType.GENE_LAYER, LayerType.REPEAT_FAMILY_LAYER, LayerType.NUCLEOTIDE_LAYER};
 			LayerType selectedLayerType = (LayerType)JOptionPane.showInputDialog(
 					getRootPane(), 
 					"Please select the type of layer to add", 
@@ -95,6 +95,9 @@ public class TAAddLayer extends TrackListAction {
 					break;
 				case SCW_LAYER:
 					new TAAddSCWLayer().actionPerformed(evt);
+					break;
+				case MASK_LAYER:
+					new TAAddMask().actionPerformed(evt);
 					break;
 				case GENE_LAYER:
 					new TAAddGeneLayer().actionPerformed(evt);

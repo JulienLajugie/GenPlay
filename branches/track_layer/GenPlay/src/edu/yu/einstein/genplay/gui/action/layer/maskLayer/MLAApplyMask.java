@@ -19,58 +19,54 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.action.layer.binlayer;
+package edu.yu.einstein.genplay.gui.action.layer.maskLayer;
 
 
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoLayersMethod;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOTwoLayers;
-import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.core.list.binList.operation.BLOTwoLayers;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
+import edu.yu.einstein.genplay.gui.track.layer.MaskLayer;
 import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
-import edu.yu.einstein.genplay.gui.track.layer.VersionedLayer;
 import edu.yu.einstein.genplay.gui.trackChooser.TrackChooser;
-import edu.yu.einstein.genplay.util.Utils;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 /**
- * Computes an arithmetic operation between the selected {@link BinLayer} and an other scored layer
+ * Applies a mask to a fixed/variable windows layer
  * @author Julien Lajugie
+ * @author Nicolas Fourel
  * @version 0.1
  */
-public final class BLATwoLayersOperation extends TrackListActionOperationWorker<ChromosomeListOfLists<?>> {
+public final class MLAApplyMask extends TrackListActionOperationWorker<ChromosomeListOfLists<?>> {
 
 	private static final long 				serialVersionUID = 4027173438789911860L; 		// generated ID
-	private static final String 			ACTION_NAME = "Two Layers Operation";			// action name
-	private static final String 			DESCRIPTION = "Run operation on two layers";	// tooltip
-	private BinLayer						selectedLayer;									// selected layer
-	private Layer<?>						otherLayer = null;								// other layer
-	private Track							resultTrack = null;								// result track
-	private ScoreCalculationTwoLayersMethod 	scm;
+	private static final String 			ACTION_NAME = "Apply Mask";						// action name
+	private static final String 			DESCRIPTION = "Apply mask on layer";			// tooltip
+	private MaskLayer 						selectedLayer;									// selected layer
+	private Layer<?>						maskedLayer;									// masked layer
+	private ScoreCalculationTwoLayersMethod scm;											// method of calculation
+	private Track							resultTrack;									// track where the result layer will be added
 
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "BLATwoLayersOperation";
+	public static final String ACTION_KEY = "MLAApplyMask";
 
 
 	/**
-	 * Creates an instance of {@link BLATwoLayersOperation}
+	 * Creates an instance of {@link MLAApplyMask}
 	 */
-	public BLATwoLayersOperation() {
+	public MLAApplyMask() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -80,7 +76,7 @@ public final class BLATwoLayersOperation extends TrackListActionOperationWorker<
 
 	@Override
 	public Operation<ChromosomeListOfLists<?>> initializeOperation() {
-		selectedLayer = (BinLayer) getValue("Layer");
+		selectedLayer = (MaskLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
 			layerChooserDialog.setLayers(getTrackListPanel().getAllLayers());
@@ -88,27 +84,15 @@ public final class BLATwoLayersOperation extends TrackListActionOperationWorker<
 			layerChooserDialog.setSelectableLayers(selectableLayers);
 			layerChooserDialog.setMultiselectable(false);
 			if (layerChooserDialog.showDialog(getRootPane()) == LayerChooserDialog.APPROVE_OPTION) {
-				otherLayer = (BinLayer) layerChooserDialog.getSelectedLayer();
-				if (otherLayer != null) {
+				maskedLayer = layerChooserDialog.getSelectedLayer();
+				if (maskedLayer != null) {
+					ChromosomeListOfLists<?> data = (ChromosomeListOfLists<?>)selectedLayer.getData();
+					ChromosomeListOfLists<?> mask = selectedLayer.getData();
 					resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackListPanel().getModel().getTracks());
 					if (resultTrack != null) {
-						this.scm = Utils.chooseScoreCalculationTwoLayersMethod(getRootPane());
-						if (scm != null) {
-							if (isSCWList()) {
-								operation = new SCWLOTwoLayers(selectedLayer.getData(),
-										(ChromosomeListOfLists<?>)otherLayer.getData(),
-										this.scm);
-							} else {
-								DataPrecision precision = Utils.choosePrecision(getRootPane());
-								if (precision != null) {
-									operation = new BLOTwoLayers(selectedLayer.getData(),
-											((BinLayer)otherLayer).getData(),
-											precision,
-											scm);
-								}
-							}
-							return operation;
-						}
+						scm = ScoreCalculationTwoLayersMethod.MULTIPLICATION;
+						operation = new SCWLOTwoLayers(data, mask, scm);
+						return operation;
 					}
 				}
 			}
@@ -120,28 +104,12 @@ public final class BLATwoLayersOperation extends TrackListActionOperationWorker<
 	@Override
 	protected void doAtTheEnd(ChromosomeListOfLists<?> actionResult) {
 		if (actionResult != null) {
-			Layer<?> newLayer;
-			if (isSCWList()) {
-				newLayer = new SCWLayer(resultTrack, (ScoredChromosomeWindowList) actionResult, selectedLayer.getName() + " & " + otherLayer.getName());
-			} else {
-				newLayer = new BinLayer(resultTrack, (BinList) actionResult, selectedLayer.getName() + " & " + otherLayer.getName());
-			}
+			SCWLayer newLayer = new SCWLayer(resultTrack, (ScoredChromosomeWindowList) actionResult, maskedLayer.getName() + " masked");
 			// add info to the history
-			((VersionedLayer<?>)newLayer).getHistory().add("Operation on two tracks", Colors.GREY);
-			((VersionedLayer<?>)newLayer).getHistory().add("Operation: " + this.scm.toString(), Colors.GREY);
-			((VersionedLayer<?>)newLayer).getHistory().add("First layer: " + this.selectedLayer.getName(), Colors.GREY);
-			((VersionedLayer<?>)newLayer).getHistory().add("Second layer: " + this.otherLayer.getName(), Colors.GREY);
+			newLayer.getHistory().add(maskedLayer.getName() + " masked by " + selectedLayer.getName(), Colors.GREY);
 			resultTrack.getLayers().add(newLayer);
 			resultTrack.setActiveLayer(newLayer);
 		}
 	}
 
-	private boolean isSCWList () {
-		if ((selectedLayer.getData() instanceof BinList) & (otherLayer.getData() instanceof BinList)) {
-			if (((BinList)selectedLayer.getData()).getBinSize() == ((BinList)otherLayer.getData()).getBinSize()) {
-				return false;
-			}
-		}
-		return true;
-	}
 }

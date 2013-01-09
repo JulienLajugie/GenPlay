@@ -101,6 +101,7 @@ public class BLATransfrag extends TrackListAction {
 										Track selectedTrack = selectedLayer.getTrack();
 										GeneLayer gl = new GeneLayer(selectedTrack, actionResult, "Transfrags from " + selectedTrack.getName());
 										selectedTrack.getLayers().add(gl);
+										selectedTrack.setActiveLayer(gl);
 										selectedTrack.getLayers().remove(selectedTrack);
 									}
 								}
