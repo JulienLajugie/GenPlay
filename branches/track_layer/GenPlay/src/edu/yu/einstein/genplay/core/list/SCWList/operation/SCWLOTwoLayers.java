@@ -29,11 +29,11 @@ import java.util.concurrent.Callable;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleScoredChromosomeWindow;
-import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoLayerMethod;
+import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoLayersMethod;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.core.list.SCWList.overLap.SCWLTwoTracksManagement;
+import edu.yu.einstein.genplay.core.list.SCWList.overLap.SCWLTwoLayersManagement;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
@@ -43,27 +43,27 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
 
 /**
- * Realizes operation on two tracks
+ * Realizes operation on two Layers
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class SCWLOTwoTracks implements Operation<ChromosomeListOfLists<?>>, Stoppable {
+public class SCWLOTwoLayers implements Operation<ChromosomeListOfLists<?>>, Stoppable {
 
-	private final ScoreCalculationTwoLayerMethod 	scm;
-	private final SCWLTwoTracksManagement 		twoTracks;			// manage the operation between two tracks
+	private final ScoreCalculationTwoLayersMethod 	scm;
+	private final SCWLTwoLayersManagement 		twoLayers;			// manage the operation between two Layers
 
 
 	/**
 	 * Adds a specified constant to the scores of each window of a {@link SimpleScoredChromosomeWindow}
 	 * @param list1 1st input list
 	 * @param list2 2nd input list
-	 * @param scm {@link ScoreCalculationTwoLayerMethod}
+	 * @param scm {@link ScoreCalculationTwoLayersMethod}
 	 */
-	public SCWLOTwoTracks(	ChromosomeListOfLists<?> list1,
+	public SCWLOTwoLayers(	ChromosomeListOfLists<?> list1,
 			ChromosomeListOfLists<?> list2,
-			ScoreCalculationTwoLayerMethod scm) {
+			ScoreCalculationTwoLayersMethod scm) {
 		this.scm = scm;
-		twoTracks = new SCWLTwoTracksManagement(list1, list2, scm);
+		twoLayers = new SCWLTwoLayersManagement(list1, list2, scm);
 	}
 
 
@@ -78,10 +78,10 @@ public class SCWLOTwoTracks implements Operation<ChromosomeListOfLists<?>>, Stop
 			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
 				@Override
 				public List<ScoredChromosomeWindow> call() throws Exception {
-					twoTracks.run(currentChromosome);
+					twoLayers.run(currentChromosome);
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
-					return twoTracks.getList(currentChromosome);
+					return twoLayers.getList(currentChromosome);
 				}
 			};
 			threadList.add(currentThread);
@@ -98,13 +98,13 @@ public class SCWLOTwoTracks implements Operation<ChromosomeListOfLists<?>>, Stop
 
 	@Override
 	public String getDescription() {
-		return "Operation on two tracks: " + scm.toString();
+		return "Operation on two layers: " + scm.toString();
 	}
 
 
 	@Override
 	public String getProcessingDescription() {
-		return "Two Tracks Operation";
+		return "Two Layers Operation";
 	}
 
 
@@ -116,6 +116,6 @@ public class SCWLOTwoTracks implements Operation<ChromosomeListOfLists<?>>, Stop
 
 	@Override
 	public void stop() {
-		twoTracks.stop();
+		twoLayers.stop();
 	}
 }

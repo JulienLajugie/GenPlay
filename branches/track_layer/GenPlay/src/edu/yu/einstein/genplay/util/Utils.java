@@ -45,7 +45,7 @@ import edu.yu.einstein.genplay.core.enums.IslandResultType;
 import edu.yu.einstein.genplay.core.enums.LogBase;
 import edu.yu.einstein.genplay.core.enums.SaturationType;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoLayerMethod;
+import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoLayersMethod;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.Variant;
 import edu.yu.einstein.genplay.gui.fileFilter.BedFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.BedGraphFilter;
@@ -307,15 +307,15 @@ public class Utils {
 	 * @param parentComponent the parent Component for the dialog
 	 * @return a {@link ScoreCalculationMethod}
 	 */
-	public static ScoreCalculationTwoLayerMethod chooseScoreCalculationTwoTrackMethod(Component parentComponent) {
-		return (ScoreCalculationTwoLayerMethod)JOptionPane.showInputDialog(
+	public static ScoreCalculationTwoLayersMethod chooseScoreCalculationTwoLayersMethod(Component parentComponent) {
+		return (ScoreCalculationTwoLayersMethod)JOptionPane.showInputDialog(
 				parentComponent,
 				"Choose a method for the calculation of the score",
 				"Score Calculation",
 				JOptionPane.QUESTION_MESSAGE,
 				null,
-				ScoreCalculationTwoLayerMethod.values(),
-				ScoreCalculationTwoLayerMethod.ADDITION);
+				ScoreCalculationTwoLayersMethod.values(),
+				ScoreCalculationTwoLayersMethod.ADDITION);
 	}
 
 

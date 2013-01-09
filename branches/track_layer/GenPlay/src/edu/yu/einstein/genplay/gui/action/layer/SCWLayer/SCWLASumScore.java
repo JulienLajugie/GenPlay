@@ -30,14 +30,12 @@ import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOSumScore;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.dialog.ChromosomeChooser;
-import edu.yu.einstein.genplay.gui.old.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.old.track.SCWListTrack;
-
+import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
+import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 
 
 /**
- * Returns the sum of the scores on the
- * selected chromosomes of the selected track
+ * Returns the sum of the scores on the selected chromosomes of the selected layer
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -47,7 +45,7 @@ public class SCWLASumScore extends TrackListActionOperationWorker<Double> {
 	private static final String 	ACTION_NAME = "Score Count";		// action name
 	private static final String 	DESCRIPTION =
 			"Return the sum of the scores on the " +
-					"selected chromosomes of the selected track";					// tooltip
+					"selected chromosomes of the selected layer";		// tooltip
 
 
 	/**
@@ -69,11 +67,11 @@ public class SCWLASumScore extends TrackListActionOperationWorker<Double> {
 
 	@Override
 	public Operation<Double> initializeOperation() {
-		SCWListTrack selectedTrack = (SCWListTrack) getTrackList().getSelectedTrack();
-		if (selectedTrack != null) {
+		SCWLayer selectedLayer = (SCWLayer) getValue("Layer");
+		if (selectedLayer != null) {
 			boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane());
 			if (selectedChromo != null) {
-				ScoredChromosomeWindowList inpuList = selectedTrack.getData();
+				ScoredChromosomeWindowList inpuList = selectedLayer.getData();
 				Operation<Double> operation = new SCWLOSumScore(inpuList, selectedChromo);
 				return operation;
 			}

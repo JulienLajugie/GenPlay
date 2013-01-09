@@ -29,22 +29,21 @@ import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOUniqueScore;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
-import edu.yu.einstein.genplay.gui.old.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.old.track.SCWListTrack;
-
+import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
+import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 
 
 /**
- * Adds a constant to the scores of the selected {@link SCWListTrack}
+ * Adds a constant to the scores of the selected {@link SCWLayer}
  * @author Julien Lajugie
  * @version 0.1
  */
 public final class SCWLAUniqueScore extends TrackListActionOperationWorker<ScoredChromosomeWindowList> {
 
-	private static final long serialVersionUID = 4027173438789911860L; 	// generated ID
-	private static final String 	ACTION_NAME = "Unique Score (Constant)";// action name
-	private static final String 	DESCRIPTION = "Set a unique score for all windows.";			// tooltip
-	private SCWListTrack 			selectedTrack;						// selected track
+	private static final long serialVersionUID = 4027173438789911860L; 						// generated ID
+	private static final String 	ACTION_NAME = "Unique Score (Constant)";				// action name
+	private static final String 	DESCRIPTION = "Set a unique score for all windows.";	// tooltip
+	private SCWLayer 				selectedLayer;											// selected layer
 
 
 	/**
@@ -66,11 +65,11 @@ public final class SCWLAUniqueScore extends TrackListActionOperationWorker<Score
 
 	@Override
 	public Operation<ScoredChromosomeWindowList> initializeOperation() {
-		selectedTrack = (SCWListTrack) getTrackList().getSelectedTrack();
-		if (selectedTrack != null) {
+		selectedLayer = (SCWLayer) getValue("Layer");
+		if (selectedLayer != null) {
 			Number constant = NumberOptionPane.getValue(getRootPane(), "Unique Score", "Enter a score for all windows", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
 			if ((constant != null) && (constant.doubleValue() != 0)) {
-				ScoredChromosomeWindowList scwList = selectedTrack.getData();
+				ScoredChromosomeWindowList scwList = selectedLayer.getData();
 				operation = new SCWLOUniqueScore(scwList, constant.doubleValue());
 				return operation;
 			}
@@ -82,7 +81,7 @@ public final class SCWLAUniqueScore extends TrackListActionOperationWorker<Score
 	@Override
 	protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
 		if (actionResult != null) {
-			selectedTrack.setData(actionResult, operation.getDescription());
+			selectedLayer.setData(actionResult, operation.getDescription());
 		}
 	}
 }

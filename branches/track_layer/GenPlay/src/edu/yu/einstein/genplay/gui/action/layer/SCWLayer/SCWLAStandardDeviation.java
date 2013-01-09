@@ -30,14 +30,12 @@ import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOStandardDeviation;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.dialog.ChromosomeChooser;
-import edu.yu.einstein.genplay.gui.old.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.old.track.SCWListTrack;
-
+import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
+import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 
 
 /**
- * Returns the standard deviation on the
- * selected chromosomes of the selected track.
+ * Returns the standard deviation on the selected chromosomes of the selected {@link SCWLayer}.
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -47,7 +45,7 @@ public final class SCWLAStandardDeviation extends TrackListActionOperationWorker
 	private static final String 	ACTION_NAME = "Standard Deviation";	// action name
 	private static final String 	DESCRIPTION =
 			"Return the standard deviation on the " +
-					"selected chromosomes of the selected track";					// tooltip
+					"selected chromosomes of the selected layer";		// tooltip
 
 
 	/**
@@ -69,11 +67,11 @@ public final class SCWLAStandardDeviation extends TrackListActionOperationWorker
 
 	@Override
 	public Operation<Double> initializeOperation() {
-		SCWListTrack selectedTrack = (SCWListTrack) getTrackList().getSelectedTrack();
-		if (selectedTrack != null) {
+		SCWLayer selectedLayer = (SCWLayer) getValue("Layer");
+		if (selectedLayer != null) {
 			boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane());
 			if (selectedChromo != null) {
-				ScoredChromosomeWindowList scwList = selectedTrack.getData();
+				ScoredChromosomeWindowList scwList = selectedLayer.getData();
 				Operation<Double> operation = new SCWLOStandardDeviation(scwList, selectedChromo);
 				return operation;
 			}

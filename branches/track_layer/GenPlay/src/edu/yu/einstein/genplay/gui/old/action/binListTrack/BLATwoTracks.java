@@ -25,12 +25,12 @@ package edu.yu.einstein.genplay.gui.old.action.binListTrack;
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
-import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoLayerMethod;
+import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoLayersMethod;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOTwoTracks;
+import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOTwoLayers;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.core.list.binList.operation.BLOTwoTracks;
+import edu.yu.einstein.genplay.core.list.binList.operation.BLOTwoLayers;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.old.action.TrackListActionOperationWorker;
@@ -58,7 +58,7 @@ public final class BLATwoTracks extends TrackListActionOperationWorker<Chromosom
 	private Track<?> 						selectedTrack;									// selected track
 	private Track<?> 						otherTrack = null;								// other track
 	private Track<?>						resultTrack = null;								// result track
-	private ScoreCalculationTwoLayerMethod 	scm;
+	private ScoreCalculationTwoLayersMethod 	scm;
 
 
 	/**
@@ -86,16 +86,16 @@ public final class BLATwoTracks extends TrackListActionOperationWorker<Chromosom
 			if (otherTrack != null) {
 				resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackList().getEmptyTracks());
 				if (resultTrack != null) {
-					this.scm = Utils.chooseScoreCalculationTwoTrackMethod(getRootPane());
+					this.scm = Utils.chooseScoreCalculationTwoLayersMethod(getRootPane());
 					if (scm != null) {
 						if (isSCWList()) {
-							operation = new SCWLOTwoTracks(	(ChromosomeListOfLists<?>)selectedTrack.getData(),
+							operation = new SCWLOTwoLayers(	(ChromosomeListOfLists<?>)selectedTrack.getData(),
 									(ChromosomeListOfLists<?>)otherTrack.getData(),
 									this.scm);
 						} else {
 							DataPrecision precision = Utils.choosePrecision(getRootPane());
 							if (precision != null) {
-								operation = new BLOTwoTracks(	((BinListTrack)selectedTrack).getData(),
+								operation = new BLOTwoLayers(	((BinListTrack)selectedTrack).getData(),
 										((BinListTrack)otherTrack).getData(),
 										precision,
 										scm);

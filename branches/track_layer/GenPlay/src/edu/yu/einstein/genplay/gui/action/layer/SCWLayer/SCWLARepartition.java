@@ -33,18 +33,20 @@ import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLORepartition;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
-import edu.yu.einstein.genplay.gui.old.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.old.track.CurveTrack;
-import edu.yu.einstein.genplay.gui.old.track.SCWListTrack;
-import edu.yu.einstein.genplay.gui.old.track.Track;
+import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
 import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotData;
 import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotPane;
-import edu.yu.einstein.genplay.gui.trackChooser.MultiTrackChooser;
+import edu.yu.einstein.genplay.gui.track.layer.ColoredLayer;
+import edu.yu.einstein.genplay.gui.track.layer.Layer;
+import edu.yu.einstein.genplay.gui.track.layer.LayerType;
+import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
- * Generates an array containing the repartition of the score values of the selected {@link SCWListTrack}
+ * Generates an array containing the repartition of the score values of the selected {@link SCWLayer}
  * @author Chirag Gorasia
  * @version 0.1
  */
@@ -53,10 +55,10 @@ public final class SCWLARepartition extends TrackListActionOperationWorker<doubl
 	private static final long serialVersionUID = -6665806475919318742L;
 	private static final String 	ACTION_NAME = "Show Repartition";	// action name
 	private static final String 	DESCRIPTION =
-			"Generate a plot showing the repartition of the scores of the selected track";	// tooltip
-	private Track<?>[] 				selectedTracks;
+			"Generate a plot showing the repartition of the scores of the selected layer";	// tooltip
+	private SCWLayer[] 				selectedLayers;
 	private List<ScatterPlotData> 	scatPlotData;
-	private int graphIndicator;
+	private int 					graphIndicator;
 
 	/**
 	 * key of the action in the {@link ActionMap}
@@ -93,8 +95,8 @@ public final class SCWLARepartition extends TrackListActionOperationWorker<doubl
 
 	@Override
 	public Operation<double [][][]> initializeOperation() {
-		SCWListTrack selectedTrack = (SCWListTrack) getTrackList().getSelectedTrack();
-		if (selectedTrack != null) {
+		SCWLayer selectedLayer = (SCWLayer) getValue("Layer");
+		if (selectedLayer != null) {
 			Object[] graphTypes = {"Score vs Window Count", "Score vs Base Pair Count"};
 			String selectedValue = (String) JOptionPane.showInputDialog(null, "Select the operation", "Graph Operation", JOptionPane.PLAIN_MESSAGE, null, graphTypes, graphTypes[0]);
 			if (selectedValue != null) {
@@ -106,16 +108,24 @@ public final class SCWLARepartition extends TrackListActionOperationWorker<doubl
 				}
 				Number scoreBin = NumberOptionPane.getValue(getRootPane(), "Size", "Enter the size of the bin of score:", new DecimalFormat("0.0#####"), 0 + Double.MIN_NORMAL, 1000, 1);
 				if (scoreBin != null) {
-					// we ask the user to choose the tracks for the repartition only if there is more than one track
-					if (getTrackList().getSCWListTracks().length > 1) {
-						selectedTracks = MultiTrackChooser.getSelectedTracks(getRootPane(), getTrackList().getSCWListTracks());
+					// we ask the user to choose the layers for the repartition only if there is more than one layer
+					LayerType[] availableLayerTypes = {LayerType.SCW_LAYER};
+					Layer<?>[] scwLayers = Utils.getLayers(getTrackListPanel().getModel().getTracks(), availableLayerTypes);
+					if (scwLayers.length > 1) {
+						LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
+						layerChooserDialog.setLayers(getTrackListPanel().getAllLayers());
+						layerChooserDialog.setSelectableLayers(availableLayerTypes);
+						layerChooserDialog.setMultiselectable(true);
+						if (layerChooserDialog.showDialog(getRootPane()) == LayerChooserDialog.APPROVE_OPTION) {
+							selectedLayers = layerChooserDialog.getSelectedLayers().toArray(selectedLayers);
+						}
 					} else {
-						selectedTracks = getTrackList().getSCWListTracks();
-					}
-					if ((selectedTracks != null)) {
-						ScoredChromosomeWindowList[] scwListArray = new SimpleScoredChromosomeWindowList[selectedTracks.length];
-						for (int i = 0; i < selectedTracks.length; i++) {
-							scwListArray[i] = ((SCWListTrack)selectedTracks[i]).getData();
+						selectedLayers = (SCWLayer[]) scwLayers;
+					}					
+					if ((selectedLayers != null)) {
+						ScoredChromosomeWindowList[] scwListArray = new SimpleScoredChromosomeWindowList[selectedLayers.length];
+						for (int i = 0; i < selectedLayers.length; i++) {
+							scwListArray[i] = selectedLayers[i].getData();
 						}
 						if (scwListArray.length > 0) {
 							Operation<double[][][]> operation = new SCWLORepartition(scwListArray, scoreBin.doubleValue(), getGraphIndicator());
@@ -131,11 +141,11 @@ public final class SCWLARepartition extends TrackListActionOperationWorker<doubl
 
 	@Override
 	protected void doAtTheEnd(double[][][] actionResult) {
-		if ((actionResult != null) && (selectedTracks.length != 0)) {
+		if ((actionResult != null) && (selectedLayers.length != 0)) {
 			scatPlotData = new ArrayList<ScatterPlotData>();
 			for (int k = 0; k < actionResult.length; k++) {
-				Color trackColor = ((CurveTrack<?>) selectedTracks[k]).getTrackColor(); // retrieve the color of the track
-				scatPlotData.add(new ScatterPlotData(actionResult[k], selectedTracks[k].toString(), trackColor));
+				Color layerColor = ((ColoredLayer) selectedLayers[k]).getColor(); // retrieve the color of the layer
+				scatPlotData.add(new ScatterPlotData(actionResult[k], selectedLayers[k].toString(), layerColor));
 			}
 			if (getGraphIndicator() == SCWLORepartition.WINDOW_COUNT_GRAPH) {
 				ScatterPlotPane.showDialog(getRootPane(), "Score", "Window Count", scatPlotData);

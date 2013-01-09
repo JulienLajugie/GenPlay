@@ -99,8 +99,8 @@ public class BLATransfrag extends TrackListAction {
 								protected void doAtTheEnd(GeneList actionResult) {
 									if (actionResult != null) {
 										Track selectedTrack = selectedLayer.getTrack();
-										GeneLayer glt = new GeneLayer(selectedTrack, actionResult, "Transfrags from " + selectedTrack.getName());
-										selectedTrack.getLayers().add(glt);
+										GeneLayer gl = new GeneLayer(selectedTrack, actionResult, "Transfrags from " + selectedTrack.getName());
+										selectedTrack.getLayers().add(gl);
 										selectedTrack.getLayers().remove(selectedTrack);
 									}
 								}

@@ -27,7 +27,7 @@ import java.util.List;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoLayerMethod;
+import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoLayersMethod;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
@@ -35,7 +35,7 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
 
 /**
- * This class manages theses operations on two tracks:
+ * This class manages theses operations on two layers:
  * 	- addition
  * 	- subtraction
  * 	- multiplication
@@ -44,39 +44,39 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
  * @author Nicolas
  * @version 0.1
  */
-public class SCWLTwoTracksManagement implements Serializable, Stoppable {
+public class SCWLTwoLayersManagement implements Serializable, Stoppable {
 
 	private static final long serialVersionUID = -4066526880193456101L;
 	protected 	final 	ProjectChromosome 				projectChromosome;	//ChromosomeManager
 	private 	final 	List<ChromosomeListOfLists<?>> 			scwList;		//list containing originals lists
-	private 	final 	List<SCWLTwoTracksEngine>			twoTracksEngineList;
+	private 	final 	List<SCWLTwoLayersEngine>			twoLayersEngineList;
 
 	/**
-	 * SCWLTwoTracks constructor
+	 * SCWLTwoLayers constructor
 	 * 
-	 * @param list1	first track
-	 * @param list2	second track
+	 * @param list1	first layer
+	 * @param list2	second layer
 	 * @param scm		operation
 	 */
-	public SCWLTwoTracksManagement (	ChromosomeListOfLists<?> list1,
+	public SCWLTwoLayersManagement (	ChromosomeListOfLists<?> list1,
 			ChromosomeListOfLists<?> list2,
-			ScoreCalculationTwoLayerMethod scm) {
+			ScoreCalculationTwoLayersMethod scm) {
 		this.projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		this.scwList = new ArrayList<ChromosomeListOfLists<?>>();
 		this.scwList.add(list1);
 		this.scwList.add(list2);
-		this.twoTracksEngineList = new ArrayList<SCWLTwoTracksEngine>();
+		this.twoLayersEngineList = new ArrayList<SCWLTwoLayersEngine>();
 		for (int i = 0; i < projectChromosome.size(); i++) {
-			this.twoTracksEngineList.add(new SCWLTwoTracksEngine(scm));
+			this.twoLayersEngineList.add(new SCWLTwoLayersEngine(scm));
 		}
 	}
 
 	/**
-	 * Runs the two tracks overlap process
+	 * Runs the two layers overlap process
 	 * @param chromosome the chromosome
 	 */
 	public void run(Chromosome chromosome) {
-		this.twoTracksEngineList.get(projectChromosome.getIndex(chromosome)).init(scwList.get(0), scwList.get(1), chromosome);
+		this.twoLayersEngineList.get(projectChromosome.getIndex(chromosome)).init(scwList.get(0), scwList.get(1), chromosome);
 	}
 
 	/**
@@ -84,13 +84,13 @@ public class SCWLTwoTracksManagement implements Serializable, Stoppable {
 	 * @return the new list of scored chromosome window
 	 */
 	public List<ScoredChromosomeWindow> getList(Chromosome chromosome) {
-		return this.twoTracksEngineList.get(projectChromosome.getIndex(chromosome)).getList();
+		return this.twoLayersEngineList.get(projectChromosome.getIndex(chromosome)).getList();
 	}
 
 	@Override
 	public void stop() {
-		if (twoTracksEngineList != null) {
-			for (SCWLTwoTracksEngine currentEngine: twoTracksEngineList) {
+		if (twoLayersEngineList != null) {
+			for (SCWLTwoLayersEngine currentEngine: twoLayersEngineList) {
 				currentEngine.stop();
 			}
 		}

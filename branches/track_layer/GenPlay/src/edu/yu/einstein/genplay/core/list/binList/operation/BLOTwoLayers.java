@@ -28,7 +28,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
-import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoLayerMethod;
+import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoLayersMethod;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.arrayList.ListFactory;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
@@ -43,12 +43,12 @@ import edu.yu.einstein.genplay.exception.BinListDifferentWindowSizeException;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class BLOTwoTracks implements Operation<ChromosomeListOfLists<?>> {
+public class BLOTwoLayers implements Operation<ChromosomeListOfLists<?>> {
 
 	private final BinList 					binList1;		// first binlist to add 
 	private final BinList 					binList2; 		// second binlist to add
 	private final DataPrecision 			precision;		// precision of the result list
-	private ScoreCalculationTwoLayerMethod 	scm;			// method of calculation for the score 
+	private ScoreCalculationTwoLayersMethod 	scm;			// method of calculation for the score 
 	private boolean							stopped = false;// true if the operation must be stopped
 
 
@@ -57,9 +57,9 @@ public class BLOTwoTracks implements Operation<ChromosomeListOfLists<?>> {
 	 * @param binList1
 	 * @param binList2
 	 * @param precision precision of the result {@link BinList}
-	 * @param scm {@link ScoreCalculationTwoLayerMethod} method used to compute the scores
+	 * @param scm {@link ScoreCalculationTwoLayersMethod} method used to compute the scores
 	 */
-	public BLOTwoTracks(BinList binList1, BinList binList2, DataPrecision precision, ScoreCalculationTwoLayerMethod scm) {
+	public BLOTwoLayers(BinList binList1, BinList binList2, DataPrecision precision, ScoreCalculationTwoLayersMethod scm) {
 		this.binList1 = binList1;
 		this.binList2 = binList2;
 		this.precision = precision;
@@ -80,17 +80,17 @@ public class BLOTwoTracks implements Operation<ChromosomeListOfLists<?>> {
 			final List<Double> currentList1 = binList1.get(i);
 			final List<Double> currentList2 = binList2.get(i);
 
-			final boolean firstTrackIsEmpty;
-			final boolean secondTrackIsEmpty;
+			final boolean firstLayerIsEmpty;
+			final boolean secondLayerIsEmpty;
 			if ((currentList1 != null) && (currentList1.size() != 0)) {
-				firstTrackIsEmpty = false;
+				firstLayerIsEmpty = false;
 			} else {
-				firstTrackIsEmpty = true;
+				firstLayerIsEmpty = true;
 			}
 			if ((currentList2 != null) && (currentList2.size() != 0)) {
-				secondTrackIsEmpty = false;
+				secondLayerIsEmpty = false;
 			} else {
-				secondTrackIsEmpty = true;
+				secondLayerIsEmpty = true;
 			}
 
 			Callable<List<Double>> currentThread = new Callable<List<Double>>() {
@@ -98,7 +98,7 @@ public class BLOTwoTracks implements Operation<ChromosomeListOfLists<?>> {
 				public List<Double> call() throws Exception {
 					List<Double> resultList = null;
 
-					if (!firstTrackIsEmpty && !secondTrackIsEmpty) {
+					if (!firstLayerIsEmpty && !secondLayerIsEmpty) {
 						resultList = ListFactory.createList(precision, currentList1.size());
 						for (int j = 0; j < currentList1.size() && !stopped; j++) {
 							if (j < currentList2.size()) {
@@ -110,31 +110,31 @@ public class BLOTwoTracks implements Operation<ChromosomeListOfLists<?>> {
 						}
 					} else {
 						List<Double> currentList = null;
-						if (!firstTrackIsEmpty & secondTrackIsEmpty) {
+						if (!firstLayerIsEmpty & secondLayerIsEmpty) {
 							currentList = currentList1;
-						} else if (firstTrackIsEmpty & !secondTrackIsEmpty) {
+						} else if (firstLayerIsEmpty & !secondLayerIsEmpty) {
 							currentList = currentList2;
 						}
 						
 						if (currentList != null) {
 							resultList = ListFactory.createList(precision, currentList.size());
-							if (scm == ScoreCalculationTwoLayerMethod.ADDITION || scm == ScoreCalculationTwoLayerMethod.MAXIMUM) {
+							if (scm == ScoreCalculationTwoLayersMethod.ADDITION || scm == ScoreCalculationTwoLayersMethod.MAXIMUM) {
 								for (int j = 0; j < currentList.size() && !stopped; j++) {
 									resultList.set(j, currentList.get(j));
 								}
-							} else if (scm == ScoreCalculationTwoLayerMethod.SUBTRACTION) {
+							} else if (scm == ScoreCalculationTwoLayersMethod.SUBTRACTION) {
 								int factor = 1;
-								if (firstTrackIsEmpty) {
+								if (firstLayerIsEmpty) {
 									factor = -1;
 								}
 								for (int j = 0; j < currentList.size() && !stopped; j++) {
 									resultList.set(j, factor*currentList.get(j));
 								}
-							} else if (scm == ScoreCalculationTwoLayerMethod.MULTIPLICATION || scm == ScoreCalculationTwoLayerMethod.DIVISION || scm == ScoreCalculationTwoLayerMethod.MINIMUM) {
+							} else if (scm == ScoreCalculationTwoLayersMethod.MULTIPLICATION || scm == ScoreCalculationTwoLayersMethod.DIVISION || scm == ScoreCalculationTwoLayersMethod.MINIMUM) {
 								for (int j = 0; j < currentList.size() && !stopped; j++) {
 									resultList.set(j, 0d);
 								}
-							} else if (scm == ScoreCalculationTwoLayerMethod.AVERAGE) {
+							} else if (scm == ScoreCalculationTwoLayersMethod.AVERAGE) {
 								for (int j = 0; j < currentList.size() && !stopped; j++) {
 									resultList.set(j, currentList.get(j) / 2);
 								}
@@ -162,7 +162,7 @@ public class BLOTwoTracks implements Operation<ChromosomeListOfLists<?>> {
 
 	@Override
 	public String getDescription() {
-		return "Operation on two tracks: " + scm.toString();
+		return "Operation on two layers: " + scm.toString();
 	}
 
 
@@ -174,7 +174,7 @@ public class BLOTwoTracks implements Operation<ChromosomeListOfLists<?>> {
 
 	@Override
 	public String getProcessingDescription() {
-		return "Two Tracks Operation";
+		return "Two Layers Operation";
 	}
 
 

@@ -19,18 +19,14 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.action.layer.binlayer;
-
+package edu.yu.einstein.genplay.gui.action.layer.SCWLayer;
 
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoLayersMethod;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOTwoLayers;
-import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.core.list.binList.operation.BLOTwoLayers;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
@@ -39,24 +35,23 @@ import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
 import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
-import edu.yu.einstein.genplay.gui.track.layer.VersionedLayer;
 import edu.yu.einstein.genplay.gui.trackChooser.TrackChooser;
 import edu.yu.einstein.genplay.util.Utils;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 /**
- * Computes an arithmetic operation between the selected {@link BinLayer} and an other scored layer
- * @author Julien Lajugie
+ * Computes an arithmetic operation on two layers
+ * @author Nicolas Fourel
  * @version 0.1
  */
-public final class BLATwoLayersOperation extends TrackListActionOperationWorker<ChromosomeListOfLists<?>> {
+public final class SCWLATwoLayersOperation extends TrackListActionOperationWorker<ChromosomeListOfLists<?>> {
 
 	private static final long 				serialVersionUID = 4027173438789911860L; 		// generated ID
 	private static final String 			ACTION_NAME = "Two Layers Operation";			// action name
 	private static final String 			DESCRIPTION = "Run operation on two layers";	// tooltip
-	private BinLayer						selectedLayer;									// selected layer
-	private Layer<?>						otherLayer = null;								// other layer
+	private Layer<?> 						selectedLayer;									// selected layer
+	private Layer<?> 						otherLayer = null;								// other layer
 	private Track							resultTrack = null;								// result track
 	private ScoreCalculationTwoLayersMethod 	scm;
 
@@ -64,13 +59,13 @@ public final class BLATwoLayersOperation extends TrackListActionOperationWorker<
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "BLATwoLayersOperation";
+	public static final String ACTION_KEY = "SCWLATwoLayersOperation";
 
 
 	/**
-	 * Creates an instance of {@link BLATwoLayersOperation}
+	 * Creates an instance of {@link SCWLATwoLayersOperation}
 	 */
-	public BLATwoLayersOperation() {
+	public SCWLATwoLayersOperation() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -80,7 +75,7 @@ public final class BLATwoLayersOperation extends TrackListActionOperationWorker<
 
 	@Override
 	public Operation<ChromosomeListOfLists<?>> initializeOperation() {
-		selectedLayer = (BinLayer) getValue("Layer");
+		selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
 			layerChooserDialog.setLayers(getTrackListPanel().getAllLayers());
@@ -94,19 +89,9 @@ public final class BLATwoLayersOperation extends TrackListActionOperationWorker<
 					if (resultTrack != null) {
 						this.scm = Utils.chooseScoreCalculationTwoLayersMethod(getRootPane());
 						if (scm != null) {
-							if (isSCWList()) {
-								operation = new SCWLOTwoLayers(selectedLayer.getData(),
-										(ChromosomeListOfLists<?>)otherLayer.getData(),
-										this.scm);
-							} else {
-								DataPrecision precision = Utils.choosePrecision(getRootPane());
-								if (precision != null) {
-									operation = new BLOTwoLayers(selectedLayer.getData(),
-											((BinLayer)otherLayer).getData(),
-											precision,
-											scm);
-								}
-							}
+							operation = new SCWLOTwoLayers(	(ChromosomeListOfLists<?>)selectedLayer.getData(),
+									(ChromosomeListOfLists<?>)otherLayer.getData(),
+									this.scm);
 							return operation;
 						}
 					}
@@ -120,27 +105,13 @@ public final class BLATwoLayersOperation extends TrackListActionOperationWorker<
 	@Override
 	protected void doAtTheEnd(ChromosomeListOfLists<?> actionResult) {
 		if (actionResult != null) {
-			Layer<?> newLayer;
-			if (isSCWList()) {
-				newLayer = new SCWLayer(resultTrack, (ScoredChromosomeWindowList) actionResult, selectedLayer.getName() + " & " + otherLayer.getName());
-			} else {
-				newLayer = new BinLayer(resultTrack, (BinList) actionResult, selectedLayer.getName() + " & " + otherLayer.getName());
-			}
+			SCWLayer newLayer = new SCWLayer(resultTrack, (ScoredChromosomeWindowList)actionResult, selectedLayer.getName() + " & " + otherLayer.getName());
 			// add info to the history
-			((VersionedLayer<?>)newLayer).getHistory().add("Operation on two tracks", Colors.GREY);
-			((VersionedLayer<?>)newLayer).getHistory().add("Operation: " + this.scm.toString(), Colors.GREY);
-			((VersionedLayer<?>)newLayer).getHistory().add("First layer: " + this.selectedLayer.getName(), Colors.GREY);
-			((VersionedLayer<?>)newLayer).getHistory().add("Second layer: " + this.otherLayer.getName(), Colors.GREY);
+			newLayer.getHistory().add("Operation on two tracks", Colors.GREY);
+			newLayer.getHistory().add("Operation: " + this.scm.toString(), Colors.GREY);
+			newLayer.getHistory().add("First track: " + this.selectedLayer.getName(), Colors.GREY);
+			newLayer.getHistory().add("Second track: " + this.otherLayer.getName(), Colors.GREY);
 			resultTrack.getLayers().add(newLayer);
 		}
-	}
-
-	private boolean isSCWList () {
-		if ((selectedLayer.getData() instanceof BinList) & (otherLayer.getData() instanceof BinList)) {
-			if (((BinList)selectedLayer.getData()).getBinSize() == ((BinList)otherLayer.getData()).getBinSize()) {
-				return false;
-			}
-		}
-		return true;
 	}
 }

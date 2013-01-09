@@ -29,23 +29,22 @@ import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOSubtractConstant;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
-import edu.yu.einstein.genplay.gui.old.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.old.track.SCWListTrack;
-
+import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
+import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 
 
 /**
- * Subtracts a constant to the scores of the selected {@link SCWListTrack}
+ * Subtracts a constant to the scores of the selected {@link SCWLayer}
  * @author Julien Lajugie
  * @version 0.1
  */
 public final class SCWLASubtractConstant extends TrackListActionOperationWorker<ScoredChromosomeWindowList> {
 
 	private static final long serialVersionUID = 4027173438789911860L; 	// generated ID
-	private static final String 	ACTION_NAME = "Subtraction (Constant)";// action name
+	private static final String 	ACTION_NAME = "Subtraction (Constant)";	// action name
 	private static final String 	DESCRIPTION =
-			"Subtract a constant to the scores of the selected track";			// tooltip
-	private SCWListTrack 			selectedTrack;						// selected track
+			"Subtract a constant to the scores of the selected layer";		// tooltip
+	private SCWLayer 				selectedLayer;							// selected layer
 
 
 	/**
@@ -67,11 +66,11 @@ public final class SCWLASubtractConstant extends TrackListActionOperationWorker<
 
 	@Override
 	public Operation<ScoredChromosomeWindowList> initializeOperation() {
-		selectedTrack = (SCWListTrack) getTrackList().getSelectedTrack();
-		if (selectedTrack != null) {
+		selectedLayer = (SCWLayer) getValue("Layer");
+		if (selectedLayer != null) {
 			Number constant = NumberOptionPane.getValue(getRootPane(), "Constant", "Enter a value C to subtract: f(x)=x - C", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
 			if ((constant != null) && (constant.doubleValue() != 0)) {
-				ScoredChromosomeWindowList scwList = selectedTrack.getData();
+				ScoredChromosomeWindowList scwList = selectedLayer.getData();
 				operation = new SCWLOSubtractConstant(scwList, constant.doubleValue());
 				return operation;
 			}
@@ -83,7 +82,7 @@ public final class SCWLASubtractConstant extends TrackListActionOperationWorker<
 	@Override
 	protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
 		if (actionResult != null) {
-			selectedTrack.setData(actionResult, operation.getDescription());
+			selectedLayer.setData(actionResult, operation.getDescription());
 		}
 	}
 }

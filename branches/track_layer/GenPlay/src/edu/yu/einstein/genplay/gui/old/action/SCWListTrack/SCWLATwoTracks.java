@@ -23,10 +23,10 @@ package edu.yu.einstein.genplay.gui.old.action.SCWListTrack;
 
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoLayerMethod;
+import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoLayersMethod;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOTwoTracks;
+import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOTwoLayers;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.old.action.TrackListActionOperationWorker;
@@ -52,7 +52,7 @@ public final class SCWLATwoTracks extends TrackListActionOperationWorker<Chromos
 	private Track<?> 						selectedTrack;									// selected track
 	private Track<?> 						otherTrack = null;								// other track
 	private Track<?>						resultTrack = null;								// result track
-	private ScoreCalculationTwoLayerMethod 	scm;
+	private ScoreCalculationTwoLayersMethod 	scm;
 
 
 	/**
@@ -80,9 +80,9 @@ public final class SCWLATwoTracks extends TrackListActionOperationWorker<Chromos
 			if (otherTrack != null) {
 				resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackList().getEmptyTracks());
 				if (resultTrack != null) {
-					this.scm = Utils.chooseScoreCalculationTwoTrackMethod(getRootPane());
+					this.scm = Utils.chooseScoreCalculationTwoLayersMethod(getRootPane());
 					if (scm != null) {
-						operation = new SCWLOTwoTracks(	(ChromosomeListOfLists<?>)selectedTrack.getData(),
+						operation = new SCWLOTwoLayers(	(ChromosomeListOfLists<?>)selectedTrack.getData(),
 								(ChromosomeListOfLists<?>)otherTrack.getData(),
 								this.scm);
 						return operation;

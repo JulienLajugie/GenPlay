@@ -28,7 +28,7 @@ import java.util.List;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleScoredChromosomeWindow;
-import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoLayerMethod;
+import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoLayersMethod;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
@@ -36,7 +36,7 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
 
 /**
- * This class manages theses operations on two tracks:
+ * This class manages theses operations on two layers:
  * 	- addition
  * 	- subtraction
  * 	- multiplication
@@ -45,12 +45,12 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
  * @author Nicolas
  * @version 0.1
  */
-public class SCWLTwoTracksEngine implements Serializable, Stoppable {
+public class SCWLTwoLayersEngine implements Serializable, Stoppable {
 
 	private static final long serialVersionUID = 2965349494486829320L;
 	private final 	List<ChromosomeListOfLists<?>> 		list;				//list containing originals lists
 	private final 	List<ScoredChromosomeWindow> 		newScwList;			//new list
-	private final	ScoreCalculationTwoLayerMethod		scm;				//operation to apply
+	private final	ScoreCalculationTwoLayersMethod		scm;				//operation to apply
 	private 		Chromosome 							chromosome;
 	private			boolean[]							isSCWList;			//stores the instance class of the lists
 	private			boolean[]							onStart;			//stores the position on the current window
@@ -62,11 +62,11 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 
 
 	/**
-	 * SCWLTwoTracks constructor
+	 * SCWLTwoLayersEngine constructor
 	 * 
 	 * @param scm		operation
 	 */
-	public SCWLTwoTracksEngine (ScoreCalculationTwoLayerMethod scm) {
+	public SCWLTwoLayersEngine (ScoreCalculationTwoLayersMethod scm) {
 		this.list = new ArrayList<ChromosomeListOfLists<?>>();
 		this.newScwList = new ArrayList<ScoredChromosomeWindow>();
 		this.scm = scm;
@@ -81,8 +81,8 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 	 * @param chromosome 	chromosome
 	 */
 	public void init (ChromosomeListOfLists<?> list1, ChromosomeListOfLists<?> list2, Chromosome chromosome) {
-		//index 0 refers to the first track
-		//index 1 refers to the second track
+		//index 0 refers to the first layer
+		//index 1 refers to the second layer
 		this.list.add(list1);
 		this.list.add(list2);
 		this.isSCWList = new boolean[2];
@@ -93,8 +93,8 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 		this.onStart[0] = true;
 		this.onStart[1] = true;
 		this.validPosition = new boolean[2];
-		this.validPosition[0] = getTrackSize(0) > 0;
-		this.validPosition[1] = getTrackSize(1) > 0;
+		this.validPosition[0] = getLayerSize(0) > 0;
+		this.validPosition[1] = getLayerSize(1) > 0;
 		this.currentScore = new Double[2];
 		this.currentScore[0] = 0.0;
 		this.currentScore[1] = 0.0;
@@ -115,22 +115,22 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 	private void run () {
 		int min;
 		while (isValid() && !stopped) {
-			min = min ();	//get the relative position of the current position on the track 1 and the current position on the track 2
+			min = min ();	//get the relative position of the current position on the layer 1 and the current position on the layer 2
 			switch (min) {
 			case 0:		//current positions are at the same place
-				if (onStart(0)) {	//the current position of the first track is on the start
-					if (onStart(1)) {	//the current position of the second track is on the start
+				if (onStart(0)) {	//the current position of the first layer is on the start
+					if (onStart(1)) {	//the current position of the second layer is on the start
 						manageStart(0);
 						manageStart(1);
-					} else {	//the current position of the second track is on the stop
+					} else {	//the current position of the second layer is on the stop
 						manageStop(1);
 						manageStart(0);
 					}
-				} else {	//the current position of the first track is on the stop
-					if (onStart(1)) {	//the current position of the second track is on the start
+				} else {	//the current position of the first layer is on the stop
+					if (onStart(1)) {	//the current position of the second layer is on the start
 						manageStop(0);
 						manageStart(1);
-					} else {	//the current position of the second track is on the stop
+					} else {	//the current position of the second layer is on the stop
 						currentPosition[1] = getStop(0);
 						addPosition();
 						nextPosition(0);
@@ -142,17 +142,17 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 					}
 				}
 				break;
-			case -1:	//the actual minimum is on the track 1
-				if (onStart(0)) {	//the current position of the first track is on the start
-					if (!onStart(1)) {	//the current position of the second track is on the stop
+			case -1:	//the actual minimum is on the layer 1
+				if (onStart(0)) {	//the current position of the first layer is on the start
+					if (!onStart(1)) {	//the current position of the second layer is on the stop
 						currentPosition[1] = getStart(0);
 						addPosition();
 					}
 					manageStart(0);
-				} else {	//the current position of the first track is on the stop
-					if (onStart(1)) {	//the current position of the second track is on the start
+				} else {	//the current position of the first layer is on the stop
+					if (onStart(1)) {	//the current position of the second layer is on the start
 						manageStop(0);
-					} else {	//the current position of the second track is on the stop
+					} else {	//the current position of the second layer is on the stop
 						int stop = getStop(0);
 						manageStop(0);
 						currentPosition[0] = stop;
@@ -163,19 +163,19 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 
 				}
 				break;
-			case 1:		//the actual minimum is on the track 2
-				if (onStart(0)) {	//the current position of the first track is on the start
-					if (onStart(1)) {	//the current position of the second track is on the start
+			case 1:		//the actual minimum is on the layer 2
+				if (onStart(0)) {	//the current position of the first layer is on the start
+					if (onStart(1)) {	//the current position of the second layer is on the start
 						manageStart(1);
-					} else {	//the current position of the second track is on the stop
+					} else {	//the current position of the second layer is on the stop
 						manageStop(1);
 					}
-				} else {	//the current position of the first track is on the stop
-					if (onStart(1)) {	//the current position of the second track is on the start
+				} else {	//the current position of the first layer is on the stop
+					if (onStart(1)) {	//the current position of the second layer is on the start
 						currentPosition[1] = getStart(1);
 						addPosition();
 						manageStart(1);
-					} else {	//the current position of the second track is on the stop
+					} else {	//the current position of the second layer is on the stop
 						int stop = getStop(1);
 						manageStop(1);
 						currentPosition[0] = stop;
@@ -187,10 +187,10 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 				break;
 			}
 		}
-		//If the first track is still valid, these positions must be added
-		finishTrack(0);
-		//If the second track is still valid, these positions must be added
-		finishTrack(1);
+		//If the first layer is still valid, these positions must be added
+		finishLayer(0);
+		//If the second layer is still valid, these positions must be added
+		finishLayer(1);
 	}
 
 	/**
@@ -209,22 +209,22 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 
 	/**
 	 * onStart method
-	 * This method says if the current position on a track is on the start or on the stop of the current position.
+	 * This method says if the current position on a layer is on the start or on the stop of the current position.
 	 * 
-	 * @param 	track	the concerned track
+	 * @param 	layer	the concerned layer
 	 * @return			true if the current position is on the start
 	 */
-	private boolean onStart (int track) {
-		return onStart[track];
+	private boolean onStart (int layer) {
+		return onStart[layer];
 	}
 
 	/**
 	 * min method
-	 * This method returns the relative position of the current position on the first track with the second track.
+	 * This method returns the relative position of the current position on the first layer with the second layer.
 	 * 
 	 * @return	0 	if it is equal,
-	 * 			-1 	if the current position on the first track is lower than the current position on the second track
-	 * 			1 	if the current position on the first track is higher than the current position on the second track
+	 * 			-1 	if the current position on the first layer is lower than the current position on the second layer
+	 * 			1 	if the current position on the first layer is higher than the current position on the second layer
 	 */
 	private int min () {
 		int currentMin0;
@@ -265,52 +265,52 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 
 	/**
 	 * nextPosition method
-	 * This method increments the current position for the track and manage his validity.
+	 * This method increments the current position for the layer and manage his validity.
 	 * 
-	 * @param track	associated track
+	 * @param layer	associated layer
 	 */
-	private void nextPosition (int track) {
-		int index = currentIndex[track] + 1;
+	private void nextPosition (int layer) {
+		int index = currentIndex[layer] + 1;
 		boolean valid = true;
 		while (valid && !stopped) {
-			if (index >= getTrackSize(track)) {
+			if (index >= getLayerSize(layer)) {
 				valid = false;
-				this.validPosition[track] = false;
+				this.validPosition[layer] = false;
 			} else {
-				if (getScore(track, index) == 0.0) {
+				if (getScore(layer, index) == 0.0) {
 					index++;
 				} else {
 					valid = false;
 				}
 			}
 		}
-		currentIndex[track] = index;
+		currentIndex[layer] = index;
 	}
 
 	/**
 	 * manageStart method
-	 * This method manages required operations for a start position on a track.
+	 * This method manages required operations for a start position on a layer.
 	 * 
-	 * @param track associated track
+	 * @param layer associated layer
 	 */
-	private void manageStart (int track) {
-		currentPosition[0] = getStart(track);
-		currentScore[track] = getScore(track);
-		onStart[track] = false;
+	private void manageStart (int layer) {
+		currentPosition[0] = getStart(layer);
+		currentScore[layer] = getScore(layer);
+		onStart[layer] = false;
 	}
 
 	/**
 	 * manageStop method
-	 * This method manages required operations for a start position on a track.
+	 * This method manages required operations for a start position on a layer.
 	 * 
-	 * @param track associated track
+	 * @param layer associated layer
 	 */
-	private void manageStop (int track) {
-		currentPosition[1] = getStop(track);
+	private void manageStop (int layer) {
+		currentPosition[1] = getStop(layer);
 		addPosition();
-		currentScore[track] = 0.0;
-		nextPosition(track);
-		onStart[track] = true;
+		currentScore[layer] = 0.0;
+		nextPosition(layer);
+		onStart[layer] = true;
 	}
 
 	/**
@@ -341,24 +341,24 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 	}
 
 	/**
-	 * finishTrack method
-	 * This method allows to finish the recording of the unfinished track.
+	 * finishlayer method
+	 * This method allows to finish the recording of the unfinished layer.
 	 * 
-	 * @param track
+	 * @param layer
 	 */
-	private void finishTrack (int track) {
-		if (validPosition[track]) {
-			if (track == 0) {
+	private void finishLayer (int layer) {
+		if (validPosition[layer]) {
+			if (layer == 0) {
 				currentScore[1] = 0.0;
 			} else {
 				currentScore[0] = 0.0;
 			}
-			for (int i = currentIndex[track]; (i < getTrackSize(track)) && !stopped; i++) {
-				currentScore[track] = getScore(track);
+			for (int i = currentIndex[layer]; (i < getLayerSize(layer)) && !stopped; i++) {
+				currentScore[layer] = getScore(layer);
 				double score = getScore();
 				if (score != 0) {
-					newScwList.add(new SimpleScoredChromosomeWindow(getStart(track), getStop(track), score));
-					currentIndex[track]++;
+					newScwList.add(new SimpleScoredChromosomeWindow(getStart(layer), getStop(layer), score));
+					currentIndex[layer]++;
 				}
 			}
 		}
@@ -408,44 +408,44 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 		return newScwList;
 	}
 
-	private int getStart (int track) {
-		if (this.isSCWList[track]) {
-			return ((ScoredChromosomeWindow) this.list.get(track).get(chromosome).get(this.currentIndex[track])).getStart();
+	private int getStart (int layer) {
+		if (this.isSCWList[layer]) {
+			return ((ScoredChromosomeWindow) this.list.get(layer).get(chromosome).get(this.currentIndex[layer])).getStart();
 		} else {
-			return this.currentIndex[track] * ((BinList)this.list.get(track)).getBinSize();
+			return this.currentIndex[layer] * ((BinList)this.list.get(layer)).getBinSize();
 		}
 	}
 
-	private int getStop (int track) {
-		if (this.isSCWList[track]) {
-			return ((ScoredChromosomeWindow) this.list.get(track).get(chromosome).get(this.currentIndex[track])).getStop();
+	private int getStop (int layer) {
+		if (this.isSCWList[layer]) {
+			return ((ScoredChromosomeWindow) this.list.get(layer).get(chromosome).get(this.currentIndex[layer])).getStop();
 		} else {
-			return (this.currentIndex[track] + 1) * ((BinList)this.list.get(track)).getBinSize();
+			return (this.currentIndex[layer] + 1) * ((BinList)this.list.get(layer)).getBinSize();
 		}
 	}
 
-	private Double getScore (int track) {
-		/*if (this.isSCWList[track]) {
-			return ((ScoredChromosomeWindow) this.list.get(track).get(chromosome).get(this.currentIndex[track])).getScore();
+	private Double getScore (int layer) {
+		/*if (this.isSCWList[layer]) {
+			return ((ScoredChromosomeWindow) this.list.get(layer).get(chromosome).get(this.currentIndex[layer])).getScore();
 		} else {
-			return (Double) this.list.get(track).get(chromosome).get(this.currentIndex[track]);
+			return (Double) this.list.get(layer).get(chromosome).get(this.currentIndex[layer]);
 		}*/
-		return getScore(track, this.currentIndex[track]);
+		return getScore(layer, this.currentIndex[layer]);
 	}
 
-	private Double getScore (int track, int index) {
-		if (this.isSCWList[track]) {
-			return ((ScoredChromosomeWindow) this.list.get(track).get(chromosome).get(index)).getScore();
+	private Double getScore (int layer, int index) {
+		if (this.isSCWList[layer]) {
+			return ((ScoredChromosomeWindow) this.list.get(layer).get(chromosome).get(index)).getScore();
 		} else {
-			return (Double) this.list.get(track).get(chromosome).get(index);
+			return (Double) this.list.get(layer).get(chromosome).get(index);
 		}
 	}
 
-	private int getTrackSize (int track) {
-		if (this.isSCWList[track]) {
-			return ((ScoredChromosomeWindowList) this.list.get(track)).get(chromosome).size();
+	private int getLayerSize (int layer) {
+		if (this.isSCWList[layer]) {
+			return ((ScoredChromosomeWindowList) this.list.get(layer)).get(chromosome).size();
 		} else {
-			List<Double> data = ((BinList) this.list.get(track)).get(chromosome);
+			List<Double> data = ((BinList) this.list.get(layer)).get(chromosome);
 			if (data != null) {
 				return data.size();
 			}

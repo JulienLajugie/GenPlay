@@ -80,14 +80,13 @@ public final class BLARepartition extends TrackListActionOperationWorker<double 
 		if (selectedLayer != null) {
 			Number scoreBin = NumberOptionPane.getValue(getRootPane(), "Size", "Enter the size of the bin of score:", new DecimalFormat("0.0#####"), 0 + Double.MIN_NORMAL, 1000, 1);
 			if (scoreBin != null) {
-				// we ask the user to choose the tracks for the repartition only if there is more than one track
-				LayerType[] availalbleLayerTypes = {LayerType.BIN_LAYER};
-				Layer<?>[] binLayers = Utils.getLayers(getTrackListPanel().getModel().getTracks(), availalbleLayerTypes);
+				// we ask the user to choose the layers for the repartition only if there is more than one layer
+				LayerType[] availableLayerTypes = {LayerType.BIN_LAYER};
+				Layer<?>[] binLayers = Utils.getLayers(getTrackListPanel().getModel().getTracks(), availableLayerTypes);
 				if (binLayers.length > 1) {
 					LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
 					layerChooserDialog.setLayers(getTrackListPanel().getAllLayers());
-					LayerType[] selectableLayers = {LayerType.BIN_LAYER};
-					layerChooserDialog.setSelectableLayers(selectableLayers);
+					layerChooserDialog.setSelectableLayers(availableLayerTypes);
 					layerChooserDialog.setMultiselectable(true);
 					if (layerChooserDialog.showDialog(getRootPane()) == LayerChooserDialog.APPROVE_OPTION) {
 						selectedLayers = layerChooserDialog.getSelectedLayers().toArray(selectedLayers);
@@ -116,8 +115,8 @@ public final class BLARepartition extends TrackListActionOperationWorker<double 
 		if (actionResult != null && selectedLayers.length != 0) {
 			scatPlotData = new ArrayList<ScatterPlotData>();
 			for (int k = 0; k < actionResult.length; k++) {
-				Color trackColor = ((ColoredLayer) selectedLayers[k]).getColor(); // retrieve the color of the track
-				scatPlotData.add(new ScatterPlotData(actionResult[k], selectedLayers[k].toString(), trackColor));
+				Color layerColor = ((ColoredLayer) selectedLayers[k]).getColor(); // retrieve the color of the layer
+				scatPlotData.add(new ScatterPlotData(actionResult[k], selectedLayers[k].toString(), layerColor));
 			}
 			ScatterPlotPane.showDialog(getRootPane(), "Score", "Bin Count", scatPlotData);
 		}

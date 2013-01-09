@@ -30,8 +30,8 @@ import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOWindowCount;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.dialog.ChromosomeChooser;
-import edu.yu.einstein.genplay.gui.old.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.old.track.SCWListTrack;
+import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
+import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 
 
 /**
@@ -41,7 +41,7 @@ import edu.yu.einstein.genplay.gui.old.track.SCWListTrack;
 public class SCWLAWindowCount extends TrackListActionOperationWorker<Long> {
 
 	private static final long serialVersionUID = -1773399821513504625L;						// generated ID
-	private static final String 	ACTION_NAME = "Window Count";					// action name
+	private static final String 	ACTION_NAME = "Window Count";							// action name
 	private static final String 	DESCRIPTION = "Sum of the total number of windows";		// tooltip
 
 
@@ -64,11 +64,11 @@ public class SCWLAWindowCount extends TrackListActionOperationWorker<Long> {
 
 	@Override
 	public Operation<Long> initializeOperation() {
-		SCWListTrack selectedTrack = (SCWListTrack) getTrackList().getSelectedTrack();
-		if (selectedTrack != null) {
+		SCWLayer selectedLayer = (SCWLayer) getValue("Layer");
+		if (selectedLayer != null) {
 			boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane());
 			if (selectedChromo != null) {
-				ScoredChromosomeWindowList scwList = selectedTrack.getData();
+				ScoredChromosomeWindowList scwList = selectedLayer.getData();
 				Operation<Long> operation = new SCWLOWindowCount(scwList, selectedChromo);
 				return operation;
 			}
