@@ -81,7 +81,7 @@ public final class TAAddRepeatLayer extends TrackListActionExtractorWorker<Repea
 	@Override
 	protected File retrieveFileToExtract() {
 		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
-		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Repeat Track", defaultDirectory, Utils.getReadableRepeatFileFilters(), true);
+		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Repeat Layer", defaultDirectory, Utils.getReadableRepeatFileFilters(), true);
 		if (selectedFile != null) {
 			return selectedFile;
 		}

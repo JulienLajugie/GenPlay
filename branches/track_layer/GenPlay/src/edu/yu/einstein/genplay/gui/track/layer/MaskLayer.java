@@ -30,7 +30,7 @@ import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.util.colors.TrackColor;
+import edu.yu.einstein.genplay.util.colors.LayerColor;
 
 
 /**
@@ -51,7 +51,7 @@ public class MaskLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList
 	 */
 	public MaskLayer(Track track, ScoredChromosomeWindowList data, String name) {
 		super(track, data, name);
-		this.color = TrackColor.getTrackColor();
+		this.color = LayerColor.getLayerColor();
 	}
 
 
@@ -59,9 +59,8 @@ public class MaskLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList
 	public void draw(Graphics g, int width, int height) {
 		if (getData() != null) {
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-			// create a transparent color for the stripes
 			g.setColor(color);
-			List<ScoredChromosomeWindow> chromoStripeList = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());//(start, stop);
+			List<ScoredChromosomeWindow> chromoStripeList = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
 			if (chromoStripeList != null) {
 				for (ScoredChromosomeWindow currentStripe: chromoStripeList) {
 					int x = projectWindow.genomeToScreenPosition(currentStripe.getStart());

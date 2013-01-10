@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.newCurveTrackDialog;
+package edu.yu.einstein.genplay.gui.dialog.newCurveLayerDialog;
 
 import java.awt.Component;
 import java.awt.GridBagConstraints;
@@ -42,15 +42,15 @@ import edu.yu.einstein.genplay.gui.dialog.genomeSelectionPanel.GenomeSelectionPa
 
 
 /**
- * A dialog for the input for a curve track loading
+ * A dialog for the input for a curve layer loading
  * @author Julien Lajugie
  * @version 0.1
  */
-public class NewCurveTrackDialog extends JDialog {
+public class NewCurveLayerDialog extends JDialog {
 
 	private static final long serialVersionUID = -4896476921693184496L; // generated ID
 	private static final int 			INSET = 7;					// inset between the components
-	private final 	TrackNamePanel 			trackNamePanel;			// panel for the track name
+	private final 	LayerNamePanel 			layerNamePanel;			// panel for the layer name
 	private final 	BinSizePanel			binSizePanel;			// panel for the binsize
 	private final 	ChromoSelectionPanel 	chromoSelectionPanel;	// panel for selecting chromosomes
 	private final 	CalculMethodPanel 		calculMethodPanel;		// panel for the method of score calculation
@@ -60,7 +60,7 @@ public class NewCurveTrackDialog extends JDialog {
 	private final	GenomeSelectionPanel	genomeSelectionPanel;	// panel for the selection of the genome in a multigenome project
 	private final 	JButton 				jbOk; 					// Button OK
 	private final 	JButton 				jbCancel; 				// Button cancel
-	private int 						approved = CANCEL_OPTION;	// indicate if the user canceled or validated
+	private int 							approved = CANCEL_OPTION;	// indicate if the user canceled or validated
 
 	/**
 	 * Return value when OK has been clicked.
@@ -78,16 +78,16 @@ public class NewCurveTrackDialog extends JDialog {
 	//	 * @param args
 	//	 */
 	//	public static void main(String[] args) {
-	//		NewCurveTrackDialog ctd = new NewCurveTrackDialog("test", false, false, false, false, true, true);
+	//		NewCurveLayerDialog ctd = new NewCurveLayerDialog("test", false, false, false, false, true, true);
 	//		ctd.showDialog(null);
 	//		ctd.dispose();
 	//	}
 
 
 	/**
-	 * Creates an instance of {@link NewCurveTrackDialog}
-	 * @param trackName the default name of the track
-	 * @param isNameNeeded true if the track name need to be asked
+	 * Creates an instance of {@link NewCurveLayerDialog}
+	 * @param layerName the default name of the layer
+	 * @param isNameNeeded true if the layer name need to be asked
 	 * @param isBinSizeNeeded true if the binsize need to be asked
 	 * @param isPrecisionNeeded true if the precision need to be asked
 	 * @param isMethodNeeded true if the method of calculation need to be asked
@@ -95,11 +95,11 @@ public class NewCurveTrackDialog extends JDialog {
 	 * @param isChromoSelectionNeeded true if the chromosome selection need to be asked
 	 * @param isGenomeSelectionNeeded true if the genome selection need to be asked (works only in multi genome)
 	 */
-	public NewCurveTrackDialog(String trackName, boolean isNameNeeded, boolean isBinSizeNeeded, boolean isPrecisionNeeded,
+	public NewCurveLayerDialog(String layerName, boolean isNameNeeded, boolean isBinSizeNeeded, boolean isPrecisionNeeded,
 			boolean isMethodNeeded, boolean isStrandNeeded, boolean isChromoSelectionNeeded, boolean isGenomeSelectionNeeded) {
 		super();
 		// create panels
-		trackNamePanel = new TrackNamePanel(trackName);
+		layerNamePanel = new LayerNamePanel(layerName);
 		binSizePanel = new BinSizePanel();
 		chromoSelectionPanel = new ChromoSelectionPanel();
 		calculMethodPanel = new CalculMethodPanel();
@@ -160,7 +160,7 @@ public class NewCurveTrackDialog extends JDialog {
 			c.insets = new Insets(INSET, INSET, INSET, INSET);
 			c.weightx = 1;
 			c.weighty = 1;
-			add(trackNamePanel, c);
+			add(layerNamePanel, c);
 		}
 
 		if (isChromoSelectionNeeded) {
@@ -273,7 +273,7 @@ public class NewCurveTrackDialog extends JDialog {
 		c.weighty = 1;
 		add(jbCancel, c);
 
-		setTitle("New Track");
+		setTitle("New Layer");
 		pack();
 		setResizable(false);
 		setModal(true);
@@ -340,10 +340,10 @@ public class NewCurveTrackDialog extends JDialog {
 
 
 	/**
-	 * @return the name of the track
+	 * @return the name of the layer
 	 */
-	public String getTrackName() {
-		return trackNamePanel.getTrackName();
+	public String getLayerName() {
+		return layerNamePanel.getLayerName();
 	}
 
 

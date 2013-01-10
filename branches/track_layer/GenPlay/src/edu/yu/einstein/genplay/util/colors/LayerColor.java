@@ -23,17 +23,19 @@ package edu.yu.einstein.genplay.util.colors;
 
 import java.awt.Color;
 
+import edu.yu.einstein.genplay.gui.track.layer.ColoredLayer;
+
 
 /**
  * This enumeration contains a single static method that returns
- * a color for a track. The color is selected amid all 
- * the elements of the enumeration {@link TrackColor}. When all 
+ * a color for a layer. The color is selected amid all 
+ * the elements of the enumeration {@link LayerColor}. When all 
  * the colors of the enumeration have been selected the algorithm
  * start from the first color again. 
  * @author Julien Lajugie
  * @version 0.1
  */
-public enum TrackColor {
+public enum LayerColor {
 
 	/** Dark blue {@link Color}  */
 	DARK_BLUE (new Color(0x0000CD)),
@@ -64,32 +66,39 @@ public enum TrackColor {
 	/** Dark cyan {@link Color}  */
 	DARK_CYAN (new Color(0x008B8B));
 
+	/**
+	 * Default transparency of a layer
+	 */
+	public final static int DEFAULT_TRANSPARENCY = 100;
+
+
 	private static int currentColorInt = 0; // static field that saves the next selected color index
 	private final Color color; 				// color field of the TrackColorEnum
 
 
 	/**
-	 * Private constructor. Creates an instance of a {@link TrackColor}
+	 * Private constructor. Creates an instance of a {@link LayerColor}
 	 * @param color color of the enum element
 	 */
-	private TrackColor(Color color){
+	private LayerColor(Color color){
 		this.color = color;
 	}
 
 
 	/**
-	 * @return a color for the track. The color is selected amid all 
-	 * the elements of the enumeration {@link TrackColor}. When all 
+	 * @return a color for a {@link ColoredLayer}. The color is selected amid all 
+	 * the elements of the enumeration {@link LayerColor}. When all 
 	 * the colors of the enumeration have been selected the algorithm
-	 * start from the first color again. 
+	 * start from the first color again.
 	 */
-	public static Color getTrackColor() {
-		TrackColor[] trackColors = TrackColor.values();
+	public static Color getLayerColor() {
+		LayerColor[] trackColors = LayerColor.values();
 		Color currentColor = trackColors[currentColorInt].color;
+		currentColor = new Color(currentColor.getRed(), currentColor.getGreen(), currentColor.getBlue(), DEFAULT_TRANSPARENCY);
 		currentColorInt++;
 		// we want the value to be in the array length range
 		currentColorInt = currentColorInt % trackColors.length;
-		return currentColor;		
+		return currentColor;
 	}
 }
 

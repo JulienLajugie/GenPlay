@@ -14,46 +14,57 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *     
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.newCurveTrackDialog;
+package edu.yu.einstein.genplay.gui.dialog.newCurveLayerDialog;
 
 import javax.swing.BorderFactory;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
+
+import edu.yu.einstein.genplay.core.enums.DataPrecision;
+
 
 
 /**
- * Panel for the track name input of a {@link NewCurveTrackDialog}
+ * Panel for the data precision input of a {@link NewCurveLayerDialog}
  * @author Julien Lajugie
  * @version 0.1
  */
-class TrackNamePanel extends JPanel {
+class DataPrecisionPanel extends JPanel {
 
-	private static final long serialVersionUID = -5969101278574088008L;	// generated ID
-	private final JTextField jtfTrackName;	// text field for the track name
-
-
+	private static final long serialVersionUID = -2255804422921021285L; 				// generated ID
+	private final JComboBox 		jcbDataPrecision; 									// combo box for the data precision 
+	private static DataPrecision 	defaultPrecision = DataPrecision.PRECISION_32BIT; 	// default data precision
+	
+	
 	/**
-	 * Creates an instance of a {@link TrackNamePanel}
-	 * @param trackName default name of a track
+	 * Creates an instance of {@link DataPrecisionPanel}
 	 */
-	TrackNamePanel(String trackName) {
+	DataPrecisionPanel() {
 		super();
-		jtfTrackName = new JTextField(trackName);
-		jtfTrackName.setColumns(15);
-		add(jtfTrackName);
-		setBorder(BorderFactory.createTitledBorder("Track Name"));
+		jcbDataPrecision = new JComboBox(DataPrecision.values());
+		jcbDataPrecision.setSelectedItem(defaultPrecision);
+		add(jcbDataPrecision);
+		setBorder(BorderFactory.createTitledBorder("Data Precision"));
 	}
-
-
+	
+	
 	/**
-	 * @return the name inside the input box
+	 * @return the selected {@link DataPrecision}
 	 */
-	String getTrackName() {
-		return jtfTrackName.getText();
+	DataPrecision getDataPrecision() {
+		return (DataPrecision) jcbDataPrecision.getSelectedItem();
+	}
+	
+	
+	/**
+	 * Saves the selected data precision as default
+	 */
+	void saveDefault() {
+		defaultPrecision = getDataPrecision();
 	}
 }

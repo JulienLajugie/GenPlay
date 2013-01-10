@@ -41,7 +41,7 @@ import edu.yu.einstein.genplay.gui.old.track.Track;
 import edu.yu.einstein.genplay.gui.trackChooser.TrackChooser;
 import edu.yu.einstein.genplay.util.Utils;
 import edu.yu.einstein.genplay.util.colors.Colors;
-import edu.yu.einstein.genplay.util.colors.TrackColor;
+import edu.yu.einstein.genplay.util.colors.LayerColor;
 
 
 
@@ -120,7 +120,7 @@ public final class BLATwoTracks extends TrackListActionOperationWorker<Chromosom
 			} else {
 				newTrack = new BinListTrack(index + 1, (BinList)actionResult);
 			}
-			newTrack.setTrackColor(TrackColor.getTrackColor());
+			newTrack.setTrackColor(LayerColor.getTrackColor());
 			// add info to the history
 			newTrack.getHistory().add("Operation on two tracks", Colors.GREY);
 			newTrack.getHistory().add("Operation: " + this.scm.toString(), Colors.GREY);

@@ -38,7 +38,7 @@ import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackConstants;
 import edu.yu.einstein.genplay.util.colors.Colors;
 import edu.yu.einstein.genplay.util.colors.GenPlayColor;
-import edu.yu.einstein.genplay.util.colors.TrackColor;
+import edu.yu.einstein.genplay.util.colors.LayerColor;
 
 
 /**
@@ -61,7 +61,7 @@ public class SCWLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList>
 	public SCWLayer(Track track, ScoredChromosomeWindowList data, String name) {
 		super(track, data, name);
 		this.setGraphType(TrackConstants.DEFAULT_GRAPH_TYPE);
-		this.color = TrackColor.getTrackColor();
+		this.color = LayerColor.getLayerColor();
 	}
 
 
@@ -102,6 +102,7 @@ public class SCWLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList>
 			Color reverseCurveColor = Colors.GREY;
 			if (!getColor().equals(Colors.BLACK)) {
 				reverseCurveColor = new Color(getColor().getRGB() ^ 0xffffff);
+				reverseCurveColor = new Color(reverseCurveColor.getRed(), reverseCurveColor.getGreen(), reverseCurveColor.getBlue(), getColor().getTransparency());
 			}
 			List<ScoredChromosomeWindow> listToPrint = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
 			if (listToPrint != null) {

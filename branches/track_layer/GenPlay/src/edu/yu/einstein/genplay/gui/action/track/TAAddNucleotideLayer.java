@@ -69,7 +69,7 @@ public class TAAddNucleotideLayer extends TrackListActionWorker<TwoBitSequenceLi
 	@Override
 	protected TwoBitSequenceList processAction() throws Exception {
 		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
-		selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Sequence Track", defaultDirectory, Utils.getReadableSequenceFileFilters(), true);
+		selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Sequence Layer", defaultDirectory, Utils.getReadableSequenceFileFilters(), true);
 		if (selectedFile != null) {
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
 				GenomeSelectionDialog genomeDialog = new GenomeSelectionDialog();

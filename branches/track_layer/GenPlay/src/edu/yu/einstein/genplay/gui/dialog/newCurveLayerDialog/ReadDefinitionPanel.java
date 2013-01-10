@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.newCurveTrackDialog;
+package edu.yu.einstein.genplay.gui.dialog.newCurveLayerDialog;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -36,7 +36,7 @@ import javax.swing.text.NumberFormatter;
 
 
 /**
- * Read panel of a {@link NewCurveTrackDialog}. Allows the user to shift and/or define the lenght of the reads
+ * Read panel of a {@link NewCurveLayerDialog}. Allows the user to shift and/or define the lenght of the reads
  * @author Julien Lajugie
  * @version 0.1
  */

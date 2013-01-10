@@ -40,7 +40,7 @@ import edu.yu.einstein.genplay.gui.old.track.EmptyTrack;
 import edu.yu.einstein.genplay.gui.old.track.GeneListTrack;
 import edu.yu.einstein.genplay.gui.old.track.SCWListTrack;
 import edu.yu.einstein.genplay.gui.old.track.Track;
-import edu.yu.einstein.genplay.util.colors.TrackColor;
+import edu.yu.einstein.genplay.util.colors.LayerColor;
 
 
 
@@ -141,10 +141,10 @@ public final class ATAConvert extends TrackListActionWorker<ChromosomeListOfList
 				newTrack = new GeneListTrack(index, (GeneList) actionResult);
 			} else if (trackType == TrackType.BIN) {
 				newTrack = new BinListTrack(index + 1, (BinList) actionResult);
-				((BinListTrack) newTrack).setTrackColor(TrackColor.getTrackColor());
+				((BinListTrack) newTrack).setTrackColor(LayerColor.getTrackColor());
 			} else if (trackType == TrackType.SCW) {
 				newTrack = new SCWListTrack(index + 1, (ScoredChromosomeWindowList)actionResult);
-				((SCWListTrack) newTrack).setTrackColor(TrackColor.getTrackColor());
+				((SCWListTrack) newTrack).setTrackColor(LayerColor.getTrackColor());
 			} else if (trackType == TrackType.MASK) {
 				newTrack = new EmptyTrack(index + 1);
 				mask = (ScoredChromosomeWindowList)actionResult;

@@ -31,7 +31,7 @@ import edu.yu.einstein.genplay.gui.dialog.DASDialog.DASDialog;
 import edu.yu.einstein.genplay.gui.old.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.old.track.SCWListTrack;
 import edu.yu.einstein.genplay.util.colors.Colors;
-import edu.yu.einstein.genplay.util.colors.TrackColor;
+import edu.yu.einstein.genplay.util.colors.LayerColor;
 
 
 /**
@@ -99,7 +99,7 @@ public class ETALoadSCWListTrackFromDAS extends TrackListActionWorker<ScoredChro
 		    	ScoredChromosomeWindowList stripes = getTrackList().getSelectedTrack().getMask();
 			SCWListTrack newTrack = new SCWListTrack(selectedTrackIndex + 1, actionResult);
 			newTrack.getHistory().add("Load From DAS Server", Colors.GREY);
-			newTrack.setTrackColor(TrackColor.getTrackColor());
+			newTrack.setTrackColor(LayerColor.getTrackColor());
 			getTrackList().setTrack(selectedTrackIndex, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), dasType.getID(), stripes, getTrackList().getSelectedTrack().getStripesList(), getTrackList().getSelectedTrack().getFiltersList());
 		}
 	}

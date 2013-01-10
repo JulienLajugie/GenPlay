@@ -34,13 +34,13 @@ import edu.yu.einstein.genplay.core.generator.ScoredChromosomeWindowListGenerato
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.gui.dialog.newCurveTrackDialog.NewCurveTrackDialog;
+import edu.yu.einstein.genplay.gui.dialog.newCurveLayerDialog.NewCurveLayerDialog;
 import edu.yu.einstein.genplay.gui.old.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.old.track.SCWListTrack;
 import edu.yu.einstein.genplay.gui.old.trackList.TrackList;
 import edu.yu.einstein.genplay.util.Utils;
 import edu.yu.einstein.genplay.util.colors.Colors;
-import edu.yu.einstein.genplay.util.colors.TrackColor;
+import edu.yu.einstein.genplay.util.colors.LayerColor;
 
 
 
@@ -91,8 +91,8 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 	@Override
 	protected void doBeforeExtraction() throws InterruptedException {
 		boolean isStrandNeeded = extractor instanceof StrandedExtractor;
-		NewCurveTrackDialog nctd = new NewCurveTrackDialog(null, false, false, false, false, isStrandNeeded, true, true);
-		if (nctd.showDialog(getRootPane()) == NewCurveTrackDialog.APPROVE_OPTION) {
+		NewCurveLayerDialog nctd = new NewCurveLayerDialog(null, false, false, false, false, isStrandNeeded, true, true);
+		if (nctd.showDialog(getRootPane()) == NewCurveLayerDialog.APPROVE_OPTION) {
 			selectedChromo = nctd.getSelectedChromosomes();
 			// if not all the chromosomes are selected we need
 			// to ask the user if the file is sorted or not
@@ -134,16 +134,16 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 	protected ScoredChromosomeWindowList generateList() throws Exception {
 		notifyActionStop();
 		if (((ScoredChromosomeWindowListGenerator)extractor).overlapped()){
-			NewCurveTrackDialog nctd = new NewCurveTrackDialog(name, true, false, false, true, false, false,  false);
-			if (nctd.showDialog(getRootPane()) == NewCurveTrackDialog.APPROVE_OPTION) {
+			NewCurveLayerDialog nctd = new NewCurveLayerDialog(name, true, false, false, true, false, false,  false);
+			if (nctd.showDialog(getRootPane()) == NewCurveLayerDialog.APPROVE_OPTION) {
 				name = nctd.getTrackName();
 				scoreCalculation = nctd.getScoreCalculationMethod();
 				notifyActionStart("Generating Track", SimpleScoredChromosomeWindowList.getCreationStepCount(), true);
 				return ((ScoredChromosomeWindowListGenerator)extractor).toScoredChromosomeWindowList(scoreCalculation);
 			}
 		} else {
-			NewCurveTrackDialog nctd = new NewCurveTrackDialog(name, true, false, false, false, false, false,  false);
-			if (nctd.showDialog(getRootPane()) == NewCurveTrackDialog.APPROVE_OPTION) {
+			NewCurveLayerDialog nctd = new NewCurveLayerDialog(name, true, false, false, false, false, false,  false);
+			if (nctd.showDialog(getRootPane()) == NewCurveLayerDialog.APPROVE_OPTION) {
 				name = nctd.getTrackName();
 				notifyActionStart("Generating Track", SimpleScoredChromosomeWindowList.getCreationStepCount(), true);
 				return ((ScoredChromosomeWindowListGenerator)extractor).toScoredChromosomeWindowList(null);
@@ -182,7 +182,7 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 			if (!history.isEmpty()) {
 				newTrack.getHistory().add(history, Colors.GREY);
 			}
-			newTrack.setTrackColor(TrackColor.getTrackColor());
+			newTrack.setTrackColor(LayerColor.getTrackColor());
 			trackList.setTrack(selectedTrackIndex, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), name, stripes, getTrackList().getSelectedTrack().getStripesList(), getTrackList().getSelectedTrack().getFiltersList());
 		}
 	}

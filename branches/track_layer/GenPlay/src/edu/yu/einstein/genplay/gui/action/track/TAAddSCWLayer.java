@@ -35,7 +35,7 @@ import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
-import edu.yu.einstein.genplay.gui.dialog.newCurveTrackDialog.NewCurveTrackDialog;
+import edu.yu.einstein.genplay.gui.dialog.newCurveLayerDialog.NewCurveLayerDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 import edu.yu.einstein.genplay.util.Utils;
@@ -78,7 +78,7 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<ScoredCh
 	@Override
 	protected File retrieveFileToExtract() {
 		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
-		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Variable Window Track", defaultDirectory, Utils.getReadableSCWFileFilters(), true);
+		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Variable Window Layer", defaultDirectory, Utils.getReadableSCWFileFilters(), true);
 		if (selectedFile != null) {
 			return selectedFile;
 		}
@@ -89,9 +89,9 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<ScoredCh
 	@Override
 	protected void doBeforeExtraction() throws InterruptedException {
 		boolean isStrandNeeded = extractor instanceof StrandedExtractor;
-		NewCurveTrackDialog nctd = new NewCurveTrackDialog(null, false, false, false, false, isStrandNeeded, true, true);
-		if (nctd.showDialog(getRootPane()) == NewCurveTrackDialog.APPROVE_OPTION) {
-			selectedChromo = nctd.getSelectedChromosomes();
+		NewCurveLayerDialog ncld = new NewCurveLayerDialog(null, false, false, false, false, isStrandNeeded, true, true);
+		if (ncld.showDialog(getRootPane()) == NewCurveLayerDialog.APPROVE_OPTION) {
+			selectedChromo = ncld.getSelectedChromosomes();
 			// if not all the chromosomes are selected we need
 			// to ask the user if the file is sorted or not
 			if (!Utils.allChromosomeSelected(selectedChromo)) {
@@ -110,15 +110,15 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<ScoredCh
 			}
 			extractor.setSelectedChromosomes(selectedChromo);
 			if (isStrandNeeded) {
-				strand = nctd.getStrandToExtract();
-				strandShift = nctd.getStrandShiftValue();
-				readLength = nctd.getReadLengthValue();
+				strand = ncld.getStrandToExtract();
+				strandShift = ncld.getStrandShiftValue();
+				readLength = ncld.getReadLengthValue();
 				((StrandedExtractor) extractor).selectStrand(strand);
 				((StrandedExtractor) extractor).setReadLengthAndShiftHandler(new ReadLengthAndShiftHandler(strandShift, readLength));
 			}
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
-				genomeName = nctd.getGenomeName();
-				alleleType = nctd.getAlleleType();
+				genomeName = ncld.getGenomeName();
+				alleleType = ncld.getAlleleType();
 				extractor.setGenomeName(genomeName);
 				extractor.setAlleleType(alleleType);
 			}
@@ -132,18 +132,18 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<ScoredCh
 	protected ScoredChromosomeWindowList generateList() throws Exception {
 		notifyActionStop();
 		if (((ScoredChromosomeWindowListGenerator)extractor).overlapped()){
-			NewCurveTrackDialog nctd = new NewCurveTrackDialog(name, true, false, false, true, false, false,  false);
-			if (nctd.showDialog(getRootPane()) == NewCurveTrackDialog.APPROVE_OPTION) {
-				name = nctd.getTrackName();
+			NewCurveLayerDialog nctd = new NewCurveLayerDialog(name, true, false, false, true, false, false,  false);
+			if (nctd.showDialog(getRootPane()) == NewCurveLayerDialog.APPROVE_OPTION) {
+				name = nctd.getLayerName();
 				scoreCalculation = nctd.getScoreCalculationMethod();
-				notifyActionStart("Generating Track", SimpleScoredChromosomeWindowList.getCreationStepCount(), true);
+				notifyActionStart("Generating Layer", SimpleScoredChromosomeWindowList.getCreationStepCount(), true);
 				return ((ScoredChromosomeWindowListGenerator)extractor).toScoredChromosomeWindowList(scoreCalculation);
 			}
 		} else {
-			NewCurveTrackDialog nctd = new NewCurveTrackDialog(name, true, false, false, false, false, false,  false);
-			if (nctd.showDialog(getRootPane()) == NewCurveTrackDialog.APPROVE_OPTION) {
-				name = nctd.getTrackName();
-				notifyActionStart("Generating Track", SimpleScoredChromosomeWindowList.getCreationStepCount(), true);
+			NewCurveLayerDialog nctd = new NewCurveLayerDialog(name, true, false, false, false, false, false,  false);
+			if (nctd.showDialog(getRootPane()) == NewCurveLayerDialog.APPROVE_OPTION) {
+				name = nctd.getLayerName();
+				notifyActionStart("Generating Layer", SimpleScoredChromosomeWindowList.getCreationStepCount(), true);
 				return ((ScoredChromosomeWindowListGenerator)extractor).toScoredChromosomeWindowList(null);
 			}
 		}

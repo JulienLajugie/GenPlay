@@ -43,7 +43,7 @@ import edu.yu.einstein.genplay.gui.old.track.SCWListTrack;
 import edu.yu.einstein.genplay.gui.old.track.Track;
 import edu.yu.einstein.genplay.gui.old.track.drawer.multiGenome.MultiGenomeDrawer;
 import edu.yu.einstein.genplay.util.colors.Colors;
-import edu.yu.einstein.genplay.util.colors.TrackColor;
+import edu.yu.einstein.genplay.util.colors.LayerColor;
 
 
 /**
@@ -54,15 +54,15 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 
 	private static final long serialVersionUID = 6498078428524511709L;	// generated ID
 	private static final String 	DESCRIPTION =
-			"Converts the stripes on a variable window track."; 										// tooltip
+			"Converts the stripes on a variable window layer."; 										// tooltip
 	private static final int 				MNEMONIC = KeyEvent.VK_M; 									// mnemonic key
-	private static		 String 			ACTION_NAME = "Convert in variable window track";			// action name
+	private static		 String 			ACTION_NAME = "Convert in variable window layer";			// action name
 
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "Multi Genome variable track Convert";
+	public static final String ACTION_KEY = "Multi Genome variable layer Convert";
 
 	private ExportEngine exportEngine;
 	private ConvertSCWDialog dialog;
@@ -154,7 +154,7 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 		if ((list!= null) && (currentTrack != null)) {
 			int index = currentTrack.getTrackNumber() - 1;
 			CurveTrack<?> newTrack = new SCWListTrack(index + 1, list);
-			newTrack.setTrackColor(TrackColor.getTrackColor());
+			newTrack.setTrackColor(LayerColor.getLayerColor());
 			newTrack.getHistory().add("Apply mask", Colors.GREY);
 			newTrack.getHistory().add("Track: " + currentTrack.getName(), Colors.GREY);
 			getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), currentTrack.getName() + " converted to BED", currentTrack.getMask(), currentTrack.getStripesList(), currentTrack.getFiltersList());

@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.newCurveTrackDialog;
+package edu.yu.einstein.genplay.gui.dialog.newCurveLayerDialog;
 
 import java.awt.Dimension;
 
@@ -32,7 +32,7 @@ import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 
 
 /**
- * Panel for the score calculation method of a {@link NewCurveTrackDialog} 
+ * Panel for the score calculation method of a {@link NewCurveLayerDialog} 
  * @author Julien Lajugie
  * @version 0.1
  */

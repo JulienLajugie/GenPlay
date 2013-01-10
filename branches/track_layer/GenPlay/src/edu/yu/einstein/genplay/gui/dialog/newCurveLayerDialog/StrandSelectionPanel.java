@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.newCurveTrackDialog;
+package edu.yu.einstein.genplay.gui.dialog.newCurveLayerDialog;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -33,7 +33,7 @@ import edu.yu.einstein.genplay.core.enums.Strand;
 
 
 /**
- * Strand selection panel of a {@link NewCurveTrackDialog}
+ * Strand selection panel of a {@link NewCurveLayerDialog}
  * @author Julien Lajugie
  * @version 0.1
  */

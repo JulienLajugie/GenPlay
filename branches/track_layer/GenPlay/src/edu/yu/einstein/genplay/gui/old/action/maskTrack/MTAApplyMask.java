@@ -36,7 +36,7 @@ import edu.yu.einstein.genplay.gui.old.track.SCWListTrack;
 import edu.yu.einstein.genplay.gui.old.track.Track;
 import edu.yu.einstein.genplay.gui.trackChooser.TrackChooser;
 import edu.yu.einstein.genplay.util.colors.Colors;
-import edu.yu.einstein.genplay.util.colors.TrackColor;
+import edu.yu.einstein.genplay.util.colors.LayerColor;
 
 
 /**
@@ -94,7 +94,7 @@ public final class MTAApplyMask extends TrackListActionOperationWorker<Chromosom
 		if (actionResult != null) {
 			int index = resultTrack.getTrackNumber() - 1;
 			CurveTrack<?> newTrack = new SCWListTrack(index + 1, (ScoredChromosomeWindowList)actionResult);
-			newTrack.setTrackColor(TrackColor.getTrackColor());
+			newTrack.setTrackColor(LayerColor.getTrackColor());
 			// add info to the history
 			newTrack.getHistory().add("Apply mask", Colors.GREY);
 			newTrack.getHistory().add("Track: " + this.selectedTrack.getName(), Colors.GREY);

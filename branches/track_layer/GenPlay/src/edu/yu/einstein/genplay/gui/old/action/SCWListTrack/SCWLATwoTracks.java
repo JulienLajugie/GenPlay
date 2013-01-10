@@ -35,7 +35,7 @@ import edu.yu.einstein.genplay.gui.old.track.Track;
 import edu.yu.einstein.genplay.gui.trackChooser.TrackChooser;
 import edu.yu.einstein.genplay.util.Utils;
 import edu.yu.einstein.genplay.util.colors.Colors;
-import edu.yu.einstein.genplay.util.colors.TrackColor;
+import edu.yu.einstein.genplay.util.colors.LayerColor;
 
 
 
@@ -99,7 +99,7 @@ public final class SCWLATwoTracks extends TrackListActionOperationWorker<Chromos
 		if (actionResult != null) {
 			int index = resultTrack.getTrackNumber() - 1;
 			SCWListTrack newTrack = new SCWListTrack(index + 1, (ScoredChromosomeWindowList)actionResult);
-			newTrack.setTrackColor(TrackColor.getTrackColor());
+			newTrack.setTrackColor(LayerColor.getTrackColor());
 			// add info to the history
 			newTrack.getHistory().add("Operation on two tracks", Colors.GREY);
 			newTrack.getHistory().add("Operation: " + this.scm.toString(), Colors.GREY);

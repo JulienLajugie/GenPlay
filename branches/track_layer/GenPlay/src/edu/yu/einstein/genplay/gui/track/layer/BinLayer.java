@@ -36,7 +36,7 @@ import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackConstants;
 import edu.yu.einstein.genplay.util.colors.Colors;
 import edu.yu.einstein.genplay.util.colors.GenPlayColor;
-import edu.yu.einstein.genplay.util.colors.TrackColor;
+import edu.yu.einstein.genplay.util.colors.LayerColor;
 
 
 /**
@@ -59,7 +59,7 @@ public class BinLayer extends AbstractVersionedLayer<BinList> implements Layer<B
 	public BinLayer(Track track, BinList data, String name) {
 		super(track, data, name);
 		this.setGraphType(TrackConstants.DEFAULT_GRAPH_TYPE);
-		this.color = TrackColor.getTrackColor();
+		this.color = LayerColor.getLayerColor();
 	}
 
 
@@ -103,6 +103,7 @@ public class BinLayer extends AbstractVersionedLayer<BinList> implements Layer<B
 				Color reverseCurveColor = Colors.GREY;
 				if (!getColor().equals(Color.black)) {
 					reverseCurveColor = new Color(getColor().getRGB() ^ 0xffffff);
+					reverseCurveColor = new Color(reverseCurveColor.getRed(), reverseCurveColor.getGreen(), reverseCurveColor.getBlue(), getColor().getTransparency());
 				}
 				int currentMinX = projectWindow.getGenomeWindow().getStart();
 				int currentMaxX = projectWindow.getGenomeWindow().getStop();
@@ -112,15 +113,14 @@ public class BinLayer extends AbstractVersionedLayer<BinList> implements Layer<B
 				int firstGenomePosition = (currentMinX / windowData) * windowData;
 				int currentGenomePosition = firstGenomePosition;
 				int i = 0;
-				int screenWindowWidth = (int)Math.ceil(windowData * projectWindow.getXRatio());
 				while (currentGenomePosition < currentMaxX) {
 					int currentIndex = currentGenomePosition / windowData;
 					if ((currentGenomePosition >= 0) && (currentIndex < binListData.length)){
 						double currentIntensity = binListData[currentIndex];
 						int screenXPosition = projectWindow.genomeToScreenPosition(currentGenomePosition);
+						int screenWindowWidth = projectWindow.genomeToScreenPosition(currentGenomePosition + windowData) - screenXPosition;
 						int screenYPosition = getTrack().getScore().scoreToScreenPosition(currentIntensity);
 						int rectHeight = screenYPosition - screenY0;
-
 						if (currentIntensity > 0) {
 							g.setColor(getColor());
 							rectHeight *= -1;

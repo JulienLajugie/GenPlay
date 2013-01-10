@@ -19,52 +19,52 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.newCurveTrackDialog;
+package edu.yu.einstein.genplay.gui.dialog.newCurveLayerDialog;
 
 import javax.swing.BorderFactory;
-import javax.swing.JComboBox;
 import javax.swing.JPanel;
-
-import edu.yu.einstein.genplay.core.enums.DataPrecision;
-
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 
 
 /**
- * Panel for the data precision input of a {@link NewCurveTrackDialog}
+ * Panel of a {@link NewCurveLayerDialog} with an input box for the bin size
  * @author Julien Lajugie
  * @version 0.1
  */
-class DataPrecisionPanel extends JPanel {
+class BinSizePanel extends JPanel {
 
-	private static final long serialVersionUID = -2255804422921021285L; 				// generated ID
-	private final JComboBox 		jcbDataPrecision; 									// combo box for the data precision 
-	private static DataPrecision 	defaultPrecision = DataPrecision.PRECISION_32BIT; 	// default data precision
+	private static final long serialVersionUID = -7359118518250220846L;	// generated ID
+	private static final int 	MAX_BINSIZE = Integer.MAX_VALUE;		// maximum bin size
+	private static final int 	SPINNER_STEP = 100; 					// step of the spinner
+	private final JSpinner 		jsBinSize; 								// spinner for the binsize input
+	private static int 			defaultBinSize = 1000; 					// default binsize
 	
 	
 	/**
-	 * Creates an instance of {@link DataPrecisionPanel}
+	 * Creates an instance of {@link BinSizePanel}
 	 */
-	DataPrecisionPanel() {
+	BinSizePanel() {
 		super();
-		jcbDataPrecision = new JComboBox(DataPrecision.values());
-		jcbDataPrecision.setSelectedItem(defaultPrecision);
-		add(jcbDataPrecision);
-		setBorder(BorderFactory.createTitledBorder("Data Precision"));
+		SpinnerNumberModel snm = new SpinnerNumberModel(defaultBinSize, 1, MAX_BINSIZE, SPINNER_STEP);
+		jsBinSize = new JSpinner(snm);
+		add(jsBinSize);
+		setBorder(BorderFactory.createTitledBorder("Window Size"));
 	}
-	
+
 	
 	/**
-	 * @return the selected {@link DataPrecision}
+	 * @return the selected binsize
 	 */
-	DataPrecision getDataPrecision() {
-		return (DataPrecision) jcbDataPrecision.getSelectedItem();
+	int getBinSize() {
+		return (Integer) jsBinSize.getValue();
 	}
 	
 	
 	/**
-	 * Saves the selected data precision as default
+	 * Saves the selected bin size as default
 	 */
 	void saveDefault() {
-		defaultPrecision = getDataPrecision();
+		defaultBinSize = getBinSize();
 	}
 }

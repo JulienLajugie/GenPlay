@@ -35,7 +35,7 @@ import edu.yu.einstein.genplay.gui.old.track.BinListTrack;
 import edu.yu.einstein.genplay.gui.old.track.Track;
 import edu.yu.einstein.genplay.gui.trackChooser.TrackChooser;
 import edu.yu.einstein.genplay.util.colors.Colors;
-import edu.yu.einstein.genplay.util.colors.TrackColor;
+import edu.yu.einstein.genplay.util.colors.LayerColor;
 
 
 
@@ -95,7 +95,7 @@ public class BLADensity extends TrackListActionOperationWorker<BinList> {
 		if (actionResult != null) {
 			int index = resultTrack.getTrackNumber() - 1;
 			BinListTrack newTrack = new BinListTrack(index + 1, actionResult);
-			newTrack.setTrackColor(TrackColor.getTrackColor());
+			newTrack.setTrackColor(LayerColor.getTrackColor());
 			// add info to the history
 			newTrack.getHistory().add("Result of the density calculation of " + selectedTrack.getName() + ", Half Width = " + halfWidth);
 			newTrack.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Colors.GREY);

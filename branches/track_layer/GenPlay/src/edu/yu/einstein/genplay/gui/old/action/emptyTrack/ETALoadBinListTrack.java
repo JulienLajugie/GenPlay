@@ -36,13 +36,13 @@ import edu.yu.einstein.genplay.core.generator.BinListGenerator;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.gui.dialog.newCurveTrackDialog.NewCurveTrackDialog;
+import edu.yu.einstein.genplay.gui.dialog.newCurveLayerDialog.NewCurveLayerDialog;
 import edu.yu.einstein.genplay.gui.old.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.old.track.BinListTrack;
 import edu.yu.einstein.genplay.gui.old.trackList.TrackList;
 import edu.yu.einstein.genplay.util.Utils;
 import edu.yu.einstein.genplay.util.colors.Colors;
-import edu.yu.einstein.genplay.util.colors.TrackColor;
+import edu.yu.einstein.genplay.util.colors.LayerColor;
 
 
 
@@ -110,7 +110,7 @@ public final class ETALoadBinListTrack extends TrackListActionExtractorWorker<Bi
 			}
 			newTrack.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Colors.GREY);
 			newTrack.getHistory().add(history, Colors.GREY);
-			newTrack.setTrackColor(TrackColor.getTrackColor());
+			newTrack.setTrackColor(LayerColor.getTrackColor());
 			trackList.setTrack(selectedTrackIndex, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), name, stripes, getTrackList().getSelectedTrack().getStripesList(), getTrackList().getSelectedTrack().getFiltersList());
 		}
 	}
@@ -120,8 +120,8 @@ public final class ETALoadBinListTrack extends TrackListActionExtractorWorker<Bi
 	protected void doBeforeExtraction() throws InterruptedException {
 		binListGenerator = (BinListGenerator)extractor;
 		boolean isStrandNeeded = extractor instanceof StrandedExtractor;
-		NewCurveTrackDialog nctd = new NewCurveTrackDialog(name, true, binListGenerator.isBinSizeNeeded(), binListGenerator.isPrecisionNeeded(), binListGenerator.isCriterionNeeded(), isStrandNeeded, true, true);
-		if (nctd.showDialog(getRootPane()) == NewCurveTrackDialog.APPROVE_OPTION) {
+		NewCurveLayerDialog nctd = new NewCurveLayerDialog(name, true, binListGenerator.isBinSizeNeeded(), binListGenerator.isPrecisionNeeded(), binListGenerator.isCriterionNeeded(), isStrandNeeded, true, true);
+		if (nctd.showDialog(getRootPane()) == NewCurveLayerDialog.APPROVE_OPTION) {
 			name = nctd.getTrackName();
 			binSize = nctd.getBinSize();
 			scoreCalculation = nctd.getScoreCalculationMethod();

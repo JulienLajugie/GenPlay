@@ -23,9 +23,11 @@ package edu.yu.einstein.genplay.gui.popupMenu.layerMenu;
 
 import javax.swing.Action;
 import javax.swing.JMenu;
+import javax.swing.JSeparator;
 
 import edu.yu.einstein.genplay.gui.popupMenu.TrackMenu;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
+import edu.yu.einstein.genplay.gui.track.layer.VersionedLayer;
 
 /**
  * Abstract class extended by the different types of layer menus.
@@ -50,6 +52,11 @@ public abstract class AbstractLayerMenu extends JMenu {
 				currentAction.putValue("Layer", layer);
 				add(currentAction);
 			}
+		}
+		if (layer instanceof VersionedLayer) {
+			JMenu versionedMenu = new VersionedLayerMenu((VersionedLayer<?>) layer);
+			add(versionedMenu, 0);
+			add(new JSeparator(), 1);
 		}
 	}
 

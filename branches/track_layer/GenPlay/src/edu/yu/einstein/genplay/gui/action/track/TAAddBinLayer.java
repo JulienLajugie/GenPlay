@@ -36,7 +36,7 @@ import edu.yu.einstein.genplay.core.generator.BinListGenerator;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
-import edu.yu.einstein.genplay.gui.dialog.newCurveTrackDialog.NewCurveTrackDialog;
+import edu.yu.einstein.genplay.gui.dialog.newCurveLayerDialog.NewCurveLayerDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
 import edu.yu.einstein.genplay.util.Utils;
@@ -116,13 +116,13 @@ public final class TAAddBinLayer extends TrackListActionExtractorWorker<BinList>
 	protected void doBeforeExtraction() throws InterruptedException {
 		binListGenerator = (BinListGenerator)extractor;
 		boolean isStrandNeeded = extractor instanceof StrandedExtractor;
-		NewCurveTrackDialog nctd = new NewCurveTrackDialog(name, true, binListGenerator.isBinSizeNeeded(), binListGenerator.isPrecisionNeeded(), binListGenerator.isCriterionNeeded(), isStrandNeeded, true, true);
-		if (nctd.showDialog(getRootPane()) == NewCurveTrackDialog.APPROVE_OPTION) {
-			name = nctd.getTrackName();
-			binSize = nctd.getBinSize();
-			scoreCalculation = nctd.getScoreCalculationMethod();
-			precision = nctd.getDataPrecision();
-			selectedChromo = nctd.getSelectedChromosomes();
+		NewCurveLayerDialog ncld = new NewCurveLayerDialog(name, true, binListGenerator.isBinSizeNeeded(), binListGenerator.isPrecisionNeeded(), binListGenerator.isCriterionNeeded(), isStrandNeeded, true, true);
+		if (ncld.showDialog(getRootPane()) == NewCurveLayerDialog.APPROVE_OPTION) {
+			name = ncld.getLayerName();
+			binSize = ncld.getBinSize();
+			scoreCalculation = ncld.getScoreCalculationMethod();
+			precision = ncld.getDataPrecision();
+			selectedChromo = ncld.getSelectedChromosomes();
 			// if not all the chromosomes are selected we need
 			// to ask the user if the file is sorted or not
 			if (!Utils.allChromosomeSelected(selectedChromo)) {
@@ -141,14 +141,14 @@ public final class TAAddBinLayer extends TrackListActionExtractorWorker<BinList>
 			}
 			extractor.setSelectedChromosomes(selectedChromo);
 			if (isStrandNeeded) {
-				strand = nctd.getStrandToExtract();
-				strandShift = nctd.getStrandShiftValue();
-				readLength = nctd.getReadLengthValue();
+				strand = ncld.getStrandToExtract();
+				strandShift = ncld.getStrandShiftValue();
+				readLength = ncld.getReadLengthValue();
 				((StrandedExtractor) extractor).selectStrand(strand);
 				((StrandedExtractor) extractor).setReadLengthAndShiftHandler(new ReadLengthAndShiftHandler(strandShift, readLength));
 			}
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
-				genomeName = nctd.getGenomeName();
+				genomeName = ncld.getGenomeName();
 			}
 		} else {
 			throw new InterruptedException();
@@ -161,9 +161,9 @@ public final class TAAddBinLayer extends TrackListActionExtractorWorker<BinList>
 		notifyActionStop();
 		// if the binSize is known we can find out how many steps will be used
 		if (binListGenerator.isBinSizeNeeded()) {
-			notifyActionStart("Generating Track", 1 + BinList.getCreationStepCount(binSize), true);
+			notifyActionStart("Generating Layer", 1 + BinList.getCreationStepCount(binSize), true);
 		} else {
-			notifyActionStart("Generating Track", 1, true);
+			notifyActionStart("Generating Layer", 1, true);
 		}
 		return ((BinListGenerator) extractor).toBinList(binSize, precision, scoreCalculation);
 	}
@@ -172,7 +172,7 @@ public final class TAAddBinLayer extends TrackListActionExtractorWorker<BinList>
 	@Override
 	protected File retrieveFileToExtract() {
 		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
-		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Fixed Window Track", defaultDirectory, Utils.getReadableBinListFileFilters(), true);
+		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Fixed Window Layer", defaultDirectory, Utils.getReadableBinListFileFilters(), true);
 		if (selectedFile != null) {
 			return selectedFile;
 		} else {

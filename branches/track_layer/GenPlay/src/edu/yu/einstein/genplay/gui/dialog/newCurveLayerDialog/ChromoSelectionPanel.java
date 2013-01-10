@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.newCurveTrackDialog;
+package edu.yu.einstein.genplay.gui.dialog.newCurveLayerDialog;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -44,7 +44,7 @@ import edu.yu.einstein.genplay.gui.dialog.chromosomeChooser.ChromosomeChooserDia
 
 
 /**
- * Panel of a {@link NewCurveTrackDialog} for the chromosome selection input
+ * Panel of a {@link NewCurveLayerDialog} for the chromosome selection input
  * @author Julien Lajugie
  * @version 0.1
  */

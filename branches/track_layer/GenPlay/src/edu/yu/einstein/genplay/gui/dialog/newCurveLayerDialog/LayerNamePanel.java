@@ -14,57 +14,46 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.newCurveTrackDialog;
+package edu.yu.einstein.genplay.gui.dialog.newCurveLayerDialog;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
+import javax.swing.JTextField;
 
 
 /**
- * Panel of a {@link NewCurveTrackDialog} with an input box for the bin size
+ * Panel for the layer name input of a {@link NewCurveLayerDialog}
  * @author Julien Lajugie
  * @version 0.1
  */
-class BinSizePanel extends JPanel {
+class LayerNamePanel extends JPanel {
 
-	private static final long serialVersionUID = -7359118518250220846L;	// generated ID
-	private static final int 	MAX_BINSIZE = Integer.MAX_VALUE;		// maximum bin size
-	private static final int 	SPINNER_STEP = 100; 					// step of the spinner
-	private final JSpinner 		jsBinSize; 								// spinner for the binsize input
-	private static int 			defaultBinSize = 1000; 					// default binsize
-	
-	
+	private static final long serialVersionUID = -5969101278574088008L;	// generated ID
+	private final JTextField jtfLayerName;	// text field for the layer name
+
+
 	/**
-	 * Creates an instance of {@link BinSizePanel}
+	 * Creates an instance of a {@link LayerNamePanel}
+	 * @param layerName default name of a layer
 	 */
-	BinSizePanel() {
+	LayerNamePanel(String layerName) {
 		super();
-		SpinnerNumberModel snm = new SpinnerNumberModel(defaultBinSize, 1, MAX_BINSIZE, SPINNER_STEP);
-		jsBinSize = new JSpinner(snm);
-		add(jsBinSize);
-		setBorder(BorderFactory.createTitledBorder("Window Size"));
+		jtfLayerName = new JTextField(layerName);
+		jtfLayerName.setColumns(15);
+		add(jtfLayerName);
+		setBorder(BorderFactory.createTitledBorder("Layer Name"));
 	}
 
-	
+
 	/**
-	 * @return the selected binsize
+	 * @return the name inside the input box
 	 */
-	int getBinSize() {
-		return (Integer) jsBinSize.getValue();
-	}
-	
-	
-	/**
-	 * Saves the selected bin size as default
-	 */
-	void saveDefault() {
-		defaultBinSize = getBinSize();
+	String getLayerName() {
+		return jtfLayerName.getText();
 	}
 }

@@ -82,7 +82,7 @@ public final class TAAddGeneLayer extends TrackListActionExtractorWorker<GeneLis
 	@Override
 	protected File retrieveFileToExtract() {
 		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
-		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Gene Track", defaultDirectory, Utils.getReadableGeneFileFilters(), true);
+		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Gene Layer", defaultDirectory, Utils.getReadableGeneFileFilters(), true);
 		if (selectedFile != null) {
 			return selectedFile;
 		}
