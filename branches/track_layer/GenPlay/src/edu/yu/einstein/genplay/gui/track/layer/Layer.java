@@ -30,9 +30,9 @@ import edu.yu.einstein.genplay.gui.track.Track;
 
 
 /**
- * Interface implemented by the different track layers available in GenPlay 
+ * Interface implemented by the different track layers available in GenPlay
  * @author Julien Lajugie
- * @param <T> type of data of the layer 
+ * @param <T> type of data of the layer
  */
 public interface Layer<T extends Serializable> extends Serializable, Drawer {
 
@@ -40,8 +40,9 @@ public interface Layer<T extends Serializable> extends Serializable, Drawer {
 	/**
 	 * @return a deep copy (not a reference copy) of the layer
 	 * @throws IOException
+	 * @throws ClassNotFoundException
 	 */
-	public abstract Layer<?> deepCopy() throws IOException;
+	public abstract Layer<?> deepCopy() throws IOException, ClassNotFoundException;
 
 
 	/**
@@ -85,7 +86,7 @@ public interface Layer<T extends Serializable> extends Serializable, Drawer {
 
 
 	/**
-	 * Sets the data of the layer 
+	 * Sets the data of the layer
 	 * @param data data to set
 	 */
 	public abstract void setData(T data);

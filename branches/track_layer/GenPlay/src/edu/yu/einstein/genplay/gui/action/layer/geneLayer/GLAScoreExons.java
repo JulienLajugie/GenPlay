@@ -82,15 +82,15 @@ public class GLAScoreExons  extends TrackListActionOperationWorker<GeneList> {
 			Layer<?>[] scwLayers = Utils.getLayers(getTrackListPanel().getModel().getTracks(), availableLayerTypes);
 			if ((scwLayers == null) || (scwLayers.length == 0)) {
 				JOptionPane.showMessageDialog(getRootPane(), "You need to load at least one Fixed or Variable Window layer before using this operation", "Warning", JOptionPane.WARNING_MESSAGE);
-			} else {	
+			} else {
 				LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
 				layerChooserDialog.setLayers(getTrackListPanel().getAllLayers());
 				layerChooserDialog.setSelectableLayers(availableLayerTypes);
 				layerChooserDialog.setMultiselectable(false);
-				if (layerChooserDialog.showDialog(getRootPane()) == LayerChooserDialog.APPROVE_OPTION) {
+				if (layerChooserDialog.showDialog(getRootPane(), "Select Layer With The Scores") == LayerChooserDialog.APPROVE_OPTION) {
 					otherLayer = layerChooserDialog.getSelectedLayer();
 				}
-			} 
+			}
 			if (otherLayer != null) {
 				ScoreCalculationMethod method = Utils.chooseScoreCalculation(getRootPane());
 				if (method != null) {

@@ -31,7 +31,6 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
 import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
@@ -82,16 +81,16 @@ public final class SCWLATwoLayersOperation extends TrackListActionOperationWorke
 			LayerType[] selectableLayers = {LayerType.BIN_LAYER, LayerType.SCW_LAYER, LayerType.MASK_LAYER};
 			layerChooserDialog.setSelectableLayers(selectableLayers);
 			layerChooserDialog.setMultiselectable(false);
-			if (layerChooserDialog.showDialog(getRootPane()) == LayerChooserDialog.APPROVE_OPTION) {
-				otherLayer = (BinLayer) layerChooserDialog.getSelectedLayer();
+			if (layerChooserDialog.showDialog(getRootPane(), "Select 2nd Layer") == LayerChooserDialog.APPROVE_OPTION) {
+				otherLayer = layerChooserDialog.getSelectedLayer();
 				if (otherLayer != null) {
 					resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackListPanel().getModel().getTracks());
 					if (resultTrack != null) {
-						this.scm = Utils.chooseScoreCalculationTwoLayersMethod(getRootPane());
+						scm = Utils.chooseScoreCalculationTwoLayersMethod(getRootPane());
 						if (scm != null) {
 							operation = new SCWLOTwoLayers(	(ChromosomeListOfLists<?>)selectedLayer.getData(),
 									(ChromosomeListOfLists<?>)otherLayer.getData(),
-									this.scm);
+									scm);
 							return operation;
 						}
 					}
@@ -108,9 +107,9 @@ public final class SCWLATwoLayersOperation extends TrackListActionOperationWorke
 			SCWLayer newLayer = new SCWLayer(resultTrack, (ScoredChromosomeWindowList)actionResult, selectedLayer.getName() + " & " + otherLayer.getName());
 			// add info to the history
 			newLayer.getHistory().add("Operation on two tracks", Colors.GREY);
-			newLayer.getHistory().add("Operation: " + this.scm.toString(), Colors.GREY);
-			newLayer.getHistory().add("First track: " + this.selectedLayer.getName(), Colors.GREY);
-			newLayer.getHistory().add("Second track: " + this.otherLayer.getName(), Colors.GREY);
+			newLayer.getHistory().add("Operation: " + scm.toString(), Colors.GREY);
+			newLayer.getHistory().add("First track: " + selectedLayer.getName(), Colors.GREY);
+			newLayer.getHistory().add("Second track: " + otherLayer.getName(), Colors.GREY);
 			resultTrack.getLayers().add(newLayer);
 			resultTrack.setActiveLayer(newLayer);
 		}

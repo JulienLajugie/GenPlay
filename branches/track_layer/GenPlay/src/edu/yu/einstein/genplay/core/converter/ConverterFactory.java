@@ -35,16 +35,18 @@ import edu.yu.einstein.genplay.core.converter.maskListConverter.MaskListToGeneLi
 import edu.yu.einstein.genplay.core.converter.maskListConverter.MaskListToSCWList;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.core.enums.TrackType;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.SCWList.MaskWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
-import edu.yu.einstein.genplay.gui.old.track.BinListTrack;
-import edu.yu.einstein.genplay.gui.old.track.GeneListTrack;
-import edu.yu.einstein.genplay.gui.old.track.SCWListTrack;
+import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
+import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
+import edu.yu.einstein.genplay.gui.track.layer.LayerType;
+import edu.yu.einstein.genplay.gui.track.layer.MaskLayer;
+import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
+
 
 /**
  * @author Nicolas Fourel
@@ -54,32 +56,29 @@ public class ConverterFactory {
 
 
 	/**
-	 * Creates a converter in order to convert the data to the new kind of track.
-	 * @param data			the data to convert (can be null if mask is not)
-	 * @param mask 			the mask to convert (can be null if data is not)
-	 * @param trackType		the new type of track to convert the data
-	 * @param binSize 		size of the bins	(can be null if the track type is not a {@link BinList}
-	 * @param precision 	precision of the data (eg: 1/8/16/32/64-BIT)	(can be null if the track type is not a {@link BinList}
-	 * @param method method to generate the BinList (eg: AVERAGE, SUM or MAXIMUM)	(can be null if the track type is not a {@link BinList}
+	 * Creates a converter in order to convert the data to the new kind of Layer.
+	 * @param data			the data to convert
+	 * @param layerType		the new type of layer to convert the data
+	 * @param binSize 		size of the bins	(can be null if the layer type is not a {@link BinList}
+	 * @param precision 	precision of the data (eg: 1/8/16/32/64-BIT)	(can be null if the layer type is not a {@link BinList}
+	 * @param method method to generate the BinList (eg: AVERAGE, SUM or MAXIMUM)	(can be null if the layer type is not a {@link BinList}
 	 * @return				the appropriate converter
 	 */
-	public static Converter getConverter (ChromosomeListOfLists<?> data, ChromosomeListOfLists<?> mask, TrackType trackType, int binSize, DataPrecision precision, ScoreCalculationMethod method) {
+	public static Converter getConverter (ChromosomeListOfLists<?> data, LayerType layerType, int binSize, DataPrecision precision, ScoreCalculationMethod method) {
 		Converter converter = null;
 		if (data != null) {
 			if (data instanceof BinList) {
 				BinList binList = (BinList) data;
-				converter = getBinListConverter(binList, trackType);
+				converter = getBinListConverter(binList, layerType);
 			} else if (data instanceof GeneList) {
 				GeneList geneList = (GeneList) data;
-				converter = getGeneListConverter(geneList, trackType, binSize, precision, method);
+				converter = getGeneListConverter(geneList, layerType, binSize, precision, method);
 			} else if (data instanceof SimpleScoredChromosomeWindowList) {
 				ScoredChromosomeWindowList scwList = (ScoredChromosomeWindowList) data;
-				converter = getSCWListConverter(scwList, trackType, binSize, precision, method);
-			}
-		} else if (mask != null) {
-			if (mask instanceof MaskWindowList) {
-				ScoredChromosomeWindowList scwList = (ScoredChromosomeWindowList) mask;
-				converter = getMaskListConverter(scwList, trackType, binSize, precision, method);
+				converter = getSCWListConverter(scwList, layerType, binSize, precision, method);
+			} else if (data instanceof MaskWindowList) {
+				ScoredChromosomeWindowList scwList = (ScoredChromosomeWindowList) data;
+				converter = getMaskListConverter(scwList, layerType, binSize, precision, method);
 			}
 		}
 		return converter;
@@ -87,160 +86,140 @@ public class ConverterFactory {
 
 
 	/**
-	 * Creates a converter in order to convert the data to the new kind of track.
+	 * Creates a converter in order to convert the data to the new kind of layer.
 	 * @param binList		the bin list
-	 * @param trackType		the new type of track to convert the data
+	 * @param layerType		the new type of layer to convert the data
 	 * @return				the appropriate converter
 	 */
-	private static Converter getBinListConverter (BinList binList, TrackType trackType) {
+	private static Converter getBinListConverter(BinList binList, LayerType layerType) {
 		Converter converter = null;
 
-		if (trackType == TrackType.SCW) {
+		if (layerType == LayerType.SCW_LAYER) {
 			converter = new BinListToSCWList(binList);
-		} else if (trackType == TrackType.GENE) {
+		} else if (layerType == LayerType.GENE_LAYER) {
 			converter = new BinListToGeneList(binList);
-		} else if (trackType == TrackType.MASK) {
+		} else if (layerType == LayerType.MASK_LAYER) {
 			converter = new BinListToMaskList(binList);
 		}
-
 		return converter;
 	}
 
 
 	/**
-	 * Creates a converter in order to convert the data to the new kind of track.
+	 * Creates a converter in order to convert the data to the new kind of layer.
 	 * @param binList		the SCW list
-	 * @param trackType		the new type of track to convert the data
-	 * @param binSize 		size of the bins	(can be null if the track type is not a {@link BinList}
-	 * @param precision 	precision of the data (eg: 1/8/16/32/64-BIT)	(can be null if the track type is not a {@link BinList}
-	 * @param method method to generate the BinList (eg: AVERAGE, SUM or MAXIMUM)	(can be null if the track type is not a {@link BinList}
+	 * @param layerType		the new type of layer to convert the data
+	 * @param binSize 		size of the bins	(can be null if the layer type is not a {@link BinList}
+	 * @param precision 	precision of the data (eg: 1/8/16/32/64-BIT)	(can be null if the layer type is not a {@link BinList}
+	 * @param method method to generate the BinList (eg: AVERAGE, SUM or MAXIMUM)	(can be null if the layer type is not a {@link BinList}
 	 * @return				the appropriate converter
 	 */
-	private static Converter getSCWListConverter (ScoredChromosomeWindowList scwList, TrackType trackType, int binSize, DataPrecision precision, ScoreCalculationMethod method) {
+	private static Converter getSCWListConverter (ScoredChromosomeWindowList scwList, LayerType layerType, int binSize, DataPrecision precision, ScoreCalculationMethod method) {
 		Converter converter = null;
-
-		if (trackType == TrackType.BIN) {
+		if (layerType == LayerType.BIN_LAYER) {
 			converter = new SCWListToBinList(scwList, binSize, precision, method);
-		} else if (trackType == TrackType.GENE) {
+		} else if (layerType == LayerType.GENE_LAYER) {
 			converter = new SCWListToGeneList(scwList);
-		} else if (trackType == TrackType.MASK) {
+		} else if (layerType == LayerType.MASK_LAYER) {
 			converter = new SCWListToMaskList(scwList);
 		}
-
 		return converter;
 	}
 
 
 	/**
-	 * Creates a converter in order to convert the data to the new kind of track.
+	 * Creates a converter in order to convert the data to the new kind of layer.
 	 * @param binList		the gene list
-	 * @param trackType		the new type of track to convert the data
-	 * @param binSize 		size of the bins	(can be null if the track type is not a {@link BinList}
-	 * @param precision 	precision of the data (eg: 1/8/16/32/64-BIT)	(can be null if the track type is not a {@link BinList}
-	 * @param method method to generate the BinList (eg: AVERAGE, SUM or MAXIMUM)	(can be null if the track type is not a {@link BinList}
+	 * @param layerType		the new type of layer to convert the data
+	 * @param binSize 		size of the bins	(can be null if the layer type is not a {@link BinList}
+	 * @param precision 	precision of the data (eg: 1/8/16/32/64-BIT)	(can be null if the layer type is not a {@link BinList}
+	 * @param method method to generate the BinList (eg: AVERAGE, SUM or MAXIMUM)	(can be null if the layer type is not a {@link BinList}
 	 * @return				the appropriate converter
 	 */
-	private static Converter getGeneListConverter (GeneList geneList, TrackType trackType, int binSize, DataPrecision precision, ScoreCalculationMethod method) {
+	private static Converter getGeneListConverter (GeneList geneList, LayerType layerType, int binSize, DataPrecision precision, ScoreCalculationMethod method) {
 		Converter converter = null;
-
-		if (trackType == TrackType.BIN) {
+		if (layerType == LayerType.BIN_LAYER) {
 			converter = new GeneListToBinList(geneList, binSize, precision, method);
-		} else if (trackType == TrackType.SCW) {
+		} else if (layerType == LayerType.SCW_LAYER) {
 			converter = new GeneListToSCWList(geneList, method);
-		} else if (trackType == TrackType.MASK) {
+		} else if (layerType == LayerType.MASK_LAYER) {
 			converter = new GeneListToMaskList(geneList, method);
 		}
-
 		return converter;
 	}
 
 
 	/**
-	 * Creates a converter in order to convert the data to the new kind of track.
+	 * Creates a converter in order to convert the data to the new kind of layer.
 	 * @param binList		the gene list
-	 * @param trackType		the new type of track to convert the data
-	 * @param binSize 		size of the bins	(can be null if the track type is not a {@link BinList}
-	 * @param precision 	precision of the data (eg: 1/8/16/32/64-BIT)	(can be null if the track type is not a {@link BinList}
-	 * @param method method to generate the BinList (eg: AVERAGE, SUM or MAXIMUM)	(can be null if the track type is not a {@link BinList}
+	 * @param layerType		the new type of layer to convert the data
+	 * @param binSize 		size of the bins	(can be null if the layer type is not a {@link BinList}
+	 * @param precision 	precision of the data (eg: 1/8/16/32/64-BIT)	(can be null if the layer type is not a {@link BinList}
+	 * @param method method to generate the BinList (eg: AVERAGE, SUM or MAXIMUM)	(can be null if the layer type is not a {@link BinList}
 	 * @return				the appropriate converter
 	 */
-	private static Converter getMaskListConverter (ScoredChromosomeWindowList maskList, TrackType trackType, int binSize, DataPrecision precision, ScoreCalculationMethod method) {
+	private static Converter getMaskListConverter (ScoredChromosomeWindowList maskList, LayerType layerType, int binSize, DataPrecision precision, ScoreCalculationMethod method) {
 		Converter converter = null;
-
-		if (trackType == TrackType.BIN) {
+		if (layerType == LayerType.BIN_LAYER) {
 			converter = new MaskListToBinList(maskList, binSize, precision, method);
-		} else if (trackType == TrackType.SCW) {
+		} else if (layerType == LayerType.SCW_LAYER) {
 			converter = new MaskListToSCWList(maskList);
-		} else if (trackType == TrackType.GENE) {
+		} else if (layerType == LayerType.GENE_LAYER) {
 			converter = new MaskListToGeneList(maskList);
 		}
-
 		return converter;
 	}
 
 
 	/**
 	 * @param data	the data to convert
-	 * @return		the {@link TrackType} available for the given data, null otherwise
+	 * @return		the {@link LayerType} available for the given data, null otherwise
 	 */
-	//public static TrackType[] getTrackTypes (ChromosomeListOfLists<?> data) {
-	public static TrackType[] getTrackTypes (ChromosomeListOfLists<?> data) {
-		TrackType[] trackTypes = null;
+	public static LayerType[] getLayerTypes (ChromosomeListOfLists<?> data) {
+		LayerType[] layerTypes = null;
 		if (data instanceof BinList) {
-			trackTypes = getBinTrackType();
+			layerTypes = getBinLayerType();
 		} else if (data instanceof GeneList) {
-			trackTypes = getGeneTrackType();
+			layerTypes = getGeneLayerType();
 		} else if (data instanceof ScoredChromosomeWindowList) {
-			trackTypes = getSCWTrackType();
+			layerTypes = getSCWLayerType();
 		}
-		return trackTypes;
+		return layerTypes;
 	}
 
 
 	/**
-	 * @return the array of {@link TrackType} a {@link BinListTrack} can be converted in.
+	 * @return the array of {@link LayerType} a {@link BinLayer} can be converted in.
 	 */
-	public static TrackType[] getBinTrackType() {
-		TrackType[] array = new TrackType[3];
-		array[0] = TrackType.GENE;
-		array[1] = TrackType.SCW;
-		array[2] = TrackType.MASK;
+	public static LayerType[] getBinLayerType() {
+		LayerType[] array = {LayerType.GENE_LAYER, LayerType.SCW_LAYER, LayerType.MASK_LAYER};
 		return array;
 	}
 
 
 	/**
-	 * @return the array of {@link TrackType} a {@link SCWListTrack} can be converted in.
+	 * @return the array of {@link LayerType} a {@link SCWLayer} can be converted in.
 	 */
-	public static TrackType[] getSCWTrackType() {
-		TrackType[] array = new TrackType[3];
-		array[0] = TrackType.GENE;
-		array[1] = TrackType.MASK;
-		array[2] = TrackType.BIN;
+	public static LayerType[] getSCWLayerType() {
+		LayerType[] array = {LayerType.GENE_LAYER, LayerType.MASK_LAYER, LayerType.BIN_LAYER};
 		return array;
 	}
 
 
 	/**
-	 * @return the array of {@link TrackType} a {@link GeneListTrack} can be converted in.
+	 * @return the array of {@link LayerType} a {@link GeneLayer} can be converted in.
 	 */
-	public static TrackType[] getGeneTrackType() {
-		TrackType[] array = new TrackType[3];
-		array[0] = TrackType.SCW;
-		array[1] = TrackType.MASK;
-		array[2] = TrackType.BIN;
+	public static LayerType[] getGeneLayerType() {
+		LayerType[] array = {LayerType.SCW_LAYER, LayerType.MASK_LAYER, LayerType.BIN_LAYER};
 		return array;
 	}
 
 
 	/**
-	 * @return the array of {@link TrackType} a {@link MaskWindowList} can be converted in.
+	 * @return the array of {@link LayerType} a {@link MaskLayer} can be converted in.
 	 */
-	public static TrackType[] getMaskTrackType() {
-		TrackType[] array = new TrackType[3];
-		array[0] = TrackType.GENE;
-		array[1] = TrackType.SCW;
-		array[2] = TrackType.BIN;
+	public static LayerType[] getMaskLayerType() {
+		LayerType[] array = {LayerType.GENE_LAYER, LayerType.SCW_LAYER, LayerType.BIN_LAYER};
 		return array;
 	}
 }

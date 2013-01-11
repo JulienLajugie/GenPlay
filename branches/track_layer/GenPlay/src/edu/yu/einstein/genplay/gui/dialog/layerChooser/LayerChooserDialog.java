@@ -117,9 +117,9 @@ public class LayerChooserDialog extends JDialog {
 	 */
 	public LayerChooserDialog () {
 		super();
-		this.layers = new ArrayList<Layer<?>>();
-		this.selectedLayers = new ArrayList<Layer<?>>();
-		this.isMultiselectable = false;
+		layers = new ArrayList<Layer<?>>();
+		selectedLayers = new ArrayList<Layer<?>>();
+		isMultiselectable = false;
 	}
 
 
@@ -133,7 +133,7 @@ public class LayerChooserDialog extends JDialog {
 
 	/**
 	 * @return the first element of the list of selected layers.
-	 * This method return the only layer selected if the property 
+	 * This method return the only layer selected if the property
 	 * isMultiselectable is set to false.
 	 */
 	public Layer<?> getSelectedLayer() {
@@ -298,11 +298,13 @@ public class LayerChooserDialog extends JDialog {
 	/**
 	 * Displays the layer chooser dialog
 	 * @param parent 	the parent component of the dialog, can be null; see showDialog for details
+	 * @param title		title of the window
 	 * @return 			APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
 	 */
-	public int showDialog(Component parent) {
+	public int showDialog(Component parent, String title) {
 		init();
 		setLocationRelativeTo(parent);
+		setTitle(title);
 		setVisible(true);
 		return approved;
 	}

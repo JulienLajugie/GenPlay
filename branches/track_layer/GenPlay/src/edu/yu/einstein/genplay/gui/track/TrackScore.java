@@ -28,8 +28,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import edu.yu.einstein.genplay.gui.track.layer.ScoredLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
+import edu.yu.einstein.genplay.gui.track.layer.ScoredLayer;
 
 /**
  * This class handles the scores showed in the track
@@ -47,7 +47,7 @@ public class TrackScore implements Serializable {
 
 
 	/**
-	 * Creates an instance of {@link TrackScore} 
+	 * Creates an instance of {@link TrackScore}
 	 * @param track track displaying this score
 	 */
 	public TrackScore(Track track) {
@@ -113,10 +113,10 @@ public class TrackScore implements Serializable {
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		setMinimumScore(in.readDouble());
-		setMaximumScore(in.readDouble());
-		setScoreAxisAutorescaled(in.readBoolean());
-		setTrack((Track)in.readObject());
+		minimumScore = in.readDouble();
+		maximumScore = in.readDouble();
+		isScoreAxisAutorescaled = in.readBoolean();
+		track = (Track)in.readObject();
 	}
 
 
@@ -131,7 +131,7 @@ public class TrackScore implements Serializable {
 		} else if (score > getMaximumScore()) {
 			return 0;
 		} else {
-			return (trackHeight - (int)Math.round((double)(score - getMinimumScore()) * getYRatio()));
+			return (trackHeight - (int)Math.round((score - getMinimumScore()) * getYRatio()));
 		}
 	}
 
@@ -170,16 +170,15 @@ public class TrackScore implements Serializable {
 	 */
 	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeDouble(getMinimumScore());
-		out.writeDouble(getMaximumScore());
-		out.writeDouble(getCurrentScore());
-		out.writeBoolean(isScoreAxisAutorescaled());
-		out.writeObject(getTrack());
+		out.writeDouble(minimumScore);
+		out.writeDouble(maximumScore);
+		out.writeBoolean(isScoreAxisAutorescaled);
+		out.writeObject(track);
 	}
 
 
 	/**
-	 * @return true if the score axis of the track will be 
+	 * @return true if the score axis of the track will be
 	 * automatically rescaled after an operation, false otherwise
 	 */
 	public boolean isScoreAxisAutorescaled() {
@@ -188,7 +187,7 @@ public class TrackScore implements Serializable {
 
 
 	/**
-	 * @param isScoreAxisAutorescaled set to true in order to automatically rescale 
+	 * @param isScoreAxisAutorescaled set to true in order to automatically rescale
 	 * a track after an operation
 	 */
 	public void setScoreAxisAutorescaled(boolean isScoreAxisAutorescaled) {

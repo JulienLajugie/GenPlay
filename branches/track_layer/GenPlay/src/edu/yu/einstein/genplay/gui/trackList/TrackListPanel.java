@@ -21,6 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.trackList;
 
+import java.awt.Component;
 import java.awt.Point;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -34,6 +35,8 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
+import edu.yu.einstein.genplay.core.manager.project.ProjectConfiguration;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEvent;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventType;
@@ -42,6 +45,8 @@ import edu.yu.einstein.genplay.gui.popupMenu.TrackMenu;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackConstants;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
+import edu.yu.einstein.genplay.gui.track.layer.VersionedLayer;
+import edu.yu.einstein.genplay.gui.track.layer.variantLayer.MultiGenomeDrawer;
 
 
 /**
@@ -50,17 +55,17 @@ import edu.yu.einstein.genplay.gui.track.layer.Layer;
  */
 public class TrackListPanel extends JScrollPane implements Serializable, TrackListener, ListDataListener {
 
-	private final static int 	SCROLL_BAR_BLOCK_INCREMENT = 40;			// block increment for the scroll bar
-	private final static int 	SCROLL_BAR_UNIT_INCREMENT = 15;				// unit increment for the scroll bar
+	private final static int 	SCROLL_BAR_BLOCK_INCREMENT = 40; 			// block increment for the scroll bar
+	private final static int 	SCROLL_BAR_UNIT_INCREMENT = 15; 			// unit increment for the scroll bar
 	private static final long 	serialVersionUID = -5070245121955382857L; 	// generated serial ID
 
-	private transient Track			copiedTrack = null; 			// list of the tracks in the clipboard
-	private transient Track			draggedOverTrack = null; 		// track rolled over by the dragged track, null if none
-	private transient Track			draggedTrack = null;			// dragged track, null if none
-	private transient Track			selectedTrack = null;			// track selected
-	private final JPanel 			jpTrackList;					// panel with the tracks
-	private final TrackListModel	model;							// model handling the tracks list showed in this panel
-	private final TrackMenu			trackMenu;
+	private transient Track 		copiedTrack = null; 		// list of the tracks in the clipboard
+	private transient Track 		draggedOverTrack = null;	// track rolled over by the dragged track, null if none
+	private transient Track 		draggedTrack = null; 		// dragged track, null if none
+	private transient Track 		selectedTrack = null; 		// track selected
+	private final JPanel 			jpTrackList; 				// panel with the tracks
+	private final TrackMenu 		trackMenu;					// menu for the track actions
+	private TrackListModel 			model; 						// model handling the tracks list showed in this panel
 
 
 	/**
@@ -71,11 +76,11 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 		super();
 		this.model = model;
 		this.model.addListDataListener(this);
-		this.jpTrackList = new JPanel();
-		this.jpTrackList.setLayout(new BoxLayout(jpTrackList, BoxLayout.PAGE_AXIS));
+		jpTrackList = new JPanel();
+		jpTrackList.setLayout(new BoxLayout(jpTrackList, BoxLayout.PAGE_AXIS));
 		setActionMap(TrackListActionMap.getActionMap());
 		setInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW, TrackListActionMap.getInputMap(this));
-		this.trackMenu = new TrackMenu();
+		trackMenu = new TrackMenu();
 		getVerticalScrollBar().setUnitIncrement(SCROLL_BAR_UNIT_INCREMENT);
 		getVerticalScrollBar().setBlockIncrement(SCROLL_BAR_BLOCK_INCREMENT);
 		setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -89,20 +94,12 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 		rebuildPanel();
 	}
 
-
 	/**
 	 * Copies the selected track.
 	 */
 	public void copyTrack() {
 		if (selectedTrack != null) {
-			try {
-				/* we need to clone the selected track because the user may copy the track
-				then modify it and finally paste the track.  If we don't do the deep clone
-				all the modification made after the cloning will be copied (and we don't want that) */
-				copiedTrack = selectedTrack.deepClone();
-			} catch (Exception e) {
-				ExceptionManager.handleException(this, e, "Error while copying the track");
-			}
+			copiedTrack = selectedTrack;
 		}
 	}
 
@@ -124,6 +121,35 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 
 
 	/**
+	 * @return the list of all the layers displayed in the
+	 *         {@link TrackListPanel}
+	 */
+	public List<Layer<?>> getAllLayers() {
+		List<Layer<?>> allLayers = new ArrayList<Layer<?>>();
+		for (Track currentTrack : getModel().getTracks()) {
+			allLayers.addAll(currentTrack.getLayers());
+		}
+		return allLayers;
+	}
+
+
+	/**
+	 * @return the copied track
+	 */
+	public Track getCopiedTrack() {
+		return copiedTrack;
+	}
+
+
+	/**
+	 * @return the {@link JPanel} displaying the tracks
+	 */
+	public Component getJpTrackList() {
+		return jpTrackList;
+	}
+
+
+	/**
 	 * @return the model containing the data displayed in this panel
 	 */
 	public TrackListModel getModel() {
@@ -136,6 +162,22 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 	 */
 	public Track getSelectedTrack() {
 		return selectedTrack;
+	}
+
+
+	/**
+	 * @param multiGenomeDrawer
+	 * @return the number of the track according to a {@link MultiGenomeDrawer}
+	 */
+	public int getTrackNumberFromMGGenomeDrawer(MultiGenomeDrawer multiGenomeDrawer) {
+		// TODO Layer modif
+		/*Track[] trackList = getModel().getTracks();
+		for (int i = 0; i < trackList.length; i++) {
+			if (trackList[i].getMultiGenomeDrawer().equals(multiGenomeDrawer)) {
+				return i + 1;
+			}
+		}*/
+		return -1;
 	}
 
 
@@ -160,10 +202,22 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 
 
 	/**
+	 * Changes the legend display of the tracks
+	 */
+	public void legendChanged() {
+		for (Track currentTrack: getModel().getTracks()) {
+			// TODO Layer modif
+			//currentTrack.legendChanged();
+			currentTrack.repaint();
+		}
+	}
+
+
+	/**
 	 * Locks the handles of all the tracks
 	 */
 	public void lockTrackHandles() {
-		for (Track currentTrack: getModel().getTracks()) {
+		for (Track currentTrack : getModel().getTracks()) {
 			if (currentTrack != null) {
 				currentTrack.lockHandle();
 			}
@@ -174,7 +228,7 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 	private void rebuildPanel() {
 		jpTrackList.removeAll();
 		Track[] trackList = getModel().getTracks();
-		for(int i = 0; i < trackList.length; i++) {
+		for (int i = 0; i < trackList.length; i++) {
 			trackList[i].setNumber(i + 1);
 			jpTrackList.add(trackList[i]);
 			trackList[i].addTrackListener(this);
@@ -202,10 +256,38 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 	}
 
 
+	/**
+	 * Changes the reset layer function of the {@link VersionedLayer}.
+	 */
+	public void resetLayerChanged() {
+		boolean hasToBeDisabled = !ProjectManager.getInstance().getProjectConfiguration().isResetTrack();
+		if (hasToBeDisabled) {
+			for (Track currentTrack: getModel().getTracks()) {
+				for (Layer<?> currentLayer: currentTrack.getLayers()) {
+					if (currentLayer instanceof VersionedLayer<?>) {
+						((VersionedLayer<?>) currentLayer).deactivateReset();
+					}
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * Sets the model handling the data
+	 * @param model
+	 */
+	public void setModel(TrackListModel model) {
+		this.model = model;
+		this.model.addListDataListener(this);
+		rebuildPanel();
+	}
+
+
 	@Override
 	public void trackChanged(TrackEvent evt) {
 		if (evt.getEventType() == TrackEventType.RIGHT_CLICKED) {
-			selectedTrack = (Track)evt.getSource();
+			selectedTrack = (Track) evt.getSource();
 			trackMenu.setTrack(selectedTrack);
 			Point mousePoint = getMousePosition();
 			if (mousePoint != null) {
@@ -214,7 +296,7 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 		} else if (evt.getEventType() == TrackEventType.DRAGGED) {
 			// set the dragged track
 			if (draggedTrack == null) {
-				draggedTrack = ((Track)evt.getSource());
+				draggedTrack = ((Track) evt.getSource());
 			}
 			trackDragged();
 		} else if (evt.getEventType() == TrackEventType.RELEASED) {
@@ -225,10 +307,32 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 				selectedTrack.setSelected(false);
 			}
 			// set the new selected track
-			selectedTrack = (Track)evt.getSource();
+			selectedTrack = (Track) evt.getSource();
 		} else if (evt.getEventType() == TrackEventType.UNSELECTED) {
 			selectedTrack = null;
 		}
+	}
+
+
+	/**
+	 * Changes the number of {@link Track} in the {@link TrackListPanel} according to
+	 * the value specified in the {@link ProjectConfiguration}
+	 */
+	public void trackCountChanged() {
+		int trackCount = ProjectManager.getInstance().getProjectConfiguration().getTrackCount();
+		int preferredHeight = ProjectManager.getInstance().getProjectConfiguration().getTrackHeight();
+		Track[] trackTmp = getModel().getTracks();
+		Track[] trackList = new Track[trackCount];
+		for (int i = 0; i < trackCount; i++) {
+			if (i < trackTmp.length) {
+				trackList[i] = trackTmp[i];
+			} else {
+				trackList[i] = new Track(i + 1);
+				trackList[i].setPreferredHeight(preferredHeight);
+			}
+		}
+		getModel().setTracks(trackList);
+		rebuildPanel();
 	}
 
 
@@ -238,14 +342,14 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 	public void trackDragged() {
 		lockTrackHandles();
 		if (getMousePosition() != null) {
-			for (Track currentTrack: getModel().getTracks()) {
+			for (Track currentTrack : getModel().getTracks()) {
 				int currentTrackTop = currentTrack.getY() - getVerticalScrollBar().getValue();
 				int currentrackBottom = (currentTrack.getY() + currentTrack.getHeight()) - getVerticalScrollBar().getValue();
-				if ((getMousePosition().y > currentTrackTop) && ( getMousePosition().y < currentrackBottom) && (draggedOverTrack != currentTrack)) {
+				if ((getMousePosition().y > currentTrackTop) && (getMousePosition().y < currentrackBottom) && (draggedOverTrack != currentTrack)) {
 					if (draggedOverTrack != null) {
 						draggedOverTrack.setBorder(TrackConstants.REGULAR_BORDER);
 					}
-					draggedOverTrack= currentTrack;
+					draggedOverTrack = currentTrack;
 					if (draggedOverTrack == draggedTrack) {
 						draggedOverTrack.setBorder(TrackConstants.DRAG_START_BORDER);
 					} else if (draggedOverTrack.getNumber() < draggedTrack.getNumber()) {
@@ -260,25 +364,42 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 
 
 	/**
-	 * Unlocks the handles of all the tracks
+	 * Sets the height of each {@link Track} according to the value specified in the {@link ProjectConfiguration}
 	 */
-	public void unlockTrackHandles() {
+	public void trackHeightChanged() {
+		int preferredHeight = ProjectManager.getInstance().getProjectConfiguration().getTrackHeight();
+		Track[] trackList = getModel().getTracks();
+		for(int i = 0; i < trackList.length; i++) {
+			trackList[i].setPreferredHeight(preferredHeight);
+			((Track) jpTrackList.getComponent(i)).setPreferredHeight(preferredHeight);
+		}
+		revalidate();
+	}
+
+
+	/**
+	 * Changes the undo count of the undoable layers
+	 */
+	public void undoCountChanged() {
+		int undoCount = ProjectManager.getInstance().getProjectConfiguration().getUndoCount();
 		for (Track currentTrack: getModel().getTracks()) {
-			if (currentTrack != null) {
-				currentTrack.unlockHandle();
+			for (Layer<?> currentLayer: currentTrack.getLayers()) {
+				if (currentLayer instanceof VersionedLayer<?>) {
+					((VersionedLayer<?>) currentLayer).setUndoCount(undoCount);
+				}
 			}
 		}
 	}
 
 
 	/**
-	 * @return the list of all the layers displayed in the {@link TrackListPanel}
+	 * Unlocks the handles of all the tracks
 	 */
-	public List<Layer<?>> getAllLayers() {
-		List<Layer<?>> allLayers = new ArrayList<Layer<?>>();
-		for (Track currentTrack: getModel().getTracks()) {
-			allLayers.addAll(currentTrack.getLayers());
+	public void unlockTrackHandles() {
+		for (Track currentTrack : getModel().getTracks()) {
+			if (currentTrack != null) {
+				currentTrack.unlockHandle();
+			}
 		}
-		return allLayers;
 	}
 }

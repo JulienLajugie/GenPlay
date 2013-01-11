@@ -418,13 +418,13 @@ public class Utils {
 	/**
 	 * @param tracks a list of {@link Track}
 	 * @param layerTypes a list of {@link LayerType}
-	 * @return all the layer from the list of tracks that are in the specified list of the {@link LayerType}
+	 * @return all the layer from the list of tracks that are in the specified list of the {@link LayerType}. All layers if the layer type list is null
 	 */
 	public static Layer<?>[] getLayers(Track[] tracks, LayerType[] layerTypes) {
 		List<Layer<?>> layerList = new ArrayList<Layer<?>>();
 		for (Track currentTrack: tracks) {
 			for (Layer<?> currentLayer: currentTrack.getLayers()) {
-				if (currentLayer.getType().isContainedIn(layerTypes)) {
+				if ((layerTypes == null) || currentLayer.getType().isContainedIn(layerTypes)) {
 					layerList.add(currentLayer);
 				}
 			}

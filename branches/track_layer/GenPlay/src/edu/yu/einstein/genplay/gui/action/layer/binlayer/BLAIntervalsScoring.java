@@ -88,7 +88,7 @@ public class BLAIntervalsScoring extends TrackListActionOperationWorker<BinList>
 			LayerType[] selectableLayers = {LayerType.BIN_LAYER};
 			layerChooserDialog.setSelectableLayers(selectableLayers);
 			layerChooserDialog.setMultiselectable(false);
-			if (layerChooserDialog.showDialog(getRootPane()) == LayerChooserDialog.APPROVE_OPTION) {
+			if (layerChooserDialog.showDialog(getRootPane(), "Select Interval Layer") == LayerChooserDialog.APPROVE_OPTION) {
 				intervalLayer = (BinLayer) layerChooserDialog.getSelectedLayer();
 				if(intervalLayer != null) {
 					percentage = NumberOptionPane.getValue(getRootPane(), "Enter a percentage", "Perform the calculation on the x% greatest values of each interval:", new DecimalFormat("0"), 0, 100, 100);

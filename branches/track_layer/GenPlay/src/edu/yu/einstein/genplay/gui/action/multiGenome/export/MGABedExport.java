@@ -32,13 +32,11 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.operation.ExportEngine;
 import edu.yu.einstein.genplay.core.multiGenome.operation.BED.MGOBedExportSingleFile;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
+import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.export.ExportBEDDialog;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.mainDialog.MultiGenomeTrackActionDialog;
-import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
-import edu.yu.einstein.genplay.gui.old.action.TrackListActionWorker;
-import edu.yu.einstein.genplay.gui.old.track.Track;
-import edu.yu.einstein.genplay.gui.old.track.drawer.multiGenome.MultiGenomeDrawer;
+import edu.yu.einstein.genplay.gui.track.layer.variantLayer.MultiGenomeDrawer;
 
 
 /**
@@ -83,8 +81,11 @@ public class MGABedExport extends TrackListActionWorker<Boolean> {
 		if (projectManager.isMultiGenomeProject()) {
 
 			// Get track information
-			Track<?> track = MainFrame.getInstance().getTrackList().getSelectedTrack();
-			MultiGenomeDrawer genomeDrawer = track.getMultiGenomeDrawer();
+			// TODO Layer modif
+			//Track track = MainFrame.getInstance().getTrackListPanel().getSelectedTrack();
+
+
+			MultiGenomeDrawer genomeDrawer = null; //track.getMultiGenomeDrawer();
 
 			// Create the export settings
 			ExportSettings settings = new ExportSettings(genomeDrawer);

@@ -58,8 +58,8 @@ public class BinLayer extends AbstractVersionedLayer<BinList> implements Layer<B
 	 */
 	public BinLayer(Track track, BinList data, String name) {
 		super(track, data, name);
-		this.setGraphType(TrackConstants.DEFAULT_GRAPH_TYPE);
-		this.color = LayerColor.getLayerColor();
+		setGraphType(TrackConstants.DEFAULT_GRAPH_TYPE);
+		color = LayerColor.getLayerColor();
 	}
 
 
@@ -94,7 +94,7 @@ public class BinLayer extends AbstractVersionedLayer<BinList> implements Layer<B
 	 * @param height height of the graphics to draw
 	 */
 	private void drawBarGraph(Graphics g, int width, int height) {
-		if (this.getData() != null) {
+		if (getData() != null) {
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
 			double[] binListData = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
 			if (binListData != null) {

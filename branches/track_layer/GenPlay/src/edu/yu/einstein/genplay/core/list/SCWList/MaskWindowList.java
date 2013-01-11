@@ -251,8 +251,8 @@ public final class MaskWindowList extends DisplayableListOfLists<ScoredChromosom
 		// list for the threads
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
 
-		this.overLapManagement = new OverLappingManagement(startList, stopList, null);
-		this.overLapManagement.setScoreCalculationMethod(null);
+		overLapManagement = new OverLappingManagement(startList, stopList, null);
+		overLapManagement.setScoreCalculationMethod(null);
 		for(final Chromosome currentChromosome : projectChromosome) {
 			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
 				@Override
@@ -334,9 +334,9 @@ public final class MaskWindowList extends DisplayableListOfLists<ScoredChromosom
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
 
 		final boolean runOverLapEngine;
-		this.overLapManagement = new OverLappingManagement(startList, stopList, null);
+		overLapManagement = new OverLappingManagement(startList, stopList, null);
 		if (scm != null) {
-			this.overLapManagement.setScoreCalculationMethod(scm);
+			overLapManagement.setScoreCalculationMethod(scm);
 			runOverLapEngine = true;
 		} else {
 			runOverLapEngine = false;

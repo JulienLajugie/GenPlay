@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -52,7 +52,7 @@ public final class BLARepartition extends TrackListActionOperationWorker<double 
 
 	private static final long serialVersionUID = -7166030548181210580L; // generated ID
 	private static final String 	ACTION_NAME = "Show Repartition";	// action name
-	private static final String 	DESCRIPTION = 
+	private static final String 	DESCRIPTION =
 			"Generate a plot showing the repartition of the scores of the selected layers";	// tooltip
 	private Layer<?>[] 				selectedLayers;
 	private List<ScatterPlotData> 	scatPlotData;
@@ -88,8 +88,8 @@ public final class BLARepartition extends TrackListActionOperationWorker<double 
 					layerChooserDialog.setLayers(getTrackListPanel().getAllLayers());
 					layerChooserDialog.setSelectableLayers(availableLayerTypes);
 					layerChooserDialog.setMultiselectable(true);
-					if (layerChooserDialog.showDialog(getRootPane()) == LayerChooserDialog.APPROVE_OPTION) {
-						selectedLayers = layerChooserDialog.getSelectedLayers().toArray(selectedLayers);
+					if (layerChooserDialog.showDialog(getRootPane(), "Select Layers") == LayerChooserDialog.APPROVE_OPTION) {
+						selectedLayers = layerChooserDialog.getSelectedLayers().toArray(new Layer<?>[0]);
 					}
 				} else {
 					selectedLayers = binLayers;
@@ -112,7 +112,7 @@ public final class BLARepartition extends TrackListActionOperationWorker<double 
 
 	@Override
 	protected void doAtTheEnd(double[][][] actionResult) {
-		if (actionResult != null && selectedLayers.length != 0) {
+		if ((actionResult != null) && (selectedLayers.length != 0)) {
 			scatPlotData = new ArrayList<ScatterPlotData>();
 			for (int k = 0; k < actionResult.length; k++) {
 				Color layerColor = ((ColoredLayer) selectedLayers[k]).getColor(); // retrieve the color of the layer

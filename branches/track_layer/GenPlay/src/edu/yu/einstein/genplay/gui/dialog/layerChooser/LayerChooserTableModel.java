@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -39,7 +39,7 @@ class LayerChooserTableModel extends AbstractTableModel {
 	private static final long serialVersionUID = 136782955769801093L; // generated serial ID
 
 	private final List<Layer<?>> 			layers;					// list of layers
-	private final List<Layer<?>>			selectedLayers;			// list of layers that are selected 
+	private final List<Layer<?>>			selectedLayers;			// list of layers that are selected
 	private final LayerType[]				selectableLayerTypes;	// type of layer types that can be selected.  Any type can be selected if null
 	private final boolean					isMultiselectable;		// true if more than one layer can be selected
 
@@ -54,9 +54,9 @@ class LayerChooserTableModel extends AbstractTableModel {
 	protected LayerChooserTableModel (List<Layer<?>> availableLayers, List<Layer<?>> selectedLayers, LayerType[] selectableLayerTypes, boolean isMultiselectable) {
 		super();
 		if (availableLayers == null) {
-			this.layers = new ArrayList<Layer<?>>();
+			layers = new ArrayList<Layer<?>>();
 		} else {
-			this.layers = availableLayers;
+			layers = availableLayers;
 		}
 		if (selectedLayers == null) {
 			this.selectedLayers = new ArrayList<Layer<?>>();
@@ -73,13 +73,13 @@ class LayerChooserTableModel extends AbstractTableModel {
 	 * @param selectedRow
 	 */
 	private void deselectOtherRows(int selectedRow) {
-        for (int row = 0; row < getRowCount(); row++) {
-            if ((Boolean)getValueAt(row, LayerChooserDialog.LAYER_SELECTION_INDEX) && row != selectedRow) {
-                setValueAt(false, row, LayerChooserDialog.LAYER_SELECTION_INDEX);
-                fireTableCellUpdated(row, LayerChooserDialog.LAYER_SELECTION_INDEX);
-            }
-        }
-    }
+		for (int row = 0; row < getRowCount(); row++) {
+			if ((Boolean)getValueAt(row, LayerChooserDialog.LAYER_SELECTION_INDEX) && (row != selectedRow)) {
+				setValueAt(false, row, LayerChooserDialog.LAYER_SELECTION_INDEX);
+				fireTableCellUpdated(row, LayerChooserDialog.LAYER_SELECTION_INDEX);
+			}
+		}
+	}
 
 
 	@Override
@@ -162,7 +162,7 @@ class LayerChooserTableModel extends AbstractTableModel {
 	@Override
 	public boolean isCellEditable(int row, int col) {
 		LayerType rowLayerType = layers.get(row).getType();
-		boolean isSelectableLayerType = ((selectableLayerTypes != null) && !rowLayerType.isContainedIn(selectableLayerTypes));
+		boolean isSelectableLayerType = ((selectableLayerTypes == null) || !rowLayerType.isContainedIn(selectableLayerTypes));
 		if ((col == LayerChooserDialog.LAYER_SELECTION_INDEX) && isSelectableLayerType) {
 			return true;
 		} else {
@@ -184,7 +184,7 @@ class LayerChooserTableModel extends AbstractTableModel {
 
 
 	/**
-	 * Sets if a layer is selected or not 
+	 * Sets if a layer is selected or not
 	 * @param value	the value to set (must be instance of Boolean)
 	 * @param row	the row where the value needs to be set
 	 * @param col	the column column where to set the value

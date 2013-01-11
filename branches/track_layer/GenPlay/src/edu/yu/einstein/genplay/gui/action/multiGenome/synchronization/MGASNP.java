@@ -35,9 +35,9 @@ import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGSNPSynchronizer;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
+import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
-import edu.yu.einstein.genplay.gui.old.action.TrackListActionWorker;
-import edu.yu.einstein.genplay.gui.old.track.Track;
+import edu.yu.einstein.genplay.gui.track.Track;
 
 
 /**
@@ -47,7 +47,7 @@ import edu.yu.einstein.genplay.gui.old.track.Track;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class MGASNP extends TrackListActionWorker<Track<?>[]> {
+public class MGASNP extends TrackListActionWorker<Track[]> {
 
 	private static final long serialVersionUID = 6498078428524511709L;		// generated ID
 	private static final String 	DESCRIPTION =
@@ -76,7 +76,7 @@ public class MGASNP extends TrackListActionWorker<Track<?>[]> {
 
 
 	@Override
-	protected Track<?>[] processAction() throws Exception {
+	protected Track[] processAction() throws Exception {
 		//ShiftCompute.resetMap();
 		ProjectManager projectManager = ProjectManager.getInstance();
 
@@ -106,10 +106,10 @@ public class MGASNP extends TrackListActionWorker<Track<?>[]> {
 
 
 	@Override
-	protected void doAtTheEnd(Track<?>[] actionResult) {
+	protected void doAtTheEnd(Track[] actionResult) {
 		MGDisplaySettings settings = MGDisplaySettings.getInstance();
-		Track<?>[] tracks = getTrackList().getTrackList();
-		for (Track<?> track: tracks) {
+		Track[] tracks = getTrackListPanel().getModel().getTracks();
+		for (Track track: tracks) {
 			List<VariantData> stripesList = settings.getVariantSettings().getVariantsForTrack(track);
 			boolean hasToReset = false;
 			for (VariantData data: stripesList) {
@@ -118,7 +118,8 @@ public class MGASNP extends TrackListActionWorker<Track<?>[]> {
 				}
 			}
 			if (hasToReset) {
-				track.resetVariantListMaker();
+				// TODO layer modif
+				//track.resetVariantListMaker();
 			}
 		}
 

@@ -116,12 +116,12 @@ public final class SCWLARepartition extends TrackListActionOperationWorker<doubl
 						layerChooserDialog.setLayers(getTrackListPanel().getAllLayers());
 						layerChooserDialog.setSelectableLayers(availableLayerTypes);
 						layerChooserDialog.setMultiselectable(true);
-						if (layerChooserDialog.showDialog(getRootPane()) == LayerChooserDialog.APPROVE_OPTION) {
-							selectedLayers = layerChooserDialog.getSelectedLayers().toArray(selectedLayers);
+						if (layerChooserDialog.showDialog(getRootPane(), "Select Layers to Paste") == LayerChooserDialog.APPROVE_OPTION) {
+							selectedLayers = layerChooserDialog.getSelectedLayers().toArray(new SCWLayer[0]);
 						}
 					} else {
 						selectedLayers = (SCWLayer[]) scwLayers;
-					}					
+					}
 					if ((selectedLayers != null)) {
 						ScoredChromosomeWindowList[] scwListArray = new SimpleScoredChromosomeWindowList[selectedLayers.length];
 						for (int i = 0; i < selectedLayers.length; i++) {

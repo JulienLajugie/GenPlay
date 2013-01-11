@@ -79,6 +79,12 @@ public abstract class AbstractVersionedLayer<T extends Serializable> extends Abs
 
 
 	@Override
+	public void deactivateReset() {
+		urrManager.deactivateReset();
+	}
+
+
+	@Override
 	public History getHistory() {
 		return history;
 	}

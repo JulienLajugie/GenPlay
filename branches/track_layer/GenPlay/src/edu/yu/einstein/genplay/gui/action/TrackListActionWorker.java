@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -36,9 +36,9 @@ import edu.yu.einstein.genplay.gui.dialog.exceptionDialog.ExceptionReportDialog;
 import edu.yu.einstein.genplay.gui.event.operationProgressEvent.OperationProgressEvent;
 import edu.yu.einstein.genplay.gui.event.operationProgressEvent.OperationProgressListener;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
-import edu.yu.einstein.genplay.gui.trackList.TrackListPanel;
 import edu.yu.einstein.genplay.gui.statusBar.StatusBar;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
+import edu.yu.einstein.genplay.gui.trackList.TrackListPanel;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -50,31 +50,6 @@ import edu.yu.einstein.genplay.util.Utils;
  * @param <T> typed of the value returned by the action
  */
 public abstract class TrackListActionWorker<T> extends AbstractAction implements OperationProgressListener, Stoppable {
-
-	private static final long serialVersionUID = 1383058897700926018L; // generated ID
-	private int currentStep = 1;			// current step of the action
-	protected SwingWorker<T, Void> worker;	// worker that will process the action
-	protected String							genomeName = null;		// genome name for a multi genome project
-	protected AlleleType						alleleType = null;		// allele type for a multi genome project
-	protected CountDownLatch latch = null;
-
-
-	/**
-	 * @return the {@link JRootPane} of the {@link TrackList}
-	 */
-	protected JRootPane getRootPane() {
-		return MainFrame.getInstance().getTrackList().getRootPane();
-	}
-
-
-	/**
-	 * Shortcut for MainFrame.getInstance().getTrackList()
-	 * @return the track list of the project
-	 */
-	protected TrackListPanel getTrackListPanel() {
-		return MainFrame.getInstance().getTrackListPanel();
-	}
-
 
 	/**
 	 * Private inner class that extends SwingWorker<T, Void>.
@@ -113,12 +88,42 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 		}
 	}
 
+	private static final long serialVersionUID = 1383058897700926018L; 	// generated ID
+	private int 								currentStep = 1;		// current step of the action
+	protected SwingWorker<T, Void> 				worker;					// worker that will process the action
+	protected String							genomeName = null;		// genome name for a multi genome project
+	protected AlleleType						alleleType = null;		// allele type for a multi genome project
+	protected CountDownLatch latch = null;
+
 
 	/**
-	 * Public constructor 
+	 * Public constructor
 	 */
 	public TrackListActionWorker() {
 		super();
+	}
+
+
+	@Override
+	public final void actionPerformed(ActionEvent arg0) {
+		worker = new PooledActionWorker();
+		worker.execute();
+	}
+
+
+	/**
+	 * Method called at the end of the action.
+	 * Can be extended to define the action to do at the end.
+	 * @param actionResult result returned by the action method
+	 */
+	protected void doAtTheEnd(T actionResult) {}
+
+
+	/**
+	 * @return the {@link JRootPane} of the {@link TrackList}
+	 */
+	protected JRootPane getRootPane() {
+		return MainFrame.getInstance().getTrackListPanel().getRootPane();
 	}
 
 
@@ -130,27 +135,18 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 	}
 
 
-	@Override
-	public final void actionPerformed(ActionEvent arg0) {
-		worker = new PooledActionWorker();
-		worker.execute();
+	/**
+	 * Shortcut for MainFrame.getInstance().getTrackList()
+	 * @return the track list of the project
+	 */
+	protected TrackListPanel getTrackListPanel() {
+		return MainFrame.getInstance().getTrackListPanel();
 	}
 
 
-	@Override
-	public void operationProgressChanged(OperationProgressEvent evt) {
-		StatusBar statusBar = getStatusBar();
-		if (evt.getState() == OperationProgressEvent.STARTING) {
-			// when a step start
-			statusBar.setProgress(currentStep, 0);
-		} else if (evt.getState() == OperationProgressEvent.IN_PROGRESS) {
-			// when a step is in progress
-			statusBar.setProgress(currentStep, (int)evt.getCompletion());
-		} else if (evt.getState() == OperationProgressEvent.COMPLETE) {
-			// when a step is done
-			statusBar.setProgress(currentStep, 100);
-			currentStep++;
-		}
+	protected void handleError (DataLineException e) {
+		ExceptionReportDialog.getInstance().addMessage(e.getMessage());
+		ExceptionReportDialog.getInstance().showDialog(getRootPane());
 	}
 
 
@@ -180,11 +176,19 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 
 
 	@Override
-	public void stop() {
-		worker.cancel(true);
-		OperationPool.getInstance().stopPool();
-		Utils.garbageCollect();
-		getStatusBar().actionStop("Operation Aborted");
+	public void operationProgressChanged(OperationProgressEvent evt) {
+		StatusBar statusBar = getStatusBar();
+		if (evt.getState() == OperationProgressEvent.STARTING) {
+			// when a step start
+			statusBar.setProgress(currentStep, 0);
+		} else if (evt.getState() == OperationProgressEvent.IN_PROGRESS) {
+			// when a step is in progress
+			statusBar.setProgress(currentStep, (int)evt.getCompletion());
+		} else if (evt.getState() == OperationProgressEvent.COMPLETE) {
+			// when a step is done
+			statusBar.setProgress(currentStep, 100);
+			currentStep++;
+		}
 	}
 
 
@@ -193,19 +197,14 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 	 * @return the result of the action
 	 * @throws Exception
 	 */
-	protected abstract T processAction() throws Exception;
+	protected abstract T processAction() throws Exception;;
 
 
-	/**
-	 * Method called at the end of the action.
-	 * Can be extended to define the action to do at the end.
-	 * @param actionResult result returned by the action method
-	 */
-	protected void doAtTheEnd(T actionResult) {};
-
-
-	protected void handleError (DataLineException e) {
-		ExceptionReportDialog.getInstance().addMessage(e.getMessage());
-		ExceptionReportDialog.getInstance().showDialog(getRootPane());
+	@Override
+	public void stop() {
+		worker.cancel(true);
+		OperationPool.getInstance().stopPool();
+		Utils.garbageCollect();
+		getStatusBar().actionStop("Operation Aborted");
 	}
 }

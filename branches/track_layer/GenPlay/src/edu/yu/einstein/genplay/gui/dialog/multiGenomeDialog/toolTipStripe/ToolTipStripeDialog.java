@@ -35,7 +35,7 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantDisplay;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLineDialog.VCFLineDialog;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
-import edu.yu.einstein.genplay.gui.old.track.drawer.multiGenome.MultiGenomeDrawer;
+import edu.yu.einstein.genplay.gui.track.layer.variantLayer.MultiGenomeDrawer;
 import edu.yu.einstein.genplay.util.Images;
 
 
@@ -71,8 +71,8 @@ public class ToolTipStripeDialog extends JDialog {
 	 */
 	public ToolTipStripeDialog (MultiGenomeDrawer multiGenomeDrawer) {
 		super(MainFrame.getInstance());
-		this.vcfLineDialog = new VCFLineDialog();
-		int trackNumber = MainFrame.getInstance().getTrackList().getTrackNumberFromMGGenomeDrawer(multiGenomeDrawer);
+		vcfLineDialog = new VCFLineDialog();
+		int trackNumber = MainFrame.getInstance().getTrackListPanel().getTrackNumberFromMGGenomeDrawer(multiGenomeDrawer);
 		String title = "Variant properties";
 		if (trackNumber > 0) {
 			title += " (Track " + trackNumber + ")";
@@ -114,43 +114,54 @@ public class ToolTipStripeDialog extends JDialog {
 
 
 	/**
-	 * Method for showing the dialog box.
-	 * @param variantList 	the current variant list
-	 * @param variant 		the variant to focus on
-	 * @param X				X position on the screen
-	 * @param Y				Y position on the screen
+	 * @return the variant
 	 */
-	public void show (List<VariantDisplay> variantList, VariantDisplay variant, int X, int Y) {
-		this.variantList = variantList;
-		this.currentVariant = variant;
-		refreshDialog();
-		setLocation(X, Y);
-		setVisible(true);
+	public VariantDisplay getVariant() {
+		return currentVariant;
 	}
 
 
 	/**
-	 * initializes the dialog content and moves the screen onto the related variant.
-	 * @param newVariant	the variant to display
+	 * @param variant the current variant
+	 * @return	the index in the variant list of the variant
 	 */
-	private void refreshDialog () {
-		// Initialize the current variant
-		if (currentVariant == null) {
-			currentLine = null;
-			currentIndex = -1;
-		} else {
-			this.currentLine = currentVariant.getVCFLine();
-			if (currentLine != null) {
-				this.currentLine.processForAnalyse();
+	private int getVariantIndex (VariantDisplay variant) {
+		for (int i = 0; i < variantList.size(); i++) {
+			if (variantList.get(i).equals(variant)) {
+				return i;
 			}
-			this.currentIndex = getVariantIndex(currentVariant);
 		}
+		return -1;
+	}
 
-		// Initialize the content of the dialog
-		initContent();
 
-		// Relocate the screen position
-		relocateScreenPosition();
+	/**
+	 * Looks for the next variant and run the dialog initialization.
+	 * @return true if it moves to the next variant, false otherwise
+	 */
+	protected boolean goToNextVariant () {
+		if ((currentIndex + 1) >= variantList.size()) {
+			return false;
+		}
+		currentIndex++;
+		currentVariant = variantList.get(currentIndex);
+		refreshDialog();
+		return true;
+	}
+
+
+	/**
+	 * Looks for the previous variant and run the dialog initialization.
+	 * @return true if it moves to the previous variant, false otherwise
+	 */
+	protected boolean goToPreviousVariant () {
+		if ((currentIndex - 1) < 0) {
+			return false;
+		}
+		currentIndex--;
+		currentVariant = variantList.get(currentIndex);
+		refreshDialog();
+		return true;
 	}
 
 
@@ -187,6 +198,31 @@ public class ToolTipStripeDialog extends JDialog {
 
 
 	/**
+	 * initializes the dialog content and moves the screen onto the related variant.
+	 * @param newVariant	the variant to display
+	 */
+	private void refreshDialog () {
+		// Initialize the current variant
+		if (currentVariant == null) {
+			currentLine = null;
+			currentIndex = -1;
+		} else {
+			currentLine = currentVariant.getVCFLine();
+			if (currentLine != null) {
+				currentLine.processForAnalyse();
+			}
+			currentIndex = getVariantIndex(currentVariant);
+		}
+
+		// Initialize the content of the dialog
+		initContent();
+
+		// Relocate the screen position
+		relocateScreenPosition();
+	}
+
+
+	/**
 	 * Locates the screen position to the start position of the actual variant.
 	 */
 	private void relocateScreenPosition () {
@@ -202,16 +238,26 @@ public class ToolTipStripeDialog extends JDialog {
 
 
 	/**
-	 * @param variant the current variant
-	 * @return	the index in the variant list of the variant
+	 * Method for showing the dialog box.
+	 * @param variantList 	the current variant list
+	 * @param variant 		the variant to focus on
+	 * @param X				X position on the screen
+	 * @param Y				Y position on the screen
 	 */
-	private int getVariantIndex (VariantDisplay variant) {
-		for (int i = 0; i < variantList.size(); i++) {
-			if (variantList.get(i).equals(variant)) {
-				return i;
-			}
-		}
-		return -1;
+	public void show (List<VariantDisplay> variantList, VariantDisplay variant, int X, int Y) {
+		this.variantList = variantList;
+		currentVariant = variant;
+		refreshDialog();
+		setLocation(X, Y);
+		setVisible(true);
+	}
+
+
+	/**
+	 * Shows the vcf line dialog
+	 */
+	protected void showVCFLine () {
+		vcfLineDialog.show(currentLine);
 	}
 
 
@@ -223,52 +269,6 @@ public class ToolTipStripeDialog extends JDialog {
 	private void updatePanel (JPanel previousPanel, JPanel newPanel) {
 		previousPanel.removeAll();
 		previousPanel.add(newPanel);
-	}
-
-
-	/**
-	 * @return the variant
-	 */
-	public VariantDisplay getVariant() {
-		return currentVariant;
-	}
-
-
-	/**
-	 * Looks for the next variant and run the dialog initialization.
-	 * @return true if it moves to the next variant, false otherwise
-	 */
-	protected boolean goToNextVariant () {
-		if ((currentIndex + 1) >= variantList.size()) {
-			return false;
-		}
-		currentIndex++;
-		currentVariant = variantList.get(currentIndex);
-		refreshDialog();
-		return true;
-	}
-
-
-	/**
-	 * Looks for the previous variant and run the dialog initialization.
-	 * @return true if it moves to the previous variant, false otherwise
-	 */
-	protected boolean goToPreviousVariant () {
-		if ((currentIndex - 1) < 0) {
-			return false;
-		}
-		currentIndex--;
-		currentVariant = variantList.get(currentIndex);
-		refreshDialog();
-		return true;
-	}
-
-
-	/**
-	 * Shows the vcf line dialog
-	 */
-	protected void showVCFLine () {
-		vcfLineDialog.show(currentLine);
 	}
 
 }

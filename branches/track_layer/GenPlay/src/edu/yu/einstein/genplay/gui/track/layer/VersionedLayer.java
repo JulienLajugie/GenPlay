@@ -34,6 +34,12 @@ import edu.yu.einstein.genplay.util.History;
 public interface VersionedLayer<T extends Serializable> {
 
 	/**
+	 * Disables the reset function of the layer
+	 */
+	public void deactivateReset();
+
+
+	/**
 	 * @return the history of the layer
 	 */
 	public abstract History getHistory();

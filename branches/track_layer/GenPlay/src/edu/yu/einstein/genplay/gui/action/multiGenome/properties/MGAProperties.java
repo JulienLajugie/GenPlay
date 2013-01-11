@@ -32,8 +32,8 @@ import javax.swing.KeyStroke;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
+import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.PropertiesDialog;
-import edu.yu.einstein.genplay.gui.old.action.TrackListAction;
 
 
 /**
@@ -43,7 +43,7 @@ import edu.yu.einstein.genplay.gui.old.action.TrackListAction;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class MGAProperties extends TrackListAction{
+public final class MGAProperties extends TrackListAction {
 
 	private static final 	long serialVersionUID = -6475180772964541278L; 			// generated ID
 	private static final 	String ACTION_NAME = "Multi Genome Properties";			// action name

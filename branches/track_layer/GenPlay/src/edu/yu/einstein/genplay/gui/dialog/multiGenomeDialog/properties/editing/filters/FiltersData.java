@@ -32,7 +32,7 @@ import edu.yu.einstein.genplay.core.multiGenome.filter.FilterInterface;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFFilter;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.IDFilterInterface;
-import edu.yu.einstein.genplay.gui.old.track.Track;
+import edu.yu.einstein.genplay.gui.track.Track;
 
 /**
  * @author Nicolas Fourel
@@ -54,40 +54,15 @@ public class FiltersData implements Serializable {
 	public static final int VCF_FILE_INDEX 	= 4;
 
 	private MGFilter			filter;
-	private Track<?>[] 			trackList;		// list of track
-
-
-	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(filter);
-		out.writeObject(trackList);
-	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		filter = (MGFilter) in.readObject();
-		trackList = (Track[]) in.readObject();
-	}
+	private Track[] 			trackList;		// list of track
 
 
 	/**
 	 * Constructor of {@link FiltersData}
 	 */
 	protected FiltersData() {
-		this.filter = null;
-		this.trackList = null;
+		filter = null;
+		trackList = null;
 	}
 
 
@@ -96,47 +71,20 @@ public class FiltersData implements Serializable {
 	 * @param filter 		the {@link MGFilter}
 	 * @param trackList		list of track
 	 */
-	public FiltersData(MGFilter filter, Track<?>[] trackList) {
+	public FiltersData(MGFilter filter, Track[] trackList) {
 		this.filter = filter.getDuplicate();
 		this.trackList = trackList;
 	}
 
 
-	//////////////////// Setters
-
 	/**
-	 * @param filter the VCF filter to set
+	 * @return a duplicate of the current object
 	 */
-	public void setMGFilter (MGFilter filter) {
-		this.filter = filter;
-	}
-
-
-	/**
-	 * @param trackList the trackList to set
-	 */
-	public void setTrackList(Track<?>[] trackList) {
-		this.trackList = trackList;
-	}
-
-
-	//////////////////// Getters
-
-	/**
-	 * @return the VCF filter
-	 */
-	public MGFilter getMGFilter () {
-		return filter;
-	}
-
-	/**
-	 * @return the reader
-	 */
-	public VCFFile getReader() {
-		if (filter instanceof VCFFilter) {
-			return ((VCFFilter)this.filter).getVCFFile();
-		}
-		return null;
+	public FiltersData getDuplicate () {
+		FiltersData duplicate = new FiltersData();
+		duplicate.setMGFilter(getMGFilter().getDuplicate());
+		duplicate.setTrackList(getTrackList());
+		return duplicate;
 	}
 
 
@@ -144,25 +92,19 @@ public class FiltersData implements Serializable {
 	 * @return the filter
 	 */
 	public FilterInterface getFilter() {
-		return this.filter.getFilter();
+		return filter.getFilter();
 	}
+
+
+	//////////////////// Setters
 
 	/**
-	 * @return the trackList
+	 * @return the filter
 	 */
-	public Track<?>[] getTrackList() {
-		return trackList;
+	public String getFilterForDisplay() {
+		return getFilter().toStringForDisplay();
 	}
 
-
-	//////////////////// Getters for display
-
-	/**
-	 * @return the genome
-	 */
-	public String getReaderForDisplay() {
-		return getReader().getFile().getName();
-	}
 
 	/**
 	 * @return the variantList
@@ -178,12 +120,45 @@ public class FiltersData implements Serializable {
 		return filter.getFilter().getName();
 	}
 
+
+	//////////////////// Getters
+
 	/**
-	 * @return the filter
+	 * @return the VCF filter
 	 */
-	public String getFilterForDisplay() {
-		return getFilter().toStringForDisplay();
+	public MGFilter getMGFilter () {
+		return filter;
 	}
+
+
+	/**
+	 * @return the reader
+	 */
+	public VCFFile getReader() {
+		if (filter instanceof VCFFilter) {
+			return ((VCFFilter)filter).getVCFFile();
+		}
+		return null;
+	}
+
+
+	/**
+	 * @return the genome
+	 */
+	public String getReaderForDisplay() {
+		return getReader().getFile().getName();
+	}
+
+
+	/**
+	 * @return the trackList
+	 */
+	public Track[] getTrackList() {
+		return trackList;
+	}
+
+
+	//////////////////// Getters for display
 
 	/**
 	 * @return the trackList
@@ -201,13 +176,15 @@ public class FiltersData implements Serializable {
 
 
 	/**
-	 * @return a duplicate of the current object
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
 	 */
-	public FiltersData getDuplicate () {
-		FiltersData duplicate = new FiltersData();
-		duplicate.setMGFilter(getMGFilter().getDuplicate());
-		duplicate.setTrackList(getTrackList());
-		return duplicate;
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		filter = (MGFilter) in.readObject();
+		trackList = (Track[]) in.readObject();
 	}
 
 
@@ -217,11 +194,39 @@ public class FiltersData implements Serializable {
 	 * @param oldTrack the old track
 	 * @param newTrack the new track
 	 */
-	public void replaceTrack (Track<?> oldTrack, Track<?> newTrack) {
+	public void replaceTrack (Track oldTrack, Track newTrack) {
 		for (int i = 0; i < trackList.length; i++) {
 			if (trackList[i].equals(oldTrack)) {
 				trackList[i] = newTrack;
 			}
 		}
+	}
+
+
+	/**
+	 * @param filter the VCF filter to set
+	 */
+	public void setMGFilter (MGFilter filter) {
+		this.filter = filter;
+	}
+
+
+	/**
+	 * @param trackList the trackList to set
+	 */
+	public void setTrackList(Track[] trackList) {
+		this.trackList = trackList;
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(filter);
+		out.writeObject(trackList);
 	}
 }

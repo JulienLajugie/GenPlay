@@ -33,17 +33,12 @@ import edu.yu.einstein.genplay.core.multiGenome.operation.ExportEngine;
 import edu.yu.einstein.genplay.core.multiGenome.operation.BED.MGOBedConvertSingleFile;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
+import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.convert.ConvertSCWDialog;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.mainDialog.MultiGenomeTrackActionDialog;
-import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
-import edu.yu.einstein.genplay.gui.old.action.TrackListActionWorker;
-import edu.yu.einstein.genplay.gui.old.track.CurveTrack;
-import edu.yu.einstein.genplay.gui.old.track.SCWListTrack;
-import edu.yu.einstein.genplay.gui.old.track.Track;
-import edu.yu.einstein.genplay.gui.old.track.drawer.multiGenome.MultiGenomeDrawer;
-import edu.yu.einstein.genplay.util.colors.Colors;
-import edu.yu.einstein.genplay.util.colors.LayerColor;
+import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.track.layer.variantLayer.MultiGenomeDrawer;
 
 
 /**
@@ -87,9 +82,11 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 		ProjectManager projectManager = ProjectManager.getInstance();
 		if (projectManager.isMultiGenomeProject()) {
 
+			// TODO Layer modif
 			// Get track information
-			Track<?> track = MainFrame.getInstance().getTrackList().getSelectedTrack();
-			MultiGenomeDrawer genomeDrawer = track.getMultiGenomeDrawer();
+			//Track track = MainFrame.getInstance().getTrackListPanel().getSelectedTrack();
+
+			MultiGenomeDrawer genomeDrawer = null; //track.getMultiGenomeDrawer();
 
 			// Create the export settings
 			ExportSettings settings = new ExportSettings(genomeDrawer);
@@ -150,15 +147,16 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 	}
 
 
-	private void setTrack (Track<?> currentTrack, ScoredChromosomeWindowList list) throws InvalidChromosomeException, InterruptedException, ExecutionException {
-		if ((list!= null) && (currentTrack != null)) {
+	private void setTrack (Track currentTrack, ScoredChromosomeWindowList list) throws InvalidChromosomeException, InterruptedException, ExecutionException {
+		// TODO Layer modif
+		/*if ((list!= null) && (currentTrack != null)) {
 			int index = currentTrack.getTrackNumber() - 1;
-			CurveTrack<?> newTrack = new SCWListTrack(index + 1, list);
+			CurveTrack newTrack = new SCWListTrack(index + 1, list);
 			newTrack.setTrackColor(LayerColor.getLayerColor());
 			newTrack.getHistory().add("Apply mask", Colors.GREY);
 			newTrack.getHistory().add("Track: " + currentTrack.getName(), Colors.GREY);
 			getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), currentTrack.getName() + " converted to BED", currentTrack.getMask(), currentTrack.getStripesList(), currentTrack.getFiltersList());
-		}
+		}*/
 	}
 
 }

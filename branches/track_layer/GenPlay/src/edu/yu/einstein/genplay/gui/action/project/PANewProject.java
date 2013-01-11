@@ -28,10 +28,9 @@ import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
+import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
-import edu.yu.einstein.genplay.gui.old.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
-
 
 /**
  * Loads a project from a file
@@ -40,17 +39,15 @@ import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
  */
 public class PANewProject extends TrackListActionWorker<Boolean> {
 
-	private static final long serialVersionUID = 6498078428524511709L;	// generated ID
-	private static final String 	DESCRIPTION = "New project"; 		// tooltip
-	private static final int 		MNEMONIC = KeyEvent.VK_N; 			// mnemonic key
-	private static final String 	ACTION_NAME = "New Project";		// action name
-
+	private static final long serialVersionUID = 6498078428524511709L; // generated ID
+	private static final String DESCRIPTION = "New project"; 	// tooltip
+	private static final int 	MNEMONIC = KeyEvent.VK_N; 		// mnemonic key
+	private static final String ACTION_NAME = "New Project"; 	// action name
 
 	/**
 	 * action accelerator {@link KeyStroke}
 	 */
-	public static final KeyStroke 	ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK);
-
+	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK);
 
 	/**
 	 * key of the action in the {@link ActionMap}
@@ -72,22 +69,23 @@ public class PANewProject extends TrackListActionWorker<Boolean> {
 
 
 	@Override
-	protected Boolean processAction() throws Exception {
-		int result = JOptionPane.showConfirmDialog(getRootPane(), "This operation will erase all unsaved data. Do you want to continue?", "New Project", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-		if (result == JOptionPane.YES_OPTION) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-
-	@Override
 	protected void doAtTheEnd(Boolean actionResult) {
 		if (actionResult) {
 			MainFrame.getInstance().setVisible(false);
 			ProjectFrame.getInstance().setVisible(true);
 			ProjectFrame.getInstance().toNewScreenProject();
+		}
+	}
+
+
+	@Override
+	protected Boolean processAction() throws Exception {
+		int result = JOptionPane.showConfirmDialog(getRootPane(), "This operation will erase all unsaved data. Do you want to continue?", "New Project", JOptionPane.YES_NO_OPTION,
+				JOptionPane.QUESTION_MESSAGE);
+		if (result == JOptionPane.YES_OPTION) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 }

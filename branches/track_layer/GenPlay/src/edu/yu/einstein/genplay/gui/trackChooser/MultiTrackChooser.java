@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -47,15 +47,14 @@ import javax.swing.JScrollPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import edu.yu.einstein.genplay.gui.old.track.Track;
-import edu.yu.einstein.genplay.gui.old.track.TrackComparator;
+import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.track.TrackComparator;
 import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
-
 /**
- * A dialog box used to choose tracks 
+ * A dialog box used to choose tracks
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -80,15 +79,76 @@ public class MultiTrackChooser extends JDialog {
 	private static JButton 			jbCancel;			// cancel button
 	private static boolean 			validated;			// true if OK has been pressed
 
+
 	/**
-	 * Private constructor. Used internally to create a {@link MultiTrackChooser} dialog. 
+	 * Displays a dialog box allowing the user to select tracks
+	 * @param parent the parent {@link Component} from which the dialog is displayed
+	 * @param availableTracks array of {@link Track}
+	 * @return an array containing the track selected. Null if cancel was pressed
+	 */
+	public static Track[] getSelectedTracks(Component parent, Track[] availableTracks) {
+		// the list model for selected tracks must be empty
+		dlmSelectedTracks = new DefaultListModel();
+
+		// show the dialog and return selected tracks
+		return getTracks(parent, availableTracks);
+	}
+
+
+	/**
+	 * Displays a dialog box allowing the user to select tracks.
+	 * This method allows user to define a list of track that are already selected
+	 * @param parent the parent {@link Component} from which the dialog is displayed
+	 * @param availableTracks 	array of {@link Track} to select
+	 * @param selectedTracks 	array of {@link Track} already selected
+	 * @return an array containing the track selected. Null if cancel was pressed
+	 */
+	public static Track[] getSelectedTracks(Component parent, Track[] availableTracks, Track[] selectedTracks) {
+		// the list model for selected tracks is set to empty
+		dlmSelectedTracks = new DefaultListModel();
+
+		// we will try to add tracks in the list model for selected tracks
+		if (selectedTracks != null) {
+			for (Track currentTrack: selectedTracks) {
+				dlmSelectedTracks.addElement(currentTrack);
+			}
+		}
+
+		// show the dialog and return selected tracks
+		return getTracks(parent, availableTracks);
+	}
+
+
+	/**
+	 * Displays a dialog box allowing the user to select tracks.
+	 * @param parent the parent {@link Component} from which the dialog is displayed
+	 * @param availableTracks 	array of {@link Track} to select
+	 * @return an array containing the track selected. Null if cancel was pressed
+	 */
+	private static Track[] getTracks (Component parent, Track[] availableTracks) {
+		MultiTrackChooser mtc = new MultiTrackChooser(parent, availableTracks);
+		mtc.setVisible(true);
+		if(validated) {
+			Track[] result = new Track[dlmSelectedTracks.getSize()];
+			for (int i = 0; i < dlmSelectedTracks.getSize(); i++) {
+				result[i] = (Track) dlmSelectedTracks.getElementAt(i);
+			}
+			return result;
+		} else {
+			return null;
+		}
+	}
+
+
+	/**
+	 * Private constructor. Used internally to create a {@link MultiTrackChooser} dialog.
 	 * @param parent The parent {@link Component} from which the dialog is displayed.
 	 * @param availableTracks array of {@link Track}
 	 */
-	private MultiTrackChooser(Component parent, Track<?>[] availableTracks) {
+	private MultiTrackChooser(Component parent, Track[] availableTracks) {
 		initComponents(availableTracks);
 		addComponents();
-		this.pack();
+		pack();
 		setIconImage(Images.getApplicationImage());
 		setModal(true);
 		setAlwaysOnTop(true);
@@ -97,155 +157,6 @@ public class MultiTrackChooser extends JDialog {
 		getRootPane().setDefaultButton(jbOk);
 		setLocationRelativeTo(parent);
 		setSize(WINDOW_SIZE);
-	}
-
-
-	/**
-	 * Initializes the subcomponents of the dialog box
-	 * @param availableTracks array of {@link Track}
-	 */
-	private void initComponents(Track<?>[] availableTracks) {
-		dlmAvailableTracks = new DefaultListModel();
-		for (Track<?> currentTrack: availableTracks) {
-			dlmAvailableTracks.addElement(currentTrack);
-		}
-
-		jlaAvailableTracks = new JLabel("Available Tracks");
-		jlaSelectedTracks = new JLabel("Selected Tracks");
-
-		jliAvailableTracks = new JList(dlmAvailableTracks);
-		jliAvailableTracks.setBorder(BorderFactory.createLineBorder(Colors.BLACK));
-		jliAvailableTracks.setBackground(Colors.WHITE);
-		jliAvailableTracks.addListSelectionListener(new ListSelectionListener() {			
-			@Override
-			public void valueChanged(ListSelectionEvent arg0) {
-				if (jliAvailableTracks.isSelectionEmpty()) {
-					jbRight.setEnabled(false);
-				} else {
-					jbRight.setEnabled(true);
-				}
-			}
-		});
-		jliAvailableTracks.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusLost(FocusEvent e) {
-				// if jbRight gain the focus we need to keep the selection in order to 
-				// know which tracks need to be transfered
-				if (e.getOppositeComponent() != jbRight) {
-					jliAvailableTracks.clearSelection();
-				}
-			}
-		});
-		jliAvailableTracks.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() % 2 == 0) {
-					selectTracks();
-				}
-			}
-		});
-
-		jliSelectedTracks = new JList(dlmSelectedTracks);
-		//jliSelectedTracks.setPreferredSize(new Dimension(LIST_WIDTH, getPreferredSize().height));
-		jliSelectedTracks.setBorder(BorderFactory.createLineBorder(Color.black));
-		jliSelectedTracks.setBackground(Color.white);
-		jliSelectedTracks.addListSelectionListener(new ListSelectionListener() {			
-			@Override
-			public void valueChanged(ListSelectionEvent arg0) {
-				if (jliSelectedTracks.isSelectionEmpty()) {
-					jbLeft.setEnabled(false);
-					jbUp.setEnabled(false);
-					jbDown.setEnabled(false);
-				} else {
-					jbLeft.setEnabled(true);
-					jbUp.setEnabled(true);
-					jbDown.setEnabled(true);
-					if (jliSelectedTracks.getSelectedIndices().length > 1) {
-						jbUp.setEnabled(false);
-						jbDown.setEnabled(false);
-					} else {
-						if (jliSelectedTracks.getSelectedIndex() == 0) {
-							jbUp.setEnabled(false);
-						}
-						if (jliSelectedTracks.getSelectedIndex() == dlmSelectedTracks.getSize() - 1) {
-							jbDown.setEnabled(false);
-						}
-					}
-				}
-			}
-		});
-		jliSelectedTracks.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusLost(FocusEvent e) {
-				// if jbLeft, jbUp or jbDown gain the focus we need to keep the selection in order to 
-				// know which tracks need to be transfered
-				if ((e.getOppositeComponent() != jbLeft) &&
-						(e.getOppositeComponent() != jbUp) &&
-						(e.getOppositeComponent() != jbDown)) {
-					jliSelectedTracks.clearSelection();
-				}
-			}
-		});
-		jliSelectedTracks.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() % 2 == 0) {
-					unSelectTracks();
-				}
-			}
-		});
-
-		jbLeft = new JButton("<");
-		jbLeft.addActionListener(new ActionListener() {			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				unSelectTracks();				
-			}
-		});		
-		jbLeft.setEnabled(false);
-
-		jbRight = new JButton(">");
-		jbRight.addActionListener(new ActionListener() {			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				selectTracks();				
-			}
-		});		
-		jbRight.setEnabled(false);
-
-		jbUp = new JButton("Up");
-		jbUp.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				selectedTrackUp();
-			}
-		});
-		jbUp.setEnabled(false);
-
-		jbDown = new JButton("Down");
-		jbDown.addActionListener(new ActionListener() {			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				selectedTrackDown();
-			}
-		});
-		jbDown.setEnabled(false);
-
-		jbOk = new JButton("OK");
-		jbOk.addActionListener(new ActionListener() {			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				jbOkClicked();				
-			}
-		});
-
-		jbCancel = new JButton("Cancel");
-		jbCancel.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				jbCancelClicked();				
-			}
-		});
 	}
 
 
@@ -354,6 +265,173 @@ public class MultiTrackChooser extends JDialog {
 
 
 	/**
+	 * Initializes the subcomponents of the dialog box
+	 * @param availableTracks array of {@link Track}
+	 */
+	private void initComponents(Track[] availableTracks) {
+		dlmAvailableTracks = new DefaultListModel();
+		for (Track currentTrack: availableTracks) {
+			dlmAvailableTracks.addElement(currentTrack);
+		}
+
+		jlaAvailableTracks = new JLabel("Available Tracks");
+		jlaSelectedTracks = new JLabel("Selected Tracks");
+
+		jliAvailableTracks = new JList(dlmAvailableTracks);
+		jliAvailableTracks.setBorder(BorderFactory.createLineBorder(Colors.BLACK));
+		jliAvailableTracks.setBackground(Colors.WHITE);
+		jliAvailableTracks.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent arg0) {
+				if (jliAvailableTracks.isSelectionEmpty()) {
+					jbRight.setEnabled(false);
+				} else {
+					jbRight.setEnabled(true);
+				}
+			}
+		});
+		jliAvailableTracks.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				// if jbRight gain the focus we need to keep the selection in order to
+				// know which tracks need to be transfered
+				if (e.getOppositeComponent() != jbRight) {
+					jliAvailableTracks.clearSelection();
+				}
+			}
+		});
+		jliAvailableTracks.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if ((e.getClickCount() % 2) == 0) {
+					selectTracks();
+				}
+			}
+		});
+
+		jliSelectedTracks = new JList(dlmSelectedTracks);
+		//jliSelectedTracks.setPreferredSize(new Dimension(LIST_WIDTH, getPreferredSize().height));
+		jliSelectedTracks.setBorder(BorderFactory.createLineBorder(Color.black));
+		jliSelectedTracks.setBackground(Color.white);
+		jliSelectedTracks.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent arg0) {
+				if (jliSelectedTracks.isSelectionEmpty()) {
+					jbLeft.setEnabled(false);
+					jbUp.setEnabled(false);
+					jbDown.setEnabled(false);
+				} else {
+					jbLeft.setEnabled(true);
+					jbUp.setEnabled(true);
+					jbDown.setEnabled(true);
+					if (jliSelectedTracks.getSelectedIndices().length > 1) {
+						jbUp.setEnabled(false);
+						jbDown.setEnabled(false);
+					} else {
+						if (jliSelectedTracks.getSelectedIndex() == 0) {
+							jbUp.setEnabled(false);
+						}
+						if (jliSelectedTracks.getSelectedIndex() == (dlmSelectedTracks.getSize() - 1)) {
+							jbDown.setEnabled(false);
+						}
+					}
+				}
+			}
+		});
+		jliSelectedTracks.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				// if jbLeft, jbUp or jbDown gain the focus we need to keep the selection in order to
+				// know which tracks need to be transfered
+				if ((e.getOppositeComponent() != jbLeft) &&
+						(e.getOppositeComponent() != jbUp) &&
+						(e.getOppositeComponent() != jbDown)) {
+					jliSelectedTracks.clearSelection();
+				}
+			}
+		});
+		jliSelectedTracks.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if ((e.getClickCount() % 2) == 0) {
+					unSelectTracks();
+				}
+			}
+		});
+
+		jbLeft = new JButton("<");
+		jbLeft.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				unSelectTracks();
+			}
+		});
+		jbLeft.setEnabled(false);
+
+		jbRight = new JButton(">");
+		jbRight.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				selectTracks();
+			}
+		});
+		jbRight.setEnabled(false);
+
+		jbUp = new JButton("Up");
+		jbUp.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				selectedTrackUp();
+			}
+		});
+		jbUp.setEnabled(false);
+
+		jbDown = new JButton("Down");
+		jbDown.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				selectedTrackDown();
+			}
+		});
+		jbDown.setEnabled(false);
+
+		jbOk = new JButton("OK");
+		jbOk.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				jbOkClicked();
+			}
+		});
+
+		jbCancel = new JButton("Cancel");
+		jbCancel.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				jbCancelClicked();
+			}
+		});
+	}
+
+
+	/**
+	 * Closes the dialog. No action are performed.
+	 */
+	private void jbCancelClicked() {
+		dispose();
+
+	}
+
+
+	/**
+	 * Closes the dialog. Sets validated to true so the main function can return the two selected curves.
+	 */
+	private void jbOkClicked() {
+		validated = true;
+		dispose();
+	}
+
+
+	/**
 	 * Moves the selected {@link Track} down in the list of selected tracks
 	 */
 	protected void selectedTrackDown() {
@@ -378,130 +456,51 @@ public class MultiTrackChooser extends JDialog {
 
 
 	/**
+	 * Moves the selected tracks from the list of available tracks to the list of selected tracks
+	 */
+	protected void selectTracks() {
+		if (!jliAvailableTracks.isSelectionEmpty()) {
+			Track[] selectedTracks = new Track[jliAvailableTracks.getSelectedValues().length];
+			for (int i = 0; i < selectedTracks.length; i++) {
+				selectedTracks[i] = (Track) jliAvailableTracks.getSelectedValues()[i];
+			}
+			for (Track currentTrack: selectedTracks) {
+				dlmSelectedTracks.addElement(currentTrack);
+				dlmAvailableTracks.removeElement(currentTrack);
+			}
+		}
+	}
+
+
+	/**
 	 * Moves the selected tracks from the list of selected tracks to the list of available tracks
 	 */
 	protected void unSelectTracks() {
 		if (!jliSelectedTracks.isSelectionEmpty()) {
 			// Get the selected tracks from the selected list of track
-			Track<?>[] selectedTracks = new Track[jliSelectedTracks.getSelectedValues().length];
+			Track[] selectedTracks = new Track[jliSelectedTracks.getSelectedValues().length];
 			for (int i = 0; i < selectedTracks.length; i++) {
-				selectedTracks[i] = (Track<?>) jliSelectedTracks.getSelectedValues()[i];
+				selectedTracks[i] = (Track) jliSelectedTracks.getSelectedValues()[i];
 			}
-			
+
 			// Get the current available tracks
-			List<Track<?>> tracks = new ArrayList<Track<?>>();
+			List<Track> tracks = new ArrayList<Track>();
 			for (Object object: dlmAvailableTracks.toArray()) {
-				tracks.add((Track<?>) object);
+				tracks.add((Track) object);
 			}
-			
+
 			// For all selected tracks
-			for (Track<?> currentTrack: selectedTracks) {
+			for (Track currentTrack: selectedTracks) {
 				tracks.add(currentTrack);							// we add them to the current available list of track
 				dlmSelectedTracks.removeElement(currentTrack);		// we delete them from the selected tracks
 			}
-			
-			// We sort the new list and update the model of the available list of track 
+
+			// We sort the new list and update the model of the available list of track
 			Collections.sort(tracks, new TrackComparator());
 			dlmAvailableTracks.removeAllElements();
-			for (Track<?> currentTrack: tracks) {
+			for (Track currentTrack: tracks) {
 				dlmAvailableTracks.addElement(currentTrack);
 			}
 		}
 	}
-
-
-	/**
-	 * Moves the selected tracks from the list of available tracks to the list of selected tracks
-	 */
-	protected void selectTracks() {
-		if (!jliAvailableTracks.isSelectionEmpty()) {
-			Track<?>[] selectedTracks = new Track[jliAvailableTracks.getSelectedValues().length];
-			for (int i = 0; i < selectedTracks.length; i++) {
-				selectedTracks[i] = (Track<?>) jliAvailableTracks.getSelectedValues()[i];
-			}			
-			for (Track<?> currentTrack: selectedTracks) {
-				dlmSelectedTracks.addElement(currentTrack);
-				dlmAvailableTracks.removeElement(currentTrack);
-			}			
-		}
-	}
-
-
-	/**
-	 * Closes the dialog. No action are performed.
-	 */
-	private void jbCancelClicked() {
-		this.dispose();
-
-	}
-
-
-	/**
-	 * Closes the dialog. Sets validated to true so the main function can return the two selected curves.
-	 */
-	private void jbOkClicked() {
-		validated = true;
-		this.dispose();		
-	}
-
-
-	/**
-	 * Displays a dialog box allowing the user to select tracks
-	 * @param parent the parent {@link Component} from which the dialog is displayed
-	 * @param availableTracks array of {@link Track}
-	 * @return an array containing the track selected. Null if cancel was pressed
-	 */
-	public static Track<?>[] getSelectedTracks(Component parent, Track<?>[] availableTracks) {
-		// the list model for selected tracks must be empty
-		dlmSelectedTracks = new DefaultListModel();
-		
-		// show the dialog and return selected tracks
-		return getTracks(parent, availableTracks);
-	}
-
-
-	/**
-	 * Displays a dialog box allowing the user to select tracks.
-	 * This method allows user to define a list of track that are already selected 
-	 * @param parent the parent {@link Component} from which the dialog is displayed
-	 * @param availableTracks 	array of {@link Track} to select
-	 * @param selectedTracks 	array of {@link Track} already selected
-	 * @return an array containing the track selected. Null if cancel was pressed
-	 */
-	public static Track<?>[] getSelectedTracks(Component parent, Track<?>[] availableTracks, Track<?>[] selectedTracks) {
-		// the list model for selected tracks is set to empty
-		dlmSelectedTracks = new DefaultListModel();
-		
-		// we will try to add tracks in the list model for selected tracks
-		if (selectedTracks != null) {
-			for (Track<?> currentTrack: selectedTracks) {
-				dlmSelectedTracks.addElement(currentTrack);
-			}
-		}
-		
-		// show the dialog and return selected tracks
-		return getTracks(parent, availableTracks);
-	}
-	
-	
-	/**
-	 * Displays a dialog box allowing the user to select tracks.
-	 * @param parent the parent {@link Component} from which the dialog is displayed
-	 * @param availableTracks 	array of {@link Track} to select
-	 * @return an array containing the track selected. Null if cancel was pressed
-	 */
-	private static Track<?>[] getTracks (Component parent, Track<?>[] availableTracks) {
-		MultiTrackChooser mtc = new MultiTrackChooser(parent, availableTracks);
-		mtc.setVisible(true);
-		if(validated) {
-			Track<?>[] result = new Track[dlmSelectedTracks.getSize()];
-			for (int i = 0; i < dlmSelectedTracks.getSize(); i++) {
-				result[i] = (Track<?>) dlmSelectedTracks.getElementAt(i);
-			}
-			return result;
-		} else {
-			return null;
-		}
-	}
-
 }

@@ -43,9 +43,8 @@ import edu.yu.einstein.genplay.core.multiGenome.operation.fileScanner.FileScanne
 import edu.yu.einstein.genplay.core.multiGenome.operation.fileScanner.SingleFileScanner;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGSynchronizer;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
-import edu.yu.einstein.genplay.gui.old.track.Track;
+import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.Utils;
-
 
 /**
  * Operation to convert a VCF track as a variable window track.
@@ -55,39 +54,56 @@ import edu.yu.einstein.genplay.util.Utils;
  */
 public class MGOBedConvertSingleFile extends ExportEngine {
 
-	private final MGSynchronizer 	synchronizer;
+	private final MGSynchronizer synchronizer;
 
-	private final String 					fullGenomeName;			// The genome to convert.
-	private final Track<?> 					firstAlleleTrack;		// The track where the data of the first allele are.
-	private final Track<?> 					secondAlleleTrack;		// The track where the data of the second allele are.
-	private final Double					dotValue;				// The value to give for "." in genotype (omit => null)
-	private final VCFHeaderType 			header;					// The header field to use as a score.
-	private final CoordinateSystemType 		coordinateSystem;		// The coordinate system to export the positions.
-	private List<AlleleSettingsBedConvert> 	fullAlleleList;			// The full list of allele settings helper.
-	private List<AlleleSettingsBedConvert> 	alleleListToConvert;	// The list of allele settings helper to use.
+	private final String fullGenomeName; // The genome to convert.
+	private final Track firstAlleleTrack; // The track where the data of the
+											// first allele are.
+	private final Track secondAlleleTrack; // The track where the data of the
+											// second allele are.
+	private final Double dotValue; // The value to give for "." in genotype
+									// (omit => null)
+	private final VCFHeaderType header; // The header field to use as a score.
+	private final CoordinateSystemType coordinateSystem; // The coordinate
+															// system to export
+															// the positions.
+	private List<AlleleSettingsBedConvert> fullAlleleList; // The full list of
+															// allele settings
+															// helper.
+	private List<AlleleSettingsBedConvert> alleleListToConvert; // The list of
+																// allele
+																// settings
+																// helper to
+																// use.
 
-	private int genomeIndex;										// The index of the genome in the file to export.
+	private int genomeIndex; // The index of the genome in the file to export.
 
+	int cpt = 0;
 
 	/**
 	 * Constructor of {@link MGOBedConvertSingleFile}
-	 * @param fullGenomeName the full genome name of the genome to export
-	 * @param firstAlleleTrack track to export the first allele
-	 * @param secondAlleleTrack track to export the second allele
-	 * @param dotValue value to give for "." in genotype (omit => null)
-	 * @param header the header to use as a score
+	 * 
+	 * @param fullGenomeName
+	 *            the full genome name of the genome to export
+	 * @param firstAlleleTrack
+	 *            track to export the first allele
+	 * @param secondAlleleTrack
+	 *            track to export the second allele
+	 * @param dotValue
+	 *            value to give for "." in genotype (omit => null)
+	 * @param header
+	 *            the header to use as a score
 	 */
-	public MGOBedConvertSingleFile (String fullGenomeName, Track<?> firstAlleleTrack, Track<?> secondAlleleTrack, Double dotValue, VCFHeaderType header) {
-		this.synchronizer = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenomeSynchronizer();
+	public MGOBedConvertSingleFile(String fullGenomeName, Track firstAlleleTrack, Track secondAlleleTrack, Double dotValue, VCFHeaderType header) {
+		synchronizer = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenomeSynchronizer();
 		this.fullGenomeName = fullGenomeName;
 		this.firstAlleleTrack = firstAlleleTrack;
 		this.secondAlleleTrack = secondAlleleTrack;
 		this.dotValue = dotValue;
 		this.header = header;
-		this.isConversion = true;
+		isConversion = true;
 		coordinateSystem = CoordinateSystemType.METAGENOME;
 	}
-
 
 	@Override
 	protected boolean canStart() throws Exception {
@@ -106,78 +122,41 @@ public class MGOBedConvertSingleFile extends ExportEngine {
 		return false;
 	}
 
-
 	/**
-	 * Initialize the list of allele
+	 * @return the scored chromosome window list for the first track, null if
+	 *         not required
+	 * @throws InvalidChromosomeException
+	 * @throws InterruptedException
+	 * @throws ExecutionException
 	 */
-	private void initializeAlleleList () {
-		fullAlleleList = new ArrayList<AlleleSettingsBedConvert>();
-		fullAlleleList.add(new AlleleSettingsBedConvert(AlleleType.ALLELE01, coordinateSystem));
-		fullAlleleList.add(new AlleleSettingsBedConvert(AlleleType.ALLELE02, coordinateSystem));
-
-		alleleListToConvert = new ArrayList<AlleleSettingsBedConvert>();
-		if ((firstAlleleTrack != null) && (secondAlleleTrack != null)) {
-			alleleListToConvert.add(fullAlleleList.get(0));
-			alleleListToConvert.add(fullAlleleList.get(1));
-		} else if ((firstAlleleTrack != null) && (secondAlleleTrack == null)) {
-			alleleListToConvert.add(fullAlleleList.get(0));
-		} else if ((firstAlleleTrack == null) && (secondAlleleTrack != null)) {
-			alleleListToConvert.add(fullAlleleList.get(1));
+	public ScoredChromosomeWindowList getFirstList() throws InvalidChromosomeException, InterruptedException, ExecutionException {
+		if (firstAlleleTrack != null) {
+			AlleleSettingsBedConvert alleleSettings = alleleListToConvert.get(0);
+			return getList(alleleSettings);
 		}
+		return null;
 	}
-
-
-	@Override
-	protected void process() throws Exception {
-		// Retrieve the index of the column of the genome in the VCF
-		genomeIndex = fileScanner.getCurrentVCFReader().getReader().getIndexFromGenome(fullGenomeName);
-
-		// Compute the file scan algorithm
-		fileScanner.compute();
-	}
-
-	int cpt = 0;
-	@Override
-	public void processLine(FileScannerInterface fileAlgorithm) throws IOException {
-		cpt++;
-		VCFLine currentLine = fileAlgorithm.getCurrentLine();
-		currentLine.processForAnalyse();
-		String gt = currentLine.getFormatField(genomeIndex, 0).toString();
-		if (gt.length() == 3) {
-			Chromosome chromosome = currentLine.getChromosome();
-			int[] lengths = synchronizer.getVariantLengths(currentLine.getREF(), Utils.split(currentLine.getALT(), ','), currentLine.getINFO());
-
-			for (AlleleSettingsBedConvert alleleExport: fullAlleleList) {
-				int altIndex = synchronizer.getAlleleIndex(gt.charAt(alleleExport.getCharIndex()));
-				alleleExport.initializeCurrentInformation(lengths, currentLine, altIndex);
-			}
-
-			AlleleSettingsBedConvert firstAllele = fullAlleleList.get(0);
-			AlleleSettingsBedConvert secondAllele = fullAlleleList.get(1);
-			firstAllele.updateCurrentInformation(secondAllele, chromosome);
-			secondAllele.updateCurrentInformation(firstAllele, chromosome);
-
-			firstAllele.finalizePosition();
-			secondAllele.finalizePosition();
-
-			for (AlleleSettingsBedConvert alleleExport: alleleListToConvert) {
-				Object score = getScore(currentLine, alleleExport);
-				if (score != null) {
-					alleleExport.addCurrentInformation(chromosome, score, includeReferences, includeNoCall);
-				} else {
-					//System.err.println("The line could not be exported. It seems the ID '" + header.getId() + "' has not been found in the line: " + currentLine.toString());
-				}
-			}
-		}
-	}
-
 
 	/**
-	 * @param currentLine	the current line in process
-	 * @param alleleExport	the allele setting helper to use
+	 * @param alleleSettings
+	 *            the allele settings helper
+	 * @return the {@link ScoredChromosomeWindowList}
+	 * @throws InvalidChromosomeException
+	 * @throws InterruptedException
+	 * @throws ExecutionException
+	 */
+	private ScoredChromosomeWindowList getList(AlleleSettingsBedConvert alleleSettings) throws InvalidChromosomeException, InterruptedException, ExecutionException {
+		return new SimpleScoredChromosomeWindowList(alleleSettings.getStartList(), alleleSettings.getStopList(), alleleSettings.getScoreList(), ScoreCalculationMethod.AVERAGE);
+	}
+
+	/**
+	 * @param currentLine
+	 *            the current line in process
+	 * @param alleleExport
+	 *            the allele setting helper to use
 	 * @return the score to use, null otherwise
 	 */
-	private Object getScore (VCFLine currentLine, AlleleSettingsBedConvert alleleExport) {
+	private Object getScore(VCFLine currentLine, AlleleSettingsBedConvert alleleExport) {
 		Object result = null;
 
 		if (alleleExport.isKnown()) {
@@ -214,31 +193,17 @@ public class MGOBedConvertSingleFile extends ExportEngine {
 		return result;
 	}
 
-
 	/**
-	 * @return the scored chromosome window list for the first track, null if not required
+	 * @return the scored chromosome window list for the second track, null if
+	 *         not required
 	 * @throws InvalidChromosomeException
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
-	public ScoredChromosomeWindowList getFirstList () throws InvalidChromosomeException, InterruptedException, ExecutionException {
-		if (firstAlleleTrack != null) {
-			AlleleSettingsBedConvert alleleSettings = alleleListToConvert.get(0);
-			return getList(alleleSettings);
-		}
-		return null;
-	}
-
-
-	/**
-	 * @return the scored chromosome window list for the second track, null if not required
-	 * @throws InvalidChromosomeException
-	 * @throws InterruptedException
-	 * @throws ExecutionException
-	 */
-	public ScoredChromosomeWindowList getSecondList () throws InvalidChromosomeException, InterruptedException, ExecutionException {
+	public ScoredChromosomeWindowList getSecondList() throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		if (secondAlleleTrack != null) {
-			AlleleSettingsBedConvert alleleSettings = alleleListToConvert.get(0);;
+			AlleleSettingsBedConvert alleleSettings = alleleListToConvert.get(0);
+			;
 			if (alleleListToConvert.size() == 2) {
 				alleleSettings = alleleListToConvert.get(1);
 			}
@@ -247,20 +212,72 @@ public class MGOBedConvertSingleFile extends ExportEngine {
 		return null;
 	}
 
-
 	/**
-	 * @param alleleSettings	the allele settings helper
-	 * @return the {@link ScoredChromosomeWindowList}
-	 * @throws InvalidChromosomeException
-	 * @throws InterruptedException
-	 * @throws ExecutionException
+	 * Initialize the list of allele
 	 */
-	private ScoredChromosomeWindowList getList (AlleleSettingsBedConvert alleleSettings) throws InvalidChromosomeException, InterruptedException, ExecutionException {
-		return new SimpleScoredChromosomeWindowList(alleleSettings.getStartList(), alleleSettings.getStopList(), alleleSettings.getScoreList(), ScoreCalculationMethod.AVERAGE);
+	private void initializeAlleleList() {
+		fullAlleleList = new ArrayList<AlleleSettingsBedConvert>();
+		fullAlleleList.add(new AlleleSettingsBedConvert(AlleleType.ALLELE01, coordinateSystem));
+		fullAlleleList.add(new AlleleSettingsBedConvert(AlleleType.ALLELE02, coordinateSystem));
+
+		alleleListToConvert = new ArrayList<AlleleSettingsBedConvert>();
+		if ((firstAlleleTrack != null) && (secondAlleleTrack != null)) {
+			alleleListToConvert.add(fullAlleleList.get(0));
+			alleleListToConvert.add(fullAlleleList.get(1));
+		} else if ((firstAlleleTrack != null) && (secondAlleleTrack == null)) {
+			alleleListToConvert.add(fullAlleleList.get(0));
+		} else if ((firstAlleleTrack == null) && (secondAlleleTrack != null)) {
+			alleleListToConvert.add(fullAlleleList.get(1));
+		}
 	}
 
+	@Override
+	protected void process() throws Exception {
+		// Retrieve the index of the column of the genome in the VCF
+		genomeIndex = fileScanner.getCurrentVCFReader().getReader().getIndexFromGenome(fullGenomeName);
+
+		// Compute the file scan algorithm
+		fileScanner.compute();
+	}
 
 	@Override
-	public void processLine(VCFLine src, VCFLine dest) throws IOException {}
+	public void processLine(FileScannerInterface fileAlgorithm) throws IOException {
+		cpt++;
+		VCFLine currentLine = fileAlgorithm.getCurrentLine();
+		currentLine.processForAnalyse();
+		String gt = currentLine.getFormatField(genomeIndex, 0).toString();
+		if (gt.length() == 3) {
+			Chromosome chromosome = currentLine.getChromosome();
+			int[] lengths = synchronizer.getVariantLengths(currentLine.getREF(), Utils.split(currentLine.getALT(), ','), currentLine.getINFO());
+
+			for (AlleleSettingsBedConvert alleleExport : fullAlleleList) {
+				int altIndex = synchronizer.getAlleleIndex(gt.charAt(alleleExport.getCharIndex()));
+				alleleExport.initializeCurrentInformation(lengths, currentLine, altIndex);
+			}
+
+			AlleleSettingsBedConvert firstAllele = fullAlleleList.get(0);
+			AlleleSettingsBedConvert secondAllele = fullAlleleList.get(1);
+			firstAllele.updateCurrentInformation(secondAllele, chromosome);
+			secondAllele.updateCurrentInformation(firstAllele, chromosome);
+
+			firstAllele.finalizePosition();
+			secondAllele.finalizePosition();
+
+			for (AlleleSettingsBedConvert alleleExport : alleleListToConvert) {
+				Object score = getScore(currentLine, alleleExport);
+				if (score != null) {
+					alleleExport.addCurrentInformation(chromosome, score, includeReferences, includeNoCall);
+				} else {
+					// System.err.println("The line could not be exported. It seems the ID '"
+					// + header.getId() + "' has not been found in the line: " +
+					// currentLine.toString());
+				}
+			}
+		}
+	}
+
+	@Override
+	public void processLine(VCFLine src, VCFLine dest) throws IOException {
+	}
 
 }

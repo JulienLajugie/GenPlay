@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -48,7 +48,7 @@ public class BLAConcatenate extends TrackListActionWorker<Void> {
 
 	private static final long serialVersionUID = 6381691669271998493L;			// generated ID
 	private static final String 	ACTION_NAME = "Concatenate";				// action name
-	private static final String 	DESCRIPTION = 
+	private static final String 	DESCRIPTION =
 			"Concatenate the selected layer with other layers in an output file";	// tooltip
 	private ConcatenateBinListWriter writer;										// writer that generate the output
 
@@ -81,9 +81,9 @@ public class BLAConcatenate extends TrackListActionWorker<Void> {
 		LayerType[] selectableLayers = {LayerType.BIN_LAYER};
 		layerChooserDialog.setSelectableLayers(selectableLayers);
 		layerChooserDialog.setMultiselectable(true);
-		if (layerChooserDialog.showDialog(getRootPane()) == LayerChooserDialog.APPROVE_OPTION) {
+		if (layerChooserDialog.showDialog(getRootPane(), "Select Layers to Concatenate") == LayerChooserDialog.APPROVE_OPTION) {
 			List<Layer<?>> selectedLayers = layerChooserDialog.getSelectedLayers();
-			if (selectedLayers != null && !selectedLayers.isEmpty()) {
+			if ((selectedLayers != null) && !selectedLayers.isEmpty()) {
 				// save dialog
 				String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
 				JFileChooser jfc = new JFileChooser(defaultDirectory);

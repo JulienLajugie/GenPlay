@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -34,7 +34,7 @@ import edu.yu.einstein.genplay.gui.track.layer.LayerType;
 
 
 /**
- * Computes the coefficient of correlation for every chromosome between 
+ * Computes the coefficient of correlation for every chromosome between
  * the selected {@link BinLayer} and another {@link BinLayer}.
  * @author Julien Lajugie
  * @version 0.1
@@ -43,7 +43,7 @@ public final class BLACorrelate extends TrackListActionOperationWorker<Double[]>
 
 	private static final long serialVersionUID = -3513622153829181945L; // generated ID
 	private static final String 	ACTION_NAME = "Correlation";		// action name
-	private static final String 	DESCRIPTION = 
+	private static final String 	DESCRIPTION =
 			"Compute the coefficient of correlation between " +
 					"the selected layer and another layer";				// tooltip
 	private BinLayer 				selectedLayer;						// 1st selected layer
@@ -76,7 +76,7 @@ public final class BLACorrelate extends TrackListActionOperationWorker<Double[]>
 			LayerType[] selectableLayers = {LayerType.BIN_LAYER};
 			layerChooserDialog.setSelectableLayers(selectableLayers);
 			layerChooserDialog.setMultiselectable(false);
-			if (layerChooserDialog.showDialog(getRootPane()) == LayerChooserDialog.APPROVE_OPTION) {
+			if (layerChooserDialog.showDialog(getRootPane(), "Select Layer") == LayerChooserDialog.APPROVE_OPTION) {
 				otherLayer = (BinLayer) layerChooserDialog.getSelectedLayer();
 				if (otherLayer != null) {
 					BinList binList1 = selectedLayer.getData();

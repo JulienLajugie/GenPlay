@@ -87,17 +87,17 @@ public final class BLATwoLayersOperation extends TrackListActionOperationWorker<
 			LayerType[] selectableLayers = {LayerType.BIN_LAYER, LayerType.SCW_LAYER, LayerType.MASK_LAYER};
 			layerChooserDialog.setSelectableLayers(selectableLayers);
 			layerChooserDialog.setMultiselectable(false);
-			if (layerChooserDialog.showDialog(getRootPane()) == LayerChooserDialog.APPROVE_OPTION) {
-				otherLayer = (BinLayer) layerChooserDialog.getSelectedLayer();
+			if (layerChooserDialog.showDialog(getRootPane(), "Select 2nd Layer") == LayerChooserDialog.APPROVE_OPTION) {
+				otherLayer = layerChooserDialog.getSelectedLayer();
 				if (otherLayer != null) {
 					resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackListPanel().getModel().getTracks());
 					if (resultTrack != null) {
-						this.scm = Utils.chooseScoreCalculationTwoLayersMethod(getRootPane());
+						scm = Utils.chooseScoreCalculationTwoLayersMethod(getRootPane());
 						if (scm != null) {
 							if (isSCWList()) {
 								operation = new SCWLOTwoLayers(selectedLayer.getData(),
 										(ChromosomeListOfLists<?>)otherLayer.getData(),
-										this.scm);
+										scm);
 							} else {
 								DataPrecision precision = Utils.choosePrecision(getRootPane());
 								if (precision != null) {
@@ -128,9 +128,9 @@ public final class BLATwoLayersOperation extends TrackListActionOperationWorker<
 			}
 			// add info to the history
 			((VersionedLayer<?>)newLayer).getHistory().add("Operation on two tracks", Colors.GREY);
-			((VersionedLayer<?>)newLayer).getHistory().add("Operation: " + this.scm.toString(), Colors.GREY);
-			((VersionedLayer<?>)newLayer).getHistory().add("First layer: " + this.selectedLayer.getName(), Colors.GREY);
-			((VersionedLayer<?>)newLayer).getHistory().add("Second layer: " + this.otherLayer.getName(), Colors.GREY);
+			((VersionedLayer<?>)newLayer).getHistory().add("Operation: " + scm.toString(), Colors.GREY);
+			((VersionedLayer<?>)newLayer).getHistory().add("First layer: " + selectedLayer.getName(), Colors.GREY);
+			((VersionedLayer<?>)newLayer).getHistory().add("Second layer: " + otherLayer.getName(), Colors.GREY);
 			resultTrack.getLayers().add(newLayer);
 			resultTrack.setActiveLayer(newLayer);
 		}
@@ -138,7 +138,7 @@ public final class BLATwoLayersOperation extends TrackListActionOperationWorker<
 
 	private boolean isSCWList () {
 		if ((selectedLayer.getData() instanceof BinList) & (otherLayer.getData() instanceof BinList)) {
-			if (((BinList)selectedLayer.getData()).getBinSize() == ((BinList)otherLayer.getData()).getBinSize()) {
+			if (selectedLayer.getData().getBinSize() == ((BinList)otherLayer.getData()).getBinSize()) {
 				return false;
 			}
 		}

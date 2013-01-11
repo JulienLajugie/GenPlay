@@ -29,15 +29,13 @@ import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.action.multiGenome.VCFAction.MGABGZIPCompression;
 import edu.yu.einstein.genplay.gui.action.multiGenome.VCFAction.MGATBIIndex;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.export.ExportVCFDialog;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.mainDialog.MultiGenomeTrackActionDialog;
-import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
-import edu.yu.einstein.genplay.gui.old.action.TrackListActionWorker;
-import edu.yu.einstein.genplay.gui.old.track.Track;
-import edu.yu.einstein.genplay.gui.old.track.drawer.multiGenome.MultiGenomeDrawer;
+import edu.yu.einstein.genplay.gui.track.layer.variantLayer.MultiGenomeDrawer;
 
 
 /**
@@ -87,9 +85,10 @@ public class MGAGlobalVCFExport extends TrackListActionWorker<Boolean> {
 		ProjectManager projectManager = ProjectManager.getInstance();
 		if (projectManager.isMultiGenomeProject()) {
 
+			// TODO Layer modif
 			// Get track information
-			Track<?> track = MainFrame.getInstance().getTrackList().getSelectedTrack();
-			MultiGenomeDrawer genomeDrawer = track.getMultiGenomeDrawer();
+			//Track track = MainFrame.getInstance().getTrackListPanel().getSelectedTrack();
+			MultiGenomeDrawer genomeDrawer = null; //track.getMultiGenomeDrawer();
 
 			// Create the export settings
 			settings = new ExportSettings(genomeDrawer);

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -87,12 +87,12 @@ public class GLAScoreRepartitionAroundStart extends TrackListActionOperationWork
 			Layer<?>[] scwLayers = Utils.getLayers(getTrackListPanel().getModel().getTracks(), availableLayerTypes);
 			if ((scwLayers == null) || (scwLayers.length == 0)) {
 				JOptionPane.showMessageDialog(getRootPane(), "You need to load at least one Fixed or Variable Window layer before using this operation", "Warning", JOptionPane.WARNING_MESSAGE);
-			} else {	
+			} else {
 				LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
 				layerChooserDialog.setLayers(getTrackListPanel().getAllLayers());
 				layerChooserDialog.setSelectableLayers(availableLayerTypes);
 				layerChooserDialog.setMultiselectable(false);
-				if (layerChooserDialog.showDialog(getRootPane()) == LayerChooserDialog.APPROVE_OPTION) {
+				if (layerChooserDialog.showDialog(getRootPane(), "Select Layer") == LayerChooserDialog.APPROVE_OPTION) {
 					BinLayer binLayer = (BinLayer) layerChooserDialog.getSelectedLayer();
 					if (binLayer != null) {
 						BinList binList = binLayer.getData();
@@ -104,7 +104,7 @@ public class GLAScoreRepartitionAroundStart extends TrackListActionOperationWork
 								if (binCount != null) {
 									ScoreCalculationMethod scm = Utils.chooseScoreCalculation(getRootPane());
 									if (scm != null) {
-										operation = new GLOScoreRepartitionAroundStart(geneList, binList, selectedChromo, binSize.intValue(), binCount.intValue(), scm); 
+										operation = new GLOScoreRepartitionAroundStart(geneList, binList, selectedChromo, binSize.intValue(), binCount.intValue(), scm);
 										return operation;
 									}
 								}

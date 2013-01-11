@@ -83,10 +83,10 @@ public final class MLAApplyMask extends TrackListActionOperationWorker<Chromosom
 			LayerType[] selectableLayers = {LayerType.BIN_LAYER, LayerType.SCW_LAYER, LayerType.MASK_LAYER};
 			layerChooserDialog.setSelectableLayers(selectableLayers);
 			layerChooserDialog.setMultiselectable(false);
-			if (layerChooserDialog.showDialog(getRootPane()) == LayerChooserDialog.APPROVE_OPTION) {
+			if (layerChooserDialog.showDialog(getRootPane(), "Select Layer to Mask") == LayerChooserDialog.APPROVE_OPTION) {
 				maskedLayer = layerChooserDialog.getSelectedLayer();
 				if (maskedLayer != null) {
-					ChromosomeListOfLists<?> data = (ChromosomeListOfLists<?>)selectedLayer.getData();
+					ChromosomeListOfLists<?> data = selectedLayer.getData();
 					ChromosomeListOfLists<?> mask = selectedLayer.getData();
 					resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackListPanel().getModel().getTracks());
 					if (resultTrack != null) {

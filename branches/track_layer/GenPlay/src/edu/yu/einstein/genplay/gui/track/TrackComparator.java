@@ -14,51 +14,37 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *     
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.action;
+package edu.yu.einstein.genplay.gui.track;
 
-import javax.swing.AbstractAction;
-import javax.swing.JRootPane;
+import java.util.Comparator;
 
-import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
-import edu.yu.einstein.genplay.gui.trackList.TrackListPanel;
-
+import edu.yu.einstein.genplay.core.comparator.StringComparator;
 
 /**
- * Abstract class. Represents an action on a TrackList
- * @author Julien Lajugie
+ * Comparator for {@link Track}.
+ * @author Nicolas Fourel
  * @version 0.1
  */
-public abstract class TrackListAction extends AbstractAction {
+public class TrackComparator implements Comparator<Track> {
 
-	private static final long serialVersionUID = 1383058897700926018L; 		// generated ID
-
-
-	/**
-	 * Constructor
-	 */
-	public TrackListAction() {
-		super();
-	}
-
-
-	/**
-	 * @return the {@link JRootPane} of the {@link TrackList}
-	 */
-	protected JRootPane getRootPane() {
-		return MainFrame.getInstance().getTrackListPanel().getRootPane();
-	}
-
-
-	/**
-	 * Shortcut for MainFrame.getInstance().getTrackList()
-	 * @return the track list of the project
-	 */
-	protected TrackListPanel getTrackListPanel() {
-		return MainFrame.getInstance().getTrackListPanel();
+	@Override
+	public int compare(Track o1, Track o2) {
+		if (o1 == null && o2 == null) {
+			return 0;
+		} else if (o1 != null && o2 == null) {
+			return -1;
+		} else if (o1 == null && o2 != null) {
+			return 1;
+		} else {
+			String s1 = o1.getName();
+			String s2 = o2.getName();
+			StringComparator stringComparator = new StringComparator();
+			return stringComparator.compare(s1, s2);
+		}
 	}
 }

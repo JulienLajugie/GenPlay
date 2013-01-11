@@ -65,16 +65,16 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 
 	private static final long 				serialVersionUID = 818958034840761257L;	// generated ID
 	private static final int  				SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
-	private final Layer<BackgroundData> 	backgroundLayer;						// background layer of the track (with the vertical and horizontal lines)
-	private final Layer<ForegroundData> 	foregroundLayer;						// foreground layer of the track (with the track name and the multi genome legend)
-	private final TrackScore				score;									// score of the track
-	private int 							defaultHeight;							// default height of a track
-	private int								number;									// number of the track
-	private List<TrackListener> 			trackListeners;							// list of track listeners
-	private TrackModel 						layers;									// layers of the track
-	private Layer<?>						activeLayer;							// active layer of the track
 	private transient HandlePanel			handlePanel;							// handle panel of the track
 	private transient GraphicsPanel			graphicsPanel;							// graphics panel of the track
+	private transient Layer<BackgroundData>	backgroundLayer;						// background layer of the track (with the vertical and horizontal lines)
+	private transient Layer<ForegroundData> foregroundLayer;						// foreground layer of the track (with the track name and the multi genome legend)
+	private transient List<TrackListener>	trackListeners;							// list of track listeners
+	private transient int 					defaultHeight;							// default height of a track
+	private int								number;									// number of the track
+	private TrackModel 						layers;									// layers of the track
+	private Layer<?>						activeLayer;							// active layer of the track
+	private TrackScore						score;									// score of the track
 
 
 	/**
@@ -122,10 +122,6 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 		// initializes the layer list
 		layers = new TrackModel();
 		layers.addListDataListener(this);
-
-		// register itself as a genome window listener to the genome window manager
-		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-		projectWindow.addGenomeWindowListener(this);
 	}
 
 
@@ -137,22 +133,14 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 	}
 
 
-	/**
-	 * Sets if the track is selected or not
-	 * @param isSelected true if the track is selected, false otherwise
-	 */
-	public void setSelected(boolean isSelected) {
-		// a track is selected if its handle is selected
-		handlePanel.setSelected(isSelected);
-	}
-
-
-	/**
-	 * @return true if the track is selected, false otherwise
-	 */
-	public boolean isSelected() {
-		// a track is selected if its handle is selected
-		return handlePanel.isSelected();
+	@Override
+	public void contentsChanged(ListDataEvent e) {
+		// case where the active layer was removed
+		if (!layers.contains(activeLayer)) {
+			activeLayer = null;
+		}
+		updateGraphicsPanelDrawers();
+		getScore().autorescaleScoreAxis();
 	}
 
 
@@ -178,7 +166,6 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 		oos.writeObject(this);
 		ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
 		ObjectInputStream ois = new ObjectInputStream(bais);
-
 
 		// we restore the listeners
 		for (TrackListener curList: tlSaver)	{
@@ -208,7 +195,6 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 	}
 
 
-
 	/**
 	 * @return the background layer of the track
 	 */
@@ -216,14 +202,7 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 		return backgroundLayer;
 	}
 
-	
-	/**
-	 * @return the panel where the layers are drawn
-	 */
-	public JPanel getGraphicsPanel() {
-		return graphicsPanel;
-	}
-	
+
 
 	/**
 	 * @return the default height of the track
@@ -238,6 +217,14 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 	 */
 	public Layer<ForegroundData> getForegroundLayer() {
 		return foregroundLayer;
+	}
+
+
+	/**
+	 * @return the panel where the layers are drawn
+	 */
+	public JPanel getGraphicsPanel() {
+		return graphicsPanel;
 	}
 
 
@@ -293,6 +280,41 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 	public TrackListener[] getTrackListeners() {
 		TrackListener[] listeners = new TrackListener[trackListeners.size()];
 		return trackListeners.toArray(listeners);
+	}
+
+
+	@Override
+	public void intervalAdded(ListDataEvent e) {
+		updateGraphicsPanelDrawers();
+		getScore().autorescaleScoreAxis();
+	}
+
+
+	@Override
+	public void intervalRemoved(ListDataEvent e) {
+		// case where the active layer was removed
+		if (!layers.contains(activeLayer)) {
+			activeLayer = null;
+		}
+		updateGraphicsPanelDrawers();
+		getScore().autorescaleScoreAxis();
+	}
+
+
+	/**
+	 * @return true if the track is selected, false otherwise
+	 */
+	public boolean isSelected() {
+		// a track is selected if its handle is selected
+		return handlePanel.isSelected();
+	}
+
+
+	/**
+	 * Locks the track handle
+	 */
+	public void lockHandle() {
+		handlePanel.setEnabled(false);
 	}
 
 
@@ -375,6 +397,16 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 
 
 	/**
+	 * Sets the number of the track
+	 * @param number number to set
+	 */
+	public void setNumber(int number) {
+		this.number = number;
+		handlePanel.setNumber(number);
+	}
+
+
+	/**
 	 * Sets the height of the track
 	 * @param preferredHeight preferred height to set
 	 */
@@ -387,12 +419,12 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 
 
 	/**
-	 * Sets the number of the track
-	 * @param number number to set
+	 * Sets if the track is selected or not
+	 * @param isSelected true if the track is selected, false otherwise
 	 */
-	public void setNumber(int number) {
-		this.number = number;
-		this.handlePanel.setNumber(number);
+	public void setSelected(boolean isSelected) {
+		// a track is selected if its handle is selected
+		handlePanel.setSelected(isSelected);
 	}
 
 
@@ -406,6 +438,14 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 			// we relay the other events to the element that contains this track
 			notifyTrackListeners(evt.getEventType());
 		}
+	}
+
+
+	/**
+	 * Unlocks the track handle
+	 */
+	public void unlockHandle() {
+		handlePanel.setEnabled(true);
 	}
 
 
@@ -433,46 +473,46 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 
 
 	/**
-	 * Locks the track handle
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
 	 */
-	public void lockHandle() {
-		handlePanel.setEnabled(false);
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		number = in.readInt();
+		layers = (TrackModel) in.readObject();
+		activeLayer = (Layer<?>) in.readObject();
+		score = (TrackScore) in.readObject();
+		// reconstruct the transient objects
+		handlePanel = new HandlePanel(number);
+		graphicsPanel = new GraphicsPanel();
+		backgroundLayer = new BackgroundLayer(this);
+		foregroundLayer = new ForegroundLayer(this);
+		trackListeners = new ArrayList<TrackListener>();
+		ProjectConfiguration projectConfiguration = ProjectManager.getInstance().getProjectConfiguration();
+		defaultHeight = projectConfiguration.getTrackHeight();
+		// register itself as a genome window listener to the genome window manager
+		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
+		projectWindow.addGenomeWindowListener(this);
 	}
 
 
 	/**
-	 * Unlocks the track handle
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
 	 */
-	public void unlockHandle() {
-		handlePanel.setEnabled(true);
-	}
-
-
-	@Override
-	public void contentsChanged(ListDataEvent e) {
-		// case where the active layer was removed
-		if (!layers.contains(activeLayer)) {
-			activeLayer = null;
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeInt(number);
+		out.writeObject(layers);
+		for (Layer<?> currentLayer: layers) {
+			currentLayer.setTrack(this);
 		}
-		updateGraphicsPanelDrawers();
-		getScore().autorescaleScoreAxis();
-	}
-
-
-	@Override
-	public void intervalAdded(ListDataEvent e) {
-		updateGraphicsPanelDrawers();
-		getScore().autorescaleScoreAxis();
-	}
-
-
-	@Override
-	public void intervalRemoved(ListDataEvent e) {
-		// case where the active layer was removed
-		if (!layers.contains(activeLayer)) {
-			activeLayer = null;
-		}
-		updateGraphicsPanelDrawers();
-		getScore().autorescaleScoreAxis();
+		out.writeObject(activeLayer);
+		activeLayer.setTrack(this);
+		out.writeObject(score);
+		out.writeObject(trackListeners);
 	}
 }

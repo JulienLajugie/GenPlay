@@ -46,10 +46,8 @@ import javax.swing.event.ChangeListener;
 import javax.swing.text.NumberFormatter;
 
 import edu.yu.einstein.genplay.core.enums.GraphType;
-import edu.yu.einstein.genplay.gui.old.track.ScoredTrackGraphics;
+import edu.yu.einstein.genplay.gui.track.TrackConstants;
 import edu.yu.einstein.genplay.util.colors.GenPlayColorChooser;
-
-
 
 
 /**
@@ -121,11 +119,11 @@ public final class TrackAppearanceOptionPane extends JDialog {
 	public TrackAppearanceOptionPane(boolean showHorizontalLines, int xLineCount, int yLineCount, Color trackColor, GraphType trackType, int scorePosition, Color scoreColor) {
 		super();
 
-		this.showHorizontalGrid = showHorizontalLines;
+		showHorizontalGrid = showHorizontalLines;
 		this.xLineCount = xLineCount;
 		this.yLineCount = yLineCount;
-		this.curvesColor = trackColor;
-		this.graphicsType = trackType;
+		curvesColor = trackColor;
+		graphicsType = trackType;
 		this.scorePosition = scorePosition;
 		this.scoreColor = scoreColor;
 
@@ -191,7 +189,7 @@ public final class TrackAppearanceOptionPane extends JDialog {
 			@Override
 			public void stateChanged(ChangeEvent arg0) {
 				if (jrbTopPosition.isSelected()) {
-					TrackAppearanceOptionPane.this.scorePosition = ScoredTrackGraphics.TOP_SCORE_POSITION;
+					TrackAppearanceOptionPane.this.scorePosition = TrackConstants.TOP_SCORE_POSITION;
 				}
 			}
 		});
@@ -200,7 +198,7 @@ public final class TrackAppearanceOptionPane extends JDialog {
 			@Override
 			public void stateChanged(ChangeEvent arg0) {
 				if (jrbBottomPosition.isSelected()) {
-					TrackAppearanceOptionPane.this.scorePosition = ScoredTrackGraphics.BOTTOM_SCORE_POSITION;
+					TrackAppearanceOptionPane.this.scorePosition = TrackConstants.BOTTOM_SCORE_POSITION;
 				}
 			}
 		});
@@ -209,9 +207,9 @@ public final class TrackAppearanceOptionPane extends JDialog {
 		scorePositionGroup.add(jrbTopPosition);
 		scorePositionGroup.add(jrbBottomPosition);
 		// select the appropriate radio button
-		if (scorePosition == ScoredTrackGraphics.TOP_SCORE_POSITION) {
+		if (scorePosition == TrackConstants.TOP_SCORE_POSITION) {
 			jrbTopPosition.setSelected(true);
-		} else if (scorePosition == ScoredTrackGraphics.BOTTOM_SCORE_POSITION) {
+		} else if (scorePosition == TrackConstants.BOTTOM_SCORE_POSITION) {
 			jrbBottomPosition.setSelected(true);
 		}
 		jlScoreColor = new JLabel("Color of the score:");
@@ -448,7 +446,7 @@ public final class TrackAppearanceOptionPane extends JDialog {
 	 * Hides this frame when Cancel is pressed.
 	 */
 	private void jbCancelActionPerformed() {
-		this.setVisible(false);
+		setVisible(false);
 	}
 
 
@@ -459,7 +457,7 @@ public final class TrackAppearanceOptionPane extends JDialog {
 		approved = APPROVE_OPTION;
 		xLineCount = ((Number)jftfXLineCount.getValue()).intValue();
 		yLineCount = ((Number)jftfYLineCount.getValue()).intValue();
-		this.setVisible(false);
+		setVisible(false);
 	}
 
 

@@ -71,10 +71,9 @@ import edu.yu.einstein.genplay.gui.controlPanel.ControlPanel;
 import edu.yu.einstein.genplay.gui.dialog.optionDialog.OptionDialog;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
-import edu.yu.einstein.genplay.gui.old.track.Track;
-import edu.yu.einstein.genplay.gui.old.trackList.TrackList;
 import edu.yu.einstein.genplay.gui.popupMenu.MainMenu;
 import edu.yu.einstein.genplay.gui.statusBar.StatusBar;
+import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.ruler.Ruler;
 import edu.yu.einstein.genplay.gui.trackList.TrackListModel;
 import edu.yu.einstein.genplay.gui.trackList.TrackListPanel;
@@ -91,21 +90,11 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 
 	private static final long serialVersionUID = -4637394760647080396L; // generated ID
 	private static final int VERSION_NUMBER = 727; 						// GenPlay version
-	/**
-	 * Title of the application
-	 */
+	/** Title of the application */
 	public static final String 		APPLICATION_TITLE = "GenPlay, Einstein Genome Analyzer (v" + VERSION_NUMBER + ")";
 	private final static Dimension 	WINDOW_DEFAULT_SIZE = new Dimension(800, 600);	// default size of the application
 	private final static Dimension 	WINDOW_MINIMUM_SIZE = new Dimension(200, 150); 	// minimum size of the application
-
 	private static 	MainFrame 			instance = null; 	// instance of the singleton MainFrame
-	private final 	ProjectChromosome 	projectChromosome; 	// Instance of the Chromosome Manager
-	private final 	Ruler 				ruler; 				// Ruler component
-	private final 	TrackList 			trackList; 			// TrackList component
-	private final 	TrackListPanel 		trackTablePanel; 	// TrackList component	
-	private final 	ControlPanel		controlPanel; 		// ControlPanel component
-	private final 	StatusBar 			statusBar; 			// Status bar component
-	private 		Rectangle			screenBounds; 		// position and dimension of this frame
 
 
 	/**
@@ -124,6 +113,31 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 
 
 	/**
+	 * Reinit the {@link ProjectChromosome} and the chromosome panel of the {@link ControlPanel} if needed
+	 */
+	public static void reinit() {
+		// if instance is null the mainframe has never been initialized
+		// so there is no need to do a reinit
+		if (instance != null) {
+			ProjectManager.getInstance().updateChromosomeList();
+			instance.getControlPanel().reinitChromosomePanel();
+			TrackListModel trackListModel = new TrackListModel();
+			instance.getTrackListPanel().setModel(trackListModel);
+			instance.setTitle();
+			instance.getStatusBar().reinit();
+		}
+	}
+
+
+	private final 	ProjectChromosome 	projectChromosome; 	// Instance of the Chromosome Manager
+	private final 	Ruler 				ruler; 				// Ruler component
+	private final 	TrackListPanel 		trackListPanel; 	// TrackList component
+	private final 	ControlPanel		controlPanel; 		// ControlPanel component
+	private final 	StatusBar 			statusBar; 			// Status bar component
+	private 		Rectangle			screenBounds; 		// position and dimension of this frame
+
+
+	/**
 	 * Private constructor. Creates an instance of singleton {@link MainFrame}
 	 */
 	private MainFrame() {
@@ -138,10 +152,8 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		ruler = new Ruler();
 		ruler.getOptionButton().addActionListener(this);
 
-		trackList = new TrackList();
-
 		TrackListModel trackListModel = new TrackListModel();
-		trackTablePanel = new TrackListPanel(trackListModel);
+		trackListPanel = new TrackListPanel(trackListModel);
 
 		controlPanel = new ControlPanel();
 
@@ -159,7 +171,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		gbc.gridy = 1;
 		gbc.weightx = 1;
 		gbc.weighty = 1;
-		add(trackTablePanel, gbc);
+		add(trackListPanel, gbc);
 
 		gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.BOTH;
@@ -204,22 +216,6 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 
 
 	/**
-	 * Sets the main frame title.
-	 * Application title - Project name - Genome name - Assembly name.
-	 */
-	public void setTitle () {
-		setTitle(	MainFrame.APPLICATION_TITLE
-				+ " - " +
-				ProjectManager.getInstance().getProjectName()
-				+ " - (" +
-				ProjectManager.getInstance().getGenomeName()
-				+ ", " +
-				ProjectManager.getInstance().getAssembly().getName()
-				+ ")");
-	}
-
-
-	/**
 	 * Shows the main menu when the button in the ruler is clicked
 	 */
 	@Override
@@ -245,20 +241,6 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		if (evt.chromosomeChanged() && ProjectManager.getInstance().isMultiGenomeProject()) {
 			MGARefresh tracksUpdate = new MGARefresh();
 			tracksUpdate.actionPerformed(null);
-		}
-	}
-
-
-	/**
-	 * Registers every control panel components to the genome window manager.
-	 */
-	public void registerToGenomeWindow () {
-		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-		projectWindow.addGenomeWindowListener(this);
-		projectWindow.addGenomeWindowListener(ruler);
-		controlPanel.registerToGenomeWindow();
-		for (Track<?> track: getTrackList().getTrackList()) {
-			track.registerToGenomeWindow();
 		}
 	}
 
@@ -297,39 +279,47 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 
 
 	/**
-	 * @return the trackList
+	 * @return the track list panel
 	 */
-	public final TrackList getTrackList() {
-		return trackList;
+	public final TrackListPanel getTrackListPanel(){
+		return trackListPanel;
 	}
 
 
 	/**
-	 * @return the track list panel
+	 * Initializes the status bar when starting a new project
 	 */
-	public final TrackListPanel getTrackListPanel(){
-		return trackTablePanel;
+	public void initStatusBarForFirstUse () {
+		statusBar.initDescriptionForFirstUse();
 	}
 
 
-//	@Override
-//	public void trackChanged(TrackEvent evt) {
-//		if (isEnabled()) {
-//			if (evt.getEventType() == TrackEventType.SCROLL_MODE_TURNED_ON) {
-//				if (evt.getSource() == ruler) {
-//					trackList.setScrollMode(true);
-//				} else {
-//					ruler.setScrollMode(true);
-//				}
-//			} else if (evt.getEventType() == TrackEventType.SCROLL_MODE_TURNED_OFF) {
-//				if (evt.getSource() == ruler) {
-//					trackList.setScrollMode(false);
-//				} else {
-//					ruler.setScrollMode(false);
-//				}
-//			}
-//		}
-//	}
+	/**
+	 * Locks the main frame:
+	 * - the action button (top left button)
+	 * - the track handles
+	 * - the chromosome selection box
+	 * - the chromosome position text field
+	 */
+	public void lock() {
+		ruler.lock();
+		trackListPanel.lockTrackHandles();
+		controlPanel.lock();
+	}
+
+
+	/**
+	 * Registers every control panel components to the genome window manager.
+	 */
+	public void registerToGenomeWindow () {
+		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
+		projectWindow.addGenomeWindowListener(this);
+		projectWindow.addGenomeWindowListener(ruler);
+		controlPanel.registerToGenomeWindow();
+		for (Track track: getTrackListPanel().getModel().getTracks()) {
+			projectWindow.addGenomeWindowListener(track);
+		}
+	}
 
 
 	/**
@@ -344,7 +334,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		getRootPane().getActionMap().put(PALoadProject.ACTION_KEY, new PALoadProject());
 		getRootPane().getActionMap().put(PANewProject.ACTION_KEY, new PANewProject());
 		getRootPane().getActionMap().put(PAOption.ACTION_KEY, new PAOption(this));
-		getRootPane().getActionMap().put(PASaveProject.ACTION_KEY, new PASaveProject(trackList));
+		getRootPane().getActionMap().put(PASaveProject.ACTION_KEY, new PASaveProject(trackListPanel));
 		getRootPane().getActionMap().put(PAMoveLeft.ACTION_KEY, new PAMoveLeft());
 		getRootPane().getActionMap().put(PAMoveFarLeft.ACTION_KEY, new PAMoveFarLeft());
 		getRootPane().getActionMap().put(PAMoveRight.ACTION_KEY, new PAMoveRight());
@@ -415,6 +405,33 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 
 
 	/**
+	 * Set the current selected genome as well as repaint the frame
+	 * @param genomeName the new selected genome name to use for the coordinate system
+	 */
+	public void setNewGenomeCoordinate (String genomeName) {
+		MGDisplaySettings.SELECTED_GENOME = genomeName;
+		controlPanel.setSelectedGenomeName(genomeName);
+		repaint();
+	}
+
+
+	/**
+	 * Sets the main frame title.
+	 * Application title - Project name - Genome name - Assembly name.
+	 */
+	public void setTitle () {
+		setTitle(	MainFrame.APPLICATION_TITLE
+				+ " - " +
+				ProjectManager.getInstance().getProjectName()
+				+ " - (" +
+				ProjectManager.getInstance().getGenomeName()
+				+ ", " +
+				ProjectManager.getInstance().getAssembly().getName()
+				+ ")");
+	}
+
+
+	/**
 	 * Shows the option screen
 	 */
 	public void showOption() {
@@ -424,19 +441,19 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 				setLookAndFeel();
 			}
 			if (optionDialog.trackHeightChanged()) {
-				trackList.trackHeightChanged();
+				trackListPanel.trackHeightChanged();
 			}
 			if (optionDialog.trackCountChanged()) {
-				trackList.trackCountChanged();
+				trackListPanel.trackCountChanged();
 			}
 			if (optionDialog.undoCountChanged()) {
-				trackList.undoCountChanged();
+				trackListPanel.undoCountChanged();
 			}
 			if (optionDialog.resetTrackChanged()) {
-				trackList.resetTrackChanged();
+				trackListPanel.resetLayerChanged();
 			}
 			if (optionDialog.legendChanged()) {
-				trackList.legendChanged();
+				trackListPanel.legendChanged();
 			}
 		}
 		optionDialog.dispose();
@@ -469,60 +486,11 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 
 
 	/**
-	 * Reinit the {@link ProjectChromosome} and the chromosome panel of the {@link ControlPanel} if needed
-	 */
-	public static void reinit() {
-		// if instance is null the mainframe has never been initialized
-		// so there is no need to do a reinit
-		if (instance != null) {
-			ProjectManager.getInstance().updateChromosomeList();
-			instance.getControlPanel().reinitChromosomePanel();
-			instance.getTrackList().resetTrackList();
-			instance.setTitle();
-			instance.getStatusBar().reinit();
-		}
-	}
-
-
-	/**
-	 * Locks the main frame:
-	 * - the action button (top left button)
-	 * - the track handles
-	 * - the chromosome selection box
-	 * - the chromosome position text field
-	 */
-	public void lock() {
-		ruler.lock();
-		trackList.lockTrackHandles();
-		controlPanel.lock();
-	}
-
-
-	/**
 	 * Unlocks the main frame
 	 */
 	public void unlock() {
 		ruler.unlock();
-		trackList.unlockTracksHandles();
+		trackListPanel.unlockTrackHandles();
 		controlPanel.unlock();
-	}
-
-
-	/**
-	 * Initializes the status bar when starting a new project
-	 */
-	public void initStatusBarForFirstUse () {
-		statusBar.initDescriptionForFirstUse();
-	}
-
-
-	/**
-	 * Set the current selected genome as well as repaint the frame
-	 * @param genomeName the new selected genome name to use for the coordinate system
-	 */
-	public void setNewGenomeCoordinate (String genomeName) {
-		MGDisplaySettings.SELECTED_GENOME = genomeName;
-		controlPanel.setSelectedGenomeName(genomeName);
-		repaint();
 	}
 }

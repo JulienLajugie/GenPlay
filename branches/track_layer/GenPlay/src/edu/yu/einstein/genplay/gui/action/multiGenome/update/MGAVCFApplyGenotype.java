@@ -22,23 +22,11 @@
 package edu.yu.einstein.genplay.gui.action.multiGenome.update;
 
 import java.awt.event.KeyEvent;
-import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
-import edu.yu.einstein.genplay.core.multiGenome.operation.UpdateEngine;
-import edu.yu.einstein.genplay.core.multiGenome.operation.VCF.MGOApplyVCFGenotype;
-import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSettings;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.genotype.GenotypeVCFDialog;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.mainDialog.MultiGenomeTrackActionDialog;
-import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
-import edu.yu.einstein.genplay.gui.old.action.TrackListActionWorker;
-import edu.yu.einstein.genplay.gui.old.track.Track;
-import edu.yu.einstein.genplay.gui.old.track.drawer.multiGenome.MultiGenomeDrawer;
+import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 
 
 /**
@@ -76,11 +64,12 @@ public class MGAVCFApplyGenotype extends TrackListActionWorker<Boolean> {
 
 	@Override
 	protected Boolean processAction() throws Exception {
-		ProjectManager projectManager = ProjectManager.getInstance();
+		//TODO Layer modif
+		/*ProjectManager projectManager = ProjectManager.getInstance();
 		if (projectManager.isMultiGenomeProject()) {
 
 			// Get track information
-			Track<?> track = MainFrame.getInstance().getTrackList().getSelectedTrack();
+			Track track = MainFrame.getInstance().getTrackList().getSelectedTrack();
 			MultiGenomeDrawer genomeDrawer = track.getMultiGenomeDrawer();
 
 			// Create the export settings
@@ -108,7 +97,7 @@ public class MGAVCFApplyGenotype extends TrackListActionWorker<Boolean> {
 				notifyActionStart(ACTION_NAME, 1, false);
 				engine.compute();
 			}
-		}
+		}*/
 		return false;
 	}
 

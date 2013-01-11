@@ -35,7 +35,7 @@ import javax.swing.JLabel;
 import javax.swing.WindowConstants;
 
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOExtractExons;
-import edu.yu.einstein.genplay.gui.old.action.geneListTrack.GLAExtractExons;
+import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLAExtractExons;
 
 
 /**
@@ -117,12 +117,6 @@ public class ExtractExonsDialog extends JDialog implements ActionListener{
 		getRootPane().setDefaultButton(jbOk);
 	}
 
-	/**
-	 * @return an int corresponding to exon-option selected
-	 */
-	public int getSelectedExonOption() {
-		return OPTION_VALUES[jcbExonOptions.getSelectedIndex()];
-	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -131,6 +125,15 @@ public class ExtractExonsDialog extends JDialog implements ActionListener{
 		}
 		setVisible(false);
 	}
+
+
+	/**
+	 * @return an int corresponding to exon-option selected
+	 */
+	public int getSelectedExonOption() {
+		return OPTION_VALUES[jcbExonOptions.getSelectedIndex()];
+	}
+
 
 	/**
 	 * Shows the component.

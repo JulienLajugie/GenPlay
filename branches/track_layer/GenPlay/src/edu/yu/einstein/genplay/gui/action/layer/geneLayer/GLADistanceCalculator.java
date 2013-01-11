@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -48,7 +48,7 @@ import edu.yu.einstein.genplay.util.colors.GenPlayColor;
 
 
 /**
- * Computes the number of base pairs at a specific distance 
+ * Computes the number of base pairs at a specific distance
  * between the selected layer and another layer
  * @author Chirag Gorasia
  */
@@ -56,13 +56,13 @@ public class GLADistanceCalculator extends TrackListActionOperationWorker<long[]
 
 	private static final long serialVersionUID = 1401297625985870348L;
 	private static final String 	ACTION_NAME = "Distance Calculation";		// action name
-	private static final String 	DESCRIPTION = 
+	private static final String 	DESCRIPTION =
 			"Compute the number of base pairs at a specific distance between " +
 					"the selected layer and another layer";							// tooltip
-	private GeneLayer 					selectedLayer;					// 1st selected layer  	
+	private GeneLayer 					selectedLayer;					// 1st selected layer
 	private GeneLayer					otherLayer;						// 2nd selected layer
-	private DistanceCalculatorDialog 	dcd;	
-	private List<ScatterPlotData> 		scatPlotData;
+	private DistanceCalculatorDialog 	dcd;
+	private final List<ScatterPlotData> 		scatPlotData;
 	private String						graphName;
 
 	/**
@@ -92,7 +92,7 @@ public class GLADistanceCalculator extends TrackListActionOperationWorker<long[]
 			LayerType[] selectableLayers = {LayerType.GENE_LAYER};
 			layerChooserDialog.setSelectableLayers(selectableLayers);
 			layerChooserDialog.setMultiselectable(false);
-			if (layerChooserDialog.showDialog(getRootPane()) == LayerChooserDialog.APPROVE_OPTION) {
+			if (layerChooserDialog.showDialog(getRootPane(), "Select Layer") == LayerChooserDialog.APPROVE_OPTION) {
 				otherLayer = (GeneLayer) layerChooserDialog.getSelectedLayer();
 				if (otherLayer != null) {
 					GeneList geneList1 = new GeneList(selectedLayer.getData());
@@ -100,14 +100,14 @@ public class GLADistanceCalculator extends TrackListActionOperationWorker<long[]
 					graphName = "Distance between \"" + selectedLayer.toString().substring(0, 10) + "\" and \"" + otherLayer.toString().substring(0, 10) + "\"";
 					dcd = new DistanceCalculatorDialog();
 					if (dcd.showDialog(getRootPane()) == DistanceCalculatorDialog.APPROVE_OPTION) {
-						if (dcd.getSelectionFlag() == 3 || dcd.getSelectionFlag() == 6 || dcd.getSelectionFlag() == 9 || dcd.getSelectionFlag() == 12 || dcd.getSelectionFlag() == 15 || dcd.getSelectionFlag() == 18) {
+						if ((dcd.getSelectionFlag() == 3) || (dcd.getSelectionFlag() == 6) || (dcd.getSelectionFlag() == 9) || (dcd.getSelectionFlag() == 12) || (dcd.getSelectionFlag() == 15) || (dcd.getSelectionFlag() == 18)) {
 							GeneListStopPositionComparator comp = new GeneListStopPositionComparator();
 							for (List<Gene> currentList: geneList2) {
 								if (currentList != null) {
 									Collections.sort(currentList,comp);
 								}
 							}
-						} else if (dcd.getSelectionFlag() == 2 || dcd.getSelectionFlag() == 5 || dcd.getSelectionFlag() == 8 || dcd.getSelectionFlag() == 11 || dcd.getSelectionFlag() == 13 || dcd.getSelectionFlag() == 15) {
+						} else if ((dcd.getSelectionFlag() == 2) || (dcd.getSelectionFlag() == 5) || (dcd.getSelectionFlag() == 8) || (dcd.getSelectionFlag() == 11) || (dcd.getSelectionFlag() == 13) || (dcd.getSelectionFlag() == 15)) {
 							GeneListMiddlePositionComparator comp = new GeneListMiddlePositionComparator();
 							for (List<Gene> currentList: geneList2) {
 								if (currentList != null) {
@@ -132,10 +132,10 @@ public class GLADistanceCalculator extends TrackListActionOperationWorker<long[]
 			for (int i = 0; i < actionResult.length; i++) {
 				for (int j = 0; j < actionResult[i].length; j++) {
 					if (counter.containsKey(actionResult[i][j]) != true) {
-						counter.put((Long) actionResult[i][j], 1);
+						counter.put(actionResult[i][j], 1);
 					} else {
 						int newValue = counter.get(actionResult[i][j]) + 1;
-						counter.put((Long) actionResult[i][j], newValue);
+						counter.put(actionResult[i][j], newValue);
 					}
 				}
 			}

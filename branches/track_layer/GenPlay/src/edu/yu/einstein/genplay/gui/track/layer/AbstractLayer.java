@@ -40,8 +40,8 @@ public abstract class AbstractLayer<T extends Serializable> implements Layer<T> 
 
 	private static final long 	serialVersionUID = 5294712647479393706L;// generated ID
 	private static final int  	SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
+	private transient Track 	track;									// track in which the layer is displayed
 	private T 					data;									// data displayed in the layer
-	private Track 				track;									// track in which the layer is displayed
 	private String				name;									// name of the layer
 	private boolean 			isHidden;								// true if the layer needs to be hidden
 
@@ -80,14 +80,14 @@ public abstract class AbstractLayer<T extends Serializable> implements Layer<T> 
 
 
 	@Override
-	public Layer<?> deepCopy() throws IOException {
+	public Layer<?> deepCopy() throws IOException, ClassNotFoundException {
 		// we clone the object
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ObjectOutputStream oos = new ObjectOutputStream(baos);
 		oos.writeObject(this);
 		ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
 		ObjectInputStream ois = new ObjectInputStream(bais);
-		return (Layer<?>) ois;
+		return (Layer<?>) ois.readObject();
 	}
 
 
@@ -124,10 +124,9 @@ public abstract class AbstractLayer<T extends Serializable> implements Layer<T> 
 	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		setData((T)in.readObject());
-		setTrack((Track)in.readObject());
-		setName((String) in.readObject());
-		setHidden(in.readBoolean());
+		data = (T)in.readObject();
+		name = (String) in.readObject();
+		isHidden = in.readBoolean();
 	}
 
 
@@ -163,9 +162,8 @@ public abstract class AbstractLayer<T extends Serializable> implements Layer<T> 
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(getData());
-		out.writeObject(getTrack());
-		out.writeObject(getName());
-		out.writeBoolean(isHidden());
+		out.writeObject(data);
+		out.writeObject(name);
+		out.writeBoolean(isHidden);
 	}
 }

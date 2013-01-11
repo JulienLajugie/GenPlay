@@ -29,7 +29,7 @@ import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.core.multiGenome.operation.convert.MGOBGZIPCompression;
-import edu.yu.einstein.genplay.gui.old.action.TrackListActionWorker;
+import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 
 
 /**
@@ -71,22 +71,6 @@ public class MGABGZIPCompression extends TrackListActionWorker<Boolean> {
 
 
 	@Override
-	protected Boolean processAction() throws Exception {
-		// Notifies the action
-		notifyActionStart(ACTION_NAME, 1, false);
-
-		operation = new MGOBGZIPCompression(vcfFile);
-		try {
-			return operation.compute();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return false;
-	}
-
-
-	@Override
 	protected void doAtTheEnd(Boolean actionResult) {
 		success = actionResult;
 		bgzFile = operation.getBgzFile();
@@ -102,6 +86,14 @@ public class MGABGZIPCompression extends TrackListActionWorker<Boolean> {
 
 
 	/**
+	 * @return the BGZIP file
+	 */
+	public File getCompressedFile() {
+		return bgzFile;
+	}
+
+
+	/**
 	 * @return true if the action has been correctly finish, false otherwise
 	 */
 	public boolean hasBeenDone () {
@@ -109,11 +101,19 @@ public class MGABGZIPCompression extends TrackListActionWorker<Boolean> {
 	}
 
 
-	/**
-	 * @return the BGZIP file
-	 */
-	public File getCompressedFile() {
-		return bgzFile;
+	@Override
+	protected Boolean processAction() throws Exception {
+		// Notifies the action
+		notifyActionStart(ACTION_NAME, 1, false);
+
+		operation = new MGOBGZIPCompression(vcfFile);
+		try {
+			return operation.compute();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return false;
 	}
 
 
@@ -123,5 +123,4 @@ public class MGABGZIPCompression extends TrackListActionWorker<Boolean> {
 	public void setLatch(CountDownLatch latch) {
 		this.latch = latch;
 	}
-
 }

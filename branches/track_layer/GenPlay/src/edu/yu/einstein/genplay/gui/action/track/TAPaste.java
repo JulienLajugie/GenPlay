@@ -23,12 +23,15 @@ package edu.yu.einstein.genplay.gui.action.track;
 
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.util.Arrays;
 
 import javax.swing.ActionMap;
 import javax.swing.KeyStroke;
 
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
+import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.track.layer.Layer;
 
 
 
@@ -73,9 +76,33 @@ public final class TAPaste extends TrackListActionWorker<Void> {
 	@Override
 	protected Void processAction() throws Exception {
 		Track selectedTrack = getTrackListPanel().getSelectedTrack();
-		if (selectedTrack != null) {
-			notifyActionStart("Pasting Clipboard on Track #" + selectedTrack.getNumber(), 1, false);
-			//getTrackListPanel().getModel().setTrack(, row);
+		Track copiedTrack = getTrackListPanel().getCopiedTrack();
+		if ((selectedTrack != null) && (copiedTrack != null)) {
+			// we ask the user to choose the layers to paste
+			Layer<?>[] layers = copiedTrack.getLayers().getLayers();
+			if (layers.length > 1) {
+				LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
+				layerChooserDialog.setLayers(Arrays.asList(layers));
+				layerChooserDialog.setMultiselectable(true);
+				if (layerChooserDialog.showDialog(getRootPane(), "Select Layers to Paste") == LayerChooserDialog.APPROVE_OPTION) {
+					Layer<?>[] selectedLayers = layerChooserDialog.getSelectedLayers().toArray(new Layer<?>[0]);
+					if ((selectedLayers != null) && (selectedLayers.length > 0)) {
+						notifyActionStart("Pasting Clipboard on Track #" + selectedTrack.getNumber(), 1, false);
+						for (Layer<?> currentLayer: selectedLayers) {
+							Layer<?> layerToAdd = currentLayer.deepCopy();
+							layerToAdd.setTrack(selectedTrack);
+							selectedTrack.getLayers().add(layerToAdd);
+							selectedTrack.setActiveLayer(layerToAdd);
+						}
+					}
+				}
+			} else if (layers.length == 1) {
+				notifyActionStart("Pasting Clipboard on Track #" + selectedTrack.getNumber(), 1, false);
+				Layer<?> layerToAdd = layers[0].deepCopy();
+				layerToAdd.setTrack(selectedTrack);
+				selectedTrack.getLayers().add(layerToAdd);
+				selectedTrack.setActiveLayer(layerToAdd);
+			}
 		}
 		return null;
 	}

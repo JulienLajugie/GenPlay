@@ -31,8 +31,8 @@ import edu.yu.einstein.genplay.core.manager.MGFiltersManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFFilter;
-import edu.yu.einstein.genplay.gui.old.action.TrackListActionWorker;
-import edu.yu.einstein.genplay.gui.old.track.Track;
+import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
+import edu.yu.einstein.genplay.gui.track.Track;
 
 
 /**
@@ -42,7 +42,7 @@ import edu.yu.einstein.genplay.gui.old.track.Track;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGAFilters extends TrackListActionWorker<Track<?>[]> {
+public class MGAFilters extends TrackListActionWorker<Track[]> {
 
 	private static final long serialVersionUID = 6498078428524511709L;		// generated ID
 	private static final String 	DESCRIPTION =
@@ -75,7 +75,7 @@ public class MGAFilters extends TrackListActionWorker<Track<?>[]> {
 
 
 	@Override
-	protected Track<?>[] processAction() throws Exception {
+	protected Track[] processAction() throws Exception {
 		ProjectManager projectManager = ProjectManager.getInstance();
 
 		// Checks if the project is multi-genome
@@ -104,13 +104,12 @@ public class MGAFilters extends TrackListActionWorker<Track<?>[]> {
 				}
 			}
 		}
-
 		return null;
 	}
 
 
 	@Override
-	protected void doAtTheEnd(Track<?>[] actionResult) {
+	protected void doAtTheEnd(Track[] actionResult) {
 		filterManager.reset();
 		if (latch != null) {
 			latch.countDown();

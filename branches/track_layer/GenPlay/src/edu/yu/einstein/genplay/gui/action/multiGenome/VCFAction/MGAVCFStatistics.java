@@ -24,19 +24,9 @@ package edu.yu.einstein.genplay.gui.action.multiGenome.VCFAction;
 import java.awt.event.KeyEvent;
 
 import javax.swing.ActionMap;
-import javax.swing.JOptionPane;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics.VCFFileMixStatistic;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics.VCFFileStatistics;
-import edu.yu.einstein.genplay.core.multiGenome.operation.VCF.MGOVCFStatisticsSingleFile;
-import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.statistics.MGStatisticsDialog;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSettings;
-import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
-import edu.yu.einstein.genplay.gui.old.action.TrackListActionWorker;
-import edu.yu.einstein.genplay.gui.old.track.Track;
-import edu.yu.einstein.genplay.gui.old.track.drawer.multiGenome.MultiGenomeDrawer;
+import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 
 
 /**
@@ -57,7 +47,7 @@ public class MGAVCFStatistics extends TrackListActionWorker<VCFFileStatistics> {
 	 */
 	public static final String ACTION_KEY = "Track Statistics";
 
-	private MGOVCFStatisticsSingleFile operation;
+	//private MGOVCFStatisticsSingleFile operation;
 
 
 	/**
@@ -74,12 +64,13 @@ public class MGAVCFStatistics extends TrackListActionWorker<VCFFileStatistics> {
 
 	@Override
 	protected VCFFileStatistics processAction() {
-		ProjectManager projectManager = ProjectManager.getInstance();
+		// TODO Layer modif
 		VCFFileStatistics result = null;
+		/*		ProjectManager projectManager = ProjectManager.getInstance();
 		if (projectManager.isMultiGenomeProject()) {
 
 			// Get track information
-			Track<?> track = MainFrame.getInstance().getTrackList().getSelectedTrack();
+			Track track = MainFrame.getInstance().getTrackListPanel().getSelectedTrack();
 			MultiGenomeDrawer genomeDrawer = track.getMultiGenomeDrawer();
 
 			if (genomeDrawer.getStatistics() == null) {
@@ -110,24 +101,24 @@ public class MGAVCFStatistics extends TrackListActionWorker<VCFFileStatistics> {
 			} else {
 				result = genomeDrawer.getStatistics();
 			}
-		}
+		}*/
 		return result;
 	}
 
 
 	@Override
 	protected void doAtTheEnd(VCFFileStatistics actionResult) {
-
-		if (actionResult != null) {
+		// TODO Layer modif
+		/*if (actionResult != null) {
 			actionResult.processStatistics();
 
-			MainFrame.getInstance().getTrackList().getSelectedTrack().getMultiGenomeDrawer().setStatistics(actionResult);
+			MainFrame.getInstance().getTrackListPanel().getSelectedTrack().getMultiGenomeDrawer().setStatistics(actionResult);
 
 			MGStatisticsDialog dialog = new MGStatisticsDialog(actionResult);
 			dialog.show(getRootPane());
 		} else {
 			System.out.println("No statistic generated");
-		}
+		}*/
 
 	}
 
