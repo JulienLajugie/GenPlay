@@ -155,16 +155,12 @@ public class VCFFilter extends MGFilter implements Serializable {
 	 * Analyzes lines from VCF file in order to determine if variation pass the filter.
 	 * @param results list of VCF lines delimited by columns (must contains the column of the filter)
 	 */
-	public void generateFilter (List<String> results) {
-		//vcfFile.initializesPositionList();
+	public void generateFilter (List<VCFLine> results) {
 		vcfFile.initializePositionList(ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome(), results);
 		if (results != null) {
 			booleanList = new ByteArrayAsBooleanList(vcfFile.getPositionList().size());
-			VCFLine line = new VCFLine(null, null);
 			for (int i = 0; i < results.size(); i++) {
-				line.initialize(results.get(i), vcfFile.getHeader());
-				line.processForAnalyse();
-				boolean valid = filter.isValid(line);
+				boolean valid = filter.isValid(results.get(i));
 				booleanList.set(i, valid);
 			}
 		}

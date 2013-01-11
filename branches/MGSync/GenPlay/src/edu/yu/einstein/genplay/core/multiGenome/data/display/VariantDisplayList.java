@@ -49,14 +49,14 @@ public class VariantDisplayList implements Serializable {
 	/** When a variant is shown */
 	public static byte SHOW = 1;
 	/** When a variant is filtered but shown */
-	public static byte FILTER_SHOW = 2;
+	public static byte SHOW_FILTER = 2;
 
-	/** When a variant is filtered but hidden because of all options */
-	public static byte FILTER_HIDE_ALL = -1;
-	/** When a variant is filtered but hidden because filtered variants must be hidden */
-	public static byte FILTER_HIDE_FILTER = -2;
-	/** When a variant is filtered but hidden because references must be hidden (case of a filtered homozygote reference) */
-	public static byte FILTER_HIDE_REFERENCE = -3;
+	/** When a variant is hidden because of all options */
+	public static byte HIDE_ALL = -1;
+	/** When a variant is hidden because filtered variants must be hidden */
+	public static byte HIDE_FILTER = -2;
+	/** When a variant is hidden because references must be hidden (case of a filtered homozygote reference) */
+	public static byte HIDE_REFERENCE = -3;
 
 
 	private List<List<Variant>> variants;
@@ -129,9 +129,9 @@ public class VariantDisplayList implements Serializable {
 	 * Update the display policy using the list of filters
 	 * @param filters list of {@link MGFilter}
 	 */
-	public void updateDisplay (List<MGFilter> filters, boolean includeReference) {
+	public void updateDisplay (List<MGFilter> filters, boolean showFilter) {
 		initialyzeDisplay();
-		updateDisplayForFilters(filters);
+		updateDisplayForFilters(filters, showFilter);
 	}
 
 
@@ -144,7 +144,7 @@ public class VariantDisplayList implements Serializable {
 	}
 
 
-	private void updateDisplayForFilters (List<MGFilter> filters) {
+	private void updateDisplayForFilters (List<MGFilter> filters, boolean showFilter) {
 		MGFileContentManager contentManager = ProjectManager.getInstance().getMultiGenomeProject().getFileContentManager();
 		Chromosome currentChromosome = ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome();
 		for (int i = 0; i < variants.size(); i++) {
@@ -166,7 +166,11 @@ public class VariantDisplayList implements Serializable {
 				}
 				byte display = SHOW;
 				if (!valid) {
-					display = FILTER_SHOW;
+					if (showFilter) {
+						display = SHOW_FILTER;
+					} else {
+						display = HIDE_FILTER;
+					}
 				}
 				this.display[i][j] = display;
 			}
@@ -174,11 +178,12 @@ public class VariantDisplayList implements Serializable {
 	}
 
 
-	private void updateDisplayForOption (boolean showReference, boolean showFilter) {
+	public void updateDisplayForOption (boolean showReference, boolean showFilter) {
 		if ((variants.size() > 0) && (variants.get(0).size() > 0)) {
 			int alleleNumber = variants.size();
 			int variantNumber = variants.get(0).size();
 
+			// For the reference option
 			for (int i = 0; i < variantNumber; i++) {
 				boolean isFullReference = true;
 				for (int j = 0; j < alleleNumber; j++) {
@@ -187,9 +192,50 @@ public class VariantDisplayList implements Serializable {
 						break;
 					}
 				}
-				//if (isFullReference)
+				if (isFullReference) {
+					for (int j = 0; j < alleleNumber; j++) {
+						byte currentDisplay = display[j][i];
+						byte newDisplay = currentDisplay;
+						if (showReference) {
+							if (currentDisplay == HIDE_ALL) {
+								newDisplay = HIDE_FILTER;
+							} else if (currentDisplay == HIDE_REFERENCE) {
+								newDisplay = SHOW;
+							}
+						} else {
+							if (currentDisplay == SHOW) {
+								newDisplay = HIDE_REFERENCE;
+							} else if (currentDisplay == HIDE_FILTER) {
+								newDisplay = HIDE_ALL;
+							}
+						}
+						display[j][i] = newDisplay;
+					}
+				}
 			}
 
+
+			// For the filter option
+			for (int allele = 0; allele < display.length; allele++) {
+				for (int pos = 0; pos < display[allele].length; pos++) {
+					byte currentDisplay = display[allele][pos];
+					byte newDisplay = currentDisplay;
+					if (showFilter) {
+						if (currentDisplay == HIDE_ALL) {
+							newDisplay = HIDE_REFERENCE;
+						} else if (currentDisplay == HIDE_FILTER) {
+							newDisplay = SHOW_FILTER;
+						}
+					} else {
+						if (currentDisplay == SHOW_FILTER) {
+							newDisplay = HIDE_FILTER;
+						} else if (currentDisplay == HIDE_REFERENCE) {
+							newDisplay = HIDE_ALL;
+						}
+					}
+					display[allele][pos] = newDisplay;
+				}
+			}
 		}
 	}
 

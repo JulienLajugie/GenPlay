@@ -69,7 +69,7 @@ public abstract class VCFScanner {
 		VCFLine line = getFirstLine();
 
 		// Scan the file line by line
-		while (!line.isLastLine()) {
+		while ((line != null) && !line.isLastLine()) {
 			// Initialize the line for treatments
 			line.processForAnalyse();
 

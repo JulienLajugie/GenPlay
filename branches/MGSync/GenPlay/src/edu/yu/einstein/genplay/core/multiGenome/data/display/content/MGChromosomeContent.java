@@ -365,4 +365,18 @@ public class MGChromosomeContent implements Iterable<MGLineContent>, Serializabl
 		return variants;
 	}
 
+
+	public void printChunk (int start, int stop) {
+		for (int i = start; i < stop; i++) {
+			String info = "";
+			info += "[" + i + "]\t";
+			info += positions.get(i) + "\t";
+			info += scores.get(i) + "\t";
+			for (MGIntegerArray alternative: alternatives) {
+				info += alternative.get(i) + "\t";
+			}
+			System.out.println(info);
+		}
+	}
+
 }

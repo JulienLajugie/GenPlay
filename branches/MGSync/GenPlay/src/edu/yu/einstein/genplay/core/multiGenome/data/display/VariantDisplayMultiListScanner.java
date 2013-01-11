@@ -271,4 +271,21 @@ public class VariantDisplayMultiListScanner {
 		return null;
 	}
 
+
+	/**
+	 * @param variant a {@link Variant}
+	 * @return the index of the given {@link Variant}, null if not found
+	 */
+	public int getCurrentVariantIndex (Variant variant) {
+		for (VariantDisplayListIterator iterator: iterators) {
+			Variant currentVariant = iterator.getCurrentVariant();
+			if (currentVariant != null){
+				if (currentVariant.equals(variant)) {
+					return iterator.getCurrentIndex();
+				}
+			}
+		}
+		return -1;
+	}
+
 }

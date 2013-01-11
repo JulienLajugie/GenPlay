@@ -53,7 +53,8 @@ public class MultiGenomeDrawer {
 	private List<MGFilter> filtersList;
 	private List<VariantDisplayList> variantDisplayList;
 	private boolean showReference;
-	private boolean showFiltered;
+	private boolean showFilter;
+	private boolean forceFitToScreen;
 	private boolean locked;
 	private VCFFileStatistics statistics;
 
@@ -70,6 +71,7 @@ public class MultiGenomeDrawer {
 	public MultiGenomeDrawer () {
 		variantDataList = new ArrayList<VariantData>();
 		variantDisplayList = new ArrayList<VariantDisplayList>();
+		forceFitToScreen = false;
 		locked = false;
 		statistics = null;
 		variantDrawer = new MultiGenomeVariantDrawer(this);
@@ -77,6 +79,9 @@ public class MultiGenomeDrawer {
 		variantDialogs = new ArrayList<VariantInformationDialog>();
 		variantUnderMouse = null;
 		chromosome = getCurrentChromosome();
+		MGDisplaySettings displaySettings = MGDisplaySettings.getInstance();
+		showFilter = displaySettings.includeFilteredVariants();
+		showReference = displaySettings.includeReferences();
 	}
 
 
@@ -112,13 +117,19 @@ public class MultiGenomeDrawer {
 			filtersHaveChanged = updateFilter(filtersList);
 		}
 
-		if (generateLists || filtersHaveChanged || haveOptionsChanged()) {
-			//System.out.println("MultiGenomeDrawer.updateMultiGenomeInformation() initialize");
+		if (generateLists || filtersHaveChanged) {
 			statistics = null;
 			for (VariantDisplayList currentList: variantDisplayList) {
-				currentList.updateDisplay(filtersList, showReference);
+				currentList.updateDisplay(filtersList, showFilter);
 			}
 			handler.initialize(variantDisplayList);
+			forceFitToScreen = true;
+		}
+		if (haveOptionsChanged()) {
+			forceFitToScreen = true;
+			for (VariantDisplayList currentList: variantDisplayList) {
+				currentList.updateDisplayForOption(showReference, showFilter);
+			}
 		}
 	}
 
@@ -170,8 +181,6 @@ public class MultiGenomeDrawer {
 		}
 		return filtersHaveChanged;
 	}
-
-
 
 
 	///////////////////////////////////////////////////////////////////// Information comparison
@@ -228,9 +237,9 @@ public class MultiGenomeDrawer {
 		boolean showReference = MGDisplaySettings.getInstance().includeReferences();
 		boolean showFiltered = MGDisplaySettings.DRAW_FILTERED_VARIANT == MGDisplaySettings.YES_MG_OPTION;
 
-		if ((this.showReference != showReference) || (this.showFiltered != showFiltered)) {
+		if ((this.showReference != showReference) || (this.showFilter != showFiltered)) {
 			this.showReference = showReference;
-			this.showFiltered = showFiltered;
+			this.showFilter = showFiltered;
 			return true;
 		}
 
@@ -278,13 +287,16 @@ public class MultiGenomeDrawer {
 				// half of the track
 				allele02Graphic.scale(1, -1); // all Y axis (vertical) coordinates must be reversed for the second allele
 				allele02Graphic.translate(0, -allele02Graphic.getClipBounds().height - 1); // translates all coordinates of the graphic for the second allele
-				for (VariantDisplayList displayList: variantDisplayList) {
-					variantDrawer.setCurrentAllele(AlleleType.ALLELE01);
-					variantDrawer.drawGenome(allele01Graphic, genomeWindow, handler.getFittedData(genomeWindow, xFactor, 0), displayList.getGenomeName()); // draw the stripes for the first allele
-					variantDrawer.setCurrentAllele(AlleleType.ALLELE02);
-					variantDrawer.drawGenome(allele02Graphic, genomeWindow, handler.getFittedData(genomeWindow, xFactor, 1), displayList.getGenomeName()); // draw the stripes for the first allele
-					variantDrawer.drawMultiGenomeLine(g); // draw a line in the middle of the track to distinguish upper and lower half.
+				if (forceFitToScreen) {
+					handler.forceFitToScreen(xFactor);
+					forceFitToScreen = false;
 				}
+				variantDrawer.setCurrentAllele(AlleleType.ALLELE01);
+				variantDrawer.drawGenome(allele01Graphic, genomeWindow, handler.getFittedData(genomeWindow, xFactor, 0)); // draw the stripes for the first allele
+				variantDrawer.setCurrentAllele(AlleleType.ALLELE02);
+				variantDrawer.drawGenome(allele02Graphic, genomeWindow, handler.getFittedData(genomeWindow, xFactor, 1)); // draw the stripes for the second allele
+				variantDrawer.drawMultiGenomeLine(g); // draw a line in the middle of the track to distinguish upper and lower half.
+				//}
 			} else {
 				variantDrawer.drawMultiGenomeMask(g, "Multi genome display interupted while loading information.");
 			}
@@ -301,6 +313,7 @@ public class MultiGenomeDrawer {
 				VariantDisplayMultiListScanner iterator = new VariantDisplayMultiListScanner(variantDisplayList);
 				iterator.initializeDiploide();
 				iterator.setPosition(pos);
+				iterator.setDisplayDependancy(true);
 				toolTip.show(iterator, e.getXOnScreen(), e.getYOnScreen()); // we show it
 			}
 		}

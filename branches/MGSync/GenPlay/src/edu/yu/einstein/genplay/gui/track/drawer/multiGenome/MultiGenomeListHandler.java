@@ -33,6 +33,7 @@ import edu.yu.einstein.genplay.core.multiGenome.data.display.VariantDisplayList;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.VariantDisplayMultiListScanner;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.MixVariant;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
+import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.VariantDisplay;
 
 /**
  * @author Nicolas Fourel
@@ -42,8 +43,8 @@ public class MultiGenomeListHandler {
 
 	private List<VariantDisplayList> variantList;
 	private List<List<Variant>> fullList;
-	private List<List<Variant>> fittedList;
-	private final CacheTrack<List<List<Variant>>> cache;
+	private List<List<VariantDisplay>> fittedList;
+	private final CacheTrack<List<List<VariantDisplay>>> cache;
 	private Chromosome fittedChromosome; // Chromosome with the adapted data
 	private Double fittedXRatio; // xRatio of the adapted data (ie ratio between the number of pixel and the number of base to display )
 
@@ -52,7 +53,7 @@ public class MultiGenomeListHandler {
 	 * Constructor of {@link MultiGenomeListHandler}
 	 */
 	public MultiGenomeListHandler () {
-		cache = new CacheTrack<List<List<Variant>>>();
+		cache = new CacheTrack<List<List<VariantDisplay>>>();
 		fittedChromosome = null;
 		fittedXRatio = null;
 	}
@@ -90,7 +91,7 @@ public class MultiGenomeListHandler {
 	 * @param allele the allele index
 	 * @return the variant list that fits the screen
 	 */
-	public final List<Variant> getFittedData(GenomeWindow window, double xRatio, int allele) {
+	public final List<VariantDisplay> getFittedData(GenomeWindow window, double xRatio, int allele) {
 		boolean hasToFit = false;
 		if ((fittedChromosome == null) || (!fittedChromosome.equals(window.getChromosome()))) {
 			fittedChromosome = window.getChromosome();
@@ -108,32 +109,33 @@ public class MultiGenomeListHandler {
 				fittedList = cache.getData(xRatio);
 			} else {
 				fitToScreen();
+				cache.setData(fittedXRatio, fittedList);
 			}
 		}
 
-		List<Variant> result = getFittedData(window.getStart(), window.getStop(), allele);
+		List<VariantDisplay> result = getFittedData(window.getStart(), window.getStop(), allele);
 		return result;
 	}
 
-	protected List<Variant> getFittedData(int start, int stop, int allele) {
+	protected List<VariantDisplay> getFittedData(int start, int stop, int allele) {
 		if ((fittedList == null) || (fittedList.size() == 0) || (fittedList.get(allele).size() == 0)) {
 			return null;
 		}
 
-		ArrayList<Variant> resultList = new ArrayList<Variant>();
+		ArrayList<VariantDisplay> resultList = new ArrayList<VariantDisplay>();
 		int indexStart = findStart(fittedList.get(allele), start, 0, fittedList.get(allele).size() - 1);
 		int indexStop = findStop(fittedList.get(allele), stop, 0, fittedList.get(allele).size() - 1);
 
 		if (indexStart > 0) {
-			Variant variant = fittedList.get(allele).get(indexStart - 1);
-			if (variant.getStop() >= start) {
+			VariantDisplay variant = fittedList.get(allele).get(indexStart - 1);
+			if (variant.getVariant().getStop() >= start) {
 				resultList.add(variant);
 			}
 		}
 		for (int i = indexStart; i <= indexStop; i++) {
 			if (i == indexStop) {
-				Variant variant = fittedList.get(allele).get(indexStop);
-				if (variant.getStart() <= stop) {
+				VariantDisplay variant = fittedList.get(allele).get(indexStop);
+				if (variant.getVariant().getStart() <= stop) {
 					resultList.add(variant);
 				}
 			} else {
@@ -141,8 +143,8 @@ public class MultiGenomeListHandler {
 			}
 		}
 		if ((indexStop + 1) < fittedList.get(allele).size()) {
-			Variant variant = fittedList.get(allele).get(indexStop + 1);
-			if (variant.getStart() <= stop) {
+			VariantDisplay variant = fittedList.get(allele).get(indexStop + 1);
+			if (variant.getVariant().getStart() <= stop) {
 				resultList.add(variant);
 			}
 		}
@@ -157,13 +159,13 @@ public class MultiGenomeListHandler {
 	 * @param indexStop
 	 * @return the index where the start value of the window is found or the index right after if the exact value is not find
 	 */
-	private int findStart(List<Variant> list, int value, int indexStart, int indexStop) {
+	private int findStart(List<VariantDisplay> list, int value, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (indexStart == indexStop) {
 			return indexStart;
-		} else if (value == list.get(indexStart + middle).getStart()) {
+		} else if (value == list.get(indexStart + middle).getVariant().getStart()) {
 			return indexStart + middle;
-		} else if (value > list.get(indexStart + middle).getStart()) {
+		} else if (value > list.get(indexStart + middle).getVariant().getStart()) {
 			return findStart(list, value, indexStart + middle + 1, indexStop);
 		} else {
 			return findStart(list, value, indexStart, indexStart + middle);
@@ -178,13 +180,13 @@ public class MultiGenomeListHandler {
 	 * @param indexStop
 	 * @return the index where the stop value of the window is found or the index right before if the exact value is not find
 	 */
-	private int findStop(List<Variant> list, int value, int indexStart, int indexStop) {
+	private int findStop(List<VariantDisplay> list, int value, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (indexStart == indexStop) {
 			return indexStart;
-		} else if (value == list.get(indexStart + middle).getStop()) {
+		} else if (value == list.get(indexStart + middle).getVariant().getStop()) {
 			return indexStart + middle;
-		} else if (value > list.get(indexStart + middle).getStop()) {
+		} else if (value > list.get(indexStart + middle).getVariant().getStop()) {
 			return findStop(list, value, indexStart + middle + 1, indexStop);
 		} else {
 			return findStop(list, value, indexStart, indexStart + middle);
@@ -193,19 +195,26 @@ public class MultiGenomeListHandler {
 
 
 
+	public void forceFitToScreen(double xRatio) {
+		fittedXRatio = xRatio;
+		fitToScreen();
+		cache.setData(fittedXRatio, fittedList);
+	}
+
+
 	/**
 	 * Merges two windows together if the gap between this two windows is not visible
 	 */
 	public void fitToScreen() {
-		fittedList = new ArrayList<List<Variant>>();
-		fittedList.add(new ArrayList<Variant>());
-		fittedList.add(new ArrayList<Variant>());
+		fittedList = new ArrayList<List<VariantDisplay>>();
+		fittedList.add(new ArrayList<VariantDisplay>());
+		fittedList.add(new ArrayList<VariantDisplay>());
 		fitToScreen(0);
 		fitToScreen(1);
 		/*if (fittedXRatio > 1) {
 			System.out.println("MultiGenomeListHandler.fitToScreen()");
 		}*/
-		cache.setData(fittedXRatio, fittedList);
+		//cache.setData(fittedXRatio, fittedList);
 	}
 
 
@@ -220,17 +229,27 @@ public class MultiGenomeListHandler {
 		if (fittedXRatio > 1) {
 			List<Variant> firstVariants = scanner.getCurrentVariants();
 			if (firstVariants.size() > 0) {
-				fittedList.get(allele).add(firstVariants.get(0));
+				Variant variant = firstVariants.get(0);
+				VariantDisplayList list = scanner.getCurrentVariantDisplayList(variant);
+				int index = scanner.getCurrentVariantIndex(variant);
+				fittedList.get(allele).add(new VariantDisplay(list, variant, allele, index));
 			}
 			while (scanner.hasNext()) {
 				List<Variant> variants = scanner.next();
-				fittedList.get(allele).add(variants.get(0));
+				Variant variant = variants.get(0);
+				VariantDisplayList list = scanner.getCurrentVariantDisplayList(variant);
+				int index = scanner.getCurrentVariantIndex(variant);
+				fittedList.get(allele).add(new VariantDisplay(list, variant, allele, index));
 			}
 		} else {
 			// Initialize the first position
 			int start = -1;
 			int stop = -1;
 			Variant currentVariant = null;
+			int previousIndex = -1;
+			int currentIndex = -1;
+			VariantDisplayList previousList = null;
+			VariantDisplayList currentList = null;
 
 			// Insert first variant
 			List<Variant> currentVariants = scanner.getCurrentVariants();
@@ -244,25 +263,36 @@ public class MultiGenomeListHandler {
 			if (currentVariant != null) {
 				start = currentVariant.getStart();
 				stop = currentVariant.getStop();
+				currentIndex = scanner.getCurrentVariantIndex(currentVariant);
+				currentList = scanner.getCurrentVariantDisplayList(currentVariant);
 			}
 
 			// Process the next positions
 			Variant previousVariant = null;
 			boolean hasToMerge = false;
 			while (scanner.hasNext()) {
+				previousIndex = currentIndex;
+				previousList = currentList;
 				previousVariant = currentVariant;
 				currentVariant = scanner.next().get(0); // Get the next position
+				currentIndex = scanner.getCurrentVariantIndex(currentVariant);
+				currentList = scanner.getCurrentVariantDisplayList(currentVariant);
 				double distance = (currentVariant.getStart() - stop) * fittedXRatio; // Compare its distance with the previous position
 				if (distance < 1) {
 					hasToMerge = true;
 					stop = currentVariant.getStop();
 				} else {
 					// Insert previous information
+					VariantDisplay variantDisplay = null;
 					if (hasToMerge) {
 						hasToMerge = false;
-						fittedList.get(allele).add(new MixVariant(start, stop));
+						variantDisplay = new VariantDisplay(null, new MixVariant(start, stop), allele, -1);
 					} else {
-						fittedList.get(allele).add(previousVariant);
+						variantDisplay = new VariantDisplay(previousList, previousVariant, allele, previousIndex);
+					}
+
+					if (variantDisplay != null) {
+						fittedList.get(allele).add(variantDisplay);
 					}
 
 					// Update current information
@@ -272,12 +302,16 @@ public class MultiGenomeListHandler {
 			}
 
 			// Handle the last case
+			VariantDisplay variantDisplay = null;
 			if (hasToMerge) {
-				fittedList.get(allele).add(new MixVariant(start, stop));
+				variantDisplay = new VariantDisplay(null, new MixVariant(start, stop), allele, -1);
 			} else {
 				if (currentVariant != null) {
-					fittedList.get(allele).add(currentVariant);
+					variantDisplay = new VariantDisplay(currentList, currentVariant, allele, currentIndex);
 				}
+			}
+			if (variantDisplay != null) {
+				fittedList.get(allele).add(variantDisplay);
 			}
 		}
 	}

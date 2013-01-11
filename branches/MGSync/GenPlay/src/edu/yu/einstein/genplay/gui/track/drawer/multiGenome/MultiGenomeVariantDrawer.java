@@ -40,6 +40,7 @@ import edu.yu.einstein.genplay.core.multiGenome.data.display.VariantDisplayList;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.MixVariant;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.ReferenceVariant;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
+import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.VariantDisplay;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
 import edu.yu.einstein.genplay.util.colors.Colors;
@@ -156,15 +157,15 @@ class MultiGenomeVariantDrawer implements Serializable {
 	 * @param g				Graphics object
 	 * @param variantList	list of variants
 	 */
-	protected void drawGenome (Graphics g, GenomeWindow genomeWindow, List<Variant> variants, String genomeName) {
+	protected void drawGenome (Graphics g, GenomeWindow genomeWindow, List<VariantDisplay> variants) {
 		if ((variants != null) && (variants.size() > 0)) {
 			Color mixColor = new Color(Colors.BLUE.getRed(), Colors.BLUE.getGreen(), Colors.BLUE.getBlue());			// color for mixed variant
-			MGDisplaySettings displaySettings = MGDisplaySettings.getInstance();
+			//MGDisplaySettings displaySettings = MGDisplaySettings.getInstance();
 			//while (iterator.hasNext()) {
 			for (int i = 0; i < variants.size(); i++) {
-				Variant variant = variants.get(i);
+				VariantDisplay variant = variants.get(i);
 				//if (displaySettings.isShown(iterator.getCurrentDisplay())) {
-				VariantType type = variant.getType();			// gets its type
+				VariantType type = variant.getVariant().getType();			// gets its type
 				Color color;
 				if (type == VariantType.REFERENCE_INSERTION) {
 					color = MGDisplaySettings.REFERENCE_INSERTION_COLOR;
@@ -177,10 +178,10 @@ class MultiGenomeVariantDrawer implements Serializable {
 				} else if (type == VariantType.MIX) {
 					color = mixColor;
 				} else  {
-					color = getVariantColor(genomeName, type);																		// in order to get which color has been defined
+					color = getVariantColor(variant.getGenomeName(), type);																		// in order to get which color has been defined
 				}
 
-				drawVariant(g, variant, color, genomeWindow, displaySettings.isFilter(VariantDisplayList.SHOW));	// draw the variant
+				drawVariant(g, variant, color, genomeWindow);	// draw the variant
 				//}
 			}
 		}
@@ -193,7 +194,9 @@ class MultiGenomeVariantDrawer implements Serializable {
 	 * @param variant	the variant
 	 * @param color		the color of the stripe
 	 */
-	private void drawVariant (Graphics g, Variant variant, Color color, GenomeWindow genomeWindow, boolean isFiltered) {
+	private void drawVariant (Graphics g, VariantDisplay variantDisplay, Color color, GenomeWindow genomeWindow) {
+		Variant variant = variantDisplay.getVariant();
+
 		// Get start and stop position
 		int start = variant.getStart();
 		int stop = variant.getStop();
@@ -234,6 +237,11 @@ class MultiGenomeVariantDrawer implements Serializable {
 		if ((drawer.getVariantUnderMouse() != null) && drawer.getVariantUnderMouse().equals(variant)) {		// if there is a variant under the mouse
 			newColor = GenPlayColor.stripeFilter(color);							// we change the color of the variant
 		} else {																	// if not
+			try {
+				newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), variantOpacity);	// we use the defined color taking into account the opacity
+			} catch (Exception e) {
+				System.out.println();
+			}
 			newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), variantOpacity);	// we use the defined color taking into account the opacity
 		}
 		g.setColor(newColor);														// we set the graphic object color
@@ -259,7 +267,7 @@ class MultiGenomeVariantDrawer implements Serializable {
 			}
 		}
 
-		if (isFiltered) {
+		if (variantDisplay.getDisplay() == VariantDisplayList.SHOW_FILTER) {
 			drawPatternFilter(g, x, y, width, height);
 		}
 		nucleotideNumber = stop - start;

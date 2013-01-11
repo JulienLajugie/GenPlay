@@ -26,7 +26,6 @@ import java.util.List;
 
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.MixVariant;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
-import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 
 /**
  * @author Nicolas Fourel
@@ -266,7 +265,8 @@ public class VariantDisplayListIterator implements Iterator<Variant> {
 
 	private boolean isVariantVisible (int index) {
 		if (displayDependant) {
-			return MGDisplaySettings.getInstance().isShown(getVariantDisplay(index));
+			return getVariantDisplay(index) >= 0;
+			//return MGDisplaySettings.getInstance().isShown(getVariantDisplay(index));
 		}
 		return true;
 	}
@@ -285,4 +285,13 @@ public class VariantDisplayListIterator implements Iterator<Variant> {
 	public void setDisplayDependant(boolean displayDependant) {
 		this.displayDependant = displayDependant;
 	}
+
+
+	/**
+	 * @return the currentIndex
+	 */
+	public int getCurrentIndex() {
+		return currentIndex;
+	}
+
 }
