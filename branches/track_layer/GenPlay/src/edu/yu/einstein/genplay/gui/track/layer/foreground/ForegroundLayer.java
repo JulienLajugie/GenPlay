@@ -27,8 +27,8 @@ import java.awt.Graphics;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackConstants;
 import edu.yu.einstein.genplay.gui.track.TrackScore;
-import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.AbstractLayer;
+import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
@@ -54,7 +54,7 @@ public class ForegroundLayer extends AbstractLayer<ForegroundData> implements La
 
 	@Override
 	public void draw(Graphics g, int width, int height) {
-		if (!isHidden()) {
+		if (isVisible()) {
 			drawMiddleVerticalLine(g, width, height);
 			drawScore(g, width, height);
 			drawName(g, width, height);
@@ -125,7 +125,7 @@ public class ForegroundLayer extends AbstractLayer<ForegroundData> implements La
 	 * @param height height of the graphics to draw
 	 */
 	private void drawScore(Graphics g, int width, int height) {
-		ForegroundData data = this.getData();
+		ForegroundData data = getData();
 		TrackScore trackScore = getTrack().getScore();
 		if ((data != null) && (trackScore != null) && (trackScore.getCurrentScore() != null)) {
 			Double currentScore = trackScore.getCurrentScore();
@@ -155,12 +155,12 @@ public class ForegroundLayer extends AbstractLayer<ForegroundData> implements La
 	//	 * - the name
 	//	 * - the stripe legend (for multi-genome)
 	//	 * It allows a fine width distribution between these 2 texts.
-	//	 * @param g 
-	//	 * @param multiGenomeDrawer 
-	//	 * @param fm 
-	//	 * @param name 
-	//	 * @param width 
-	//	 * @param backgroundColor 
+	//	 * @param g
+	//	 * @param multiGenomeDrawer
+	//	 * @param fm
+	//	 * @param name
+	//	 * @param width
+	//	 * @param backgroundColor
 	//	 */
 	//	public void drawHeaderTrack (Graphics g, MultiGenomeDrawer multiGenomeDrawer, FontMetrics fm, String name, int width, Color backgroundColor) {
 	//		this.multiGenomeDrawer = multiGenomeDrawer;
@@ -168,8 +168,8 @@ public class ForegroundLayer extends AbstractLayer<ForegroundData> implements La
 	//		this.name = name;
 	//		this.width = width;
 	//		this.backgroundColor = backgroundColor;
-	//		
-	//		
+	//
+	//
 	//		// Initializes the modified text length for display
 	//		int trackTextDisplayWidth = 0;
 	//		int legendTextDisplayWidth = 0;
@@ -202,8 +202,8 @@ public class ForegroundLayer extends AbstractLayer<ForegroundData> implements La
 	//
 	//		//repaint(); // if uncommented, the activation/deactivation of the "Show Legend" option in the option dialog takes effect immediately!
 	//	}
-	//	
-	//	
+	//
+	//
 	//	/**
 	//	 * Draws the legend of the stripe in a multi genome project
 	//	 * @param g
@@ -277,7 +277,7 @@ public class ForegroundLayer extends AbstractLayer<ForegroundData> implements La
 	//
 	//				// Gets variant type / color mapping
 	//				Map<VariantType, Color> colors = multiGenomeDrawer.getVariantColorMap(genomeName);
-	//				
+	//
 	//				// Gets the real size of the list
 	//				int colorsSize = colors.size();
 	//
@@ -322,7 +322,7 @@ public class ForegroundLayer extends AbstractLayer<ForegroundData> implements La
 	//		}
 	//
 	//	}
-	//	
+	//
 	//	/**
 	//	 * @return true if the stripe legend has to be drawn, false otherwise.
 	//	 */
@@ -332,9 +332,9 @@ public class ForegroundLayer extends AbstractLayer<ForegroundData> implements La
 	//				multiGenomeDrawer.getStripesList() != null &&
 	//				ProjectManager.getInstance().getProjectConfiguration().isLegend());
 	//	}
-	//	
 	//
-	//	
+	//
+	//
 	//
 	//	/**
 	//	 * @return the legend of the multigenome variant formated in one line

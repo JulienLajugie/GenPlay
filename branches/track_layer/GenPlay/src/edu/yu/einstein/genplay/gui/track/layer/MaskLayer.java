@@ -51,24 +51,26 @@ public class MaskLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList
 	 */
 	public MaskLayer(Track track, ScoredChromosomeWindowList data, String name) {
 		super(track, data, name);
-		this.color = LayerColor.getLayerColor();
+		color = LayerColor.getLayerColor();
 	}
 
 
 	@Override
 	public void draw(Graphics g, int width, int height) {
-		if (getData() != null) {
-			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-			g.setColor(color);
-			List<ScoredChromosomeWindow> chromoStripeList = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
-			if (chromoStripeList != null) {
-				for (ScoredChromosomeWindow currentStripe: chromoStripeList) {
-					int x = projectWindow.genomeToScreenPosition(currentStripe.getStart());
-					int widthWindow = projectWindow.genomeToScreenWidth(currentStripe.getStop() - currentStripe.getStart());
-					if (widthWindow < 1) {
-						widthWindow = 1;
+		if (isVisible()) {
+			if (getData() != null) {
+				ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
+				g.setColor(color);
+				List<ScoredChromosomeWindow> chromoStripeList = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
+				if (chromoStripeList != null) {
+					for (ScoredChromosomeWindow currentStripe: chromoStripeList) {
+						int x = projectWindow.genomeToScreenPosition(currentStripe.getStart());
+						int widthWindow = projectWindow.genomeToScreenWidth(currentStripe.getStop() - currentStripe.getStart());
+						if (widthWindow < 1) {
+							widthWindow = 1;
+						}
+						g.fillRect(x, 0, widthWindow, height);
 					}
-					g.fillRect(x, 0, widthWindow, height);
 				}
 			}
 		}

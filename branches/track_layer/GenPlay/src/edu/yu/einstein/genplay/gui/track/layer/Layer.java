@@ -80,9 +80,9 @@ public interface Layer<T extends Serializable> extends Serializable, Drawer {
 
 
 	/**
-	 * @return true if the layer needs to be hidden
+	 * @return true if the layer is visible, false if hidden
 	 */
-	public abstract boolean isHidden();
+	public abstract boolean isVisible();
 
 
 	/**
@@ -93,10 +93,10 @@ public interface Layer<T extends Serializable> extends Serializable, Drawer {
 
 
 	/**
-	 * Sets if the layer needs to be hidden
-	 * @param isHidden set to true if the layer needs to be hidden
+	 * Sets if the layer is visible or hidden
+	 * @param isVisible set to true if the layer is visible, false if hidden
 	 */
-	public abstract void setHidden(boolean isHidden);
+	public abstract void setVisible(boolean isVisible);
 
 
 	/**

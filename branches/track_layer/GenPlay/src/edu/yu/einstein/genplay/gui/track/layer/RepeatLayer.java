@@ -74,88 +74,90 @@ public class RepeatLayer extends AbstractLayer<RepeatFamilyList> implements Laye
 
 	@Override
 	public void draw(Graphics g, int width, int height) {
-		int currentHeight = SPACE_HEIGHT;
-		if (getData() != null) {
-			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-			List<RepeatFamily> repeatFamilyList = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
-			if ((repeatFamilyList != null) && (repeatFamilyList.size() > 0)) {
-				// calculate how many lines are displayable
-				int displayedLineCount = ((height - SPACE_HEIGHT) / (REPEAT_HEIGHT + (2 * SPACE_HEIGHT))) + 1;
-				// calculate how many scroll on the Y axis are necessary to show all the repeats
-				repeatLinesCount = (familyNames.size() - displayedLineCount) + 2;
-				int currentColor = firstLineToDisplay;
-				// loop for each line of the track
-				for (int i = 0; i < displayedLineCount; i++) {
-					if ((i + firstLineToDisplay) < familyNames.size()) {
-						// retrieve the repeat associated to the current line to draw
-						String familyToDraw = familyNames.get(i + firstLineToDisplay);
-						RepeatFamily currentFamily = null;
-						int indexFamilyToDisplay = 0;
-						while ((currentFamily == null) && (indexFamilyToDisplay < repeatFamilyList.size())) {
-							if (repeatFamilyList.get(indexFamilyToDisplay).getName().equals(familyToDraw)) {
-								currentFamily = repeatFamilyList.get(indexFamilyToDisplay);
+		if (isVisible()) {
+			int currentHeight = SPACE_HEIGHT;
+			if (getData() != null) {
+				ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
+				List<RepeatFamily> repeatFamilyList = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
+				if ((repeatFamilyList != null) && (repeatFamilyList.size() > 0)) {
+					// calculate how many lines are displayable
+					int displayedLineCount = ((height - SPACE_HEIGHT) / (REPEAT_HEIGHT + (2 * SPACE_HEIGHT))) + 1;
+					// calculate how many scroll on the Y axis are necessary to show all the repeats
+					repeatLinesCount = (familyNames.size() - displayedLineCount) + 2;
+					int currentColor = firstLineToDisplay;
+					// loop for each line of the track
+					for (int i = 0; i < displayedLineCount; i++) {
+						if ((i + firstLineToDisplay) < familyNames.size()) {
+							// retrieve the repeat associated to the current line to draw
+							String familyToDraw = familyNames.get(i + firstLineToDisplay);
+							RepeatFamily currentFamily = null;
+							int indexFamilyToDisplay = 0;
+							while ((currentFamily == null) && (indexFamilyToDisplay < repeatFamilyList.size())) {
+								if (repeatFamilyList.get(indexFamilyToDisplay).getName().equals(familyToDraw)) {
+									currentFamily = repeatFamilyList.get(indexFamilyToDisplay);
+								}
+								indexFamilyToDisplay++;
 							}
-							indexFamilyToDisplay++;
-						}
-						// calculate if the background is white or gray
-						if ((currentColor % 2) == 1) {
-							g.setColor(Colors.LIGHT_GREY);
-							if (selectedFamilyName == null) {
-								g.fillRect(0, currentHeight, width, REPEAT_HEIGHT + (2 * SPACE_HEIGHT));
-							} else if ((selectedFamilyName != null) && (selectedFamilyName.equals(familyToDraw))) {
-								g.fillRect(0, 0, width, height);
+							// calculate if the background is white or gray
+							if ((currentColor % 2) == 1) {
+								g.setColor(Colors.LIGHT_GREY);
+								if (selectedFamilyName == null) {
+									g.fillRect(0, currentHeight, width, REPEAT_HEIGHT + (2 * SPACE_HEIGHT));
+								} else if ((selectedFamilyName != null) && (selectedFamilyName.equals(familyToDraw))) {
+									g.fillRect(0, 0, width, height);
+								}
 							}
-						}
-						if ((selectedFamilyName == null) && (highlightedFamilyName != null) && (familyToDraw.equals(highlightedFamilyName))) {
-							g.setColor(Colors.BLACK);
-							g.drawRect(0, currentHeight, width, REPEAT_HEIGHT + (2 * SPACE_HEIGHT) - 1);
-						}
-						currentHeight += SPACE_HEIGHT;
-						// calculate the color of the line
-						g.setColor(intToColor(currentColor));
-						// loop for each repeat of the current family
-						if (currentFamily != null) {
-							for(ChromosomeWindow currentRepeat : currentFamily.getRepeatList()) {
-								if (currentRepeat != null) {
-									int x = projectWindow.genomeToScreenPosition(currentRepeat.getStart());
-									int repeatWidth = projectWindow.genomeToScreenPosition(currentRepeat.getStop()) - x;
-									if (repeatWidth < 1) {
-										repeatWidth = 1;
-									}
-									if (selectedFamilyName == null) {
-										g.fillRect(x, currentHeight, repeatWidth, REPEAT_HEIGHT);
-									} else if ((selectedFamilyName != null) && (selectedFamilyName.equals(familyToDraw))) {
-										g.fillRect(x, 0, repeatWidth, height);
+							if ((selectedFamilyName == null) && (highlightedFamilyName != null) && (familyToDraw.equals(highlightedFamilyName))) {
+								g.setColor(Colors.BLACK);
+								g.drawRect(0, currentHeight, width, (REPEAT_HEIGHT + (2 * SPACE_HEIGHT)) - 1);
+							}
+							currentHeight += SPACE_HEIGHT;
+							// calculate the color of the line
+							g.setColor(intToColor(currentColor));
+							// loop for each repeat of the current family
+							if (currentFamily != null) {
+								for(ChromosomeWindow currentRepeat : currentFamily.getRepeatList()) {
+									if (currentRepeat != null) {
+										int x = projectWindow.genomeToScreenPosition(currentRepeat.getStart());
+										int repeatWidth = projectWindow.genomeToScreenPosition(currentRepeat.getStop()) - x;
+										if (repeatWidth < 1) {
+											repeatWidth = 1;
+										}
+										if (selectedFamilyName == null) {
+											g.fillRect(x, currentHeight, repeatWidth, REPEAT_HEIGHT);
+										} else if ((selectedFamilyName != null) && (selectedFamilyName.equals(familyToDraw))) {
+											g.fillRect(x, 0, repeatWidth, height);
+										}
 									}
 								}
 							}
+							FontMetrics fm = g.getFontMetrics();
+							// calculate the witdh of the text of the repeat name
+							int textWidth = fm.stringWidth(familyToDraw);
+							// draw a rectangle under the text with the color of the background
+							if ((currentColor % 2) == 1) {
+								g.setColor(Colors.LIGHT_GREY);
+							} else {
+								g.setColor(Colors.WHITE);
+							}
+							if (selectedFamilyName == null) {
+								g.fillRect(1, currentHeight, textWidth + 2, REPEAT_HEIGHT);
+							} else if ((selectedFamilyName != null) && (selectedFamilyName.equals(familyToDraw))) {
+								int yTextRect = (height / 2) - (fm.getHeight());
+								int heightTextRect = fm.getHeight() + 5;
+								g.fillRect(1, yTextRect, textWidth + 2, heightTextRect);
+							}
+							currentHeight += REPEAT_HEIGHT;
+							// Write the repeat name
+							g.setColor(intToColor(currentColor));
+							if (selectedFamilyName == null) {
+								g.drawString(familyToDraw, 2, currentHeight);
+							} else if ((selectedFamilyName != null) && (selectedFamilyName.equals(familyToDraw))) {
+								g.drawString(familyToDraw, 2, height / 2);
+							}
+							currentHeight += SPACE_HEIGHT;
+							currentColor++;
 						}
-						FontMetrics fm = g.getFontMetrics();
-						// calculate the witdh of the text of the repeat name
-						int textWidth = fm.stringWidth(familyToDraw);
-						// draw a rectangle under the text with the color of the background
-						if ((currentColor % 2) == 1) {
-							g.setColor(Colors.LIGHT_GREY);
-						} else {
-							g.setColor(Colors.WHITE);
-						}
-						if (selectedFamilyName == null) {
-							g.fillRect(1, currentHeight, textWidth + 2, REPEAT_HEIGHT);
-						} else if ((selectedFamilyName != null) && (selectedFamilyName.equals(familyToDraw))) {
-							int yTextRect = (height / 2) - (fm.getHeight());
-							int heightTextRect = fm.getHeight() + 5;
-							g.fillRect(1, yTextRect, textWidth + 2, heightTextRect);
-						}
-						currentHeight += REPEAT_HEIGHT;
-						// Write the repeat name
-						g.setColor(intToColor(currentColor));
-						if (selectedFamilyName == null) {
-							g.drawString(familyToDraw, 2, currentHeight);
-						} else if ((selectedFamilyName != null) && (selectedFamilyName.equals(familyToDraw))) {
-							g.drawString(familyToDraw, 2, height / 2);
-						}
-						currentHeight += SPACE_HEIGHT;
-						currentColor++;
 					}
 				}
 			}
@@ -186,7 +188,7 @@ public class RepeatLayer extends AbstractLayer<RepeatFamilyList> implements Laye
 	 */
 	private String getFamilyRolledOver(int yPosition) {
 		int repeatHeight = REPEAT_HEIGHT + (2 * SPACE_HEIGHT);
-		int highlightedFamilyIndex = (int) (yPosition / repeatHeight) + firstLineToDisplay;
+		int highlightedFamilyIndex = yPosition / repeatHeight + firstLineToDisplay;
 		if (highlightedFamilyIndex >= familyNames.size()) {
 			return null;
 		} else {

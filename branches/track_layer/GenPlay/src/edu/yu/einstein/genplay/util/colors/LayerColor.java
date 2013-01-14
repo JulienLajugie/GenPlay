@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -28,10 +28,10 @@ import edu.yu.einstein.genplay.gui.track.layer.ColoredLayer;
 
 /**
  * This enumeration contains a single static method that returns
- * a color for a layer. The color is selected amid all 
- * the elements of the enumeration {@link LayerColor}. When all 
+ * a color for a layer. The color is selected amid all
+ * the elements of the enumeration {@link LayerColor}. When all
  * the colors of the enumeration have been selected the algorithm
- * start from the first color again. 
+ * start from the first color again.
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -86,19 +86,28 @@ public enum LayerColor {
 
 
 	/**
-	 * @return a color for a {@link ColoredLayer}. The color is selected amid all 
-	 * the elements of the enumeration {@link LayerColor}. When all 
+	 * @return a color for a {@link ColoredLayer}. The color is selected amid all
+	 * the elements of the enumeration {@link LayerColor}. When all
 	 * the colors of the enumeration have been selected the algorithm
 	 * start from the first color again.
 	 */
 	public static Color getLayerColor() {
 		LayerColor[] trackColors = LayerColor.values();
 		Color currentColor = trackColors[currentColorInt].color;
-		currentColor = new Color(currentColor.getRed(), currentColor.getGreen(), currentColor.getBlue(), DEFAULT_TRANSPARENCY);
+		currentColor = createTransparentColor(currentColor);
 		currentColorInt++;
 		// we want the value to be in the array length range
 		currentColorInt = currentColorInt % trackColors.length;
 		return currentColor;
+	}
+
+
+	/**
+	 * @param color
+	 * @return new Color with the same RGB component as the specified on but transparent
+	 */
+	public static Color createTransparentColor(Color color) {
+		return new Color(color.getRed(), color.getGreen(), color.getBlue(), DEFAULT_TRANSPARENCY);
 	}
 }
 

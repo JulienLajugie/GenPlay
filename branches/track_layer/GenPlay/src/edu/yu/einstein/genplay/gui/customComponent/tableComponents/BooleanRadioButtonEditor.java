@@ -19,54 +19,55 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.customComponent.radioButtonForJTable;
+package edu.yu.einstein.genplay.gui.customComponent.tableComponents;
 
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import javax.swing.BorderFactory;
+import javax.swing.AbstractCellEditor;
 import javax.swing.JRadioButton;
 import javax.swing.JTable;
-import javax.swing.UIManager;
-import javax.swing.border.Border;
-import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableCellEditor;
 
 /**
- * Table renderer that displays a radio button
+ * Table editor that displays a radio button
  * @author Julien Lajugie
  */
-public class BooleanRadioButtonRenderer implements TableCellRenderer {
+public class BooleanRadioButtonEditor extends AbstractCellEditor implements TableCellEditor {
 
-	private final JRadioButton 	radioButton;	// radio button rendered
-	private final Border 		emptyBorder;	// border of the button
+	private static final long serialVersionUID = 2828724045541167111L; // generated serial ID
+
+	private final JRadioButton radioButton;	// radio button
 
 
 	/**
-	 * Default constructor. Create an instance of {@link BooleanRadioButtonRenderer}
+	 * Default constructor. Create an instance of {@link BooleanRadioButtonEditor}
 	 */
-	public BooleanRadioButtonRenderer() {
+	public BooleanRadioButtonEditor() {
 		radioButton = new JRadioButton();
 		radioButton.setHorizontalAlignment(JRadioButton.CENTER);
-		radioButton.setBorderPainted(true);
-		radioButton.setOpaque(true);
-		emptyBorder = BorderFactory.createEmptyBorder(1, 1, 1, 1);
+		radioButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// prevent deselection to mimic button group
+				if (!radioButton.isSelected()) {
+					cancelCellEditing();
+				}
+				stopCellEditing();
+			}
+		});
 	}
 
 
 	@Override
-	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
-		if (isSelected) {
-			radioButton.setBackground(table.getSelectionBackground());
-			radioButton.setForeground(table.getSelectionForeground());
-		} else {
-			radioButton.setBackground(table.getBackground());
-			radioButton.setForeground(table.getForeground());
-		}
-		if (hasFocus) {
-			radioButton.setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
-		} else {
-			radioButton.setBorder(emptyBorder);
-		}
+	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int col) {
 		radioButton.setSelected((Boolean)value);
 		return radioButton;
+	}
+
+
+	@Override
+	public Object getCellEditorValue() {
+		return Boolean.valueOf(radioButton.isSelected());
 	}
 }

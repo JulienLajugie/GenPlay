@@ -43,7 +43,7 @@ public abstract class AbstractLayer<T extends Serializable> implements Layer<T> 
 	private transient Track 	track;									// track in which the layer is displayed
 	private T 					data;									// data displayed in the layer
 	private String				name;									// name of the layer
-	private boolean 			isHidden;								// true if the layer needs to be hidden
+	private boolean 			isVisible;								// true if the layer is visible, false if hidden
 
 
 	/**
@@ -75,7 +75,7 @@ public abstract class AbstractLayer<T extends Serializable> implements Layer<T> 
 		this.data = data;
 		this.track = track;
 		this.name = name;
-		this.isHidden = false;
+		isVisible = true;
 	}
 
 
@@ -110,8 +110,8 @@ public abstract class AbstractLayer<T extends Serializable> implements Layer<T> 
 
 
 	@Override
-	public boolean isHidden() {
-		return isHidden;
+	public boolean isVisible() {
+		return isVisible;
 	}
 
 
@@ -126,7 +126,7 @@ public abstract class AbstractLayer<T extends Serializable> implements Layer<T> 
 		in.readInt();
 		data = (T)in.readObject();
 		name = (String) in.readObject();
-		isHidden = in.readBoolean();
+		isVisible = in.readBoolean();
 	}
 
 
@@ -138,8 +138,8 @@ public abstract class AbstractLayer<T extends Serializable> implements Layer<T> 
 
 
 	@Override
-	public void setHidden(boolean isHidden) {
-		this.isHidden = isHidden;
+	public void setVisible(boolean isVisible) {
+		this.isVisible = isVisible;
 	}
 
 
@@ -164,6 +164,6 @@ public abstract class AbstractLayer<T extends Serializable> implements Layer<T> 
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeObject(data);
 		out.writeObject(name);
-		out.writeBoolean(isHidden);
+		out.writeBoolean(isVisible);
 	}
 }

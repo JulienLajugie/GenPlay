@@ -67,7 +67,7 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 	private Gene 							geneUnderMouse = null;			// gene under the cursor of the mouse
 	private double 							min;							// minimum score of the GeneList to display
 	private double							max;							// maximum score of the GeneList to display
-	
+
 
 	/**
 	 * Creates an instance of a {@link GeneLayer}
@@ -91,107 +91,109 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 	 */
 	@Override
 	public void draw(Graphics g, int width, int height) {
-		// we retrieve the project window
-		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-		// we retrieve the minimum and maximum scores displayed in the track
-		double max = getTrack().getScore().getMaximumScore();
-		double min = getTrack().getScore().getMinimumScore();
-		// we print the gene names if the x ratio > MIN_X_RATIO_PRINT_NAME
-		boolean isGeneNamePrinted = projectWindow.getXRatio() > MIN_X_RATIO_PRINT_NAME;
-		// set the data font metrics
-		getData().setFontMetrics(g.getFontMetrics());
-		// Retrieve the genes to print
-		List<List<Gene>> genesToPrint = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
-		if ((genesToPrint != null) && (genesToPrint.size() > 0)){
-			// Compute the maximum number of line displayable
-			int displayedLineCount = 0;
-			if (isGeneNamePrinted) {
-				displayedLineCount = ((height - (2 * GENE_HEIGHT)) / (GENE_HEIGHT * 3)) + 1;
-			} else {
-				displayedLineCount = ((height - GENE_HEIGHT) / (GENE_HEIGHT * 2)) + 1;
-			}
-			// calculate how many scroll on the Y axis are necessary to show all the genes
-			geneLinesCount = (genesToPrint.size() - displayedLineCount) + 2;
-			// For each line of genes on the screen
-			for (int i = 0; i < displayedLineCount; i++) {
-				// Calculate the height of the gene
-				int currentHeight;
+		if (isVisible()) {
+			// we retrieve the project window
+			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
+			// we retrieve the minimum and maximum scores displayed in the track
+			double max = getTrack().getScore().getMaximumScore();
+			double min = getTrack().getScore().getMinimumScore();
+			// we print the gene names if the x ratio > MIN_X_RATIO_PRINT_NAME
+			boolean isGeneNamePrinted = projectWindow.getXRatio() > MIN_X_RATIO_PRINT_NAME;
+			// set the data font metrics
+			getData().setFontMetrics(g.getFontMetrics());
+			// Retrieve the genes to print
+			List<List<Gene>> genesToPrint = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
+			if ((genesToPrint != null) && (genesToPrint.size() > 0)){
+				// Compute the maximum number of line displayable
+				int displayedLineCount = 0;
 				if (isGeneNamePrinted) {
-					currentHeight = (i * (GENE_HEIGHT * 3)) + (2 * GENE_HEIGHT);
+					displayedLineCount = ((height - (2 * GENE_HEIGHT)) / (GENE_HEIGHT * 3)) + 1;
 				} else {
-					currentHeight = (i * (GENE_HEIGHT * 2)) + GENE_HEIGHT;
+					displayedLineCount = ((height - GENE_HEIGHT) / (GENE_HEIGHT * 2)) + 1;
 				}
-				// Calculate which line has to be printed depending on the position of the scroll bar
-				int currentLine = i + firstLineToDisplay;
-				if (currentLine < genesToPrint.size()) {
-					// For each gene of the current line
-					for (Gene geneToPrint : genesToPrint.get(currentLine)) {
-						// retrieve the screen x coordinate of the start and stop position
-						int x1 = projectWindow.genomeToScreenPosition(geneToPrint.getStart());
-						int x2 = projectWindow.genomeToScreenPosition(geneToPrint.getStop());
-						if (x2 != 0) {
-							// Choose the color depending on if the gene is under the mouse and on the strand
-							boolean isHighlighted = ((geneUnderMouse != null) && (geneToPrint.equals(geneUnderMouse)));
-							g.setColor(GenPlayColor.geneToColor(geneToPrint.getStrand(), isHighlighted));
-							// Draw the gene
-							g.drawLine(x1, currentHeight, x2, currentHeight);
-							// Draw the name of the gene if the zoom is small enough
-							if (isGeneNamePrinted) {
-								String geneName = geneToPrint.getName();
-								if (geneToPrint.getStart() < projectWindow.getGenomeWindow().getStart()) {
-									int newX = (int)Math.round((geneToPrint.getStart() - projectWindow.getGenomeWindow().getStart()) * projectWindow.getXRatio());	// former method
-									g.drawString(geneName, newX, currentHeight - 1);
-								} else {
-									g.drawString(geneName, x1, currentHeight - 1);
+				// calculate how many scroll on the Y axis are necessary to show all the genes
+				geneLinesCount = (genesToPrint.size() - displayedLineCount) + 2;
+				// For each line of genes on the screen
+				for (int i = 0; i < displayedLineCount; i++) {
+					// Calculate the height of the gene
+					int currentHeight;
+					if (isGeneNamePrinted) {
+						currentHeight = (i * (GENE_HEIGHT * 3)) + (2 * GENE_HEIGHT);
+					} else {
+						currentHeight = (i * (GENE_HEIGHT * 2)) + GENE_HEIGHT;
+					}
+					// Calculate which line has to be printed depending on the position of the scroll bar
+					int currentLine = i + firstLineToDisplay;
+					if (currentLine < genesToPrint.size()) {
+						// For each gene of the current line
+						for (Gene geneToPrint : genesToPrint.get(currentLine)) {
+							// retrieve the screen x coordinate of the start and stop position
+							int x1 = projectWindow.genomeToScreenPosition(geneToPrint.getStart());
+							int x2 = projectWindow.genomeToScreenPosition(geneToPrint.getStop());
+							if (x2 != 0) {
+								// Choose the color depending on if the gene is under the mouse and on the strand
+								boolean isHighlighted = ((geneUnderMouse != null) && (geneToPrint.equals(geneUnderMouse)));
+								g.setColor(GenPlayColor.geneToColor(geneToPrint.getStrand(), isHighlighted));
+								// Draw the gene
+								g.drawLine(x1, currentHeight, x2, currentHeight);
+								// Draw the name of the gene if the zoom is small enough
+								if (isGeneNamePrinted) {
+									String geneName = geneToPrint.getName();
+									if (geneToPrint.getStart() < projectWindow.getGenomeWindow().getStart()) {
+										int newX = (int)Math.round((geneToPrint.getStart() - projectWindow.getGenomeWindow().getStart()) * projectWindow.getXRatio());	// former method
+										g.drawString(geneName, newX, currentHeight - 1);
+									} else {
+										g.drawString(geneName, x1, currentHeight - 1);
+									}
 								}
-							}
-							// For each exon of the current gene
-							if (geneToPrint.getExonStarts() != null) {
-								for (int j = 0; j < geneToPrint.getExonStarts().length; j++) {
-									int exonX = projectWindow.genomeToScreenPosition(geneToPrint.getExonStarts()[j]);
-									if (geneToPrint.getExonStops()[j] >= projectWindow.getGenomeWindow().getStart()) {
-										int exonWidth = projectWindow.genomeToScreenPosition(geneToPrint.getExonStops()[j]) - exonX;
-										if (exonWidth < 1) {
-											exonWidth = 1;
-										}
-										// if we have some exon score values
-										if (geneToPrint.getExonScores() != null) {
-											// if we have just one exon score
-											if (geneToPrint.getExonScores().length == 1) {
-												g.setColor(GenPlayColor.scoreToColor(geneToPrint.getExonScores()[0], min, max));
-											} else { // if we have values for each exon
-												g.setColor(GenPlayColor.scoreToColor(geneToPrint.getExonScores()[j], min, max));
+								// For each exon of the current gene
+								if (geneToPrint.getExonStarts() != null) {
+									for (int j = 0; j < geneToPrint.getExonStarts().length; j++) {
+										int exonX = projectWindow.genomeToScreenPosition(geneToPrint.getExonStarts()[j]);
+										if (geneToPrint.getExonStops()[j] >= projectWindow.getGenomeWindow().getStart()) {
+											int exonWidth = projectWindow.genomeToScreenPosition(geneToPrint.getExonStops()[j]) - exonX;
+											if (exonWidth < 1) {
+												exonWidth = 1;
 											}
-										}
-										// case where the exon is not at all in a UTR (untranslated region)
-										if ((geneToPrint.getExonStarts()[j] >= geneToPrint.getUTR5Bound()) && (geneToPrint.getExonStops()[j] <= geneToPrint.getUTR3Bound())) {
-											g.fillRect(exonX, currentHeight + 1, exonWidth, GENE_HEIGHT);
-										} else {
-											// case where the whole exon is in a UTR
-											if ((geneToPrint.getExonStops()[j] <= geneToPrint.getUTR5Bound()) || (geneToPrint.getExonStarts()[j] >= geneToPrint.getUTR3Bound())) {
-												g.fillRect(exonX, currentHeight + 1, exonWidth, UTR_HEIGHT);
+											// if we have some exon score values
+											if (geneToPrint.getExonScores() != null) {
+												// if we have just one exon score
+												if (geneToPrint.getExonScores().length == 1) {
+													g.setColor(GenPlayColor.scoreToColor(geneToPrint.getExonScores()[0], min, max));
+												} else { // if we have values for each exon
+													g.setColor(GenPlayColor.scoreToColor(geneToPrint.getExonScores()[j], min, max));
+												}
+											}
+											// case where the exon is not at all in a UTR (untranslated region)
+											if ((geneToPrint.getExonStarts()[j] >= geneToPrint.getUTR5Bound()) && (geneToPrint.getExonStops()[j] <= geneToPrint.getUTR3Bound())) {
+												g.fillRect(exonX, currentHeight + 1, exonWidth, GENE_HEIGHT);
 											} else {
-												// case where the exon is in both UTR
-												if ((geneToPrint.getExonStarts()[j] <= geneToPrint.getUTR5Bound()) && (geneToPrint.getExonStops()[j] >= geneToPrint.getUTR3Bound())) {
-													int UTR5Width = projectWindow.genomeToScreenPosition(geneToPrint.getUTR5Bound()) - exonX;
-													int TRWidth = projectWindow.genomeToScreenPosition(geneToPrint.getUTR3Bound()) - exonX - UTR5Width;
-													int UTR3Width = exonWidth - UTR5Width - TRWidth;
-													g.fillRect(exonX, currentHeight + 1, UTR5Width, UTR_HEIGHT);
-													g.fillRect(exonX + UTR5Width, currentHeight + 1, TRWidth, GENE_HEIGHT);
-													g.fillRect(exonX + UTR5Width + TRWidth, currentHeight + 1, UTR3Width, UTR_HEIGHT);
-
+												// case where the whole exon is in a UTR
+												if ((geneToPrint.getExonStops()[j] <= geneToPrint.getUTR5Bound()) || (geneToPrint.getExonStarts()[j] >= geneToPrint.getUTR3Bound())) {
+													g.fillRect(exonX, currentHeight + 1, exonWidth, UTR_HEIGHT);
 												} else {
-													// case where part of the exon is in the UTR and part is not
-													if ((geneToPrint.getExonStarts()[j] <= geneToPrint.getUTR5Bound()) && (geneToPrint.getExonStops()[j] >= geneToPrint.getUTR5Bound())) {
-														// case where part is in the 5'UTR
-														int UTRWidth = projectWindow.genomeToScreenPosition(geneToPrint.getUTR5Bound()) - exonX;
-														g.fillRect(exonX, currentHeight + 1, UTRWidth, UTR_HEIGHT);
-														g.fillRect(exonX + UTRWidth, currentHeight + 1, exonWidth - UTRWidth, GENE_HEIGHT);
-													} else if ((geneToPrint.getExonStarts()[j] <= geneToPrint.getUTR3Bound()) && (geneToPrint.getExonStops()[j] >= geneToPrint.getUTR3Bound())) {
-														// case where part is in the 3' UTR
-														int TRWidth = projectWindow.genomeToScreenPosition(geneToPrint.getUTR3Bound()) - exonX; // TRWidth is the with of the TRANSLATED region
-														g.fillRect(exonX, currentHeight + 1, TRWidth, GENE_HEIGHT);
-														g.fillRect(exonX + TRWidth, currentHeight + 1, exonWidth - TRWidth, UTR_HEIGHT);
+													// case where the exon is in both UTR
+													if ((geneToPrint.getExonStarts()[j] <= geneToPrint.getUTR5Bound()) && (geneToPrint.getExonStops()[j] >= geneToPrint.getUTR3Bound())) {
+														int UTR5Width = projectWindow.genomeToScreenPosition(geneToPrint.getUTR5Bound()) - exonX;
+														int TRWidth = projectWindow.genomeToScreenPosition(geneToPrint.getUTR3Bound()) - exonX - UTR5Width;
+														int UTR3Width = exonWidth - UTR5Width - TRWidth;
+														g.fillRect(exonX, currentHeight + 1, UTR5Width, UTR_HEIGHT);
+														g.fillRect(exonX + UTR5Width, currentHeight + 1, TRWidth, GENE_HEIGHT);
+														g.fillRect(exonX + UTR5Width + TRWidth, currentHeight + 1, UTR3Width, UTR_HEIGHT);
+
+													} else {
+														// case where part of the exon is in the UTR and part is not
+														if ((geneToPrint.getExonStarts()[j] <= geneToPrint.getUTR5Bound()) && (geneToPrint.getExonStops()[j] >= geneToPrint.getUTR5Bound())) {
+															// case where part is in the 5'UTR
+															int UTRWidth = projectWindow.genomeToScreenPosition(geneToPrint.getUTR5Bound()) - exonX;
+															g.fillRect(exonX, currentHeight + 1, UTRWidth, UTR_HEIGHT);
+															g.fillRect(exonX + UTRWidth, currentHeight + 1, exonWidth - UTRWidth, GENE_HEIGHT);
+														} else if ((geneToPrint.getExonStarts()[j] <= geneToPrint.getUTR3Bound()) && (geneToPrint.getExonStops()[j] >= geneToPrint.getUTR3Bound())) {
+															// case where part is in the 3' UTR
+															int TRWidth = projectWindow.genomeToScreenPosition(geneToPrint.getUTR3Bound()) - exonX; // TRWidth is the with of the TRANSLATED region
+															g.fillRect(exonX, currentHeight + 1, TRWidth, GENE_HEIGHT);
+															g.fillRect(exonX + TRWidth, currentHeight + 1, exonWidth - TRWidth, UTR_HEIGHT);
+														}
 													}
 												}
 											}
@@ -391,8 +393,8 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 			mouseStartDragY = e.getY();
 		}
 	}
-	
-	
+
+
 	@Override
 	public void mouseReleased(MouseEvent e) {}
 

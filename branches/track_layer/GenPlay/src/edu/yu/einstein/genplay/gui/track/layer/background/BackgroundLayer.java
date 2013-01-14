@@ -28,8 +28,8 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.AbstractLayer;
+import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
@@ -56,7 +56,7 @@ public class BackgroundLayer extends AbstractLayer<BackgroundData> implements La
 
 	@Override
 	public void draw(Graphics g, int width, int height) {
-		if (!isHidden()) {
+		if (isVisible()) {
 			drawVerticalLines(g, width, height);
 			drawHorizontalLines(g, width, height);
 		}
@@ -74,11 +74,11 @@ public class BackgroundLayer extends AbstractLayer<BackgroundData> implements La
 			double scoreMin = getTrack().getScore().getMinimumScore();
 			double scoreMax = getTrack().getScore().getMaximumScore();
 			int horizontalLineCount = getData().getHorizontalLineCount();
-			double scoreGapBetweenLineY = (scoreMax - scoreMin) / (double)horizontalLineCount;
+			double scoreGapBetweenLineY = (scoreMax - scoreMin) / horizontalLineCount;
 			double intensityFirstLineY = scoreMin - (scoreMin % scoreGapBetweenLineY);
 			g.setColor(Colors.LIGHT_GREY);
 			for(int i = 0; i <= horizontalLineCount; i++) {
-				double intensityLineY = ((double) i) * scoreGapBetweenLineY + intensityFirstLineY;
+				double intensityLineY = ((i) * scoreGapBetweenLineY) + intensityFirstLineY;
 				if (intensityLineY >= scoreMin) {
 					int screenLineY = getTrack().getScore().scoreToScreenPosition(intensityLineY);
 					g.drawLine(0, screenLineY, width, screenLineY);

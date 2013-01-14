@@ -65,24 +65,26 @@ public class BinLayer extends AbstractVersionedLayer<BinList> implements Layer<B
 
 	@Override
 	public void draw(Graphics g, int width, int height) {
-		Graphics2D g2D = (Graphics2D)g;
-		switch(getGraphType()) {
-		case BAR:
-			g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-			drawBarGraph(g, width, height);
-			break;
-		case CURVE:
-			g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			drawCurveGraph(g, width, height);
-			break;
-		case POINTS:
-			g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-			drawPointGraph(g, width, height);
-			break;
-		case DENSE:
-			g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-			drawDenseGraph(g, width, height);
-			break;
+		if (isVisible()) {
+			Graphics2D g2D = (Graphics2D)g;
+			switch(getGraphType()) {
+			case BAR:
+				g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+				drawBarGraph(g, width, height);
+				break;
+			case CURVE:
+				g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+				drawCurveGraph(g, width, height);
+				break;
+			case POINTS:
+				g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+				drawPointGraph(g, width, height);
+				break;
+			case DENSE:
+				g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+				drawDenseGraph(g, width, height);
+				break;
+			}
 		}
 	}
 

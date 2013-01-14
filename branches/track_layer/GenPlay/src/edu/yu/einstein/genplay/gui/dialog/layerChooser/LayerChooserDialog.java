@@ -40,8 +40,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
-import edu.yu.einstein.genplay.gui.customComponent.radioButtonForJTable.BooleanRadioButtonEditor;
-import edu.yu.einstein.genplay.gui.customComponent.radioButtonForJTable.BooleanRadioButtonRenderer;
+import edu.yu.einstein.genplay.gui.customComponent.tableComponents.BooleanRadioButtonEditor;
+import edu.yu.einstein.genplay.gui.customComponent.tableComponents.BooleanRadioButtonRenderer;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;

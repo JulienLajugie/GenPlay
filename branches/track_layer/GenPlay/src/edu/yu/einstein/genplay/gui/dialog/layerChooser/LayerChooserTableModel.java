@@ -76,7 +76,7 @@ class LayerChooserTableModel extends AbstractTableModel {
 		for (int row = 0; row < getRowCount(); row++) {
 			if ((Boolean)getValueAt(row, LayerChooserDialog.LAYER_SELECTION_INDEX) && (row != selectedRow)) {
 				setValueAt(false, row, LayerChooserDialog.LAYER_SELECTION_INDEX);
-				fireTableCellUpdated(row, LayerChooserDialog.LAYER_SELECTION_INDEX);
+				// fireTableCellUpdated(row, LayerChooserDialog.LAYER_SELECTION_INDEX);
 			}
 		}
 	}

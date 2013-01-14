@@ -57,7 +57,7 @@ public class NucleotideLayer extends AbstractLayer<DisplayableListOfLists<Nucleo
 	private Integer 	baseUnderMouseIndex = null;									// index of the base under the mouse
 	private boolean		nucleotidePrinted = false;									// true if the nucleotide are printed
 
-	
+
 	/**
 	 * Creates an instance of a {@link NucleotideLayer}
 	 * @param track track containing the layer
@@ -76,12 +76,14 @@ public class NucleotideLayer extends AbstractLayer<DisplayableListOfLists<Nucleo
 
 	@Override
 	public void draw(Graphics g, int width, int height) {
-		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-		long baseToPrintCount = projectWindow.getGenomeWindow().getSize();
-		// if there is enough room to print something
-		nucleotidePrinted = (baseToPrintCount <= width);
-		drawNucleotideBackgrounds(g, width, height);
-		drawNucleotideLetters(g, width, height);
+		if (isVisible()) {
+			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
+			long baseToPrintCount = projectWindow.getGenomeWindow().getSize();
+			// if there is enough room to print something
+			nucleotidePrinted = (baseToPrintCount <= width);
+			drawNucleotideBackgrounds(g, width, height);
+			drawNucleotideLetters(g, width, height);
+		}
 	}
 
 

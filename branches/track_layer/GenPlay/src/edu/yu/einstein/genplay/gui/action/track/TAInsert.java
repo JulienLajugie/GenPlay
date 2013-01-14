@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -32,7 +32,6 @@ import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.track.Track;
 
 
-
 /**
  * Inserts a blank track
  * @author Julien Lajugie
@@ -45,8 +44,8 @@ public class TAInsert extends TrackListAction {
 	private static final String DESCRIPTION = "Insert a blank track " +
 			"right above the selected track"; 								// tooltip
 	private static final int 	MNEMONIC = KeyEvent.VK_I; 					// mnemonic key
-	
-	
+
+
 	/**
 	 * action accelerator {@link KeyStroke}
 	 */
@@ -56,7 +55,7 @@ public class TAInsert extends TrackListAction {
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "TAInsert";
+	public static final String ACTION_KEY = TAInsert.class.getName();
 
 
 	/**
@@ -77,7 +76,7 @@ public class TAInsert extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		Track selectedTrack = getTrackListPanel().getSelectedTrack(); 
+		Track selectedTrack = getTrackListPanel().getSelectedTrack();
 		if (selectedTrack != null) {
 			int trackIndex = getTrackListPanel().getModel().indexOf(selectedTrack);
 			Track newTrack = new Track(trackIndex);

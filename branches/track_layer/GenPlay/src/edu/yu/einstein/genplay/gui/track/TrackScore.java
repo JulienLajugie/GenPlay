@@ -64,7 +64,7 @@ public class TrackScore implements Serializable {
 	public Double getCurrentScore() {
 		if (getTrack() != null) {
 			Layer<?> activeLayer = getTrack().getActiveLayer();
-			if ((activeLayer != null) && (activeLayer instanceof ScoredLayer)) {
+			if ((activeLayer != null) && (activeLayer instanceof ScoredLayer) && (activeLayer.isVisible())) {
 				return ((ScoredLayer)activeLayer).getCurrentScoreToDisplay();
 			}
 		}

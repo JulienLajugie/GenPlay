@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -25,6 +25,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 import javax.swing.ActionMap;
+import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
@@ -43,8 +44,8 @@ public final class TADelete extends TrackListAction {
 	private static final String ACTION_NAME = "Delete";						// action name
 	private static final String DESCRIPTION = "Delete the selected track"; 	// tooltip
 	private static final int 	MNEMONIC = KeyEvent.VK_D; 					// mnemonic key
-	
-	
+
+
 	/**
 	 * action accelerator {@link KeyStroke}
 	 */
@@ -77,7 +78,9 @@ public final class TADelete extends TrackListAction {
 	public void actionPerformed(ActionEvent arg0) {
 		Track selectedTrack = getTrackListPanel().getSelectedTrack();
 		if (selectedTrack != null) {
-			getTrackListPanel().getModel().deleteTrack(selectedTrack);
+			if (JOptionPane.showConfirmDialog(getRootPane(), "Do you really want to delete the track \"" + selectedTrack.getName() + "\"?", "Delete Track", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+				getTrackListPanel().getModel().deleteTrack(selectedTrack);
+			}
 		}
 	}
 }
