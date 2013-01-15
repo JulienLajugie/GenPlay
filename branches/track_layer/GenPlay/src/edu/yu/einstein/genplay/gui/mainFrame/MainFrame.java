@@ -73,7 +73,6 @@ import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 import edu.yu.einstein.genplay.gui.popupMenu.MainMenu;
 import edu.yu.einstein.genplay.gui.statusBar.StatusBar;
-import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.ruler.Ruler;
 import edu.yu.einstein.genplay.gui.trackList.TrackListModel;
 import edu.yu.einstein.genplay.gui.trackList.TrackListPanel;
@@ -121,8 +120,10 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		if (instance != null) {
 			ProjectManager.getInstance().updateChromosomeList();
 			instance.getControlPanel().reinitChromosomePanel();
+			// creates a new model and register the tracks to the project window manager
 			TrackListModel trackListModel = new TrackListModel();
 			instance.getTrackListPanel().setModel(trackListModel);
+			ProjectManager.getInstance().getProjectWindow().removeAllListeners();
 			instance.setTitle();
 			instance.getStatusBar().reinit();
 		}
@@ -188,8 +189,10 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		gbc.weighty = 0;
 		add(statusBar, gbc);
 
-		// register to the genome window manager
-		registerToGenomeWindow();
+		// register to the genome window manager so it can be notified when the project window changes
+		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
+		projectWindow.addGenomeWindowListener(this);
+
 		// create actions
 		setActionMap();
 		// add shortcuts
@@ -305,20 +308,6 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		ruler.lock();
 		trackListPanel.lockTrackHandles();
 		controlPanel.lock();
-	}
-
-
-	/**
-	 * Registers every control panel components to the genome window manager.
-	 */
-	public void registerToGenomeWindow () {
-		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-		projectWindow.addGenomeWindowListener(this);
-		projectWindow.addGenomeWindowListener(ruler);
-		controlPanel.registerToGenomeWindow();
-		for (Track track: getTrackListPanel().getModel().getTracks()) {
-			projectWindow.addGenomeWindowListener(track);
-		}
 	}
 
 

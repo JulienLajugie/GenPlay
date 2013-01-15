@@ -186,10 +186,12 @@ public class NucleotideLayer extends AbstractLayer<DisplayableListOfLists<Nucleo
 	 */
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		if (baseUnderMouseIndex != null) {
-			baseUnderMouseIndex = null;
-			getTrack().getGraphicsPanel().setToolTipText(null);
-			getTrack().repaint();
+		if (isVisible()) {
+			if (baseUnderMouseIndex != null) {
+				baseUnderMouseIndex = null;
+				getTrack().getGraphicsPanel().setToolTipText(null);
+				getTrack().repaint();
+			}
 		}
 	}
 
@@ -216,33 +218,35 @@ public class NucleotideLayer extends AbstractLayer<DisplayableListOfLists<Nucleo
 	 */
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		getTrack().setToolTipText("");
-		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-		Integer oldBaseUnderMouseIndex = baseUnderMouseIndex;
-		baseUnderMouseIndex = null;
-		if (!ScrollingManager.getInstance().isScrollingEnabled()) {
-			// if the zoom is too out we can't print the bases and so there is none under the mouse
-			if (nucleotidePrinted) {
-				// retrieve the position of the mouse
-				Point mousePosition = e.getPoint();
-				// retrieve the list of the printed nucleotides
-				Nucleotide[] printedBases = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
-				// do nothing if there is no genes
-				if (printedBases != null) {
-					double distance = projectWindow.screenToGenomeWidth(mousePosition.x);
-					distance = Math.floor(distance);
-					baseUnderMouseIndex = (int) distance;
-					// we repaint the track only if the gene under the mouse changed
-					if (((oldBaseUnderMouseIndex == null) && (baseUnderMouseIndex != null))
-							|| ((oldBaseUnderMouseIndex != null) && (!oldBaseUnderMouseIndex.equals(baseUnderMouseIndex)))) {
-						getTrack().repaint();
+		if (isVisible()) {
+			getTrack().setToolTipText("");
+			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
+			Integer oldBaseUnderMouseIndex = baseUnderMouseIndex;
+			baseUnderMouseIndex = null;
+			if (!ScrollingManager.getInstance().isScrollingEnabled()) {
+				// if the zoom is too out we can't print the bases and so there is none under the mouse
+				if (nucleotidePrinted) {
+					// retrieve the position of the mouse
+					Point mousePosition = e.getPoint();
+					// retrieve the list of the printed nucleotides
+					Nucleotide[] printedBases = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
+					// do nothing if there is no genes
+					if (printedBases != null) {
+						double distance = projectWindow.screenToGenomeWidth(mousePosition.x);
+						distance = Math.floor(distance);
+						baseUnderMouseIndex = (int) distance;
+						// we repaint the track only if the gene under the mouse changed
+						if (((oldBaseUnderMouseIndex == null) && (baseUnderMouseIndex != null))
+								|| ((oldBaseUnderMouseIndex != null) && (!oldBaseUnderMouseIndex.equals(baseUnderMouseIndex)))) {
+							getTrack().repaint();
+						}
 					}
 				}
-			}
-			if (baseUnderMouseIndex != null) {
-				Nucleotide nucleotide = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio())[baseUnderMouseIndex];
-				if (nucleotide != null) {
-					getTrack().setToolTipText(nucleotide.name());
+				if (baseUnderMouseIndex != null) {
+					Nucleotide nucleotide = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio())[baseUnderMouseIndex];
+					if (nucleotide != null) {
+						getTrack().setToolTipText(nucleotide.name());
+					}
 				}
 			}
 		}

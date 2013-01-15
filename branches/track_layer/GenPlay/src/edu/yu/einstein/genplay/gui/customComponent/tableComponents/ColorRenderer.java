@@ -52,15 +52,24 @@ public class ColorRenderer extends JLabel implements TableCellRenderer {
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object color, boolean isSelected, boolean hasFocus,int row, int column) {
 		Color newColor = (Color)color;
-		setBackground(newColor);
-		if (isBordered) {
-			Border border;
+		if (newColor == null) {
 			if (isSelected) {
-				border = BorderFactory.createMatteBorder(2, 5, 2, 5, table.getSelectionBackground());
+				setBackground(table.getSelectionBackground());
 			} else {
-				border = BorderFactory.createMatteBorder(2, 5, 2, 5, table.getBackground());
+				setBackground(table.getBackground());
 			}
-			setBorder(border);
+			setBorder(null);
+		} else {
+			setBackground(newColor);
+			if (isBordered) {
+				Border border;
+				if (isSelected) {
+					border = BorderFactory.createMatteBorder(2, 5, 2, 5, table.getSelectionBackground());
+				} else {
+					border = BorderFactory.createMatteBorder(2, 5, 2, 5, table.getBackground());
+				}
+				setBorder(border);
+			}
 		}
 		return this;
 	}

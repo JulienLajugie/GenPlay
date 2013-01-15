@@ -98,6 +98,9 @@ public final class ControlPanel extends JPanel {
 		gbc.weightx = 1;
 		gbc.gridwidth = 1;
 		add(genomeWindowPanel, gbc);
+
+		// register the control panel to the project window manager so the control panel can be notified when the project window changes
+		registerToGenomeWindow();
 	}
 
 
@@ -207,7 +210,7 @@ public final class ControlPanel extends JPanel {
 	/**
 	 * Registers every control panel components to the genome window manager.
 	 */
-	public void registerToGenomeWindow () {
+	private void registerToGenomeWindow () {
 		projectWindow.addGenomeWindowListener(chromosomePanel);
 		projectWindow.addGenomeWindowListener(genomeWindowPanel);
 		projectWindow.addGenomeWindowListener(topPanel);

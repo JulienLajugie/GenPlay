@@ -23,6 +23,8 @@ package edu.yu.einstein.genplay.gui.track.layer.foreground;
 
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackConstants;
@@ -39,8 +41,8 @@ import edu.yu.einstein.genplay.util.colors.Colors;
  */
 public class ForegroundLayer extends AbstractLayer<ForegroundData> implements Layer<ForegroundData> {
 
-
 	private static final long serialVersionUID = -6813481315069255351L; // generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 
 
 	/**
@@ -146,6 +148,27 @@ public class ForegroundLayer extends AbstractLayer<ForegroundData> implements La
 	@Override
 	public LayerType getType() {
 		return LayerType.FOREGROUND_LAYER;
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 	}
 
 

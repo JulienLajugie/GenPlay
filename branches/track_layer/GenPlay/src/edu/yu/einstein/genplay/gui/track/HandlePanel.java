@@ -43,7 +43,6 @@ import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEvent;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventType;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackListener;
-import edu.yu.einstein.genplay.gui.track.TrackConstants;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 /**
@@ -59,11 +58,11 @@ public final class HandlePanel extends JPanel implements MouseListener, MouseMot
 	private static final int 	MOVE_RESIZE_ZONE_HEIGHT = 10;	// height of the resize zone
 	private static final String FONT_NAME = "ARIAL";			// name of the font
 	private static final int 	FONT_SIZE = 12;					// size of the font
+	private transient int 		startDragY = 0; 				// height of the mouse when start dragging
+	private transient int		newHeight = 0;					// seize of the track after resizing by dragging
+	private transient boolean 	isTrackDragged = false;			// true if the user is dragging the track
+	private transient boolean	isSelected = false;				// true if the track is selected
 	private int					number;							// number of the track
-	private int 				startDragY = 0; 				// height of the mouse when start dragging
-	private int					newHeight = 0;					// seize of the track after resizing by dragging
-	private boolean 			isTrackDragged = false;			// true if the user is dragging the track
-	private boolean				isSelected = false;				// true if the track is selected
 	private JLabel 				jlNumber;						// label with the number of the track
 	private List<TrackListener> trackListeners;					// list of track listeners
 
@@ -171,7 +170,7 @@ public final class HandlePanel extends JPanel implements MouseListener, MouseMot
 	public void mouseDragged(MouseEvent arg0) {
 		if (startDragY != 0) {
 			// we compute the new size of the track
-			newHeight = getHeight() + arg0.getY() - startDragY;
+			newHeight = (getHeight() + arg0.getY()) - startDragY;
 			// we make sure that the new size is not smaller than the minimum height
 			newHeight = Math.max(TrackConstants.TRACK_MINIMUM_HEIGHT, newHeight);
 			// we notify the listeners that the size has been changed
@@ -252,9 +251,11 @@ public final class HandlePanel extends JPanel implements MouseListener, MouseMot
 	 * @param trackEventType track event type
 	 */
 	public void notifyTrackListeners(TrackEventType trackEventType) {
-		TrackEvent trackEvent = new TrackEvent(this, trackEventType);
-		for (TrackListener listener: trackListeners) {
-			listener.trackChanged(trackEvent);
+		if (trackListeners != null) {
+			TrackEvent trackEvent = new TrackEvent(this, trackEventType);
+			for (TrackListener listener: trackListeners) {
+				listener.trackChanged(trackEvent);
+			}
 		}
 	}
 
@@ -270,9 +271,11 @@ public final class HandlePanel extends JPanel implements MouseListener, MouseMot
 		number = in.readInt();
 		jlNumber = (JLabel) in.readObject();
 		startDragY = 0;
-		isTrackDragged = false;
+		newHeight = 0;
 		isSelected = false;
+		isTrackDragged = false;
 		trackListeners = new ArrayList<TrackListener>();
+		setBackground(Colors.TRACK_HANDLE_BACKGROUND);
 	}
 
 
@@ -296,7 +299,7 @@ public final class HandlePanel extends JPanel implements MouseListener, MouseMot
 	 */
 	public void setSelected(boolean selected) {
 		if (selected != isSelected()) {
-			this.isSelected = selected;
+			isSelected = selected;
 			if (selected) {
 				setBackground(Colors.TRACK_HANDLE_ROLLOVER);
 				notifyTrackListeners(TrackEventType.SELECTED);

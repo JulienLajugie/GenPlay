@@ -28,8 +28,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -61,17 +59,17 @@ import edu.yu.einstein.genplay.gui.track.layer.foreground.ForegroundLayer;
  * A track contains two subcomponents: the track handle and the graphics panel showing the data
  * @author Julien Lajugie
  */
-public class Track extends JPanel implements Serializable, GenomeWindowListener, TrackListener, TrackEventsGenerator, ListDataListener {
+public final class Track extends JPanel implements Serializable, GenomeWindowListener, TrackListener, TrackEventsGenerator, ListDataListener {
 
 	private static final long 				serialVersionUID = 818958034840761257L;	// generated ID
 	private static final int  				SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
-	private transient HandlePanel			handlePanel;							// handle panel of the track
-	private transient GraphicsPanel			graphicsPanel;							// graphics panel of the track
-	private transient Layer<BackgroundData>	backgroundLayer;						// background layer of the track (with the vertical and horizontal lines)
-	private transient Layer<ForegroundData> foregroundLayer;						// foreground layer of the track (with the track name and the multi genome legend)
 	private transient List<TrackListener>	trackListeners;							// list of track listeners
 	private transient int 					defaultHeight;							// default height of a track
-	private int								number;									// number of the track
+	private int								trackNumber;							// number of the track
+	private HandlePanel						handlePanel;							// handle panel of the track
+	private GraphicsPanel					graphicsPanel;							// graphics panel of the track
+	private BackgroundLayer					backgroundLayer;						// background layer of the track (with the vertical and horizontal lines)
+	private ForegroundLayer 				foregroundLayer;						// foreground layer of the track (with the track name and the multi genome legend)
 	private TrackModel 						layers;									// layers of the track
 	private Layer<?>						activeLayer;							// active layer of the track
 	private TrackScore						score;									// score of the track
@@ -83,45 +81,28 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 	 */
 	public Track(int trackNumber) {
 		super();
-
-		// creates the panels
+		// create the panels
 		handlePanel = new HandlePanel(trackNumber);
-		handlePanel.addTrackListener(this);
 		graphicsPanel = new GraphicsPanel();
 
+		// add the panels
 		BorderLayout layout = new BorderLayout();
 		setLayout(layout);
 		add(handlePanel, BorderLayout.LINE_START);
 		add(graphicsPanel, BorderLayout.CENTER);
 
+		// sets the track number
+		setNumber(trackNumber);
+
 		// initializes the foreground and background drawer
 		backgroundLayer = new BackgroundLayer(this);
 		foregroundLayer = new ForegroundLayer(this);
+
 		// we update the list of drawers registered to the graphics panel
 		updateGraphicsPanelDrawers();
 
-		// set the the default height of the track
-		ProjectConfiguration projectConfiguration = ProjectManager.getInstance().getProjectConfiguration();
-		int defaultHeight = projectConfiguration.getTrackHeight();
-		setDefaultHeight(defaultHeight);
-		setPreferredHeight(defaultHeight);
-
-		setName(null);
-		setNumber(trackNumber);
-		score = new TrackScore(this);
-
-		// Set the font of the project
-		setFont(TrackConstants.FONT);
-
-		// Set the border of the track
-		setBorder(TrackConstants.REGULAR_BORDER);
-
-		// create list of track listener
-		trackListeners = new ArrayList<TrackListener>();
-
-		// initializes the layer list
-		layers = new TrackModel();
-		layers.addListDataListener(this);
+		// initialize the track
+		init();
 	}
 
 
@@ -137,46 +118,10 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 	public void contentsChanged(ListDataEvent e) {
 		// case where the active layer was removed
 		if (!layers.contains(activeLayer)) {
-			activeLayer = null;
+			setActiveLayer(null);
 		}
 		updateGraphicsPanelDrawers();
 		getScore().autorescaleScoreAxis();
-	}
-
-
-	/**
-	 * Create a deep Copy of the track
-	 * @return a copy of the track
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	public Track deepClone() throws IOException, ClassNotFoundException {
-		// we save in a local variable and then remove the listeners
-		// before cloning the track in order to avoid cloning the listeners
-		TrackListener[] tlSaver = getTrackListeners();
-		for (TrackListener curList: tlSaver)	{
-			removeTrackListener(curList);
-		}
-		// we remove listeners from the genome window manager
-		ProjectManager.getInstance().getProjectWindow().removeGenomeWindowListener(this);
-
-		// we clone the object
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		ObjectOutputStream oos = new ObjectOutputStream(baos);
-		oos.writeObject(this);
-		ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-		ObjectInputStream ois = new ObjectInputStream(bais);
-
-		// we restore the listeners
-		for (TrackListener curList: tlSaver)	{
-			addTrackListener(curList);
-		}
-
-		// register itself as a genome window listener to the genome window manager
-		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-		projectWindow.addGenomeWindowListener(this);
-
-		return (Track) ois.readObject();
 	}
 
 
@@ -203,13 +148,13 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 	}
 
 
-
 	/**
 	 * @return the default height of the track
 	 */
 	public int getDefaultHeight() {
 		return defaultHeight;
 	}
+
 
 
 	/**
@@ -264,7 +209,7 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 	 * @return the number of the track
 	 */
 	public int getNumber() {
-		return number;
+		return trackNumber;
 	}
 
 
@@ -283,6 +228,44 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 	}
 
 
+	/**
+	 * Initialize the track
+	 * @param trackNumber number of the track
+	 */
+	private void init() {
+		// register itself to the handle so the track can be notified when there is an action on the handle
+		handlePanel.addTrackListener(this);
+
+		// set the the default height of the track
+		ProjectConfiguration projectConfiguration = ProjectManager.getInstance().getProjectConfiguration();
+		int defaultHeight = projectConfiguration.getTrackHeight();
+		setDefaultHeight(defaultHeight);
+		setPreferredHeight(defaultHeight);
+
+		setName(null);
+
+		// set the track score
+		score = new TrackScore(this);
+
+		// set the font of the project
+		setFont(TrackConstants.FONT);
+
+		// set the border of the track
+		setBorder(TrackConstants.REGULAR_BORDER);
+
+		// create list of track listener
+		trackListeners = new ArrayList<TrackListener>();
+
+		// initializes the layer list
+		layers = new TrackModel();
+		layers.addListDataListener(this);
+
+		// register the track to the project window manager so the track can be notified when the project window changes
+		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
+		projectWindow.addGenomeWindowListener(this);
+	}
+
+
 	@Override
 	public void intervalAdded(ListDataEvent e) {
 		updateGraphicsPanelDrawers();
@@ -294,7 +277,7 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 	public void intervalRemoved(ListDataEvent e) {
 		// case where the active layer was removed
 		if (!layers.contains(activeLayer)) {
-			activeLayer = null;
+			setActiveLayer(null);
 		}
 		updateGraphicsPanelDrawers();
 		getScore().autorescaleScoreAxis();
@@ -323,10 +306,47 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 	 * @param trackEventType track event type
 	 */
 	public void notifyTrackListeners(TrackEventType trackEventType) {
-		TrackEvent trackEvent = new TrackEvent(this, trackEventType);
-		for (TrackListener listener: trackListeners) {
-			listener.trackChanged(trackEvent);
+		if (trackListeners != null) {
+			TrackEvent trackEvent = new TrackEvent(this, trackEventType);
+			for (TrackListener listener: trackListeners) {
+				listener.trackChanged(trackEvent);
+			}
 		}
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		trackNumber = in.readInt();
+		handlePanel = (HandlePanel) in.readObject();
+		graphicsPanel = (GraphicsPanel) in.readObject();
+		// initialize the track
+		init();
+		// set the background and foreground layers
+		backgroundLayer = (BackgroundLayer) in.readObject();
+		backgroundLayer.setTrack(this);
+		foregroundLayer = (ForegroundLayer) in.readObject();
+		foregroundLayer.setTrack(this);
+		// initialize the track
+		// add the tracks
+		int layerCount = in.readInt();
+		if (layerCount > 0) {
+			layers = (TrackModel) in.readObject();
+			// since the track field of layers is transient we have to set it
+			for (Layer<?> currentLayer: layers) {
+				currentLayer.setTrack(this);
+			}
+			setActiveLayer((Layer<?>) in.readObject());
+		}
+		score = (TrackScore) in.readObject();
+		updateGraphicsPanelDrawers();
+		//ProjectManager.getInstance().getProjectWindow().setTrackWidth(graphicsPanel.getWidth());
 	}
 
 
@@ -349,7 +369,7 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 		} else if (layers.contains(activeLayer)) {
 			this.activeLayer = activeLayer;
 		}
-
+		// update the mouse listeners of the graphics panel
 		if (oldLayer != activeLayer) {
 			if (oldLayer != null) {
 				if (oldLayer instanceof MouseMotionListener) {
@@ -401,7 +421,7 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 	 * @param number number to set
 	 */
 	public void setNumber(int number) {
-		this.number = number;
+		trackNumber = number;
 		handlePanel.setNumber(number);
 	}
 
@@ -473,46 +493,29 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 
 
 	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		number = in.readInt();
-		layers = (TrackModel) in.readObject();
-		activeLayer = (Layer<?>) in.readObject();
-		score = (TrackScore) in.readObject();
-		// reconstruct the transient objects
-		handlePanel = new HandlePanel(number);
-		graphicsPanel = new GraphicsPanel();
-		backgroundLayer = new BackgroundLayer(this);
-		foregroundLayer = new ForegroundLayer(this);
-		trackListeners = new ArrayList<TrackListener>();
-		ProjectConfiguration projectConfiguration = ProjectManager.getInstance().getProjectConfiguration();
-		defaultHeight = projectConfiguration.getTrackHeight();
-		// register itself as a genome window listener to the genome window manager
-		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-		projectWindow.addGenomeWindowListener(this);
-	}
-
-
-	/**
 	 * Method used for serialization
 	 * @param out
 	 * @throws IOException
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeInt(number);
-		out.writeObject(layers);
-		for (Layer<?> currentLayer: layers) {
-			currentLayer.setTrack(this);
+		out.writeInt(trackNumber);
+		out.writeObject(handlePanel);
+		out.writeObject(graphicsPanel);
+		out.writeObject(backgroundLayer);
+		out.writeObject(foregroundLayer);
+		// write the number of layers
+		if ((layers == null) || layers.isEmpty()) {
+			out.writeInt(0);
+		} else {
+			out.writeInt(layers.size());
+			out.writeObject(layers);
+			// make sure the active layer is not null
+			if (activeLayer == null) {
+				setActiveLayer(layers.getLayers()[0]);
+			}
+			out.writeObject(activeLayer);
 		}
-		out.writeObject(activeLayer);
-		activeLayer.setTrack(this);
 		out.writeObject(score);
-		out.writeObject(trackListeners);
 	}
 }

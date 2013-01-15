@@ -236,15 +236,17 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// if a gene is double clicked
-		if ((e.getClickCount() == 2) && (geneUnderMouse != null)) {
-			// if the desktop is supported
-			if ((getData().getSearchURL() != null) && (Desktop.isDesktopSupported())) {
-				try {
-					// we open a browser showing information on the gene
-					Desktop.getDesktop().browse(new URI(getData().getSearchURL() + geneUnderMouse.getName()));
-				} catch (Exception e1) {
-					ExceptionManager.handleException(getTrack().getRootPane(), e1, "Error while opening the web browser");
+		if (isVisible()) {
+			// if a gene is double clicked
+			if ((e.getClickCount() == 2) && (geneUnderMouse != null)) {
+				// if the desktop is supported
+				if ((getData().getSearchURL() != null) && (Desktop.isDesktopSupported())) {
+					try {
+						// we open a browser showing information on the gene
+						Desktop.getDesktop().browse(new URI(getData().getSearchURL() + geneUnderMouse.getName()));
+					} catch (Exception e1) {
+						ExceptionManager.handleException(getTrack().getRootPane(), e1, "Error while opening the web browser");
+					}
 				}
 			}
 		}
@@ -256,23 +258,25 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 	 */
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		// we retrieve the project window
-		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-		// we print the gene names if the x ratio > MIN_X_RATIO_PRINT_NAME
-		boolean isGeneNamePrinted = projectWindow.getXRatio() > MIN_X_RATIO_PRINT_NAME;
-		if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
-			int distance = 0;
-			if (isGeneNamePrinted) {
-				distance = (mouseStartDragY - e.getY()) / (3 * GENE_HEIGHT);
-			} else {
-				distance = (mouseStartDragY - e.getY()) / (2 * GENE_HEIGHT);
-			}
-			if (Math.abs(distance) > 0) {
-				if (((distance < 0) && ((distance + firstLineToDisplay) >= 0))
-						|| ((distance > 0) && ((distance + firstLineToDisplay) <= geneLinesCount))) {
-					firstLineToDisplay += distance;
-					mouseStartDragY = e.getY();
-					getTrack().repaint();
+		if (isVisible()) {
+			// we retrieve the project window
+			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
+			// we print the gene names if the x ratio > MIN_X_RATIO_PRINT_NAME
+			boolean isGeneNamePrinted = projectWindow.getXRatio() > MIN_X_RATIO_PRINT_NAME;
+			if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
+				int distance = 0;
+				if (isGeneNamePrinted) {
+					distance = (mouseStartDragY - e.getY()) / (3 * GENE_HEIGHT);
+				} else {
+					distance = (mouseStartDragY - e.getY()) / (2 * GENE_HEIGHT);
+				}
+				if (Math.abs(distance) > 0) {
+					if (((distance < 0) && ((distance + firstLineToDisplay) >= 0))
+							|| ((distance > 0) && ((distance + firstLineToDisplay) <= geneLinesCount))) {
+						firstLineToDisplay += distance;
+						mouseStartDragY = e.getY();
+						getTrack().repaint();
+					}
 				}
 			}
 		}
@@ -292,93 +296,95 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 	 */
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		if (!ScrollingManager.getInstance().isScrollingEnabled()) {
-			// we retrieve the project window
-			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-			Gene oldGeneUnderMouse = geneUnderMouse;
-			geneUnderMouse = null;
-			// retrieve the position of the mouse
-			Point mousePosition = e.getPoint();
-			// check if the name of genes is printed
-			boolean isGeneNamePrinted = projectWindow.getXRatio() > MIN_X_RATIO_PRINT_NAME;
-			// retrieve the list of the printed genes
-			List<List<Gene>> printedGenes = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
-			// do nothing if there is no genes
-			if (printedGenes == null) {
-				return;
-			}
-			// look for how many lines of genes are printed
-			int displayedLineCount = printedGenes.size();
+		if (isVisible()) {
+			if (!ScrollingManager.getInstance().isScrollingEnabled()) {
+				// we retrieve the project window
+				ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
+				Gene oldGeneUnderMouse = geneUnderMouse;
+				geneUnderMouse = null;
+				// retrieve the position of the mouse
+				Point mousePosition = e.getPoint();
+				// check if the name of genes is printed
+				boolean isGeneNamePrinted = projectWindow.getXRatio() > MIN_X_RATIO_PRINT_NAME;
+				// retrieve the list of the printed genes
+				List<List<Gene>> printedGenes = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
+				// do nothing if there is no genes
+				if (printedGenes == null) {
+					return;
+				}
+				// look for how many lines of genes are printed
+				int displayedLineCount = printedGenes.size();
 
-			// search if the mouse is on a line where there is genes printed on the track
-			int mouseLine = -1;
-			int i = 0;
-			while ((mouseLine == -1) &&  (i < displayedLineCount)) {
-				if (isGeneNamePrinted) {
-					if ((mousePosition.y >= ((i * GENE_HEIGHT * 3) + GENE_HEIGHT)) &&
-							(mousePosition.y <= ((i * GENE_HEIGHT * 3) + (3 * GENE_HEIGHT)))) {
-						mouseLine = i;
-					}
-				} else {
-					if ((mousePosition.y >= ((i * GENE_HEIGHT * 2) + GENE_HEIGHT)) &&
-							(mousePosition.y <= ((i * GENE_HEIGHT * 2) + (2 * GENE_HEIGHT)))) {
-						mouseLine = i;
-					}
-				}
-				i++;
-			}
-			// if we found something
-			if (mouseLine != -1) {
-				// line of genes where the mouse is
-				mouseLine += firstLineToDisplay;
-				if (mouseLine < printedGenes.size()) {
-					// search if the x position of the mouse is on a gene too
-					int j = 0;
-					while ((j < printedGenes.get(mouseLine).size()) && (geneUnderMouse == null)) {
-						Gene currentGene = printedGenes.get(mouseLine).get(j);
-						if ((mousePosition.x >= projectWindow.genomeToScreenPosition(currentGene.getStart())) &&
-								(mousePosition.x <= projectWindow.genomeToScreenPosition(currentGene.getStop()))) {
-							// we found a gene under the mouse
-							geneUnderMouse = currentGene;
+				// search if the mouse is on a line where there is genes printed on the track
+				int mouseLine = -1;
+				int i = 0;
+				while ((mouseLine == -1) &&  (i < displayedLineCount)) {
+					if (isGeneNamePrinted) {
+						if ((mousePosition.y >= ((i * GENE_HEIGHT * 3) + GENE_HEIGHT)) &&
+								(mousePosition.y <= ((i * GENE_HEIGHT * 3) + (3 * GENE_HEIGHT)))) {
+							mouseLine = i;
 						}
-						j++;
+					} else {
+						if ((mousePosition.y >= ((i * GENE_HEIGHT * 2) + GENE_HEIGHT)) &&
+								(mousePosition.y <= ((i * GENE_HEIGHT * 2) + (2 * GENE_HEIGHT)))) {
+							mouseLine = i;
+						}
+					}
+					i++;
+				}
+				// if we found something
+				if (mouseLine != -1) {
+					// line of genes where the mouse is
+					mouseLine += firstLineToDisplay;
+					if (mouseLine < printedGenes.size()) {
+						// search if the x position of the mouse is on a gene too
+						int j = 0;
+						while ((j < printedGenes.get(mouseLine).size()) && (geneUnderMouse == null)) {
+							Gene currentGene = printedGenes.get(mouseLine).get(j);
+							if ((mousePosition.x >= projectWindow.genomeToScreenPosition(currentGene.getStart())) &&
+									(mousePosition.x <= projectWindow.genomeToScreenPosition(currentGene.getStop()))) {
+								// we found a gene under the mouse
+								geneUnderMouse = currentGene;
+							}
+							j++;
+						}
 					}
 				}
-			}
-			// unset the tool text and the mouse cursor if there is no gene under the mouse
-			if (geneUnderMouse == null) {
-				getTrack().getGraphicsPanel().setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
-				getTrack().getGraphicsPanel().setToolTipText(null);
-			} else {
-				// if there is a gene under the mouse we also check
-				// if there is an exon with a score under the mouse cursor
-				Double scoreUnderMouse = null;
-				if ((geneUnderMouse.getExonScores() != null) && (geneUnderMouse.getExonScores().length > 0)) {
-					for (int k = 0; (k < geneUnderMouse.getExonStarts().length) && (scoreUnderMouse == null); k++) {
-						if ((mousePosition.x >= projectWindow.genomeToScreenPosition(geneUnderMouse.getExonStarts()[k])) &&
-								(mousePosition.x <= projectWindow.genomeToScreenPosition(geneUnderMouse.getExonStops()[k]))) {
-							if (geneUnderMouse.getExonScores().length == 1) {
-								scoreUnderMouse = geneUnderMouse.getExonScores()[0];
-							} else {
-								scoreUnderMouse = geneUnderMouse.getExonScores()[k];
+				// unset the tool text and the mouse cursor if there is no gene under the mouse
+				if (geneUnderMouse == null) {
+					getTrack().getGraphicsPanel().setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
+					getTrack().getGraphicsPanel().setToolTipText(null);
+				} else {
+					// if there is a gene under the mouse we also check
+					// if there is an exon with a score under the mouse cursor
+					Double scoreUnderMouse = null;
+					if ((geneUnderMouse.getExonScores() != null) && (geneUnderMouse.getExonScores().length > 0)) {
+						for (int k = 0; (k < geneUnderMouse.getExonStarts().length) && (scoreUnderMouse == null); k++) {
+							if ((mousePosition.x >= projectWindow.genomeToScreenPosition(geneUnderMouse.getExonStarts()[k])) &&
+									(mousePosition.x <= projectWindow.genomeToScreenPosition(geneUnderMouse.getExonStops()[k]))) {
+								if (geneUnderMouse.getExonScores().length == 1) {
+									scoreUnderMouse = geneUnderMouse.getExonScores()[0];
+								} else {
+									scoreUnderMouse = geneUnderMouse.getExonScores()[k];
+								}
 							}
 						}
 					}
+					// set the cursor and the tooltip text if there is a gene under the mouse cursor
+					getTrack().getGraphicsPanel().setCursor(new Cursor(Cursor.HAND_CURSOR));
+					if (scoreUnderMouse == null) {
+						// if there is a gene but no exon score
+						getTrack().getGraphicsPanel().setToolTipText(geneUnderMouse.getName());
+					} else {
+						// if there is a gene and an exon score
+						getTrack().getGraphicsPanel().setToolTipText(geneUnderMouse.getName() + ": " +  SCORE_FORMAT.format(scoreUnderMouse));
+					}
 				}
-				// set the cursor and the tooltip text if there is a gene under the mouse cursor
-				getTrack().getGraphicsPanel().setCursor(new Cursor(Cursor.HAND_CURSOR));
-				if (scoreUnderMouse == null) {
-					// if there is a gene but no exon score
-					getTrack().getGraphicsPanel().setToolTipText(geneUnderMouse.getName());
-				} else {
-					// if there is a gene and an exon score
-					getTrack().getGraphicsPanel().setToolTipText(geneUnderMouse.getName() + ": " +  SCORE_FORMAT.format(scoreUnderMouse));
+				// we repaint the track only if the gene under the mouse changed
+				if (((oldGeneUnderMouse == null) && (geneUnderMouse != null))
+						|| ((oldGeneUnderMouse != null) && (!oldGeneUnderMouse.equals(geneUnderMouse)))) {
+					getTrack().repaint();
 				}
-			}
-			// we repaint the track only if the gene under the mouse changed
-			if (((oldGeneUnderMouse == null) && (geneUnderMouse != null))
-					|| ((oldGeneUnderMouse != null) && (!oldGeneUnderMouse.equals(geneUnderMouse)))) {
-				getTrack().repaint();
 			}
 		}
 	}
@@ -389,8 +395,10 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 	 */
 	@Override
 	public void mousePressed(MouseEvent e) {
-		if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
-			mouseStartDragY = e.getY();
+		if (isVisible()) {
+			if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
+				mouseStartDragY = e.getY();
+			}
 		}
 	}
 
@@ -405,11 +413,13 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 	 */
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
-		if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
-			if (((e.getWheelRotation() < 0) && ((e.getWheelRotation() + firstLineToDisplay) >= 0))
-					|| ((e.getWheelRotation() > 0) && ((e.getWheelRotation() + firstLineToDisplay) <= geneLinesCount))) {
-				firstLineToDisplay += e.getWheelRotation();
-				getTrack().repaint();
+		if (isVisible()) {
+			if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
+				if (((e.getWheelRotation() < 0) && ((e.getWheelRotation() + firstLineToDisplay) >= 0))
+						|| ((e.getWheelRotation() > 0) && ((e.getWheelRotation() + firstLineToDisplay) <= geneLinesCount))) {
+					firstLineToDisplay += e.getWheelRotation();
+					getTrack().repaint();
+				}
 			}
 		}
 	}

@@ -55,10 +55,10 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 	 * Constructor of {@link ProjectWindow}
 	 */
 	protected ProjectWindow () {
-		this.gwListenerList = new ArrayList<GenomeWindowListener>();
-		this.genomeWindow = null;
-		this.trackWidth = 0;
-		this.xRatio = 0;
+		gwListenerList = new ArrayList<GenomeWindowListener>();
+		genomeWindow = null;
+		trackWidth = 0;
+		xRatio = 0;
 	}
 
 
@@ -146,10 +146,10 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		this.setGenomeWindow((GenomeWindow) in.readObject());
-		this.setTrackWidth(in.readInt());
-		this.updateXRatio();
-		this.gwListenerList = new ArrayList<GenomeWindowListener>();
+		setGenomeWindow((GenomeWindow) in.readObject());
+		setTrackWidth(in.readInt());
+		updateXRatio();
+		gwListenerList = new ArrayList<GenomeWindowListener>();
 	}
 
 
@@ -203,8 +203,10 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 			if (evt.chromosomeChanged()) {
 				ProjectManager.getInstance().getProjectChromosome().setCurrentChromosome(genomeWindow.getChromosome());
 			}
-			for (GenomeWindowListener currentListener: gwListenerList) {
-				currentListener.genomeWindowChanged(evt);
+			if ((gwListenerList != null) && !gwListenerList.isEmpty()) {
+				for (GenomeWindowListener currentListener: gwListenerList) {
+					currentListener.genomeWindowChanged(evt);
+				}
 			}
 		}
 	}

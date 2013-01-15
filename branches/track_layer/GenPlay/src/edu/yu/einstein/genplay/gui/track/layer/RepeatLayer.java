@@ -188,7 +188,7 @@ public class RepeatLayer extends AbstractLayer<RepeatFamilyList> implements Laye
 	 */
 	private String getFamilyRolledOver(int yPosition) {
 		int repeatHeight = REPEAT_HEIGHT + (2 * SPACE_HEIGHT);
-		int highlightedFamilyIndex = yPosition / repeatHeight + firstLineToDisplay;
+		int highlightedFamilyIndex = (yPosition / repeatHeight) + firstLineToDisplay;
 		if (highlightedFamilyIndex >= familyNames.size()) {
 			return null;
 		} else {
@@ -221,16 +221,18 @@ public class RepeatLayer extends AbstractLayer<RepeatFamilyList> implements Laye
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// handle right clicks
-		if ((e.getModifiers() == InputEvent.BUTTON3_MASK) && (e.getClickCount() == 2)){
-			if (selectedFamilyName != null) {
-				selectedFamilyName = null;
-				getTrack().repaint();
-			} else {
-				int mouseYPosition = e.getPoint().y;
-				String newSelectedFamilyName = getFamilyRolledOver(mouseYPosition);
-				if (newSelectedFamilyName != selectedFamilyName) {
-					selectedFamilyName = newSelectedFamilyName;
+		if (isVisible()) {
+			if ((e.getModifiers() == InputEvent.BUTTON3_MASK) && (e.getClickCount() == 2)){
+				if (selectedFamilyName != null) {
+					selectedFamilyName = null;
 					getTrack().repaint();
+				} else {
+					int mouseYPosition = e.getPoint().y;
+					String newSelectedFamilyName = getFamilyRolledOver(mouseYPosition);
+					if (newSelectedFamilyName != selectedFamilyName) {
+						selectedFamilyName = newSelectedFamilyName;
+						getTrack().repaint();
+					}
 				}
 			}
 		}
@@ -242,14 +244,16 @@ public class RepeatLayer extends AbstractLayer<RepeatFamilyList> implements Laye
 	 */
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
-			int distance = (mouseStartDragY - e.getY()) / (REPEAT_HEIGHT + (2 * SPACE_HEIGHT));
-			if (Math.abs(distance) > 0) {
-				if (((distance < 0) && ((distance + firstLineToDisplay) >= 0))
-						|| ((distance > 0) && ((distance + firstLineToDisplay) <= repeatLinesCount))) {
-					firstLineToDisplay += distance;
-					mouseStartDragY = e.getY();
-					getTrack().repaint();
+		if (isVisible()) {
+			if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
+				int distance = (mouseStartDragY - e.getY()) / (REPEAT_HEIGHT + (2 * SPACE_HEIGHT));
+				if (Math.abs(distance) > 0) {
+					if (((distance < 0) && ((distance + firstLineToDisplay) >= 0))
+							|| ((distance > 0) && ((distance + firstLineToDisplay) <= repeatLinesCount))) {
+						firstLineToDisplay += distance;
+						mouseStartDragY = e.getY();
+						getTrack().repaint();
+					}
 				}
 			}
 		}
@@ -272,11 +276,13 @@ public class RepeatLayer extends AbstractLayer<RepeatFamilyList> implements Laye
 	 */
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		int mouseYPosition = e.getPoint().y;
-		String newHighlightedFamilyName = getFamilyRolledOver(mouseYPosition);
-		if (newHighlightedFamilyName != highlightedFamilyName) {
-			highlightedFamilyName = newHighlightedFamilyName;
-			getTrack().repaint();
+		if (isVisible()) {
+			int mouseYPosition = e.getPoint().y;
+			String newHighlightedFamilyName = getFamilyRolledOver(mouseYPosition);
+			if (newHighlightedFamilyName != highlightedFamilyName) {
+				highlightedFamilyName = newHighlightedFamilyName;
+				getTrack().repaint();
+			}
 		}
 	}
 
@@ -286,8 +292,10 @@ public class RepeatLayer extends AbstractLayer<RepeatFamilyList> implements Laye
 	 */
 	@Override
 	public void mousePressed(MouseEvent e) {
-		if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
-			mouseStartDragY = e.getY();
+		if (isVisible()) {
+			if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
+				mouseStartDragY = e.getY();
+			}
 		}
 	}
 
@@ -301,11 +309,13 @@ public class RepeatLayer extends AbstractLayer<RepeatFamilyList> implements Laye
 	 */
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
-		if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
-			if (((e.getWheelRotation() < 0) && ((e.getWheelRotation() + firstLineToDisplay) >= 0))
-					|| ((e.getWheelRotation() > 0) && ((e.getWheelRotation() + firstLineToDisplay) <= repeatLinesCount))) {
-				firstLineToDisplay += e.getWheelRotation();
-				getTrack().repaint();
+		if (isVisible()) {
+			if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
+				if (((e.getWheelRotation() < 0) && ((e.getWheelRotation() + firstLineToDisplay) >= 0))
+						|| ((e.getWheelRotation() > 0) && ((e.getWheelRotation() + firstLineToDisplay) <= repeatLinesCount))) {
+					firstLineToDisplay += e.getWheelRotation();
+					getTrack().repaint();
+				}
 			}
 		}
 	}

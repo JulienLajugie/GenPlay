@@ -60,11 +60,11 @@ public class ProjectRecording {
 
 	private ProjectInformation projectInformation; // The project information
 	private boolean trackListReadyToLoad = false; // Checks if the list of track
-													// can be loaded
+	// can be loaded
 	private boolean mgManagerReadyToLoad = false; // Checks if the multi genome
-													// manager can be loaded
+	// manager can be loaded
 	private boolean loadingEvent = false; // Checks if the request is for
-											// loading or for saving
+	// loading or for saving
 	private String currentProjectPath; // path to the current project
 
 	protected ProjectRecording() {
@@ -146,9 +146,9 @@ public class ProjectRecording {
 	public void initMultiGenomeManager() throws IOException, ClassNotFoundException {
 		if (mgManagerReadyToLoad && ProjectManager.getInstance().isMultiGenomeProject()) {
 			ProjectManager.getInstance().readMultiGenomeObject(ois); // read the
-																		// multi
-																		// genome
-																		// manager
+			// multi
+			// genome
+			// manager
 			ois.readObject(); // read the MGDisplaySettings
 		}
 		trackListReadyToLoad = true;
@@ -326,7 +326,7 @@ public class ProjectRecording {
 		TrackListPanel trackListPanel = MainFrame.getInstance().getTrackListPanel();
 		Integer trackCount = 0;
 		for (Track currentTrack : trackListPanel.getModel().getTracks()) {
-			if (!(currentTrack.getLayers().size() > 0)) {
+			if (currentTrack.getLayers().size() > 0) {
 				trackCount++;
 			}
 		}

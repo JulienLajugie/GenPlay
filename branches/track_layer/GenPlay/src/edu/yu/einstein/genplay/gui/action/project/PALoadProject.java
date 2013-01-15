@@ -50,11 +50,11 @@ import edu.yu.einstein.genplay.util.Utils;
  */
 public class PALoadProject extends TrackListActionWorker<Track[]> {
 
-	private static final long serialVersionUID = 6498078428524511709L; // generated ID
+	private static final long serialVersionUID = 6498078428524511709L; 		// generated ID
 	private static final String DESCRIPTION = "Load a project from a file"; // tooltip
-	private static final int 	MNEMONIC = KeyEvent.VK_L; // mnemonic key
-	private static final String ACTION_NAME = "Load Project"; // action name
-	private boolean 			skipFileSelection = false; // true if the file selection need to be skipped. Default is false
+	private static final int 	MNEMONIC = KeyEvent.VK_L; 					// mnemonic key
+	private static final String ACTION_NAME = "Load Project"; 				// action name
+	private boolean 			skipFileSelection = false; 					// true if the file selection need to be skipped. Default is false
 
 	/**
 	 * action accelerator {@link KeyStroke}
@@ -64,7 +64,7 @@ public class PALoadProject extends TrackListActionWorker<Track[]> {
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "PALoadProject";
+	public static final String ACTION_KEY = PALoadProject.class.getName();
 
 
 	/**
@@ -99,9 +99,6 @@ public class PALoadProject extends TrackListActionWorker<Track[]> {
 			for (Track currentTrack : tracks) {
 				MGDisplaySettings.getInstance().restoreInformation(currentTrack);
 			}
-
-			ProjectManager.getInstance().getProjectWindow().removeAllListeners();
-			MainFrame.getInstance().registerToGenomeWindow();
 
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
 				MGDisplaySettings.getInstance().restoreGenomeCoordinate();
@@ -150,18 +147,7 @@ public class PALoadProject extends TrackListActionWorker<Track[]> {
 		}
 		if (hasBeenInitialized) {
 			TrackListModel trackListModel = new TrackListModel();
-			MainFrame.getInstance().getTrackListPanel().setModel(trackListModel); // we
-			// remove
-			// all
-			// the
-			// track
-			// before
-			// the
-			// loading
-			// (better
-			// for
-			// memory
-			// usage)
+			MainFrame.getInstance().getTrackListPanel().setModel(trackListModel); // we remove all the track before the loading (better for memory usage)
 			notifyActionStart("Loading Project", 1, false);
 			return RecordingManager.getInstance().getProjectRecording().getTrackList();
 		}
