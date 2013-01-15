@@ -292,16 +292,6 @@ public abstract class Track<T> extends JPanel implements GenomeWindowListener, T
 
 
 	/**
-	 * Reset the list of the variant list makers
-	 */
-	public void resetVariantListMaker () {
-		if (trackGraphics.getMultiGenomeDrawer() != null) {
-			trackGraphics.getMultiGenomeDrawer().resetVariantListMaker();
-		}
-	}
-
-
-	/**
 	 * Initializes attributes used for multi genome project.
 	 */
 	public void multiGenomeInitializing () {
@@ -394,7 +384,7 @@ public abstract class Track<T> extends JPanel implements GenomeWindowListener, T
 	 */
 	public List<VariantData> getStripesList() {
 		if (trackGraphics.getMultiGenomeDrawer() != null) {
-			return trackGraphics.getMultiGenomeDrawer().getStripesList();
+			return trackGraphics.getMultiGenomeDrawer().getVariantDataList();
 		}
 		return null;
 	}

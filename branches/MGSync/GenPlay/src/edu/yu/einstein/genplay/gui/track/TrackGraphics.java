@@ -348,7 +348,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 			}
 		}
 		if ((e.getButton() == MouseEvent.BUTTON3) && ProjectManager.getInstance().isMultiGenomeProject()) {
-			multiGenomeDrawer.toolTipStripe(getHeight(), e);
+			multiGenomeDrawer.showVariantInformationDialog(getHeight(), e);
 		}
 	}
 

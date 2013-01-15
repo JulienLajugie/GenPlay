@@ -98,8 +98,13 @@ public class MGSOffset {
 	 * Show the information of the {@link MGSOffset}
 	 */
 	public void show () {
-		System.out.println("position: " + position + "; value: " + value);
+		System.out.println(toString());
 	}
 
+
+	@Override
+	public String toString () {
+		return "position: " + position + "; value: " + value;
+	}
 
 }

@@ -439,12 +439,14 @@ public class MGSynchronizer implements VCFScannerReceiver, Serializable {
 		boolean valid = true;
 
 		while (valid) {
+
 			MGSOffset currentReferenceOffset = getOffset(referenceOffsetList, referenceOffsetIndex);										// get the current reference offset
 			MGSOffset currentAlleleOffset = getOffset(alleleOffsetList, alleleOffsetIndex);												// get the current offset from the current genome
 			MGSOffset newOffset = null;																									// declare a new offset
 
-			if ((currentReferenceOffset != null) && (currentAlleleOffset != null)) {													// if both offset exist
 
+
+			if ((currentReferenceOffset != null) && (currentAlleleOffset != null)) {													// if both offset exist
 				if (currentAlleleOffset.getPosition() == currentReferenceOffset.getPosition()) {										// if both position are similar
 					if (currentReferenceOffset.getValue() > currentAlleleOffset.getValue()) {											// if the value from the reference offset is higher than the one from the current allele, it means that an other genome of the project contains a bigger insertion.
 						newOffset = getNewOffset(list, currentAlleleOffset, lastRefPosition, length, currentAlleleOffset.getValue());	// get the new offset
@@ -559,4 +561,5 @@ public class MGSynchronizer implements VCFScannerReceiver, Serializable {
 		}
 		return null;
 	}
+
 }

@@ -96,7 +96,6 @@ class MultiGenomeVariantDrawer implements Serializable {
 		projectWindow = ProjectManager.getInstance().getProjectWindow();
 		setDrawer(drawer);
 		variantOpacity = 0;
-		//initializeStripesOpacity();
 	}
 
 
@@ -130,11 +129,7 @@ class MultiGenomeVariantDrawer implements Serializable {
 	 * @param text	a text to display
 	 */
 	protected void drawMultiGenomeMask (Graphics g, String text) {
-		//int width = g.getClipBounds().width;
 		int height = g.getClipBounds().height;
-		//Color colorMask = new Color(Color.LIGHT_GRAY.getRed(), Color.LIGHT_GRAY.getGreen(), Color.LIGHT_GRAY.getBlue(), 50);			// color for mixed variant
-		//g.setColor(colorMask);
-		//g.fillRect(0, 0, width, height);
 		g.setColor(Colors.RED);
 		g.drawString(text, 10, height -5);
 	}
@@ -160,11 +155,8 @@ class MultiGenomeVariantDrawer implements Serializable {
 	protected void drawGenome (Graphics g, GenomeWindow genomeWindow, List<VariantDisplay> variants) {
 		if ((variants != null) && (variants.size() > 0)) {
 			Color mixColor = new Color(Colors.BLUE.getRed(), Colors.BLUE.getGreen(), Colors.BLUE.getBlue());			// color for mixed variant
-			//MGDisplaySettings displaySettings = MGDisplaySettings.getInstance();
-			//while (iterator.hasNext()) {
 			for (int i = 0; i < variants.size(); i++) {
 				VariantDisplay variant = variants.get(i);
-				//if (displaySettings.isShown(iterator.getCurrentDisplay())) {
 				VariantType type = variant.getVariant().getType();			// gets its type
 				Color color;
 				if (type == VariantType.REFERENCE_INSERTION) {
@@ -182,7 +174,6 @@ class MultiGenomeVariantDrawer implements Serializable {
 				}
 
 				drawVariant(g, variant, color, genomeWindow);	// draw the variant
-				//}
 			}
 		}
 	}
@@ -219,35 +210,19 @@ class MultiGenomeVariantDrawer implements Serializable {
 
 		// Get the height of the clip and of the stripe
 		int clipHeight = g.getClipBounds().height;									// get the height of the clip
-		int score;																	// get the score of the variant
-		if (variant instanceof MixVariant) {
-			score = 101;
-		} else {
-			score = (int) variant.getScore();										// get the score of the variant
-		}
-		int height;																	// Instantiate the int for the height of the variant
-		if (score > 100) {															// if the score is higher than 100,
-			height = clipHeight;													// the variant height is the height of the clip
-		} else {																	// if it is less than 100
-			height = (score * clipHeight) / 100;									// the variant height is the percentage between its score and the height clip
-		}
+		int height = getVariantHeight(variant, clipHeight);																	// Instantiate the int for the height of the variant
 
 		// Sets the stripe color
 		Color newColor;
 		if ((drawer.getVariantUnderMouse() != null) && drawer.getVariantUnderMouse().equals(variant)) {		// if there is a variant under the mouse
 			newColor = GenPlayColor.stripeFilter(color);							// we change the color of the variant
 		} else {																	// if not
-			try {
-				newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), variantOpacity);	// we use the defined color taking into account the opacity
-			} catch (Exception e) {
-				System.out.println();
-			}
 			newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), variantOpacity);	// we use the defined color taking into account the opacity
 		}
 		g.setColor(newColor);														// we set the graphic object color
 
 		// if it is not a blank of synchronization
-		int y = clipHeight - height;												// y represents the top left corner of the stripes, the axis goes to the bottom
+		int y = clipHeight - height;												// y represents the top left corner of the stripes, the axis goes down to the bottom
 
 		// Draws the variant
 		int nucleotideNumber;
@@ -255,7 +230,6 @@ class MultiGenomeVariantDrawer implements Serializable {
 			if (color != null) {						// if color is null, it means we don't want to draw the reference
 				drawReference(g, x, width);
 			}
-			height = clipHeight;
 		} else {
 			g.fillRect(x, y, width, height);									// draw the stripe
 
@@ -279,6 +253,32 @@ class MultiGenomeVariantDrawer implements Serializable {
 		if (variant.getType() != VariantType.MIX) {
 			drawLetters(g, x, width, height, variant, nucleotideNumber);					// draw the letters (nucleotides) over the stripe
 		}
+	}
+
+
+
+	protected int getVariantHeight (Variant variant, int clipHeight) {
+		int height;																	// Instantiate the int for the height of the variant
+		if (variant instanceof ReferenceVariant) {					// drawing a reference stripe requires a different method (shorter and more simple)
+			height = clipHeight;
+		} else {
+
+			int score;																	// get the score of the variant
+			if (variant instanceof MixVariant) {
+				score = 101;
+			} else {
+				score = (int) variant.getScore();										// get the score of the variant
+			}
+
+			if (score > 100) {															// if the score is higher than 100,
+				height = clipHeight;													// the variant height is the height of the clip
+			} else {																	// if it is less than 100
+				height = (score * clipHeight) / 100;									// the variant height is the percentage between its score and the height clip
+			}
+
+
+		}
+		return height;
 	}
 
 
@@ -401,7 +401,7 @@ class MultiGenomeVariantDrawer implements Serializable {
 	 */
 	private Color getVariantColor (String genome, VariantType type) {
 		Color color = null;
-		for (VariantData data: drawer.getStripesList()) {
+		for (VariantData data: drawer.getVariantDataList()) {
 			if (data.getGenome().equals(genome)) {
 				int variantIndex = data.getVariationTypeList().indexOf(type);
 				if (variantIndex != -1) {

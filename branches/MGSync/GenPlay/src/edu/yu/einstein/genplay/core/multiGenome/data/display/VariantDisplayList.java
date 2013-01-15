@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
@@ -128,6 +129,7 @@ public class VariantDisplayList implements Serializable {
 	/**
 	 * Update the display policy using the list of filters
 	 * @param filters list of {@link MGFilter}
+	 * @param showFilter true if filtered {@link Variant} have to be shown, false otherwise
 	 */
 	public void updateDisplay (List<MGFilter> filters, boolean showFilter) {
 		initialyzeDisplay();
@@ -178,6 +180,13 @@ public class VariantDisplayList implements Serializable {
 	}
 
 
+	/**
+	 * Update the whole display policy array of the current list of variant to match defined settings about:
+	 * - showing the references
+	 * - showing the filtered variants
+	 * @param showReference true if the homozygote references have to be shown, false otherwise
+	 * @param showFilter	true if the filtered variants have to be shown, false otherwise
+	 */
 	public void updateDisplayForOption (boolean showReference, boolean showFilter) {
 		if ((variants.size() > 0) && (variants.get(0).size() > 0)) {
 			int alleleNumber = variants.size();
@@ -253,15 +262,70 @@ public class VariantDisplayList implements Serializable {
 	/**
 	 * @param alleleIndex			the index of an allele
 	 * @param metaGenomePosition	a meta genome position
-	 * @return the variant at the given allele and meta genome position, null if not found
+	 * @return the list of variants at the given allele including the given meta genome position, null if not found
 	 */
-	public Variant getVariant (int alleleIndex, int metaGenomePosition) {
-		Variant variant = null;
+	public List<Variant> getVariantsInArea (int alleleIndex, int metaGenomePosition) {
+		List<Variant> result = new ArrayList<Variant>();
 		int index = getIndex(variants.get(alleleIndex), metaGenomePosition);
 		if (index > -1) {
-			variant = variants.get(0).get(index);
+			result.add(variants.get(alleleIndex).get(index));
+			result.addAll(lookAfterIndex(alleleIndex, index, metaGenomePosition));
+			result.addAll(lookBeforeIndex(alleleIndex, index, metaGenomePosition));
 		}
-		return variant;
+		return result;
+	}
+
+
+	/**
+	 * Look for all {@link Variant} after a specific index (within a specific allele) which include a meta genome position.
+	 * @param alleleIndex			the index of the allele
+	 * @param index					the index where to start
+	 * @param metaGenomePosition	the meta genome position to use
+	 * @return	the list of {@link Variant} including the meta genome position after the given index, an empty list otherwise
+	 */
+	private List<Variant> lookAfterIndex (int alleleIndex, int index, int metaGenomePosition) {
+		List<Variant> result = new ArrayList<Variant>();
+		int nextIndex = index + 1;
+		boolean includePosition = true;
+		List<Variant> variantList = variants.get(alleleIndex);
+		int size = variantList.size();
+
+		while (includePosition && (nextIndex < size)) {
+			Variant current = variantList.get(nextIndex);
+			if ((metaGenomePosition >= current.getStart()) && (metaGenomePosition < current.getStop())) {
+				result.add(current);
+				nextIndex++;
+			} else {
+				includePosition = false;
+			}
+		}
+		return result;
+	}
+
+
+	/**
+	 * Look for all {@link Variant} before a specific index (within a specific allele) which include a meta genome position.
+	 * @param alleleIndex			the index of the allele
+	 * @param index					the index where to start
+	 * @param metaGenomePosition	the meta genome position to use
+	 * @return	the list of {@link Variant} including the meta genome position before the given index, an empty list otherwise
+	 */
+	private List<Variant> lookBeforeIndex (int alleleIndex, int index, int metaGenomePosition) {
+		List<Variant> result = new ArrayList<Variant>();
+		int previousIndex = index - 1;
+		boolean includePosition = true;
+		List<Variant> variantList = variants.get(alleleIndex);
+
+		while (includePosition && (previousIndex > -1)) {
+			Variant current = variantList.get(previousIndex);
+			if ((metaGenomePosition >= current.getStart()) && (metaGenomePosition < current.getStop())) {
+				result.add(current);
+				previousIndex--;
+			} else {
+				includePosition = false;
+			}
+		}
+		return result;
 	}
 
 

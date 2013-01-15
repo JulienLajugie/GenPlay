@@ -24,6 +24,10 @@ package edu.yu.einstein.genplay.core.multiGenome.data.display.variant;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.VariantDisplayList;
 
 /**
+ * A {@link VariantDisplay} is exclusively for display purposes,
+ * it contains the minimum amount of information to retrieve quickly and safely its specific display information.
+ * A {@link Variant} itself can be involved in different layers/tracks but its way to display it can also be different every time.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
@@ -35,6 +39,13 @@ public class VariantDisplay {
 	private final int index;
 
 
+	/**
+	 * Constructor of {@link VariantDisplay}
+	 * @param displayList the {@link VariantDisplayList}
+	 * @param variant	the {@link Variant}
+	 * @param allele	the index on which allele the {@link Variant} is
+	 * @param index	the index of the {@link Variant} within its own {@link VariantDisplayList}
+	 */
 	public VariantDisplay (VariantDisplayList displayList, Variant variant, int allele, int index) {
 		this.displayList = displayList;
 		this.variant = variant;
@@ -43,11 +54,17 @@ public class VariantDisplay {
 	}
 
 
+	/**
+	 * @return the {@link Variant}
+	 */
 	public Variant getVariant () {
 		return variant;
 	}
 
 
+	/**
+	 * @return the display information of the {@link VariantDisplay}
+	 */
 	public byte getDisplay () {
 		if (displayList != null) {
 			return displayList.getDisplay()[allele][index];
@@ -56,6 +73,9 @@ public class VariantDisplay {
 	}
 
 
+	/**
+	 * @return the genome name where the {@link Variant} is
+	 */
 	public String getGenomeName () {
 		if (displayList != null) {
 			return displayList.getGenomeName();

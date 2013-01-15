@@ -52,9 +52,9 @@ public class TrackHeaderDrawer implements Serializable {
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;				// saved format version
 
 	private List<String>			stripeLegendText;				// stripes legend for multi genome track (for MG project)
-	private List<Color>				stripeLegendColor;				// stripes legend for multi genome track (for MG project)
+	//private List<Color>				stripeLegendColor;				// stripes legend for multi genome track (for MG project)
 
-	private MultiGenomeDrawer	 	multiGenomeDrawer;	// the multigenome drawer
+	//private MultiGenomeDrawer	 	multiGenomeDrawer;	// the multigenome drawer
 	private FontMetrics 			fm;					// the font metrics track
 	private String 					name;				// the track name
 	private int 					width;				// the track width
@@ -96,7 +96,7 @@ public class TrackHeaderDrawer implements Serializable {
 	 * @param backgroundColor
 	 */
 	public void drawHeaderTrack (Graphics g, MultiGenomeDrawer multiGenomeDrawer, FontMetrics fm, String name, int width, Color backgroundColor) {
-		this.multiGenomeDrawer = multiGenomeDrawer;
+		//this.multiGenomeDrawer = multiGenomeDrawer;
 		this.fm = fm;
 		this.name = name;
 		this.width = width;

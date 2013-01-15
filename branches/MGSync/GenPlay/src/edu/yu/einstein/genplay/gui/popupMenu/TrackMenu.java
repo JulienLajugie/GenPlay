@@ -158,7 +158,7 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 		//jmMultiGenome.addSeparator();
 		jmMultiGenome.add(jmiApplyGenotype);
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			List<VariantData> stripes = trackList.getSelectedTrack().getMultiGenomeDrawer().getStripesList();
+			List<VariantData> stripes = trackList.getSelectedTrack().getMultiGenomeDrawer().getVariantDataList();
 			if ((stripes == null) || (stripes.size() == 0)) {
 				jmiTrackStatistics.setEnabled(false);
 				jmiExportVCF.setEnabled(false);

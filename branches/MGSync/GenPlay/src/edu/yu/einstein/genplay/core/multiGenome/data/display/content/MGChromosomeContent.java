@@ -366,7 +366,13 @@ public class MGChromosomeContent implements Iterable<MGLineContent>, Serializabl
 	}
 
 
-	public void printChunk (int start, int stop) {
+	/**
+	 * Print part of the {@link MGChromosomeContent} information
+	 * USED FOR DEVELOPMENT PURPOSE ONLY
+	 * @param start the index where to start
+	 * @param stop	the index where to stop
+	 */
+	public void printChunkWithIndex (int start, int stop) {
 		for (int i = start; i < stop; i++) {
 			String info = "";
 			info += "[" + i + "]\t";
@@ -376,6 +382,34 @@ public class MGChromosomeContent implements Iterable<MGLineContent>, Serializabl
 				info += alternative.get(i) + "\t";
 			}
 			System.out.println(info);
+		}
+	}
+
+
+	/**
+	 * Print part of the {@link MGChromosomeContent} information
+	 * USED FOR DEVELOPMENT PURPOSE ONLY
+	 * @param start the position on the reference genome where to start printing
+	 * @param stop	the position on the reference genome where to stop printing
+	 */
+	public void printChunkWithReferencePosition (int start, int stop) {
+		System.out.println("MGChromosomeContent.printChunkWithReferencePosition()");
+		int index = positions.getIndex(start);
+		if (index == -1) {
+			System.out.println("No index has been found for the reference position: " + start);
+		} else {
+			boolean inBound = true;
+			MGLineContent line = getPosition(index);
+			while (inBound && (index < getSize())) {
+				int referencePosition = line.getReferenceGenomePosition();
+				if ((referencePosition >= start) && (referencePosition <= stop)) {
+					System.out.println(index + ": " + line.toString());
+					index++;
+					line = getPosition(line, index);
+				} else {
+					inBound = false;
+				}
+			}
 		}
 	}
 

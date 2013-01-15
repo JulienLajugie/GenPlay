@@ -51,8 +51,8 @@ public class ExportSettings {
 	 * @param genomeDrawer the genome drawer
 	 */
 	public ExportSettings (MultiGenomeDrawer genomeDrawer) {
-		variationMap = getVariationMap(genomeDrawer.getStripesList());
-		fileMap = getGenomeFileMap(genomeDrawer.getStripesList());
+		variationMap = getVariationMap(genomeDrawer.getVariantDataList());
+		fileMap = getGenomeFileMap(genomeDrawer.getVariantDataList());
 		filterList = genomeDrawer.getFiltersList();
 		fileList = getFileList(fileMap);
 	}

@@ -25,6 +25,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
@@ -125,11 +127,17 @@ public class MultiGenomeDrawer {
 			handler.initialize(variantDisplayList);
 			forceFitToScreen = true;
 		}
-		if (haveOptionsChanged()) {
+
+		boolean haveOptionsChanged = haveOptionsChanged();
+		if (haveOptionsChanged) {
 			forceFitToScreen = true;
 			for (VariantDisplayList currentList: variantDisplayList) {
 				currentList.updateDisplayForOption(showReference, showFilter);
 			}
+		}
+
+		if (generateLists || filtersHaveChanged || haveOptionsChanged) {
+			killStripesDialogs();
 		}
 	}
 
@@ -255,14 +263,17 @@ public class MultiGenomeDrawer {
 	/////////////////////////////////////////////////////////////////////
 
 
-
-	public void resetVariantListMaker() {
-	}
-
-	public List<VariantData> getStripesList() {
+	/**
+	 * @return the list of {@link VariantData}
+	 */
+	public List<VariantData> getVariantDataList() {
 		return variantDataList;
 	}
 
+
+	/**
+	 * @return the list of {@link MGFilter}
+	 */
 	public List<MGFilter> getFiltersList() {
 		return filtersList;
 	}
@@ -277,9 +288,6 @@ public class MultiGenomeDrawer {
 	public void drawMultiGenomeInformation(Graphics g, GenomeWindow genomeWindow, double xFactor) {
 		if ((variantDataList != null) && (variantDataList.size() > 0)) {
 			variantDrawer.initializeStripesOpacity();
-			/*
-			 * if (genomeWindow.getSize() > 1000000) { stripesDrawer.drawMultiGenomeMask(g, "Multi genome information cannot be displayed at this zoom level."); } else {
-			 */
 			if (!locked) { // if there are stripes
 				int halfHeight = g.getClipBounds().height / 2; // calculates the half of the height track
 				Graphics allele01Graphic = g.create(0, 0, g.getClipBounds().width, halfHeight); // create a graphics for the first allele that correspond to the upper half of the track
@@ -296,15 +304,19 @@ public class MultiGenomeDrawer {
 				variantDrawer.setCurrentAllele(AlleleType.ALLELE02);
 				variantDrawer.drawGenome(allele02Graphic, genomeWindow, handler.getFittedData(genomeWindow, xFactor, 1)); // draw the stripes for the second allele
 				variantDrawer.drawMultiGenomeLine(g); // draw a line in the middle of the track to distinguish upper and lower half.
-				//}
 			} else {
 				variantDrawer.drawMultiGenomeMask(g, "Multi genome display interupted while loading information.");
 			}
-			// }
 		}
 	}
 
-	public void toolTipStripe(int height, MouseEvent e) {
+
+	/**
+	 * Shows the {@link VariantInformationDialog} is the mouse is on top of a {@link Variant}
+	 * @param height height of the track
+	 * @param e the {@link MouseEvent}
+	 */
+	public void showVariantInformationDialog(int height, MouseEvent e) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) { // we must be in a multi genome project
 			if (isOverVariant(height, e)) {
 				VariantInformationDialog toolTip = new VariantInformationDialog(this); // we create the information dialog
@@ -319,11 +331,26 @@ public class MultiGenomeDrawer {
 		}
 	}
 
+
+	/**
+	 * Checks if the track has to be repaint when the mouse exit from it. Basically, it has to be repaint if a variant was under the mouse in order to not highlight it.
+	 * @return true if the track has to be repaint, false otherwise
+	 */
 	public boolean hasToBeRepaintAfterExit() {
-		// TODO Auto-generated method stub
+		if (variantUnderMouse != null) {
+			variantUnderMouse = null;
+			return true;
+		}
 		return false;
 	}
 
+
+	/**
+	 * Look if the mouse is on top of a {@link Variant}, set the related attribute and return the result.
+	 * @param height height of the track
+	 * @param e the {@link MouseEvent}
+	 * @return	true if the mouse is on top of a {@link Variant}, false otherwise
+	 */
 	public boolean isOverVariant(int height, MouseEvent e) {
 		if (ProjectManager.getInstance().isMultiGenomeProject() && !locked) { // if we are in multi genome project
 			Variant variant = getVariantUnderMouse(height, e.getX(), e.getY()); // we get the variant (Y is needed to know if the variant is on the upper or lower half of the track)
@@ -339,7 +366,13 @@ public class MultiGenomeDrawer {
 	}
 
 
-
+	/**
+	 * Scans lists and processes data in order to retrieve the {@link Variant} that is under the pointer of the mouse.
+	 * @param height height of the track
+	 * @param x x position of the pointer
+	 * @param y y position of the pointer
+	 * @return the {@link Variant} under the mouse, null if there is no {@link Variant}.
+	 */
 	private Variant getVariantUnderMouse (int trackHeight, int x, int y) {
 		// Get the allele index
 		int alleleIndex = 0;
@@ -352,58 +385,120 @@ public class MultiGenomeDrawer {
 
 		List<Variant> results = new ArrayList<Variant>();
 		for (VariantDisplayList list: variantDisplayList) {
-			Variant result = list.getVariant(alleleIndex, pos);
+			List<Variant> result = list.getVariantsInArea(alleleIndex, pos);
 			if (result != null) {
-				results.add(result);
+				results.addAll(result);
 			}
 		}
 
 		if (results.size() > 0) {
-			return results.get(0);
+			Collections.sort(results, new Comparator<Variant>() {
+				@Override
+				public int compare(Variant o1, Variant o2) {
+					if (o1.getScore() < o2.getScore()) {
+						return -1;
+					} else if (o1.getScore() > o2.getScore()) {
+						return 1;
+					}
+					return 0;
+				}
+			});
+
+			int clipHeight = trackHeight / 2;
+			int index = 0;
+			int size = results.size();
+			boolean found = false;
+			while (!found && (index < size)) {
+				Variant variant = results.get(index);
+				int height = variantDrawer.getVariantHeight(variant, clipHeight);
+				int yVariant = clipHeight - height;
+				if (alleleIndex == 0) {
+					if (y >= yVariant) {
+						found = true;
+					}
+				} else {
+					y -= clipHeight;
+					if (y <= height) {
+						found = true;
+					}
+				}
+				if (!found) {
+					index++;
+				}
+			}
+			if (found) {
+				return results.get(index);
+			} else {
+				return results.get(0);
+			}
 		}
 		return null;
 	}
 
 
+	/**
+	 * This method does not process anything, only return the {@link Variant} that has been found earlier!
+	 * @return the {@link Variant} under the mouse.
+	 */
 	public Variant getVariantUnderMouse () {
 		return variantUnderMouse;
 	}
 
 
-	public void setVariantDataList(List<VariantData> stripeList) {
-		// TODO Auto-generated method stub
-
+	/**
+	 * Sets the {@link VariantData} list
+	 * @param variantDataList the new {@link VariantData} list to use
+	 */
+	public void setVariantDataList(List<VariantData> variantDataList) {
+		this.variantDataList = variantDataList;
 	}
 
+
+	/**
+	 * Sets the {@link MGFilter} list
+	 * @param filterList the new {@link MGFilter} list to use
+	 */
 	public void setFiltersList(List<MGFilter> filterList) {
-		// TODO Auto-generated method stub
-
+		this.filtersList = filterList;
 	}
 
+
+	/**
+	 * Locks the painting in all methods (used when information is changing)
+	 */
 	public void lockPainting() {
 		locked = true;
 	}
 
+
+	/**
+	 * Unlocks the painting in all methods (used once information changed)
+	 */
 	public void unlockPainting() {
 		locked = false;
 	}
 
+
+	/**
+	 * @return the {@link VCFFileStatistics} of the track
+	 */
 	public VCFFileStatistics getStatistics() {
 		return statistics;
 	}
 
+
+	/**
+	 * Sets the {@link VCFFileStatistics} to use
+	 * @param statistics the {@link VCFFileStatistics} to use
+	 */
 	public void setStatistics(VCFFileStatistics statistics) {
 		this.statistics = statistics;
 	}
 
 
-
-	public boolean isVariantShown(Variant variant) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-
+	/**
+	 * Disposes all {@link VariantInformationDialog} related to this track
+	 */
 	private void killStripesDialogs() {
 		for (VariantInformationDialog dialog : variantDialogs) {
 			dialog.dispose();

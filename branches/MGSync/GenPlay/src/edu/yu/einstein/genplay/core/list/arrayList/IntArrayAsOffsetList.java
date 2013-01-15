@@ -188,6 +188,23 @@ public class IntArrayAsOffsetList extends AbstractList<MGSOffset> implements Ser
 
 
 	/**
+	 * @param genomePosition a position on the genome
+	 * @return the index of the {@link MGSOffset} at the given genome position, or the index before if no exact match
+	 */
+	public int getIndex (int genomePosition) {
+		if (size == 0) {
+			return -1;
+		}
+		int genomePositionIndex = findGenomeIndex(genomePosition, 0, size - 1);	// get the index of the position (or the one right after)
+		if (genomePosition < position[genomePositionIndex]) {					// if the position is lower than the one found (ie we want the index right before)
+			if (genomePositionIndex > 0) {										// if the index found is not the first one in the list
+				genomePositionIndex--;											// it is the one we are looking for
+			}
+		}
+		return genomePositionIndex;
+	}
+
+	/**
 	 * Recursive function. Returns the index where the genome position is found
 	 * or the index right after if the exact value is not found.
 	 * @param value			value of a genome position

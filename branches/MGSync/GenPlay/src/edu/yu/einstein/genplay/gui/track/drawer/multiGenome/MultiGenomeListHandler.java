@@ -194,7 +194,11 @@ public class MultiGenomeListHandler {
 	}
 
 
-
+	/**
+	 * Forces the fitToScreen method to be performed
+	 * (Used after a change of options that didn't required the full list of {@link Variant} to change)
+	 * @param xRatio
+	 */
 	public void forceFitToScreen(double xRatio) {
 		fittedXRatio = xRatio;
 		fitToScreen();
@@ -211,10 +215,6 @@ public class MultiGenomeListHandler {
 		fittedList.add(new ArrayList<VariantDisplay>());
 		fitToScreen(0);
 		fitToScreen(1);
-		/*if (fittedXRatio > 1) {
-			System.out.println("MultiGenomeListHandler.fitToScreen()");
-		}*/
-		//cache.setData(fittedXRatio, fittedList);
 	}
 
 

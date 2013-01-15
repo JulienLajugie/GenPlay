@@ -145,5 +145,4 @@ public class MGSAllele implements Serializable {
 			offset.show();
 		}*/
 	}
-
 }
