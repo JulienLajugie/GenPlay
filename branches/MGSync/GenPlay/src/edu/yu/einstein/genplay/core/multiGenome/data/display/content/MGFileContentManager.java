@@ -36,6 +36,8 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 
 /**
+ * A {@link MGFileContentManager} represents the content of all {@link VCFFile} organized byt {@link Chromosome} and {@link MGChromosomeContent}.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
@@ -44,7 +46,7 @@ public class MGFileContentManager implements Serializable {
 	/** Default serial version ID */
 	private static final long serialVersionUID = 4837189232012683529L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
-	private Map<VCFFile, Map<Chromosome, MGChromosomeContent>> lists;
+	private Map<VCFFile, Map<Chromosome, MGChromosomeContent>> lists;		// Maps to store all data from all files.
 
 
 	/**

@@ -24,7 +24,16 @@ package edu.yu.einstein.genplay.core.multiGenome.data.display.content;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
+
 /**
+ * A {@link MGLineContent} represents a line from a {@link VCFFile}.
+ * It only contains minimum information such as:
+ * - the reference genome position
+ * - the score (QUAL)
+ * - a list of alternatives
+ * - a list of genotype for each genome
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
@@ -32,10 +41,10 @@ public class MGLineContent {
 
 	/** When alternative length cannot be given */
 	public static final int NO_ALTERNATIVE = Integer.MIN_VALUE;
-	private int referenceGenomePosition;
-	private float score;
-	private int[] alternatives;
-	private Map<String, byte[]> genotypes;
+	private int 				referenceGenomePosition;	// The reference genome position.
+	private float 				score;						// The score.
+	private int[] 				alternatives;				// The alternatives.
+	private Map<String, byte[]> genotypes;					// The genotypes.
 
 
 	/**

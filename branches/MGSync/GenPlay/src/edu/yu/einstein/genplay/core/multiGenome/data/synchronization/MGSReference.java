@@ -44,7 +44,7 @@ public class MGSReference implements Serializable {
 	/** Default serial version ID */
 	private static final long serialVersionUID = -7912709879126635029L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
-	private MGSAllele allele;
+	private MGSAllele allele;		// The unique allele of the reference genome.
 
 
 	/**

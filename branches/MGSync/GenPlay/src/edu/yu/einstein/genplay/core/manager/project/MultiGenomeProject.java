@@ -74,7 +74,7 @@ public class MultiGenomeProject implements Serializable {
 
 	private 	MGSMultiGenome 					multiGenome;					// The genome synchronization data structure.
 	private		MGSynchronizer					multiGenomeSynchronizer;		// The synchronizer for Indels and Structural Variant variations.
-	private		MGFileContentManager			fileContentManager;
+	private		MGFileContentManager			fileContentManager;				// The file content manager.
 
 
 	/**
@@ -119,6 +119,7 @@ public class MultiGenomeProject implements Serializable {
 		this.genomeFileAssociation = project.getGenomeFileAssociation();
 		this.multiGenome = project.getMultiGenome();
 		this.multiGenomeSynchronizer = project.getMultiGenomeSynchronizer();
+		this.fileContentManager = project.getFileContentManager();
 	}
 
 

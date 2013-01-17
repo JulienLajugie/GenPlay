@@ -27,14 +27,16 @@ import java.util.List;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 
 /**
+ * The {@link VariantDisplayMultiListScanner} iterates over several {@link VariantDisplayList} using independant {@link VariantDisplayListIterator}.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
 public class VariantDisplayMultiListScanner {
 
-	private final List<VariantDisplayList> lists;
-	private final List<VariantDisplayListIterator> iterators;
-	private int metaGenomePosition;
+	private final List<VariantDisplayList> 			lists;				// The lists of variant display.
+	private final List<VariantDisplayListIterator> 	iterators;			// The list of iterator.
+	private int metaGenomePosition;										// The current meta genome position.
 
 
 	/**
@@ -172,6 +174,9 @@ public class VariantDisplayMultiListScanner {
 	}
 
 
+	/**
+	 * @return the smallest meta genome position from all iterators
+	 */
 	private int getCurrentSmallestMetaGenomePosition () {
 		int position = 0;
 		boolean firstIterator = true;
@@ -190,6 +195,9 @@ public class VariantDisplayMultiListScanner {
 	}
 
 
+	/**
+	 * @return the highest meta genome position from all iterators
+	 */
 	private int getCurrentHighestMetaGenomePosition () {
 		int position = 0;
 		for (VariantDisplayListIterator iterator: iterators) {

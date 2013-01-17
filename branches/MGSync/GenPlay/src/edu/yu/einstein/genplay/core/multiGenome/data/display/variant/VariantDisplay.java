@@ -21,6 +21,11 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.data.display.variant;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
+
+import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.VariantDisplayList;
 
 /**
@@ -31,12 +36,44 @@ import edu.yu.einstein.genplay.core.multiGenome.data.display.VariantDisplayList;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class VariantDisplay {
+public class VariantDisplay implements Serializable {
 
-	private final VariantDisplayList displayList;
-	private final Variant variant;
-	private final int allele;
-	private final int index;
+	/** Generated serial version ID */
+	private static final long serialVersionUID = -3704675535072054858L;
+	private static final int SAVED_FORMAT_VERSION_NUMBER = 0; // saved format version
+
+	private VariantDisplayList displayList;		// The variant display list.
+	private Variant variant;					// The variant.
+	private int allele;							// The allele where the variant is.
+	private int index;							// The index of the variant in the variant display list.
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(displayList);
+		out.writeObject(variant);
+		out.writeInt(allele);
+		out.writeInt(index);
+	}
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		displayList = (VariantDisplayList) in.readObject();
+		variant = (Variant) in.readObject();
+		allele = in.readInt();
+		index = in.readInt();
+	}
 
 
 	/**
@@ -81,5 +118,25 @@ public class VariantDisplay {
 			return displayList.getGenomeName();
 		}
 		return null;
+	}
+
+
+	/**
+	 * @return the {@link AlleleType} of the {@link Variant}
+	 */
+	public AlleleType getAlleleType () {
+		return AlleleType.getAlleleType(allele);
+	}
+
+
+	/**
+	 * @return the sequence of nucleotide for the variant
+	 */
+	public String getVariantSequence() {
+		if ((variant instanceof InsertionVariant) || (variant instanceof SNPVariant)) {
+			return variant.getVariantSequence(getGenomeName(), AlleleType.getAlleleType(allele));
+		} else {
+			return variant.getVariantSequence();
+		}
 	}
 }

@@ -28,6 +28,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
@@ -189,8 +190,19 @@ public abstract class Variant implements Serializable {
 	 * @return the sequence of nucleotide for the variant
 	 */
 	public String getVariantSequence() {
-		// TODO Code it!
-		return ".";
+		return "-";
+	}
+
+
+	/**
+	 * This method makes sense only for {@link InsertionVariant} and {@link SNPVariant}.
+	 * Otherwise, it returns the result of the regular method and parameters will not be used at all.
+	 * @param genomeName the name of the genome
+	 * @param alleType the {@link AlleleType}
+	 * @return the sequence of nucleotide for a {@link InsertionVariant} and {@link SNPVariant}
+	 */
+	public String getVariantSequence(String genomeName, AlleleType alleType) {
+		return getVariantSequence();
 	}
 
 

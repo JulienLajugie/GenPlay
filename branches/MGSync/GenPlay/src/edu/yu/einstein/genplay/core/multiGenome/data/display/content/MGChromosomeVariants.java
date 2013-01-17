@@ -39,6 +39,11 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 
 /**
+ * The {@link MGChromosomeVariants} contains the lists of {@link Variant}.
+ * More than one {@link Variant} can be defined within a same line, there are as much list as the maximum number of defined {@link Variant} in line within a {@link Chromosome}.
+ * The worst example is: in one chromosome, all lines define only one {@link Variant} except one that defines three {@link Variant}, there will be three lists (1 full, 2 with only one {@link Variant}).
+ * The memory usage estimation for millions of null elements in a list represents few MBs. Which is negligible.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
@@ -47,7 +52,7 @@ public class MGChromosomeVariants implements Serializable {
 	/** Default serial version ID */
 	private static final long serialVersionUID = -203508611757257381L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
-	private List<MGVariantArray> variants;
+	private List<MGVariantArray> variants;			// The lists of variants.
 
 
 	/**
@@ -104,32 +109,30 @@ public class MGChromosomeVariants implements Serializable {
 	 * @param chromosomeContent the {@link MGChromosomeContent}
 	 */
 	private void compute (MGChromosomeContent chromosomeContent) {
-		int size = chromosomeContent.getSize();
-		int alternativeNumber = variants.size();
-		String referenceGenomeName = ProjectManager.getInstance().getAssembly().getDisplayName();
-		String metaGenomeName = FormattedMultiGenomeName.META_GENOME_NAME;
-		Chromosome chromosome = chromosomeContent.getChromosome();
-		for (int i = 0; i < size; i++) {
+		int size = chromosomeContent.getSize();															// Get the total number of lines.
+		int alternativeNumber = variants.size();														// Get the maximum number of alternatives per line.
+		String referenceGenomeName = ProjectManager.getInstance().getAssembly().getDisplayName();		// Get the name of the reference genome.
+		String metaGenomeName = FormattedMultiGenomeName.META_GENOME_NAME;								// Get the name of the meta genome.
+		Chromosome chromosome = chromosomeContent.getChromosome();										// Get the chromosome the variants will refer to.
+		for (int i = 0; i < size; i++) {																// Scan over the lines
 
-			for (int j = 0; j < alternativeNumber; j++) {
+			for (int j = 0; j < alternativeNumber; j++) {												// Scan over the different alternatives of a line
 				Variant variant = null;
-				int referencePosition = chromosomeContent.getPositions().get(i);
-				int length = chromosomeContent.getAlternatives().get(j).get(i);
-				int start = ShiftCompute.getPosition(referenceGenomeName, null, referencePosition, chromosome, metaGenomeName);
-				if (length > 0) {
-					//int stop = ShiftCompute.getPosition(referenceGenomeName, null, referencePosition + 1, chromosome, metaGenomeName) - 1;
-					start++;
-					int stop = start + length;
-					variant = new InsertionVariant(chromosomeContent, i, start, stop);
-				} else if (length < 0) {
-					//int stop = ShiftCompute.getPosition(referenceGenomeName, null, referencePosition - length, chromosome, metaGenomeName);
-					start++;
-					int stop = start + (length * -1);
-					variant = new DeletionVariant(chromosomeContent, i, start, stop);
-				} else {
-					variant = new SNPVariant(chromosomeContent, i, start);
+				int referencePosition = chromosomeContent.getPositions().get(i);						// Get the current reference genome position.
+				int length = chromosomeContent.getAlternatives().get(j).get(i);							// Get the length of the current alternative.
+				int start = ShiftCompute.getPosition(referenceGenomeName, null, referencePosition, chromosome, metaGenomeName);	// Calculate the start position of the variant.
+				if (length > 0) {																		// In case of an insertion:
+					start++;																			// The actual variation starts one nucleotide further
+					int stop = start + length;															// Calculate the stop position: only start + length
+					variant = new InsertionVariant(chromosomeContent, i, start, stop);					// Create the variant.
+				} else if (length < 0) {																// In case of a deletion
+					start++;																			// The actual variation starts one nucleotide further
+					int stop = start + (length * -1);													// Calculate the stop position: only start + length (the length is here negative since it's a deletion)
+					variant = new DeletionVariant(chromosomeContent, i, start, stop);					// Create the variant.
+				} else {																				// A 0 nulceotide length can only be a SNP.
+					variant = new SNPVariant(chromosomeContent, i, start);								// Create the variant.
 				}
-				variants.get(j).set(i, variant);
+				variants.get(j).set(i, variant);														// Add the variant to the lists.
 			}
 		}
 	}

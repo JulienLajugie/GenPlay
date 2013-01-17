@@ -22,6 +22,7 @@
 package edu.yu.einstein.genplay.core.multiGenome.data.display.variant;
 
 import edu.yu.einstein.genplay.core.enums.VariantType;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.content.MGChromosomeContent;
 
 /**
@@ -72,4 +73,18 @@ public class DeletionVariant extends MultiNucleotideVariant {
 		return description;
 	}
 
+
+	@Override
+	public String getVariantSequence() {
+		VCFLine line = getVCFLine();
+		if (line != null) {
+			String chain = "-";
+			String ref = line.getREF();
+			if (ref.length() > 1) {
+				chain = ref.substring(1);
+			}
+			return chain;
+		}
+		return super.getVariantSequence();
+	}
 }

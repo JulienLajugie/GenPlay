@@ -44,22 +44,23 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 
 /**
+ * The {@link VariantDisplayListBuilder} builds all lists of {@link Variant} for all allele.
+ * It is genome and {@link Chromosome} specific and gather information from all necessary {@link VCFFile}.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
 public class VariantDisplayListBuilder {
 
+	private final MGFileContentManager 	contentManager;			// The file content manager.
+	private final String 				referenceGenomeName;	// The name of the reference genome.
+	private final String 				metaGenomeName;			// The name of the meta genome.
 
-	private final String referenceGenomeName;
-	private final String metaGenomeName;
-
-	private List<List<Variant>> variants;
-	private String genomeName;
-	private List<VariantType> types;
-	private Chromosome chromosome;
-	private final MGFileContentManager contentManager;
-
-	private MGChromosomeContent currentContent;
+	private List<List<Variant>> 	variants;					// The lists of variants.
+	private String 					genomeName;					// The name of the genome to process.
+	private List<VariantType> 		types;						// The list of variant types to handle.
+	private Chromosome 				chromosome;					// The chromosome to process.
+	private MGChromosomeContent 	currentContent;				// The current chromosome content (when processing only)
 
 
 	/**
@@ -94,7 +95,6 @@ public class VariantDisplayListBuilder {
 		this.types = types;
 		this.chromosome = chromosome;
 
-
 		List<VCFFile> fileList = getValidFileList();
 		for (VCFFile file: fileList) {
 			currentContent = contentManager.getContent(file, chromosome);
@@ -109,7 +109,9 @@ public class VariantDisplayListBuilder {
 	}
 
 
-
+	/**
+	 * @return the list of {@link VCFFile} able to handle the required variation types for the required genome, an empty list if no files found.
+	 */
 	private List<VCFFile> getValidFileList () {
 		List<VCFFile> validFiles = new ArrayList<VCFFile>();
 		List<VCFFile> fileList = contentManager.getFileList();
@@ -129,6 +131,10 @@ public class VariantDisplayListBuilder {
 	}
 
 
+	/**
+	 * Creates the list of {@link Variant}
+	 * @return the list of all {@link Variant} for all alleles
+	 */
 	private List<List<Variant>> getVariantList () {
 		List<List<Variant>> result = getEmptyVariantList(currentContent);
 
@@ -173,6 +179,11 @@ public class VariantDisplayListBuilder {
 	}
 
 
+	/**
+	 * Retrieves all {@link Variant} at one specific index and return the dominant one
+	 * @param positionindex	the index of the position
+	 * @return the dominant {@link Variant}, null if no {@link Variant}
+	 */
 	private Variant getCurrentDominantVariant (int positionindex) {
 		List<Variant> variants = currentContent.getVariants().getVariants(positionindex);
 		List<Variant> eligibleVariants = new ArrayList<Variant>();
@@ -185,6 +196,10 @@ public class VariantDisplayListBuilder {
 	}
 
 
+	/**
+	 * @param variants a list of {@link Variant}
+	 * @return the dominant {@link Variant} among a list of {@link Variant}, null if not found
+	 */
 	private Variant getDominantVariant (List<Variant> variants) {
 		if ((variants == null) || (variants.size() == 0)) {
 			return null;
@@ -204,6 +219,10 @@ public class VariantDisplayListBuilder {
 	}
 
 
+	/**
+	 * @param size size of the list
+	 * @return an empty list of list with the given size
+	 */
 	private List<List<Variant>> getEmptyList (int size) {
 		List<List<Variant>> result = new ArrayList<List<Variant>>();
 		for (int i = 0; i < size; i++) {
@@ -213,6 +232,11 @@ public class VariantDisplayListBuilder {
 	}
 
 
+	/**
+	 * Add the necessary references of all {@link Variant} of the list
+	 * @param list list of {@link Variant}
+	 * @return a list of {@link Variant} including references
+	 */
 	private List<List<Variant>> fillWithReferences (List<List<Variant>> list) {
 		List<List<Variant>> newList = getEmptyList(list.size());
 		for (int i = 0; i < list.size(); i++) {
@@ -231,7 +255,11 @@ public class VariantDisplayListBuilder {
 	}
 
 
-
+	/**
+	 * Adds a list to another one
+	 * @param list01 list receiving the other list
+	 * @param list02 list containing the elements to add
+	 */
 	private void addFromListToList (List<List<Variant>> list01, List<List<Variant>> list02) {
 		// Add missing lists
 		int add = list02.size() - list01.size();
@@ -244,6 +272,10 @@ public class VariantDisplayListBuilder {
 	}
 
 
+	/**
+	 * @param variant a {@link Variant}
+	 * @return the {@link VariantType} related to a {@link Variant}
+	 */
 	private VariantType getReferenceType (Variant variant) {
 		if (variant instanceof InsertionVariant) {
 			return VariantType.REFERENCE_INSERTION;
@@ -258,6 +290,10 @@ public class VariantDisplayListBuilder {
 	}
 
 
+	/**
+	 * @param chromosomeContent the {@link MGChromosomeContent} giving the maximum number of alleles
+	 * @return an empty list of {@link Variant} according to the maximum number of alleles
+	 */
 	private List<List<Variant>> getEmptyVariantList (MGChromosomeContent chromosomeContent) {
 		int size = chromosomeContent.getMaxGenotypeNumber();
 		if (size < 2) {
@@ -321,6 +357,10 @@ public class VariantDisplayListBuilder {
 	}
 
 
+	/**
+	 * @param genotype a full genotype as an array of bytes
+	 * @return true if all alleles define the exact same variation, false otherwise
+	 */
 	private boolean isHomozygote (byte[] genotype) {
 		int length = genotype.length;
 
@@ -342,6 +382,10 @@ public class VariantDisplayListBuilder {
 	}
 
 
+	/**
+	 * @param genotype	a full genotype as an array of bytes
+	 * @return	true if all alleles define the reference, false otherwise
+	 */
 	private boolean isHomozygoteReference (byte[] genotype) {
 		if (isHomozygote(genotype)) {
 			return (genotype[0] == MGSynchronizer.REFERENCE);
@@ -350,6 +394,10 @@ public class VariantDisplayListBuilder {
 	}
 
 
+	/**
+	 * @param line a {@link MGLineContent}
+	 * @return true if the given line defines for at least one of the required variation
+	 */
 	private boolean defineVariantType (MGLineContent line) {
 		int[] alternatives = line.getAlternatives();
 		for (int alternative: alternatives) {
@@ -371,6 +419,12 @@ public class VariantDisplayListBuilder {
 	}
 
 
+	/**
+	 * Adjust the size of the {@link ReferenceVariant}.
+	 * They have been added earlier but they have to be shrinked in case of overlaps.
+	 * @param list a list of {@link Variant}
+	 * @return a list of {@link Variant} without overlap of {@link ReferenceVariant}
+	 */
 	private List<List<Variant>> adjustVariants (List<List<Variant>> list) {
 		List<List<Variant>> newList = new ArrayList<List<Variant>>();
 		for (List<Variant> current: list) {

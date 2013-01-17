@@ -32,11 +32,27 @@ import java.util.List;
 import java.util.Map;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.array.MGByteArray;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.array.MGFloatArray;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.array.MGIntegerArray;
+import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
+import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.VariantDisplay;
 
 /**
+ * A {@link MGChromosomeContent} represents the content of a {@link Chromosome} for a specific {@link VCFFile}.
+ * It stores arrays for:
+ * - the reference genome positions
+ * - the scores (QUAL)
+ * - a list of alternatives
+ * - a list of genotype for each genome
+ * - a list of {@link Variant}
+ * 
+ * Every line from the chromosome is represented in these arrays.
+ * The {@link Variant} stored are stored only once and it's here, a same {@link Variant} can be used for different display.
+ * This way, a {@link Variant} will never be created more than once.
+ * For display specific details, a {@link Variant} is encapsulated in a {@link VariantDisplay}.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
@@ -45,12 +61,12 @@ public class MGChromosomeContent implements Iterable<MGLineContent>, Serializabl
 	/** Default serial version ID */
 	private static final long serialVersionUID = -8385957556240550523L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
-	private Chromosome chromosome;
-	private MGIntegerArray positions;
-	private MGFloatArray scores;
-	private List<MGIntegerArray> alternatives;
-	private Map<String, List<MGByteArray>> genotypes;
-	private MGChromosomeVariants variants;
+	private Chromosome 						chromosome;				// The chromosome represented here.
+	private MGIntegerArray 					positions;				// The array of reference genome positions.
+	private MGFloatArray 					scores;					// The array of scores.
+	private List<MGIntegerArray> 			alternatives;			// The list of alternatives.
+	private Map<String, List<MGByteArray>> 	genotypes;				// The lists of genotypes.
+	private MGChromosomeVariants 			variants;				// The lists of variants.
 
 
 	/**
@@ -114,13 +130,14 @@ public class MGChromosomeContent implements Iterable<MGLineContent>, Serializabl
 	 * @param position	the {@link MGLineContent} to insert
 	 */
 	public void addPosition (int index, MGLineContent position) {
-		positions.set(index, position.getReferenceGenomePosition());
-		scores.set(index, position.getScore());
-		for (int i = 0; i < position.getAlternatives().length; i++) {
+		// Each element of a position is added separately in the different lists
+		positions.set(index, position.getReferenceGenomePosition());						// Add the position.
+		scores.set(index, position.getScore());												// Add the score.
+		for (int i = 0; i < position.getAlternatives().length; i++) {						// Add the alternatives.
 			addAlternative(i, index, position.getAlternatives()[i]);
 		}
 
-		List<String> genomes = new ArrayList<String>(position.getGenotypes().keySet());
+		List<String> genomes = new ArrayList<String>(position.getGenotypes().keySet());		// Add the genotypes.
 		for (String genome: genomes) {
 			addGenotype(index, genome, position.getGenotypes().get(genome));
 		}

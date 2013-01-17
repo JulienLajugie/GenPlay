@@ -41,6 +41,7 @@ public abstract class VCFScanner {
 	protected final VCFFile vcfFile;		// The VCF file to scan.
 
 	private List<String> genomes;
+	private List<Integer> genomeIndexes;
 	private List<VariantType> variations;
 	private List<MGFilter> filters;
 
@@ -65,6 +66,9 @@ public abstract class VCFScanner {
 	 * @throws IOException
 	 */
 	public void compute () throws IOException {
+		// Get genome indexes
+		genomeIndexes = getGenomeIndexes();
+
 		// Get the first line of data
 		VCFLine line = getFirstLine();
 
@@ -122,20 +126,6 @@ public abstract class VCFScanner {
 	 * @return the list of indexes (include no call (-2) and references (-1))
 	 */
 	private List<Integer> getScopeDefinedVariationIndexes (VCFLine line) {
-		// Get genome indexes
-		List<Integer> genomeIndexes = new ArrayList<Integer>();
-		if (genomes != null) {
-			for (String genome: genomes) {
-				genomeIndexes.add(vcfFile.getHeader().getIndexFromFullGenomeName(genome));
-			}
-		} else {
-			int genomeNumber = vcfFile.getHeader().getGenomeNames().size();
-			int index = 9;
-			for (int i = 0; i < genomeNumber; i++) {
-				genomeIndexes.add(index + i);
-			}
-		}
-
 		// Get alternatives indexes define by selected genomes
 		List<Integer> altIndexes = new ArrayList<Integer>();
 		for (int index: genomeIndexes) {
@@ -152,6 +142,27 @@ public abstract class VCFScanner {
 
 		// return result
 		return altIndexes;
+	}
+
+
+	private List<Integer> getGenomeIndexes () {
+		// Get genome indexes
+		List<Integer> genomeIndexes = new ArrayList<Integer>();
+		if (genomes != null) {
+			for (String genome: genomes) {
+				int index = vcfFile.getHeader().getIndexFromFullGenomeName(genome);
+				if (index > -1) {
+					genomeIndexes.add(index);
+				}
+			}
+		} else {
+			int genomeNumber = vcfFile.getHeader().getGenomeNames().size();
+			int index = 9;
+			for (int i = 0; i < genomeNumber; i++) {
+				genomeIndexes.add(index + i);
+			}
+		}
+		return genomeIndexes;
 	}
 
 

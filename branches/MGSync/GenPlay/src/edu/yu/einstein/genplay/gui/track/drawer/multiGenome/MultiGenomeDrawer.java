@@ -24,6 +24,9 @@ package edu.yu.einstein.genplay.gui.track.drawer.multiGenome;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -49,22 +52,86 @@ import edu.yu.einstein.genplay.gui.track.TrackGraphics;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MultiGenomeDrawer {
+public class MultiGenomeDrawer implements Serializable {
 
-	private List<VariantData> variantDataList;
-	private List<MGFilter> filtersList;
-	private List<VariantDisplayList> variantDisplayList;
-	private boolean showReference;
-	private boolean showFilter;
-	private boolean forceFitToScreen;
-	private boolean locked;
-	private VCFFileStatistics statistics;
+	/** Generated serial version ID */
+	private static final long serialVersionUID = -6660557171751127841L;
+	private static final int SAVED_FORMAT_VERSION_NUMBER = 0; // saved format version
 
-	private final MultiGenomeVariantDrawer variantDrawer;
-	private final MultiGenomeListHandler handler;
-	private List<VariantInformationDialog> variantDialogs;
-	private Variant variantUnderMouse;
-	private Chromosome chromosome;
+	private MultiGenomeVariantDrawer 		variantDrawer;
+	private MultiGenomeListHandler			handler;
+
+	private List<VariantInformationDialog> 	variantDialogs;
+	private Chromosome 						chromosome;
+	private VCFFileStatistics 				statistics;
+
+	private List<VariantData> 				variantDataList;
+	private List<MGFilter> 					filtersList;
+	private List<VariantDisplayList> 		variantDisplayList;
+
+	private boolean 						showReference;
+	private boolean 						showFilter;
+	private boolean 						forceFitToScreen;
+	private boolean 						locked;
+	private Variant 						variantUnderMouse;
+
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+
+		out.writeObject(variantDrawer);
+		out.writeObject(handler);
+
+		out.writeObject(chromosome);
+		out.writeObject(statistics);
+
+		out.writeObject(variantDataList);
+		out.writeObject(filtersList);
+		out.writeObject(variantDisplayList);
+
+		out.writeBoolean(showReference);
+		out.writeBoolean(showFilter);
+		out.writeBoolean(forceFitToScreen);
+		out.writeBoolean(locked);
+		out.writeObject(variantUnderMouse);
+	}
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+
+		variantDrawer = (MultiGenomeVariantDrawer) in.readObject();
+		handler = (MultiGenomeListHandler) in.readObject();
+
+		variantDialogs = new ArrayList<VariantInformationDialog>();
+		chromosome = (Chromosome) in.readObject();
+		statistics = (VCFFileStatistics) in.readObject();
+
+
+		variantDataList = (List<VariantData>) in.readObject();
+		filtersList = (List<MGFilter>) in.readObject();
+		variantDisplayList = (List<VariantDisplayList>) in.readObject();
+
+		showReference = in.readBoolean();
+		showFilter = in.readBoolean();
+		forceFitToScreen = in.readBoolean();
+		locked = in.readBoolean();
+		variantUnderMouse = (Variant) in.readObject();
+
+		variantDrawer.setDrawer(this);
+	}
 
 
 	/**

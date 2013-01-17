@@ -37,8 +37,8 @@ public class MGSMultiGenome implements Serializable {
 	/** Default serial version ID */
 	private static final long serialVersionUID = 6093066740612842875L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
-	private MGSReference reference;
-	private List<MGSGenome> genomes;
+	private MGSReference reference;			// The reference genome instance.
+	private List<MGSGenome> genomes;		// The genome instances.
 
 
 	/**

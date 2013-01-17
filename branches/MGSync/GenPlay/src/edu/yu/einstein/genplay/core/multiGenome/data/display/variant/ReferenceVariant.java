@@ -26,6 +26,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import edu.yu.einstein.genplay.core.enums.VariantType;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.content.MGChromosomeContent;
 
 /**
@@ -104,5 +105,23 @@ public class ReferenceVariant extends MultiNucleotideVariant {
 		String description = super.getDescription();
 		description += " TYPE: " + type.name() + ";";
 		return description;
+	}
+
+
+	@Override
+	public String getVariantSequence() {
+		VCFLine line = getVCFLine();
+		if (line != null) {
+			String chain = "-";
+			String ref = line.getREF();
+			int length = getLength();
+			if (length == 0) {
+				chain = ref;
+			} else if (length < 0) {
+				chain = ref.substring(1);
+			}
+			return chain;
+		}
+		return super.getVariantSequence();
 	}
 }

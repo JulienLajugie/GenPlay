@@ -22,6 +22,7 @@
 package edu.yu.einstein.genplay.core.multiGenome.data.display.variant;
 
 import edu.yu.einstein.genplay.core.enums.VariantType;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.content.MGChromosomeContent;
 
 /**
@@ -71,4 +72,13 @@ public class NoCallVariant extends SingleNucleotideVariant {
 		return description;
 	}
 
+
+	@Override
+	public String getVariantSequence() {
+		VCFLine line = getVCFLine();
+		if (line != null) {
+			return line.getREF();
+		}
+		return super.getVariantSequence();
+	}
 }

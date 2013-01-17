@@ -251,7 +251,7 @@ class MultiGenomeVariantDrawer implements Serializable {
 
 		// Draw the variant letters
 		if (variant.getType() != VariantType.MIX) {
-			drawLetters(g, x, width, height, variant, nucleotideNumber);					// draw the letters (nucleotides) over the stripe
+			drawLetters(g, x, width, height, variantDisplay, nucleotideNumber);					// draw the letters (nucleotides) over the stripe
 		}
 	}
 
@@ -351,11 +351,12 @@ class MultiGenomeVariantDrawer implements Serializable {
 	 * @param x					x coordinate
 	 * @param width				width of the stripe
 	 * @param height			height of the stripe
-	 * @param variant			variant
+	 * @param variantDisplay			variant
 	 * @param nucleotideNumber	number of nucleotide to display
 	 */
-	private void drawLetters (Graphics g, int x, int width, int height, Variant variant, int nucleotideNumber) {
+	private void drawLetters (Graphics g, int x, int width, int height, VariantDisplay variantDisplay, int nucleotideNumber) {
 		boolean draw = false;								// boolean to check if drawing letters is required
+		Variant variant = variantDisplay.getVariant();
 		VariantType variantType = variant.getType();		// gets the variant type
 		if (	((variantType == VariantType.INSERTION) && 	(MGDisplaySettings.DRAW_INSERTION_LETTERS 	== MGDisplaySettings.YES_MG_OPTION)) ||	// checks all options in order to determine if the letters must be drawn
 				((variantType == VariantType.DELETION) 	&& 	(MGDisplaySettings.DRAW_DELETION_LETTERS 	== MGDisplaySettings.YES_MG_OPTION)) ||
@@ -369,7 +370,7 @@ class MultiGenomeVariantDrawer implements Serializable {
 			double windowWidth = width / nucleotideNumber;									// calculate the size of window (here, the windo is the width of a nucleotide on the screen)
 			FontMetrics fm = g.getFontMetrics();											// get the font metrics
 			if ((fm.getHeight() < height) && (fm.stringWidth("A") < windowWidth)) {			// verifies if the height of the font is smaller than the height of the stripe AND if the width of a reference letter (A) is smaller than a window size
-				String letters = variant.getVariantSequence();
+				String letters = variantDisplay.getVariantSequence();
 				g.setColor(Colors.BLACK);												// set the color of the letters
 				int letterHeight = (height + fm.getHeight()) / 2;						// define where the draw will start on the Y axis
 				for (int i = 0; i < nucleotideNumber; i++) {							// for all the nucleotide that are supposed to be displayed

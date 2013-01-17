@@ -40,8 +40,8 @@ public class MGSGenome implements Serializable {
 	/** Default serial version ID */
 	private static final long serialVersionUID = -910049079866828194L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
-	private String name;
-	private List<MGSAllele> alleles;
+	private String name;					// The name of the genome.
+	private List<MGSAllele> alleles;		// The list of alleles.
 
 
 	/**

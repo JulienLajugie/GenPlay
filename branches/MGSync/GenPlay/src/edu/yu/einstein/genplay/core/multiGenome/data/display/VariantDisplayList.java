@@ -39,6 +39,18 @@ import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFFilter;
 
 /**
+ * A {@link VariantDisplayList} handles the list of {@link Variant} for each allele.
+ * There is as many {@link Variant} lists as alleles.
+ * It also handle the display policy of each {@link Variant}.
+ * A {@link Variant} can be:
+ * - shown
+ * - filtered but shown (the "hide filtered variants" feature is off)
+ * - hidden because filtered (the "hide filtered variants" feature is on)
+ * - hidden because it is a homozygote reference (the "hide references" feature is on)
+ * - hidden because filtered AND because it is a homozygote reference (both feature mentionned above are on)
+ * 
+ * The {@link VariantDisplayList} is specific of one genome and knows which {@link VariantType} it handles.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
@@ -60,10 +72,10 @@ public class VariantDisplayList implements Serializable {
 	public static byte HIDE_REFERENCE = -3;
 
 
-	private List<List<Variant>> variants;
-	private byte[][] display;
-	private String genomeName;
-	private List<VariantType> types;
+	private List<List<Variant>> variants;	// The lists of variants for all alleles.
+	private byte[][] display;				// The display policy bytes for all variants within all alleles (as array of bytes for memory usage).
+	private String genomeName;				// The name of the genome.
+	private List<VariantType> types;		// The list of variant type to handle.
 
 
 	/**
@@ -146,6 +158,11 @@ public class VariantDisplayList implements Serializable {
 	}
 
 
+	/**
+	 * Updates the display policy arrays according to the filters and the filter option
+	 * @param filters		the list of {@link MGFilter}
+	 * @param showFilter	the filter option (true: filters are shown, false: filters are hidden)
+	 */
 	private void updateDisplayForFilters (List<MGFilter> filters, boolean showFilter) {
 		MGFileContentManager contentManager = ProjectManager.getInstance().getMultiGenomeProject().getFileContentManager();
 		Chromosome currentChromosome = ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome();

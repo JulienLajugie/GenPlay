@@ -21,7 +21,9 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.data.display.variant;
 
+import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.content.MGChromosomeContent;
 
 /**
@@ -70,5 +72,21 @@ public class InsertionVariant extends MultiNucleotideVariant {
 		String description = super.getDescription();
 		description += " TYPE: INSERTION;";
 		return description;
+	}
+
+
+	@Override
+	public String getVariantSequence(String genomeName, AlleleType alleType) {
+		VCFLine line = getVCFLine();
+		if (line != null) {
+			line.processForAnalyse();
+			String chain = "-";
+			String alt = line.getAlternativeFromFullName(genomeName, alleType);
+			if ((alt != null) && (alt.charAt(0) != '<')) {
+				chain = alt.substring(1);
+			}
+			return chain;
+		}
+		return super.getVariantSequence();
 	}
 }

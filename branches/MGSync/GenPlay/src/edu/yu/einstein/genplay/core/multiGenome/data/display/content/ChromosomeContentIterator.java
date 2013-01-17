@@ -26,22 +26,27 @@ import java.util.NoSuchElementException;
 
 
 /**
+ * The {@link ChromosomeContentIterator} iterates through a {@link MGChromosomeContent} returning {@link MGLineContent}.
+ * It contains a "SmartIterator" feature, in this case only one {@link MGLineContent} will be created and initialized before being returned.
+ * It has the advantage to avoid memory peaks.
+ * If the returned {@link MGLineContent} has to be stored, it probably must be used as a different object, in this case, do not use the "SmartIterator" feature.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
-class ChromosomeContentIterator implements Iterator<MGLineContent> {
+public class ChromosomeContentIterator implements Iterator<MGLineContent> {
 
-	private final MGChromosomeContent fileList;
-	private int currentIndex = 0;
-	private MGLineContent smartPosition;
-	private boolean smartIterator;
+	private final MGChromosomeContent 	chromosomeContent;			// The chromosome content.
+	private int 						currentIndex = 0;			// The current index of the iterator.
+	private MGLineContent				smartPosition;				// The object used when "SmartIterator" feature is enabled.
+	private boolean 					smartIterator;				// True if the "SmartIterator" feature is enabled, false otherwise.
 
 
 	/**
 	 * Constructor of {@link ChromosomeContentIterator}
 	 */
 	protected ChromosomeContentIterator (MGChromosomeContent fileList) {
-		this.fileList = fileList;
+		this.chromosomeContent = fileList;
 		currentIndex = 0;
 		smartPosition = null;
 		smartIterator = false;
@@ -57,15 +62,15 @@ class ChromosomeContentIterator implements Iterator<MGLineContent> {
 	@Override
 	public MGLineContent next() throws NoSuchElementException {
 		if (isValidIndex()) {
-			if (smartIterator) {
+			if (smartIterator) {										// If the "SmartIterator" feature is enabled, the position object must be initialized and returned.
 				if (smartPosition == null) {
 					smartPosition = new MGLineContent();
 				}
-				smartPosition = fileList.getPosition(smartPosition, currentIndex);
+				smartPosition = chromosomeContent.getPosition(smartPosition, currentIndex);
 				currentIndex++;
 				return smartPosition;
 			}
-			MGLineContent currentPosition = fileList.getPosition(currentIndex);
+			MGLineContent currentPosition = chromosomeContent.getPosition(currentIndex);		// A new position object is returned otherwise
 			currentIndex++;
 			return currentPosition;
 		}
@@ -83,7 +88,7 @@ class ChromosomeContentIterator implements Iterator<MGLineContent> {
 	 * @return true if the current index is valid, false otherwise
 	 */
 	private boolean isValidIndex () {
-		if (currentIndex < fileList.getSize()) {
+		if (currentIndex < chromosomeContent.getSize()) {
 			return true;
 		} else {
 			return false;

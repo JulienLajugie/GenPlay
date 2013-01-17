@@ -21,6 +21,9 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.track.drawer.multiGenome;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -35,18 +38,60 @@ import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.MixVariant;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.VariantDisplay;
 
+
 /**
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MultiGenomeListHandler {
+public class MultiGenomeListHandler implements Serializable {
 
-	private List<VariantDisplayList> variantList;
-	private List<List<Variant>> fullList;
-	private List<List<VariantDisplay>> fittedList;
-	private final CacheTrack<List<List<VariantDisplay>>> cache;
-	private Chromosome fittedChromosome; // Chromosome with the adapted data
-	private Double fittedXRatio; // xRatio of the adapted data (ie ratio between the number of pixel and the number of base to display )
+	/** Generated serial version ID */
+	private static final long serialVersionUID = -7976375676020159462L;
+	private static final int SAVED_FORMAT_VERSION_NUMBER = 0; // saved format version
+
+	private List<VariantDisplayList> 					variantList;
+	private List<List<Variant>> 						fullList;
+	private List<List<VariantDisplay>> 					fittedList;
+	private CacheTrack<List<List<VariantDisplay>>> 		cache;
+	private Chromosome 									fittedChromosome; // Chromosome with the adapted data
+	private Double 										fittedXRatio; // xRatio of the adapted data (ie ratio between the number of pixel and the number of base to display )
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(variantList);
+		out.writeObject(fullList);
+		out.writeObject(fittedList);
+		out.writeObject(fittedChromosome);
+		if (fittedXRatio == null) {
+			out.writeDouble(0.0);
+		} else {
+			out.writeDouble(fittedXRatio);
+		}
+	}
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		variantList = (List<VariantDisplayList>) in.readObject();
+		fullList = (List<List<Variant>>) in.readObject();
+		fittedList = (List<List<VariantDisplay>>) in.readObject();
+		fittedChromosome = (Chromosome) in.readObject();
+		fittedXRatio = in.readDouble();
+
+		cache = new CacheTrack<List<List<VariantDisplay>>>();
+	}
 
 
 	/**

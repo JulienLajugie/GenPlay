@@ -28,16 +28,18 @@ import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.MixVariant;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 
 /**
+ * The {@link VariantDisplayListIterator} iterates over a {@link VariantDisplayList} for a specific allele.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
 public class VariantDisplayListIterator implements Iterator<Variant> {
 
-	private final VariantDisplayList displayList;
-	private final List<Variant> variantList;
-	private final byte[] display;
-	private boolean displayDependant;
-	private int currentIndex;
+	private final VariantDisplayList 	displayList;			// The list of variant display.
+	private final List<Variant> 		variantList;			// The list of variant.
+	private final byte[] 				display;				// The display policy of the variants.
+	private boolean 					displayDependant;		// When display dependant, the iterator does not stop on hidden variants.
+	private int 						currentIndex;			// The current index while iterating.
 
 
 	/**
@@ -130,6 +132,9 @@ public class VariantDisplayListIterator implements Iterator<Variant> {
 	}
 
 
+	/**
+	 * Move the index forward
+	 */
 	private void moveIndexForward () {
 		boolean moved = false;
 		int index = currentIndex + 1;
@@ -143,6 +148,9 @@ public class VariantDisplayListIterator implements Iterator<Variant> {
 	}
 
 
+	/**
+	 * Move the index backward
+	 */
 	private void moveIndexBackward () {
 		boolean moved = false;
 		int index = currentIndex - 1;
@@ -178,11 +186,18 @@ public class VariantDisplayListIterator implements Iterator<Variant> {
 	}
 
 
+	/**
+	 * @return true if the current index is in the list bounds, false otherwise
+	 */
 	private boolean inBound () {
 		return inBound(currentIndex);
 	}
 
 
+	/**
+	 * @param index and index
+	 * @return	true if the given index is in the list bounds, false otherwise
+	 */
 	private boolean inBound (int index) {
 		if ((index >= 0) && (index < variantList.size())) {
 			return true;
@@ -224,11 +239,6 @@ public class VariantDisplayListIterator implements Iterator<Variant> {
 	public void setIteratorPosition (int position) {
 		int index = getIndex(variantList, position, 0, variantList.size() - 1);
 		currentIndex = index;
-		/*int start = variantList.get(index).getStart();
-		int stop = variantList.get(index).getStop();
-		if ((position >= start) && (position < stop)) {
-			currentIndex = index;
-		}*/
 	}
 
 
@@ -258,15 +268,21 @@ public class VariantDisplayListIterator implements Iterator<Variant> {
 	}
 
 
+	/**
+	 * @return true if the current {@link Variant} is shown, false otherwise
+	 */
 	private boolean isCurrentVariantVisible () {
 		return isVariantVisible(currentIndex);
 	}
 
 
+	/**
+	 * @param index the index of a {@link Variant}
+	 * @return true if the {@link Variant} at the given index is shown, false otherwise
+	 */
 	private boolean isVariantVisible (int index) {
 		if (displayDependant) {
 			return getVariantDisplay(index) >= 0;
-			//return MGDisplaySettings.getInstance().isShown(getVariantDisplay(index));
 		}
 		return true;
 	}
