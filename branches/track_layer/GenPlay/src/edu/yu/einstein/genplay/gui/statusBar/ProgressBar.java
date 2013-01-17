@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -38,8 +38,8 @@ final class ProgressBar extends JProgressBar {
 	private static final long serialVersionUID = -3669001086333207235L; 	// generated ID
 	private static final Color 	BACKGROUND_COLOR = Colors.WHITE; // color of the background of the progressbar
 	private static final int 	HEIGHT = 15; 								// height of the progress bar
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link ProgressBar}
 	 */
@@ -59,22 +59,22 @@ final class ProgressBar extends JProgressBar {
 	 * @param progress
 	 */
 	synchronized void setProgress(int progress) {
-		setIndeterminate(false);
+		setIndeterminateAndUnpainted(false);
 		// set the progression position
 		setValue(progress);
 		// set the text on the progress bar
 		setString(progress + "%");
 	}
 
-	
+
 	/**
-	 * Sets the progress bar indeterminate and don't print the string 
+	 * Sets the progress bar indeterminate and don't print the string
 	 * on the progress bar if the parameter is true
+	 * @param b true to set indeterminate and unpainted
 	 */
-	@Override
-	public void setIndeterminate(boolean b) {
-		firePropertyChange("indeterminate", isIndeterminate(), b);
-		super.setIndeterminate(b);
+	public void setIndeterminateAndUnpainted(boolean b) {
+		setIndeterminate(b);
+		//firePropertyChange("indeterminate", isIndeterminate(), b);
 		setStringPainted(!b);
 	}
 }

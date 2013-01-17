@@ -21,65 +21,41 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.customComponent.tableComponents;
 
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.AbstractCellEditor;
-import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 
-import edu.yu.einstein.genplay.util.colors.GenPlayColorChooser;
-
 /**
- * JTable Editor that can be used to select a color
+ * JTable Editor that can be used to select an element in a combox box
  * @author Julien Lajugie
  */
-public class ColorEditor extends AbstractCellEditor implements TableCellEditor, ActionListener {
+public class ComboBoxEditor extends AbstractCellEditor implements TableCellEditor {
 
-	private static final long serialVersionUID = 8019042313436179591L; // generated serial ID
-	private Color 			currentColor; 	// currently selected color
-	private final JButton 	jbColor; 		// button for the editor
+	private static final long serialVersionUID = -8754967887212589985L; // generated serial ID
+	private final JComboBox comboBox;	// components of this editor
 
 
 	/**
-	 * Creates an instance of color Editor
-	 * @param text text that appears on the component
+	 * Creates an instance of {@link ComboBoxEditor}
+	 * @param comboValues values available in the combox
 	 */
-	public ColorEditor(String text) {
-		jbColor = new JButton();
-		if (text != null) {
-			jbColor.setText(text);
-		}
-		jbColor.addActionListener(this);
-		jbColor.setBorderPainted(false);
-	}
-
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		Color colorTmp = GenPlayColorChooser.showDialog(jbColor, "Select a Color", currentColor);
-		if (currentColor != null) {
-			currentColor = colorTmp;
-			jbColor.setBackground(currentColor);
-		}
-		fireEditingStopped();
+	public ComboBoxEditor(Object[] comboValues) {
+		comboBox = new JComboBox(comboValues);
 	}
 
 
 	@Override
 	public Object getCellEditorValue() {
-		return currentColor;
+		return comboBox.getSelectedItem();
 	}
 
 
 	@Override
 	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-		currentColor = (Color) value;
-		jbColor.setBackground(currentColor);
-		jbColor.setForeground(new Color(currentColor.getRGB() ^ 0xffffff));
-		return jbColor;
+		comboBox.setSelectedItem(value);
+		return comboBox;
 	}
 }

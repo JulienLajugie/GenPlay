@@ -34,6 +34,7 @@ import edu.yu.einstein.genplay.gui.dialog.layerSettings.LayerSettingsDialog;
 import edu.yu.einstein.genplay.gui.dialog.layerSettings.LayerSettingsRow;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.ColoredLayer;
+import edu.yu.einstein.genplay.gui.track.layer.GraphLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.util.colors.LayerColor;
 
@@ -92,19 +93,29 @@ public class TALayerSettings extends TrackListAction {
 				LayerSettingsDialog layerSettingsDialog = new LayerSettingsDialog(layerSettings);
 				if (layerSettingsDialog.showDialog(getRootPane()) == LayerSettingsDialog.APPROVE_OPTION) {
 					selectedTrack.getLayers().clear();
+					selectedTrack.setActiveLayer(null);
 					for (LayerSettingsRow currentRow: layerSettings) {
-						currentRow.getLayer().setName(currentRow.getLayerName());
-						currentRow.getLayer().setVisible(currentRow.isLayerVisible());
-						if (currentRow.getLayer() instanceof ColoredLayer) {
-							Color selectedColor = currentRow.getLayerColor();
-							// will be removed in the java7 version of genplay since user will be able to select the transparency
-							selectedColor = LayerColor.createTransparentColor(selectedColor);
-							((ColoredLayer) currentRow.getLayer()).setColor(selectedColor);
+						if (!currentRow.isLayerSetForDeletion()) {
+							currentRow.getLayer().setName(currentRow.getLayerName());
+							currentRow.getLayer().setVisible(currentRow.isLayerVisible());
+							if (currentRow.getLayer() instanceof ColoredLayer) {
+								Color selectedColor = currentRow.getLayerColor();
+								// will be removed in the java7 version of genplay since user will be able to select the transparency
+								selectedColor = LayerColor.createTransparentColor(selectedColor);
+								((ColoredLayer) currentRow.getLayer()).setColor(selectedColor);
+							}
+							if (currentRow.getLayer() instanceof GraphLayer) {
+								((GraphLayer) currentRow.getLayer()).setGraphType(currentRow.getLayerGraphType());
+							}
+							selectedTrack.getLayers().addLast(currentRow.getLayer());
+							if (currentRow.isLayerActive()) {
+								selectedTrack.setActiveLayer(currentRow.getLayer());
+							}
 						}
-						selectedTrack.getLayers().add(currentRow.getLayer());
-						if (currentRow.isLayerActive()) {
-							selectedTrack.setActiveLayer(currentRow.getLayer());
-						}
+					}
+					// if there is no active layer we set the first layer as active (if there is a layer)
+					if ((selectedTrack.getActiveLayer() == null) && (selectedTrack.getLayers().size() > 0)) {
+						selectedTrack.setActiveLayer(selectedTrack.getLayers().getLayers()[0]);
 					}
 					selectedTrack.repaint();
 				}

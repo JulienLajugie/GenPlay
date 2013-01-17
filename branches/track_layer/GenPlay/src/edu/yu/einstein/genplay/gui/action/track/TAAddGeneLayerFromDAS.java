@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -26,10 +26,11 @@ import edu.yu.einstein.genplay.core.DAS.DASConnector;
 import edu.yu.einstein.genplay.core.DAS.DASType;
 import edu.yu.einstein.genplay.core.DAS.DataSource;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
-import edu.yu.einstein.genplay.gui.dialog.DASDialog.DASDialog;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
+import edu.yu.einstein.genplay.gui.dialog.DASDialog.DASDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 /**
@@ -39,17 +40,17 @@ import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
  * @version 0.1
  */
 public class TAAddGeneLayerFromDAS extends TrackListActionWorker<GeneList> {
-	
+
 	private static final long serialVersionUID = 142539909587173492L; // generated ID
 	private final DataSource 	dataSource;			// DAS data source
 	private final DASConnector 	dasConnector;		// DAS connector
 	private final DASType 		dasType;			// DAS type
-	private final int 			dataRange;			// enum representing the type of range (genome wide / current range / user defined) 
+	private final int 			dataRange;			// enum representing the type of range (genome wide / current range / user defined)
 	private final GenomeWindow 	genomeWindow;		// genome window defined by the user
-	private final GenomeWindow 	currentWindow;		// current genome window 
+	private final GenomeWindow 	currentWindow;		// current genome window
 	private final Track			selectedTrack;		// selected track
 
-	
+
 	/**
 	 * Creates an instance of {@link TAAddGeneLayerFromDAS}
 	 * @param dataSource DAS data source
@@ -60,7 +61,7 @@ public class TAAddGeneLayerFromDAS extends TrackListActionWorker<GeneList> {
 	 * @param currentWindow current genome window
 	 * @param selectedTrack selected track
 	 */
-	public TAAddGeneLayerFromDAS(DataSource dataSource, DASConnector dasConnector, DASType dasType, int dataRange, 
+	public TAAddGeneLayerFromDAS(DataSource dataSource, DASConnector dasConnector, DASType dasType, int dataRange,
 			GenomeWindow genomeWindow, GenomeWindow currentWindow, Track selectedTrack) {
 		this.dataSource = dataSource;
 		this.dasConnector = dasConnector;
@@ -70,14 +71,14 @@ public class TAAddGeneLayerFromDAS extends TrackListActionWorker<GeneList> {
 		this.currentWindow = currentWindow;
 		this.selectedTrack = selectedTrack;
 	}
-	
-	
+
+
 	@Override
 	protected GeneList processAction() throws Exception {
 		notifyActionStart("Loading From DAS Server", 1, true);
-		if(dataRange == DASDialog.GENERATE_GENOMEWIDE_LIST)
+		if(dataRange == DASDialog.GENERATE_GENOMEWIDE_LIST) {
 			return dasConnector.getGeneList(dataSource, dasType);
-		else if(dataRange == DASDialog.GENERATE_USER_SPECIFIED_LIST) {
+		} else if(dataRange == DASDialog.GENERATE_USER_SPECIFIED_LIST) {
 			if(genomeWindow.getStop() < genomeWindow.getStart()) {
 				throw new Exception("Invalid Start Stop Range");
 			}
@@ -94,6 +95,7 @@ public class TAAddGeneLayerFromDAS extends TrackListActionWorker<GeneList> {
 	protected void doAtTheEnd(GeneList actionResult) {
 		if (actionResult != null) {
 			GeneLayer newLayer = new GeneLayer(selectedTrack, actionResult, dataSource.getName());
+			newLayer.getHistory().add("Load " + dataSource.getName() + " From DAS Server", Colors.GREY);
 			selectedTrack.getLayers().add(newLayer);
 			selectedTrack.setActiveLayer(newLayer);
 		}

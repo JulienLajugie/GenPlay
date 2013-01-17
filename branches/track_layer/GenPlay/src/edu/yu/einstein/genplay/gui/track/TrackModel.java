@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -28,6 +28,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.event.ListDataEvent;
@@ -45,24 +46,43 @@ public class TrackModel implements Serializable, Collection<Layer<?>> {
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 
 	private List<ListDataListener>		dataListeners;		// list of listeners that is notified each time a change to the data model occurs
-	private List<Layer<?>>				layers; 			// array of layers displayed in the track
+	private LinkedList<Layer<?>>		layers; 			// list of layers displayed in the track
+
 
 	/**
 	 * Creates an instance of {@link TrackModel}
 	 */
 	public TrackModel() {
-		this.dataListeners = new ArrayList<ListDataListener>();
-		this.layers = new ArrayList<Layer<?>>();
+		dataListeners = new ArrayList<ListDataListener>();
+		layers = new LinkedList<Layer<?>>();
 	}
 
 
+	/**
+	 * Adds the specified layer at the beginning of the list because layers are
+	 * stacked.  They are also painted in reverse order
+	 * @param layer a {@link Layer}
+	 * @return true
+	 */
 	@Override
 	public boolean add(Layer<?> layer) {
-		int indexAdded = this.layers.size();
-		this.layers.add(layer);
-		ListDataEvent event = new ListDataEvent(this, ListDataEvent.INTERVAL_ADDED, indexAdded, indexAdded);
+		int indexAdded = layers.size();
+		layers.addFirst(layer);
+		ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, indexAdded);
 		notifyListeners(event);
 		return true;
+	}
+
+
+	/**
+	 * Adds the specified layer at the end of the list
+	 * @param layer a {@link Layer}
+	 */
+	public void addLast(Layer<?> layer) {
+		int indexAdded = layers.size();
+		layers.add(layer);
+		ListDataEvent event = new ListDataEvent(this, ListDataEvent.INTERVAL_ADDED, indexAdded, indexAdded);
+		notifyListeners(event);
 	}
 
 
@@ -73,7 +93,7 @@ public class TrackModel implements Serializable, Collection<Layer<?>> {
 		boolean listChanged = this.layers.addAll(layers);
 		if (listChanged) {
 			ListDataEvent event = new ListDataEvent(this, ListDataEvent.INTERVAL_ADDED, indexFirstAdded, indexLastAdded);
-			notifyListeners(event); 
+			notifyListeners(event);
 		}
 		return listChanged;
 	}
@@ -84,8 +104,8 @@ public class TrackModel implements Serializable, Collection<Layer<?>> {
 	 * @param dataListener
 	 */
 	public void addListDataListener(ListDataListener dataListener) {
-		if (!this.dataListeners.contains(dataListener)) {
-			this.dataListeners.add(dataListener);
+		if (!dataListeners.contains(dataListener)) {
+			dataListeners.add(dataListener);
 		}
 	}
 
@@ -93,7 +113,7 @@ public class TrackModel implements Serializable, Collection<Layer<?>> {
 	@Override
 	public void clear() {
 		int lastIndex = layers.size() - 1;
-		this.layers.clear();
+		layers.clear();
 		ListDataEvent event = new ListDataEvent(this, ListDataEvent.INTERVAL_REMOVED, 0, lastIndex);
 		notifyListeners(event);
 	}
@@ -115,8 +135,7 @@ public class TrackModel implements Serializable, Collection<Layer<?>> {
 	 * @return an array containing the elements managed by this {@link TrackModel}
 	 */
 	public Layer<?>[] getLayers() {
-		Layer<?>[] layerArray = new Layer<?>[this.layers.size()];
-		return this.layers.toArray(layerArray);
+		return layers.toArray(new Layer<?>[0]);
 	}
 
 
@@ -177,7 +196,9 @@ public class TrackModel implements Serializable, Collection<Layer<?>> {
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		dataListeners = (List<ListDataListener>)in.readObject();
-		layers = (List<Layer<?>>)in.readObject();
+		layers = (LinkedList<Layer<?>>)in.readObject();
+		// We remove layer with null data since if the unserialization of a layer failed, its data is null
+		removeNoDataLayers();
 	}
 
 
@@ -215,6 +236,21 @@ public class TrackModel implements Serializable, Collection<Layer<?>> {
 	 */
 	public void removeListDataListener(ListDataListener dataListener)  {
 		dataListeners.remove(dataListener);
+	}
+
+
+	/**
+	 * This method removes all the layers with null data
+	 */
+	private void removeNoDataLayers() {
+		int i = 0;
+		while (i < layers.size()) {
+			if (layers.get(i).getData() == null) {
+				layers.remove(i);
+			} else {
+				i++;
+			}
+		}
 	}
 
 
@@ -257,7 +293,7 @@ public class TrackModel implements Serializable, Collection<Layer<?>> {
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(this.dataListeners);
-		out.writeObject(this.layers);
+		out.writeObject(dataListeners);
+		out.writeObject(layers);
 	}
 }

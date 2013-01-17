@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -60,10 +60,10 @@ public final class NumberOptionPane extends JDialog {
 	private static String 				label;										// Text of the JLabel jl
 	private static boolean 				validated;									// True if OK has been pressed
 
-	
+
 	/**
-	 * Private constructor. Used internally to create a NumberOptionPane dialog. 
-	 * @param parent the parent component of the dialog, can be null; see showDialog for details 
+	 * Private constructor. Used internally to create a NumberOptionPane dialog.
+	 * @param parent the parent component of the dialog, can be null; see showDialog for details
 	 * @param aTitle Title of the dialog
 	 * @param aLabel Text of the inside label of the dialog
 	 * @param df DecimalFormat of the input value
@@ -81,7 +81,7 @@ public final class NumberOptionPane extends JDialog {
 		minValidValue = min;
 		maxValidValue = max;
 		validated = false;
-		initComponent();	
+		initComponent();
 		setTitle(title);
 		getRootPane().setDefaultButton(jbOk);
 		pack();
@@ -89,7 +89,7 @@ public final class NumberOptionPane extends JDialog {
 		setLocationRelativeTo(parent);
 	}
 
-	
+
 	/**
 	 * Creates the component and all the subcomponents.
 	 */
@@ -97,11 +97,11 @@ public final class NumberOptionPane extends JDialog {
 		if(label != null) {
 			jl = new JLabel(label);
 		}
-		
+
 		jftfValue = new JFormattedTextField(decimalFormat);
 		jftfValue.setValue(validValue);
 		jftfValue.setColumns(8);
-		jftfValue.addPropertyChangeListener(new PropertyChangeListener() {				
+		jftfValue.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
 				jftfValuePropertyChange();
@@ -123,16 +123,16 @@ public final class NumberOptionPane extends JDialog {
 		jbOk.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				jbOkActionPerformed();				
+				jbOkActionPerformed();
 			}
 		});
-		
+
 		jbCancel = new JButton("Cancel");
 		jbCancel.setPreferredSize(new Dimension(75, 30));
 		jbCancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				jbCancelActionPerformed();				
+				jbCancelActionPerformed();
 			}
 		});
 
@@ -148,7 +148,7 @@ public final class NumberOptionPane extends JDialog {
 			c.weighty = 0.1;
 			add(jl, c);
 		}
-		
+
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
 		c.gridy = 1;
@@ -165,27 +165,27 @@ public final class NumberOptionPane extends JDialog {
 		add(jbOk, c);
 
 		c.gridx = 1;
-		add(jbCancel, c);		
+		add(jbCancel, c);
 	}
 
-	
+
 	/**
 	 * Closes the dialog. No action are performed.
 	 */
 	private void jbCancelActionPerformed() {
-		this.dispose();
+		dispose();
 	}
 
-	
+
 	/**
 	 * Closes the dialog. Sets validated to true so the main function can return the two selected curves.
 	 */
 	private void jbOkActionPerformed() {
 		validated = true;
-		this.dispose();		
+		dispose();
 	}
 
-	
+
 	/**
 	 * Called when the value of the fieldText jftfValue changes.
 	 * Check if the new value is between min and max.
@@ -201,40 +201,42 @@ public final class NumberOptionPane extends JDialog {
 		}
 	}
 
-	
+
 	/**
 	 * Displays a dialog, and returns a Number.
-	 * @param parent the parent component of the dialog, can be null; see showDialog for details 
+	 * @param parent the parent component of the dialog, can be null; see showDialog for details
 	 * @param title Title of the dialog.
 	 * @param label Text of the inside label of the dialog.
 	 * @param df DecimalFormat of the input value.
-	 * @param min Minimum allowed value for the input value. 
+	 * @param min Minimum allowed value for the input value.
 	 * @param max Maximum allowed value for the input value.
-	 * @param defaultValue Default displayed value when the dialog is displayed. 
+	 * @param defaultValue Default displayed value when the dialog is displayed.
 	 * @return A number if OK has been pressed, otherwise null.
 	 */
 	public static Number getValue(Component parent, String title, String label, DecimalFormat df, double min, double max, double defaultValue) {
 		NumberOptionPane NOP = new NumberOptionPane(parent, title, label, df, defaultValue, min, max);
-		NOP.setVisible(true);	
-		if(validated)
+		NOP.setVisible(true);
+		if(validated) {
 			return validValue;
-		else
+		} else {
 			return null;
+		}
 	}
 
-	
+
 	/**
 	 * Displays a dialog asking for a window size and returns a Number.
-	 * @param parent the parent component of the dialog, can be null; see showDialog for details 
-	 * @param defaultValue Default displayed value when the dialog is displayed. 
+	 * @param parent the parent component of the dialog, can be null; see showDialog for details
+	 * @param defaultValue Default displayed value when the dialog is displayed.
 	 * @return A number if OK has been pressed, otherwise null.
 	 */
 	public static Integer getValueWindow(Component parent, int defaultValue) {
 		NumberOptionPane NOP = new NumberOptionPane(parent, "Window size:", null, new DecimalFormat("0"), defaultValue, 1, 1000000);
 		NOP.setVisible(true);
-		if (validated)
+		if (validated) {
 			return validValue.intValue();
-		else
+		} else {
 			return null;
+		}
 	}
 }

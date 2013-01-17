@@ -42,7 +42,7 @@ import edu.yu.einstein.genplay.util.colors.Colors;
 
 /**
  * Panel that defines mouse listeners that modifies the genomic position.
- * A list of drawers can be registered an instance of this class in order 
+ * A list of drawers can be registered an instance of this class in order
  * to draw on the {@link Graphics} context of this panel.
  * The first elements of the list of drawers draw first.
  * @author Julien Lajugie
@@ -117,8 +117,8 @@ public class GraphicsPanel extends JPanel implements Serializable, ComponentList
 			int genomeWidth = projectWindow.screenToGenomeWidth(screenWidth);
 			GenomeWindow newWindow = new GenomeWindow();
 			newWindow.setChromosome(projectWindow.getGenomeWindow().getChromosome());
-			newWindow.setStart(projectWindow.getGenomeWindow().getStart()+ (int) genomeWidth);
-			newWindow.setStop(projectWindow.getGenomeWindow().getStop() + (int) genomeWidth);
+			newWindow.setStart(projectWindow.getGenomeWindow().getStart()+ genomeWidth);
+			newWindow.setStop(projectWindow.getGenomeWindow().getStop() + genomeWidth);
 			if (((newWindow.getMiddlePosition()) >= 0) && (newWindow.getMiddlePosition() <= newWindow.getChromosome().getLength())) {
 				projectWindow.setGenomeWindow(newWindow);
 			}
@@ -175,8 +175,8 @@ public class GraphicsPanel extends JPanel implements Serializable, ComponentList
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		// if the scrolling mode is enable we update the intensity of the scrolling 
-		// depending on how far the mouse is from the center of the track 
+		// if the scrolling mode is enable we update the intensity of the scrolling
+		// depending on how far the mouse is from the center of the track
 		ScrollingManager scrollingManager = ScrollingManager.getInstance();
 		if (scrollingManager.isScrollingEnabled()) {
 			// width between the cursor and the middle of the track

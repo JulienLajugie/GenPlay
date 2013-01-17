@@ -33,6 +33,7 @@ import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
 import edu.yu.einstein.genplay.util.Utils;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 
@@ -105,6 +106,7 @@ public final class TAAddGeneLayer extends TrackListActionExtractorWorker<GeneLis
 		if ((actionResult != null) && valid) {
 			Track selectedTrack = getTrackListPanel().getSelectedTrack();
 			GeneLayer newLayer = new GeneLayer(selectedTrack, actionResult, fileToExtract.getName());
+			newLayer.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Colors.GREY);
 			selectedTrack.getLayers().add(newLayer);
 			selectedTrack.setActiveLayer(newLayer);
 		}

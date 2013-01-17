@@ -27,6 +27,7 @@ import java.awt.Component;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.table.TableCellRenderer;
 
@@ -41,10 +42,15 @@ public class ColorRenderer extends JLabel implements TableCellRenderer {
 
 	/**
 	 * Creates an instance of {@link ColorRenderer}
+	 * @param text text that appears on the component
 	 * @param isBordered true if the borders are visible
 	 */
-	public ColorRenderer(boolean isBordered) {
+	public ColorRenderer(String text, boolean isBordered) {
 		this.isBordered = isBordered;
+		if (text != null) {
+			setHorizontalAlignment(SwingConstants.CENTER);
+			setText(text);
+		}
 		setOpaque(true);
 	}
 
@@ -55,12 +61,15 @@ public class ColorRenderer extends JLabel implements TableCellRenderer {
 		if (newColor == null) {
 			if (isSelected) {
 				setBackground(table.getSelectionBackground());
+				setForeground(table.getSelectionBackground());
 			} else {
 				setBackground(table.getBackground());
+				setForeground(table.getBackground());
 			}
 			setBorder(null);
 		} else {
 			setBackground(newColor);
+			setForeground(new Color(newColor.getRGB() ^ 0xffffff));
 			if (isBordered) {
 				Border border;
 				if (isSelected) {

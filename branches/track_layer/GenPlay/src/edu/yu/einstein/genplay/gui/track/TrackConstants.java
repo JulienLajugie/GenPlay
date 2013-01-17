@@ -102,9 +102,39 @@ public class TrackConstants {
 
 
 	/**
+	 * Minimum height of a track
+	 */
+	public static final int MAXIMUM_HEIGHT = 9999;
+
+
+	/**
+	 * Maximum number if horizontal lines displayed in the background of a track
+	 */
+	public static final int	MAXIMUM_HORIZONTAL_LINE_COUNT = 100;
+
+
+	/**
+	 * Maximum number of vertical lines displayed in the background of a track
+	 */
+	public static final int	MAXIMUM_VERTICAL_LINE_COUNT = 100;
+
+
+	/**
+	 * Minimum height of a track
+	 */
+	public static final int MINIMUM_HEIGHT = 30;
+
+
+	/**
+	 * Prefix of the default track name
+	 */
+	public static final String NAME_PREFIX = "Track #";
+
+
+	/**
 	 * Default border of a track
 	 */
-	public static final Border REGULAR_BORDER = 
+	public static final Border REGULAR_BORDER =
 			BorderFactory.createMatteBorder(0, 0, 1, 0, Colors.BLACK);
 
 
@@ -136,18 +166,6 @@ public class TrackConstants {
 	 * The score of the track is drawn on top of the track
 	 */
 	public static final int TOP_SCORE_POSITION = 0;
-
-
-	/**
-	 * Minimum height of a track
-	 */
-	public static final int TRACK_MINIMUM_HEIGHT = 30;
-
-
-	/**
-	 * Prefix of the default track name
-	 */
-	public static final String TRACK_NAME_PREFIX = "Track #";
 
 
 	/**

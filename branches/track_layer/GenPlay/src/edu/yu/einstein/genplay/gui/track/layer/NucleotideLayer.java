@@ -22,6 +22,7 @@
 package edu.yu.einstein.genplay.gui.track.layer;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
@@ -29,6 +30,8 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 
 import javax.swing.JOptionPane;
 
@@ -37,6 +40,7 @@ import edu.yu.einstein.genplay.core.list.DisplayableListOfLists;
 import edu.yu.einstein.genplay.core.list.nucleotideList.TwoBitSequenceList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.ScrollingManager;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackConstants;
@@ -51,11 +55,11 @@ import edu.yu.einstein.genplay.util.colors.GenPlayColor;
  */
 public class NucleotideLayer extends AbstractLayer<DisplayableListOfLists<Nucleotide, Nucleotide[]>> implements Layer<DisplayableListOfLists<Nucleotide, Nucleotide[]>>, MouseMotionListener, MouseListener {
 
-	private static final long serialVersionUID = 3779631846077486596L; // generated ID
-	private static final int NUCLEOTIDE_HEIGHT = 10;								// y position of the nucleotides on the track
-	private int 		maxBaseWidth = 0;											// size on the screen of the widest base to display (in pixels)
-	private Integer 	baseUnderMouseIndex = null;									// index of the base under the mouse
-	private boolean		nucleotidePrinted = false;									// true if the nucleotide are printed
+	private static final long 	serialVersionUID = 3779631846077486596L;// generated ID
+	private static final int 	NUCLEOTIDE_HEIGHT = 10;				 	// y position of the nucleotides on the track
+	private transient Integer	maxBaseWidth = null;					// size on the screen of the widest base to display (in pixels)
+	private transient Integer 	baseUnderMouseIndex = null;				// index of the base under the mouse
+	private transient boolean	nucleotidePrinted = false;				// true if the nucleotide are printed
 
 
 	/**
@@ -66,17 +70,31 @@ public class NucleotideLayer extends AbstractLayer<DisplayableListOfLists<Nucleo
 	 */
 	public NucleotideLayer(Track track, DisplayableListOfLists<Nucleotide, Nucleotide[]> data, String name) {
 		super(track, data, name);
+		maxBaseWidth = computeMaximumBaseWidth();
+	}
+
+
+	/**
+	 * @return the maximum width in pixel that a base can take up
+	 */
+	private int computeMaximumBaseWidth() {
+		int maxWidth = 0;
 		// compute the length in pixels of the widest base to display
 		String[] bases = {"N", "A", "C", "G", "T"};
 		for (String currBase: bases) {
-			maxBaseWidth = Math.max(maxBaseWidth, getTrack().getFontMetrics(TrackConstants.FONT).stringWidth(currBase));
+			maxWidth = Math.max(maxWidth, getTrack().getFontMetrics(TrackConstants.FONT).stringWidth(currBase));
 		}
+		return maxWidth;
 	}
 
 
 	@Override
 	public void draw(Graphics g, int width, int height) {
 		if (isVisible()) {
+			if (maxBaseWidth == null) {
+				// should be null after unserialization and need to be reinitialized
+				maxBaseWidth = computeMaximumBaseWidth();
+			}
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
 			long baseToPrintCount = projectWindow.getGenomeWindow().getSize();
 			// if there is enough room to print something
@@ -218,7 +236,7 @@ public class NucleotideLayer extends AbstractLayer<DisplayableListOfLists<Nucleo
 	 */
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		if (isVisible()) {
+		if (isVisible() && (getData() != null)) {
 			getTrack().setToolTipText("");
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
 			Integer oldBaseUnderMouseIndex = baseUnderMouseIndex;
@@ -262,9 +280,23 @@ public class NucleotideLayer extends AbstractLayer<DisplayableListOfLists<Nucleo
 
 
 	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		maxBaseWidth = null;
+		baseUnderMouseIndex = null;
+		nucleotidePrinted = false;
+		twoBitSequenceListUnserialization();
+	}
+
+
+	/**
 	 * Handle the unserialization of a {@link TwoBitSequenceList}.
 	 */
-	private void twoBitSequenceListUnserialization()  {
+	private void twoBitSequenceListUnserialization() {
 		// if the data is a TwoBitSequenceList we want to make sure
 		// that the file is still at the same location than when
 		// the save was made.  If not we need to ask the user for the new location.
@@ -276,12 +308,14 @@ public class NucleotideLayer extends AbstractLayer<DisplayableListOfLists<Nucleo
 			} catch (FileNotFoundException e) {
 				// if the file is not found we
 				String filePath = twoBitData.getDataFilePath();
-				int dialogRes = JOptionPane.showConfirmDialog(getTrack().getRootPane(),
+				// since the track can be null we need to get the project root pane
+				Component rootPane = MainFrame.getInstance().getRootPane();
+				int dialogRes = JOptionPane.showConfirmDialog(rootPane,
 						"The file " + filePath + " cannot be found\nPlease locate the file or press cancel to delete the Sequence Track",
 						"File Not Found", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 				if (dialogRes == JOptionPane.OK_OPTION) {
 					String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
-					File selectedFile = Utils.chooseFileToLoad(getTrack().getRootPane(), "Load Sequence Track", defaultDirectory, Utils.getReadableSequenceFileFilters(), true);
+					File selectedFile = Utils.chooseFileToLoad(rootPane, "Load Sequence Track", defaultDirectory, Utils.getReadableSequenceFileFilters(), true);
 					if (selectedFile != null) {
 						try {
 							twoBitData.setSequenceFilePath(selectedFile.getPath());
@@ -291,6 +325,8 @@ public class NucleotideLayer extends AbstractLayer<DisplayableListOfLists<Nucleo
 					} else {
 						twoBitSequenceListUnserialization();
 					}
+				} else {
+					setData(null);
 				}
 			}
 		}

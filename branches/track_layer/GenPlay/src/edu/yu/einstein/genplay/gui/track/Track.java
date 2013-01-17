@@ -81,6 +81,10 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 	 */
 	public Track(int trackNumber) {
 		super();
+
+		setMinimumSize(new Dimension(getMinimumSize().width, TrackConstants.MINIMUM_HEIGHT));
+		setMaximumSize(new Dimension(getMaximumSize().width, TrackConstants.MAXIMUM_HEIGHT));
+
 		// create the panels
 		handlePanel = new HandlePanel(trackNumber);
 		graphicsPanel = new GraphicsPanel();
@@ -156,13 +160,13 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 	}
 
 
-
 	/**
 	 * @return the foreground layer of the track
 	 */
 	public Layer<ForegroundData> getForegroundLayer() {
 		return foregroundLayer;
 	}
+
 
 
 	/**
@@ -200,7 +204,7 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 		if (super.getName() != null) {
 			return super.getName();
 		} else {
-			return new String(TrackConstants.TRACK_NAME_PREFIX + getNumber());
+			return new String(TrackConstants.NAME_PREFIX + getNumber());
 		}
 	}
 
@@ -408,7 +412,7 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 
 	@Override
 	public void setName(String name) {
-		String defaultName = TrackConstants.TRACK_NAME_PREFIX + getNumber();
+		String defaultName = TrackConstants.NAME_PREFIX + getNumber();
 		// we don't set the name if it's the default track name
 		if ((name != null) && !name.equals(defaultName)) {
 			super.setName(name);
@@ -449,6 +453,16 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 
 
 	@Override
+	public String toString() {
+		if (getName() != null) {
+			return getName();
+		} else {
+			return super.toString();
+		}
+	}
+
+
+	@Override
 	public void trackChanged(TrackEvent evt) {
 		if (evt.getEventType() == TrackEventType.RESIZED) { // resize event
 			setPreferredHeight(handlePanel.getNewHeight());
@@ -482,7 +496,10 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 			Drawer[] drawers = new Drawer[layers.size() + 2];
 			drawers[0] = backgroundLayer;
 			int i = 1;
-			for (Drawer currentDrawer: layers) {
+			// we want to draw the layers in reverse order because the first layers
+			// of the list should be on top
+			for (int j = layers.size() - 1; j >= 0; j--) {
+				Drawer currentDrawer = layers.getLayers()[j];
 				drawers[i] = currentDrawer;
 				i++;
 			}

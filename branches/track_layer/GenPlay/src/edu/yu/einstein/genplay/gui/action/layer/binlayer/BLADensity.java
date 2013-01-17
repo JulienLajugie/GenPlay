@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -46,8 +46,8 @@ public class BLADensity extends TrackListActionOperationWorker<BinList> {
 
 	private static final long serialVersionUID = 8669677084318132021L;	// generated ID
 	private static final String 	ACTION_NAME = "Density";			// action name
-	private static final String 	DESCRIPTION = 
-		"Computes the densities of none null bins of the selected layer";// tooltip
+	private static final String 	DESCRIPTION =
+			"Computes the densities of none null bins of the selected layer";// tooltip
 	private BinLayer 				selectedLayer;						// selected layer
 	private Track	 				resultTrack;						// result track
 	private Number 					halfWidth;							// half width

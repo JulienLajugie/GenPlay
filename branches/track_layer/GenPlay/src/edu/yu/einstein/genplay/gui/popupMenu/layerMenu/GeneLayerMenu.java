@@ -23,6 +23,8 @@ package edu.yu.einstein.genplay.gui.popupMenu.layerMenu;
 
 import javax.swing.Action;
 
+import edu.yu.einstein.genplay.gui.action.layer.LAConvert;
+import edu.yu.einstein.genplay.gui.action.layer.LASave;
 import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLAAverageScore;
 import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLACountAllGenes;
 import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLACountNonNullGenes;
@@ -78,6 +80,9 @@ public class GeneLayerMenu extends AbstractLayerMenu {
 				new GLAGeneRenamer(),
 				new GLADistanceCalculator(),
 				new GLAScoreRepartitionAroundStart(),
+				null,
+				new LAConvert(),
+				new LASave()
 		};
 		return actions;
 	}

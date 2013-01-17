@@ -26,7 +26,9 @@ import java.awt.Color;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
+import edu.yu.einstein.genplay.core.enums.GraphType;
 import edu.yu.einstein.genplay.gui.track.layer.ColoredLayer;
+import edu.yu.einstein.genplay.gui.track.layer.GraphLayer;
 
 
 /**
@@ -72,10 +74,14 @@ public class LayerSettingsModel extends AbstractTableModel implements TableModel
 			return data[rowIndex].getLayer().getType();
 		case LayerSettingsDialog.LAYER_COLOR_INDEX:
 			return data[rowIndex].getLayerColor();
+		case LayerSettingsDialog.LAYER_GRAPH_TYPE_INDEX:
+			return data[rowIndex].getLayerGraphType();
 		case LayerSettingsDialog.IS_LAYER_VISIBLE_INDEX:
 			return data[rowIndex].isLayerVisible();
 		case LayerSettingsDialog.IS_LAYER_ACTIVE_INDEX:
 			return data[rowIndex].isLayerActive();
+		case LayerSettingsDialog.IS_LAYER_SET_FOR_DELETION_INDEX:
+			return data[rowIndex].isLayerSetForDeletion();
 		default:
 			return null;
 		}
@@ -99,9 +105,13 @@ public class LayerSettingsModel extends AbstractTableModel implements TableModel
 			return String.class;
 		case LayerSettingsDialog.LAYER_COLOR_INDEX:
 			return Color.class;
+		case LayerSettingsDialog.LAYER_GRAPH_TYPE_INDEX:
+			return GraphType.class;
 		case LayerSettingsDialog.IS_LAYER_VISIBLE_INDEX:
 			return Boolean.class;
 		case LayerSettingsDialog.IS_LAYER_ACTIVE_INDEX:
+			return Boolean.class;
+		case LayerSettingsDialog.IS_LAYER_SET_FOR_DELETION_INDEX:
 			return Boolean.class;
 		default:
 			return null;
@@ -120,9 +130,13 @@ public class LayerSettingsModel extends AbstractTableModel implements TableModel
 			return false;
 		case LayerSettingsDialog.LAYER_COLOR_INDEX:
 			return data[rowIndex].getLayer() instanceof ColoredLayer;
+		case LayerSettingsDialog.LAYER_GRAPH_TYPE_INDEX:
+			return data[rowIndex].getLayer() instanceof GraphLayer;
 		case LayerSettingsDialog.IS_LAYER_VISIBLE_INDEX:
 			return true;
 		case LayerSettingsDialog.IS_LAYER_ACTIVE_INDEX:
+			return true;
+		case LayerSettingsDialog.IS_LAYER_SET_FOR_DELETION_INDEX:
 			return true;
 		default:
 			return false;
@@ -153,6 +167,11 @@ public class LayerSettingsModel extends AbstractTableModel implements TableModel
 					fireTableCellUpdated(rowIndex, columnIndex);
 				}
 				break;
+			case LayerSettingsDialog.LAYER_GRAPH_TYPE_INDEX:
+				if (aValue instanceof GraphType) {
+					data[rowIndex].setLayerGraphType((GraphType) aValue);
+					fireTableCellUpdated(rowIndex, columnIndex);
+				}
 			case LayerSettingsDialog.IS_LAYER_VISIBLE_INDEX:
 				if(aValue instanceof Boolean) {
 					data[rowIndex].setLayerVisible((Boolean) aValue);
@@ -171,6 +190,11 @@ public class LayerSettingsModel extends AbstractTableModel implements TableModel
 					fireTableCellUpdated(rowIndex, columnIndex);
 				}
 				break;
+			case LayerSettingsDialog.IS_LAYER_SET_FOR_DELETION_INDEX:
+				if(aValue instanceof Boolean) {
+					data[rowIndex].setLayerSetForDeletion((Boolean) aValue);
+					fireTableCellUpdated(rowIndex, columnIndex);
+				}
 			}
 		}
 	}

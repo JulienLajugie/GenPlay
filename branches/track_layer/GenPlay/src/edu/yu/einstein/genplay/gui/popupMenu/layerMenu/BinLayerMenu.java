@@ -24,6 +24,8 @@ package edu.yu.einstein.genplay.gui.popupMenu.layerMenu;
 import javax.swing.Action;
 import javax.swing.JCheckBoxMenuItem;
 
+import edu.yu.einstein.genplay.gui.action.layer.LAConvert;
+import edu.yu.einstein.genplay.gui.action.layer.LASave;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAAddConstant;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAAverage;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAChangeBinSize;
@@ -136,7 +138,10 @@ public class BinLayerMenu extends AbstractLayerMenu {
 				new BLADensity(),
 				new BLAIntervalsScoring(),
 				new BLARepartition(),
-				new BLAConcatenate()
+				new BLAConcatenate(),
+				null,
+				new LAConvert(),
+				new LASave()
 		};
 		return actions;
 	}

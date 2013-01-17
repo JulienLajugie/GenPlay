@@ -172,7 +172,7 @@ public final class HandlePanel extends JPanel implements MouseListener, MouseMot
 			// we compute the new size of the track
 			newHeight = (getHeight() + arg0.getY()) - startDragY;
 			// we make sure that the new size is not smaller than the minimum height
-			newHeight = Math.max(TrackConstants.TRACK_MINIMUM_HEIGHT, newHeight);
+			newHeight = Math.max(TrackConstants.MINIMUM_HEIGHT, newHeight);
 			// we notify the listeners that the size has been changed
 			notifyTrackListeners(TrackEventType.RESIZED);
 			// we reset the position where the dragging starts

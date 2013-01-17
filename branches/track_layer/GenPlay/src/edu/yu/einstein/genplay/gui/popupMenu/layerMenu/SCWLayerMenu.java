@@ -23,6 +23,8 @@ package edu.yu.einstein.genplay.gui.popupMenu.layerMenu;
 
 import javax.swing.Action;
 
+import edu.yu.einstein.genplay.gui.action.layer.LAConvert;
+import edu.yu.einstein.genplay.gui.action.layer.LASave;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAAddConstant;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAAverage;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLACountNonNullLength;
@@ -97,7 +99,10 @@ public class SCWLayerMenu extends AbstractLayerMenu {
 				new SCWLAFilter(),
 				new SCWLATransfrag(),
 				null,
-				new SCWLARepartition()
+				new SCWLARepartition(),
+				null,
+				new LAConvert(),
+				new LASave()
 		};
 		return actions;
 	}

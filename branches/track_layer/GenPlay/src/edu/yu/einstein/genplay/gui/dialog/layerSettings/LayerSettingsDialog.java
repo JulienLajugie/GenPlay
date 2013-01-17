@@ -30,6 +30,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -37,10 +38,12 @@ import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.table.TableColumn;
 
+import edu.yu.einstein.genplay.core.enums.GraphType;
 import edu.yu.einstein.genplay.gui.customComponent.tableComponents.BooleanRadioButtonEditor;
 import edu.yu.einstein.genplay.gui.customComponent.tableComponents.BooleanRadioButtonRenderer;
 import edu.yu.einstein.genplay.gui.customComponent.tableComponents.ColorEditor;
 import edu.yu.einstein.genplay.gui.customComponent.tableComponents.ColorRenderer;
+import edu.yu.einstein.genplay.gui.customComponent.tableComponents.ComboBoxEditor;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 
 /**
@@ -56,7 +59,7 @@ public class LayerSettingsDialog extends JDialog {
 	public static final int CANCEL_OPTION = 1;
 
 	/** Column headers */
-	protected static final String[] COLUMN_NAMES = {"#", "Name", "Type", "Color", "Visible", "Active"};
+	protected static final String[] COLUMN_NAMES = {"#", "Name", "Type", "Color", "Graph Type", "Visible", "Active", "Set For Deletion"};
 
 	/** Index of the layer number column */
 	protected static final int LAYER_NUMBER_INDEX = 0;
@@ -70,14 +73,20 @@ public class LayerSettingsDialog extends JDialog {
 	/** Index of the layer color column */
 	protected static final int LAYER_COLOR_INDEX = 3;
 
+	/** Index of the layer graph type column */
+	protected static final int LAYER_GRAPH_TYPE_INDEX = 4;
+
 	/** Index of the "is layer visible" column */
-	protected static final int IS_LAYER_VISIBLE_INDEX = 4;
+	protected static final int IS_LAYER_VISIBLE_INDEX = 5;
 
 	/** Index of the "is layer active" column */
-	protected static final int IS_LAYER_ACTIVE_INDEX = 5;
+	protected static final int IS_LAYER_ACTIVE_INDEX = 6;
+
+	/** Index of the set for deletion column*/
+	protected static final int IS_LAYER_SET_FOR_DELETION_INDEX = 7;
 
 	private static 	final 	long 		serialVersionUID 	= 5640779725244792401L; 				// generated ID
-	private static	final 	Dimension 	DIALOG_SIZE 		= new Dimension(600, 600);				// Window size
+	private static	final 	Dimension 	DIALOG_SIZE 		= new Dimension(800, 600);				// Window size
 	private static	final 	Dimension 	BUTTON_PANEL_SIZE	= new Dimension(DIALOG_SIZE.width, 65);	// Button panel size
 
 	private JTable 						layerSettingsTable;			// table displaying the layer settings
@@ -131,8 +140,10 @@ public class LayerSettingsDialog extends JDialog {
 		jbConfirm.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				approved = APPROVE_OPTION;
-				dispose();
+				if (confirmLayerDeletion()) {
+					approved = APPROVE_OPTION;
+					dispose();
+				}
 			}
 		});
 
@@ -201,6 +212,31 @@ public class LayerSettingsDialog extends JDialog {
 
 
 	/**
+	 * If some layers have been set for deletion this method ask the user to confirm the deletion
+	 * @return true if:<br>
+	 *  - the user want to delete the layers <br>
+	 *  - there is no layers set for deletion<br>
+	 *  Return false otherwise.
+	 */
+	private boolean confirmLayerDeletion() {
+		String confirmQuestion = "Do you really want to delete the following layers: \n";
+		boolean deletionRequested = false;
+		for (LayerSettingsRow currentRow: data) {
+			if (currentRow.isLayerSetForDeletion()) {
+				deletionRequested = true;
+				confirmQuestion += currentRow.getLayer().getName() + "\n";
+			}
+		}
+		if (deletionRequested) {
+			int confirmOption = JOptionPane.showConfirmDialog(getRootPane(), confirmQuestion, "Delete Layers", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+			return confirmOption == JOptionPane.YES_OPTION;
+		} else {
+			return true;
+		}
+	}
+
+
+	/**
 	 * This method initializes the column properties:
 	 * - name
 	 * - width
@@ -214,8 +250,11 @@ public class LayerSettingsDialog extends JDialog {
 			column.setResizable(true);
 			switch (columnIndex) {
 			case LAYER_COLOR_INDEX:
-				column.setCellEditor(new ColorEditor());
-				column.setCellRenderer(new ColorRenderer(true));
+				column.setCellEditor(new ColorEditor("Select"));
+				column.setCellRenderer(new ColorRenderer("Select", true));
+				break;
+			case LAYER_GRAPH_TYPE_INDEX:
+				column.setCellEditor(new ComboBoxEditor(GraphType.values()));
 				break;
 			case IS_LAYER_ACTIVE_INDEX:
 				column.setCellEditor(new BooleanRadioButtonEditor());

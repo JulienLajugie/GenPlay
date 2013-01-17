@@ -133,13 +133,9 @@ public abstract class AbstractLayer<T extends Serializable> implements Layer<T> 
 	@Override
 	public void setData(T data) {
 		this.data = data;
-		getTrack().repaint();
-	}
-
-
-	@Override
-	public void setVisible(boolean isVisible) {
-		this.isVisible = isVisible;
+		if (getTrack() != null) {
+			getTrack().repaint();
+		}
 	}
 
 
@@ -152,6 +148,22 @@ public abstract class AbstractLayer<T extends Serializable> implements Layer<T> 
 	@Override
 	public void setTrack(Track track) {
 		this.track = track;
+	}
+
+
+	@Override
+	public void setVisible(boolean isVisible) {
+		this.isVisible = isVisible;
+	}
+
+
+	@Override
+	public String toString() {
+		if (getName() != null) {
+			return getName();
+		} else {
+			return super.toString();
+		}
 	}
 
 

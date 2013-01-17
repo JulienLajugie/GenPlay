@@ -23,6 +23,8 @@ package edu.yu.einstein.genplay.gui.popupMenu.layerMenu;
 
 import javax.swing.Action;
 
+import edu.yu.einstein.genplay.gui.action.layer.LAConvert;
+import edu.yu.einstein.genplay.gui.action.layer.LASave;
 import edu.yu.einstein.genplay.gui.action.layer.maskLayer.MLAApplyMask;
 import edu.yu.einstein.genplay.gui.action.layer.maskLayer.MLAInvertMask;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
@@ -45,12 +47,15 @@ public class MaskLayerMenu extends AbstractLayerMenu {
 		super(layer);
 	}
 
-	
+
 	@Override
 	protected Action[] getLayerMenuActions() {
 		Action[] actions = {
 				new MLAApplyMask(),
-				new MLAInvertMask()
+				new MLAInvertMask(),
+				null,
+				new LAConvert(),
+				new LASave()
 		};
 		return actions;
 	}

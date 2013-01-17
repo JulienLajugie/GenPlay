@@ -51,22 +51,21 @@ import edu.yu.einstein.genplay.gui.trackList.TrackListPanel;
  */
 public class ProjectRecording {
 
-	private File fileToLoad; // The project file to load
-	private Track[] trackList; // The list of tracks to save
+	private File 				fileToLoad; // The project file to load
+	private Track[] 			trackList; // The list of tracks to save
+	private FileInputStream 	fis;
+	private GZIPInputStream 	gz;
+	private ObjectInputStream 	ois; // The input file stream
+	private ProjectInformation 	projectInformation; // The project information
+	private boolean 			trackListReadyToLoad = false; // Checks if the list of track can be loaded
+	private boolean 			mgManagerReadyToLoad = false; // Checks if the multi genome manager can be loaded
+	private boolean 			loadingEvent = false; // Checks if the request is for loading or for saving
+	private String 				currentProjectPath; // path to the current project
 
-	private FileInputStream fis;
-	private GZIPInputStream gz;
-	private ObjectInputStream ois; // The input file stream
 
-	private ProjectInformation projectInformation; // The project information
-	private boolean trackListReadyToLoad = false; // Checks if the list of track
-	// can be loaded
-	private boolean mgManagerReadyToLoad = false; // Checks if the multi genome
-	// manager can be loaded
-	private boolean loadingEvent = false; // Checks if the request is for
-	// loading or for saving
-	private String currentProjectPath; // path to the current project
-
+	/**
+	 * Creates an instance of {@link ProjectRecording}
+	 */
 	protected ProjectRecording() {
 		ois = null;
 		projectInformation = null;
@@ -74,6 +73,7 @@ public class ProjectRecording {
 		mgManagerReadyToLoad = false;
 		loadingEvent = false;
 	}
+
 
 	/**
 	 * Closes input streams
@@ -102,12 +102,14 @@ public class ProjectRecording {
 		fis = null;
 	}
 
+
 	/**
 	 * @return the fileToLoad
 	 */
 	public File getFileToLoad() {
 		return fileToLoad;
 	}
+
 
 	/**
 	 * @return the projectInformation
@@ -116,9 +118,9 @@ public class ProjectRecording {
 		return projectInformation;
 	}
 
+
 	/**
 	 * Reads the track list object.
-	 * 
 	 * @return a track list
 	 */
 	public Track[] getTrackList() {
@@ -137,18 +139,15 @@ public class ProjectRecording {
 		return null;
 	}
 
+
 	/**
 	 * Initializes the manager of the multi genome part
-	 * 
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
 	public void initMultiGenomeManager() throws IOException, ClassNotFoundException {
 		if (mgManagerReadyToLoad && ProjectManager.getInstance().isMultiGenomeProject()) {
-			ProjectManager.getInstance().readMultiGenomeObject(ois); // read the
-			// multi
-			// genome
-			// manager
+			ProjectManager.getInstance().readMultiGenomeObject(ois); // read the multi-genome manager
 			ois.readObject(); // read the MGDisplaySettings
 		}
 		trackListReadyToLoad = true;
@@ -156,9 +155,7 @@ public class ProjectRecording {
 
 	/**
 	 * Creates/sets chromosome manager object.
-	 * 
-	 * @param inputFile
-	 *            project file
+	 * @param inputFile project file
 	 * @throws Exception
 	 */
 	public void initObjectInputStream(File inputFile) throws Exception {
@@ -169,9 +166,7 @@ public class ProjectRecording {
 
 	/**
 	 * Creates/sets chromosome manager object.
-	 * 
-	 * @param is
-	 *            InputStream object
+	 * @param is InputStream object
 	 * @throws Exception
 	 */
 	public void initObjectInputStream(InputStream is) throws Exception {
@@ -189,7 +184,6 @@ public class ProjectRecording {
 	 * contained in the file that is the information about the project. This
 	 * method must be the first one to be called once the object input stream
 	 * has been created.
-	 * 
 	 * @throws ClassNotFoundException
 	 * @throws IOException
 	 */
@@ -204,7 +198,6 @@ public class ProjectRecording {
 	 * contained in the file that is the project manager. This method must be
 	 * the second one to be called once the object input stream has been
 	 * created.
-	 * 
 	 * @throws ClassNotFoundException
 	 * @throws IOException
 	 */
@@ -230,9 +223,7 @@ public class ProjectRecording {
 
 	/**
 	 * Saves the current list of tracks into a file
-	 * 
-	 * @param outputFile
-	 *            file where the project needs to be saved
+	 * @param outputFile file where the project needs to be saved
 	 * @return true if the saving was successful. Returns false otherwise
 	 */
 	public boolean saveProject(File outputFile) {
@@ -280,24 +271,21 @@ public class ProjectRecording {
 	}
 
 	/**
-	 * @param currentProjectPath
-	 *            the currentProjectPath to set
+	 * @param currentProjectPath the currentProjectPath to set
 	 */
 	public void setCurrentProjectPath(String currentProjectPath) {
 		this.currentProjectPath = currentProjectPath;
 	}
 
 	/**
-	 * @param fileToLoad
-	 *            the fileToLoad to set
+	 * @param fileToLoad the fileToLoad to set
 	 */
 	public void setFileToLoad(File fileToLoad) {
 		this.fileToLoad = fileToLoad;
 	}
 
 	/**
-	 * @param loadingEvent
-	 *            the loadingEvent to set
+	 * @param loadingEvent the loadingEvent to set
 	 */
 	public void setLoadingEvent(boolean loadingEvent) {
 		this.loadingEvent = loadingEvent;
@@ -336,5 +324,4 @@ public class ProjectRecording {
 			projectInformation.setProjectFiles(ProjectFiles.getInstance().getValidArrayOfFiles());
 		}
 	}
-
 }

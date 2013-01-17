@@ -23,7 +23,9 @@ package edu.yu.einstein.genplay.gui.dialog.layerSettings;
 
 import java.awt.Color;
 
+import edu.yu.einstein.genplay.core.enums.GraphType;
 import edu.yu.einstein.genplay.gui.track.layer.ColoredLayer;
+import edu.yu.einstein.genplay.gui.track.layer.GraphLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 
 
@@ -33,11 +35,13 @@ import edu.yu.einstein.genplay.gui.track.layer.Layer;
  */
 public class LayerSettingsRow {
 
-	private final Layer<?> 	layer;			// layer of the row
-	private String 			layerName;		// name of the layer
-	private Color 			layerColor;		// color of the layer
-	private boolean 		isLayerVisible;	// true if the layer is visible
-	private boolean 		isLayerActive;	// true if the layer is the active layer
+	private final Layer<?> 	layer;					// layer of the row
+	private String 			layerName;				// name of the layer
+	private Color 			layerColor;				// color of the layer. null if not a colored layer
+	private GraphType		layerGraphType;			// type of graph. null if not a graph layer
+	private boolean 		isLayerVisible;			// true if the layer is visible
+	private boolean 		isLayerActive;			// true if the layer is the active layer
+	private boolean			isLayerSetForDeletion;	// true if the layer has been set for deletion
 
 
 	/**
@@ -49,24 +53,24 @@ public class LayerSettingsRow {
 		layerName = layer.getName();
 		if (layer instanceof ColoredLayer) {
 			layerColor = ((ColoredLayer) layer).getColor();
+		} else {
+			layerColor = null;
+		}
+		if (layer instanceof GraphLayer) {
+			layerGraphType = ((GraphLayer) layer).getGraphType();
+		} else {
+			layerGraphType = null;
 		}
 		isLayerVisible = layer.isVisible();
+		isLayerSetForDeletion = false;
 	}
 
 
 	/**
-	 * @return the layerName
+	 * @return the layer
 	 */
-	public String getLayerName() {
-		return layerName;
-	}
-
-
-	/**
-	 * @param layerName the layerName to set
-	 */
-	public void setLayerName(String layerName) {
-		this.layerName = layerName;
+	public Layer<?> getLayer() {
+		return layer;
 	}
 
 
@@ -79,26 +83,18 @@ public class LayerSettingsRow {
 
 
 	/**
-	 * @param layerColor the layerColor to set
+	 * @return the type of graph of the layer
 	 */
-	public void setLayerColor(Color layerColor) {
-		this.layerColor = layerColor;
+	public GraphType getLayerGraphType() {
+		return layerGraphType;
 	}
 
 
 	/**
-	 * @return the isLayerVisible
+	 * @return the layerName
 	 */
-	public boolean isLayerVisible() {
-		return isLayerVisible;
-	}
-
-
-	/**
-	 * @param isLayerVisible the isLayerVisible to set
-	 */
-	public void setLayerVisible(boolean isLayerVisible) {
-		this.isLayerVisible = isLayerVisible;
+	public String getLayerName() {
+		return layerName;
 	}
 
 
@@ -111,6 +107,22 @@ public class LayerSettingsRow {
 
 
 	/**
+	 * @return true if the layer has been set for deletion. False otherwise
+	 */
+	public boolean isLayerSetForDeletion() {
+		return isLayerSetForDeletion;
+	}
+
+
+	/**
+	 * @return the isLayerVisible
+	 */
+	public boolean isLayerVisible() {
+		return isLayerVisible;
+	}
+
+
+	/**
 	 * @param isLayerActive the isLayerActive to set
 	 */
 	public void setLayerActive(boolean isLayerActive) {
@@ -119,9 +131,43 @@ public class LayerSettingsRow {
 
 
 	/**
-	 * @return the layer
+	 * @param layerColor the layerColor to set
 	 */
-	public Layer<?> getLayer() {
-		return layer;
+	public void setLayerColor(Color layerColor) {
+		this.layerColor = layerColor;
+	}
+
+
+	/**
+	 * Sets the type of graph of the layer
+	 * @param layerGraphType
+	 */
+	public void setLayerGraphType(GraphType layerGraphType) {
+		this.layerGraphType = layerGraphType;
+	}
+
+
+	/**
+	 * @param layerName the layerName to set
+	 */
+	public void setLayerName(String layerName) {
+		this.layerName = layerName;
+	}
+
+
+	/**
+	 * Set to true to set the layer for deletion
+	 * @param isLayerSetForDeletion
+	 */
+	public void setLayerSetForDeletion(boolean isLayerSetForDeletion) {
+		this.isLayerSetForDeletion = isLayerSetForDeletion;
+	}
+
+
+	/**
+	 * @param isLayerVisible the isLayerVisible to set
+	 */
+	public void setLayerVisible(boolean isLayerVisible) {
+		this.isLayerVisible = isLayerVisible;
 	}
 }

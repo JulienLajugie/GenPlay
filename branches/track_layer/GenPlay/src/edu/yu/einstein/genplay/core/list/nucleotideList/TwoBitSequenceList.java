@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -61,9 +61,9 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 	private boolean						needToBeStopped = false;		// true if the execution need to be stopped
 	protected String					genomeName = null;				// genome name for a multi genome project
 	protected AlleleType 				alleleType = null;				// allele type for a multi genome project
-	
 
-	
+
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -78,8 +78,8 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 		out.writeObject(sequence);
 		out.writeObject(genomeName);
 	}
-	
-	
+
+
 	/**
 	 * Method used for unserialization
 	 * @param in
@@ -96,8 +96,8 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 		needToBeStopped = false;
 		genomeName = (String) in.readObject();
 	}
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link TwoBitSequenceList}
 	 * @param genomeName name of the genome the {@link TwoBitSequenceList} represents
@@ -107,21 +107,21 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 		super();
 		this.genomeName = genomeName;
 		this.alleleType = alleleType;
-		this.projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		// initializes the lists
 		for (int i = 0; i < projectChromosome.size(); i++) {
 			add(null);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Extracts the sequence list from a 2bit file
 	 * @param file 2Bit file
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 * @throws InvalidFileTypeException
-	 * @throws InterruptedException 
+	 * @throws InterruptedException
 	 */
 	public void extract(File file) throws FileNotFoundException, IOException, InvalidFileTypeException, InterruptedException  {
 		filePath = file.getAbsolutePath();
@@ -140,12 +140,12 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 				// if it doesn't the file is not correct
 				throw new InvalidFileTypeException();
 			}
-		}		
+		}
 		if (reverseBytes) {
-			version = Integer.reverseBytes(twoBitFile.readInt());	
+			version = Integer.reverseBytes(twoBitFile.readInt());
 		} else {
 			version = twoBitFile.readInt();
-		}		
+		}
 		int sequenceCount = 0;
 		if (reverseBytes) {
 			sequenceCount = Integer.reverseBytes(twoBitFile.readInt());
@@ -215,11 +215,11 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 	 */
 	@Override
 	protected void fitToScreen() {}
-	
-	
+
+
 	@Override
 	protected Nucleotide[] getFittedData(int start, int stop) {
-		Nucleotide[] result = new Nucleotide[stop - start + 1];
+		Nucleotide[] result = new Nucleotide[(stop - start) + 1];
 		List<Nucleotide> currentList;
 		try {
 			currentList = get(fittedChromosome);
@@ -234,45 +234,49 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 			result[j] = currentList.get(i);
 			j++;
 		}
-		
+
 		return result;
 	}
-	
-	
+
+
 	/**
-	 * Re-initializes the connection to the random access file containing the sequences  
+	 * Re-initializes the connection to the random access file containing the sequences
 	 * @throws FileNotFoundException
 	 */
 	public void reinitDataFile() throws FileNotFoundException {
 		twoBitFile = new RandomAccessFile(new File(filePath), "r");
+		for (List<Nucleotide> currentSequence: this) {
+			((TwoBitSequence) currentSequence).reinitDataFile();
+		}
+		sequence.reinitDataFile();
 	}
-	
-	
+
+
 	/**
 	 * @return the path to the random access file containing the sequences
 	 */
 	public String getDataFilePath() {
 		return filePath;
 	}
-	
-	
+
+
 	/**
 	 * Sets the file path to the random access file containing the sequences
-	 * @param filePath path to the 
-	 * @throws FileNotFoundException 
+	 * @param filePath path to the
+	 * @throws FileNotFoundException
 	 */
 	public void setSequenceFilePath(String filePath) throws FileNotFoundException {
 		for (List<Nucleotide> currentSequence: this) {
-			((TwoBitSequence) currentSequence).setSequenceFilePath(filePath);			
+			((TwoBitSequence) currentSequence).setSequenceFilePath(filePath);
 		}
 		sequence.setSequenceFilePath(filePath);
 		this.filePath = filePath;
 		reinitDataFile();
 	}
-	
+
 
 	/**
-	 * Stops the extraction of the 2bit file 
+	 * Stops the extraction of the 2bit file
 	 */
 	@Override
 	public void stop() {
