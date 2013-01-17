@@ -32,18 +32,24 @@ import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.core.multiGenome.utils.VCFLineUtility;
 
 /**
+ * A {@link VCFScanner} provides an easy way to go through the lines of a {@link VCFFile}.
+ * A {@link VCFScanner} must know the {@link VCFFile} to scan as well as the {@link VCFScannerReceiver} who will process the current line.
+ * It is also possible to define which genomes, variations and filters to use while scanning in order to scan only the correct lines.
+ * In order to scan all lines without distinction, just do not provide these information.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
 public abstract class VCFScanner {
 
-	private final VCFScannerReceiver receiver;
-	protected final VCFFile vcfFile;		// The VCF file to scan.
+	private 	final VCFScannerReceiver 	receiver;		// The VCF scanner receiver.
+	protected 	final VCFFile 				vcfFile;		// The VCF file to scan.
 
-	private List<String> genomes;
-	private List<Integer> genomeIndexes;
-	private List<VariantType> variations;
-	private List<MGFilter> filters;
+	private List<String> 		genomes;					// The list of genomes to take into account while scanning.
+	private List<VariantType> 	variations;					// The list of variations to take into account while scanning.
+	private List<MGFilter> 		filters;					// The list of filters to apply while scanning.
+
+	private List<Integer> 		genomeIndexes;				// The indexes of every genome, used as class variable to optimize the scan.
 
 
 	/**
@@ -145,6 +151,9 @@ public abstract class VCFScanner {
 	}
 
 
+	/**
+	 * @return the indexes of all required genomes
+	 */
 	private List<Integer> getGenomeIndexes () {
 		// Get genome indexes
 		List<Integer> genomeIndexes = new ArrayList<Integer>();

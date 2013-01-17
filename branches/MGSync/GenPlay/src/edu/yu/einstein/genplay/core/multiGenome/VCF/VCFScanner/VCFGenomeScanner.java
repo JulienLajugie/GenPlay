@@ -28,6 +28,12 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 
 /**
+ * See the {@link VCFScanner} description for further information on scanners.
+ * The {@link VCFGenomeScanner} will go through all the lines of a {@link VCFFile}.
+ * All chromosomes will be scanned.
+ * 
+ * It is technically optimized to avoid memory peaks.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */

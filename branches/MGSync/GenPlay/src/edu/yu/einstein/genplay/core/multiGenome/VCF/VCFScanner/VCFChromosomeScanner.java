@@ -30,14 +30,20 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 
 /**
+ * See the {@link VCFScanner} description for further information on scanners.
+ * The {@link VCFChromosomeScanner} will go through the lines of a {@link VCFFile} for the current {@link Chromosome} only.
+ * Only the current {@link Chromosome} will be scanned.
+ * 
+ * This uses the Tabix API and we'll retrieve all information about a {@link Chromosome} at once, it may generate memory peaks.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
 public class VCFChromosomeScanner extends VCFScanner {
 
-	private List<String> result;
-	private VCFLine line;
-	private int index;
+	private List<String> 	result;		// The full list of lines returned by the Tabix API.
+	private VCFLine 		line;		// The current line in process.
+	private int 			index;		// The index of the line in the list of result.
 
 
 	/**
@@ -72,6 +78,9 @@ public class VCFChromosomeScanner extends VCFScanner {
 	}
 
 
+	/**
+	 * @return the current {@link VCFLine} being processed
+	 */
 	private VCFLine getCurrentLine () {
 		if (index < result.size()) {
 			line = new VCFLine(result.get(index), vcfFile.getHeader());

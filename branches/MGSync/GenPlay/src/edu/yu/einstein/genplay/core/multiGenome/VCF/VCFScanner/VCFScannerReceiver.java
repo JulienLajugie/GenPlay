@@ -22,8 +22,12 @@
 package edu.yu.einstein.genplay.core.multiGenome.VCF.VCFScanner;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 
 /**
+ * The {@link VCFScannerReceiver} interface can be implemented by any class who wants to get scan a {@link VCFFile}.
+ * It will receive all the {@link VCFLine} to process according to the {@link VCFScanner} settings.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
