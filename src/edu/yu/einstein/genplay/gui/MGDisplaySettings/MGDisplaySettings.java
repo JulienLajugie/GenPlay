@@ -54,7 +54,7 @@ public class MGDisplaySettings implements Serializable {
 	public static final int NO_MG_OPTION = 0;
 
 	/** Draw the variant that have been filtered */
-	public static int DRAW_FILTERED_VARIANT = YES_MG_OPTION;
+	public static int DRAW_FILTERED_VARIANT = NO_MG_OPTION;
 
 	/** Insertion stripes can be drawn with an edge line */
 	public static int DRAW_INSERTION_EDGE = YES_MG_OPTION;
@@ -91,6 +91,9 @@ public class MGDisplaySettings implements Serializable {
 
 	/** Color of the reference SNP stripes */
 	public static Color REFERENCE_SNP_COLOR = new Color(Colors.BLACK.getRed(), Colors.BLACK.getGreen(), Colors.BLACK.getBlue());
+
+	/** Color of the no call stripes */
+	public static Color NO_CALL_COLOR = new Color(Colors.GREY.getRed(), Colors.GREY.getGreen(), Colors.GREY.getBlue());
 
 	/** Current selected coordinate genome system */
 	public static String SELECTED_GENOME = CoordinateSystemType.METAGENOME.toString();
@@ -296,6 +299,12 @@ public class MGDisplaySettings implements Serializable {
 		return DRAW_REFERENCE_INSERTION == YES_MG_OPTION;
 	}
 
+	/**
+	 * @return true if filtered variants have to be included, false otherwise
+	 */
+	public boolean includeFilteredVariants () {
+		return DRAW_FILTERED_VARIANT == YES_MG_OPTION;
+	}
 
 	/**
 	 * @return true is no call "." have to be included, false otherwise
@@ -303,6 +312,25 @@ public class MGDisplaySettings implements Serializable {
 	public boolean includeNoCall () {
 		return true;
 	}
+
+
+	/**
+	 * @param display
+	 * @return true if the display is has to be shown, false otherwise
+	 */
+	/*public boolean isShown (byte display) {
+		if (display == VariantDisplayList.SHOW) {
+			return true;
+		}
+
+		if (display == VariantDisplayList.SHOW_FILTER) {
+			if (DRAW_FILTERED_VARIANT == YES_MG_OPTION) {
+				return true;
+			}
+		}
+
+		return false;
+	}*/
 
 
 	/**

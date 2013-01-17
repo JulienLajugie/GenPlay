@@ -98,7 +98,6 @@ public class MGAFilters extends TrackListActionWorker<Track<?>[]> {
 					if (filter instanceof VCFFilter) {
 						VCFFilter vcfFilter = (VCFFilter) filter;
 						vcfFilter.generateFilter(filterManager.getResultOfFilter(vcfFilter));
-
 					} else {
 						filter.generateFilter();
 					}

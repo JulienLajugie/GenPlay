@@ -165,7 +165,7 @@ public class GenotypeVCFDialog extends MultiGenomeTrackActionDialog {
 						jtfInputFile.setText(file.getPath());
 						try {
 							vcfToGenotype = new VCFFile(file);
-							List<String> names = vcfToGenotype.getHeader().getRawGenomesNames();
+							List<String> names = vcfToGenotype.getHeader().getGenomeRawNames();
 							genomePanel.initialize(settings.getGenomeNames(), names);
 						} catch (IOException e1) {
 							e1.printStackTrace();

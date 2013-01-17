@@ -23,7 +23,9 @@ package edu.yu.einstein.genplay.core.comparator;
 
 import java.util.Comparator;
 
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.Variant;
+import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.ReferenceVariant;
+import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
+
 
 /**
  * This class is a comparator for variant.
@@ -43,6 +45,14 @@ public class VariantComparator implements Comparator<Variant> {
 		if (position1 < position2) {
 			return -1;
 		} else if (position1 == position2) {
+			boolean isReference01 = (o1 instanceof ReferenceVariant);
+			boolean isReference02 = (o2 instanceof ReferenceVariant);
+			if (isReference01 && !isReference02) {
+				return 1;
+			} else if (!isReference01 && isReference02) {
+				return -1;
+			}
+
 			int length1 = o1.getLength();
 			int length2 = o2.getLength();
 			if (length1 > length2) {

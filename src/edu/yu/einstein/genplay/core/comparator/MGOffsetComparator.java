@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -23,27 +23,27 @@ package edu.yu.einstein.genplay.core.comparator;
 
 import java.util.Comparator;
 
-import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGOffset;
+import edu.yu.einstein.genplay.core.multiGenome.data.synchronization.MGSOffset;
 
 /**
- * Comparator for {@link MGOffset}.
- * The comparator compares first the position between both {@link MGOffset} and then, if equal, their values.
- * The {@link MGOffset} having the highest value is higher than the other {@link MGOffset}.
+ * Comparator for {@link MGSOffset}.
+ * The comparator compares first the position between both {@link MGSOffset} and then, if equal, their values.
+ * The {@link MGSOffset} having the highest value is higher than the other {@link MGSOffset}.
  * 
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGOffsetComparator implements Comparator<MGOffset> {
+public class MGOffsetComparator implements Comparator<MGSOffset> {
 
 	@Override
-	public int compare(MGOffset o1, MGOffset o2) {
+	public int compare(MGSOffset o1, MGSOffset o2) {
 		int position1 = o1.getPosition();				// gets the position of the first object
 		int position2 = o2.getPosition();				// gets the position of the second object
-		
+
 		if (position1 == position2) {					// if positions are equal
 			int value1 = o1.getValue();					// gets the value of the first object
 			int value2 = o1.getValue();					// gets the value of the second object
-			
+
 			if (value1 == value2) {						// if values are equal
 				return 0;								// object are equal
 			} else if (value1 > value2) {				// if the first value is higher than the second value,

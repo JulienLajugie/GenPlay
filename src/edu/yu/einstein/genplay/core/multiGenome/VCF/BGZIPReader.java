@@ -47,7 +47,7 @@ public class BGZIPReader implements VCFGenomeIndexer {
 	private final BufferedReader 				reader;
 	private String 								metaDataHeader;		// meta data of the file header
 	private String 								fieldDataHeader;	// field data of the file header
-	private String								fullHeader;			// the fulle header
+	private String								fullHeader;			// the full header
 	private VCFLine 							currentLine;		// current line in the file
 	//private String columns;
 	private final Map<String, Integer> 			genomeMap;			// map between genome names and their related index according to their location on the column line

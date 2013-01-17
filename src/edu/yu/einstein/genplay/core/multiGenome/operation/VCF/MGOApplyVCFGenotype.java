@@ -94,7 +94,7 @@ public class MGOApplyVCFGenotype extends UpdateEngine {
 	public void processLine(VCFLine src, VCFLine dest) throws IOException {
 		canBeInserted = false;
 
-		destGenome = fileToUpdate.getHeader().getRawGenomesNames();
+		destGenome = fileToUpdate.getHeader().getGenomeRawNames();
 
 		List<String> gtList = getNewGtList(src, dest);
 

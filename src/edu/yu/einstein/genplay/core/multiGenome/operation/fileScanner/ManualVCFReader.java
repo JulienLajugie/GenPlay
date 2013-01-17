@@ -32,7 +32,8 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.BGZIPReader;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
-import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGSynchronizer;
+import edu.yu.einstein.genplay.core.multiGenome.operation.synchronization.MGSynchronizer;
+import edu.yu.einstein.genplay.core.multiGenome.utils.VCFLineUtility;
 import edu.yu.einstein.genplay.util.Utils;
 
 /**
@@ -155,8 +156,8 @@ public class ManualVCFReader {
 
 		if (!currentLine.isLastLine() && currentLine.isValid()) {																											// The line has to be a valid line to be processed
 			currentLine.processForAnalyse();
-			int[] lengths = synchronizer.getVariantLengths(currentLine.getREF(), Utils.split(currentLine.getALT(), ','), currentLine.getINFO());		// Retrieves the length of all defined variations of the line
-			VariantType[] variations = synchronizer.getVariantTypes(lengths);																	// Converts the lengths into variation types (insertion, deletion...)
+			int[] lengths = VCFLineUtility.getVariantLengths(currentLine.getREF(), Utils.split(currentLine.getALT(), ','), currentLine.getINFO());		// Retrieves the length of all defined variations of the line
+			VariantType[] variations = VCFLineUtility.getVariantTypes(lengths);																	// Converts the lengths into variation types (insertion, deletion...)
 
 			allValidIndex = new ArrayList<Integer>();																				// Initializes the array that will contain all valid alternative indexes of the line
 			allValidGenome = new ArrayList<String>();																				// Initializes the array that will contain all valid genome names of the line
@@ -197,8 +198,8 @@ public class ManualVCFReader {
 		int genomeIndex = reader.getIndexFromGenome(genomeName);
 		String genotype = Utils.split(reader.getCurrentLine().getField(genomeIndex), ':')[0];
 
-		indexes[0] = synchronizer.getAlleleIndex(genotype.charAt(0));
-		indexes[1] = synchronizer.getAlleleIndex(genotype.charAt(2));
+		indexes[0] = VCFLineUtility.getAlleleIndex(genotype.charAt(0) + "");
+		indexes[1] = VCFLineUtility.getAlleleIndex(genotype.charAt(2) + "");
 
 		return indexes;
 	}
@@ -301,5 +302,4 @@ public class ManualVCFReader {
 	public List<String> getAllValidGenome() {
 		return allValidGenome;
 	}
-
 }

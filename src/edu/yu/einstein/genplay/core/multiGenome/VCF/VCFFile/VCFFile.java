@@ -338,14 +338,14 @@ public class VCFFile implements Serializable {
 	 * @param chromosome the current chromosome
 	 * @param results		the list of result
 	 */
-	public void initializePositionList (Chromosome chromosome, List<String> results) {
+	public void initializePositionList (Chromosome chromosome, List<VCFLine> results) {
 		if (chromosomeHasChanged(chromosome)) {
 			if (results != null) {
 				positionList = new IntArrayAsIntegerList(results.size());
-				VCFLine line = new VCFLine(null, null);
+				//VCFLine line = new VCFLine(null, null);
 				for (int i = 0; i < results.size(); i++) {
-					line.initialize(results.get(i), null);
-					positionList.set(i, line.getReferencePosition());
+					//line.initialize(results.get(i), null);
+					positionList.set(i, results.get(i).getReferencePosition());
 				}
 			} else {
 				positionList = new IntArrayAsIntegerList(0);

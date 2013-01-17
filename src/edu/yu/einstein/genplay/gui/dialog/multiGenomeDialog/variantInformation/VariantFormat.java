@@ -29,7 +29,8 @@ import javax.swing.JPanel;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFHeader;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantDisplay;
+import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.ReferenceVariant;
+import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 /**
@@ -50,10 +51,10 @@ public class VariantFormat {
 	 * @param formatHeader string containing header information about the FORMAT field of the variant information
 	 * @param formatValues string containing values information about the FORMAT field of the variant information according to a specific genome
 	 */
-	protected VariantFormat (VariantDisplay variant, VCFLine line) {
+	protected VariantFormat (Variant variant, VCFLine line, String genomeName) {
 		title = "Format";
 
-		if ((line == null) || (variant.isReference())) {
+		if ((line == null) || (variant instanceof ReferenceVariant)) {
 			pane = new PanelInformation(title, null, null, null);
 		} else {
 			keys = new ArrayList<String>();
@@ -61,7 +62,7 @@ public class VariantFormat {
 			description = new ArrayList<String>();
 
 			String[] headerElements = line.getFormat();
-			String[] valueElements = line.getFormatValues(FormattedMultiGenomeName.getRawName(variant.getSource().getGenomeName()));
+			String[] valueElements = line.getFormatValues(FormattedMultiGenomeName.getRawName(genomeName));
 
 			VCFHeader header = null;
 			if (line.getGenomeIndexer() instanceof VCFHeader) {

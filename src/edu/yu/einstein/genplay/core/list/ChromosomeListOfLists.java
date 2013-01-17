@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -30,6 +30,7 @@ import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 
 
 
+
 /**
  * This class represents a generic list organized by chromosome
  * @param <T> type of the objects stored in the list
@@ -38,24 +39,24 @@ import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
  */
 public interface ChromosomeListOfLists<T> extends Cloneable, Serializable, List<List<T>> {
 
-	
+
 	/**
 	 * Adds an element to the list of the specified chromosome
-	 * @param chromosome chromosome of the item 
+	 * @param chromosome chromosome of the item
 	 * @param element element to add
 	 * @throws InvalidChromosomeException
 	 */
 	public void add(Chromosome chromosome, T element) throws InvalidChromosomeException;
-	
+
 
 	/**
 	 * @param chromosome a {@link Chromosome}
-	 * @return the list associated to the specified {@link Chromosome} 
+	 * @return the list associated to the specified {@link Chromosome}
 	 * @throws InvalidChromosomeException
 	 */
 	public List<T> get(Chromosome chromosome) throws InvalidChromosomeException;
 
-	
+
 	/**
 	 * @param chromosome index of a chromosome
 	 * @param index
@@ -63,52 +64,52 @@ public interface ChromosomeListOfLists<T> extends Cloneable, Serializable, List<
 	 * @throws InvalidChromosomeException
 	 */
 	public T get(Chromosome chromosome, int index) throws InvalidChromosomeException;
-	
-	
+
+
 	/**
 	 * @param chromosomeIndex index of a chromosome
-	 * @param elementIndex 
+	 * @param elementIndex
 	 * @return the data with the specified index on the specified chromosome
 	 */
 	public T get(int chromosomeIndex, int elementIndex);
-	
-	
+
+
 	/**
-	 * Sets the element on the specified index of the specified {@link Chromosome} 
+	 * Sets the element on the specified index of the specified {@link Chromosome}
 	 * @param chromosome a {@link Chromosome}
 	 * @param index
 	 * @param element element to set
 	 * @throws InvalidChromosomeException if the specified {@link Chromosome} is not a chromosome of the {@link ProjectChromosome}
 	 */
 	public void set(Chromosome chromosome, int index, T element) throws InvalidChromosomeException;
-	
+
 
 
 	/**
-	 * Sets the list of elements on the specified {@link Chromosome} 
+	 * Sets the list of elements on the specified {@link Chromosome}
 	 * @param chromosome a {@link Chromosome}
 	 * @param list list to set
 	 * @throws InvalidChromosomeException if the specified {@link Chromosome} is not a chromosome of the {@link ProjectChromosome}
 	 */
 	public void set(Chromosome chromosome, List<T> list) throws InvalidChromosomeException;
 
-	
+
 	/**
-	 * Sets the element on the specified index of the specified {@link Chromosome} 
+	 * Sets the element on the specified index of the specified {@link Chromosome}
 	 * @param chromosomeIndex
 	 * @param elementIndex
 	 * @param element value to set
 	 */
 	public void set(int chromosomeIndex, int elementIndex, T element);
-	
-	
+
+
 	/**
 	 * @param index index of a chromosome
 	 * @return the size of the list for the specified chromosome
 	 */
 	public int size(int index);
 
-	
+
 	/**
 	 * @param chromosome
 	 * @return the size of the list for a specified chromosome

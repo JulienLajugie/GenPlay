@@ -113,18 +113,10 @@ public class ConvertSCWDialog extends MultiGenomeTrackActionDialog {
 
 		// Create the boxes
 		JComboBox jcbGenome = getGenomeComboBox(genomeList);
-		if (settings.getAlleleType() == AlleleType.BOTH) {
-			alleleTrackLabel01 = new JLabel("Select the track for the " + AlleleType.ALLELE01.toString() + " allele:");
-			alleleTrackLabel02 = new JLabel("Select the track for the " + AlleleType.ALLELE02.toString() + " allele:");
-			jcbAlleleTrack01 = getTrackListBox();
-			jcbAlleleTrack02 = getTrackListBox();
-		} else if (settings.getAlleleType() == AlleleType.ALLELE01) {
-			alleleTrackLabel01 = new JLabel("Select the track for the " + AlleleType.ALLELE01.toString() + " allele:");
-			jcbAlleleTrack01 = getTrackListBox();
-		} else if (settings.getAlleleType() == AlleleType.ALLELE02) {
-			alleleTrackLabel02 = new JLabel("Select the track for the " + AlleleType.ALLELE02.toString() + " allele:");
-			jcbAlleleTrack02 = getTrackListBox();
-		}
+		alleleTrackLabel01 = new JLabel("Select the track for the " + AlleleType.ALLELE01.toString() + " allele:");
+		alleleTrackLabel02 = new JLabel("Select the track for the " + AlleleType.ALLELE02.toString() + " allele:");
+		jcbAlleleTrack01 = getTrackListBox();
+		jcbAlleleTrack02 = getTrackListBox();
 
 		// Create the layout
 		GridBagLayout layout = new GridBagLayout();
@@ -154,12 +146,8 @@ public class ConvertSCWDialog extends MultiGenomeTrackActionDialog {
 			panel.add(alleleTrackLabel01, gbc);
 
 			// Insert the first allele track combo box
-			if (alleleTrackLabel02 != null) {
-				gbc.insets = new Insets(0, 10, 0, 0);
-			} else {
-				gbc.insets = new Insets(0, 10, 5, 0);
-				gbc.weighty = 1;
-			}
+			gbc.insets = new Insets(0, 10, 0, 0);
+
 			gbc.gridy++;
 			panel.add(jcbAlleleTrack01, gbc);
 		}

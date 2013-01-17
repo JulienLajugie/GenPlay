@@ -25,9 +25,8 @@ import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsOffsetList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGAllele;
-import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGGenome;
-import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGOffset;
+import edu.yu.einstein.genplay.core.multiGenome.data.synchronization.MGSAllele;
+import edu.yu.einstein.genplay.core.multiGenome.data.synchronization.MGSOffset;
 
 
 /**
@@ -55,13 +54,13 @@ public class ShiftCompute {
 		int outputPosition = -1;
 
 		if (FormattedMultiGenomeName.isMetaGenome(outputGenomeName)) {
-			ChromosomeListOfLists<MGOffset> chromosomeOffsetList = getOffsetList(inputGenomeName, inputAlleleType);
+			ChromosomeListOfLists<MGSOffset> chromosomeOffsetList = getOffsetList(inputGenomeName, inputAlleleType);
 			if (chromosomeOffsetList != null) {
 				IntArrayAsOffsetList offsetList = (IntArrayAsOffsetList) chromosomeOffsetList.get(chromosome);
 				outputPosition = offsetList.getMetaGenomePosition(inputGenomePosition);
 			}
 		} else if (FormattedMultiGenomeName.isMetaGenome(inputGenomeName)) {
-			ChromosomeListOfLists<MGOffset> chromosomeOffsetList = getOffsetList(outputGenomeName, inputAlleleType);
+			ChromosomeListOfLists<MGSOffset> chromosomeOffsetList = getOffsetList(outputGenomeName, inputAlleleType);
 			if (chromosomeOffsetList != null) {
 				IntArrayAsOffsetList offsetList = (IntArrayAsOffsetList) chromosomeOffsetList.get(chromosome);
 				outputPosition = offsetList.getGenomePosition(inputGenomePosition);
@@ -75,24 +74,20 @@ public class ShiftCompute {
 	}
 
 
-	private static ChromosomeListOfLists<MGOffset> getOffsetList (String genome, AlleleType alleleType) {
-		MGAllele alleleInformation = null;
+	private static ChromosomeListOfLists<MGSOffset> getOffsetList (String genome, AlleleType alleleType) {
+		MGSAllele alleleInformation = null;
 
 		if (FormattedMultiGenomeName.isReferenceGenome(genome)) {
 			alleleInformation = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenome().getReferenceGenome().getAllele();
 		} else {
-			MGGenome genomeInformation = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenome().getGenomeInformation(genome);
-			if (alleleType == AlleleType.ALLELE01) {
-				alleleInformation = genomeInformation.getAlleleA();
-			} else if (alleleType == AlleleType.ALLELE02) {
-				alleleInformation = genomeInformation.getAlleleB();
-			} else {
+			alleleInformation = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenome().getGenomeInformation(genome).getAllele(alleleType);
+			if (alleleInformation == null) {
 				System.err.println("Illegal use of the method \"ShiftCompute.computeShift\" with the parameter: " + alleleType + " , genome: " + genome);
 				return null;
 			}
 		}
 
-		ChromosomeListOfLists<MGOffset> offsetList = alleleInformation.getOffsetList();
+		ChromosomeListOfLists<MGSOffset> offsetList = alleleInformation.getOffsetList();
 
 		return offsetList;
 	}

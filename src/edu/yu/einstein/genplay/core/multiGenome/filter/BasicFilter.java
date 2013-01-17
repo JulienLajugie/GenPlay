@@ -26,7 +26,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.Variant;
+import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 
 /**
  * @author Nicolas Fourel

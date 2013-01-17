@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -38,7 +38,7 @@ import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 
 /**
  * The ChromosomeManager class provides tools to load and access and list of {@link Chromosome}.
- * This class follows the design pattern <i>Singleton</i> 
+ * This class follows the design pattern <i>Singleton</i>
  * @author Julien Lajugie
  * @author Nicolas Fourel
  * @version 0.1
@@ -48,7 +48,7 @@ public final class ProjectChromosome implements Serializable, Iterable<Chromosom
 	private static final long serialVersionUID = 8781043776370540275L;	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 
-	
+
 	private		 	Map<String, Integer> 		chromosomeHash;			// Hashtable indexed by chromosome name
 	private			List<Chromosome> 			chromosomeList;			// List of chromosome
 	private			Chromosome					currentChromosome;		// Current chromosome in the genome window (uses for multi genome project)
@@ -81,10 +81,10 @@ public final class ProjectChromosome implements Serializable, Iterable<Chromosom
 		chromosomeHash = (Map<String, Integer>) in.readObject();
 		chromosomeList = (List<Chromosome>) in.readObject();
 		currentChromosome = (Chromosome) in.readObject();
-		genomeLength = (long) in.readLong();
+		genomeLength = in.readLong();
 	}
 
-	
+
 	/**
 	 * Set the current {@link ProjectChromosome} using another instance of {@link ProjectChromosome}
 	 * Used for the unserialization.
@@ -94,7 +94,7 @@ public final class ProjectChromosome implements Serializable, Iterable<Chromosom
 		setChromosomeList(project.getChromosomeList());
 		setCurrentChromosome(project.getCurrentChromosome());
 	}
-	
+
 
 	/**
 	 * Constructor of {@link ProjectChromosome}.
@@ -110,13 +110,13 @@ public final class ProjectChromosome implements Serializable, Iterable<Chromosom
 		createChromosomeHash();
 		genomeLengthCalculation();
 	}
-	
-	
+
+
 	/**
 	 * @param chromosomeList the chromosomeList to set
 	 */
 	public void updateChromosomeLength (List<Chromosome> chromosomeList) {
-		
+
 		for (Chromosome current: chromosomeList) {
 			Chromosome existingChromosome = get(current.getName());
 			if (existingChromosome != null) {
@@ -176,7 +176,7 @@ public final class ProjectChromosome implements Serializable, Iterable<Chromosom
 		if (index < chromosomeList.size()) {
 			return chromosomeList.get(index);
 		}
-		
+
 		// throw an exception if nothing found
 		throw new InvalidChromosomeException();
 	}
@@ -190,15 +190,15 @@ public final class ProjectChromosome implements Serializable, Iterable<Chromosom
 	public Chromosome get(String chromosomeName) throws InvalidChromosomeException {
 		// we put the chromosome name in lower case to avoid problems related to case sensitivity
 		chromosomeName = chromosomeName.toLowerCase();
-		
+
 		// we get the index of associated to the chromosome name
 		Integer index = chromosomeHash.get(chromosomeName);
-		
+
 		// if the index (thus the chromosome) exists, we can return the chromosome
 		if (index != null) {
 			return chromosomeList.get(index);
 		}
-		
+
 		// throw an exception if nothing found
 		throw new InvalidChromosomeException();
 	}
@@ -222,10 +222,10 @@ public final class ProjectChromosome implements Serializable, Iterable<Chromosom
 	public short getIndex(String chromosomeName) throws InvalidChromosomeException {
 		// we put the chromosome name in lower case to avoid problems related to case sensitivity
 		chromosomeName = chromosomeName.toLowerCase();
-		
-		// we get the index of associated to the chromosome name 
+
+		// we get the index of associated to the chromosome name
 		short index = (short)chromosomeHash.get(chromosomeName).intValue();
-		
+
 		// throw an exception if nothing found
 		if (index == -1) {
 			throw new InvalidChromosomeException();
@@ -249,10 +249,10 @@ public final class ProjectChromosome implements Serializable, Iterable<Chromosom
 	public Chromosome[] toArray() {
 		// Initializes the chromosome array
 		Chromosome[] returnArray = new Chromosome[chromosomeList.size()];
-		
+
 		// Fills the chromosome array
 		returnArray = chromosomeList.toArray(returnArray);
-		
+
 		// Returns the array
 		return returnArray;
 	}
@@ -264,7 +264,7 @@ public final class ProjectChromosome implements Serializable, Iterable<Chromosom
 	public List<Chromosome> getChromosomeList() {
 		return chromosomeList;
 	}
-	
+
 
 	/**
 	 * @return the currentChromosome
@@ -322,13 +322,13 @@ public final class ProjectChromosome implements Serializable, Iterable<Chromosom
 					return chromosome;
 				}
 			}
-			throw new NoSuchElementException(); 
+			throw new NoSuchElementException();
 		}
 
 
 		@Override
 		public void remove() throws UnsupportedOperationException {
-			throw new UnsupportedOperationException();				
+			throw new UnsupportedOperationException();
 		}
 	}
 }

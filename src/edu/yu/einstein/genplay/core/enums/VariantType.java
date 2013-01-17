@@ -84,6 +84,10 @@ public enum VariantType {
 	 */
 	REFERENCE_SNP ("Reference SNP"),
 	/**
+	 * To display the reference SNP
+	 */
+	REFERENCE_NO_CALL ("Reference no call"),
+	/**
 	 * To display the no call
 	 */
 	NO_CALL ("No Call"),
