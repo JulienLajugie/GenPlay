@@ -41,6 +41,7 @@ import javax.swing.table.TableColumn;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
+import edu.yu.einstein.genplay.util.Images;
 
 /**
  * This class displays a list of chromosome in order to make a selection.
@@ -97,9 +98,9 @@ public class ChromosomeChooserDialog extends JDialog {
 	 */
 	public void setFullChromosomeList (List<Chromosome> list) {
 		if (list == null) {
-			this.fullChromosomeList = new ArrayList<Chromosome>();
+			fullChromosomeList = new ArrayList<Chromosome>();
 		} else {
-			this.fullChromosomeList = list;
+			fullChromosomeList = list;
 		}
 	}
 
@@ -110,9 +111,9 @@ public class ChromosomeChooserDialog extends JDialog {
 	 */
 	public void setListOfSelectedChromosome (List<Chromosome> list) {
 		if (list == null) {
-			this.selectedChromosome = new ArrayList<Chromosome>();
+			selectedChromosome = new ArrayList<Chromosome>();
 		} else {
-			this.selectedChromosome = list;
+			selectedChromosome = list;
 		}
 	}
 
@@ -131,7 +132,7 @@ public class ChromosomeChooserDialog extends JDialog {
 	 * @return the list of every chromosome
 	 */
 	public List<Chromosome> getFullChromosomeList () {
-		return this.fullChromosomeList;
+		return fullChromosomeList;
 	}
 
 
@@ -139,7 +140,7 @@ public class ChromosomeChooserDialog extends JDialog {
 	 * @return the list of selected chromosome
 	 */
 	public List<Chromosome> getListOfSelectedChromosome () {
-		return this.selectedChromosome;
+		return selectedChromosome;
 	}
 
 
@@ -158,13 +159,13 @@ public class ChromosomeChooserDialog extends JDialog {
 
 	/**
 	 * Initializes dialog components
-	 * @param title	dialog title
-	 * @param data	table data
 	 */
 	private void init() {
 		//JDialog information
 		setSize(DIALOG_SIZE);
 		setBackground(CHROMOSOME_CHOOSER_COLOR);
+		setTitle("Choose Chromosomes");
+		setIconImage(Images.getApplicationImage());
 		setResizable(false);
 		setModal(true);
 

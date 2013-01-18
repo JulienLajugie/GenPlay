@@ -45,6 +45,7 @@ import edu.yu.einstein.genplay.gui.customComponent.tableComponents.BooleanRadioB
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
+import edu.yu.einstein.genplay.util.Images;
 
 /**
  * Dialog that prompt the user to choose layers.
@@ -305,6 +306,7 @@ public class LayerChooserDialog extends JDialog {
 		init();
 		setLocationRelativeTo(parent);
 		setTitle(title);
+		setIconImage(Images.getApplicationImage());
 		setVisible(true);
 		return approved;
 	}

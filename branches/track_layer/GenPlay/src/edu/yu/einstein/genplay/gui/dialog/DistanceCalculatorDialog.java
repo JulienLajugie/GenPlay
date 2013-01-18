@@ -39,6 +39,8 @@ import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import edu.yu.einstein.genplay.util.Images;
+
 /**
  * A dialog box for Distance Calculation between Base Pairs
  * @author Chirag Gorasia
@@ -443,6 +445,7 @@ public class DistanceCalculatorDialog extends JDialog {
 		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		setModal(true);
 		setTitle("Distance Calculator Paramters");
+		setIconImage(Images.getApplicationImage());
 		setLocation(GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint().x - (WINDOW_WIDTH/2), GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint().y - (WINDOW_HEIGHT/2));
 		setMinimumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
 		setResizable(false);

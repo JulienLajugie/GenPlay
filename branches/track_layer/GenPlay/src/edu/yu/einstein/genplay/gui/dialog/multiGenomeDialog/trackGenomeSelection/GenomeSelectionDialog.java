@@ -36,6 +36,7 @@ import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.gui.dialog.genomeSelectionPanel.GenomeSelectionPanel;
+import edu.yu.einstein.genplay.util.Images;
 
 
 /**
@@ -69,6 +70,7 @@ public class GenomeSelectionDialog extends JDialog {
 
 		// Init
 		setTitle("Synchronization parameters");
+		setIconImage(Images.getApplicationImage());
 		setResizable(false);
 		setVisible(false);
 

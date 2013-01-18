@@ -40,6 +40,8 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollBar;
 
+import edu.yu.einstein.genplay.util.Images;
+
 
 /**
  * A dialog box used to choose a value for the sigma parameter of a gaussian filter.
@@ -68,6 +70,7 @@ public final class GenomeWidthChooser extends JDialog {
 		validated = false;
 		initComponent();
 		setTitle(type + " value :");
+		setIconImage(Images.getApplicationImage());
 		getRootPane().setDefaultButton(jbOk);
 		setLocationRelativeTo(parent);
 	}
@@ -141,8 +144,8 @@ public final class GenomeWidthChooser extends JDialog {
 		c.gridy = 2;
 		add(jbCancel, c);
 
-		this.pack();
-		this.setResizable(false);
+		pack();
+		setResizable(false);
 	}
 
 
@@ -150,7 +153,7 @@ public final class GenomeWidthChooser extends JDialog {
 	 * Closes the dialog. No action are performed.
 	 */
 	private void jbCancelActionPerformed() {
-		this.dispose();
+		dispose();
 
 	}
 
@@ -160,7 +163,7 @@ public final class GenomeWidthChooser extends JDialog {
 	 */
 	private void jbOkActionPerformed() {
 		validated = true;
-		this.dispose();
+		dispose();
 	}
 
 

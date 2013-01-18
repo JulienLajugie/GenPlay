@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -29,6 +29,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JColorChooser;
 import javax.swing.JDialog;
 
+import edu.yu.einstein.genplay.util.Images;
+
 /**
  * @author Nicolas Fourel
  * @version 0.1
@@ -39,10 +41,10 @@ public class GenPlayColorChooser {
 	private static final String		DEFAULT_TITLE = "Choose a color";
 	private static JColorChooser	chooser = null;		// color chooser object
 	private static JDialog 			dialog;				// color chooser dialog
-	private static ActionListener 	okListener;			// ok button listener of the color chooser 
+	private static ActionListener 	okListener;			// ok button listener of the color chooser
 	private static ActionListener 	cancelListener;		// cancel button listener of the color chooser
 	private static Color 			selectedColor;		// selected color
-	
+
 
 	/**
 	 * Initializes the color chooser.
@@ -63,7 +65,7 @@ public class GenPlayColorChooser {
 		}
 	}
 
-	
+
 	/**
 	 * Shows the color chooser
 	 * @param component	to display the color chooser
@@ -73,8 +75,8 @@ public class GenPlayColorChooser {
 	public static Color showDialog (Component component, Color color) {
 		return showDialog(component, DEFAULT_TITLE, color);
 	}
-	
-	
+
+
 	/**
 	 * Shows the color chooser
 	 * @param component	to display the color chooser
@@ -86,6 +88,7 @@ public class GenPlayColorChooser {
 		init();
 		selectedColor = color;
 		dialog = JColorChooser.createDialog(component, "Choose a color", true, chooser, okListener, cancelListener);
+		dialog.setIconImage(Images.getApplicationImage());
 		dialog.setVisible(true);
 		return selectedColor;
 	}

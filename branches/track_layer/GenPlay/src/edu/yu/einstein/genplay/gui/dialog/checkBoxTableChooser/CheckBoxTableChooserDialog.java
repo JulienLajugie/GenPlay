@@ -40,6 +40,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.table.TableColumn;
 
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
+import edu.yu.einstein.genplay.util.Images;
 
 /**
  * This class displays a dialog windows containing a table with two columns:
@@ -64,7 +65,7 @@ public class CheckBoxTableChooserDialog<T> extends JDialog {
 	public 		static 	final 	int 		CANCEL_OPTION = 1;
 
 	protected 	static	final 	String[] 	COLUMN_NAMES 				= {"Name", "Selected"};					// Column names
-//	private 	static	final 	Dimension 	DIALOG_SIZE 				= new Dimension(430, 600);				// Window size
+	//	private 	static	final 	Dimension 	DIALOG_SIZE 				= new Dimension(430, 600);				// Window size
 	private 	static	final 	Dimension 	BUTTON_PANEL_SIZE			= new Dimension(430, 65);	// Button panel size
 	private 	static	final 	Color 		ITEM_CHOOSER_COLOR 			= ProjectFrame.ASSEMBLY_COLOR;			// Item chooser color
 
@@ -155,8 +156,6 @@ public class CheckBoxTableChooserDialog<T> extends JDialog {
 
 	/**
 	 * Initializes dialog components
-	 * @param title	dialog title
-	 * @param data	table data
 	 */
 	private void init() {
 		//JDialog information
@@ -164,7 +163,7 @@ public class CheckBoxTableChooserDialog<T> extends JDialog {
 		setBackground(ITEM_CHOOSER_COLOR);
 		setResizable(false);
 		setModal(true);
-
+		setIconImage(Images.getApplicationImage());
 		//Table
 		tableModel = new CheckBoxTableModel<T>();
 		tableModel.setData(fullItemList, selectedItem);

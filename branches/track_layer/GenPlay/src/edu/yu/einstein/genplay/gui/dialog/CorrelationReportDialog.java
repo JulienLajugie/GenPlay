@@ -48,6 +48,7 @@ import javax.swing.text.StyledDocument;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
@@ -332,6 +333,7 @@ public class CorrelationReportDialog extends JDialog {
 		setModal(true);
 		getRootPane().setDefaultButton(jbOk);
 		setTitle("Correlation Report");
+		setIconImage(Images.getApplicationImage());
 	}
 
 

@@ -44,6 +44,7 @@ import edu.yu.einstein.genplay.core.Gene;
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.list.geneList.GeneSearcher;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.util.Images;
 
 
 
@@ -194,6 +195,7 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 
 		getRootPane().setDefaultButton(jbValidInput);
 		setTitle("Find Gene");
+		setIconImage(Images.getApplicationImage());
 		pack();
 		setAlwaysOnTop(true);
 		setResizable(false);

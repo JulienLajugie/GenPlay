@@ -45,6 +45,7 @@ import edu.yu.einstein.genplay.gui.customComponent.tableComponents.ColorEditor;
 import edu.yu.einstein.genplay.gui.customComponent.tableComponents.ColorRenderer;
 import edu.yu.einstein.genplay.gui.customComponent.tableComponents.ComboBoxEditor;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
+import edu.yu.einstein.genplay.util.Images;
 
 /**
  * Dialog for the settings of the layers of a track
@@ -208,6 +209,9 @@ public class LayerSettingsDialog extends JDialog {
 		setLayout(border);
 		add(scrollPane, BorderLayout.CENTER);
 		add(buttonPanel, BorderLayout.SOUTH);
+
+
+		getRootPane().setDefaultButton(jbConfirm);
 	}
 
 
@@ -274,6 +278,7 @@ public class LayerSettingsDialog extends JDialog {
 		init();
 		setLocationRelativeTo(parent);
 		setTitle("Layer Settings");
+		setIconImage(Images.getApplicationImage());
 		setVisible(true);
 		return approved;
 	}

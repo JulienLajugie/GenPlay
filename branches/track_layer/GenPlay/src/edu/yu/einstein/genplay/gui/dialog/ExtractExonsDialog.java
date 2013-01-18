@@ -36,6 +36,7 @@ import javax.swing.WindowConstants;
 
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOExtractExons;
 import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLAExtractExons;
+import edu.yu.einstein.genplay.util.Images;
 
 
 /**
@@ -112,6 +113,7 @@ public class ExtractExonsDialog extends JDialog implements ActionListener{
 		setResizable(false);
 		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		setTitle("Extract Exons");
+		setIconImage(Images.getApplicationImage());
 		setVisible(false);
 		jbOk.setDefaultCapable(true);
 		getRootPane().setDefaultButton(jbOk);

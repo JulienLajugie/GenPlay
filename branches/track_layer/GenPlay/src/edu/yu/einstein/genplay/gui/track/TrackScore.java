@@ -51,9 +51,9 @@ public class TrackScore implements Serializable {
 	 * @param track track displaying this score
 	 */
 	public TrackScore(Track track) {
-		setMinimumScore(0);
-		setMaximumScore(0);
-		setScoreAxisAutorescaled(true);
+		setMinimumScore(TrackConstants.DEFAULT_MINIMUM_SCORE);
+		setMaximumScore(TrackConstants.DEFAULT_MAXIMUM_SCORE);
+		setScoreAxisAutorescaled(TrackConstants.DEFAULT_IS_SCORE_AUTO_RESCALED);
 		setTrack(track);
 	}
 

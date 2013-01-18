@@ -40,6 +40,7 @@ import edu.yu.einstein.genplay.gui.action.track.TARename;
 import edu.yu.einstein.genplay.gui.action.track.TASaveAsImage;
 import edu.yu.einstein.genplay.gui.action.track.TASetHeight;
 import edu.yu.einstein.genplay.gui.action.track.TASetVerticalLineCount;
+import edu.yu.einstein.genplay.gui.action.track.TATrackSettings;
 
 
 /**
@@ -64,7 +65,8 @@ public class TrackListActionMap {
 		new TARename(),
 		new TASaveAsImage(),
 		new TASetHeight(),
-		new TASetVerticalLineCount()
+		new TASetVerticalLineCount(),
+		new TATrackSettings()
 	};
 
 

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -38,6 +38,8 @@ import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+
+import edu.yu.einstein.genplay.util.Images;
 
 /**
  * An implementation of an input option pane for number.
@@ -64,10 +66,10 @@ public final class TwoNumbersOptionPane extends JDialog {
 	private static String 				label2;										// Text of the second JLabel
 	private static boolean 				validated;									// True if OK has been pressed
 
-	
+
 	/**
-	 * Private constructor. Used internally to create a NumberOptionPane dialog. 
-	 * @param parent the parent component of the dialog, can be null; see showDialog for details 
+	 * Private constructor. Used internally to create a NumberOptionPane dialog.
+	 * @param parent the parent component of the dialog, can be null; see showDialog for details
 	 * @param aTitle Title of the dialog
 	 * @param aLabel1 Text of the first inside label of the dialog
 	 * @param aLabel2 Text of the second inside label of the dialog
@@ -89,15 +91,16 @@ public final class TwoNumbersOptionPane extends JDialog {
 		minValidValue = min;
 		maxValidValue = max;
 		validated = false;
-		initComponent();	
+		initComponent();
 		setTitle(title);
+		setIconImage(Images.getApplicationImage());
 		getRootPane().setDefaultButton(jbOk);
 		pack();
 		setResizable(false);
 		setLocationRelativeTo(parent);
 	}
 
-	
+
 	/**
 	 * Creates the component and all the subcomponents.
 	 */
@@ -108,12 +111,12 @@ public final class TwoNumbersOptionPane extends JDialog {
 		if(label2 != null) {
 			jl2 = new JLabel(label2);
 		}
-		
-		
+
+
 		jftfValue1 = new JFormattedTextField(decimalFormat);
 		jftfValue1.setValue(validValue1);
 		jftfValue1.setColumns(8);
-		jftfValue1.addPropertyChangeListener(new PropertyChangeListener() {				
+		jftfValue1.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
 				jftf1ValuePropertyChange();
@@ -129,11 +132,11 @@ public final class TwoNumbersOptionPane extends JDialog {
 			}
 		});
 
-		
+
 		jftfValue2 = new JFormattedTextField(decimalFormat);
 		jftfValue2.setValue(validValue2);
 		jftfValue2.setColumns(8);
-		jftfValue2.addPropertyChangeListener(new PropertyChangeListener() {				
+		jftfValue2.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
 				jftf2ValuePropertyChange();
@@ -148,23 +151,23 @@ public final class TwoNumbersOptionPane extends JDialog {
 				}
 			}
 		});
-		
+
 		jbOk = new JButton("Ok");
 		jbOk.setPreferredSize(new Dimension(75, 30));
 		jbOk.setDefaultCapable(true);
 		jbOk.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				jbOkActionPerformed();				
+				jbOkActionPerformed();
 			}
 		});
-		
+
 		jbCancel = new JButton("Cancel");
 		jbCancel.setPreferredSize(new Dimension(75, 30));
 		jbCancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				jbCancelActionPerformed();				
+				jbCancelActionPerformed();
 			}
 		});
 
@@ -180,7 +183,7 @@ public final class TwoNumbersOptionPane extends JDialog {
 			c.weighty = 0.1;
 			add(jl1, c);
 		}
-		
+
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
 		c.gridy = 1;
@@ -189,7 +192,7 @@ public final class TwoNumbersOptionPane extends JDialog {
 		c.weighty = 0.5;
 		add(jftfValue1, c);
 
-		
+
 		if(label2 != null) {
 			c.fill = GridBagConstraints.HORIZONTAL;
 			c.gridx = 0;
@@ -199,7 +202,7 @@ public final class TwoNumbersOptionPane extends JDialog {
 			c.weighty = 0.1;
 			add(jl2, c);
 		}
-		
+
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
 		c.gridy = 3;
@@ -207,8 +210,8 @@ public final class TwoNumbersOptionPane extends JDialog {
 		c.weightx = 0.5;
 		c.weighty = 0.5;
 		add(jftfValue2, c);
-		
-		
+
+
 		c.fill = GridBagConstraints.NONE;
 		c.gridx = 0;
 		c.gridy = 4;
@@ -217,27 +220,27 @@ public final class TwoNumbersOptionPane extends JDialog {
 		add(jbOk, c);
 
 		c.gridx = 1;
-		add(jbCancel, c);		
+		add(jbCancel, c);
 	}
 
-	
+
 	/**
 	 * Closes the dialog. No action are performed.
 	 */
 	private void jbCancelActionPerformed() {
-		this.dispose();
+		dispose();
 	}
 
-	
+
 	/**
 	 * Closes the dialog. Sets validated to true so the main function can return the two selected curves.
 	 */
 	private void jbOkActionPerformed() {
 		validated = true;
-		this.dispose();		
+		dispose();
 	}
 
-	
+
 	/**
 	 * Called when the value of the fieldText jftfValue1 changes.
 	 * Check if the new value is between min and max.
@@ -253,7 +256,7 @@ public final class TwoNumbersOptionPane extends JDialog {
 		}
 	}
 
-	
+
 	/**
 	 * Called when the value of the fieldText jftfValue2 changes.
 	 * Check if the new value is between min and max.
@@ -268,16 +271,16 @@ public final class TwoNumbersOptionPane extends JDialog {
 			validValue2 = currentValue;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Displays a GdpCurveChooser dialog, and returns a Number.
-	 * @param parent the parent component of the dialog, can be null; see showDialog for details 
+	 * @param parent the parent component of the dialog, can be null; see showDialog for details
 	 * @param title Title of the dialog.
 	 * @param label1 Text of the first inside label of the dialog.
 	 * @param label2 Text of the second inside label of the dialog.
 	 * @param df DecimalFormat of the input value.
-	 * @param min Minimum allowed value for the input value. 
+	 * @param min Minimum allowed value for the input value.
 	 * @param max Maximum allowed value for the input value.
 	 * @param defaultValue1 first default displayed value when the dialog is displayed.
 	 * @param defaultValue2 second default displayed value when the dialog is displayed.
@@ -285,7 +288,7 @@ public final class TwoNumbersOptionPane extends JDialog {
 	 */
 	public static Number[] getValue(Component parent, String title, String label1, String label2, DecimalFormat df, double min, double max, double defaultValue1, double defaultValue2) {
 		TwoNumbersOptionPane NOP = new TwoNumbersOptionPane(parent, title, label1, label2, df, defaultValue1, defaultValue2, min, max);
-		NOP.setVisible(true);	
+		NOP.setVisible(true);
 		if(validated) {
 			Number[] result = {validValue1, validValue2};
 			return result;

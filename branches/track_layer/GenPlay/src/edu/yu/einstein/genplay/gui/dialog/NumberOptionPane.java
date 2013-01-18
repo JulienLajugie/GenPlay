@@ -39,6 +39,8 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
+import edu.yu.einstein.genplay.util.Images;
+
 /**
  * An implementation of an input option pane for number.
  * The format, the maximum and the minimum value of the input value can be specified.
@@ -83,6 +85,7 @@ public final class NumberOptionPane extends JDialog {
 		validated = false;
 		initComponent();
 		setTitle(title);
+		setIconImage(Images.getApplicationImage());
 		getRootPane().setDefaultButton(jbOk);
 		pack();
 		setResizable(false);

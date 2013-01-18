@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -36,6 +36,8 @@ import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+
+import edu.yu.einstein.genplay.util.Images;
 
 
 /**
@@ -105,12 +107,13 @@ public final class TextDialog extends JDialog implements ActionListener {
 		add(jbOk, c);
 
 		setTitle(title);
+		setIconImage(Images.getApplicationImage());
 		getRootPane().setDefaultButton(jbOk);
 		pack();
 		setSize(DIALOG_DIMENSION);
 		setResizable(false);
 		setModal(true);
-		setLocationRelativeTo(getRootPane());		
+		setLocationRelativeTo(getRootPane());
 	}
 
 
@@ -119,7 +122,7 @@ public final class TextDialog extends JDialog implements ActionListener {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		dispose();		
+		dispose();
 	}
 
 

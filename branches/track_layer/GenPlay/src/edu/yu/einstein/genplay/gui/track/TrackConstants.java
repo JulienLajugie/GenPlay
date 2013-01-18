@@ -57,6 +57,24 @@ public class TrackConstants {
 
 
 	/**
+	 * Default score auto-rescaled value of a track
+	 */
+	public static final boolean DEFAULT_IS_SCORE_AUTO_RESCALED = true;
+
+
+	/**
+	 * Default maximum score displayed in a track
+	 */
+	public static final double DEFAULT_MAXIMUM_SCORE = 100;
+
+
+	/**
+	 * Default minimum score displayed in a track
+	 */
+	public static final double DEFAULT_MINIMUM_SCORE = 0;
+
+
+	/**
 	 * Border of a track when the track is being dragged down
 	 */
 	public static final Border DRAG_DOWN_BORDER =

@@ -40,14 +40,14 @@ import edu.yu.einstein.genplay.util.colors.LayerColor;
 
 
 /**
- * Shows a dialog to manage the layer settings
+ * Shows a dialog to manage the layers of the selected track
  * @author Julien Lajugie
  */
 public class TALayerSettings extends TrackListAction {
 
 	private static final long serialVersionUID = 775293461948991915L;		// generated ID
 	private static final String ACTION_NAME = "Layer Settings";				// action name
-	private static final String DESCRIPTION = "Manage layers settings";		// tooltip
+	private static final String DESCRIPTION = "Manage layers";				// tooltip
 	private static final int 	MNEMONIC = KeyEvent.VK_L; 					// mnemonic key
 
 

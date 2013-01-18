@@ -35,6 +35,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.event.ChangeEvent;
@@ -59,8 +60,8 @@ class ScoreOptionsPanel extends JPanel implements ActionListener, ChangeListener
 	private final JFormattedTextField 	jftfScoreMin;			// minimum score value text field
 	private final JLabel 				jlScoreMax;				// maximum score value label
 	private final JFormattedTextField 	jftfScoreMax;			// maximum score value text field
-	private final JLabel				jlScoreAuto;			// autoscale score label
-	private final JCheckBox				jcbScoreAuto;			// autoscale score check box
+	private final JLabel				jlScoreAuto;			// autoscaled score label
+	private final JCheckBox				jcbScoreAuto;			// autoscaled score check box
 	private final JLabel				jlScorePosition;		// label score position
 	private final JRadioButton			jrbTopPosition;			// radio button top score position
 	private final JRadioButton			jrbBottomPosition;		// radio button bottom score position
@@ -84,7 +85,7 @@ class ScoreOptionsPanel extends JPanel implements ActionListener, ChangeListener
 		jftfScoreMax = new JFormattedTextField(createScoreFormatter());
 		jftfScoreMax.setColumns(8);
 
-		jlScoreAuto = new JLabel("Auto-Rescale");
+		jlScoreAuto = new JLabel("Auto-Rescaled");
 		jcbScoreAuto = new JCheckBox();
 		jcbScoreAuto.addChangeListener(this);
 
@@ -137,17 +138,15 @@ class ScoreOptionsPanel extends JPanel implements ActionListener, ChangeListener
 
 		c.gridx = 0;
 		c.gridy = 4;
-		c.gridwidth = 2;
+		c.gridwidth = 1;
 		add(jrbTopPosition, c);
 
-		c.gridx = 0;
+		c.gridx = 1;
 		c.gridy = 4;
-		c.gridwidth = 2;
 		add(jrbBottomPosition, c);
 
 		c.gridx = 0;
 		c.gridy = 5;
-		c.gridwidth = 1;
 		add(jlScoreColor, c);
 
 		c.gridx = 1;
@@ -173,14 +172,6 @@ class ScoreOptionsPanel extends JPanel implements ActionListener, ChangeListener
 		NumberFormat scoreFormat = NumberFormat.getNumberInstance();
 		NumberFormatter scoreFormatter = new NumberFormatter(scoreFormat);
 		return scoreFormatter;
-	}
-
-
-	/**
-	 * @return true if the score is set to be auto-rescaled. False otherwise
-	 */
-	boolean getScoreAutoRescale() {
-		return jcbScoreAuto.isSelected();
 	}
 
 
@@ -242,6 +233,14 @@ class ScoreOptionsPanel extends JPanel implements ActionListener, ChangeListener
 	}
 
 
+	/**
+	 * @return true if the score is set to be auto-rescaled. False otherwise
+	 */
+	boolean isScoreAutoRescaled() {
+		return jcbScoreAuto.isSelected();
+	}
+
+
 	@Override
 	public void stateChanged(ChangeEvent e) {
 		if (e.getSource() == jcbScoreAuto) {
@@ -252,6 +251,20 @@ class ScoreOptionsPanel extends JPanel implements ActionListener, ChangeListener
 				jftfScoreMin.setEnabled(true);
 				jftfScoreMax.setEnabled(true);
 			}
+		}
+	}
+
+
+	/**
+	 * Make sure that the minimum score is smaller than the maximum score
+	 * @return true if the input are valid
+	 */
+	public boolean validateInput() {
+		if (!isScoreAutoRescaled() && (getScoreMinimum() >= getScoreMaximum())) {
+			JOptionPane.showMessageDialog(getRootPane(), "The maximum score value must be greater than the minimum one.", "Invalid Scores", JOptionPane.WARNING_MESSAGE);
+			return false;
+		} else {
+			return true;
 		}
 	}
 }

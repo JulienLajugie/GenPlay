@@ -43,6 +43,7 @@ import edu.yu.einstein.genplay.gui.action.track.TARename;
 import edu.yu.einstein.genplay.gui.action.track.TASaveAsImage;
 import edu.yu.einstein.genplay.gui.action.track.TASetHeight;
 import edu.yu.einstein.genplay.gui.action.track.TASetVerticalLineCount;
+import edu.yu.einstein.genplay.gui.action.track.TATrackSettings;
 import edu.yu.einstein.genplay.gui.popupMenu.layerMenu.LayerMenuFactory;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
@@ -75,6 +76,8 @@ public class TrackMenu extends JPopupMenu implements PopupMenuListener {
 		null,
 		TAAddLayer.ACTION_KEY,
 		TAAddLayerFromDAS.ACTION_KEY,
+		null,
+		TATrackSettings.ACTION_KEY
 	};
 
 	private Track 				selectedTrack; 			// selected track
@@ -96,7 +99,6 @@ public class TrackMenu extends JPopupMenu implements PopupMenuListener {
 				add(actionMap.get(currentKey));
 			}
 		}
-		addSeparator();
 		layerSettingsMenu = new JMenuItem(actionMap.get(TALayerSettings.ACTION_KEY));
 		add(layerSettingsMenu);
 		addPopupMenuListener(this);

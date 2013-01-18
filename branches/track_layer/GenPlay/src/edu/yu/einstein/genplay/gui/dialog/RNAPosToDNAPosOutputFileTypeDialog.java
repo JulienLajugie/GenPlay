@@ -36,6 +36,7 @@ import javax.swing.JLabel;
 import javax.swing.WindowConstants;
 
 import edu.yu.einstein.genplay.core.enums.RNAToDNAResultType;
+import edu.yu.einstein.genplay.util.Images;
 
 
 
@@ -111,6 +112,7 @@ public class RNAPosToDNAPosOutputFileTypeDialog extends JDialog implements Actio
 		setResizable(false);
 		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		setTitle("RNA To DNA Output File Selector");
+		setIconImage(Images.getApplicationImage());
 		setVisible(false);
 		jbOK.setDefaultCapable(true);
 		getRootPane().setDefaultButton(jbOK);

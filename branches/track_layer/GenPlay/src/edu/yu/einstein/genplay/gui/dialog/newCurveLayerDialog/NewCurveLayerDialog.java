@@ -39,6 +39,7 @@ import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.Strand;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.dialog.genomeSelectionPanel.GenomeSelectionPanel;
+import edu.yu.einstein.genplay.util.Images;
 
 
 /**
@@ -274,6 +275,7 @@ public class NewCurveLayerDialog extends JDialog {
 		add(jbCancel, c);
 
 		setTitle("New Layer");
+		setIconImage(Images.getApplicationImage());
 		pack();
 		setResizable(false);
 		setModal(true);

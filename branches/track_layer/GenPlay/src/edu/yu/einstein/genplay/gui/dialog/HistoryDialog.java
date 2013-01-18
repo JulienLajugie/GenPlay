@@ -40,6 +40,7 @@ import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import edu.yu.einstein.genplay.util.History;
+import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -70,6 +71,7 @@ public final class HistoryDialog extends JDialog {
 	private HistoryDialog(Component parent, String trackName, History history) {
 		super();
 		setTitle(trackName);
+		setIconImage(Images.getApplicationImage());
 		setModal(true);
 		this.trackName = trackName;
 		this.history = history;
