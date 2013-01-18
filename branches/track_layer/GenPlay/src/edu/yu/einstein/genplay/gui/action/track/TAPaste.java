@@ -24,6 +24,8 @@ package edu.yu.einstein.genplay.gui.action.track;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import javax.swing.ActionMap;
 import javax.swing.KeyStroke;
@@ -85,7 +87,9 @@ public final class TAPaste extends TrackListActionWorker<Void> {
 				layerChooserDialog.setLayers(Arrays.asList(layers));
 				layerChooserDialog.setMultiselectable(true);
 				if (layerChooserDialog.showDialog(getRootPane(), "Select Layers to Paste") == LayerChooserDialog.APPROVE_OPTION) {
-					Layer<?>[] selectedLayers = layerChooserDialog.getSelectedLayers().toArray(new Layer<?>[0]);
+					List<Layer<?>> selectedLayerList = layerChooserDialog.getSelectedLayers();
+					Collections.reverse(selectedLayerList);
+					Layer<?>[] selectedLayers = selectedLayerList.toArray(new Layer<?>[0]);
 					if ((selectedLayers != null) && (selectedLayers.length > 0)) {
 						notifyActionStart("Pasting Clipboard on Track #" + selectedTrack.getNumber(), 1, false);
 						for (Layer<?> currentLayer: selectedLayers) {

@@ -162,7 +162,7 @@ class LayerChooserTableModel extends AbstractTableModel {
 	@Override
 	public boolean isCellEditable(int row, int col) {
 		LayerType rowLayerType = layers.get(row).getType();
-		boolean isSelectableLayerType = ((selectableLayerTypes == null) || !rowLayerType.isContainedIn(selectableLayerTypes));
+		boolean isSelectableLayerType = ((selectableLayerTypes == null) || rowLayerType.isContainedIn(selectableLayerTypes));
 		if ((col == LayerChooserDialog.LAYER_SELECTION_INDEX) && isSelectableLayerType) {
 			return true;
 		} else {

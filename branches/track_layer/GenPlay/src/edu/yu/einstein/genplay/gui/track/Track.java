@@ -124,6 +124,9 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 		if (!layers.contains(activeLayer)) {
 			setActiveLayer(null);
 		}
+		if ((activeLayer == null) && !layers.isEmpty()) {
+			setActiveLayer(layers.getLayers()[0]);
+		}
 		updateGraphicsPanelDrawers();
 		getScore().autorescaleScoreAxis();
 	}
