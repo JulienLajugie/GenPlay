@@ -45,6 +45,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.text.NumberFormatter;
 
 import edu.yu.einstein.genplay.core.enums.LogBase;
+import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
@@ -445,6 +446,7 @@ public class AxisOptionDialog extends JDialog {
 	 */
 	public int showDialog(Component parent, String title) {
 		setTitle(title);
+		setIconImage(Images.getApplicationImage());
 		setModal(true);
 		setLocationRelativeTo(parent);
 		setVisible(true);

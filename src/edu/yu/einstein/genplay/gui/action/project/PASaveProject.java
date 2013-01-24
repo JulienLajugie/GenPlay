@@ -37,32 +37,29 @@ import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.fileFilter.ExtendedFileFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.GenPlayProjectFilter;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
-import edu.yu.einstein.genplay.gui.trackList.TrackList;
+import edu.yu.einstein.genplay.gui.trackList.TrackListPanel;
 import edu.yu.einstein.genplay.util.Utils;
-
-
 
 /**
  * Saves the project into a file
+ * 
  * @author Julien Lajugie
  * @author Nicolas Fourel
  * @version 0.1
  */
 public class PASaveProject extends TrackListActionWorker<Boolean> {
 
-	private static final long serialVersionUID = -8503082838697971220L;	// generated ID
-	private static final String 	DESCRIPTION =
-			"Save the project into a file"; 							// tooltip
-	private static final int 		MNEMONIC = KeyEvent.VK_S; 		// mnemonic key
-	private static final String 	ACTION_NAME = "Save Project";	// action name
-	private final 		TrackList	trackList;						// track list containing the project to save
-	private File 					selectedFile;					// selected file
-
+	private static final long serialVersionUID = -8503082838697971220L; 			// generated ID
+	private static final String 	DESCRIPTION = "Save the project into a file"; 	// tooltip
+	private static final int 		MNEMONIC = KeyEvent.VK_S; 						// mnemonic key
+	private static final String 	ACTION_NAME = "Save Project"; 					// action name
+	private final TrackListPanel 	trackListPanel; 		// track list containing the project to save
+	private File 					selectedFile; 									// selected file
 
 	/**
 	 * action accelerator {@link KeyStroke}
 	 */
-	public static final KeyStroke 	ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK);
+	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK);
 
 
 	/**
@@ -73,44 +70,17 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 
 	/**
 	 * Creates an instance of {@link PASaveProject}
-	 * @param trackList singleton TrackList of the project
+	 * 
+	 * @param trackListPanel singleton TrackList of the project
 	 */
-	public PASaveProject(TrackList trackList) {
+	public PASaveProject(TrackListPanel trackListPanel) {
 		super();
-		this.trackList = trackList;
+		this.trackListPanel = trackListPanel;
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
 		putValue(ACCELERATOR_KEY, ACCELERATOR);
-	}
-
-
-	@Override
-	protected Boolean processAction() throws Exception {
-		final JFileChooser jfc = new JFileChooser(ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory());
-		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		jfc.setDialogTitle("Save Project");
-		FileFilter[] filters = {new GenPlayProjectFilter()};
-		jfc.addChoosableFileFilter(filters[0]);
-		jfc.setFileFilter(filters[0]);
-		jfc.setAcceptAllFileFilterUsed(false);
-		File f = new File(ProjectManager.getInstance().getProjectName().concat(".gen"));
-		jfc.setSelectedFile(f);
-		int returnVal = jfc.showSaveDialog(trackList.getRootPane());
-		if(returnVal == JFileChooser.APPROVE_OPTION) {
-			ExtendedFileFilter selectedFilter = (ExtendedFileFilter)jfc.getFileFilter();
-			selectedFile = Utils.addExtension(jfc.getSelectedFile(), selectedFilter.getExtensions()[0]);
-			if (!Utils.cancelBecauseFileExist(trackList.getRootPane(), selectedFile)) {
-				notifyActionStart("Saving Project", 1, false);
-				String projectName = Utils.getFileNameWithoutExtension(selectedFile);
-				ProjectManager.getInstance().setProjectName(projectName);
-				ProjectRecording projectRecording = RecordingManager.getInstance().getProjectRecording();
-				projectRecording.setCurrentProjectPath(selectedFile.getPath());
-				return projectRecording.saveProject(selectedFile);
-			}
-		}
-		return false;
 	}
 
 
@@ -122,4 +92,31 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 		}
 	}
 
+
+	@Override
+	protected Boolean processAction() throws Exception {
+		final JFileChooser jfc = new JFileChooser(ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory());
+		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		jfc.setDialogTitle("Save Project");
+		FileFilter[] filters = { new GenPlayProjectFilter() };
+		jfc.addChoosableFileFilter(filters[0]);
+		jfc.setFileFilter(filters[0]);
+		jfc.setAcceptAllFileFilterUsed(false);
+		File f = new File(ProjectManager.getInstance().getProjectName().concat(".gen"));
+		jfc.setSelectedFile(f);
+		int returnVal = jfc.showSaveDialog(trackListPanel.getRootPane());
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			ExtendedFileFilter selectedFilter = (ExtendedFileFilter) jfc.getFileFilter();
+			selectedFile = Utils.addExtension(jfc.getSelectedFile(), selectedFilter.getExtensions()[0]);
+			if (!Utils.cancelBecauseFileExist(trackListPanel.getRootPane(), selectedFile)) {
+				notifyActionStart("Saving Project", 1, false);
+				String projectName = Utils.getFileNameWithoutExtension(selectedFile);
+				ProjectManager.getInstance().setProjectName(projectName);
+				ProjectRecording projectRecording = RecordingManager.getInstance().getProjectRecording();
+				projectRecording.setCurrentProjectPath(selectedFile.getPath());
+				return projectRecording.saveProject(selectedFile);
+			}
+		}
+		return false;
+	}
 }

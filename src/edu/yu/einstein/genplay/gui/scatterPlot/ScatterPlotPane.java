@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -39,7 +39,8 @@ import java.util.List;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.core.enums.GraphicsType;
+import edu.yu.einstein.genplay.core.enums.GraphType;
+import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
@@ -59,16 +60,16 @@ public class ScatterPlotPane extends JPanel {
 	private static final int 	PAD = 100; 					// padding between the graph and the dialog
 	private static final int 	LENGEND_PAD = 20;			// padding between the legend and the dialog
 	private static final int	LEGEND_INSET = 10;			// inset between the legend rectangle and the legend text
-	private static final Color 	LEGEND_BACKGROUND = 
-		new Color(228, 236, 247);							// background color
+	private static final Color 	LEGEND_BACKGROUND =
+			new Color(228, 236, 247);							// background color
 	private static final String X_AXIS_PREFIX = "X-Axis: ";	// prefix name of the x axis
 	private static final String Y_AXIS_PREFIX = "Y-Axis: ";	// prefix name of the y axis
-	private static final DecimalFormat 	DF = 
-		new DecimalFormat("###,###,###.###");				// decimal format	
+	private static final DecimalFormat 	DF =
+			new DecimalFormat("###,###,###.###");				// decimal format
 	private final ScatterPlotAxis 			xAxis;			// x axis
 	private final ScatterPlotAxis 			yAxis;			// y axis
 	private final List<ScatterPlotData> 	data;			// data to plot
-	private GraphicsType 					chartType;		// type of chart
+	private GraphType 					chartType;		// type of chart
 	private int 							legendWidth;	// with of the legend
 
 
@@ -85,6 +86,7 @@ public class ScatterPlotPane extends JPanel {
 		scatterPlotDialog.setContentPane(scatterPlotPane);
 		scatterPlotDialog.setModal(true);
 		scatterPlotDialog.setTitle("Scatter Plot");
+		scatterPlotDialog.setIconImage(Images.getApplicationImage());
 		scatterPlotDialog.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
 		scatterPlotDialog.setMinimumSize(new Dimension(MINIMUM_WIDTH, MINIMUM_HEIGHT));
 		scatterPlotDialog.pack();
@@ -101,21 +103,21 @@ public class ScatterPlotPane extends JPanel {
 	 * @param yAxisName name of the Y-Axis
 	 * @param data data to plot
 	 */
-	private ScatterPlotPane(Component parent, String xAxisName, String yAxisName, List<ScatterPlotData> data) {		
+	private ScatterPlotPane(Component parent, String xAxisName, String yAxisName, List<ScatterPlotData> data) {
 		this.data = data;
 		double[] dataBounds = findDataBounds(data);
-		this.xAxis = new ScatterPlotAxis(dataBounds[0], dataBounds[1], ScatterPlotAxis.HORIZONTAL, xAxisName);
-		this.yAxis = new ScatterPlotAxis(dataBounds[2], dataBounds[3], ScatterPlotAxis.VERTICAL, yAxisName);
-		this.chartType = GraphicsType.BAR;
-		this.legendWidth = computeLegendWidth();
+		xAxis = new ScatterPlotAxis(dataBounds[0], dataBounds[1], ScatterPlotAxis.HORIZONTAL, xAxisName);
+		yAxis = new ScatterPlotAxis(dataBounds[2], dataBounds[3], ScatterPlotAxis.VERTICAL, yAxisName);
+		chartType = GraphType.BAR;
+		legendWidth = computeLegendWidth();
 		// show the menu when right click
 		addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {	
+			public void mouseClicked(MouseEvent e) {
 				if (e.getButton() == 3){
 					ScatterPlotMenu spm = new ScatterPlotMenu(ScatterPlotPane.this);
 					spm.show(ScatterPlotPane.this, e.getX(), e.getY());
-				}	
+				}
 			}
 		});
 		//  show the data values for the mouse position
@@ -141,7 +143,7 @@ public class ScatterPlotPane extends JPanel {
 	 * @param dataToAdd list of {@link ScatterPlotData} to add
 	 */
 	public void addData(List<ScatterPlotData> dataToAdd) {
-		this.data.addAll(dataToAdd);
+		data.addAll(dataToAdd);
 		this.repaint();
 	}
 
@@ -151,9 +153,9 @@ public class ScatterPlotPane extends JPanel {
 	 * @param dataToAdd {@link ScatterPlotData} to add
 	 */
 	public void addData(ScatterPlotData dataToAdd) {
-		this.data.add(dataToAdd);
+		data.add(dataToAdd);
 		findDataBounds(data);
-		this.legendWidth = computeLegendWidth();
+		legendWidth = computeLegendWidth();
 		this.repaint();
 	}
 
@@ -181,7 +183,7 @@ public class ScatterPlotPane extends JPanel {
 	private void drawBarGraphics(Graphics g) {
 		for (ScatterPlotData currentScatterPlot: data) {
 			g.setColor(currentScatterPlot.getColor());
-			for (int j = 0; j < currentScatterPlot.getData().length - 1; j++) {
+			for (int j = 0; j < (currentScatterPlot.getData().length - 1); j++) {
 				Point current = null;
 				Point next = null;
 				if ((currentScatterPlot.getData()[j][0] >= xAxis.getMin())
@@ -212,7 +214,7 @@ public class ScatterPlotPane extends JPanel {
 	 */
 	private void drawChartBackground(Graphics g, Rectangle clip) {
 		g.setColor(Colors.WHITE);
-		g.fillRect(clip.x, clip.y, clip.width, clip.height);			
+		g.fillRect(clip.x, clip.y, clip.width, clip.height);
 	}
 
 
@@ -223,12 +225,12 @@ public class ScatterPlotPane extends JPanel {
 	private void drawCurveGraphics(Graphics g) {
 		for (ScatterPlotData currentScatterPlot: data) {
 			g.setColor(currentScatterPlot.getColor());
-			for (int j = 0; j < currentScatterPlot.getData().length - 1; j++) {
-				Point current = new Point(getTranslatedPoint(currentScatterPlot.getData()[j][0], currentScatterPlot.getData()[j][1]));				
+			for (int j = 0; j < (currentScatterPlot.getData().length - 1); j++) {
+				Point current = new Point(getTranslatedPoint(currentScatterPlot.getData()[j][0], currentScatterPlot.getData()[j][1]));
 				Point nexttonext = new Point(getTranslatedPoint(currentScatterPlot.getData()[j + 1][0], currentScatterPlot.getData()[j + 1][1]));
 				g.drawLine(current.x, current.y, nexttonext.x, nexttonext.y);
-				if ((currentScatterPlot.getData()[j][0] < xAxis.getMin()) 
-						|| (currentScatterPlot.getData()[j][0] > xAxis.getMax()) 
+				if ((currentScatterPlot.getData()[j][0] < xAxis.getMin())
+						|| (currentScatterPlot.getData()[j][0] > xAxis.getMax())
 						|| (currentScatterPlot.getData()[j + 1][1] <= yAxis.getMax())) {
 					// we erase the part of the line that is not in the chart area
 					// this means that the curve needs to be drawn before the axis and ticks and legend
@@ -247,7 +249,7 @@ public class ScatterPlotPane extends JPanel {
 	 * @param g {@link Graphics} object of the component
 	 * @param clip rectangle where to draw the chart
 	 */
-	private void drawGraphics(Graphics g, Rectangle clip, GraphicsType graphicsType) {
+	private void drawGraphics(Graphics g, Rectangle clip, GraphType graphicsType) {
 		switch (graphicsType) {
 		case BAR:
 			drawBarGraphics(g);
@@ -286,7 +288,7 @@ public class ScatterPlotPane extends JPanel {
 			Color graphColor = data.get(i).getColor();
 			String graphName = data.get(i).getName();
 			g.setColor(graphColor);
-			int yLine = p.y + (i + 2) * lineHeight; // y position of the current line
+			int yLine = p.y + ((i + 2) * lineHeight); // y position of the current line
 			g.drawLine(p.x, yLine - 5, p.x + 25, yLine - 5); // draw a line with the color of the graph
 			g.setColor(Colors.BLACK);
 			g.drawString(graphName, p.x + 30, yLine); // draw the name of the graph
@@ -301,7 +303,7 @@ public class ScatterPlotPane extends JPanel {
 	private void drawPointGraphics(Graphics g) {
 		for (ScatterPlotData currentScatterPlot: data) {
 			g.setColor(currentScatterPlot.getColor());
-			for (int j = 0; j < currentScatterPlot.getData().length - 1; j++) {
+			for (int j = 0; j < (currentScatterPlot.getData().length - 1); j++) {
 				Point current = new Point(getTranslatedPoint(currentScatterPlot.getData()[j][0], currentScatterPlot.getData()[j][1]));
 				Point next = new Point(getTranslatedPoint(currentScatterPlot.getData()[j + 1][0], currentScatterPlot.getData()[j][1]));
 				if ((currentScatterPlot.getData()[j][0] >= xAxis.getMin())
@@ -312,7 +314,7 @@ public class ScatterPlotPane extends JPanel {
 				}
 			}
 		}
-	}	
+	}
 
 
 	/**
@@ -342,7 +344,7 @@ public class ScatterPlotPane extends JPanel {
 	/**
 	 * @return the chart type
 	 */
-	public final GraphicsType getChartType() {
+	public final GraphType getChartType() {
 		return chartType;
 	}
 
@@ -361,19 +363,19 @@ public class ScatterPlotPane extends JPanel {
 	 */
 	private Point2D getDataPoint(Point screenPoint) {
 		Point2D.Double retPoint = new Point2D.Double();
-		retPoint.x = ((screenPoint.x - PAD) * (xAxis.getMax() - xAxis.getMin()) / (getWidth() - 2 * PAD)) + xAxis.getMin();
-		retPoint.y = -1 * ((screenPoint.y - getHeight() + PAD) * (yAxis.getMax() - yAxis.getMin()) / (getHeight() - 2 * PAD)) + yAxis.getMin();
+		retPoint.x = (((screenPoint.x - PAD) * (xAxis.getMax() - xAxis.getMin())) / (getWidth() - (2 * PAD))) + xAxis.getMin();
+		retPoint.y = (-1 * ((((screenPoint.y - getHeight()) + PAD) * (yAxis.getMax() - yAxis.getMin())) / (getHeight() - (2 * PAD)))) + yAxis.getMin();
 		return retPoint;
 	}
 
 
 	/**
-	 * @return an array of String containing the name of the {@link ScatterPlotData} 
+	 * @return an array of String containing the name of the {@link ScatterPlotData}
 	 */
 	public String[] getGraphNames() {
-		String[] names = new String[data.size()]; 
+		String[] names = new String[data.size()];
 		for (int i = 0; i < data.size(); i++) {
-			names[i] = data.get(i).getName();			
+			names[i] = data.get(i).getName();
 		}
 		return names;
 	}
@@ -418,7 +420,7 @@ public class ScatterPlotPane extends JPanel {
 		// set where inside the dialog, the chart needs to be drawn
 		Rectangle clip = new Rectangle(PAD, PAD, getWidth() - (2 * PAD), getHeight() - (2 * PAD));
 		// draw the background of the chart
-		drawChartBackground(g, clip);	
+		drawChartBackground(g, clip);
 		// set the position of the axis in case they moved
 		if (yAxis.isLogScale()) {
 			xAxis.setPosition(yAxis.dataValueToScreenPosition(1, clip));
@@ -452,7 +454,7 @@ public class ScatterPlotPane extends JPanel {
 	/**
 	 * @param chartType the chart type to set
 	 */
-	public final void setChartType(GraphicsType chartType) {
+	public final void setChartType(GraphType chartType) {
 		this.chartType = chartType;
 	}
 }

@@ -169,5 +169,5 @@ public abstract class ArrayAsDoubleList<T> extends AbstractList<Double> implemen
 	@Override
 	public boolean isCompressed() {
 		return isCompressed;
-	}	 
+	}
 }

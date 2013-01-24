@@ -27,14 +27,13 @@ import edu.yu.einstein.genplay.core.comparator.StringComparator;
 
 /**
  * Comparator for {@link Track}.
- * 
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class TrackComparator implements Comparator<Track<?>> {
+public class TrackComparator implements Comparator<Track> {
 
 	@Override
-	public int compare(Track<?> o1, Track<?> o2) {
+	public int compare(Track o1, Track o2) {
 		if (o1 == null && o2 == null) {
 			return 0;
 		} else if (o1 != null && o2 == null) {
@@ -42,10 +41,8 @@ public class TrackComparator implements Comparator<Track<?>> {
 		} else if (o1 == null && o2 != null) {
 			return 1;
 		} else {
-			
 			String s1 = o1.getName();
 			String s2 = o2.getName();
-			
 			StringComparator stringComparator = new StringComparator();
 			return stringComparator.compare(s1, s2);
 		}

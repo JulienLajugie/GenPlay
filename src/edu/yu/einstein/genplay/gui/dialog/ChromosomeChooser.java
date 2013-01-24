@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -35,11 +35,12 @@ import javax.swing.JLabel;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.util.Images;
 
 
 
 /**
- * A dialog box used to choose a list of chromosomes. 
+ * A dialog box used to choose a list of chromosomes.
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -56,7 +57,7 @@ public final class ChromosomeChooser extends JDialog {
 
 
 	/**
-	 * Private constructor. Used internally to create a ChromosomeChooser dialog. 
+	 * Private constructor. Used internally to create a ChromosomeChooser dialog.
 	 * @param parent The Component from which the dialog is displayed
 	 */
 	private ChromosomeChooser(Component parent) {
@@ -64,8 +65,9 @@ public final class ChromosomeChooser extends JDialog {
 		setModal(true);
 		validated = false;
 		projectChromosome = ProjectManager.getInstance().getProjectChromosome();
-		initComponent();	
+		initComponent();
 		setTitle("Choose chromosomes");
+		setIconImage(Images.getApplicationImage());
 		getRootPane().setDefaultButton(jbOk);
 		pack();
 		setResizable(false);
@@ -84,7 +86,7 @@ public final class ChromosomeChooser extends JDialog {
 		jcbSelectAll.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				jcbSelectAllItemStateChanged();				
+				jcbSelectAllItemStateChanged();
 			}
 		});
 
@@ -94,7 +96,7 @@ public final class ChromosomeChooser extends JDialog {
 		jbOk.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				jbOkActionPerformed();				
+				jbOkActionPerformed();
 			}
 		});
 
@@ -103,7 +105,7 @@ public final class ChromosomeChooser extends JDialog {
 		jbCancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				jbCancelActionPerformed();				
+				jbCancelActionPerformed();
 			}
 		});
 
@@ -136,7 +138,7 @@ public final class ChromosomeChooser extends JDialog {
 					}
 				});
 				c.gridx = x;
-				add(jcbChromos[k], c);				
+				add(jcbChromos[k], c);
 				x++;
 				k++;
 			}
@@ -164,12 +166,12 @@ public final class ChromosomeChooser extends JDialog {
 	private void jcbSelectAllItemStateChanged() {
 		boolean selectAll = jcbSelectAll.isSelected();
 		for(int i = 0; i < projectChromosome.size(); i++) {
-			jcbChromos[i].setSelected(selectAll); 
+			jcbChromos[i].setSelected(selectAll);
 		}
 		jcbSelectAll.setEnabled(true);
 	}
-	
-	
+
+
 	/**
 	 * Checks the "select all" box if all the chromosome are checked.
 	 * Unchecks it if not.
@@ -193,39 +195,39 @@ public final class ChromosomeChooser extends JDialog {
 	 * Closes the dialog. No action are performed.
 	 */
 	private void jbCancelActionPerformed() {
-		this.dispose();
+		dispose();
 	}
 
 
 	/**
-	 * Closes the dialog. Sets validated to true so the main function can return a list of booleans 
+	 * Closes the dialog. Sets validated to true so the main function can return a list of booleans
 	 * corresponding to the check / uncheck states of the chromosomes.
 	 */
 	private void jbOkActionPerformed() {
 		validated = true;
-		this.dispose();		
+		dispose();
 	}
 
-	
+
 
 	/**
-	 * Displays a ChromosomeChooser dialog, and returns a list of booleans 
+	 * Displays a ChromosomeChooser dialog, and returns a list of booleans
 	 * corresponding to the check / uncheck states of the chromosomes if the OK has been pressed.
 	 * All the chromosomes are selected when the window appears
 	 * @param parent The Component from which the dialog is displayed.
 	 * @return a list of booleans corresponding to the check / uncheck states
-	 * of the chromosomes if the OK has been pressed. Else returns null. 
+	 * of the chromosomes if the OK has been pressed. Else returns null.
 	 */
 	public static boolean[] getSelectedChromo(Component parent) {
 		ChromosomeChooser CCOP = new ChromosomeChooser(parent);
-	
+
 		// check all the chromosomes
 		for (int i = 0; i < jcbChromos.length; i++) {
 			jcbChromos[i].setSelected(true);
 		}
-		jcbSelectAll.setSelected(true);	
-		
-		CCOP.setVisible(true);	
+		jcbSelectAll.setSelected(true);
+
+		CCOP.setVisible(true);
 		if(validated) {
 			boolean[] returnArray = new boolean[projectChromosome.size()];
 			for(int i = 0; i < projectChromosome.size(); i++) {
@@ -234,32 +236,32 @@ public final class ChromosomeChooser extends JDialog {
 			}
 			for(int i = 0; i < projectChromosome.size(); i++) {
 				returnArray[i] = jcbChromos[i].isSelected();
-			}			
+			}
 			return returnArray;
-		}
-		else
+		} else {
 			return null;
+		}
 	}
-		
-	
+
+
 	/**
-	 * Displays a ChromosomeChooser dialog, and returns a list of booleans 
+	 * Displays a ChromosomeChooser dialog, and returns a list of booleans
 	 * corresponding to the check / uncheck states of the chromosomes if the OK has been pressed.
 	 * @param parent The Component from which the dialog is displayed.
 	 * @param selectedChromo list of the chromosomes that should appear as selected when the dialog is shown
 	 * @return a list of booleans corresponding to the check / uncheck states
-	 * of the chromosomes if the OK has been pressed. Else returns null. 
+	 * of the chromosomes if the OK has been pressed. Else returns null.
 	 */
 	public static boolean[] getSelectedChromo(Component parent, boolean[] selectedChromo) {
 		ChromosomeChooser CCOP = new ChromosomeChooser(parent);
-		
+
 		// check the box of the chromosomes that need to be selected
 		for (int i = 0; i < selectedChromo.length; i++) {
 			jcbChromos[i].setSelected(selectedChromo[i]);
 		}
 		checkIfAllCBChecked();
-		
-		CCOP.setVisible(true);	
+
+		CCOP.setVisible(true);
 
 		if(validated) {
 			boolean[] returnArray = new boolean[projectChromosome.size()];
@@ -269,10 +271,10 @@ public final class ChromosomeChooser extends JDialog {
 			}
 			for(int i = 0; i < projectChromosome.size(); i++) {
 				returnArray[i] = jcbChromos[i].isSelected();
-			}			
+			}
 			return returnArray;
-		}
-		else
+		} else {
 			return null;
+		}
 	}
 }

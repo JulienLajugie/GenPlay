@@ -39,6 +39,8 @@ import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import edu.yu.einstein.genplay.util.Images;
+
 /**
  * A dialog box for choosing the number of duplicates to be filtered out of a read file
  * @author Chirag Gorasia
@@ -212,6 +214,7 @@ public class DupReadFilterDialog extends JDialog implements ActionListener{
 		setResizable(false);
 		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		setTitle("Duplicate Reads Filter");
+		setIconImage(Images.getApplicationImage());
 		setVisible(false);
 		jbOK.setDefaultCapable(true);
 		getRootPane().setDefaultButton(jbOK);

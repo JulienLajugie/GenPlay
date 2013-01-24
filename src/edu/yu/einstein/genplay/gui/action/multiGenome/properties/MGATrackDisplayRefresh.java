@@ -32,6 +32,7 @@ import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
 
 
@@ -83,8 +84,8 @@ public class MGATrackDisplayRefresh extends TrackListActionWorker<Boolean> {
 			settings = MGDisplaySettings.getInstance();
 
 			// Update tracks
-			Track<?>[] tracks = getTrackList().getTrackList();
-			for (Track<?> track: tracks) {
+			Track[] tracks = MainFrame.getInstance().getTrackListPanel().getModel().getTracks();
+			for (Track track: tracks) {
 				List<MGFilter> filtersList = settings.getFilterSettings().getMGFiltersForTrack(track);
 				List<VariantData> variantList = settings.getVariantSettings().getVariantsForTrack(track);
 				track.updateMultiGenomeInformation(variantList, filtersList);
@@ -100,8 +101,8 @@ public class MGATrackDisplayRefresh extends TrackListActionWorker<Boolean> {
 	@Override
 	protected void doAtTheEnd(Boolean actionResult) {
 		if (actionResult) {
-			Track<?>[] tracks = getTrackList().getTrackList();
-			for (Track<?> track: tracks) {
+			Track[] tracks = MainFrame.getInstance().getTrackListPanel().getModel().getTracks();
+			for (Track track: tracks) {
 				if (track != null) {
 					track.repaint();
 				}

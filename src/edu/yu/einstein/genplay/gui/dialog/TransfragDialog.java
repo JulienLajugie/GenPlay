@@ -40,6 +40,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.NumberFormatter;
 
+import edu.yu.einstein.genplay.util.Images;
+
 
 /**
  * Dialog for the transfrag operation
@@ -187,6 +189,7 @@ public class TransfragDialog extends JDialog {
 		add(jbCancel, c);
 
 		setTitle("Transfrag");
+		setIconImage(Images.getApplicationImage());
 		pack();
 		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		getRootPane().setDefaultButton(jbOk);

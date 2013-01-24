@@ -49,8 +49,7 @@ public class EditingDialogManagerForStripes implements EditingDialogManagerInter
 	private final TrackSelectionPanel 				trackEditingPanel;			// Panel to edit the tracks
 	private final GenomeEditingPanel 				genomeEditingPanel;			// Panel to edit the genomes
 	private final VariationTypeEditingPanel 		variationTypeEditingPanel;	// Panel to edit the variations
-
-	private VariantData currentData;								// The current stripe data (can be null)
+	private VariantData 							currentData;				// The current stripe data (can be null)
 
 
 	/**
@@ -82,26 +81,6 @@ public class EditingDialogManagerForStripes implements EditingDialogManagerInter
 	}
 
 
-	@Override
-	public List<VariantData> showDialog() {
-		initializePanels();
-		EditingDialog<VariantData> editingDialog = new EditingDialog<VariantData>(this);
-		List<VariantData> data = null;
-		if (editingDialog.showDialog(null) == EditingDialog.APPROVE_OPTION) {
-			data = retrieveData();
-		}
-		currentData = null;
-		resetPanels();
-		return data;
-	}
-
-
-	@Override
-	public void setData(VariantData data) {
-		this.currentData = data;
-	}
-
-
 	private void initializePanels () {
 		List<String> allGenomeNames = ProjectManager.getInstance().getMultiGenomeProject().getGenomeNames();
 		genomeEditingPanel.update(allGenomeNames);
@@ -118,6 +97,16 @@ public class EditingDialogManagerForStripes implements EditingDialogManagerInter
 
 
 	/**
+	 * Resets all the panels
+	 */
+	private void resetPanels () {
+		for (EditingPanel<?> panel: editingPanelList) {
+			panel.reset();
+		}
+	}
+
+
+	/**
 	 * Retrieves all the information from the panel in order to create/set the stripe data object.
 	 * If a current stripe data has been defined, it will be set and returned.
 	 * If no current stripe data has been defined, a new one will be created.
@@ -128,7 +117,7 @@ public class EditingDialogManagerForStripes implements EditingDialogManagerInter
 		AlleleType alleleType = variationTypeEditingPanel.getSelectedAlleleType();
 		List<VariantType> variantList = variationTypeEditingPanel.getSelectedVariantTypes();
 		List<Color> colorList = variationTypeEditingPanel.getSelectedColors();
-		Track<?>[] trackList = trackEditingPanel.getSelectedTracks();
+		Track[] trackList = trackEditingPanel.getSelectedTracks();
 
 		List<VariantData> result = new ArrayList<VariantData>();
 
@@ -171,13 +160,23 @@ public class EditingDialogManagerForStripes implements EditingDialogManagerInter
 	}
 
 
-	/**
-	 * Resets all the panels
-	 */
-	private void resetPanels () {
-		for (EditingPanel<?> panel: editingPanelList) {
-			panel.reset();
+	@Override
+	public void setData(VariantData data) {
+		currentData = data;
+	}
+
+
+	@Override
+	public List<VariantData> showDialog() {
+		initializePanels();
+		EditingDialog<VariantData> editingDialog = new EditingDialog<VariantData>(this);
+		List<VariantData> data = null;
+		if (editingDialog.showDialog(null) == EditingDialog.APPROVE_OPTION) {
+			data = retrieveData();
 		}
+		currentData = null;
+		resetPanels();
+		return data;
 	}
 
 }

@@ -66,12 +66,12 @@ public class TopPanel extends JPanel implements AdjustmentListener, MouseWheelLi
 	/** Generated default version ID */
 	private static final long serialVersionUID = 2637751583693743095L;
 
-	private static final int HANDLE_WIDTH 			= 50;					// Width of the track handle
-	private static final int TRACKS_SCROLL_WIDTH 	= 17;					// Width of the scroll bar
-	private final JScrollBar 		jsbPosition;		// scroll bar to modify the position
-	private final ProjectWindow		projectWindow;		// Instance of the Genome Window Manager
-	private JButton jbMultiGenome;											// button for the multi genome properties dialog
-	private JPopupMenu popupMenu;
+	private static final int HANDLE_WIDTH 			= 50;	// Width of the track handle
+	private static final int TRACKS_SCROLL_WIDTH 	= 17;	// Width of the scroll bar
+	private final 	JScrollBar 		jsbPosition;			// scroll bar to modify the position
+	private final 	ProjectWindow	projectWindow;			// Instance of the Genome Window Manager
+	private 		JButton 		jbMultiGenome;			// button for the multi genome properties dialog
+	private 		JPopupMenu		popupMenu;				// popup-menu
 
 
 	/**

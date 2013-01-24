@@ -39,12 +39,9 @@ import edu.yu.einstein.genplay.core.manager.ProjectFiles;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.InvalidFileTypeException;
-import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
-import edu.yu.einstein.genplay.gui.track.EmptyTrack;
 import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.gui.trackList.TrackList;
-
+import edu.yu.einstein.genplay.gui.trackList.TrackListPanel;
 
 /**
  * This class manages the saving and loading processes of the current project.
@@ -54,21 +51,22 @@ import edu.yu.einstein.genplay.gui.trackList.TrackList;
  */
 public class ProjectRecording {
 
-	private 		File 					fileToLoad;							// The project file to load
-	private 		Track<?>[]				trackList;							// The list of tracks to save
-
-	private 		FileInputStream fis;
-	private 		GZIPInputStream gz;
-	private 		ObjectInputStream 		ois;								// The input file stream
-
-	private 		ProjectInformation		projectInformation;					// The project information
-	private 		boolean 				trackListReadyToLoad 	= false;	// Checks if the list of track can be loaded
-	private 		boolean 				mgManagerReadyToLoad 	= false;	// Checks if the multi genome manager can be loaded
-	private			boolean 				loadingEvent	 		= false;	// Checks if the request is for loading or for saving
-	private 		String 					currentProjectPath;					// path to the current project
+	private File 				fileToLoad; // The project file to load
+	private Track[] 			trackList; // The list of tracks to save
+	private FileInputStream 	fis;
+	private GZIPInputStream 	gz;
+	private ObjectInputStream 	ois; // The input file stream
+	private ProjectInformation 	projectInformation; // The project information
+	private boolean 			trackListReadyToLoad = false; // Checks if the list of track can be loaded
+	private boolean 			mgManagerReadyToLoad = false; // Checks if the multi genome manager can be loaded
+	private boolean 			loadingEvent = false; // Checks if the request is for loading or for saving
+	private String 				currentProjectPath; // path to the current project
 
 
-	protected ProjectRecording () {
+	/**
+	 * Creates an instance of {@link ProjectRecording}
+	 */
+	protected ProjectRecording() {
 		ois = null;
 		projectInformation = null;
 		trackListReadyToLoad = false;
@@ -78,158 +76,9 @@ public class ProjectRecording {
 
 
 	/**
-	 * Saves the current list of tracks into a file
-	 * @param outputFile file where the project needs to be saved
-	 * @return true if the saving was successful. Returns false otherwise
-	 */
-	public boolean saveProject(File outputFile) {
-		try {
-			TrackList trackList = MainFrame.getInstance().getTrackList();
-			// remove all the references to the listener so we don't save them
-			for (Track<?> currentTrack: trackList.getTrackList()) {
-				currentTrack.removeTrackListener(trackList);
-			}
-			FileOutputStream fos = new FileOutputStream(outputFile);
-			GZIPOutputStream gz = new GZIPOutputStream(fos);
-			ObjectOutputStream oos = new ObjectOutputStream(gz);
-			// there is bug during the serialization with the nimbus LAF if the track list is visible
-			if (UIManager.getLookAndFeel().getID().equalsIgnoreCase("Nimbus")) {
-				trackList.setViewportView(null);
-			}
-			updatesCurrentProjectInformation();
-			oos.writeObject(projectInformation);
-			oos.writeObject(ProjectManager.getInstance());
-			if (ProjectManager.getInstance().isMultiGenomeProject()) {
-				oos.writeObject(ProjectManager.getInstance().getMultiGenomeProject());
-				oos.writeObject(MGDisplaySettings.getInstance());
-			}
-			oos.writeObject(trackList.getTrackList());
-
-			// there is bug during the serialization with the nimbus LAF if the track list is visible
-			if (UIManager.getLookAndFeel().getID().equalsIgnoreCase("Nimbus")) {
-				trackList.setViewportView(trackList.getJpTrackList());
-			}
-			oos.flush();
-			oos.close();
-			gz.flush();
-			gz.close();
-			fos.flush();
-			fos.close();
-			// rebuild the references to the listener
-			for (Track<?> currentTrack: trackList.getTrackList()) {
-				currentTrack.addTrackListener(trackList);
-			}
-			//ProjectManager.getInstance().getProjectConfiguration().writeConfigurationFile(); 	// deactivate the configuration file saving
-		} catch (IOException e) {
-			ExceptionManager.handleException(MainFrame.getInstance().getRootPane(), e, "An error occurred while saving the project");
-			return false;
-		}
-		return true;
-	}
-
-
-	/**
-	 * Creates/sets chromosome manager object.
-	 * @param inputFile		project file
-	 * @throws Exception
-	 */
-	public void initObjectInputStream (File inputFile) throws Exception {
-		fileToLoad = inputFile;
-		fis = new FileInputStream(inputFile);
-		initObjectInputStream(fis);
-	}
-
-
-	/**
-	 * Creates/sets chromosome manager object.
-	 * @param is InputStream object
-	 * @throws Exception
-	 */
-	public void initObjectInputStream (InputStream is) throws Exception {
-		try {
-			gz = new GZIPInputStream(is);
-			ois = new ObjectInputStream(gz);
-		} catch (IOException e) {
-			// a IOException is likely to be caused by a invalid file type
-			throw new InvalidFileTypeException();
-		}
-	}
-
-
-	/**
-	 * Initializes the project information.
-	 * It unserializes the first object contained in the file that is the information about the project.
-	 * This method must be the first one to be called once the object input stream has been created.
-	 * @throws ClassNotFoundException
-	 * @throws IOException
-	 */
-	public void initProjectInformation () throws ClassNotFoundException, IOException {
-		if (ois != null) {
-			projectInformation = (ProjectInformation) ois.readObject();
-		}
-	}
-
-
-	/**
-	 * Initializes the project manager.
-	 * It unserializes the second object contained in the file that is the project manager.
-	 * This method must be the second one to be called once the object input stream has been created.
-	 * @throws ClassNotFoundException
-	 * @throws IOException
-	 */
-	public void initProjectManager () throws ClassNotFoundException, IOException {
-		if (ois != null) {
-			ois.readObject();		// read the project manager
-			if (ProjectManager.getInstance().isMultiGenomeProject()) {
-				mgManagerReadyToLoad = true;
-				trackListReadyToLoad = false;
-			} else {
-				mgManagerReadyToLoad = false;
-				trackListReadyToLoad = true;
-			}
-		}
-	}
-
-
-	/**
-	 * Initializes the manager of the multi genome part
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	public void initMultiGenomeManager () throws IOException, ClassNotFoundException {
-		if (mgManagerReadyToLoad && ProjectManager.getInstance().isMultiGenomeProject()) {
-			ProjectManager.getInstance().readMultiGenomeObject(ois);	// read the multi genome manager
-			ois.readObject();		// read the MGDisplaySettings
-		}
-		trackListReadyToLoad = true;
-	}
-
-
-	/**
-	 * Reads the track list object.
-	 * @return a track list
-	 */
-	public Track<?>[] getTrackList() {
-		if (trackListReadyToLoad) {
-			try {
-				trackList = (Track[])ois.readObject();
-				trackListReadyToLoad = false;
-				closeStreams();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			}
-			return trackList;
-		}
-		return null;
-	}
-
-
-	/**
 	 * Closes input streams
 	 */
-	private void closeStreams () {
+	private void closeStreams() {
 		try {
 			ois.close();
 		} catch (IOException e) {
@@ -255,12 +104,192 @@ public class ProjectRecording {
 
 
 	/**
+	 * @return the fileToLoad
+	 */
+	public File getFileToLoad() {
+		return fileToLoad;
+	}
+
+
+	/**
 	 * @return the projectInformation
 	 */
 	public ProjectInformation getProjectInformation() {
 		return projectInformation;
 	}
 
+
+	/**
+	 * Reads the track list object.
+	 * @return a track list
+	 */
+	public Track[] getTrackList() {
+		if (trackListReadyToLoad) {
+			try {
+				trackList = (Track[]) ois.readObject();
+				trackListReadyToLoad = false;
+				closeStreams();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+			return trackList;
+		}
+		return null;
+	}
+
+
+	/**
+	 * Initializes the manager of the multi genome part
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public void initMultiGenomeManager() throws IOException, ClassNotFoundException {
+		if (mgManagerReadyToLoad && ProjectManager.getInstance().isMultiGenomeProject()) {
+			ProjectManager.getInstance().readMultiGenomeObject(ois); // read the multi-genome manager
+			ois.readObject(); // read the MGDisplaySettings
+		}
+		trackListReadyToLoad = true;
+	}
+
+	/**
+	 * Creates/sets chromosome manager object.
+	 * @param inputFile project file
+	 * @throws Exception
+	 */
+	public void initObjectInputStream(File inputFile) throws Exception {
+		fileToLoad = inputFile;
+		fis = new FileInputStream(inputFile);
+		initObjectInputStream(fis);
+	}
+
+	/**
+	 * Creates/sets chromosome manager object.
+	 * @param is InputStream object
+	 * @throws Exception
+	 */
+	public void initObjectInputStream(InputStream is) throws Exception {
+		try {
+			gz = new GZIPInputStream(is);
+			ois = new ObjectInputStream(gz);
+		} catch (IOException e) {
+			// a IOException is likely to be caused by a invalid file type
+			throw new InvalidFileTypeException();
+		}
+	}
+
+	/**
+	 * Initializes the project information. It unserializes the first object
+	 * contained in the file that is the information about the project. This
+	 * method must be the first one to be called once the object input stream
+	 * has been created.
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
+	public void initProjectInformation() throws ClassNotFoundException, IOException {
+		if (ois != null) {
+			projectInformation = (ProjectInformation) ois.readObject();
+		}
+	}
+
+	/**
+	 * Initializes the project manager. It unserializes the second object
+	 * contained in the file that is the project manager. This method must be
+	 * the second one to be called once the object input stream has been
+	 * created.
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
+	public void initProjectManager() throws ClassNotFoundException, IOException {
+		if (ois != null) {
+			ois.readObject(); // read the project manager
+			if (ProjectManager.getInstance().isMultiGenomeProject()) {
+				mgManagerReadyToLoad = true;
+				trackListReadyToLoad = false;
+			} else {
+				mgManagerReadyToLoad = false;
+				trackListReadyToLoad = true;
+			}
+		}
+	}
+
+	/**
+	 * @return the loadingEvent
+	 */
+	public boolean isLoadingEvent() {
+		return loadingEvent;
+	}
+
+	/**
+	 * Saves the current list of tracks into a file
+	 * @param outputFile file where the project needs to be saved
+	 * @return true if the saving was successful. Returns false otherwise
+	 */
+	public boolean saveProject(File outputFile) {
+		try {
+			TrackListPanel trackListPanel = MainFrame.getInstance().getTrackListPanel();
+			// remove all the references to the listener so we don't save them
+			for (Track currentTrack : trackListPanel.getModel().getTracks()) {
+				currentTrack.removeTrackListener(trackListPanel);
+			}
+			FileOutputStream fos = new FileOutputStream(outputFile);
+			GZIPOutputStream gz = new GZIPOutputStream(fos);
+			ObjectOutputStream oos = new ObjectOutputStream(gz);
+			// there is bug during the serialization with the nimbus LAF if the
+			// track list is visible
+			if (UIManager.getLookAndFeel().getID().equalsIgnoreCase("Nimbus")) {
+				trackListPanel.setViewportView(null);
+			}
+			updatesCurrentProjectInformation();
+			oos.writeObject(projectInformation);
+			oos.writeObject(ProjectManager.getInstance());
+			oos.writeObject(trackListPanel.getModel().getTracks());
+
+			// there is bug during the serialization with the nimbus LAF if the
+			// track list is visible
+			if (UIManager.getLookAndFeel().getID().equalsIgnoreCase("Nimbus")) {
+				trackListPanel.setViewportView(trackListPanel.getJpTrackList());
+			}
+			oos.flush();
+			oos.close();
+			gz.flush();
+			gz.close();
+			fos.flush();
+			fos.close();
+			// rebuild the references to the listener
+			for (Track currentTrack : trackListPanel.getModel().getTracks()) {
+				currentTrack.addTrackListener(trackListPanel);
+			}
+			// ProjectManager.getInstance().getProjectConfiguration().writeConfigurationFile();
+			// // deactivate the configuration file saving
+		} catch (IOException e) {
+			ExceptionManager.handleException(MainFrame.getInstance().getRootPane(), e, "An error occurred while saving the project");
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * @param currentProjectPath the currentProjectPath to set
+	 */
+	public void setCurrentProjectPath(String currentProjectPath) {
+		this.currentProjectPath = currentProjectPath;
+	}
+
+	/**
+	 * @param fileToLoad the fileToLoad to set
+	 */
+	public void setFileToLoad(File fileToLoad) {
+		this.fileToLoad = fileToLoad;
+	}
+
+	/**
+	 * @param loadingEvent the loadingEvent to set
+	 */
+	public void setLoadingEvent(boolean loadingEvent) {
+		this.loadingEvent = loadingEvent;
+	}
 
 	/**
 	 * Updates the current information about the project
@@ -278,16 +307,14 @@ public class ProjectRecording {
 		}
 
 		GregorianCalendar calendar = new GregorianCalendar();
-		String currentDate = (calendar.get(Calendar.MONTH) + 1) + "/" +
-				calendar.get(Calendar.DATE) + "/" +
-				calendar.get(Calendar.YEAR);
+		String currentDate = (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.DATE) + "/" + calendar.get(Calendar.YEAR);
 		projectInformation.setProjectDate(currentDate);
 
 		// we count the number of non-empty tracks in the track list
-		TrackList trackList = MainFrame.getInstance().getTrackList();
+		TrackListPanel trackListPanel = MainFrame.getInstance().getTrackListPanel();
 		Integer trackCount = 0;
-		for (Track<?> currentTrack: trackList.getTrackList()) {
-			if (!(currentTrack instanceof EmptyTrack)) {
+		for (Track currentTrack : trackListPanel.getModel().getTracks()) {
+			if (currentTrack.getLayers().size() > 0) {
 				trackCount++;
 			}
 		}
@@ -297,45 +324,4 @@ public class ProjectRecording {
 			projectInformation.setProjectFiles(ProjectFiles.getInstance().getValidArrayOfFiles());
 		}
 	}
-
-
-	/**
-	 * @return the fileToLoad
-	 */
-	public File getFileToLoad() {
-		return fileToLoad;
-	}
-
-
-	/**
-	 * @param fileToLoad the fileToLoad to set
-	 */
-	public void setFileToLoad(File fileToLoad) {
-		this.fileToLoad = fileToLoad;
-	}
-
-
-	/**
-	 * @return the loadingEvent
-	 */
-	public boolean isLoadingEvent() {
-		return loadingEvent;
-	}
-
-
-	/**
-	 * @param loadingEvent the loadingEvent to set
-	 */
-	public void setLoadingEvent(boolean loadingEvent) {
-		this.loadingEvent = loadingEvent;
-	}
-
-
-	/**
-	 * @param currentProjectPath the currentProjectPath to set
-	 */
-	public void setCurrentProjectPath(String currentProjectPath) {
-		this.currentProjectPath = currentProjectPath;
-	}
-
 }

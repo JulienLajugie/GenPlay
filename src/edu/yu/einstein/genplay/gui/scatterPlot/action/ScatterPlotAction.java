@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -30,7 +30,7 @@ import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotPane;
 
 
 /**
- * Abstract class extended by the different classes 
+ * Abstract class extended by the different classes
  * defining action on a {@link ScatterPlotPane}
  * @author Julien Lajugie
  * @version 0.1
@@ -39,8 +39,8 @@ public abstract class ScatterPlotAction extends AbstractAction {
 
 	private static final long serialVersionUID = 7889036761995344801L;	// generated ID
 	private final ScatterPlotPane scatterPlotPane;	// scatter plot pane
-	
-	
+
+
 	/**
 	 * Public constructor
 	 * @param scatterPlotPane
@@ -51,17 +51,17 @@ public abstract class ScatterPlotAction extends AbstractAction {
 
 
 	/**
+	 * @return the {@link JRootPane}
+	 */
+	protected JRootPane getRootPane() {
+		return MainFrame.getInstance().getTrackListPanel().getRootPane();
+	}
+
+
+	/**
 	 * @return the scatterPlotPane
 	 */
 	protected ScatterPlotPane getScatterPlotPane() {
 		return scatterPlotPane;
-	}
-	
-	
-	/**
-	 * @return the {@link JRootPane}
-	 */
-	protected JRootPane getRootPane() {
-		return MainFrame.getInstance().getTrackList().getRootPane();
 	}
 }

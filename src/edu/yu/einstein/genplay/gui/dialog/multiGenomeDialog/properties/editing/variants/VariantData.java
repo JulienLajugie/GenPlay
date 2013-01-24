@@ -36,7 +36,8 @@ import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.gui.trackList.TrackList;
+import edu.yu.einstein.genplay.gui.trackList.TrackListPanel;
+
 
 /**
  * @author Nicolas Fourel
@@ -47,7 +48,6 @@ public class VariantData implements Serializable {
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 2604583442089053519L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-
 	/** Index used for Genome column */
 	public static final int GENOME_INDEX 	= 1;
 	/** Index used for Allele column */
@@ -57,66 +57,22 @@ public class VariantData implements Serializable {
 	/** Index used for track column */
 	public static final int TRACK_INDEX 	= 4;
 
-
 	private String 				genome;				// name of the genome
 	private AlleleType			alleleType;			// type of allele (paternal, maternal or both)
 	private List<VariantType> 	variationTypeList;	// list of variation
 	private List<Color> 		colorList;			// list of color
-	private Track<?>[] 			trackList;			// list of track
-
-
-	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(genome);
-		out.writeObject(alleleType);
-		out.writeObject(variationTypeList);
-		out.writeObject(colorList);
-
-		TrackList trackList = MainFrame.getInstance().getTrackList();
-		for (Track<?> currentTrack: this.trackList) {
-			currentTrack.removeTrackListener(trackList);
-		}
-
-		out.writeObject(this.trackList);
-
-		// rebuild the references to the listener
-		for (Track<?> currentTrack: this.trackList) {
-			currentTrack.addTrackListener(trackList);
-		}
-	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	@SuppressWarnings("unchecked")
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		genome = (String) in.readObject();
-		alleleType = (AlleleType) in.readObject();
-		variationTypeList = (List<VariantType>) in.readObject();
-		colorList = (List<Color>) in.readObject();
-		trackList = (Track<?>[]) in.readObject();
-	}
+	private Track[] 			trackList;			// list of track
 
 
 	/**
 	 * Constructor of {@link VariantData}
 	 */
 	protected VariantData() {
-		this.genome = null;
-		this.alleleType = null;
-		this.variationTypeList = null;
-		this.colorList = null;
-		this.trackList = null;
+		genome = null;
+		alleleType = null;
+		variationTypeList = null;
+		colorList = null;
+		trackList = null;
 	}
 
 
@@ -129,49 +85,55 @@ public class VariantData implements Serializable {
 	 * @param trackList		list of track
 	 */
 	public VariantData(String genome, AlleleType alleleType, List<VariantType> variantList,
-			List<Color> colorList, Track<?>[] trackList) {
+			List<Color> colorList, Track[] trackList) {
 		this.genome = genome;
 		this.alleleType = alleleType;
-		this.variationTypeList = variantList;
+		variationTypeList = variantList;
 		this.colorList = colorList;
 		this.trackList = trackList;
 	}
 
 
-	//////////////////// Setters
-	/**
-	 * @param genome the genome to set
-	 */
-	public void setGenome(String genome) {
-		this.genome = genome;
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj){
+			return true;
+		}
+		if((obj == null) || (obj.getClass() != this.getClass())) {
+			return false;
+		}
+
+		// object must be Test at this point
+		VariantData test = (VariantData)obj;
+		return genome.equals(test.getGenome()) &&
+				(alleleType == test.getAlleleType()) &&
+				hasSameVariationTypeList(test.getVariationTypeList()) &&
+				hasSameColorList(test.getColorList()) &&
+				hasSameTrackList(test.getTrackList());
 	}
 
-	/**
-	 * @param alleleType the alleleType to set
-	 */
-	public void setAlleleType(AlleleType alleleType) {
-		this.alleleType = alleleType;
-	}
 
 	/**
-	 * @param variantList the variantList to set
+	 * @return the alleleType
 	 */
-	public void setVariationTypeList(List<VariantType> variantList) {
-		this.variationTypeList = variantList;
+	public AlleleType getAlleleType() {
+		return alleleType;
 	}
 
-	/**
-	 * @param colorList the colorList to set
-	 */
-	public void setColorList(List<Color> colorList) {
-		this.colorList = colorList;
-	}
 
 	/**
-	 * @param trackList the trackList to set
+	 * @return the allele type
 	 */
-	public void setTrackList(Track<?>[] trackList) {
-		this.trackList = trackList;
+	public String getAlleleTypeForDisplay() {
+		return alleleType.toString();
+	}
+
+
+	/**
+	 * @return the colorList
+	 */
+	public List<Color> getColorList() {
+		return colorList;
 	}
 
 
@@ -183,34 +145,6 @@ public class VariantData implements Serializable {
 		return genome;
 	}
 
-	/**
-	 * @return the alleleType
-	 */
-	public AlleleType getAlleleType() {
-		return alleleType;
-	}
-
-	/**
-	 * @return the variantList
-	 */
-	public List<VariantType> getVariationTypeList() {
-		return variationTypeList;
-	}
-
-	/**
-	 * @return the colorList
-	 */
-	public List<Color> getColorList() {
-		return colorList;
-	}
-
-	/**
-	 * @return the trackList
-	 */
-	public Track<?>[] getTrackList() {
-		return trackList;
-	}
-
 
 	//////////////////// Getters for display
 	/**
@@ -218,63 +152,6 @@ public class VariantData implements Serializable {
 	 */
 	public String getGenomeForDisplay() {
 		return genome;
-	}
-
-	/**
-	 * @return the allele type
-	 */
-	public String getAlleleTypeForDisplay() {
-		return alleleType.toString();
-	}
-
-	/**
-	 * @return the variantList
-	 */
-	public JPanel getVariationTypeListForDisplay() {
-		JPanel panel = new JPanel();
-		FlowLayout layout = new FlowLayout(FlowLayout.LEFT, 0, 0);
-		panel.setLayout(layout);
-		for (int i = 0; i < variationTypeList.size(); i++) {
-			JLabel label = new JLabel(variationTypeList.get(i).toString());
-			label.setForeground(colorList.get(i));
-			panel.add(label);
-			if (i < (variationTypeList.size() - 1)) {
-				panel.add(new JLabel(", "));
-			}
-		}
-		return panel;
-	}
-
-	/**
-	 * @return the trackList
-	 */
-	public String getTrackListForDisplay() {
-		String text = "";
-		for (int i = 0; i < trackList.length; i++) {
-			text += trackList[i];
-			if (i < (trackList.length - 1)) {
-				text += ", ";
-			}
-		}
-		return text;
-	}
-
-
-	@Override
-	public String toString () {
-		String info = "";
-		info += genome;
-		info += " " + alleleType.toString();
-		for (int i = 0; i < variationTypeList.size(); i++) {
-			info += " [" + variationTypeList.get(i) + ", ";
-			info += colorList.get(i) + "]";
-		}
-		info += " [";
-		for (Track<?> track: trackList) {
-			info += track + ", ";
-		}
-		info += "]";
-		return info;
 	}
 
 
@@ -302,49 +179,53 @@ public class VariantData implements Serializable {
 	}*/
 
 
-	@Override
-	public boolean equals(Object obj) {
-		if(this == obj){
-			return true;
-		}
-		if((obj == null) || (obj.getClass() != this.getClass())) {
-			return false;
-		}
-
-		// object must be Test at this point
-		VariantData test = (VariantData)obj;
-		return genome.equals(test.getGenome()) &&
-				(alleleType == test.getAlleleType()) &&
-				hasSameVariationTypeList(test.getVariationTypeList()) &&
-				hasSameColorList(test.getColorList()) &&
-				hasSameTrackList(test.getTrackList());
+	/**
+	 * @return the trackList
+	 */
+	public Track[] getTrackList() {
+		return trackList;
 	}
 
 
 	/**
-	 * Compare a variation type list to the current one
-	 * @param variationTypeList	the variation list to compare
-	 * @return	true if both list contain same values, false otherwise
+	 * @return the trackList
 	 */
-	private boolean hasSameVariationTypeList (List<VariantType> variationTypeList) {
-		if ((this.variationTypeList == null) && (variationTypeList == null)) {
-			return true;
-		} else if ((this.variationTypeList != null) && (variationTypeList == null)) {
-			return false;
-		} else if ((this.variationTypeList == null) && (variationTypeList != null)) {
-			return false;
-		} else {
-			if (this.variationTypeList.size() != variationTypeList.size()) {
-				return false;
-			} else {
-				for (VariantType variantType: variationTypeList) {
-					if (!this.variationTypeList.contains(variantType)) {
-						return false;
-					}
-				}
-				return true;
+	public String getTrackListForDisplay() {
+		String text = "";
+		for (int i = 0; i < trackList.length; i++) {
+			text += trackList[i];
+			if (i < (trackList.length - 1)) {
+				text += ", ";
 			}
 		}
+		return text;
+	}
+
+
+	/**
+	 * @return the variantList
+	 */
+	public List<VariantType> getVariationTypeList() {
+		return variationTypeList;
+	}
+
+
+	/**
+	 * @return the variantList
+	 */
+	public JPanel getVariationTypeListForDisplay() {
+		JPanel panel = new JPanel();
+		FlowLayout layout = new FlowLayout(FlowLayout.LEFT, 0, 0);
+		panel.setLayout(layout);
+		for (int i = 0; i < variationTypeList.size(); i++) {
+			JLabel label = new JLabel(variationTypeList.get(i).toString());
+			label.setForeground(colorList.get(i));
+			panel.add(label);
+			if (i < (variationTypeList.size() - 1)) {
+				panel.add(new JLabel(", "));
+			}
+		}
+		return panel;
 	}
 
 
@@ -380,7 +261,7 @@ public class VariantData implements Serializable {
 	 * @param trackList	the list of track to compare
 	 * @return	true if both list contain same values, false otherwise
 	 */
-	private boolean hasSameTrackList (Track<?>[] trackList) {
+	private boolean hasSameTrackList (Track[] trackList) {
 		if ((this.trackList == null) && (trackList == null)) {
 			return true;
 		} else if ((this.trackList != null) && (trackList == null)) {
@@ -391,9 +272,9 @@ public class VariantData implements Serializable {
 			if (this.trackList.length != trackList.length) {
 				return false;
 			} else {
-				for (Track<?> track: trackList) {
+				for (Track track: trackList) {
 					boolean contain = false;
-					for (Track<?> currentTrack: this.trackList) {
+					for (Track currentTrack: this.trackList) {
 						if (track.equals(currentTrack)) {
 							contain = true;
 						}
@@ -409,12 +290,56 @@ public class VariantData implements Serializable {
 
 
 	/**
+	 * Compare a variation type list to the current one
+	 * @param variationTypeList	the variation list to compare
+	 * @return	true if both list contain same values, false otherwise
+	 */
+	private boolean hasSameVariationTypeList (List<VariantType> variationTypeList) {
+		if ((this.variationTypeList == null) && (variationTypeList == null)) {
+			return true;
+		} else if ((this.variationTypeList != null) && (variationTypeList == null)) {
+			return false;
+		} else if ((this.variationTypeList == null) && (variationTypeList != null)) {
+			return false;
+		} else {
+			if (this.variationTypeList.size() != variationTypeList.size()) {
+				return false;
+			} else {
+				for (VariantType variantType: variationTypeList) {
+					if (!this.variationTypeList.contains(variantType)) {
+						return false;
+					}
+				}
+				return true;
+			}
+		}
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		genome = (String) in.readObject();
+		alleleType = (AlleleType) in.readObject();
+		variationTypeList = (List<VariantType>) in.readObject();
+		colorList = (List<Color>) in.readObject();
+		trackList = (Track[]) in.readObject();
+	}
+
+
+	/**
 	 * When a new track is loaded, the settings will still refer to the previous track if this method is not called.
 	 * It will replace the references to the old track by the one of the new track.
 	 * @param oldTrack the old track
 	 * @param newTrack the new track
 	 */
-	public void replaceTrack (Track<?> oldTrack, Track<?> newTrack) {
+	public void replaceTrack (Track oldTrack, Track newTrack) {
 		for (int i = 0; i < trackList.length; i++) {
 			if (trackList[i].equals(oldTrack)) {
 				trackList[i] = newTrack;
@@ -422,4 +347,88 @@ public class VariantData implements Serializable {
 		}
 	}
 
+
+	/**
+	 * @param alleleType the alleleType to set
+	 */
+	public void setAlleleType(AlleleType alleleType) {
+		this.alleleType = alleleType;
+	}
+
+
+	/**
+	 * @param colorList the colorList to set
+	 */
+	public void setColorList(List<Color> colorList) {
+		this.colorList = colorList;
+	}
+
+
+	//////////////////// Setters
+	/**
+	 * @param genome the genome to set
+	 */
+	public void setGenome(String genome) {
+		this.genome = genome;
+	}
+
+
+	/**
+	 * @param trackList the trackList to set
+	 */
+	public void setTrackList(Track[] trackList) {
+		this.trackList = trackList;
+	}
+
+
+	/**
+	 * @param variantList the variantList to set
+	 */
+	public void setVariationTypeList(List<VariantType> variantList) {
+		variationTypeList = variantList;
+	}
+
+
+	@Override
+	public String toString () {
+		String info = "";
+		info += genome;
+		info += " " + alleleType.toString();
+		for (int i = 0; i < variationTypeList.size(); i++) {
+			info += " [" + variationTypeList.get(i) + ", ";
+			info += colorList.get(i) + "]";
+		}
+		info += " [";
+		for (Track track: trackList) {
+			info += track + ", ";
+		}
+		info += "]";
+		return info;
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(genome);
+		out.writeObject(alleleType);
+		out.writeObject(variationTypeList);
+		out.writeObject(colorList);
+
+		TrackListPanel trackListPanel = MainFrame.getInstance().getTrackListPanel();
+		for (Track currentTrack: trackList) {
+			currentTrack.removeTrackListener(trackListPanel);
+		}
+
+		out.writeObject(trackList);
+
+		// rebuild the references to the listener
+		for (Track currentTrack: trackList) {
+			currentTrack.addTrackListener(trackListPanel);
+		}
+	}
 }

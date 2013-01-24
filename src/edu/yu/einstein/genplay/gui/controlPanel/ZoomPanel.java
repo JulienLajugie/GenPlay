@@ -83,7 +83,7 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 		jbMinus.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				zoomChanged(projectZoom.getZoomIn(projectWindow.getGenomeWindow().getSize()));
+				zoomChanged(projectZoom.getNextZoomIn(projectWindow.getGenomeWindow().getSize()));
 			}
 		});
 
@@ -93,7 +93,7 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 		jbPlus.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				zoomChanged(projectZoom.getZoomOut(projectWindow.getGenomeWindow().getSize()));
+				zoomChanged(projectZoom.getNextZoomOut(projectWindow.getGenomeWindow().getSize()));
 			}
 		});
 
@@ -182,9 +182,9 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 		int currentZoom = projectWindow.getGenomeWindow().getSize();
 		for (int i = 0; i < Math.abs(mwe.getWheelRotation()); i++) {
 			if (mwe.getWheelRotation() > 0) {
-				zoomChanged(projectZoom.getZoomIn(currentZoom));
+				zoomChanged(projectZoom.getNextZoomIn(currentZoom));
 			} else {
-				zoomChanged(projectZoom.getZoomOut(currentZoom));
+				zoomChanged(projectZoom.getNextZoomOut(currentZoom));
 			}
 		}
 	}

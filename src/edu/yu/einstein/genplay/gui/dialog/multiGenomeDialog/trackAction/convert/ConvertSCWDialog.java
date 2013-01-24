@@ -72,33 +72,70 @@ public class ConvertSCWDialog extends MultiGenomeTrackActionDialog {
 
 
 	@Override
-	protected void initializeContentPanel() {
-		// Initialize the content panel
-		contentPanel = new JPanel();
+	protected String getErrors() {
+		String error = "";
 
-		// Create the field set effect
-		TitledBorder titledBorder = BorderFactory.createTitledBorder("Conversion settings");
-		contentPanel.setBorder(titledBorder);
+		if ((getFirstAlleleTrack() == null) && (getSecondAlleleTrack() == null)) {
+			error += "No track has been selected.";
+		}
 
-		// Create the layout
-		GridBagLayout layout = new GridBagLayout();
-		contentPanel.setLayout(layout);
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-		gbc.insets = new Insets(0, 0, 0, 0);
-		gbc.weightx = 1;
-		gbc.weighty = 0;
-		gbc.gridx = 0;
-		gbc.gridy = 0;
+		if ((jtfDotValue != null) && jtfDotValue.isEnabled() && (getDotValue() == null)) {
+			if (!error.isEmpty()) {
+				error += "\n";
+			}
+			error += "The defined constant for \".\" in genotype does not seem to be a valid number.";
+		}
 
-		contentPanel.add(getGenomeSelectionPanel(settings.getGenomeNames()), gbc);
+		return error;
+	}
 
-		gbc.gridy++;
-		contentPanel.add(getIDPanel(settings.getFileList()), gbc);
 
-		gbc.gridy++;
-		gbc.weighty = 1;
-		contentPanel.add(getOptionPanel(), gbc);
+	/**
+	 * @return the selected track of the first allele
+	 */
+	public Track getFirstAlleleTrack () {
+		if (jcbAlleleTrack01 != null) {
+			Object object = jcbAlleleTrack01.getSelectedItem();
+			if (object instanceof Track) {
+				return (Track) object;
+			}
+		}
+		return null;
+	}
+
+
+	/**
+	 * Creates the genome combo box.
+	 * @return the genome combo box
+	 */
+	private JComboBox getGenomeComboBox (List<String> genomeList) {
+		// Creates the combo box
+		JComboBox jcbGenome = new JComboBox(genomeList.toArray());
+		jcbGenome.setSelectedIndex(0);
+		genomeName = jcbGenome.getSelectedItem().toString();
+
+		//Dimension
+		int height = jcbGenome.getFontMetrics(jcbGenome.getFont()).getHeight() + 5;
+		Dimension dimension = new Dimension(MIN_DIALOG_WIDTH - 50, height);
+		jcbGenome.setPreferredSize(dimension);
+		jcbGenome.setMinimumSize(dimension);
+
+		jcbGenome.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				genomeName = ((JComboBox) arg0.getSource()).getSelectedItem().toString();
+			}
+		});
+
+		return jcbGenome;
+	}
+
+
+	/**
+	 * @return the selected genome name
+	 */
+	public String getGenomeName () {
+		return genomeName;
 	}
 
 
@@ -170,41 +207,23 @@ public class ConvertSCWDialog extends MultiGenomeTrackActionDialog {
 
 
 	/**
-	 * Creates the genome combo box.
-	 * @return the genome combo box
+	 * @return the header
 	 */
-	private JComboBox getGenomeComboBox (List<String> genomeList) {
-		// Creates the combo box
-		JComboBox jcbGenome = new JComboBox(genomeList.toArray());
-		jcbGenome.setSelectedIndex(0);
-		genomeName = jcbGenome.getSelectedItem().toString();
-
-		//Dimension
-		int height = jcbGenome.getFontMetrics(jcbGenome.getFont()).getHeight() + 5;
-		Dimension dimension = new Dimension(MIN_DIALOG_WIDTH - 50, height);
-		jcbGenome.setPreferredSize(dimension);
-		jcbGenome.setMinimumSize(dimension);
-
-		jcbGenome.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				genomeName = ((JComboBox) arg0.getSource()).getSelectedItem().toString();
-			}
-		});
-
-		return jcbGenome;
+	public VCFHeaderType getHeader() {
+		return header;
 	}
 
 
-	private JComboBox getTrackListBox () {
-		Track<?>[] tracks = MainFrame.getInstance().getTrackList().getEmptyTracks();
-
-		JComboBox box = new JComboBox();
-		box.addItem("Do not convert this allele.");
-		for (Track<?> track: tracks) {
-			box.addItem(track);
-		}
-
+	private JComboBox getIDComboBox (List<VCFHeaderType> headers) {
+		JComboBox box = new JComboBox(headers.toArray());
+		box.setSelectedIndex(0);
+		header = (VCFHeaderType) box.getSelectedItem();
+		box.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				header =  (VCFHeaderType)((JComboBox) arg0.getSource()).getSelectedItem();
+			}
+		});
 		return box;
 	}
 
@@ -246,17 +265,61 @@ public class ConvertSCWDialog extends MultiGenomeTrackActionDialog {
 	}
 
 
-	private JComboBox getIDComboBox (List<VCFHeaderType> headers) {
-		JComboBox box = new JComboBox(headers.toArray());
-		box.setSelectedIndex(0);
-		header = (VCFHeaderType) box.getSelectedItem();
-		box.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				header =  (VCFHeaderType)((JComboBox) arg0.getSource()).getSelectedItem();
+	/**
+	 * @return the selected track of the second allele
+	 */
+	public Track getSecondAlleleTrack () {
+		if (jcbAlleleTrack02 != null) {
+			Object object = jcbAlleleTrack02.getSelectedItem();
+			if (object instanceof Track) {
+				return (Track) object;
 			}
-		});
+		}
+		return null;
+	}
+
+
+	private JComboBox getTrackListBox () {
+		Track[] tracks = MainFrame.getInstance().getTrackListPanel().getModel().getTracks();
+
+		JComboBox box = new JComboBox();
+		box.addItem("Do not convert this allele.");
+		for (Track track: tracks) {
+			box.addItem(track);
+		}
+
 		return box;
+	}
+
+
+	@Override
+	protected void initializeContentPanel() {
+		// Initialize the content panel
+		contentPanel = new JPanel();
+
+		// Create the field set effect
+		TitledBorder titledBorder = BorderFactory.createTitledBorder("Conversion settings");
+		contentPanel.setBorder(titledBorder);
+
+		// Create the layout
+		GridBagLayout layout = new GridBagLayout();
+		contentPanel.setLayout(layout);
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbc.insets = new Insets(0, 0, 0, 0);
+		gbc.weightx = 1;
+		gbc.weighty = 0;
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+
+		contentPanel.add(getGenomeSelectionPanel(settings.getGenomeNames()), gbc);
+
+		gbc.gridy++;
+		contentPanel.add(getIDPanel(settings.getFileList()), gbc);
+
+		gbc.gridy++;
+		gbc.weighty = 1;
+		contentPanel.add(getOptionPanel(), gbc);
 	}
 
 
@@ -271,68 +334,5 @@ public class ConvertSCWDialog extends MultiGenomeTrackActionDialog {
 			}
 		}
 		return result;
-	}
-
-
-	/**
-	 * @return the selected genome name
-	 */
-	public String getGenomeName () {
-		return genomeName;
-	}
-
-
-	/**
-	 * @return the selected track of the first allele
-	 */
-	public Track<?> getFirstAlleleTrack () {
-		if (jcbAlleleTrack01 != null) {
-			Object object = jcbAlleleTrack01.getSelectedItem();
-			if (object instanceof Track<?>) {
-				return (Track<?>) object;
-			}
-		}
-		return null;
-	}
-
-
-	/**
-	 * @return the selected track of the second allele
-	 */
-	public Track<?> getSecondAlleleTrack () {
-		if (jcbAlleleTrack02 != null) {
-			Object object = jcbAlleleTrack02.getSelectedItem();
-			if (object instanceof Track<?>) {
-				return (Track<?>) object;
-			}
-		}
-		return null;
-	}
-
-
-	/**
-	 * @return the header
-	 */
-	public VCFHeaderType getHeader() {
-		return header;
-	}
-
-
-	@Override
-	protected String getErrors() {
-		String error = "";
-
-		if ((getFirstAlleleTrack() == null) && (getSecondAlleleTrack() == null)) {
-			error += "No track has been selected.";
-		}
-
-		if ((jtfDotValue != null) && jtfDotValue.isEnabled() && (getDotValue() == null)) {
-			if (!error.isEmpty()) {
-				error += "\n";
-			}
-			error += "The defined constant for \".\" in genotype does not seem to be a valid number.";
-		}
-
-		return error;
 	}
 }

@@ -38,12 +38,10 @@ import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSe
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.convert.ConvertSCWDialog;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.mainDialog.MultiGenomeTrackActionDialog;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
-import edu.yu.einstein.genplay.gui.track.CurveTrack;
-import edu.yu.einstein.genplay.gui.track.SCWListTrack;
 import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.gui.track.drawer.multiGenome.MultiGenomeDrawer;
+import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.variantLayer.MultiGenomeDrawer;
 import edu.yu.einstein.genplay.util.colors.Colors;
-import edu.yu.einstein.genplay.util.colors.TrackColor;
 
 
 /**
@@ -88,7 +86,7 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 		if (projectManager.isMultiGenomeProject()) {
 
 			// Get track information
-			Track<?> track = MainFrame.getInstance().getTrackList().getSelectedTrack();
+			Track track = MainFrame.getInstance().getTrackListPanel().getSelectedTrack();
 			MultiGenomeDrawer genomeDrawer = track.getMultiGenomeDrawer();
 
 			// Create the export settings
@@ -150,14 +148,13 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 	}
 
 
-	private void setTrack (Track<?> currentTrack, ScoredChromosomeWindowList list) throws InvalidChromosomeException, InterruptedException, ExecutionException {
+	private void setTrack (Track currentTrack, ScoredChromosomeWindowList list) throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		if ((list!= null) && (currentTrack != null)) {
-			int index = currentTrack.getTrackNumber() - 1;
-			CurveTrack<?> newTrack = new SCWListTrack(index + 1, list);
-			newTrack.setTrackColor(TrackColor.getTrackColor());
-			newTrack.getHistory().add("Apply mask", Colors.GREY);
-			newTrack.getHistory().add("Track: " + currentTrack.getName(), Colors.GREY);
-			getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), currentTrack.getName() + " converted to BED", currentTrack.getMask(), currentTrack.getStripesList(), currentTrack.getFiltersList());
+			// TODO replace currentTrack.getName per currentLayer.getName
+			SCWLayer newLayer = new SCWLayer(currentTrack, list, currentTrack.getName());
+			newLayer.getHistory().add("Apply mask", Colors.GREY);
+			newLayer.getHistory().add("Track: " + currentTrack.getName(), Colors.GREY);
+			currentTrack.getLayers().add(newLayer);
 		}
 	}
 

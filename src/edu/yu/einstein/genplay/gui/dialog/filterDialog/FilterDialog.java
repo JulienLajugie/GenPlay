@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -41,6 +41,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeSelectionModel;
 
 import edu.yu.einstein.genplay.core.enums.FilterType;
+import edu.yu.einstein.genplay.util.Images;
 
 
 
@@ -59,7 +60,7 @@ public final class FilterDialog extends JDialog implements TreeSelectionListener
 	private final JButton 			jbOk; 						// Button OK
 	private final JButton 			jbCancel; 					// Button cancel
 	private final JSplitPane 		jspDivider; 				// Divider between the tree and the panel
-	private int 					approved = CANCEL_OPTION;	// indicate if the user canceled or validated 
+	private int 					approved = CANCEL_OPTION;	// indicate if the user canceled or validated
 	private static int 				selectionRow = 0;			// save the selected filter type
 
 	/**
@@ -138,7 +139,7 @@ public final class FilterDialog extends JDialog implements TreeSelectionListener
 				boolean isInputValid = filterPanel.isInputValid();
 				// close the window if the input is valid
 				if (isInputValid) {
-					// save the input so it becomes the default values next time the window is opened 
+					// save the input so it becomes the default values next time the window is opened
 					filterPanel.saveMax();
 					filterPanel.saveMin();
 					filterPanel.saveIsSaturation();
@@ -187,6 +188,7 @@ public final class FilterDialog extends JDialog implements TreeSelectionListener
 
 		jt.setSelectionRow(selectionRow);
 		setTitle("Filter");
+		setIconImage(Images.getApplicationImage());
 		setSize(FILTER_DIALOG_DIMENSION);
 		setResizable(false);
 		setModal(true);
@@ -211,7 +213,7 @@ public final class FilterDialog extends JDialog implements TreeSelectionListener
 
 		category = new DefaultMutableTreeNode(new BandStopPanel());
 		top.add(category);
-		
+
 		category = new DefaultMutableTreeNode(new CountPanel());
 		top.add(category);
 	}

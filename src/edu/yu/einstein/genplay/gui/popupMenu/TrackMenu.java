@@ -21,6 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.popupMenu;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ActionMap;
@@ -30,199 +31,138 @@ import javax.swing.JPopupMenu;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
-import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.gui.action.allTrack.ATAConvert;
-import edu.yu.einstein.genplay.gui.action.allTrack.ATACopy;
-import edu.yu.einstein.genplay.gui.action.allTrack.ATACut;
-import edu.yu.einstein.genplay.gui.action.allTrack.ATADelete;
-import edu.yu.einstein.genplay.gui.action.allTrack.ATAInsert;
-import edu.yu.einstein.genplay.gui.action.allTrack.ATAPaste;
-import edu.yu.einstein.genplay.gui.action.allTrack.ATAPasteSpecial;
-import edu.yu.einstein.genplay.gui.action.allTrack.ATARename;
-import edu.yu.einstein.genplay.gui.action.allTrack.ATASaveAsImage;
-import edu.yu.einstein.genplay.gui.action.allTrack.ATASetHeight;
-import edu.yu.einstein.genplay.gui.action.allTrack.ATASetVerticalLineCount;
-import edu.yu.einstein.genplay.gui.action.maskTrack.MTAApplyMask;
-import edu.yu.einstein.genplay.gui.action.maskTrack.MTAInvertMask;
-import edu.yu.einstein.genplay.gui.action.maskTrack.MTALoadMask;
-import edu.yu.einstein.genplay.gui.action.maskTrack.MTARemoveMask;
-import edu.yu.einstein.genplay.gui.action.maskTrack.MTASaveMask;
-import edu.yu.einstein.genplay.gui.action.multiGenome.VCFAction.MGAVCFStatistics;
-import edu.yu.einstein.genplay.gui.action.multiGenome.convert.MGASCWLConvert;
-import edu.yu.einstein.genplay.gui.action.multiGenome.export.MGAGlobalVCFExport;
-import edu.yu.einstein.genplay.gui.action.multiGenome.update.MGAVCFApplyGenotype;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
-import edu.yu.einstein.genplay.gui.trackList.TrackList;
-
-
+import edu.yu.einstein.genplay.gui.action.track.TAAddLayer;
+import edu.yu.einstein.genplay.gui.action.track.TAAddLayerFromDAS;
+import edu.yu.einstein.genplay.gui.action.track.TACopy;
+import edu.yu.einstein.genplay.gui.action.track.TACut;
+import edu.yu.einstein.genplay.gui.action.track.TADelete;
+import edu.yu.einstein.genplay.gui.action.track.TAInsert;
+import edu.yu.einstein.genplay.gui.action.track.TALayerSettings;
+import edu.yu.einstein.genplay.gui.action.track.TAPaste;
+import edu.yu.einstein.genplay.gui.action.track.TARename;
+import edu.yu.einstein.genplay.gui.action.track.TASaveAsImage;
+import edu.yu.einstein.genplay.gui.action.track.TASetHeight;
+import edu.yu.einstein.genplay.gui.action.track.TASetVerticalLineCount;
+import edu.yu.einstein.genplay.gui.action.track.TATrackSettings;
+import edu.yu.einstein.genplay.gui.popupMenu.layerMenu.LayerMenuFactory;
+import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.track.layer.Layer;
+import edu.yu.einstein.genplay.gui.trackList.TrackListActionMap;
 
 /**
- * Base class of the popup menus of a {@link TrackList}
+ * Contextual menu showed when a track handle is right clicked
  * @author Julien Lajugie
  * @version 0.1
  */
-public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener {
+public class TrackMenu extends JPopupMenu implements PopupMenuListener {
 
-	private static final long serialVersionUID = -2376957246826289131L;	// generated ID
-
-	private final JMenuItem 	jmiConvert;					// menu convert track
-	private final JMenuItem 	jmiCopy;					// menu copy track
-	private final JMenuItem 	jmiCut;						// menu cut track
-	private final JMenuItem 	jmiInsert;					// menu insert blank track
-	private final JMenuItem		jmiPaste;					// menu paste track
-	private final JMenuItem		jmiPasteSpecial;			// menu special paste track
-	private final JMenuItem 	jmiDelete;					// menu delete track
-	private final JMenuItem 	jmiRename;					// menu rename track
-	private final JMenuItem 	jmiSetHeight;				// menu set height
-	private final JMenuItem 	jmiSetVerticalLineCount;	// menu set vertical line count
-	private final JMenuItem 	jmiSaveAsImage;				// menu save track as image
-
-	// Menu for mask track
-	private final JMenu			jmMask;						// menu for the mask
-	private final JMenuItem 	jmiLoadMask;				// menu load mask
-	private final JMenuItem 	jmiSaveMask;				// menu load mask
-	private final JMenuItem 	jmiRemoveMask;				// menu remove mask
-	private final JMenuItem 	jmiInvertMask;				// menu invert mask
-	private final JMenuItem 	jmiApplyMask;				// menu apply mask
-
-	// Menu for Multi Genome
-	private final JMenu			jmMultiGenome;				// menu for multi genome
-	private final JMenuItem		jmiTrackStatistics;			// menu to generate statistics of the track
-	private final JMenuItem		jmiExportVCF;				// menu to export stripes as VCF
-	//private final JMenuItem		jmiExportBED;				// menu to export stripes as BED	// Temporary unusued
-	private final JMenuItem		jmiConvertBED;				// menu to convert stripes as BED
-	private final JMenuItem		jmiApplyGenotype;				// menu to update the Gt of a VCF
-
-	protected final TrackList 	trackList;					// track list where the menu popped up
-	protected final ActionMap	actionMap;					// map containing the actions for this menu
-
+	private static final long serialVersionUID = -7063797741454351041L; // generated serial ID
 
 	/**
-	 * Constructor.
-	 * @param tl {@link TrackList} where the menu popped up
+	 *  Keys of the actions of this menu as registered in the {@link TrackListActionMap}
+	 *  The menu items appears in the same order as in this array
+	 *  A null key inserts a separator
 	 */
-	public TrackMenu(TrackList tl) {
-		super ("Track Menu");
-		this.trackList = tl;
-		this.actionMap = tl.getActionMap();
+	private static final String[] ACTION_KEYS = {
+		TACopy.ACTION_KEY,
+		TACut.ACTION_KEY,
+		TADelete.ACTION_KEY,
+		TAInsert.ACTION_KEY,
+		TAPaste.ACTION_KEY,
+		TARename.ACTION_KEY,
+		TASaveAsImage.ACTION_KEY,
+		TASetHeight.ACTION_KEY,
+		TASetVerticalLineCount.ACTION_KEY,
+		null,
+		TAAddLayer.ACTION_KEY,
+		TAAddLayerFromDAS.ACTION_KEY,
+		null,
+		TATrackSettings.ACTION_KEY
+	};
 
+	private Track 				selectedTrack; 			// selected track
+	private final JMenuItem		layerSettingsMenu;		// layer setting menu
+	private final List<JMenu> 	layerMenus; 			// list containing all the layer menus available for the selected track
+	private final Separator		layerMenusSeparator;	// separator that separate the layer menus from the other elements of the track menu
 
-		// Initialize items
-		jmiConvert = new JMenuItem(actionMap.get(ATAConvert.ACTION_KEY));
-		jmiCopy = new JMenuItem(actionMap.get(ATACopy.ACTION_KEY));
-		jmiCut = new JMenuItem(actionMap.get(ATACut.ACTION_KEY));
-		jmiDelete = new JMenuItem(actionMap.get(ATADelete.ACTION_KEY));
-		jmiInsert = new JMenuItem(actionMap.get(ATAInsert.ACTION_KEY));
-		jmiPaste = new JMenuItem(actionMap.get(ATAPaste.ACTION_KEY));
-		jmiPasteSpecial = new JMenuItem(actionMap.get(ATAPasteSpecial.ACTION_KEY));
-		jmiRename = new JMenuItem(actionMap.get(ATARename.ACTION_KEY));
-		jmiSaveAsImage = new JMenuItem(actionMap.get(ATASaveAsImage.ACTION_KEY));
-		jmiSetHeight = new JMenuItem(actionMap.get(ATASetHeight.ACTION_KEY));
-		jmiSetVerticalLineCount = new JMenuItem(actionMap.get(ATASetVerticalLineCount.ACTION_KEY));
-
-
-		// Initialize mask items
-		jmMask = new JMenu("Mask");
-		jmiLoadMask = new JMenuItem(actionMap.get(MTALoadMask.ACTION_KEY));
-		jmiSaveMask = new JMenuItem(actionMap.get(MTASaveMask.ACTION_KEY));
-		jmiRemoveMask = new JMenuItem(actionMap.get(MTARemoveMask.ACTION_KEY));
-		jmiInvertMask = new JMenuItem(actionMap.get(MTAInvertMask.ACTION_KEY));
-		jmiApplyMask = new JMenuItem(actionMap.get(MTAApplyMask.ACTION_KEY));
-		jmMask.add(jmiLoadMask);
-		jmMask.add(jmiSaveMask);
-		jmMask.add(jmiRemoveMask);
-		jmMask.addSeparator();
-		jmMask.add(jmiInvertMask);
-		jmMask.add(jmiApplyMask);
-		jmiSaveMask.setEnabled(trackList.isMaskRemovable());
-		jmiRemoveMask.setEnabled(trackList.isMaskRemovable());
-		jmiInvertMask.setEnabled(trackList.isMaskRemovable());
-		jmiApplyMask.setEnabled(trackList.isMaskApplicable());
-
-
-		// Initialize multi genome items
-		jmMultiGenome = new JMenu("Multi Genome");
-		jmiTrackStatistics = new JMenuItem(actionMap.get(MGAVCFStatistics.ACTION_KEY));
-		jmiExportVCF = new JMenuItem(actionMap.get(MGAGlobalVCFExport.ACTION_KEY));
-		//jmiExportBED = new JMenuItem(actionMap.get(MGABedExport.ACTION_KEY));
-		jmiConvertBED = new JMenuItem(actionMap.get(MGASCWLConvert.ACTION_KEY));
-		jmiApplyGenotype = new JMenuItem(actionMap.get(MGAVCFApplyGenotype.ACTION_KEY));
-		jmMultiGenome.add(jmiTrackStatistics);
-		jmMultiGenome.addSeparator();
-		jmMultiGenome.add(jmiConvertBED);
-		jmMultiGenome.add(jmiExportVCF);
-		//jmMultiGenome.add(jmiExportBED);
-		//jmMultiGenome.addSeparator();
-		//jmMultiGenome.addSeparator();
-		jmMultiGenome.add(jmiApplyGenotype);
-		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			List<VariantData> stripes = trackList.getSelectedTrack().getMultiGenomeDrawer().getVariantDataList();
-			if ((stripes == null) || (stripes.size() == 0)) {
-				jmiTrackStatistics.setEnabled(false);
-				jmiExportVCF.setEnabled(false);
-				//jmiExportBED.setEnabled(false);
-				jmiConvertBED.setEnabled(false);
-				jmiApplyGenotype.setEnabled(false);
+	/**
+	 * Creates an instance of {@link TrackMenu}
+	 */
+	public TrackMenu() {
+		layerMenus = new ArrayList<JMenu>();
+		layerMenusSeparator = new Separator();
+		ActionMap actionMap = TrackListActionMap.getActionMap();
+		for (String currentKey: ACTION_KEYS) {
+			if (currentKey == null) {
+				addSeparator();
+			} else {
+				add(actionMap.get(currentKey));
 			}
-		} else {
-			jmMultiGenome.setEnabled(false);
-			jmiTrackStatistics.setEnabled(false);
-			jmiExportVCF.setEnabled(false);
-			//jmiExportBED.setEnabled(false);
-			jmiConvertBED.setEnabled(false);
-			jmiApplyGenotype.setEnabled(false);
 		}
-
-
-		// Add items
-		add(jmiCopy);
-		add(jmiCut);
-		add(jmiPaste);
-		add(jmiPasteSpecial);
-		add(jmiDelete);
-		add(jmiInsert);
-		add(jmiRename);
-		add(jmiSetHeight);
-		if (!(trackList.getSelectedTrack().getData() instanceof BinList)
-				&& !(trackList.getSelectedTrack().getData() instanceof ScoredChromosomeWindowList)) {
-			add(jmiSetVerticalLineCount);
-		}
-		addSeparator();
-		add(jmiSaveAsImage);
-		addSeparator();
-		add(jmiConvert);
-		add(jmMask);
-		add(jmMultiGenome);
-
-
-		jmiConvert.setEnabled(trackList.getSelectedTrack().isConvertible());
-		jmiPaste.setEnabled(trackList.isPasteEnable());
-		jmiPasteSpecial.setEnabled(trackList.isPasteEnable());
-
+		layerSettingsMenu = new JMenuItem(actionMap.get(TALayerSettings.ACTION_KEY));
+		add(layerSettingsMenu);
 		addPopupMenuListener(this);
 	}
 
 
-	@Override
-	public void popupMenuCanceled(PopupMenuEvent arg0) {}
-
-
 	/**
-	 * Unlocks the handle of the tracks when a menu disappear
+	 * Sets the selected track
+	 * @param track
 	 */
-	@Override
-	public void popupMenuWillBecomeInvisible(PopupMenuEvent arg0) {
-		trackList.unlockTracksHandles();
+	public void setTrack(Track track) {
+		selectedTrack = track;
 	}
 
 
 	/**
-	 * Locks the handle of the tracks when a menu appear
+	 * @return the selected track
+	 */
+	public Track getTrack() {
+		return selectedTrack;
+	}
+
+
+	@Override
+	public void popupMenuCanceled(PopupMenuEvent evt) {}
+
+
+	/**
+	 * Removes the menus associated to the layers of the selected track when the menu is about to become invisible
 	 */
 	@Override
-	public void popupMenuWillBecomeVisible(PopupMenuEvent arg0) {
-		trackList.lockTrackHandles();
+	public void popupMenuWillBecomeInvisible(PopupMenuEvent evt) {
+		if (!layerMenus.isEmpty()) {
+			for (JMenu currentMenu: layerMenus) {
+				remove(currentMenu);
+			}
+			layerMenus.clear();
+			remove(layerMenusSeparator);
+		}
+	}
+
+
+	/**
+	 * Displays the menus associated to the layers of the selected track when the menu is about to become invisible
+	 */
+	@Override
+	public void popupMenuWillBecomeVisible(PopupMenuEvent evt) {
+		layerSettingsMenu.setEnabled((selectedTrack != null) && (selectedTrack.getLayers() != null) && !selectedTrack.getLayers().isEmpty());
+		if (selectedTrack != null) {
+			Layer<?>[] trackLayers = selectedTrack.getLayers().getLayers();
+			if (trackLayers != null) {
+				int lastIndex = getComponentCount();
+				for (Layer<?> currentLayer: trackLayers) {
+					JMenu layerMenu = LayerMenuFactory.createLayerMenu(currentLayer);
+					if (layerMenu != null) {
+						add(layerMenu);
+						layerMenus.add(layerMenu);
+					}
+				}
+				// if there is at least one layer menu we add a separator right on top of it
+				if (!layerMenus.isEmpty()) {
+					add(layerMenusSeparator, lastIndex);
+				}
+			}
+		}
 	}
 }

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -47,6 +47,7 @@ import edu.yu.einstein.genplay.core.list.binList.operation.BLOFindPeaksDensity;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLOFindPeaksStDev;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.dialog.peakFinderDialog.islandPanel.IslandFinderPanel;
+import edu.yu.einstein.genplay.util.Images;
 
 
 
@@ -65,11 +66,11 @@ public class PeakFinderDialog extends JDialog implements TreeSelectionListener {
 	private final JButton 			jbOk; 						// Button OK
 	private final JButton 			jbCancel; 					// Button cancel
 	private final JSplitPane 		jspDivider; 				// Divider between the tree and the panel
-	private int 					approved = CANCEL_OPTION;	// indicate if the user canceled or validated 
+	private int 					approved = CANCEL_OPTION;	// indicate if the user canceled or validated
 	private static int 				selectionRow = 0;			// save the selected peak finder
 	private Operation<BinList[]>	setOperation = null;		// operation set in this dialog
 
-	
+
 	/**
 	 * Return value when OK has been clicked.
 	 */
@@ -130,7 +131,7 @@ public class PeakFinderDialog extends JDialog implements TreeSelectionListener {
 				setOperation = peakFinderPanel.validateInput();
 				// close the window if the input is valid
 				if (setOperation != null) {
-					// save the input so it becomes the default values next time the window is opened 
+					// save the input so it becomes the default values next time the window is opened
 					peakFinderPanel.saveInput();
 					// save the filter type selected
 					selectionRow = jt.getLeadSelectionRow();
@@ -177,6 +178,7 @@ public class PeakFinderDialog extends JDialog implements TreeSelectionListener {
 
 		jt.setSelectionRow(selectionRow);
 		setTitle("Peak Finder");
+		setIconImage(Images.getApplicationImage());
 		setSize(PEAK_FINDER_DIALOG_DIMENSION);
 		setResizable(false);
 		setModal(true);
@@ -184,8 +186,8 @@ public class PeakFinderDialog extends JDialog implements TreeSelectionListener {
 		setDefaultCloseOperation(HIDE_ON_CLOSE);
 		getRootPane().setDefaultButton(jbOk);
 	}
-	
-	
+
+
 	/**
 	 * Creates the data of the tree.
 	 * @param top Root DefaultMutableTreeNode of the tree.
@@ -228,8 +230,8 @@ public class PeakFinderDialog extends JDialog implements TreeSelectionListener {
 			return null;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Shows the component.
 	 * @param parent the parent component of the dialog, can be null; see showDialog for details
@@ -240,8 +242,8 @@ public class PeakFinderDialog extends JDialog implements TreeSelectionListener {
 		setVisible(true);
 		return approved;
 	}
-	
-	
+
+
 	/**
 	 * Changes the panel displayed when the node of the tree changes.
 	 */

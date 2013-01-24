@@ -53,7 +53,7 @@ import edu.yu.einstein.genplay.gui.track.Track;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class MGASynchronizing extends TrackListActionWorker<Track<?>[]> {
+public class MGASynchronizing extends TrackListActionWorker<Track[]> {
 
 	private static final long serialVersionUID = 6498078428524511709L;	// generated ID
 	private static final String 	DESCRIPTION =
@@ -84,7 +84,7 @@ public class MGASynchronizing extends TrackListActionWorker<Track<?>[]> {
 
 
 	@Override
-	protected Track<?>[] processAction() throws Exception {
+	protected Track[] processAction() throws Exception {
 		ProjectManager projectManager = ProjectManager.getInstance();
 
 		// Checks if the project is multi-genome
@@ -133,7 +133,7 @@ public class MGASynchronizing extends TrackListActionWorker<Track<?>[]> {
 
 
 	@Override
-	protected void doAtTheEnd(Track<?>[] actionResult) {
+	protected void doAtTheEnd(Track[] actionResult) {
 		multiGenomeProject.updateChromosomeList();
 
 		initializesTrackListForMultiGenomeProject();
@@ -195,8 +195,8 @@ public class MGASynchronizing extends TrackListActionWorker<Track<?>[]> {
 	 * Initializes attributes used for multi genome project.
 	 */
 	private void initializesTrackListForMultiGenomeProject () {
-		Track<?>[] tracks = MainFrame.getInstance().getTrackList().getTrackList();
-		for (Track<?> track: tracks) {
+		Track[] tracks = MainFrame.getInstance().getTrackListPanel().getModel().getTracks();
+		for (Track track: tracks) {
 			if (track.getStripesList() == null) {
 				track.multiGenomeInitializing();
 			}

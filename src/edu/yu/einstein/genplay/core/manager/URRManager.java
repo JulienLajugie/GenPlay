@@ -64,8 +64,8 @@ public class URRManager<T extends Serializable> implements Serializable {
 	public URRManager(int length, T initialObject) {
 		this.length = length;
 		this.currentObject = initialObject;
-		undoList = new LinkedList<ByteArrayOutputStream>();
-		redoList = new LinkedList<ByteArrayOutputStream>();
+		this.undoList = new LinkedList<ByteArrayOutputStream>();
+		this.redoList = new LinkedList<ByteArrayOutputStream>();
 	}
 
 

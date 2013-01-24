@@ -40,7 +40,7 @@ import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.MixVariant;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLineDialog.VCFLineDialog;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
-import edu.yu.einstein.genplay.gui.track.drawer.multiGenome.MultiGenomeDrawer;
+import edu.yu.einstein.genplay.gui.track.layer.variantLayer.MultiGenomeDrawer;
 import edu.yu.einstein.genplay.util.Images;
 
 /**
@@ -78,7 +78,7 @@ public class VariantInformationDialog extends JDialog {
 		super(MainFrame.getInstance());
 		this.vcfLineDialog = new VCFLineDialog();
 		options = new SearchOption();
-		int trackNumber = MainFrame.getInstance().getTrackList().getTrackNumberFromMGGenomeDrawer(multiGenomeDrawer);
+		int trackNumber = MainFrame.getInstance().getTrackListPanel().getTrackNumberFromMGGenomeDrawer(multiGenomeDrawer);
 		String title = "Variant properties";
 		if (trackNumber > 0) {
 			title += " (Track " + trackNumber + ")";

@@ -52,7 +52,7 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 	public static final int MISSING_POSITION = -1000000000;
 	private static final long serialVersionUID = 4155123051619828951L;	// generated ID
 	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private transient RandomAccessFile 	raf;			// 2bit random access file
+	private transient RandomAccessFile 	raf;	// 2bit random access file
 	private String	filePath;					// path of the 2bit file (used for the serialization)
 	private int 	headerSize;					// the size in byte of the header of the sequence
 	private String 	name;						// the sequence name
@@ -341,7 +341,7 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 	 * Re-initializes the connection to the random access file containing the sequences
 	 * @throws FileNotFoundException
 	 */
-	private void reinitDataFile() throws FileNotFoundException {
+	protected void reinitDataFile() throws FileNotFoundException {
 		raf = new RandomAccessFile(new File(filePath), "r");
 	}
 
@@ -351,8 +351,7 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 	 * @param filePath path to the
 	 * @throws FileNotFoundException
 	 */
-	public void setSequenceFilePath(String filePath) throws FileNotFoundException {
+	protected void setSequenceFilePath(String filePath) throws FileNotFoundException {
 		this.filePath = filePath;
-		reinitDataFile();
 	}
 }

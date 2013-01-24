@@ -38,7 +38,7 @@ import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.export.E
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.mainDialog.MultiGenomeTrackActionDialog;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.gui.track.drawer.multiGenome.MultiGenomeDrawer;
+import edu.yu.einstein.genplay.gui.track.layer.variantLayer.MultiGenomeDrawer;
 
 
 /**
@@ -83,7 +83,7 @@ public class MGABedExport extends TrackListActionWorker<Boolean> {
 		if (projectManager.isMultiGenomeProject()) {
 
 			// Get track information
-			Track<?> track = MainFrame.getInstance().getTrackList().getSelectedTrack();
+			Track track = MainFrame.getInstance().getTrackListPanel().getSelectedTrack();
 			MultiGenomeDrawer genomeDrawer = track.getMultiGenomeDrawer();
 
 			// Create the export settings

@@ -44,6 +44,7 @@ import edu.yu.einstein.genplay.core.DAS.DataSource;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.dialog.genomeSelectionPanel.GenomeSelectionPanel;
+import edu.yu.einstein.genplay.util.Images;
 
 
 /**
@@ -190,6 +191,7 @@ public class DASDialog extends JDialog {
 		add(jbCancel, c);
 
 		setTitle("Retrieve DAS Data");
+		setIconImage(Images.getApplicationImage());
 		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		getRootPane().setDefaultButton(jbOk);
 		pack();

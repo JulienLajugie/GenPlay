@@ -55,8 +55,8 @@ import edu.yu.einstein.genplay.util.Utils;
 public class MGOBedConvertSingleFile extends ExportEngine {
 
 	private final String 					fullGenomeName;			// The genome to convert.
-	private final Track<?> 					firstAlleleTrack;		// The track where the data of the first allele are.
-	private final Track<?> 					secondAlleleTrack;		// The track where the data of the second allele are.
+	private final Track 					firstAlleleTrack;		// The track where the data of the first allele are.
+	private final Track 					secondAlleleTrack;		// The track where the data of the second allele are.
 	private final Double					dotValue;				// The value to give for "." in genotype (omit => null)
 	private final VCFHeaderType 			header;					// The header field to use as a score.
 	private final CoordinateSystemType 		coordinateSystem;		// The coordinate system to export the positions.
@@ -74,7 +74,7 @@ public class MGOBedConvertSingleFile extends ExportEngine {
 	 * @param dotValue value to give for "." in genotype (omit => null)
 	 * @param header the header to use as a score
 	 */
-	public MGOBedConvertSingleFile (String fullGenomeName, Track<?> firstAlleleTrack, Track<?> secondAlleleTrack, Double dotValue, VCFHeaderType header) {
+	public MGOBedConvertSingleFile (String fullGenomeName, Track firstAlleleTrack, Track secondAlleleTrack, Double dotValue, VCFHeaderType header) {
 		this.fullGenomeName = fullGenomeName;
 		this.firstAlleleTrack = firstAlleleTrack;
 		this.secondAlleleTrack = secondAlleleTrack;

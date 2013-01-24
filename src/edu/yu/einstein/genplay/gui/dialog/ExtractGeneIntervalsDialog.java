@@ -38,8 +38,8 @@ import javax.swing.WindowConstants;
 import javax.swing.text.NumberFormatter;
 
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOExtractIntervals;
-import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAExtractInterval;
-
+import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLAExtractInterval;
+import edu.yu.einstein.genplay.util.Images;
 
 
 /**
@@ -169,9 +169,19 @@ public final class ExtractGeneIntervalsDialog extends JDialog implements ActionL
 		setResizable(false);
 		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		setTitle("Extract Intervals");
+		setIconImage(Images.getApplicationImage());
 		setVisible(false);
 		jbOk.setDefaultCapable(true);
 		getRootPane().setDefaultButton(jbOk);
+	}
+
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		if (arg0.getSource() == jbOk) {
+			approved = APPROVE_OPTION;
+		}
+		setVisible(false);
 	}
 
 
@@ -206,15 +216,6 @@ public final class ExtractGeneIntervalsDialog extends JDialog implements ActionL
 	 */
 	public int getStopFrom() {
 		return OPTION_VALUES[jcbStopFrom.getSelectedIndex()];
-	}
-
-
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		if (arg0.getSource() == jbOk) {
-			approved = APPROVE_OPTION;
-		}
-		setVisible(false);
 	}
 
 

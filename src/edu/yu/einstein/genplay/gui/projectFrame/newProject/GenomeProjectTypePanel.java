@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -26,6 +26,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -39,14 +40,14 @@ import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
  * @version 0.1
  */
 class GenomeProjectTypePanel extends JPanel implements ActionListener {
-	
+
 	private static final long serialVersionUID = -5329054202308798840L;
-	
-	private JRadioButton 	singleRadio;	// Radio button for a simple genomic project
-	private JRadioButton 	multiRadio;		// Radio button for a multi genomic project
-	private ButtonGroup 	genomeRadio;	// Radio group
-	
-	
+
+	private final JRadioButton 	singleRadio;	// Radio button for a simple genomic project
+	private final JRadioButton 	multiRadio;		// Radio button for a multi genomic project
+	private final ButtonGroup 	genomeRadio;	// Radio group
+
+
 	/**
 	 * Constructor of {@link GenomeProjectTypePanel}
 	 */
@@ -56,31 +57,32 @@ class GenomeProjectTypePanel extends JPanel implements ActionListener {
 		setPreferredSize(getSize());
 		setMinimumSize(getSize());
 		setMaximumSize(getSize());
-		
+
 		//Radio buttons
 		singleRadio = new JRadioButton("Single Genome Project");
 		singleRadio.setSelected(true);
 		multiRadio = new JRadioButton("Multi Genome Project");
-		
+		multiRadio.setEnabled(false);					// FIXME MG: this has to be removed once the MG will be fully merged with the new layer system!
+
 		//Color
 		setBackground(ProjectFrame.GENOME_COLOR);
 		singleRadio.setBackground(ProjectFrame.GENOME_COLOR);
 		multiRadio.setBackground(ProjectFrame.GENOME_COLOR);
-		
+
 		//Listener
 		singleRadio.addActionListener(this);
 		multiRadio.addActionListener(this);
-		
+
 		//Radio group
 		genomeRadio = new ButtonGroup();
 		genomeRadio.add(singleRadio);
 		genomeRadio.add(multiRadio);
-		
+
 		//Layout
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		Insets gbcInsets = new Insets (5, 77, 5, 0);
-		
+
 		//newRadio
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -89,7 +91,7 @@ class GenomeProjectTypePanel extends JPanel implements ActionListener {
 		gbc.anchor = GridBagConstraints.CENTER;
 		gbc.weightx = 1;
 		add(singleRadio, gbc);
-		
+
 		//loadRadio
 		gbc.gridy = 1;
 		gbc.fill = GridBagConstraints.BOTH;
@@ -97,7 +99,7 @@ class GenomeProjectTypePanel extends JPanel implements ActionListener {
 		add(multiRadio, gbc);
 	}
 
-	
+
 	/**
 	 * This method displays or hide the loading var files panel.
 	 */
@@ -105,10 +107,10 @@ class GenomeProjectTypePanel extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent arg0) {
 		ProjectFrame.getInstance().setVarTableVisible(!(arg0.getSource() == singleRadio));
 	}
-	
-	
+
+
 	/**
-	 * This method determines if user chose a simple or a multi genome project. 
+	 * This method determines if user chose a simple or a multi genome project.
 	 * @return true if user chose a simple genome project.
 	 */
 	protected boolean isSingleProject () {
@@ -118,5 +120,5 @@ class GenomeProjectTypePanel extends JPanel implements ActionListener {
 			return false;
 		}
 	}
-	
+
 }

@@ -214,7 +214,7 @@ public class MGDisplaySettings implements Serializable {
 	 * This method is used when multi genome information cannot be serialized.
 	 * @param track the track to save information
 	 */
-	public void copyTemporaryTrack (Track<?> track) {
+	public void copyTemporaryTrack (Track track) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			variantSettings.copyTemporaryStripes(track);
 			filterSettings.copyTemporaryFilters(track);
@@ -227,7 +227,7 @@ public class MGDisplaySettings implements Serializable {
 	 * It does not erase the temporary lists in order to use them again later on.
 	 * @param track the new track for the information
 	 */
-	public void pasteTemporaryTrack (Track<?> track) {
+	public void pasteTemporaryTrack (Track track) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			variantSettings.pasteTemporaryStripes(track);
 			filterSettings.pasteTemporaryFilters(track);
@@ -242,7 +242,7 @@ public class MGDisplaySettings implements Serializable {
 	 * @param oldTrack the old track
 	 * @param newTrack the new track
 	 */
-	public void replaceTrack (Track<?> oldTrack, Track<?> newTrack) {
+	public void replaceTrack (Track oldTrack, Track newTrack) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			filterSettings.replaceTrack(oldTrack, newTrack);
 			variantSettings.replaceTrack(oldTrack, newTrack);
@@ -256,7 +256,7 @@ public class MGDisplaySettings implements Serializable {
 	 * @param copiedTrack	the copied track
 	 * @param newTrack		the pasted track
 	 */
-	public void copyTrack (Track<?> copiedTrack, Track<?> newTrack) {
+	public void copyTrack (Track copiedTrack, Track newTrack) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			filterSettings.copyData(copiedTrack, newTrack);
 			variantSettings.copyData(copiedTrack, newTrack);
@@ -270,7 +270,7 @@ public class MGDisplaySettings implements Serializable {
 	 * Therefore, deleting settings must be processed carefully, taking into account the other track.
 	 * @param deleteTrack the deleted track
 	 */
-	public void deleteTrack (Track<?> deleteTrack) {
+	public void deleteTrack (Track deleteTrack) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			filterSettings.deleteData(deleteTrack);
 			variantSettings.deleteData(deleteTrack);
@@ -282,7 +282,7 @@ public class MGDisplaySettings implements Serializable {
 	 * Restore multi genome information to a track
 	 * @param track the track
 	 */
-	public void restoreInformation (Track<?> track) {
+	public void restoreInformation (Track track) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			List<MGFilter> filterList = filterSettings.getMGFiltersForTrack(track);
 			List<VariantData> stripeList = variantSettings.getVariantsForTrack(track);

@@ -36,7 +36,7 @@ import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.statistics.MGStatist
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSettings;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.gui.track.drawer.multiGenome.MultiGenomeDrawer;
+import edu.yu.einstein.genplay.gui.track.layer.variantLayer.MultiGenomeDrawer;
 
 
 /**
@@ -79,7 +79,7 @@ public class MGAVCFStatistics extends TrackListActionWorker<VCFFileStatistics> {
 		if (projectManager.isMultiGenomeProject()) {
 
 			// Get track information
-			Track<?> track = MainFrame.getInstance().getTrackList().getSelectedTrack();
+			Track track = MainFrame.getInstance().getTrackListPanel().getSelectedTrack();
 			MultiGenomeDrawer genomeDrawer = track.getMultiGenomeDrawer();
 
 			if (genomeDrawer.getStatistics() == null) {
@@ -121,7 +121,7 @@ public class MGAVCFStatistics extends TrackListActionWorker<VCFFileStatistics> {
 		if (actionResult != null) {
 			actionResult.processStatistics();
 
-			MainFrame.getInstance().getTrackList().getSelectedTrack().getMultiGenomeDrawer().setStatistics(actionResult);
+			MainFrame.getInstance().getTrackListPanel().getSelectedTrack().getMultiGenomeDrawer().setStatistics(actionResult);
 
 			MGStatisticsDialog dialog = new MGStatisticsDialog(actionResult);
 			dialog.show(getRootPane());

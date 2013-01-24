@@ -237,8 +237,8 @@ public class DataRangePanel extends JPanel {
 	 */
 	public GenomeWindow getUserSpecifiedGenomeWindow() {
 		if(jtfUserStart.isEnabled() && jtfUserStop.isEnabled()) {
-			userSpecifiedStart = (Integer) jtfUserStart.getValue();	
-			userSpecifiedStop = (Integer)jtfUserStop.getValue();
+			userSpecifiedStart = ((Number)jtfUserStart.getValue()).intValue();
+			userSpecifiedStop = ((Number)jtfUserStop.getValue()).intValue();
 			userSpecifiedChromo = (Chromosome) jcbChromosomeNumber.getSelectedItem();
 			return new GenomeWindow(userSpecifiedChromo, userSpecifiedStart, userSpecifiedStop);
 		} else {

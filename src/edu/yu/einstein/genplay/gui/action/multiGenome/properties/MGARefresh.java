@@ -34,6 +34,7 @@ import javax.swing.KeyStroke;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.Utils;
 
@@ -132,8 +133,8 @@ public final class MGARefresh extends TrackListAction {
 
 		private void setTrackLock (boolean lock) {
 			// Update tracks
-			Track<?>[] tracks = getTrackList().getTrackList();
-			for (Track<?> track: tracks) {
+			Track[] tracks = MainFrame.getInstance().getTrackListPanel().getModel().getTracks();
+			for (Track track: tracks) {
 				if (lock) {
 					track.getMultiGenomeDrawer().lockPainting();
 				} else {
@@ -144,8 +145,8 @@ public final class MGARefresh extends TrackListAction {
 
 		private void repaintTrack () {
 			// Update tracks
-			Track<?>[] tracks = getTrackList().getTrackList();
-			for (Track<?> track: tracks) {
+			Track[] tracks = MainFrame.getInstance().getTrackListPanel().getModel().getTracks();
+			for (Track track: tracks) {
 				track.repaint();
 			}
 		}

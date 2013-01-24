@@ -44,13 +44,12 @@ import javax.swing.SpinnerNumberModel;
 import edu.yu.einstein.genplay.core.converter.ConverterFactory;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.core.enums.TrackType;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
-import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.track.layer.Layer;
+import edu.yu.einstein.genplay.gui.track.layer.LayerType;
 import edu.yu.einstein.genplay.util.Images;
 
 /**
@@ -67,14 +66,13 @@ public class ConvertDialog extends JDialog {
 	/** Return value when Cancel has been clicked. */
 	public static final 	int 			CANCEL_OPTION 		= 1;
 
-	private int				approved 			= CANCEL_OPTION;	// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
+	private int	approved = CANCEL_OPTION;	// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
 	private int dialogwidth = 400;
 	private JPanel binPanel;
 
-
-	// Input track elements
-	private final Track<?> inputTrack;
-	private final TrackType[] trackTypes;
+	// Input layer elements
+	private final Layer<?> 		inputLayer;
+	private final LayerType[] 	layerTypes;
 
 	// Bin list elements
 	private JSpinner 	jsBinSize;
@@ -82,23 +80,21 @@ public class ConvertDialog extends JDialog {
 	private JComboBox 	jcbDataPrecision; 	// combo box for the data precision
 
 	// Output track elements
-	private TrackType outputTrackType;		// The output type track.
-	private JTextField jtfTrackName;		// Text field for the track name.
-	private Track<?> outputTrack;		// The
+	private LayerType 	outputLayerType;	// The output layer type
+	private JTextField 	jtfLayerName;		// Text field for the layer name
+	private Track 		outputTrack;		// The output track
 
 
 	/**
 	 * Constructor of {@link ConvertDialog}
-	 * @param inputTrack the track to convert
+	 * @param inputLayer the layer to convert
 	 */
-	public ConvertDialog (Track<?> inputTrack) {
-		this.inputTrack = inputTrack;
-		if ((ChromosomeListOfLists<?>) inputTrack.getData() != null) {
-			this.trackTypes = ConverterFactory.getTrackTypes((ChromosomeListOfLists<?>) inputTrack.getData());
-		} else if ((ChromosomeListOfLists<?>) inputTrack.getMask() != null) {
-			this.trackTypes = ConverterFactory.getMaskTrackType();
+	public ConvertDialog (Layer<?> inputLayer) {
+		this.inputLayer = inputLayer;
+		if ((ChromosomeListOfLists<?>) inputLayer.getData() != null) {
+			layerTypes = ConverterFactory.getLayerTypes((ChromosomeListOfLists<?>) inputLayer.getData());
 		} else {
-			this.trackTypes = null;
+			layerTypes = null;
 		}
 
 		// Layout settings
@@ -111,23 +107,23 @@ public class ConvertDialog extends JDialog {
 		gbc.weighty = 0;
 
 		// Get the panels
-		JPanel inputTrackPanel = getInputTrackPanel();
-		JPanel outputTypeTrackPanel = getOutputTypeTrack();
+		JPanel inputLayerPanel = getInputLayerPanel();
+		JPanel outputTypeLayerPanel = getOutputTypeLayer();
 		JPanel outputTrackPanel = getOutputTrackPanel();
 		JPanel validationPanel = getValidationPanel();
 
 		// Set the panels dimension
-		setDimension(inputTrackPanel);
-		setDimension(outputTypeTrackPanel);
+		setDimension(inputLayerPanel);
+		setDimension(outputTypeLayerPanel);
 		setDimension(outputTrackPanel);
 		setDimension(validationPanel);
 
-		// Add the input track panel
-		add(inputTrackPanel, gbc);
+		// Add the input layer panel
+		add(inputLayerPanel, gbc);
 
-		// Add the output type track panel
+		// Add the output type layer panel
 		gbc.gridy++;
-		add(outputTypeTrackPanel, gbc);
+		add(outputTypeLayerPanel, gbc);
 
 		// Add the output track panel
 		gbc.gridy++;
@@ -139,164 +135,12 @@ public class ConvertDialog extends JDialog {
 		add(validationPanel, gbc);
 
 		// Dialog settings
-		setTitle("Convert the track");
+		setTitle("Convert the layer");
 		setIconImage(Images.getApplicationImage());
 		setAlwaysOnTop(true);
 		setResizable(false);
 		setVisible(false);
 		pack();
-	}
-
-
-	/**
-	 * Shows the component.
-	 * @param parent 	the parent component of the dialog, can be null; see showDialog for details
-	 * @return APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
-	 */
-	public int showDialog(Component parent) {
-		// Sets dialog display options
-		setLocationRelativeTo(parent);
-		setModal(true);
-		setVisible(true);
-
-		return approved;
-	}
-
-
-	/**
-	 * Set the dimension of a panel with the dialog width.
-	 * @param panel the panel
-	 */
-	private void setDimension (JPanel panel) {
-		int height = panel.getPreferredSize().height;
-		Dimension dimension = new Dimension(dialogwidth, height);
-		panel.setPreferredSize(dimension);
-	}
-
-
-	/**
-	 * Set the width of the dialog (cannot be less than 400) according to the length of a string.
-	 * @param s the string
-	 */
-	private void setDialogWidth (String s) {
-		JLabel test = new JLabel();
-		int width = getFontMetrics(test.getFont()).stringWidth(s);
-		if (width > dialogwidth) {
-			dialogwidth = width;
-		}
-	}
-
-
-	/**
-	 * Creates the panel describing the input track
-	 * @return	the input track panel
-	 */
-	private JPanel getInputTrackPanel () {
-		// Creates panel elements
-		JLabel jlName = new JLabel("Track name: " + inputTrack.getName());
-		JLabel jlType = new JLabel(getInputTrackTypeString());
-		setDialogWidth(jlName.getText());
-
-		// Creates the panel
-		JPanel panel = new JPanel();
-		panel.setBorder(BorderFactory.createTitledBorder("Input Track"));
-
-		// Layout settings
-		GridBagLayout layout = new GridBagLayout();
-		panel.setLayout(layout);
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.LINE_START;
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.weightx = 1;
-		gbc.weighty = 0;
-
-		// Add the track name
-		gbc.insets = new Insets(5, 5, 0, 0);
-		panel.add(jlName, gbc);
-
-		// Add the track type
-		gbc.gridy++;
-		gbc.weighty = 1;
-		gbc.insets = new Insets(5, 5, 5, 0);
-		panel.add(jlType, gbc);
-
-		// Return the panel
-		return panel;
-	}
-
-
-	/**
-	 * @return the input track type description
-	 */
-	private String getInputTrackTypeString () {
-		String typeName = "Track type: ";
-		if (inputTrack.getData() instanceof BinList) {
-			typeName += "Fixed Window Track";
-		} else if (inputTrack.getData() instanceof ScoredChromosomeWindowList) {
-			typeName += "Variable Window Track";
-		} else if (inputTrack.getData() instanceof GeneList) {
-			typeName += "Gene Track";
-		}
-		return typeName;
-	}
-
-
-	/**
-	 * @return the panel that manages the output track type option
-	 */
-	private JPanel getOutputTypeTrack () {
-		// Creates the panel
-		JPanel panel = new JPanel();
-		panel.setBorder(BorderFactory.createTitledBorder("Convertion Options"));
-
-		// Layout settings
-		GridBagLayout layout = new GridBagLayout();
-		panel.setLayout(layout);
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.LINE_START;
-		gbc.gridx = 0;
-		gbc.weightx = 1;
-		gbc.weighty = 0;
-
-		// Create and add elements
-		ButtonGroup group = new ButtonGroup();
-		for (int i = 0; i < trackTypes.length; i++) {
-			final TrackType currentTrackType = trackTypes[i];
-			JRadioButton radio = new JRadioButton(currentTrackType.toString());
-			group.add(radio);
-			radio.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent arg0) {
-					outputTrackType = currentTrackType;
-					updateBinPanel(outputTrackType);
-				}
-			});
-
-			if (i == 0) {
-				radio.setSelected(true);
-				outputTrackType = currentTrackType;
-				gbc.insets = new Insets(5, 5, 0, 0);
-				gbc.gridy = 0;
-			} else {
-				gbc.gridy++;
-				gbc.insets = new Insets(0, 5, 0, 0);
-				if (i == (trackTypes.length - 1)) {
-					gbc.weighty = 1;
-				}
-			}
-			panel.add(radio, gbc);
-			if (currentTrackType == TrackType.BIN) {
-				gbc.gridy++;
-				gbc.insets = new Insets(0, 25, 0, 0);
-				binPanel = getBinPanel();
-				updateBinPanel(outputTrackType);
-				panel.add(binPanel, gbc);
-			}
-		}
-
-		// Return the panel
-		return panel;
 	}
 
 
@@ -374,19 +218,73 @@ public class ConvertDialog extends JDialog {
 
 
 	/**
-	 * Enable/Disable the bin panel according to th output track type
-	 * @param trackType the output track type
+	 * @return the selected binsize
 	 */
-	private void updateBinPanel (TrackType trackType) {
-		if (binPanel != null) {
-			boolean enable = false;
-			if ((trackType != null) && (trackType == TrackType.BIN)) {
-				enable = true;
-			}
-			jsBinSize.setEnabled(enable);
-			jcbCalculMetod.setEnabled(enable);
-			jcbDataPrecision.setEnabled(enable);
-		}
+	public int getBinSize() {
+		return (Integer) jsBinSize.getValue();
+	}
+
+
+	/**
+	 * @return the selected {@link DataPrecision}
+	 */
+	public DataPrecision getDataPrecision() {
+		return (DataPrecision) jcbDataPrecision.getSelectedItem();
+	}
+
+
+	/**
+	 * Creates the panel describing the input layer
+	 * @return	the input layer panel
+	 */
+	private JPanel getInputLayerPanel () {
+		// Creates panel elements
+		JLabel jlName = new JLabel("Layer name: " + inputLayer.getName());
+		JLabel jlType = new JLabel(inputLayer.getType().toString());
+		setDialogWidth(jlName.getText());
+
+		// Creates the panel
+		JPanel panel = new JPanel();
+		panel.setBorder(BorderFactory.createTitledBorder("Input Layer"));
+
+		// Layout settings
+		GridBagLayout layout = new GridBagLayout();
+		panel.setLayout(layout);
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.LINE_START;
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.weightx = 1;
+		gbc.weighty = 0;
+
+		// Add the layer name
+		gbc.insets = new Insets(5, 5, 0, 0);
+		panel.add(jlName, gbc);
+
+		// Add the layer type
+		gbc.gridy++;
+		gbc.weighty = 1;
+		gbc.insets = new Insets(5, 5, 5, 0);
+		panel.add(jlType, gbc);
+
+		// Return the panel
+		return panel;
+	}
+
+
+	/**
+	 * @return the output track
+	 */
+	public Track getOutputTrack() {
+		return outputTrack;
+	}
+
+
+	/**
+	 * @return the output layer name
+	 */
+	public String getOutputLayerName() {
+		return jtfLayerName.getText();
 	}
 
 
@@ -397,12 +295,12 @@ public class ConvertDialog extends JDialog {
 		// Creates panel elements
 		JLabel jlTrackName = new JLabel("Output track name:");
 		JLabel jlTrack = new JLabel("Output track:");
-		jtfTrackName = new JTextField("Converted " + inputTrack.getName());
-		jtfTrackName.setColumns(15);
-		JComboBox jcbOutputTrack = new JComboBox(MainFrame.getInstance().getTrackList().getEmptyTracks());
+		jtfLayerName = new JTextField("Converted " + inputLayer.getName());
+		jtfLayerName.setColumns(15);
+		JComboBox jcbOutputTrack = new JComboBox(MainFrame.getInstance().getTrackListPanel().getModel().getTracks());
 		jcbOutputTrack.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {outputTrack = (Track<?>) ((JComboBox)e.getSource()).getSelectedItem();}
+			public void actionPerformed(ActionEvent e) {outputTrack = (Track) ((JComboBox)e.getSource()).getSelectedItem();}
 		});
 		jcbOutputTrack.setSelectedIndex(0);
 
@@ -419,14 +317,14 @@ public class ConvertDialog extends JDialog {
 		gbc.weightx = 1;
 		gbc.weighty = 0;
 
-		// Add the output track name
+		// Add the output layer name
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.insets = new Insets(10, 5, 0, 0);
 		panel.add(jlTrackName, gbc);
 		gbc.gridx = 1;
 		gbc.insets = new Insets(10, 0, 0, 0);
-		panel.add(jtfTrackName, gbc);
+		panel.add(jtfLayerName, gbc);
 
 		// Add the output track selection box
 		gbc.gridx = 0;
@@ -440,6 +338,79 @@ public class ConvertDialog extends JDialog {
 
 		// Return the panel
 		return panel;
+	}
+
+
+	/**
+	 * @return the output layer type
+	 */
+	public LayerType getOutputLayerType () {
+		return outputLayerType;
+	}
+
+
+	/**
+	 * @return the panel that manages the output layer type option
+	 */
+	private JPanel getOutputTypeLayer () {
+		// Creates the panel
+		JPanel panel = new JPanel();
+		panel.setBorder(BorderFactory.createTitledBorder("Convertion Options"));
+
+		// Layout settings
+		GridBagLayout layout = new GridBagLayout();
+		panel.setLayout(layout);
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.LINE_START;
+		gbc.gridx = 0;
+		gbc.weightx = 1;
+		gbc.weighty = 0;
+
+		// Create and add elements
+		ButtonGroup group = new ButtonGroup();
+		for (int i = 0; i < layerTypes.length; i++) {
+			final LayerType currentLayerType = layerTypes[i];
+			JRadioButton radio = new JRadioButton(currentLayerType.toString());
+			group.add(radio);
+			radio.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					outputLayerType = currentLayerType;
+					updateBinPanel(outputLayerType);
+				}
+			});
+
+			if (i == 0) {
+				radio.setSelected(true);
+				outputLayerType = currentLayerType;
+				gbc.insets = new Insets(5, 5, 0, 0);
+				gbc.gridy = 0;
+			} else {
+				gbc.gridy++;
+				gbc.insets = new Insets(0, 5, 0, 0);
+				if (i == (layerTypes.length - 1)) {
+					gbc.weighty = 1;
+				}
+			}
+			panel.add(radio, gbc);
+			if (currentLayerType == LayerType.BIN_LAYER) {
+				gbc.gridy++;
+				gbc.insets = new Insets(0, 25, 0, 0);
+				binPanel = getBinPanel();
+				updateBinPanel(outputLayerType);
+				panel.add(binPanel, gbc);
+			}
+		}
+		// Return the panel
+		return panel;
+	}
+
+
+	/**
+	 * @return the selected score calculation method
+	 */
+	public ScoreCalculationMethod getScoreCalculationMethod() {
+		return (ScoreCalculationMethod) jcbCalculMetod.getSelectedItem();
 	}
 
 
@@ -481,49 +452,57 @@ public class ConvertDialog extends JDialog {
 
 
 	/**
-	 * @return the output track type
+	 * Set the width of the dialog (cannot be less than 400) according to the length of a string.
+	 * @param s the string
 	 */
-	public TrackType getOutputTrackType () {
-		return outputTrackType;
+	private void setDialogWidth (String s) {
+		JLabel test = new JLabel();
+		int width = getFontMetrics(test.getFont()).stringWidth(s);
+		if (width > dialogwidth) {
+			dialogwidth = width;
+		}
 	}
 
 
 	/**
-	 * @return the output track name
+	 * Set the dimension of a panel with the dialog width.
+	 * @param panel the panel
 	 */
-	public String getOutputTrackName() {
-		return jtfTrackName.getText();
+	private void setDimension (JPanel panel) {
+		int height = panel.getPreferredSize().height;
+		Dimension dimension = new Dimension(dialogwidth, height);
+		panel.setPreferredSize(dimension);
 	}
 
 
 	/**
-	 * @return the output track
+	 * Shows the component.
+	 * @param parent 	the parent component of the dialog, can be null; see showDialog for details
+	 * @return APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
 	 */
-	public Track<?> getOutputTrack() {
-		return outputTrack;
+	public int showDialog(Component parent) {
+		// Sets dialog display options
+		setLocationRelativeTo(parent);
+		setModal(true);
+		setVisible(true);
+
+		return approved;
 	}
 
 
 	/**
-	 * @return the selected binsize
+	 * Enable/Disable the bin panel according to the output layer type
+	 * @param layerType the output layer type
 	 */
-	public int getBinSize() {
-		return (Integer) jsBinSize.getValue();
-	}
-
-
-	/**
-	 * @return the selected score calculation method
-	 */
-	public ScoreCalculationMethod getScoreCalculationMethod() {
-		return (ScoreCalculationMethod) jcbCalculMetod.getSelectedItem();
-	}
-
-
-	/**
-	 * @return the selected {@link DataPrecision}
-	 */
-	public DataPrecision getDataPrecision() {
-		return (DataPrecision) jcbDataPrecision.getSelectedItem();
+	private void updateBinPanel (LayerType layerType) {
+		if (binPanel != null) {
+			boolean enable = false;
+			if ((layerType != null) && (layerType == LayerType.BIN_LAYER)) {
+				enable = true;
+			}
+			jsBinSize.setEnabled(enable);
+			jcbCalculMetod.setEnabled(enable);
+			jcbDataPrecision.setEnabled(enable);
+		}
 	}
 }

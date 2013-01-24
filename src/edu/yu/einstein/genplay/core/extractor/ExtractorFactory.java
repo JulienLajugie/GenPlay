@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -43,9 +43,9 @@ public final class ExtractorFactory {
 	 * @param fileToExtract file to extract
 	 * @param logFile file for the log of the extraction
 	 * @return an instance of a subclass of {@link Extractor} if the type has been found.
-	 * Otherwise throw a {@link InvalidFileTypeException} 
-	 * @throws IOException 
-	 * @throws InvalidFileTypeException 
+	 * Otherwise throw a {@link InvalidFileTypeException}
+	 * @throws IOException
+	 * @throws InvalidFileTypeException
 	 */
 	public static Extractor getExtractor(File fileToExtract, File logFile) throws IOException, InvalidFileTypeException {
 		Extractor extractor = null;
@@ -99,19 +99,17 @@ public final class ExtractorFactory {
 			return new PSLExtractor(fileToExtract, logFile);
 		} else if (fileExtension.equalsIgnoreCase("sam")) {
 			return new SAMExtractor(fileToExtract, logFile);
-		} else if (fileExtension.equalsIgnoreCase("soapsnp")) {
-			return new SOAPsnpExtractor(fileToExtract, logFile);
 		} else {
 			return null;
-		}		
+		}
 	}
 
 
-	/** 
+	/**
 	 * @param fileToExtract
 	 * @param logFile
-	 * @return an {@link Extractor} if there is some information about 
-	 * the type of {@link Extractor} in the header. Null otherwise  
+	 * @return an {@link Extractor} if there is some information about
+	 * the type of {@link Extractor} in the header. Null otherwise
 	 * @throws IOException
 	 */
 	public static Extractor checkHeader(File fileToExtract, File logFile) throws IOException {
@@ -130,7 +128,7 @@ public final class ExtractorFactory {
 				// comment line
 				if (line.charAt(0) == '#') {
 					isHeader = true;
-				} 
+				}
 				// browser line
 				if (line.substring(0, 7).equalsIgnoreCase("browser")) {
 					isHeader = true;
@@ -174,14 +172,12 @@ public final class ExtractorFactory {
 									return new GdpGeneExtractor(fileToExtract, logFile);
 								} else if (type.equalsIgnoreCase("wiggle")) {
 									return new WiggleExtractor(fileToExtract, logFile);
-								} else if (type.equalsIgnoreCase("eland_extended")) {	
+								} else if (type.equalsIgnoreCase("eland_extended")) {
 									return new ElandExtendedExtractor(fileToExtract, logFile);
-								} else if (type.equalsIgnoreCase("psl")) {	
+								} else if (type.equalsIgnoreCase("psl")) {
 									return new PSLExtractor(fileToExtract, logFile);
-								} else if (type.equalsIgnoreCase("sam")) {	
+								} else if (type.equalsIgnoreCase("sam")) {
 									return new SAMExtractor(fileToExtract, logFile);
-								} else if (type.equalsIgnoreCase("soapsnp")) {	
-									return new SOAPsnpExtractor(fileToExtract, logFile);
 								} else {
 									return null;
 								}

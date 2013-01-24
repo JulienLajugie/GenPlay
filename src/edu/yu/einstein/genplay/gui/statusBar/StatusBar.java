@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -44,8 +44,8 @@ public final class StatusBar extends JPanel {
 	private final StopButton				stopButton;				// stop button
 	private final StatusLabel 				statusLabel;			// label in the middle of the bar
 	private final GarbageCollectorButton	garbageCollectorButton;	// garbage collector button
-	
-		
+
+
 	/**
 	 * Creates an instance of {@link StatusBar}
 	 */
@@ -53,17 +53,17 @@ public final class StatusBar extends JPanel {
 		// we create the subcomponents
 		progressBar = new ProgressBar();
 		stopButton = new StopButton();
-		statusLabel = new StatusLabel();		
+		statusLabel = new StatusLabel();
 		memoryPanel = new MemoryPanel();
 		garbageCollectorButton = new GarbageCollectorButton();
-		
+
 		// we add the subcomponents to the status bar
 		setLayout(new GridBagLayout());
-		
-		GridBagConstraints gbc = new GridBagConstraints();		
+
+		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.VERTICAL;
 		gbc.anchor = GridBagConstraints.CENTER;
-		
+
 		gbc.insets = new Insets(5, 10, 5, 3);
 		gbc.weightx = 0;
 		gbc.weighty = 1;
@@ -72,8 +72,8 @@ public final class StatusBar extends JPanel {
 
 		gbc.insets = new Insets(5, 0, 5, 0);
 		gbc.gridx++;
-		add(stopButton, gbc);		
-		
+		add(stopButton, gbc);
+
 		gbc.weightx = 1;
 		gbc.weighty = 1;
 		gbc.gridx++;
@@ -84,14 +84,14 @@ public final class StatusBar extends JPanel {
 		gbc.weighty = 1;
 		gbc.gridx++;
 		add(garbageCollectorButton, gbc);
-		
+
 		gbc.insets = new Insets(1, 3, 1, 1);
 		gbc.gridx++;
 		add(memoryPanel, gbc);
 		setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Colors.LIGHT_GREY));
 	}
-	
-	
+
+
 	/**
 	 * Notifies the status bar the an action is starting.
 	 * @param actionDescription description of the action
@@ -101,7 +101,7 @@ public final class StatusBar extends JPanel {
 	public void actionStart(String actionDescription, int stepCount, Stoppable stoppable) {
 		// initialize the progress bar
 		progressBar.setProgress(0);
-		progressBar.setIndeterminate(true);
+		progressBar.setIndeterminateAndUnpainted(true);
 		// initialize the status label
 		statusLabel.setDescription(actionDescription);
 		statusLabel.setStep(1);
@@ -111,15 +111,15 @@ public final class StatusBar extends JPanel {
 		stopButton.setStoppable(stoppable);
 		garbageCollectorButton.setEnabled(false);
 	}
-	
-	
+
+
 	/**
 	 * Notifies the status bar that the action is done
-	 * @param resultStatus {@link String} describing the result of the action 
+	 * @param resultStatus {@link String} describing the result of the action
 	 */
 	public void actionStop(String resultStatus) {
 		// stop the progress bar
-		progressBar.setIndeterminate(false);
+		progressBar.setIndeterminateAndUnpainted(false);
 		progressBar.setProgress(100);
 		// stop the status label
 		statusLabel.stopCounter();
@@ -129,8 +129,8 @@ public final class StatusBar extends JPanel {
 		stopButton.setStoppable(null);
 		garbageCollectorButton.setEnabled(true);
 	}
-	
-	
+
+
 	/**
 	 * Sets the progress of the action on the status bar
 	 * @param step current step of the action
@@ -140,20 +140,20 @@ public final class StatusBar extends JPanel {
 		progressBar.setProgress(progress);
 		statusLabel.setStep(step);
 	}
-	
-	
+
+
 	/**
 	 * Reinits the status to its default state
 	 */
 	public void reinit() {
 		statusLabel.reinit();
-		progressBar.setProgress(0);	
+		progressBar.setProgress(0);
 		garbageCollectorButton.setEnabled(true);
 	}
-	
-	
+
+
 	/**
-	 * Set the description label when starting a new project 
+	 * Set the description label when starting a new project
 	 */
 	public void initDescriptionForFirstUse () {
 		statusLabel.initDescriptionForFirstUse();

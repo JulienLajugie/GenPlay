@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -42,9 +42,9 @@ public class ExpressTrackChooserPanel extends JPanel {
 	/** Generated default version ID */
 	private static final long serialVersionUID = -1472615405340919386L;
 
-	private Track<?>[] allTracks;
-	private JList jList;
-	private DefaultListModel model;
+	private final Track[] allTracks;
+	private final JList jList;
+	private final DefaultListModel model;
 
 
 	/**
@@ -57,8 +57,8 @@ public class ExpressTrackChooserPanel extends JPanel {
 
 		// Creates the model
 		model = new DefaultListModel();
-		allTracks = MainFrame.getInstance().getTrackList().getTrackList();
-		for (Track<?> track: allTracks) {
+		allTracks = MainFrame.getInstance().getTrackListPanel().getModel().getTracks();
+		for (Track track: allTracks) {
 			model.addElement(track);
 		}
 
@@ -74,62 +74,12 @@ public class ExpressTrackChooserPanel extends JPanel {
 
 
 	/**
-	 * Reset the panel clearing the list selection.
-	 */
-	public void reset () {
-		jList.clearSelection();
-	}
-
-
-	/**
-	 * Sets the tracks in the list
-	 * @param tracks the tracks to select
-	 */
-	public void setSelectedTrack (Track<?>[] tracks) {
-		for (Track<?> track: tracks) {
-			int index = getTrackIndex(track);
-			if (index >= 0) {
-				jList.setSelectedIndex(index);
-			}
-		}
-	}
-
-
-	/**
-	 * Retrieve the index of a track from the list of track
-	 * @param track a track
-	 * @return		its index on the list of track
-	 */
-	private int getTrackIndex (Track<?> track) {
-		for (int i = 0; i < model.size(); i++) {
-			if (model.get(i).equals(track)) {
-				return i;
-			}
-		}
-		return -1;
-	}
-
-
-	/**
-	 * @return an array of selected tracks
-	 */
-	public Track<?>[] getSelectedTrack () {
-		int[] indexes = jList.getSelectedIndices();
-		Track<?>[] tracks = new Track[indexes.length];
-		for (int i = 0; i < indexes.length; i++) {
-			tracks[i] = allTracks[indexes[i]];
-		}
-		return tracks;
-	}
-
-
-	/**
 	 * Makes the calculation of the minimum dimension of the list.
 	 * @return the dimension of the list
 	 */
 	public Dimension getDimension () {
 		String longestString = "";
-		for (Track<?> track: allTracks) {
+		for (Track track: allTracks) {
 			String currentString = track.getName();
 			if (currentString.length() > longestString.length()) {
 				longestString = currentString;
@@ -143,11 +93,61 @@ public class ExpressTrackChooserPanel extends JPanel {
 
 
 	/**
+	 * @return an array of selected tracks
+	 */
+	public Track[] getSelectedTrack () {
+		int[] indexes = jList.getSelectedIndices();
+		Track[] tracks = new Track[indexes.length];
+		for (int i = 0; i < indexes.length; i++) {
+			tracks[i] = allTracks[indexes[i]];
+		}
+		return tracks;
+	}
+
+
+	/**
+	 * Retrieve the index of a track from the list of track
+	 * @param track a track
+	 * @return		its index on the list of track
+	 */
+	private int getTrackIndex (Track track) {
+		for (int i = 0; i < model.size(); i++) {
+			if (model.get(i).equals(track)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+
+	/**
+	 * Reset the panel clearing the list selection.
+	 */
+	public void reset () {
+		jList.clearSelection();
+	}
+
+
+	/**
 	 * Set the size of the list.
 	 * @param dimension
 	 */
 	public void setListSize (Dimension dimension) {
 		jList.setPreferredSize(dimension);
 	}
-	
+
+
+	/**
+	 * Sets the tracks in the list
+	 * @param tracks the tracks to select
+	 */
+	public void setSelectedTrack (Track[] tracks) {
+		for (Track track: tracks) {
+			int index = getTrackIndex(track);
+			if (index >= 0) {
+				jList.setSelectedIndex(index);
+			}
+		}
+	}
+
 }

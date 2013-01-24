@@ -107,26 +107,6 @@ public class EditingDialogManagerForFilters implements EditingDialogManagerInter
 	}
 
 
-	@Override
-	public List<FiltersData> showDialog() {
-		initializePanels();
-		EditingDialog<FiltersData> editingDialog = new EditingDialog<FiltersData>(this);
-		List<FiltersData> data = null;
-		if (editingDialog.showDialog(null) == EditingDialog.APPROVE_OPTION) {
-			data = retrieveData();
-		}
-		currentData = null;
-		resetPanels();
-		return data;
-	}
-
-
-	@Override
-	public void setData(FiltersData data) {
-		this.currentData = data;
-	}
-
-
 	private void initializePanels () {
 		fileEditingPanel.update(ProjectManager.getInstance().getMultiGenomeProject().getAllVCFFiles());
 
@@ -145,6 +125,17 @@ public class EditingDialogManagerForFilters implements EditingDialogManagerInter
 		}
 	}
 
+
+	/**
+	 * Resets all the panels
+	 */
+	private void resetPanels () {
+		for (EditingPanel<?> panel: editingPanelList) {
+			panel.reset();
+		}
+	}
+
+
 	/**
 	 * Retrieves all the information from the panel in order to create/set the filter data object.
 	 * If a current filter data has been defined, it will be set and returned.
@@ -154,7 +145,7 @@ public class EditingDialogManagerForFilters implements EditingDialogManagerInter
 	private List<FiltersData> retrieveData () {
 		VCFFile vcfFile = fileEditingPanel.getSelectedVCFFile();
 		IDFilterInterface IDFilter = (IDFilterInterface) filterEditingPanel.getFilter();
-		Track<?>[] trackList = trackEditingPanel.getSelectedTracks();
+		Track[] trackList = trackEditingPanel.getSelectedTracks();
 
 		if ((IDFilter.getHeaderType() != null) && (IDFilter.getHeaderType().getColumnCategory() == VCFColumnName.FORMAT)) {
 			List<String> genomeNames = genomeEditingPanel.getSelectedGenomes();
@@ -185,13 +176,22 @@ public class EditingDialogManagerForFilters implements EditingDialogManagerInter
 		return result;
 	}
 
+	@Override
+	public void setData(FiltersData data) {
+		currentData = data;
+	}
 
-	/**
-	 * Resets all the panels
-	 */
-	private void resetPanels () {
-		for (EditingPanel<?> panel: editingPanelList) {
-			panel.reset();
+
+	@Override
+	public List<FiltersData> showDialog() {
+		initializePanels();
+		EditingDialog<FiltersData> editingDialog = new EditingDialog<FiltersData>(this);
+		List<FiltersData> data = null;
+		if (editingDialog.showDialog(null) == EditingDialog.APPROVE_OPTION) {
+			data = retrieveData();
 		}
+		currentData = null;
+		resetPanels();
+		return data;
 	}
 }

@@ -31,11 +31,12 @@ import edu.yu.einstein.genplay.gui.trackChooser.ExpressTrackChooserPanel;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class TrackSelectionPanel extends EditingPanel<Track<?>[]> {
+public class TrackSelectionPanel extends EditingPanel<Track[]> {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -4060807866730514644L;
 	private ExpressTrackChooserPanel trackChooserPanel;
+
 
 	/**
 	 * Constructor of {@link TrackSelectionPanel}
@@ -43,6 +44,32 @@ public class TrackSelectionPanel extends EditingPanel<Track<?>[]> {
 	public TrackSelectionPanel() {
 		super("Track(s)");
 
+	}
+
+
+	@Override
+	public String getErrors() {
+		String errors = "";
+		if ((getSelectedTracks() == null) || (getSelectedTracks().length == 0)) {
+			errors += "Track(s) selection\n";
+		}
+		return errors;
+	}
+
+
+	/**
+	 * @return the selected tracks
+	 */
+	public Track[] getSelectedTracks () {
+		return trackChooserPanel.getSelectedTrack();
+	}
+
+
+	@Override
+	public void initialize(Track[] element) {
+		if (element != null) {
+			trackChooserPanel.setSelectedTrack(element);
+		}
 	}
 
 
@@ -68,28 +95,6 @@ public class TrackSelectionPanel extends EditingPanel<Track<?>[]> {
 	}
 
 
-	/**
-	 * @return the selected tracks
-	 */
-	public Track<?>[] getSelectedTracks () {
-		return trackChooserPanel.getSelectedTrack();
-	}
-
-
-	@Override
-	public void update(Object object) {}
-
-
-	@Override
-	public String getErrors() {
-		String errors = "";
-		if ((getSelectedTracks() == null) || (getSelectedTracks().length == 0)) {
-			errors += "Track(s) selection\n";
-		}
-		return errors;
-	}
-
-
 	@Override
 	public void reset() {
 		trackChooserPanel.reset();
@@ -97,10 +102,6 @@ public class TrackSelectionPanel extends EditingPanel<Track<?>[]> {
 
 
 	@Override
-	public void initialize(Track<?>[] element) {
-		if (element != null) {
-			trackChooserPanel.setSelectedTrack(element);
-		}
-	}
+	public void update(Object object) {}
 
 }

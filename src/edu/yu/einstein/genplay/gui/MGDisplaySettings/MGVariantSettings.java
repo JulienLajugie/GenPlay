@@ -46,13 +46,116 @@ public class MGVariantSettings implements Serializable {
 
 
 	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
+	 * Constructor of {@link MGVariantSettings}
 	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(variantsList);
+	protected MGVariantSettings () {
+		variantsList = new ArrayList<VariantData>();
+		copiedStripesList = null;
+	}
+
+
+	/**
+	 * When pasting a track, associated stripes settings to the copying track must be given to the pasting track.
+	 * This method create duplicates of the settings related to the copied track updated for the pasted track.
+	 * @param copiedTrack	the copied track
+	 * @param newTrack		the pasted track
+	 */
+	public void copyData (Track copiedTrack, Track newTrack) {
+		List<VariantData> stripeList = getVariantsForTrack(copiedTrack);
+		if (stripeList != null) {
+			for (VariantData data: stripeList) {
+				Track[] track = {newTrack};
+				VariantData newData = new VariantData(data.getGenome(), data.getAlleleType(), data.getVariationTypeList(), data.getColorList(), track);
+				if (!stripeList.contains(newData)) {
+					variantsList.add(newData);
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * Create a copy of the information related to the given track in the temporary list.
+	 * This method is used when multi genome information cannot be serialized.
+	 * @param track the track to save information
+	 */
+	public void copyTemporaryStripes(Track track) {
+		copiedStripesList = getVariantsForTrack(track);
+	}
+
+
+	/**
+	 * When deleting a track, all its settings must be deleted.
+	 * The setting of a track can be mixed with the ones of other tracks.
+	 * Therefore, deleting settings must be processed carefully, taking into account the other track.
+	 * @param deleteTrack the deleted track
+	 */
+	public void deleteData (Track deleteTrack) {
+		List<VariantData> stripeList = getVariantsForTrack(deleteTrack);
+		if (stripeList != null) {
+			for (VariantData data: stripeList) {
+				Track[] trackList = data.getTrackList();
+				if (trackList.length == 1) {
+					variantsList.remove(data);
+				} else {
+					Track[] newTrackList = new Track[trackList.length - 1];
+					int cpt = 0;
+					for (Track track: trackList) {
+						if (!deleteTrack.toString().equals(track.toString())) {
+							newTrackList[cpt] = track;
+							cpt++;
+						}
+					}
+					data.setTrackList(newTrackList);
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * Creates the list of stripes according to a track
+	 * @param track the track
+	 * @return		its list of stripes
+	 */
+	public List<VariantData> getVariantsForTrack (Track track) {
+		List<VariantData> list = new ArrayList<VariantData>();
+
+		for (VariantData data: variantsList) {
+			Track[] trackList = data.getTrackList();
+			for (Track currentTrack: trackList) {
+				if (currentTrack.toString().equals(track.toString())) {
+					list.add(data);
+					break;
+				}
+			}
+		}
+
+		return list;
+	}
+
+
+	/**
+	 * @return the stripesList
+	 */
+	public List<VariantData> getVariantsList() {
+		return variantsList;
+	}
+
+
+	/**
+	 * Copy the information from the temporary list to the actual list changing their target track.
+	 * It does not erase the temporary list in order to use it again later on.
+	 * @param track the new track for the information
+	 */
+	public void pasteTemporaryStripes (Track track) {
+		if (copiedStripesList != null) {
+			for (VariantData data: copiedStripesList) {
+				Track[] tracks = {track};
+				VariantData newData = new VariantData(data.getGenome(), data.getAlleleType(), data.getVariationTypeList(), data.getColorList(), tracks);
+				variantsList.add(newData);
+			}
+		}
 	}
 
 
@@ -71,19 +174,15 @@ public class MGVariantSettings implements Serializable {
 
 
 	/**
-	 * Constructor of {@link MGVariantSettings}
+	 * When a new track is loaded, the settings will still refer to the previous track if this method is not called.
+	 * It will replace the references to the old track by the one of the new track.
+	 * @param oldTrack the old track
+	 * @param newTrack the new track
 	 */
-	protected MGVariantSettings () {
-		variantsList = new ArrayList<VariantData>();
-		copiedStripesList = null;
-	}
-
-
-	/**
-	 * @return the stripesList
-	 */
-	public List<VariantData> getVariantsList() {
-		return variantsList;
+	public void replaceTrack (Track oldTrack, Track newTrack) {
+		for (VariantData stripe: variantsList) {
+			stripe.replaceTrack(oldTrack, newTrack);
+		}
 	}
 
 
@@ -92,116 +191,6 @@ public class MGVariantSettings implements Serializable {
 	 */
 	public void setVariantsSettings(List<VariantData> variantsList) {
 		this.variantsList = variantsList;
-	}
-
-
-	/**
-	 * Create a copy of the information related to the given track in the temporary list.
-	 * This method is used when multi genome information cannot be serialized.
-	 * @param track the track to save information
-	 */
-	public void copyTemporaryStripes(Track<?> track) {
-		this.copiedStripesList = getVariantsForTrack(track);
-	}
-
-
-	/**
-	 * Copy the information from the temporary list to the actual list changing their target track.
-	 * It does not erase the temporary list in order to use it again later on.
-	 * @param track the new track for the information
-	 */
-	public void pasteTemporaryStripes (Track<?> track) {
-		if (copiedStripesList != null) {
-			for (VariantData data: copiedStripesList) {
-				Track<?>[] tracks = {track};
-				VariantData newData = new VariantData(data.getGenome(), data.getAlleleType(), data.getVariationTypeList(), data.getColorList(), tracks);
-				variantsList.add(newData);
-			}
-		}
-	}
-
-
-	/**
-	 * Creates the list of stripes according to a track
-	 * @param track the track
-	 * @return		its list of stripes
-	 */
-	public List<VariantData> getVariantsForTrack (Track<?> track) {
-		List<VariantData> list = new ArrayList<VariantData>();
-
-		for (VariantData data: variantsList) {
-			Track<?>[] trackList = data.getTrackList();
-			for (Track<?> currentTrack: trackList) {
-				if (currentTrack.toString().equals(track.toString())) {
-					list.add(data);
-					break;
-				}
-			}
-		}
-
-		return list;
-	}
-
-
-	/**
-	 * When pasting a track, associated stripes settings to the copying track must be given to the pasting track.
-	 * This method create duplicates of the settings related to the copied track updated for the pasted track.
-	 * @param copiedTrack	the copied track
-	 * @param newTrack		the pasted track
-	 */
-	public void copyData (Track<?> copiedTrack, Track<?> newTrack) {
-		List<VariantData> stripeList = getVariantsForTrack(copiedTrack);
-		if (stripeList != null) {
-			for (VariantData data: stripeList) {
-				Track<?>[] track = {newTrack};
-				VariantData newData = new VariantData(data.getGenome(), data.getAlleleType(), data.getVariationTypeList(), data.getColorList(), track);
-				if (!stripeList.contains(newData)) {
-					variantsList.add(newData);
-				}
-			}
-		}
-	}
-
-
-	/**
-	 * When deleting a track, all its settings must be deleted.
-	 * The setting of a track can be mixed with the ones of other tracks.
-	 * Therefore, deleting settings must be processed carefully, taking into account the other track.
-	 * @param deleteTrack the deleted track
-	 */
-	public void deleteData (Track<?> deleteTrack) {
-		List<VariantData> stripeList = getVariantsForTrack(deleteTrack);
-		if (stripeList != null) {
-			for (VariantData data: stripeList) {
-				Track<?>[] trackList = data.getTrackList();
-				if (trackList.length == 1) {
-					variantsList.remove(data);
-				} else {
-					Track<?>[] newTrackList = new Track<?>[trackList.length - 1];
-					int cpt = 0;
-					for (Track<?> track: trackList) {
-						if (!deleteTrack.toString().equals(track.toString())) {
-							newTrackList[cpt] = track;
-							cpt++;
-						}
-					}
-					data.setTrackList(newTrackList);
-				}
-			}
-		}
-	}
-
-
-	/**
-	 * When a new track is loaded, the settings will still refer to the previous track if this method is not called.
-	 * It will replace the references to the old track by the one of the new track.
-	 * @param oldTrack the old track
-	 * @param newTrack the new track
-	 */
-	public void replaceTrack (Track<?> oldTrack, Track<?> newTrack) {
-		for (VariantData stripe: variantsList) {
-			stripe.replaceTrack(oldTrack, newTrack);
-		}
 	}
 
 
@@ -215,4 +204,14 @@ public class MGVariantSettings implements Serializable {
 		}
 	}
 
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(variantsList);
+	}
 }

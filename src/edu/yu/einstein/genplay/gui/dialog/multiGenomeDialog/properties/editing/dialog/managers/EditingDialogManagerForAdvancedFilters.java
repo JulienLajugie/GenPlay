@@ -48,8 +48,7 @@ public class EditingDialogManagerForAdvancedFilters implements EditingDialogMana
 	private final DescriptionDisplayPanel		descriptionEditingPanel;	// Description panel for the filter
 	private final AdvancedFilterEditingPanel 	filterEditingPanel;			// Panel to edit the filter
 	private final TrackSelectionPanel 			trackEditingPanel;			// Panel to edit the tracks
-
-	private FiltersData currentData;						// The current filter data (can be null)
+	private FiltersData 						currentData;				// The current filter data (can be null)
 
 
 	/**
@@ -79,29 +78,16 @@ public class EditingDialogManagerForAdvancedFilters implements EditingDialogMana
 	}
 
 
+	private List<FilterInterface> getAllAdvancedFilter () {
+		List<FilterInterface> list = new ArrayList<FilterInterface>();
+
+		return list;
+	}
+
+
 	@Override
 	public List<EditingPanel<?>> getEditingPanelList() {
 		return editingPanelList;
-	}
-
-
-	@Override
-	public List<FiltersData> showDialog() {
-		initializePanels();
-		EditingDialog<FiltersData> editingDialog = new EditingDialog<FiltersData>(this);
-		List<FiltersData> data = null;
-		if (editingDialog.showDialog(null) == EditingDialog.APPROVE_OPTION) {
-			data = retrieveData();
-		}
-		currentData = null;
-		resetPanels();
-		return data;
-	}
-
-
-	@Override
-	public void setData(FiltersData data) {
-		this.currentData = data;
 	}
 
 
@@ -119,6 +105,16 @@ public class EditingDialogManagerForAdvancedFilters implements EditingDialogMana
 
 
 	/**
+	 * Resets all the panels
+	 */
+	private void resetPanels () {
+		for (EditingPanel<?> panel: editingPanelList) {
+			panel.reset();
+		}
+	}
+
+
+	/**
 	 * Retrieves all the information from the panel in order to create/set the filter data object.
 	 * If a current filter data has been defined, it will be set and returned.
 	 * If no current filter data has been defined, a new one will be created.
@@ -126,7 +122,7 @@ public class EditingDialogManagerForAdvancedFilters implements EditingDialogMana
 	 */
 	private List<FiltersData> retrieveData () {
 		FilterInterface filter = filterEditingPanel.getFilter();
-		Track<?>[] trackList = trackEditingPanel.getSelectedTracks();
+		Track[] trackList = trackEditingPanel.getSelectedTracks();
 
 		List<FiltersData> result = new ArrayList<FiltersData>();
 		FiltersData data;
@@ -147,19 +143,22 @@ public class EditingDialogManagerForAdvancedFilters implements EditingDialogMana
 	}
 
 
-	/**
-	 * Resets all the panels
-	 */
-	private void resetPanels () {
-		for (EditingPanel<?> panel: editingPanelList) {
-			panel.reset();
-		}
+	@Override
+	public void setData(FiltersData data) {
+		currentData = data;
 	}
 
 
-	private List<FilterInterface> getAllAdvancedFilter () {
-		List<FilterInterface> list = new ArrayList<FilterInterface>();
-
-		return list;
+	@Override
+	public List<FiltersData> showDialog() {
+		initializePanels();
+		EditingDialog<FiltersData> editingDialog = new EditingDialog<FiltersData>(this);
+		List<FiltersData> data = null;
+		if (editingDialog.showDialog(null) == EditingDialog.APPROVE_OPTION) {
+			data = retrieveData();
+		}
+		currentData = null;
+		resetPanels();
+		return data;
 	}
 }

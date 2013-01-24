@@ -31,26 +31,25 @@ import edu.yu.einstein.genplay.core.manager.recording.ProjectRecording;
 import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 
-
 /**
  * Loads a project from a file
+ * 
  * @author Julien Lajugie
  * @author Nicolas Fourel
  * @version 0.1
  */
 public class PAInitMGManager extends TrackListActionWorker<Void> {
 
-	private static final long serialVersionUID = 6498078428524511709L;	// generated ID
-	private static final String 	DESCRIPTION =
-			"Initialize Multi Genome Manager"; 							// tooltip
-	private static final String 	ACTION_NAME = "Initialize Multi Genome Manager";	// action name
+	private static final long serialVersionUID = 6498078428524511709L; // generated ID
+
+	private static final String DESCRIPTION = "Initialize Multi Genome Manager"; // tooltip
+	private static final String ACTION_NAME = "Initialize Multi Genome Manager"; // action name
 
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
 	public static final String ACTION_KEY = "PAInitMGManager";
-
 
 	private boolean hasBeenInitialized;
 
@@ -68,27 +67,6 @@ public class PAInitMGManager extends TrackListActionWorker<Void> {
 
 
 	@Override
-	protected Void processAction() throws Exception {
-		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			notifyActionStart("Load Multi Genome information", 1, false);
-
-			ProjectRecording projectRecording = RecordingManager.getInstance().getProjectRecording();
-			try {
-				projectRecording.initMultiGenomeManager();
-				hasBeenInitialized =  true;
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			}
-		} else {
-			hasBeenInitialized =  true;
-		}
-		return null;
-	}
-
-
-	@Override
 	protected void doAtTheEnd(Void actionResult) {
 		if (latch != null) {
 			latch.countDown();
@@ -99,8 +77,29 @@ public class PAInitMGManager extends TrackListActionWorker<Void> {
 	/**
 	 * @return true if the managers have been initialized, false otherwise
 	 */
-	public boolean hasBeenInitialized () {
+	public boolean hasBeenInitialized() {
 		return hasBeenInitialized;
+	}
+
+
+	@Override
+	protected Void processAction() throws Exception {
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			notifyActionStart("Load Multi Genome information", 1, false);
+
+			ProjectRecording projectRecording = RecordingManager.getInstance().getProjectRecording();
+			try {
+				projectRecording.initMultiGenomeManager();
+				hasBeenInitialized = true;
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		} else {
+			hasBeenInitialized = true;
+		}
+		return null;
 	}
 
 
