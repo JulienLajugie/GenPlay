@@ -26,9 +26,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.List;
 
 import edu.yu.einstein.genplay.core.enums.CoordinateSystemType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.colors.Colors;
@@ -51,7 +54,7 @@ public class MGDisplaySettings implements Serializable {
 	public static final int NO_MG_OPTION = 0;
 
 	/** Draw the variant that have been filtered */
-	public static int DRAW_FILTERED_VARIANT = YES_MG_OPTION;
+	public static int DRAW_FILTERED_VARIANT = NO_MG_OPTION;
 
 	/** Insertion stripes can be drawn with an edge line */
 	public static int DRAW_INSERTION_EDGE = YES_MG_OPTION;
@@ -89,12 +92,76 @@ public class MGDisplaySettings implements Serializable {
 	/** Color of the reference SNP stripes */
 	public static Color REFERENCE_SNP_COLOR = new Color(Colors.BLACK.getRed(), Colors.BLACK.getGreen(), Colors.BLACK.getBlue());
 
+	/** Color of the no call stripes */
+	public static Color NO_CALL_COLOR = new Color(Colors.GREY.getRed(), Colors.GREY.getGreen(), Colors.GREY.getBlue());
+
 	/** Current selected coordinate genome system */
 	public static String SELECTED_GENOME = CoordinateSystemType.METAGENOME.toString();
 	//private static String SELECTED_GENOME = null;
 
 
 	private static MGDisplaySettings 	instance;	// Instance of the class
+
+	private MGFilterSettings 	filterSettings; 	// All settings about the filters
+	private MGVariantSettings 	variantSettings; 	// All settings about the stripes
+	private MGVariousSettings 	variousSettings;	// All settings about various settings
+	private String savedCoordinate;
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(instance);
+		out.writeObject(filterSettings);
+		out.writeObject(variantSettings);
+		out.writeObject(variousSettings);
+
+		out.writeInt(DRAW_FILTERED_VARIANT);
+		out.writeInt(DRAW_INSERTION_EDGE);
+		out.writeInt(DRAW_DELETION_EDGE);
+		out.writeInt(DRAW_REFERENCE_INSERTION);
+		out.writeInt(DRAW_REFERENCE_DELETION);
+		out.writeInt(DRAW_REFERENCE_SNP);
+		out.writeInt(DRAW_INSERTION_LETTERS);
+		out.writeInt(DRAW_DELETION_LETTERS);
+		out.writeInt(DRAW_SNP_LETTERS);
+		out.writeInt(DRAW_REFERENCE_LETTERS);
+
+		out.writeObject(SELECTED_GENOME);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		instance = (MGDisplaySettings) in.readObject();
+		filterSettings = (MGFilterSettings) in.readObject();
+		variantSettings = (MGVariantSettings) in.readObject();
+		variousSettings = (MGVariousSettings) in.readObject();
+
+		DRAW_FILTERED_VARIANT = in.readInt();
+		DRAW_INSERTION_EDGE = in.readInt();
+		DRAW_DELETION_EDGE = in.readInt();
+		DRAW_REFERENCE_INSERTION = in.readInt();
+		DRAW_REFERENCE_DELETION = in.readInt();
+		DRAW_REFERENCE_SNP = in.readInt();
+		DRAW_INSERTION_LETTERS = in.readInt();
+		DRAW_DELETION_LETTERS = in.readInt();
+		DRAW_SNP_LETTERS = in.readInt();
+		DRAW_REFERENCE_LETTERS = in.readInt();
+
+		savedCoordinate = (String) in.readObject();
+	}
+
 
 	/**
 	 * @return an instance of a {@link MGDisplaySettings}.
@@ -106,12 +173,6 @@ public class MGDisplaySettings implements Serializable {
 		}
 		return instance;
 	}
-	private MGFilterSettings 	filterSettings; 	// All settings about the filters
-	private MGVariantSettings 	variantSettings; 	// All settings about the stripes
-	private MGVariousSettings 	variousSettings;	// All settings about various settings
-
-
-	private String savedCoordinate;
 
 
 	/**
@@ -125,6 +186,30 @@ public class MGDisplaySettings implements Serializable {
 
 
 	/**
+	 * @return the filterSettings
+	 */
+	public MGFilterSettings getFilterSettings() {
+		return filterSettings;
+	}
+
+
+	/**
+	 * @return the stripeSettings
+	 */
+	public MGVariantSettings getVariantSettings() {
+		return variantSettings;
+	}
+
+
+	/**
+	 * @return the variousSettings
+	 */
+	public MGVariousSettings getVariousSettings() {
+		return variousSettings;
+	}
+
+
+	/**
 	 * Create a copy of the information related to the given track in temporary lists.
 	 * This method is used when multi genome information cannot be serialized.
 	 * @param track the track to save information
@@ -133,6 +218,34 @@ public class MGDisplaySettings implements Serializable {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			variantSettings.copyTemporaryStripes(track);
 			filterSettings.copyTemporaryFilters(track);
+		}
+	}
+
+
+	/**
+	 * Copy the information from the temporary lists to the actual list changing their target track.
+	 * It does not erase the temporary lists in order to use them again later on.
+	 * @param track the new track for the information
+	 */
+	public void pasteTemporaryTrack (Track track) {
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			variantSettings.pasteTemporaryStripes(track);
+			filterSettings.pasteTemporaryFilters(track);
+		}
+	}
+
+
+
+	/**
+	 * When a new track is loaded, the settings will still refer to the previous track if this method is not called.
+	 * It will replace the references to the old track by the one of the new track.
+	 * @param oldTrack the old track
+	 * @param newTrack the new track
+	 */
+	public void replaceTrack (Track oldTrack, Track newTrack) {
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			filterSettings.replaceTrack(oldTrack, newTrack);
+			variantSettings.replaceTrack(oldTrack, newTrack);
 		}
 	}
 
@@ -166,36 +279,17 @@ public class MGDisplaySettings implements Serializable {
 
 
 	/**
-	 * @return the filterSettings
+	 * Restore multi genome information to a track
+	 * @param track the track
 	 */
-	public MGFilterSettings getFilterSettings() {
-		return filterSettings;
+	public void restoreInformation (Track track) {
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			List<MGFilter> filterList = filterSettings.getMGFiltersForTrack(track);
+			List<VariantData> stripeList = variantSettings.getVariantsForTrack(track);
+			track.getMultiGenomeDrawer().setVariantDataList(stripeList);
+			track.getMultiGenomeDrawer().setFiltersList(filterList);
+		}
 	}
-
-
-	/**
-	 * @return the stripeSettings
-	 */
-	public MGVariantSettings getVariantSettings() {
-		return variantSettings;
-	}
-
-
-	/**
-	 * @return the variousSettings
-	 */
-	public MGVariousSettings getVariousSettings() {
-		return variousSettings;
-	}
-
-
-	/**
-	 * @return true is no call "." have to be included, false otherwise
-	 */
-	public boolean includeNoCall () {
-		return true;
-	}
-
 
 
 	/**
@@ -205,83 +299,38 @@ public class MGDisplaySettings implements Serializable {
 		return DRAW_REFERENCE_INSERTION == YES_MG_OPTION;
 	}
 
+	/**
+	 * @return true if filtered variants have to be included, false otherwise
+	 */
+	public boolean includeFilteredVariants () {
+		return DRAW_FILTERED_VARIANT == YES_MG_OPTION;
+	}
 
 	/**
-	 * Copy the information from the temporary lists to the actual list changing their target track.
-	 * It does not erase the temporary lists in order to use them again later on.
-	 * @param track the new track for the information
+	 * @return true is no call "." have to be included, false otherwise
 	 */
-	public void pasteTemporaryTrack (Track track) {
-		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			variantSettings.pasteTemporaryStripes(track);
-			filterSettings.pasteTemporaryFilters(track);
+	public boolean includeNoCall () {
+		return true;
+	}
+
+
+	/**
+	 * @param display
+	 * @return true if the display is has to be shown, false otherwise
+	 */
+	/*public boolean isShown (byte display) {
+		if (display == VariantDisplayList.SHOW) {
+			return true;
 		}
-	}
 
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		instance = (MGDisplaySettings) in.readObject();
-		filterSettings = (MGFilterSettings) in.readObject();
-		variantSettings = (MGVariantSettings) in.readObject();
-		variousSettings = (MGVariousSettings) in.readObject();
-
-		DRAW_FILTERED_VARIANT = in.readInt();
-		DRAW_INSERTION_EDGE = in.readInt();
-		DRAW_DELETION_EDGE = in.readInt();
-		DRAW_REFERENCE_INSERTION = in.readInt();
-		DRAW_REFERENCE_DELETION = in.readInt();
-		DRAW_REFERENCE_SNP = in.readInt();
-		DRAW_INSERTION_LETTERS = in.readInt();
-		DRAW_DELETION_LETTERS = in.readInt();
-		DRAW_SNP_LETTERS = in.readInt();
-		DRAW_REFERENCE_LETTERS = in.readInt();
-
-		savedCoordinate = (String) in.readObject();
-	}
-
-
-	/**
-	 * When a new track is loaded, the settings will still refer to the previous track if this method is not called.
-	 * It will replace the references to the old track by the one of the new track.
-	 * @param oldTrack the old track
-	 * @param newTrack the new track
-	 */
-	public void replaceTrack (Track oldTrack, Track newTrack) {
-		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			filterSettings.replaceTrack(oldTrack, newTrack);
-			variantSettings.replaceTrack(oldTrack, newTrack);
+		if (display == VariantDisplayList.SHOW_FILTER) {
+			if (DRAW_FILTERED_VARIANT == YES_MG_OPTION) {
+				return true;
+			}
 		}
-	}
 
-
-	/**
-	 * Restores the saved genome coordinate system after loading a project.
-	 */
-	public void restoreGenomeCoordinate () {
-		MainFrame.getInstance().setNewGenomeCoordinate(savedCoordinate);
-	}
-
-
-	/**
-	 * Restore multi genome information to a track
-	 * @param track the track
-	 */
-	public void restoreInformation (Track track) {
-		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			// TODO layer modif
-			/* List<MGFilter> filterList = filterSettings.getMGFiltersForTrack(track);
-			List<VariantData> stripeList = variantSettings.getVariantsForTrack(track);
-			track.getMultiGenomeDrawer().setVariantDataList(stripeList);
-			track.getMultiGenomeDrawer().setFiltersList(filterList);*/
-		}
-	}
+		return false;
+	}*/
 
 
 	/**
@@ -300,38 +349,19 @@ public class MGDisplaySettings implements Serializable {
 
 
 	/**
+	 * Restores the saved genome coordinate system after loading a project.
+	 */
+	public void restoreGenomeCoordinate () {
+		MainFrame.getInstance().setNewGenomeCoordinate(savedCoordinate);
+	}
+
+	/**
 	 * Show the settings
 	 */
 	public void showSettings () {
 		variousSettings.showSettings();
 		filterSettings.showSettings();
 		variantSettings.showSettings();
-	}
-
-	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(instance);
-		out.writeObject(filterSettings);
-		out.writeObject(variantSettings);
-		out.writeObject(variousSettings);
-
-		out.writeInt(DRAW_FILTERED_VARIANT);
-		out.writeInt(DRAW_INSERTION_EDGE);
-		out.writeInt(DRAW_DELETION_EDGE);
-		out.writeInt(DRAW_REFERENCE_INSERTION);
-		out.writeInt(DRAW_REFERENCE_DELETION);
-		out.writeInt(DRAW_REFERENCE_SNP);
-		out.writeInt(DRAW_INSERTION_LETTERS);
-		out.writeInt(DRAW_DELETION_LETTERS);
-		out.writeInt(DRAW_SNP_LETTERS);
-		out.writeInt(DRAW_REFERENCE_LETTERS);
-
-		out.writeObject(SELECTED_GENOME);
 	}
 
 }

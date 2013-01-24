@@ -104,6 +104,7 @@ public class MGAFilters extends TrackListActionWorker<Track[]> {
 				}
 			}
 		}
+
 		return null;
 	}
 

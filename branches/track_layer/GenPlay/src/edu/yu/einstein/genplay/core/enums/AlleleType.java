@@ -79,4 +79,19 @@ public enum AlleleType {
 		return null;
 	}
 
+
+	/**
+	 * The index 0 will return the first allele, 1 will return the second allele...
+	 * @param alleleIndex the index of an allele
+	 * @return the {@link AlleleType} of the index
+	 */
+	public static AlleleType getAlleleType (int alleleIndex) {
+		if (alleleIndex == 0) {
+			return ALLELE01;
+		} else if (alleleIndex == 1) {
+			return ALLELE02;
+		}
+		return null;
+	}
+
 }

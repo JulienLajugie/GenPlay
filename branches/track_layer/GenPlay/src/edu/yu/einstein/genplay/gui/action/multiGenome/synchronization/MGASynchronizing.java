@@ -22,6 +22,7 @@
 package edu.yu.einstein.genplay.gui.action.multiGenome.synchronization;
 
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -83,6 +84,55 @@ public class MGASynchronizing extends TrackListActionWorker<Track[]> {
 
 
 	@Override
+	protected Track[] processAction() throws Exception {
+		ProjectManager projectManager = ProjectManager.getInstance();
+
+		// Checks if the project is multi-genome
+		if (projectManager.isMultiGenomeProject()) {
+
+			// Checks if parameters have been set
+			if (hasBeenInitialized()) {
+
+				// Notifies the action
+				notifyActionStart(ACTION_NAME, 1, false);
+
+				// Locks the main frame
+				MainFrame.getInstance().lock();
+
+				// Initializes the genome synchronization
+				multiGenomeProject.initializeSynchronization (genomeFileAssociation);
+
+				// Insert synchronization data into the data structure
+				multiGenomeProject.getMultiGenomeSynchronizer().processFiles(getRequiredGenomeNames(), null, null);
+
+				// Sort lists of position for every chromosome of every genome
+				multiGenomeProject.getMultiGenome().sort();
+
+				// Remove the duplicate from the reference genome lists of position
+				multiGenomeProject.getMultiGenome().getReferenceGenome().removeDuplicate();
+
+				// Performs the synchronization in order to get all genome positions and their offset with the meta genome
+				multiGenomeProject.getMultiGenomeSynchronizer().performPositionSynchronization();
+
+				// Compacts the offset lists in order to optimize the memory usage
+				multiGenomeProject.getMultiGenome().compactLists();
+
+				// Loads the current variants into the memory
+				multiGenomeProject.getFileContentManager().updateCurrentVariants();
+
+			} else {
+				// Generates error when parameters have not been set
+				System.err.println("Multi-genome synchronization cannot be performed because the file readers and/or the genome file association parameters have not been set.");
+			}
+		} else {
+			// Generates error if the project is not multi-genome
+			System.err.println("Multi-genome synchronization cannot be performed because the project does not seem to be multi-genome.");
+		}
+		return null;
+	}
+
+
+	@Override
 	protected void doAtTheEnd(Track[] actionResult) {
 		multiGenomeProject.updateChromosomeList();
 
@@ -93,7 +143,6 @@ public class MGASynchronizing extends TrackListActionWorker<Track[]> {
 
 		// Unlocks the main frame
 		MainFrame.getInstance().unlock();
-
 
 		//multiGenomeProject.show();
 	}
@@ -124,77 +173,34 @@ public class MGASynchronizing extends TrackListActionWorker<Track[]> {
 
 
 	/**
-	 * Initializes attributes used for multi genome project.
-	 */
-	private void initializesTrackListForMultiGenomeProject () {
-		// TODO Layer modif
-		/*Track[] tracks = MainFrame.getInstance().getTrackList().getTrackList();
-		for (Track track: tracks) {
-			if (track.getStripesList() == null) {
-				track.multiGenomeInitializing();
-			}
-		}*/
-	}
-
-
-	@Override
-	protected Track[] processAction() throws Exception {
-		ProjectManager projectManager = ProjectManager.getInstance();
-
-		// Checks if the project is multi-genome
-		if (projectManager.isMultiGenomeProject()) {
-
-			// Checks if parameters have been set
-			if (hasBeenInitialized()) {
-
-				// Notifies the action
-				notifyActionStart(ACTION_NAME, 1, false);
-
-				// Locks the main frame
-				MainFrame.getInstance().lock();
-
-				// Initializes the genome synchronization
-				multiGenomeProject.initializeSynchronization (genomeFileAssociation);
-
-				// Insert the variation into the data structure
-				multiGenomeProject.getMultiGenomeSynchronizer().insertVariantposition();
-
-				// Sort lists of position for every chromosome of every genome
-				multiGenomeProject.getMultiGenome().sort();
-
-				// Remove the duplicate from the reference genome lists of position
-				multiGenomeProject.getMultiGenome().getReferenceGenome().removeDuplicate();
-
-				// Creates the variation for the reference genome.
-				// This is the only place where this method must be called!! After removing duplicates and before position synchronization.
-				multiGenomeProject.getMultiGenomeForDisplay().getReferenceGenome().getAllele().initialize();
-
-				// Performs the synchronization in order to get all genome positions and their offset with the meta genome
-				multiGenomeProject.getMultiGenomeSynchronizer().performPositionSynchronization();
-
-				// Compacts the offset lists in order to optimize the memory usage
-				multiGenomeProject.getMultiGenome().compactLists();
-
-				// Create the reference genome position index list
-				multiGenomeProject.getMultiGenomeForDisplay().getReferenceGenome().getAllele().createIndexLists();
-			} else {
-				// Generates error when parameters have not been set
-				System.err.println("Multi-genome synchronization cannot be performed because the file readers and/or the genome file association parameters have not been set.");
-			}
-
-		} else {
-			// Generates error if the project is not multi-genome
-			System.err.println("Multi-genome synchronization cannot be performed because the project does not seem to be multi-genome.");
-		}
-		return null;
-	}
-
-
-	/**
 	 * This method must be used when multi-genome synchronization is performed for the first time in a project.
 	 * @param genomeFileAssociation the genomeFileAssociation to set
 	 */
 	public void setGenomeFileAssociation(Map<String, List<VCFFile>> genomeFileAssociation) {
 		this.genomeFileAssociation = genomeFileAssociation;
 	}
+
+
+
+	private List<String> getRequiredGenomeNames () {
+		List<String> genomes = null;
+		if (genomeFileAssociation != null) {
+			genomes = new ArrayList<String>(genomeFileAssociation.keySet());
+		}
+		return genomes;
+	}
+
+
+	/**
+	 * Initializes attributes used for multi genome project.
+	 */
+	private void initializesTrackListForMultiGenomeProject () {
+		Track[] tracks = MainFrame.getInstance().getTrackListPanel().getModel().getTracks();
+		for (Track track: tracks) {
+			if (track.getStripesList() == null) {
+				track.multiGenomeInitializing();
+			}
+		}
+	}
+
 }

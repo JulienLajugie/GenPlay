@@ -24,9 +24,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import net.sf.samtools.seekablestream.SeekableBufferedStream;
+import net.sf.samtools.seekablestream.SeekableStream;
 import net.sf.samtools.util.BlockCompressedInputStream;
-import net.sf.samtools.util.SeekableBufferedStream;
-import net.sf.samtools.util.SeekableStream;
 
 /**
  * @author Thomas Abeel

@@ -43,7 +43,7 @@ import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.Propertie
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class MGAProperties extends TrackListAction {
+public final class MGAProperties extends TrackListAction{
 
 	private static final 	long serialVersionUID = -6475180772964541278L; 			// generated ID
 	private static final 	String ACTION_NAME = "Multi Genome Properties";			// action name

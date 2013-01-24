@@ -35,22 +35,18 @@ import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.manager.ProjectFiles;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
-import edu.yu.einstein.genplay.core.multiGenome.display.MGMultiGenomeForDisplay;
-import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGGenome;
-import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGMultiGenome;
-import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGOffset;
-import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGSNPSynchronizer;
-import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGSynchronizer;
+import edu.yu.einstein.genplay.core.multiGenome.data.display.content.MGFileContentManager;
+import edu.yu.einstein.genplay.core.multiGenome.data.synchronization.MGSMultiGenome;
+import edu.yu.einstein.genplay.core.multiGenome.data.synchronization.MGSOffset;
+import edu.yu.einstein.genplay.core.multiGenome.operation.synchronization.MGSynchronizer;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
-import edu.yu.einstein.genplay.gui.action.multiGenome.synchronization.MGASNP;
 import edu.yu.einstein.genplay.gui.action.multiGenome.synchronization.MGASynchronizing;
 
 
 /**
  * The multi genome data structure can be seen in 3 main parts:
- * - {@link MGMultiGenome} : Manages offsets between genomes and the meta genome. It is all about the synchronization of the positions.
- * - {@link MGMultiGenomeForDisplay} : Manages the variant information for their display.
- * - {@link MGSynchronizer} & {@link MGSNPSynchronizer}: the synchronizers, they perform the synchronization operations.
+ * - {@link MGSMultiGenome} : Manages offsets between genomes and the meta genome. It is all about the synchronization of the positions.
+ * - {@link MGFileContentManager} : Manages the variant information for their display.
  * 
  * This class also contains the map between the genome names and their VCF file readers.
  * Information about a genome can be stored in one or several VCF files, no matter the type (Indels, SV, SNPs).
@@ -62,7 +58,7 @@ import edu.yu.einstein.genplay.gui.action.multiGenome.synchronization.MGASynchro
  * ALL GENOME NAMES ARE STORED IN THIS DATA STRUCTURE AS "FULL GENOME NAME" (with group/genome/raw name).
  * See {@link FormattedMultiGenomeName} for more details.
  * 
- * THE WHOLE SYNCHRONIZATION PROCESS IS HANDLED BY {@link MGASynchronizing} AND {@link MGASNP}.
+ * THE WHOLE SYNCHRONIZATION PROCESS IS HANDLED BY {@link MGASynchronizing}.
  * 
  * @author Nicolas Fourel
  * @version 0.1
@@ -76,11 +72,9 @@ public class MultiGenomeProject implements Serializable {
 	private		List<String>					genomeNames;					// The genome names list.
 	private 	Map<String, List<VCFFile>> 		genomeFileAssociation;			// The map between genome names and their files.
 
-	private 	MGMultiGenome 					multiGenome;					// The genome synchronization data structure.
-	private 	MGMultiGenomeForDisplay 		multiGenomeForDisplay;			// The genome display data structure.
-
+	private 	MGSMultiGenome 					multiGenome;					// The genome synchronization data structure.
 	private		MGSynchronizer					multiGenomeSynchronizer;		// The synchronizer for Indels and Structural Variant variations.
-	private		MGSNPSynchronizer				multiGenomeSynchronizerForSNP; 	// The synchronizer for SNPs variations.
+	private		MGFileContentManager			fileContentManager;				// The file content manager.
 
 
 	/**
@@ -93,9 +87,8 @@ public class MultiGenomeProject implements Serializable {
 		out.writeObject(genomeNames);
 		out.writeObject(genomeFileAssociation);
 		out.writeObject(multiGenome);
-		out.writeObject(multiGenomeForDisplay);
 		out.writeObject(multiGenomeSynchronizer);
-		out.writeObject(multiGenomeSynchronizerForSNP);
+		out.writeObject(fileContentManager);
 	}
 
 
@@ -110,10 +103,9 @@ public class MultiGenomeProject implements Serializable {
 		in.readInt();
 		genomeNames = (List<String>) in.readObject();
 		genomeFileAssociation = (Map<String, List<VCFFile>>) in.readObject();
-		multiGenome = (MGMultiGenome) in.readObject();
-		multiGenomeForDisplay = (MGMultiGenomeForDisplay) in.readObject();
+		multiGenome = (MGSMultiGenome) in.readObject();
 		multiGenomeSynchronizer = (MGSynchronizer) in.readObject();
-		multiGenomeSynchronizerForSNP = (MGSNPSynchronizer) in.readObject();
+		fileContentManager = (MGFileContentManager) in.readObject();
 	}
 
 
@@ -126,9 +118,8 @@ public class MultiGenomeProject implements Serializable {
 		this.genomeNames = project.getGenomeNames();
 		this.genomeFileAssociation = project.getGenomeFileAssociation();
 		this.multiGenome = project.getMultiGenome();
-		this.multiGenomeForDisplay = project.getMultiGenomeForDisplay();
 		this.multiGenomeSynchronizer = project.getMultiGenomeSynchronizer();
-		this.multiGenomeSynchronizerForSNP = project.getMultiGenomeSynchronizerForSNP();
+		this.fileContentManager = project.getFileContentManager();
 	}
 
 
@@ -154,10 +145,9 @@ public class MultiGenomeProject implements Serializable {
 			}
 		}
 
-		this.multiGenome = new MGMultiGenome(genomeNames);
+		this.multiGenome = new MGSMultiGenome(genomeNames);
 		this.multiGenomeSynchronizer = new MGSynchronizer(this);
-		this.multiGenomeSynchronizerForSNP = new MGSNPSynchronizer();
-		initializesDisplayInformation();
+		this.fileContentManager = new MGFileContentManager(getAllVCFFiles());
 		initializeFileDependancy();
 	}
 
@@ -263,7 +253,7 @@ public class MultiGenomeProject implements Serializable {
 		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		List<Chromosome> currentChromosomeList = projectChromosome.getChromosomeList();
 		List<Chromosome> newChromosomeList = new ArrayList<Chromosome>();
-		ChromosomeListOfLists<MGOffset> offsetList = multiGenome.getReferenceGenome().getAllele().getOffsetList();
+		ChromosomeListOfLists<MGSOffset> offsetList = multiGenome.getReferenceGenome().getAllele().getOffsetList();
 
 		for (Chromosome current: currentChromosomeList) {
 			String name = current.getName();
@@ -276,15 +266,6 @@ public class MultiGenomeProject implements Serializable {
 		}
 
 		projectChromosome.updateChromosomeLength(newChromosomeList);
-	}
-
-
-	/**
-	 * Initializes the genome information for display purpose
-	 */
-	private void initializesDisplayInformation () {
-		List<MGGenome> genomeList = multiGenome.getGenomeInformation();
-		multiGenomeForDisplay = new MGMultiGenomeForDisplay(genomeList);
 	}
 
 
@@ -344,16 +325,6 @@ public class MultiGenomeProject implements Serializable {
 	}
 
 
-	/**
-	 * @param chromosome	a chromosome
-	 * @param position a reference genome position
-	 * @return the index of the given reference position.
-	 */
-	public int getReferencePositionIndex (Chromosome chromosome, int position) {
-		return multiGenomeForDisplay.getReferenceGenome().getAllele().getPositionIndex(chromosome, position);
-	}
-
-
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Getters & Setters
 
 
@@ -366,26 +337,10 @@ public class MultiGenomeProject implements Serializable {
 
 
 	/**
-	 * @return the multiGenomeSynchronizerForSNP
-	 */
-	public MGSNPSynchronizer getMultiGenomeSynchronizerForSNP() {
-		return multiGenomeSynchronizerForSNP;
-	}
-
-
-	/**
 	 * @return the multiGenome
 	 */
-	public MGMultiGenome getMultiGenome() {
+	public MGSMultiGenome getMultiGenome() {
 		return multiGenome;
-	}
-
-
-	/**
-	 * @return the multiGenomeForDisplay
-	 */
-	public MGMultiGenomeForDisplay getMultiGenomeForDisplay() {
-		return multiGenomeForDisplay;
 	}
 
 
@@ -398,13 +353,21 @@ public class MultiGenomeProject implements Serializable {
 
 
 	/**
+	 * @return the fileContentManager
+	 */
+	public MGFileContentManager getFileContentManager() {
+		return fileContentManager;
+	}
+
+
+	/**
 	 * Show the information of the {@link MultiGenomeProject}
 	 */
 	public void show () {
 		System.out.println("POSITION");
 		multiGenome.show();
-		System.out.println("DISPLAY");
-		multiGenomeForDisplay.show();
+		System.out.println("CONTENT");
+		fileContentManager.show();
 	}
 
 }

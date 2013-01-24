@@ -35,6 +35,8 @@ import edu.yu.einstein.genplay.gui.action.multiGenome.VCFAction.MGATBIIndex;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.export.ExportVCFDialog;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.mainDialog.MultiGenomeTrackActionDialog;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
+import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.variantLayer.MultiGenomeDrawer;
 
 
@@ -85,10 +87,9 @@ public class MGAGlobalVCFExport extends TrackListActionWorker<Boolean> {
 		ProjectManager projectManager = ProjectManager.getInstance();
 		if (projectManager.isMultiGenomeProject()) {
 
-			// TODO Layer modif
 			// Get track information
-			//Track track = MainFrame.getInstance().getTrackListPanel().getSelectedTrack();
-			MultiGenomeDrawer genomeDrawer = null; //track.getMultiGenomeDrawer();
+			Track track = MainFrame.getInstance().getTrackListPanel().getSelectedTrack();
+			MultiGenomeDrawer genomeDrawer = track.getMultiGenomeDrawer();
 
 			// Create the export settings
 			settings = new ExportSettings(genomeDrawer);

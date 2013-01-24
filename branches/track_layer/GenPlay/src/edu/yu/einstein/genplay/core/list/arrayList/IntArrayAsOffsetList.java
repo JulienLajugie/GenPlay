@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -29,17 +29,17 @@ import java.util.AbstractList;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.list.nucleotideList.TwoBitSequence;
-import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGOffset;
+import edu.yu.einstein.genplay.core.multiGenome.data.synchronization.MGSOffset;
 
 
 /**
- * This class implements the List of MGOffset interface but internally 
- * it contains an array of int that is dynamically resized in order to 
- * be more memory efficient. 
+ * This class implements the List of MGOffset interface but internally
+ * it contains an array of int that is dynamically resized in order to
+ * be more memory efficient.
  * @author Julien Lajugie
  * @author Nicolas Fourel
  */
-public class IntArrayAsOffsetList extends AbstractList<MGOffset> implements Serializable, List<MGOffset> {
+public class IntArrayAsOffsetList extends AbstractList<MGSOffset> implements Serializable, List<MGSOffset> {
 
 	private static final long serialVersionUID = -8787392051503707843L; // generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
@@ -74,7 +74,7 @@ public class IntArrayAsOffsetList extends AbstractList<MGOffset> implements Seri
 		in.readInt();
 		position = (int[]) in.readObject();
 		value = (int[]) in.readObject();
-		size = in.readInt();		
+		size = in.readInt();
 	}
 
 
@@ -100,7 +100,7 @@ public class IntArrayAsOffsetList extends AbstractList<MGOffset> implements Seri
 
 
 	@Override
-	public boolean add(MGOffset offset) {
+	public boolean add(MGSOffset offset) {
 		// if the array is to small we resize it before adding the data
 		if (size >= position.length) {
 			// we multiply the current size by the resize multiplication factor
@@ -127,8 +127,8 @@ public class IntArrayAsOffsetList extends AbstractList<MGOffset> implements Seri
 
 
 	@Override
-	public MGOffset get(int index) {
-		return new MGOffset(position[index], value[index]);
+	public MGSOffset get(int index) {
+		return new MGSOffset(position[index], value[index]);
 	}
 
 
@@ -136,7 +136,7 @@ public class IntArrayAsOffsetList extends AbstractList<MGOffset> implements Seri
 	 * @return null in order to accelerate the operation
 	 */
 	@Override
-	public MGOffset set(int index, MGOffset offset) {
+	public MGSOffset set(int index, MGSOffset offset) {
 		position[index] = offset.getPosition();
 		value[index] = offset.getValue();
 		return null;
@@ -188,6 +188,23 @@ public class IntArrayAsOffsetList extends AbstractList<MGOffset> implements Seri
 
 
 	/**
+	 * @param genomePosition a position on the genome
+	 * @return the index of the {@link MGSOffset} at the given genome position, or the index before if no exact match
+	 */
+	public int getIndex (int genomePosition) {
+		if (size == 0) {
+			return -1;
+		}
+		int genomePositionIndex = findGenomeIndex(genomePosition, 0, size - 1);	// get the index of the position (or the one right after)
+		if (genomePosition < position[genomePositionIndex]) {					// if the position is lower than the one found (ie we want the index right before)
+			if (genomePositionIndex > 0) {										// if the index found is not the first one in the list
+				genomePositionIndex--;											// it is the one we are looking for
+			}
+		}
+		return genomePositionIndex;
+	}
+
+	/**
 	 * Recursive function. Returns the index where the genome position is found
 	 * or the index right after if the exact value is not found.
 	 * @param value			value of a genome position
@@ -218,22 +235,22 @@ public class IntArrayAsOffsetList extends AbstractList<MGOffset> implements Seri
 			return metaGenomePosition;
 		}
 		int genomePositionIndex = findMetaGenomeIndex(metaGenomePosition, 0, size - 1);	// get the index of the position (or the one right after)
-		
-		int metaGenomePositionFound = position[genomePositionIndex] + value[genomePositionIndex];	// get the meta genome position found (genome position + its meta genome offset) 
-		
+
+		int metaGenomePositionFound = position[genomePositionIndex] + value[genomePositionIndex];	// get the meta genome position found (genome position + its meta genome offset)
+
 		if (metaGenomePosition == metaGenomePositionFound) {					// if both position are equal
 			return position[genomePositionIndex];								// the genome position is the one found
 		} else if (metaGenomePosition > metaGenomePositionFound) {				// if the meta genome position is higher than the one found
 			int difference = metaGenomePosition - metaGenomePositionFound;		// calculation of the difference of both position: meta genome seek and meta genome found
 			return (position[genomePositionIndex] + difference);				// the new meta genome position must be the one found plus the calculated difference
 		} else {																// if the meta genome position is lower than the one found
-			int difference = metaGenomePositionFound - metaGenomePosition;		// we want to know the difference between both position in order to compare with the variation length 
+			int difference = metaGenomePositionFound - metaGenomePosition;		// we want to know the difference between both position in order to compare with the variation length
 			int variationLength = value[genomePositionIndex];					// by default the variation length is the current offset (with the MG) of the index found
-			
+
 			if (genomePositionIndex > 0) {										// if the current index is not the first one, the variation length just instantiated is the sum of all offset of the previous variations
 				variationLength -= value[genomePositionIndex - 1];				// in order to have the current variation length, we subtract with the offset of the previous index.
 			}
-			
+
 			if (difference <= variationLength) {								// if the seek meta genome position is included in the variation length,
 				return TwoBitSequence.MISSING_POSITION;							// this meta genome position does not match with a position of the genome
 			} else {															// if the seek meta genome position is not included in the variation length,

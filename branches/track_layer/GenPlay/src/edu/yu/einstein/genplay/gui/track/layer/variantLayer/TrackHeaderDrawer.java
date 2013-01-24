@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -27,13 +27,8 @@ import java.awt.Graphics;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
-import edu.yu.einstein.genplay.core.enums.VariantType;
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
@@ -54,17 +49,17 @@ public class TrackHeaderDrawer implements Serializable {
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -8974239086338004628L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;				// saved format version
-	
-	private List<String>			stripeLegendText;		// stripes legend for multi genome track (for MG project)
-	private List<Color>				stripeLegendColor;		// stripes legend for multi genome track (for MG project)
-	
-	private MultiGenomeDrawer	 	multiGenomeDrawer;		// the multigenome drawer
-	private FontMetrics 			fm;						// the font metrics track
-	private String 					name;					// the track name
-	private int 					width;					// the track width
-	private Color 					backgroundColor;		// the track background color
-	
-	
+
+	private List<String>			stripeLegendText;				// stripes legend for multi genome track (for MG project)
+	//private List<Color>				stripeLegendColor;				// stripes legend for multi genome track (for MG project)
+
+	//private MultiGenomeDrawer	 	multiGenomeDrawer;	// the multigenome drawer
+	private FontMetrics 			fm;					// the font metrics track
+	private String 					name;				// the track name
+	private int 					width;				// the track width
+	private Color 					backgroundColor;	// the track background color
+
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -84,34 +79,35 @@ public class TrackHeaderDrawer implements Serializable {
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 	}
-	
-	
+
+
 	/**
 	 * Draws the header of the track.
 	 * The header of the track is composed of:
 	 * - the name
 	 * - the stripe legend (for multi-genome)
 	 * It allows a fine width distribution between these 2 texts.
-	 * @param g 
-	 * @param multiGenomeDrawer 
-	 * @param fm 
-	 * @param name 
-	 * @param width 
-	 * @param backgroundColor 
+	 * @param g
+	 * @param multiGenomeDrawer
+	 * @param fm
+	 * @param name
+	 * @param width
+	 * @param backgroundColor
 	 */
 	public void drawHeaderTrack (Graphics g, MultiGenomeDrawer multiGenomeDrawer, FontMetrics fm, String name, int width, Color backgroundColor) {
-		this.multiGenomeDrawer = multiGenomeDrawer;
+		//this.multiGenomeDrawer = multiGenomeDrawer;
 		this.fm = fm;
 		this.name = name;
 		this.width = width;
 		this.backgroundColor = backgroundColor;
-		
-		
+
+
 		// Initializes the modified text length for display
 		int trackTextDisplayWidth = 0;
 		int legendTextDisplayWidth = 0;
 
-		if (validTrackName() && initializeLegend()) {				// if both track name and legend have to be drawed
+		//if (validTrackName() && initializeLegend()) {				// if both track name and legend have to be drawed
+		if (validTrackName()) {				// if both track name and legend have to be drawed
 			int widthOffset = 2;									// space between the border of the rectangle and the text.
 			int totalWidth = this.width - (widthOffset * 4);		// width of the track
 			int trackNameWidth = this.fm.stringWidth(this.name);			// width of the track name
@@ -135,7 +131,7 @@ public class TrackHeaderDrawer implements Serializable {
 
 		// Calls methods for drawing
 		drawName(g, trackTextDisplayWidth);
-		drawLegend(g, legendTextDisplayWidth);
+		//drawLegend(g, legendTextDisplayWidth);
 
 		//repaint(); // if uncommented, the activation/deactivation of the "Show Legend" option in the option dialog takes effect immediately!
 	}
@@ -152,12 +148,12 @@ public class TrackHeaderDrawer implements Serializable {
 	/**
 	 * @return true if the stripe legend has to be draw, false otherwise.
 	 */
-	private boolean validLegend () {
+	/*private boolean validLegend () {
 		return (ProjectManager.getInstance().isMultiGenomeProject() &&
 				multiGenomeDrawer != null &&
 				multiGenomeDrawer.getStripesList() != null &&
 				ProjectManager.getInstance().getProjectConfiguration().isLegend());
-	}
+	}*/
 
 
 	/**
@@ -170,7 +166,7 @@ public class TrackHeaderDrawer implements Serializable {
 			int textWidth = fm.stringWidth(this.name);							// text width on the screen
 
 			String name = this.name;
-			if (displayTextWidth > 0 && textWidth > displayTextWidth) {			// if the display width of the full text is larger than the one given, the text has to be shorted.
+			if ((displayTextWidth > 0) && (textWidth > displayTextWidth)) {			// if the display width of the full text is larger than the one given, the text has to be shorted.
 				String newText = "";
 				int charIndex = 0;
 				while (fm.stringWidth(newText + "...") <= displayTextWidth) {	// we add char one by one to the new text until reaching the length limit
@@ -200,7 +196,7 @@ public class TrackHeaderDrawer implements Serializable {
 	 * Draws the legend of the stripe in a multi genome project
 	 * @param g
 	 */
-	private void drawLegend (Graphics g, int displayTextWidth) {
+	/*private void drawLegend (Graphics g, int displayTextWidth) {
 		if (initializeLegend()) {
 			if (stripeLegendText.size() > 0) {
 				int widthOffset = 2;												// space between the border of the rectangle and the text.
@@ -243,14 +239,14 @@ public class TrackHeaderDrawer implements Serializable {
 				}
 			}
 		}
-	}
+	}*/
 
 
 	/**
 	 * Initializes the list of text and the list of their associated color in order to draw the legend.
 	 * @return true if it has been initialized, false otherwise.
 	 */
-	private boolean initializeLegend () {
+	/*private boolean initializeLegend () {
 		if (validLegend()) {
 			// Sets parameters
 			stripeLegendText = new ArrayList<String>();
@@ -269,7 +265,7 @@ public class TrackHeaderDrawer implements Serializable {
 
 				// Gets variant type / color mapping
 				Map<VariantType, Color> colors = multiGenomeDrawer.getVariantColorMap(genomeName);
-				
+
 				// Gets the real size of the list
 				int colorsSize = colors.size();
 
@@ -313,7 +309,7 @@ public class TrackHeaderDrawer implements Serializable {
 			return false;
 		}
 
-	}
+	}*/
 
 
 	/**
@@ -328,5 +324,5 @@ public class TrackHeaderDrawer implements Serializable {
 		}
 		return legend;
 	}
-	
+
 }

@@ -31,7 +31,7 @@ import edu.yu.einstein.genplay.core.list.arrayList.ByteArrayAsBooleanList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.Variant;
+import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 /**
  * @author Nicolas Fourel
  * @version 0.1
@@ -155,17 +155,12 @@ public class VCFFilter extends MGFilter implements Serializable {
 	 * Analyzes lines from VCF file in order to determine if variation pass the filter.
 	 * @param results list of VCF lines delimited by columns (must contains the column of the filter)
 	 */
-	public void generateFilter (List<String> results) {
-		//vcfFile.initializesPositionList();
+	public void generateFilter (List<VCFLine> results) {
 		vcfFile.initializePositionList(ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome(), results);
-
 		if (results != null) {
 			booleanList = new ByteArrayAsBooleanList(vcfFile.getPositionList().size());
-			VCFLine line = new VCFLine(null, null);
 			for (int i = 0; i < results.size(); i++) {
-				line.initialize(results.get(i), vcfFile.getHeader());
-				line.processForAnalyse();
-				boolean valid = filter.isValid(line);
+				boolean valid = filter.isValid(results.get(i));
 				booleanList.set(i, valid);
 			}
 		}

@@ -37,8 +37,11 @@ import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.convert.ConvertSCWDialog;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.mainDialog.MultiGenomeTrackActionDialog;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 import edu.yu.einstein.genplay.gui.track.layer.variantLayer.MultiGenomeDrawer;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 /**
@@ -49,15 +52,15 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 
 	private static final long serialVersionUID = 6498078428524511709L;	// generated ID
 	private static final String 	DESCRIPTION =
-			"Converts the stripes on a variable window layer."; 										// tooltip
+			"Converts the stripes on a variable window track."; 										// tooltip
 	private static final int 				MNEMONIC = KeyEvent.VK_M; 									// mnemonic key
-	private static		 String 			ACTION_NAME = "Convert in variable window layer";			// action name
+	private static		 String 			ACTION_NAME = "Convert in variable window track";			// action name
 
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "Multi Genome variable layer Convert";
+	public static final String ACTION_KEY = "Multi Genome variable track Convert";
 
 	private ExportEngine exportEngine;
 	private ConvertSCWDialog dialog;
@@ -82,11 +85,9 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 		ProjectManager projectManager = ProjectManager.getInstance();
 		if (projectManager.isMultiGenomeProject()) {
 
-			// TODO Layer modif
 			// Get track information
-			//Track track = MainFrame.getInstance().getTrackListPanel().getSelectedTrack();
-
-			MultiGenomeDrawer genomeDrawer = null; //track.getMultiGenomeDrawer();
+			Track track = MainFrame.getInstance().getTrackListPanel().getSelectedTrack();
+			MultiGenomeDrawer genomeDrawer = track.getMultiGenomeDrawer();
 
 			// Create the export settings
 			ExportSettings settings = new ExportSettings(genomeDrawer);
@@ -148,15 +149,13 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 
 
 	private void setTrack (Track currentTrack, ScoredChromosomeWindowList list) throws InvalidChromosomeException, InterruptedException, ExecutionException {
-		// TODO Layer modif
-		/*if ((list!= null) && (currentTrack != null)) {
-			int index = currentTrack.getTrackNumber() - 1;
-			CurveTrack newTrack = new SCWListTrack(index + 1, list);
-			newTrack.setTrackColor(LayerColor.getLayerColor());
-			newTrack.getHistory().add("Apply mask", Colors.GREY);
-			newTrack.getHistory().add("Track: " + currentTrack.getName(), Colors.GREY);
-			getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), currentTrack.getName() + " converted to BED", currentTrack.getMask(), currentTrack.getStripesList(), currentTrack.getFiltersList());
-		}*/
+		if ((list!= null) && (currentTrack != null)) {
+			// TODO replace currentTrack.getName per currentLayer.getName
+			SCWLayer newLayer = new SCWLayer(currentTrack, list, currentTrack.getName());
+			newLayer.getHistory().add("Apply mask", Colors.GREY);
+			newLayer.getHistory().add("Track: " + currentTrack.getName(), Colors.GREY);
+			currentTrack.getLayers().add(newLayer);
+		}
 	}
 
 }

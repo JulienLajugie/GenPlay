@@ -26,6 +26,7 @@ import java.awt.Component;
 import javax.swing.BorderFactory;
 import javax.swing.JRadioButton;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.table.TableCellRenderer;
@@ -45,7 +46,7 @@ public class BooleanRadioButtonRenderer implements TableCellRenderer {
 	 */
 	public BooleanRadioButtonRenderer() {
 		radioButton = new JRadioButton();
-		radioButton.setHorizontalAlignment(JRadioButton.CENTER);
+		radioButton.setHorizontalAlignment(SwingConstants.CENTER);
 		radioButton.setBorderPainted(true);
 		radioButton.setOpaque(true);
 		emptyBorder = BorderFactory.createEmptyBorder(1, 1, 1, 1);

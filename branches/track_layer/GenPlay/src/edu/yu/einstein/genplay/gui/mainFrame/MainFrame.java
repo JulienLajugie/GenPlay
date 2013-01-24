@@ -88,7 +88,8 @@ import edu.yu.einstein.genplay.util.Images;
 public final class MainFrame extends JFrame implements GenomeWindowListener, ActionListener {
 
 	private static final long serialVersionUID = -4637394760647080396L; // generated ID
-	private static final int VERSION_NUMBER = 727; 						// GenPlay version
+	private static final int VERSION_NUMBER = 757; 						// GenPlay version
+
 	/** Title of the application */
 	public static final String 		APPLICATION_TITLE = "GenPlay, Einstein Genome Analyzer (v" + VERSION_NUMBER + ")";
 	private final static Dimension 	WINDOW_DEFAULT_SIZE = new Dimension(800, 600);	// default size of the application
@@ -242,6 +243,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 	public void genomeWindowChanged(GenomeWindowEvent evt) {
 		// if the chromosome changed we reinitialize the multigenome data
 		if (evt.chromosomeChanged() && ProjectManager.getInstance().isMultiGenomeProject()) {
+			ProjectManager.getInstance().getMultiGenomeProject().getFileContentManager().updateCurrentVariants();
 			MGARefresh tracksUpdate = new MGARefresh();
 			tracksUpdate.actionPerformed(null);
 		}

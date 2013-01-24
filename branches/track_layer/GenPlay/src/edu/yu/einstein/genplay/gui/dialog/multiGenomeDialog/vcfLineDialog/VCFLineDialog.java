@@ -21,7 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLineDialog;
 
-import java.awt.Component;
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Toolkit;
@@ -82,9 +82,12 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 		table.addMouseListener(this);
 
 		// Initialize the scroll pane
-		pane = new JScrollPane(table, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+		pane = new JScrollPane(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 
-		add(pane);
+		BorderLayout border = new BorderLayout();
+		setLayout(border);
+		add(pane, BorderLayout.CENTER);
+		//add(pane);
 
 		// Initialize the popup menu
 		menu = new JPopupMenu();
@@ -94,7 +97,7 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 
 		// Sets dialog parameters
 		setIconImage(Images.getApplicationImage());
-		setResizable(true);
+		setResizable(false);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setAlwaysOnTop(true);
 		setTitle("Full VCF Line");
@@ -130,37 +133,20 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 		// Initializes the table
 		initColumnList(line);
 		initTable(line);
+		table.revalidate();
 		pane.setViewportView(table);
 
 		// Manages the sizes
 		int heightOffset = 17 + 17 + 2;			// 17 (horizontal scroll bar); 17 (table header); 2 (to make sure we see the whole line: linux issue)
 		int tableHeight = (int)table.getPreferredSize().getHeight();
-		int tableWidth = (int)table.getPreferredSize().getWidth();
-		setComponentSize(table, tableWidth, tableHeight);
-		if (tableWidth > maxWidth) {
-			tableWidth = maxWidth;
-		}
-		setComponentSize(pane, tableWidth, tableHeight + heightOffset);
+		Dimension paneDimension = new Dimension(maxWidth, tableHeight + heightOffset);
+		pane.setPreferredSize(paneDimension);
 		pack();
 
 		// Show the dialog
 		setLocationRelativeTo(getRootPane());
 		setVisible(true);
-	}
 
-
-	/**
-	 * Sets the size of a component
-	 * @param component
-	 * @param width
-	 * @param height
-	 */
-	private void setComponentSize (Component component, int width, int height) {
-		Dimension dimension = new Dimension(width, height);
-		component.setSize(dimension);
-		component.setPreferredSize(dimension);
-		component.setMinimumSize(dimension);
-		component.setMaximumSize(dimension);
 	}
 
 
@@ -187,8 +173,7 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 		// Creates the table
 		VCFLineTableModel model = new VCFLineTableModel(columns.toArray(), data);
 		table = new JTable(model);
-		//table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		table.addMouseListener(this);
 
 		// Sets the column widths
@@ -196,7 +181,7 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 		for (int i = 0; i < columns.size(); i++) {
 			int width = (int)(getMax(columns.get(i), data[0][i]) * 1.5);
 			columnModel.getColumn(i).setPreferredWidth(width);
-			columnModel.getColumn(i).setMinWidth(width);
+			columnModel.getColumn(i).setResizable(false);
 		}
 	}
 

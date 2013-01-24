@@ -44,7 +44,6 @@ public class ExportSettings {
 	private final Map<String, List<VCFFile>> fileMap;
 	private final List<MGFilter> filterList;
 	private final List<VCFFile> fileList;
-	private final AlleleType alleleType;
 
 
 	/**
@@ -52,11 +51,10 @@ public class ExportSettings {
 	 * @param genomeDrawer the genome drawer
 	 */
 	public ExportSettings (MultiGenomeDrawer genomeDrawer) {
-		variationMap = getVariationMap(genomeDrawer.getStripesList());
-		fileMap = getGenomeFileMap(genomeDrawer.getStripesList());
+		variationMap = getVariationMap(genomeDrawer.getVariantDataList());
+		fileMap = getGenomeFileMap(genomeDrawer.getVariantDataList());
 		filterList = genomeDrawer.getFiltersList();
 		fileList = getFileList(fileMap);
-		alleleType = genomeDrawer.getTrackAlleleType();
 	}
 
 
@@ -196,10 +194,10 @@ public class ExportSettings {
 
 
 	/**
-	 * @return the alleleType
+	 * @return the allele type (BOTH)
 	 */
 	public AlleleType getAlleleType() {
-		return alleleType;
+		return AlleleType.BOTH;
 	}
 
 }

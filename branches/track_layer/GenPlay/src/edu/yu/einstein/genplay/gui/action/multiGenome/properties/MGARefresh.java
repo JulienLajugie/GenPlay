@@ -34,7 +34,7 @@ import javax.swing.KeyStroke;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
-import edu.yu.einstein.genplay.gui.action.multiGenome.synchronization.MGASNP;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.Utils;
 
@@ -132,21 +132,20 @@ public final class MGARefresh extends TrackListAction {
 	private class UpdateThread extends Thread {
 
 		private void setTrackLock (boolean lock) {
-			// TODO Layer modif
 			// Update tracks
-			/*Track[] tracks = getTrackListPanel().getModel().getTracks();
+			Track[] tracks = MainFrame.getInstance().getTrackListPanel().getModel().getTracks();
 			for (Track track: tracks) {
 				if (lock) {
 					track.getMultiGenomeDrawer().lockPainting();
 				} else {
 					track.getMultiGenomeDrawer().unlockPainting();
 				}
-			}*/
+			}
 		}
 
 		private void repaintTrack () {
 			// Update tracks
-			Track[] tracks = getTrackListPanel().getModel().getTracks();
+			Track[] tracks = MainFrame.getInstance().getTrackListPanel().getModel().getTracks();
 			for (Track track: tracks) {
 				track.repaint();
 			}
@@ -156,21 +155,6 @@ public final class MGARefresh extends TrackListAction {
 		public void run() {
 			// Lock the painting
 			setTrackLock(true);
-
-			// Create and start the SNP thread
-			SNPThread snpThread = new SNPThread();
-			if (snpThread.hasToBeStarted()) {
-				CountDownLatch SNPLatch = new CountDownLatch(1);		// one for the SNP action
-				snpThread.setLatch(SNPLatch);
-				snpThread.start();
-
-				// The current thread is waiting for the SNP thread to finish
-				try {
-					SNPLatch.await();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
 
 			// Create and start the filter thread
 			FilterThread filterThread = new FilterThread();
@@ -207,46 +191,6 @@ public final class MGARefresh extends TrackListAction {
 			// Unlock the painting and force the repaint
 			setTrackLock(false);
 			repaintTrack();
-		}
-	}
-
-
-
-	/////////////////////////////////////////////////////////////////////// SNPThread class
-
-	/**
-	 * The SNP thread class.
-	 * This class starts the SNP action.
-	 * 
-	 * @author Nicolas Fourel
-	 * @version 0.1
-	 */
-	private class SNPThread extends Thread {
-
-		MGASNP multiGenomeSNP;
-
-
-		public SNPThread () {
-			multiGenomeSNP = new MGASNP();
-		}
-
-		@Override
-		public void run() {
-			multiGenomeSNP.actionPerformed(null);
-		}
-
-		/**
-		 * @return true if the thread has to be started, false if no need
-		 */
-		public boolean hasToBeStarted () {
-			return multiGenomeSNP.hasToBeProcessed();
-		}
-
-		/**
-		 * @param latch the latch to set
-		 */
-		public void setLatch(CountDownLatch latch) {
-			multiGenomeSNP.setLatch(latch);
 		}
 	}
 

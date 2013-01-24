@@ -24,9 +24,19 @@ package edu.yu.einstein.genplay.gui.action.multiGenome.VCFAction;
 import java.awt.event.KeyEvent;
 
 import javax.swing.ActionMap;
+import javax.swing.JOptionPane;
 
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics.VCFFileMixStatistic;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics.VCFFileStatistics;
+import edu.yu.einstein.genplay.core.multiGenome.operation.VCF.MGOVCFStatisticsSingleFile;
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.statistics.MGStatisticsDialog;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSettings;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
+import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.track.layer.variantLayer.MultiGenomeDrawer;
 
 
 /**
@@ -47,7 +57,7 @@ public class MGAVCFStatistics extends TrackListActionWorker<VCFFileStatistics> {
 	 */
 	public static final String ACTION_KEY = "Track Statistics";
 
-	//private MGOVCFStatisticsSingleFile operation;
+	private MGOVCFStatisticsSingleFile operation;
 
 
 	/**
@@ -64,9 +74,8 @@ public class MGAVCFStatistics extends TrackListActionWorker<VCFFileStatistics> {
 
 	@Override
 	protected VCFFileStatistics processAction() {
-		// TODO Layer modif
+		ProjectManager projectManager = ProjectManager.getInstance();
 		VCFFileStatistics result = null;
-		/*		ProjectManager projectManager = ProjectManager.getInstance();
 		if (projectManager.isMultiGenomeProject()) {
 
 			// Get track information
@@ -101,15 +110,15 @@ public class MGAVCFStatistics extends TrackListActionWorker<VCFFileStatistics> {
 			} else {
 				result = genomeDrawer.getStatistics();
 			}
-		}*/
+		}
 		return result;
 	}
 
 
 	@Override
 	protected void doAtTheEnd(VCFFileStatistics actionResult) {
-		// TODO Layer modif
-		/*if (actionResult != null) {
+
+		if (actionResult != null) {
 			actionResult.processStatistics();
 
 			MainFrame.getInstance().getTrackListPanel().getSelectedTrack().getMultiGenomeDrawer().setStatistics(actionResult);
@@ -118,7 +127,7 @@ public class MGAVCFStatistics extends TrackListActionWorker<VCFFileStatistics> {
 			dialog.show(getRootPane());
 		} else {
 			System.out.println("No statistic generated");
-		}*/
+		}
 
 	}
 

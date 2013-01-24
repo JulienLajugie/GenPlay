@@ -23,7 +23,7 @@ package edu.yu.einstein.genplay.core.comparator;
 
 import java.util.Comparator;
 
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantDisplay;
+import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 
 /**
  * This class is a comparator for variant.
@@ -32,10 +32,10 @@ import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantDisplay;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class VariantDisplayComparator implements Comparator<VariantDisplay> {
+public class VariantDisplayComparator implements Comparator<Variant> {
 
 	@Override
-	public int compare(VariantDisplay o1, VariantDisplay o2) {
+	public int compare(Variant o1, Variant o2) {
 		int position1 = o1.getStart();
 		int position2 = o2.getStart();
 		if (position1 < position2) {

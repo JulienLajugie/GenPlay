@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -65,7 +65,12 @@ public enum LayerType {
 	/**
 	 * ScoredChromosomeWindowList layer
 	 */
-	SCW_LAYER ("Variable Window Layer");
+	SCW_LAYER ("Variable Window Layer"),
+
+	/**
+	 * Variant layer displaying the multigenome information
+	 */
+	VARIANT_LAYER ("Variant Layer");
 
 
 	private final String name; // name

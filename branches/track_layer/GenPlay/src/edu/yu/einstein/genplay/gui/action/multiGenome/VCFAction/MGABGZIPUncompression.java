@@ -70,6 +70,22 @@ public class MGABGZIPUncompression extends TrackListActionWorker<Boolean> {
 
 
 	@Override
+	protected Boolean processAction() throws Exception {
+		// Notifies the action
+		notifyActionStart(ACTION_NAME, 1, false);
+
+		MGOBGZIPUncompression operation = new MGOBGZIPUncompression(bgzFile);
+		try {
+			return operation.compute();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+
+	@Override
 	protected void doAtTheEnd(Boolean actionResult) {
 		success = actionResult;
 
@@ -88,22 +104,6 @@ public class MGABGZIPUncompression extends TrackListActionWorker<Boolean> {
 	 */
 	public File getDecompressedFile() {
 		return file;
-	}
-
-
-	@Override
-	protected Boolean processAction() throws Exception {
-		// Notifies the action
-		notifyActionStart(ACTION_NAME, 1, false);
-
-		MGOBGZIPUncompression operation = new MGOBGZIPUncompression(bgzFile);
-		try {
-			return operation.compute();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return false;
 	}
 
 

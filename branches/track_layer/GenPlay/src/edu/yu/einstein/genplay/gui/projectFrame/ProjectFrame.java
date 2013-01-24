@@ -418,4 +418,5 @@ public class ProjectFrame extends JFrame {
 		}
 		super.setVisible(aFlag);
 	}
+
 }

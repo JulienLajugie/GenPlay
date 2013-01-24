@@ -135,7 +135,8 @@ public class VCFLine implements Serializable {
 
 
 	/**
-	 * Process line information for further analysis
+	 * Process line information for further analysis.
+	 * Retrieves and organizes alternatives and formats.
 	 */
 	public void processForAnalyse () {
 		if (!readyForAnalyse) {
@@ -169,7 +170,7 @@ public class VCFLine implements Serializable {
 
 	/**
 	 * Retrieves the length of a variation using the reference and the alternative.
-	 * If the alternative is a structural variant, the length is given by the SVLEN INFO attributes
+	 * If the alternative is a structural variant, the length is given by the SVLEN INFO attributes.
 	 * @param alternative	ALT field
 	 * @return	the length of the variation
 	 */
@@ -220,7 +221,7 @@ public class VCFLine implements Serializable {
 	 * @param variationLength 	length of the variation
 	 * @return					the variation type {@link VariantType}
 	 */
-	private VariantType getVariantType (int variationLength) {
+	public VariantType getVariantType (int variationLength) {
 		if (variationLength < 0) {
 			return VariantType.DELETION;
 		} else if (variationLength > 0) {
@@ -245,6 +246,69 @@ public class VCFLine implements Serializable {
 		for (int i = 9; i < elements.length; i++) {
 			formats.add(Utils.split(elements[i], ':'));
 		}
+	}
+
+	/**
+	 * @param genomeRawName
+	 * @return true if the genotype if heterozygote
+	 */
+	public boolean isHeterozygote (String genomeRawName) {
+		String gt = getGenotype(genomeRawName);
+		if (gt.length() > 2) {
+			char c1 = gt.charAt(0);
+			char c2 = gt.charAt(2);
+			return c1 != c2;
+		}
+		return false;
+	}
+
+	/**
+	 * @param genomeRawName
+	 * @return true if the genotype if homozygote
+	 */
+	public boolean isHomozygote (String genomeRawName) {
+		String gt = getGenotype(genomeRawName);
+		if (gt.length() > 2) {
+			char c1 = gt.charAt(0);
+			char c2 = gt.charAt(2);
+			return c1 == c2;
+		}
+		return false;
+	}
+
+	/**
+	 * @param genomeRawName
+	 * @return true if the genotype contains a no call (a dot: '.')
+	 */
+	public boolean genomeHasNoCall (String genomeRawName) {
+		String gt = getGenotype(genomeRawName);
+		return genotypeHasNoCall(gt);
+	}
+
+	/**
+	 * @param genotype
+	 * @return true if at least one no call is defined in the genotype
+	 */
+	private boolean genotypeHasNoCall (String genotype) {
+		if (genotype.length() > 2) {
+			char c1 = genotype.charAt(0);
+			char c2 = genotype.charAt(2);
+			return ((c1 == '.') || (c2 == '.'));
+		}
+		return false;
+	}
+
+	/**
+	 * @return true if at least one no call is defined in the line
+	 */
+	public boolean lineHasNoCall () {
+		for (String[] format: formats) {
+			String genotype = format[0];
+			if (genotypeHasNoCall(genotype)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	/////////////////////////////////////////////////////
 
@@ -392,6 +456,26 @@ public class VCFLine implements Serializable {
 		return result;
 	}
 
+
+	/**
+	 * @param fullGenomeName a full genome name
+	 * @return	the alternative of the genome
+	 */
+	public int[] getAlternativeIndexesFromFullName (String fullGenomeName) {
+		String rawName = FormattedMultiGenomeName.getRawName(fullGenomeName);
+		if (rawName != null) {
+			String genotype = getGenotype(rawName);
+			String[] indexes = genotype.split("/");
+			int[] array = new int[indexes.length];
+			for (int i = 0; i < indexes.length; i++) {
+				array[i] = VCFLineUtility.getAlleleIndex(indexes[i]);
+			}
+			return array;
+		}
+		return null;
+	}
+
+
 	/**
 	 * @param fullGenomeName a full genome name
 	 * @param allele an allele type
@@ -416,9 +500,9 @@ public class VCFLine implements Serializable {
 		if (genotype != null) {
 			int index = -1;
 			if (allele == AlleleType.ALLELE01) {
-				index = getAlleleIndex(genotype.charAt(0));
+				index = VCFLineUtility.getAlleleIndex(genotype.charAt(0) + "");
 			} else if (allele == AlleleType.ALLELE02) {
-				index = getAlleleIndex(genotype.charAt(2));
+				index = VCFLineUtility.getAlleleIndex(genotype.charAt(2) + "");
 			}
 			if (index > -1) {
 				return alternatives[index];
@@ -543,32 +627,12 @@ public class VCFLine implements Serializable {
 		}
 		return shortName;
 	}
-
-	/**
-	 * Transforms a character into its allele index.
-	 * The char 1 will refer to the first alternative located at the index 0 of any arrays.
-	 * The char 0 returns -1 and the char '.' returns -2 and don't refer to any alternatives.
-	 * @param alleleChar the character
-	 * @return the associated code (char - 1)
-	 */
-	private int getAlleleIndex (char alleleChar) {
-		int alleleIndex = -1;
-		if (alleleChar == '.') {
-			alleleIndex = -2;
-		} else if (alleleChar == '0') {
-			alleleIndex = -1;
-		} else {
-			try {
-				alleleIndex = Integer.parseInt(alleleChar + "") - 1;
-			} catch (Exception e) {}
-		}
-		return alleleIndex;
-	}
 	/////////////////////////////////////////////////////
 
 
 	///////////////////////////////////////////////////// Line utilities
 	/**
+	 * A valid line contains data and at least 10 columns: 8 (CHROM to INFO) + 1 (FORMAT) + 1 (sample)
 	 * @return true if the line is valid, false otherwise
 	 */
 	public boolean isValid () {
@@ -709,5 +773,15 @@ public class VCFLine implements Serializable {
 		s += elements[elements.length - 1];
 		return s;
 	}
+
+
+	/**
+	 * @return the formats
+	 */
+	public List<String[]> getFormats() {
+		return formats;
+	}
+
+
 	/////////////////////////////////////////////////////
 }

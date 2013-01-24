@@ -28,6 +28,7 @@ import java.awt.event.ActionListener;
 import javax.swing.AbstractCellEditor;
 import javax.swing.JRadioButton;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.table.TableCellEditor;
 
 /**
@@ -46,8 +47,9 @@ public class BooleanRadioButtonEditor extends AbstractCellEditor implements Tabl
 	 */
 	public BooleanRadioButtonEditor() {
 		radioButton = new JRadioButton();
-		radioButton.setHorizontalAlignment(JRadioButton.CENTER);
+		radioButton.setHorizontalAlignment(SwingConstants.CENTER);
 		radioButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				// prevent deselection to mimic button group
 				if (!radioButton.isSelected()) {

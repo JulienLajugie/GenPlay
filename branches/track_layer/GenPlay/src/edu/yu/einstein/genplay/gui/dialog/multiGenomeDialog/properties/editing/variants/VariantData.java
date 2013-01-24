@@ -27,19 +27,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.display.MGAlleleForDisplay;
-import edu.yu.einstein.genplay.core.multiGenome.display.MGGenomeForDisplay;
-import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.trackList.TrackListPanel;
@@ -162,14 +156,13 @@ public class VariantData implements Serializable {
 
 
 	/**
-	 * @param alleleType
 	 * @return the list of variant list for display
 	 */
-	public List<MGVariantListForDisplay> getListOfVariantList (AlleleType alleleType) {
-		List<MGVariantListForDisplay> listOfVariantList = new ArrayList<MGVariantListForDisplay>();
+	/*public List<MGDVariantList> getListOfVariantList (AlleleType alleleType) {
+		List<MGDVariantList> listOfVariantList = new ArrayList<MGDVariantList>();
 
-		MGGenomeForDisplay genomeForDisplay = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenomeForDisplay().getGenomeInformation(genome);
-		MGAlleleForDisplay alleleForDisplay = null;
+		MGDGenome genomeForDisplay = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenomeForDisplay().getGenomeInformation(genome);
+		MGDAllele alleleForDisplay = null;
 		if (alleleType == AlleleType.ALLELE01) {
 			alleleForDisplay = genomeForDisplay.getAlleleA();
 		} else if (alleleType == AlleleType.ALLELE02) {
@@ -178,12 +171,12 @@ public class VariantData implements Serializable {
 
 		Chromosome chromosome = ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome();
 		for (VariantType variantType: variationTypeList) {
-			MGVariantListForDisplay variantListForDisplay = alleleForDisplay.getVariantList(chromosome, variantType);
+			MGDVariantList variantListForDisplay = alleleForDisplay.getVariantList(chromosome, variantType);
 			listOfVariantList.add(variantListForDisplay);
 		}
 
 		return listOfVariantList;
-	}
+	}*/
 
 
 	/**

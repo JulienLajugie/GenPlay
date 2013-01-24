@@ -22,7 +22,7 @@
 package edu.yu.einstein.genplay.core.multiGenome.filter;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.Variant;
+import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 
 /**
  * @author Nicolas Fourel

@@ -22,12 +22,17 @@
 package edu.yu.einstein.genplay.gui.action.multiGenome.properties;
 
 import java.awt.event.KeyEvent;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
 
 
@@ -46,7 +51,7 @@ public class MGATrackDisplayRefresh extends TrackListActionWorker<Boolean> {
 	private static final int 				MNEMONIC = KeyEvent.VK_M; 			// mnemonic key
 	private static		 String 			ACTION_NAME = "Updating tracks";	// action name
 
-	//private					MGDisplaySettings 	settings;						// the multi genome settings object shortcut
+	private					MGDisplaySettings 	settings;						// the multi genome settings object shortcut
 
 	/**
 	 * key of the action in the {@link ActionMap}
@@ -76,17 +81,15 @@ public class MGATrackDisplayRefresh extends TrackListActionWorker<Boolean> {
 			// Notifies the action
 			notifyActionStart(ACTION_NAME, 1, false);
 
-			// TODO Layer modif
-
-			/*settings = MGDisplaySettings.getInstance();
+			settings = MGDisplaySettings.getInstance();
 
 			// Update tracks
-			 Track[] tracks = getTrackListPanel().getModel().getTracks();
+			Track[] tracks = MainFrame.getInstance().getTrackListPanel().getModel().getTracks();
 			for (Track track: tracks) {
 				List<MGFilter> filtersList = settings.getFilterSettings().getMGFiltersForTrack(track);
-				List<VariantData> stripesList = settings.getVariantSettings().getVariantsForTrack(track);
-				track.updateMultiGenomeInformation(stripesList, filtersList);
-			} */
+				List<VariantData> variantList = settings.getVariantSettings().getVariantsForTrack(track);
+				track.updateMultiGenomeInformation(variantList, filtersList);
+			}
 
 			return true;
 		}
@@ -98,7 +101,7 @@ public class MGATrackDisplayRefresh extends TrackListActionWorker<Boolean> {
 	@Override
 	protected void doAtTheEnd(Boolean actionResult) {
 		if (actionResult) {
-			Track[] tracks = getTrackListPanel().getModel().getTracks();
+			Track[] tracks = MainFrame.getInstance().getTrackListPanel().getModel().getTracks();
 			for (Track track: tracks) {
 				if (track != null) {
 					track.repaint();

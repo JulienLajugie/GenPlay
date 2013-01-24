@@ -71,37 +71,6 @@ public class MGABGZIPCompression extends TrackListActionWorker<Boolean> {
 
 
 	@Override
-	protected void doAtTheEnd(Boolean actionResult) {
-		success = actionResult;
-		bgzFile = operation.getBgzFile();
-
-		if (!success) {
-			JOptionPane.showMessageDialog(getRootPane(), "The VCF extension has not been found.\nThe file to compress must be a VCF file.\nThe file will not be compressed.", "Compression error.", JOptionPane.INFORMATION_MESSAGE);
-		}
-
-		if (latch != null) {
-			latch.countDown();
-		}
-	}
-
-
-	/**
-	 * @return the BGZIP file
-	 */
-	public File getCompressedFile() {
-		return bgzFile;
-	}
-
-
-	/**
-	 * @return true if the action has been correctly finish, false otherwise
-	 */
-	public boolean hasBeenDone () {
-		return success;
-	}
-
-
-	@Override
 	protected Boolean processAction() throws Exception {
 		// Notifies the action
 		notifyActionStart(ACTION_NAME, 1, false);
@@ -117,10 +86,42 @@ public class MGABGZIPCompression extends TrackListActionWorker<Boolean> {
 	}
 
 
+	@Override
+	protected void doAtTheEnd(Boolean actionResult) {
+		success = actionResult;
+		bgzFile = operation.getBgzFile();
+
+		if (!success) {
+			JOptionPane.showMessageDialog(getRootPane(), "The VCF extension has not been found.\nThe file to compress must be a VCF file.\nThe file will not be compressed.", "Compression error.", JOptionPane.INFORMATION_MESSAGE);
+		}
+
+		if (latch != null) {
+			latch.countDown();
+		}
+	}
+
+
+	/**
+	 * @return true if the action has been correctly finish, false otherwise
+	 */
+	public boolean hasBeenDone () {
+		return success;
+	}
+
+
+	/**
+	 * @return the BGZIP file
+	 */
+	public File getCompressedFile() {
+		return bgzFile;
+	}
+
+
 	/**
 	 * @param latch the latch to set
 	 */
 	public void setLatch(CountDownLatch latch) {
 		this.latch = latch;
 	}
+
 }
