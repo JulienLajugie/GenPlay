@@ -36,6 +36,7 @@ import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.ColoredLayer;
 import edu.yu.einstein.genplay.gui.track.layer.GraphLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
+import edu.yu.einstein.genplay.util.colors.Colors;
 import edu.yu.einstein.genplay.util.colors.LayerColor;
 
 
@@ -54,7 +55,7 @@ public class TALayerSettings extends TrackListAction {
 	/**
 	 * action accelerator {@link KeyStroke}
 	 */
-	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.CTRL_DOWN_MASK);
+	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK);
 
 
 	/**
@@ -101,7 +102,7 @@ public class TALayerSettings extends TrackListAction {
 							if (currentRow.getLayer() instanceof ColoredLayer) {
 								Color selectedColor = currentRow.getLayerColor();
 								// will be removed in the java7 version of genplay since user will be able to select the transparency
-								selectedColor = LayerColor.createTransparentColor(selectedColor);
+								selectedColor = Colors.addTransparency(selectedColor, LayerColor.DEFAULT_TRANSPARENCY);
 								((ColoredLayer) currentRow.getLayer()).setColor(selectedColor);
 							}
 							if (currentRow.getLayer() instanceof GraphLayer) {

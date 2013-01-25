@@ -326,11 +326,11 @@ class AssemblyPanel extends JPanel implements ActionListener {
 			ChromosomeChooserDialog chromosomeChooser = new ChromosomeChooserDialog();
 			chromosomeChooser.setTitle(title);
 			chromosomeChooser.setFullChromosomeList(fullChromosomeList);
-			chromosomeChooser.setListOfSelectedChromosome(selectedChromosomes);
+			chromosomeChooser.setSelectedChromosomeList(selectedChromosomes);
 			chromosomeChooser.setOrdering(false);
 			if (chromosomeChooser.showDialog(getRootPane()) == ChromosomeChooserDialog.APPROVE_OPTION) {
 				fullChromosomeList = chromosomeChooser.getFullChromosomeList();
-				selectedChromosomes = chromosomeChooser.getListOfSelectedChromosome();
+				selectedChromosomes = chromosomeChooser.getSelectedChromosomeList();
 			}
 		}
 	}

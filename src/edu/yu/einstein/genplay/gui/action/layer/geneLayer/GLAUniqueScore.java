@@ -28,9 +28,9 @@ import javax.swing.ActionMap;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOUniqueScore;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
 import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
-import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 
 
 /**
@@ -50,7 +50,7 @@ public class GLAUniqueScore  extends TrackListActionOperationWorker<GeneList> {
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "GLAUniqueScore";
+	public static final String ACTION_KEY = GLAUniqueScore.class.getName();
 
 
 	/**

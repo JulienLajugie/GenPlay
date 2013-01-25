@@ -27,7 +27,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import edu.yu.einstein.genplay.core.RepeatFamily;
 import edu.yu.einstein.genplay.core.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosomeWindow.MaskChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
@@ -36,6 +35,7 @@ import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowLis
 import edu.yu.einstein.genplay.core.list.repeatFamilyList.RepeatFamilyList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
+import edu.yu.einstein.genplay.core.repeatFamily.RepeatFamily;
 
 
 /**

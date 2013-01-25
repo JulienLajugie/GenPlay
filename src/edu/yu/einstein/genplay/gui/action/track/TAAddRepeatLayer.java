@@ -50,7 +50,7 @@ public final class TAAddRepeatLayer extends TrackListActionExtractorWorker<Repea
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "TAAddRepeatLayer";
+	public static final String ACTION_KEY = TAAddRepeatLayer.class.getName();
 
 
 	/**

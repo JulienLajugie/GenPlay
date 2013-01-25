@@ -54,7 +54,7 @@ public final class TACut extends TrackListActionWorker<Void> {
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "TACut";
+	public static final String ACTION_KEY = TACut.class.getName();
 
 
 	/**

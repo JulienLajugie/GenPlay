@@ -46,7 +46,6 @@ import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackConstants;
 import edu.yu.einstein.genplay.util.Utils;
 import edu.yu.einstein.genplay.util.colors.Colors;
-import edu.yu.einstein.genplay.util.colors.GenPlayColor;
 
 
 /**
@@ -128,7 +127,7 @@ public class NucleotideLayer extends AbstractLayer<DisplayableListOfLists<Nucleo
 						if ((baseUnderMouseIndex != null) && (index == baseUnderMouseIndex)) {
 							g.setColor(Colors.WHITE);
 						} else {
-							g.setColor(GenPlayColor.nucleotideToColor(nucleotide));
+							g.setColor(Colors.nucleotideToColor(nucleotide));
 						}
 						g.fillRect(x, 0, nucleoWith, height);
 						if (nucleoWith >= 5) {
@@ -137,12 +136,6 @@ public class NucleotideLayer extends AbstractLayer<DisplayableListOfLists<Nucleo
 						}
 					}
 				}
-			} else {
-				// if we can't print all the bases we just print a message for the user
-				g.setColor(Color.LIGHT_GRAY);
-				g.fillRect(0, 0, width, height);
-				g.setColor(Color.black);
-				g.drawString("Can't display sequence at this zoom level.", 0, height - NUCLEOTIDE_HEIGHT);
 			}
 			g.setColor(Color.WHITE);
 			g.drawLine(0, 0, width, 0);
@@ -183,7 +176,7 @@ public class NucleotideLayer extends AbstractLayer<DisplayableListOfLists<Nucleo
 			} else {
 				// if we can't print all the bases we just print a message for the user
 				g.setColor(Color.black);
-				g.drawString("Can't display sequence at this zoom level.", 0, height - NUCLEOTIDE_HEIGHT);
+				g.drawString("Can't display DNA sequence at this zoom level.", 0, height - NUCLEOTIDE_HEIGHT);
 			}
 		}
 	}

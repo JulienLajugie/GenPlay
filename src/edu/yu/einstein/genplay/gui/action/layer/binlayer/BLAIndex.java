@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -30,9 +30,9 @@ import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLOIndex;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
-import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 
 
 /**
@@ -44,15 +44,15 @@ public final class BLAIndex extends TrackListActionOperationWorker<BinList> {
 
 	private static final long serialVersionUID = -4566157311251154991L; // generated ID
 	private static final String 	ACTION_NAME = "Indexation";			// action name
-	private static final String 	DESCRIPTION = 
-		"Index the selected layer";	 									// tooltip
+	private static final String 	DESCRIPTION =
+			"Index the selected layer";	 									// tooltip
 	private BinLayer 				selectedLayer;						// selected layer
 
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "BLAIndex";
+	public static final String ACTION_KEY = BLAIndex.class.getName();
 
 
 	/**

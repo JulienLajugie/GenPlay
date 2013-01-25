@@ -21,7 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.list;
 
-import edu.yu.einstein.genplay.core.GenomeWindow;
+import edu.yu.einstein.genplay.core.genomeWindow.GenomeWindow;
 
 /**
  * Interface to implement to generate a list of data displayable on the screen

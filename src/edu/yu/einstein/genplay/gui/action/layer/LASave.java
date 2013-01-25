@@ -94,6 +94,7 @@ public class LASave extends TrackListActionWorker<Void> {
 			}
 			jfc.setAcceptAllFileFilterUsed(false);
 			jfc.setFileFilter(jfc.getChoosableFileFilters()[0]);
+			jfc.setSelectedFile(new File(selectedLayer.getName()));
 			int returnVal = jfc.showSaveDialog(getRootPane());
 			if(returnVal == JFileChooser.APPROVE_OPTION) {
 				ExtendedFileFilter selectedFilter = (ExtendedFileFilter)jfc.getFileFilter();

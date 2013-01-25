@@ -24,7 +24,6 @@ package edu.yu.einstein.genplay.gui.dialog.checkBoxTableChooser;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -65,7 +64,6 @@ public class CheckBoxTableChooserDialog<T> extends JDialog {
 	public 		static 	final 	int 		CANCEL_OPTION = 1;
 
 	protected 	static	final 	String[] 	COLUMN_NAMES 				= {"Name", "Selected"};			// Column names
-	private 	static	final 	Dimension 	BUTTON_PANEL_SIZE			= new Dimension(430, 65);		// Button panel size
 	private 	static	final 	Color 		ITEM_CHOOSER_COLOR 			= ProjectFrame.ASSEMBLY_COLOR;	// Item chooser color
 
 	private JTable 					itemTable;					// table containing the items and the check-boxes
@@ -157,7 +155,6 @@ public class CheckBoxTableChooserDialog<T> extends JDialog {
 	 */
 	private void init() {
 		//JDialog information
-		//setSize(DIALOG_SIZE);
 		setBackground(ITEM_CHOOSER_COLOR);
 		setResizable(false);
 		setModal(true);
@@ -166,7 +163,7 @@ public class CheckBoxTableChooserDialog<T> extends JDialog {
 		tableModel = new CheckBoxTableModel<T>();
 		tableModel.setData(fullItemList, selectedItem);
 		itemTable = new JTable();
-		itemTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		itemTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		itemTable.setBackground(ITEM_CHOOSER_COLOR);
 		JScrollPane scrollPane = new JScrollPane(itemTable);
 		scrollPane.setBackground(ITEM_CHOOSER_COLOR);
@@ -239,10 +236,6 @@ public class CheckBoxTableChooserDialog<T> extends JDialog {
 
 		////Button panel
 		JPanel buttonPanel = new JPanel();
-		buttonPanel.setSize(BUTTON_PANEL_SIZE);
-		buttonPanel.setPreferredSize(BUTTON_PANEL_SIZE);
-		buttonPanel.setMinimumSize(BUTTON_PANEL_SIZE);
-		buttonPanel.setMaximumSize(BUTTON_PANEL_SIZE);
 		buttonPanel.setBackground(ITEM_CHOOSER_COLOR);
 		buttonPanel.setLayout(new GridLayout(2, 1));
 
@@ -282,18 +275,7 @@ public class CheckBoxTableChooserDialog<T> extends JDialog {
 		for (int i = 0; i < 2; i++) {
 			column = itemTable.getColumnModel().getColumn(i);
 			column.setHeaderValue(COLUMN_NAMES[i]);
-			column.setResizable(false);
-			int width = getPreferredSize().width - 26;
-			switch (i) {
-			case 0:
-				column.setPreferredWidth((int)Math.round(width * 0.8));
-				break;
-			case 1:
-				column.setPreferredWidth((int)Math.round(width * 0.2));
-				break;
-			default:
-				break;
-			}
+			column.setResizable(true);
 		}
 	}
 }

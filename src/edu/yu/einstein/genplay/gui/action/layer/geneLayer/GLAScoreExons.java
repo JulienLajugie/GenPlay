@@ -60,7 +60,7 @@ public class GLAScoreExons  extends TrackListActionOperationWorker<GeneList> {
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "GLAScoreExons";
+	public static final String ACTION_KEY = GLAScoreExons.class.getName();
 
 
 	/**
@@ -85,7 +85,7 @@ public class GLAScoreExons  extends TrackListActionOperationWorker<GeneList> {
 			} else {
 				LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
 				layerChooserDialog.setLayers(getTrackListPanel().getAllLayers());
-				layerChooserDialog.setSelectableLayers(availableLayerTypes);
+				layerChooserDialog.setSelectableLayerTypes(availableLayerTypes);
 				layerChooserDialog.setMultiselectable(false);
 				if (layerChooserDialog.showDialog(getRootPane(), "Select Layer With The Scores") == LayerChooserDialog.APPROVE_OPTION) {
 					otherLayer = layerChooserDialog.getSelectedLayer();

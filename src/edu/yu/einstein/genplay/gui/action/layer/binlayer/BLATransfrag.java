@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -32,12 +32,12 @@ import edu.yu.einstein.genplay.core.list.binList.operation.BLOTransfragGeneList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
+import edu.yu.einstein.genplay.gui.action.TrackListAction;
+import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.TransfragDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
 import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
-import edu.yu.einstein.genplay.gui.action.TrackListAction;
-import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -49,18 +49,18 @@ import edu.yu.einstein.genplay.util.Utils;
  */
 public class BLATransfrag extends TrackListAction {
 
-	private static final long serialVersionUID = 8388717083206483317L;	// generated ID	
+	private static final long serialVersionUID = 8388717083206483317L;	// generated ID
 	private static final String 	ACTION_NAME = "Transfrag";			// action name
-	private static final String 	DESCRIPTION = 
-		"Define regions separated by gaps of a specified length " +
-		"and compute the average/max/sum of these regions";				// tooltip
+	private static final String 	DESCRIPTION =
+			"Define regions separated by gaps of a specified length " +
+					"and compute the average/max/sum of these regions";				// tooltip
 	private BinLayer 				selectedLayer;						// selected layer
 
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "BLATransfrag";
+	public static final String ACTION_KEY = BLATransfrag.class.getName();
 
 
 	/**

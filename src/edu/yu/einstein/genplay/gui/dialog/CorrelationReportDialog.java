@@ -48,13 +48,15 @@ import javax.swing.text.StyledDocument;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.gui.track.layer.ColoredLayer;
+import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 
 /**
- * A dialog window showing the correlations for each chromosome between two tracks
+ * A dialog window showing the correlations for each chromosome between two layers
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -244,22 +246,21 @@ public class CorrelationReportDialog extends JDialog {
 
 
 	private static final long serialVersionUID = 5952700526094523963L;	// generated ID
-	private static final String text1 = "Correlation Between ";			// text before the first track name in the text pane
-	private static final String text2 = "\n And ";						// text after the first track name in the text pane
+	private static final String text1 = "Correlation Between ";			// text before the first layer name in the text pane
+	private static final String text2 = "\n And ";						// text after the first layer name in the text pane
 	private static JScrollPane 	jsp;									// scroll pane containing the JTable
 	private static JTable 		jt;										// JTable showing the result of the correlation for each chromosome plus the genome wide result
 	private static JButton 		jbOk;									// button OK
-	private static JTextPane	jtaTrackNames; 							// text pane with the name of the tracks
-
+	private static JTextPane	jtaLayerNames; 							// text pane with the name of the layers
 
 	/**
 	 * Privates constructor. Creates an instance of {@link CorrelationReportDialog}
 	 * @param parent parent Component in which the dialog is shown
 	 * @param correlations array containing the correlations for each chromosome and the correlation genome wide
-	 * @param name1 name of the first track
-	 * @param name2 name of the second track
+	 * @param layer1 1st layer
+	 * @param layer2 2nd layer
 	 */
-	private CorrelationReportDialog(Component parent, Double[] correlations, String name1, String name2) {
+	private CorrelationReportDialog(Component parent, Double[] correlations, Layer<?> layer1, Layer<?> layer2) {
 		super();
 		DecimalFormat df = new DecimalFormat("#.##");
 		Object[][] tableData = new Object[correlations.length][2];
@@ -291,23 +292,35 @@ public class CorrelationReportDialog extends JDialog {
 				dispose();
 			}
 		});
+		// retrieve layer properties
+		String name1 = layer1.getName();
+		String name2 = layer2.getName();
+		Color color1 = Colors.BLACK;
+		if (layer1 instanceof ColoredLayer) {
+			color1 = ((ColoredLayer) layer1).getColor();
+		}
+		Color color2 = Colors.BLACK;
+		if (layer2 instanceof ColoredLayer) {
+			color2 = ((ColoredLayer) layer2).getColor();
+		}
 		// create the text area
-		jtaTrackNames = new JTextPane();
+		jtaLayerNames = new JTextPane();
 		// retrieve the document
-		StyledDocument document = jtaTrackNames.getStyledDocument();
+		StyledDocument document = jtaLayerNames.getStyledDocument();
 		// add a centered justification to the default style
 		MutableAttributeSet attributes = new SimpleAttributeSet();
 		StyleConstants.setAlignment(attributes, StyleConstants.ALIGN_CENTER);
 		document.setParagraphAttributes(0, 0, attributes, false);
 		// set the text of the document
-		jtaTrackNames.setText(text1 + name1 + text2 + name2);
-		// change the style of the track names
-		StyleConstants.setForeground(attributes, Colors.BLUE);
+		jtaLayerNames.setText(text1 + name1 + text2 + name2);
+		// change the style of the layer names
+		StyleConstants.setForeground(attributes, color1);
 		document.setCharacterAttributes(text1.length(), name1.length(), attributes, false);
+		StyleConstants.setForeground(attributes, color2);
 		document.setCharacterAttributes(text1.length() + name1.length() + text2.length() , name2.length(), attributes, false);
 		// set the text area non editable and change the color of the background
-		jtaTrackNames.setEditable(false);
-		jtaTrackNames.setBackground(getContentPane().getBackground());
+		jtaLayerNames.setEditable(false);
+		jtaLayerNames.setBackground(getContentPane().getBackground());
 
 		// add the components
 		setLayout(new GridBagLayout());
@@ -315,8 +328,9 @@ public class CorrelationReportDialog extends JDialog {
 
 		c.weightx = 1;
 		c.weighty = 1;
+		c.fill = GridBagConstraints.BOTH;
 		c.anchor = GridBagConstraints.CENTER;
-		add(jtaTrackNames, c);
+		add(jtaLayerNames, c);
 
 		c.gridy = 1;
 		c.fill = GridBagConstraints.BOTH;
@@ -341,10 +355,10 @@ public class CorrelationReportDialog extends JDialog {
 	 * Show a {@link CorrelationReportDialog} containing the specified data
 	 * @param parent parents component in which the dialog is shown
 	 * @param correlations array containing the correlation for each chromosome plus a row with the total correlation
-	 * @param name1 name of the first track
-	 * @param name2 name of the second track
+	 * @param layer1 1st layer
+	 * @param layer2 2nd layer
 	 */
-	public static void showDialog(Component parent, Double[] correlations, String name1, String name2) {
-		new CorrelationReportDialog(parent, correlations, name1, name2).setVisible(true);
+	public static void showDialog(Component parent, Double[] correlations, Layer<?> layer1, Layer<?> layer2) {
+		new CorrelationReportDialog(parent, correlations, layer1, layer2).setVisible(true);
 	}
 }

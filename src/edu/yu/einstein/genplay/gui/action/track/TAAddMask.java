@@ -28,8 +28,8 @@ import javax.swing.ActionMap;
 import edu.yu.einstein.genplay.core.generator.ScoredChromosomeWindowListGenerator;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection.GenomeSelectionDialog;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection.GenomeSelectionDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.MaskLayer;
 import edu.yu.einstein.genplay.util.Utils;
@@ -47,14 +47,14 @@ public final class TAAddMask extends TrackListActionExtractorWorker<ScoredChromo
 	private static final long serialVersionUID = -900140642202561851L; 					// generated ID
 	private static final String ACTION_NAME = "Add Mask Layer"; 						// action name
 	private static final String DESCRIPTION = "Add a mask layer to the selected track"; // tooltip
-	
+
 	private Track 				selectedTrack; 											// selected track
 
-	
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "TAAddMask";
+	public static final String ACTION_KEY = TAAddMask.class.getName();
 
 
 	/**

@@ -282,7 +282,7 @@ public class LayerChooserDialog extends JDialog {
 	 * Sets the layer types that can be selected
 	 * @param selectableLayerTypes list of layer type that can be selected
 	 */
-	public void setSelectableLayers(LayerType[] selectableLayerTypes) {
+	public void setSelectableLayerTypes(LayerType[] selectableLayerTypes) {
 		this.selectableLayerTypes = selectableLayerTypes;
 	}
 

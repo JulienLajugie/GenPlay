@@ -55,7 +55,7 @@ public final class TADelete extends TrackListAction {
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "TADelete";
+	public static final String ACTION_KEY = TADelete.class.getName();
 
 
 	/**

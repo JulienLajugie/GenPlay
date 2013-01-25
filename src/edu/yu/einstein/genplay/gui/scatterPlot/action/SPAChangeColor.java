@@ -27,7 +27,7 @@ import java.util.Arrays;
 
 import javax.swing.JOptionPane;
 
-import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotPane;
+import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotPane;
 import edu.yu.einstein.genplay.util.colors.GenPlayColorChooser;
 
 

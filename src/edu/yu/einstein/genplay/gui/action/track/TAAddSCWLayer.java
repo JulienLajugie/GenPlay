@@ -61,7 +61,7 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<ScoredCh
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "TAAddSCWLayer";
+	public static final String ACTION_KEY = TAAddSCWLayer.class.getName();
 
 
 	/**

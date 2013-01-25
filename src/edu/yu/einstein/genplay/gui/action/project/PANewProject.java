@@ -52,7 +52,7 @@ public class PANewProject extends TrackListActionWorker<Boolean> {
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "PANewProject";
+	public static final String ACTION_KEY = PANewProject.class.getName();
 
 
 	/**

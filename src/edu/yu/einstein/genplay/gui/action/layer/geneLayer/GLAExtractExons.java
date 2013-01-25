@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -26,10 +26,10 @@ import javax.swing.ActionMap;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOExtractExons;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.ExtractExonsDialog;
 import edu.yu.einstein.genplay.gui.dialog.ExtractGeneIntervalsDialog;
 import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
-import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 
 
 /**
@@ -45,13 +45,13 @@ public class GLAExtractExons extends TrackListActionOperationWorker<GeneList> {
 			"defined relative to genes"; 								// tooltip
 	private GeneLayer 			selectedLayer;							// selected layer
 
-	
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "GLAExtractExons";
+	public static final String ACTION_KEY = GLAExtractExons.class.getName();
 
-	
+
 	/**
 	 * Creates an instance of {@link GLAExtractExons}
 	 */
@@ -62,7 +62,7 @@ public class GLAExtractExons extends TrackListActionOperationWorker<GeneList> {
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 	}
 
-	
+
 	@Override
 	public Operation<GeneList> initializeOperation() throws Exception {
 		selectedLayer = (GeneLayer) getValue("Layer");
@@ -70,13 +70,13 @@ public class GLAExtractExons extends TrackListActionOperationWorker<GeneList> {
 			GeneList geneList = selectedLayer.getData();
 			ExtractExonsDialog dialog = new ExtractExonsDialog();
 			if (dialog.showDialog(getRootPane()) == ExtractGeneIntervalsDialog.APPROVE_OPTION) {
-					operation = new GLOExtractExons(geneList, dialog.getSelectedExonOption()); 
-					return operation;
+				operation = new GLOExtractExons(geneList, dialog.getSelectedExonOption());
+				return operation;
 			}
 		}
 		return null;
 	}
-	
+
 
 	@Override
 	protected void doAtTheEnd(GeneList actionResult) {

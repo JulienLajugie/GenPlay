@@ -37,7 +37,6 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackConstants;
 import edu.yu.einstein.genplay.util.colors.Colors;
-import edu.yu.einstein.genplay.util.colors.GenPlayColor;
 import edu.yu.einstein.genplay.util.colors.LayerColor;
 
 
@@ -201,7 +200,7 @@ public class SCWLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList>
 					}
 					double scoreMin = getTrack().getScore().getMinimumScore();
 					double scoreMax = getTrack().getScore().getMaximumScore();
-					g.setColor(GenPlayColor.scoreToColor(currentWindow.getScore(), scoreMin, scoreMax));
+					g.setColor(Colors.scoreToColor(currentWindow.getScore(), scoreMin, scoreMax));
 					g.fillRect(x, 0, widthWindow, height);
 				}
 			}

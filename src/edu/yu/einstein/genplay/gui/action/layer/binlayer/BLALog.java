@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -41,15 +41,15 @@ public final class BLALog extends TrackListActionOperationWorker<BinList> {
 
 	private static final long serialVersionUID = -7633526345952471304L; // generated ID
 	private static final String 	ACTION_NAME = "Log";				// action name
-	private static final String 	DESCRIPTION = 
-		"Apply a log function to the scores of the selected layer";		// tooltip
+	private static final String 	DESCRIPTION =
+			"Apply a log function to the scores of the selected layer";		// tooltip
 	private BinLayer				selectedLayer;						// selected layer
 
-	
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "BLALog";
+	public static final String ACTION_KEY = BLALog.class.getName();
 
 
 	/**

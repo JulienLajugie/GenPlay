@@ -56,7 +56,7 @@ public class BLAConcatenate extends TrackListActionWorker<Void> {
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "BLAConcatenate";
+	public static final String ACTION_KEY = BLAConcatenate.class.getName();
 
 
 	/**
@@ -79,7 +79,7 @@ public class BLAConcatenate extends TrackListActionWorker<Void> {
 		LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
 		layerChooserDialog.setLayers(getTrackListPanel().getAllLayers());
 		LayerType[] selectableLayers = {LayerType.BIN_LAYER};
-		layerChooserDialog.setSelectableLayers(selectableLayers);
+		layerChooserDialog.setSelectableLayerTypes(selectableLayers);
 		layerChooserDialog.setMultiselectable(true);
 		if (layerChooserDialog.showDialog(getRootPane(), "Select Layers to Concatenate") == LayerChooserDialog.APPROVE_OPTION) {
 			List<Layer<?>> selectedLayers = layerChooserDialog.getSelectedLayers();

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -34,7 +34,7 @@ import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
- * Changes the {@link DataPrecision} of a {@link BinLayer} 
+ * Changes the {@link DataPrecision} of a {@link BinLayer}
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -42,8 +42,8 @@ public class BLAChangeDataPrecision extends TrackListActionOperationWorker<BinLi
 
 	private static final long serialVersionUID = 259517972989514480L;		// generated ID
 	private static final String 	ACTION_NAME = "Change Precision";		// action name
-	private static final String 	DESCRIPTION = 
-		"Change the precision of the data of the selected layer";			// tooltip
+	private static final String 	DESCRIPTION =
+			"Change the precision of the data of the selected layer";			// tooltip
 
 	private BinLayer 				selectedLayer;							// selected layer
 
@@ -51,7 +51,7 @@ public class BLAChangeDataPrecision extends TrackListActionOperationWorker<BinLi
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "BLAChangeDataPrecision";
+	public static final String ACTION_KEY = BLAChangeDataPrecision.class.getName();
 
 
 	/**

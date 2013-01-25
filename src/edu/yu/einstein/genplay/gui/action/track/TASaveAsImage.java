@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -23,6 +23,7 @@ package edu.yu.einstein.genplay.gui.action.track;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -30,6 +31,7 @@ import java.io.File;
 import javax.imageio.ImageIO;
 import javax.swing.ActionMap;
 import javax.swing.JFileChooser;
+import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
@@ -50,13 +52,19 @@ public final class TASaveAsImage extends TrackListActionWorker<Void> {
 	private static final long serialVersionUID = -4363481310731795005L; 				// generated ID
 	private static final String ACTION_NAME = "Save as Image"; 							// action name
 	private static final String DESCRIPTION = "Save the selected track as a PNG image"; // tooltip
-	private static final int 	MNEMONIC = KeyEvent.VK_A; 								// mnemonic key
+	private static final int 	MNEMONIC = KeyEvent.VK_S; 								// mnemonic key
 
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "TASaveAsImage";
+	public static final String ACTION_KEY = TASaveAsImage.class.getName();
+
+
+	/**
+	 * action accelerator {@link KeyStroke}
+	 */
+	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK);
 
 
 	/**
@@ -68,6 +76,7 @@ public final class TASaveAsImage extends TrackListActionWorker<Void> {
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
+		putValue(ACCELERATOR_KEY, ACCELERATOR);
 	}
 
 
@@ -80,6 +89,7 @@ public final class TASaveAsImage extends TrackListActionWorker<Void> {
 			FileNameExtensionFilter filter = new FileNameExtensionFilter("PNG file (*.PNG)", "png");
 			saveFC.setFileFilter(filter);
 			saveFC.setDialogTitle("Save track " + selectedTrack.getName() + " as a PNG image");
+			saveFC.setSelectedFile(new File(selectedTrack.getName() + ".png"));
 			int returnVal = saveFC.showSaveDialog(getRootPane());
 			if(returnVal == JFileChooser.APPROVE_OPTION) {
 				File file = Utils.addExtension(saveFC.getSelectedFile(), "png");

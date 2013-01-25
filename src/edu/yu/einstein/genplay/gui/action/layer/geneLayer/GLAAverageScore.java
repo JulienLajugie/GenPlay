@@ -29,9 +29,9 @@ import javax.swing.JOptionPane;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOAverageScore;
 import edu.yu.einstein.genplay.core.operation.Operation;
-import edu.yu.einstein.genplay.gui.dialog.ChromosomeChooser;
-import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
+import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -50,7 +50,7 @@ public final class GLAAverageScore extends TrackListActionOperationWorker<Double
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "GLAAverageScore";
+	public static final String ACTION_KEY = GLAAverageScore.class.getName();
 
 
 	/**
@@ -68,7 +68,7 @@ public final class GLAAverageScore extends TrackListActionOperationWorker<Double
 	public Operation<Double> initializeOperation() {
 		GeneLayer selectedLayer = (GeneLayer) getValue("Layer");
 		if (selectedLayer != null) {
-			boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane());
+			boolean[] selectedChromo = Utils.chooseChromosomes(getRootPane());
 			if (selectedChromo != null) {
 				GeneList binList = selectedLayer.getData();
 				Operation<Double> operation = new GLOAverageScore(binList, selectedChromo);

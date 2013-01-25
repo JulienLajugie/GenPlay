@@ -39,10 +39,7 @@ import edu.yu.einstein.genplay.gui.action.track.TADelete;
 import edu.yu.einstein.genplay.gui.action.track.TAInsert;
 import edu.yu.einstein.genplay.gui.action.track.TALayerSettings;
 import edu.yu.einstein.genplay.gui.action.track.TAPaste;
-import edu.yu.einstein.genplay.gui.action.track.TARename;
 import edu.yu.einstein.genplay.gui.action.track.TASaveAsImage;
-import edu.yu.einstein.genplay.gui.action.track.TASetHeight;
-import edu.yu.einstein.genplay.gui.action.track.TASetVerticalLineCount;
 import edu.yu.einstein.genplay.gui.action.track.TATrackSettings;
 import edu.yu.einstein.genplay.gui.popupMenu.layerMenu.LayerMenuFactory;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -64,18 +61,17 @@ public class TrackMenu extends JPopupMenu implements PopupMenuListener {
 	 *  A null key inserts a separator
 	 */
 	private static final String[] ACTION_KEYS = {
-		TACopy.ACTION_KEY,
-		TACut.ACTION_KEY,
-		TADelete.ACTION_KEY,
-		TAInsert.ACTION_KEY,
-		TAPaste.ACTION_KEY,
-		TARename.ACTION_KEY,
-		TASaveAsImage.ACTION_KEY,
-		TASetHeight.ACTION_KEY,
-		TASetVerticalLineCount.ACTION_KEY,
-		null,
 		TAAddLayer.ACTION_KEY,
 		TAAddLayerFromDAS.ACTION_KEY,
+		null,
+		TACopy.ACTION_KEY,
+		TACut.ACTION_KEY,
+		TAPaste.ACTION_KEY,
+		null,
+		TAInsert.ACTION_KEY,
+		TADelete.ACTION_KEY,
+		null,
+		TASaveAsImage.ACTION_KEY,
 		null,
 		TATrackSettings.ACTION_KEY
 	};

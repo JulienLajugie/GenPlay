@@ -264,9 +264,9 @@ public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLis
 
 
 		final boolean runOverLapEngine;
-		this.overLapManagement = new OverLappingManagement(startList, stopList, scoreList);
+		overLapManagement = new OverLappingManagement(startList, stopList, scoreList);
 		if (scm != null) {
-			this.overLapManagement.setScoreCalculationMethod(scm);
+			overLapManagement.setScoreCalculationMethod(scm);
 			runOverLapEngine = true;
 		} else {
 			runOverLapEngine = false;
@@ -334,9 +334,9 @@ public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLis
 
 
 		final boolean runOverLapEngine;
-		this.overLapManagement = new OverLappingManagement(startList, stopList, null);
+		overLapManagement = new OverLappingManagement(startList, stopList, null);
 		if (scm != null) {
-			this.overLapManagement.setScoreCalculationMethod(scm);
+			overLapManagement.setScoreCalculationMethod(scm);
 			runOverLapEngine = true;
 		} else {
 			runOverLapEngine = false;

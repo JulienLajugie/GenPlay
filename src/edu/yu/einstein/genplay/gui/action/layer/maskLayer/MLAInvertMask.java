@@ -48,7 +48,7 @@ public final class MLAInvertMask extends TrackListActionOperationWorker<ScoredCh
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "MLAInvertMask";
+	public static final String ACTION_KEY = MLAInvertMask.class.getName();
 
 
 	/**

@@ -27,9 +27,9 @@ import javax.swing.JOptionPane;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOCountNonNullGenes;
 import edu.yu.einstein.genplay.core.operation.Operation;
-import edu.yu.einstein.genplay.gui.dialog.ChromosomeChooser;
-import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
+import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -48,7 +48,7 @@ public final class GLACountNonNullGenes extends TrackListActionOperationWorker<L
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "GLACountNonNullGenes";
+	public static final String ACTION_KEY = GLACountNonNullGenes.class.getName();
 
 
 	/**
@@ -66,7 +66,7 @@ public final class GLACountNonNullGenes extends TrackListActionOperationWorker<L
 	public Operation<Long> initializeOperation() {
 		GeneLayer selectedLayer = (GeneLayer) getValue("Layer");
 		if (selectedLayer != null) {
-			boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane());
+			boolean[] selectedChromo = Utils.chooseChromosomes(getRootPane());
 			if (selectedChromo != null) {
 				GeneList binList = selectedLayer.getData();
 				Operation<Long> operation = new GLOCountNonNullGenes(binList, selectedChromo);

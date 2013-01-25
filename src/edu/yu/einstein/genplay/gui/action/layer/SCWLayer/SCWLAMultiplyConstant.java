@@ -28,9 +28,9 @@ import javax.swing.ActionMap;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOMultiplyConstant;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
 import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
-import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 
 
 /**
@@ -50,7 +50,7 @@ public final class SCWLAMultiplyConstant extends TrackListActionOperationWorker<
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "SCWLAMultiplyConstant";
+	public static final String ACTION_KEY = SCWLAMultiplyConstant.class.getName();
 
 
 	/**

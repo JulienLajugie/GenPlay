@@ -36,10 +36,7 @@ import edu.yu.einstein.genplay.gui.action.track.TADelete;
 import edu.yu.einstein.genplay.gui.action.track.TAInsert;
 import edu.yu.einstein.genplay.gui.action.track.TALayerSettings;
 import edu.yu.einstein.genplay.gui.action.track.TAPaste;
-import edu.yu.einstein.genplay.gui.action.track.TARename;
 import edu.yu.einstein.genplay.gui.action.track.TASaveAsImage;
-import edu.yu.einstein.genplay.gui.action.track.TASetHeight;
-import edu.yu.einstein.genplay.gui.action.track.TASetVerticalLineCount;
 import edu.yu.einstein.genplay.gui.action.track.TATrackSettings;
 
 
@@ -62,10 +59,7 @@ public class TrackListActionMap {
 		new TAInsert(),
 		new TALayerSettings(),
 		new TAPaste(),
-		new TARename(),
 		new TASaveAsImage(),
-		new TASetHeight(),
-		new TASetVerticalLineCount(),
 		new TATrackSettings()
 	};
 

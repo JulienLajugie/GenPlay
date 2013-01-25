@@ -31,20 +31,20 @@ import java.util.TreeMap;
 
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.Gene;
 import edu.yu.einstein.genplay.core.comparator.GeneListMiddlePositionComparator;
 import edu.yu.einstein.genplay.core.comparator.GeneListStopPositionComparator;
+import edu.yu.einstein.genplay.core.gene.Gene;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLODistanceCalculator;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
+import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotData;
+import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotPane;
 import edu.yu.einstein.genplay.gui.dialog.DistanceCalculatorDialog;
 import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
-import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotData;
-import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotPane;
 import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
-import edu.yu.einstein.genplay.util.colors.GenPlayColor;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 /**
@@ -68,7 +68,7 @@ public class GLADistanceCalculator extends TrackListActionOperationWorker<long[]
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "GLADistanceCalculator";
+	public static final String ACTION_KEY = GLADistanceCalculator.class.getName();
 
 
 	/**
@@ -90,7 +90,7 @@ public class GLADistanceCalculator extends TrackListActionOperationWorker<long[]
 			LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
 			layerChooserDialog.setLayers(getTrackListPanel().getAllLayers());
 			LayerType[] selectableLayers = {LayerType.GENE_LAYER};
-			layerChooserDialog.setSelectableLayers(selectableLayers);
+			layerChooserDialog.setSelectableLayerTypes(selectableLayers);
 			layerChooserDialog.setMultiselectable(false);
 			if (layerChooserDialog.showDialog(getRootPane(), "Select Layer") == LayerChooserDialog.APPROVE_OPTION) {
 				otherLayer = (GeneLayer) layerChooserDialog.getSelectedLayer();
@@ -149,7 +149,7 @@ public class GLADistanceCalculator extends TrackListActionOperationWorker<long[]
 				plotData[i][1] = sortedCounter.get(key);
 				i++;
 			}
-			scatPlotData.add(new ScatterPlotData(plotData, graphName, GenPlayColor.generateRandomColor()));
+			scatPlotData.add(new ScatterPlotData(plotData, graphName, Colors.generateRandomColor()));
 			ScatterPlotPane.showDialog(getRootPane(), "Distance", "Count", scatPlotData);
 		}
 	}

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -35,7 +35,7 @@ import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
 
 
 /**
- * Class to Rename Genes 
+ * Class to Rename Genes
  * @author Chirag Gorasia
  * @version 0.1
  */
@@ -46,14 +46,14 @@ public class GLAGeneRenamer extends TrackListActionOperationWorker<GeneList>{
 	private static final String 	ACTION_NAME = "Rename Genes"; // action name
 	private static final String 	DESCRIPTION = "Rename Genes";
 	private GeneLayer 				selectedLayer;
-	
-	
+
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "GLAGeneRenamer";
-	
-	
+	public static final String ACTION_KEY = GLAGeneRenamer.class.getName();
+
+
 	/**
 	 * Creates an instance of {@link GLAGeneRenamer}
 	 */
@@ -64,7 +64,7 @@ public class GLAGeneRenamer extends TrackListActionOperationWorker<GeneList>{
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 	}
 
-	
+
 	@Override
 	public Operation<GeneList> initializeOperation() throws Exception {
 		selectedLayer = (GeneLayer) getValue("Layer");
@@ -76,14 +76,14 @@ public class GLAGeneRenamer extends TrackListActionOperationWorker<GeneList>{
 			int retVal = jfc.showOpenDialog(getRootPane());
 			if (retVal == JFileChooser.APPROVE_OPTION) {
 				File fileName = jfc.getSelectedFile();
-				operation = new GLOGeneRenamer(geneList, fileName); 
+				operation = new GLOGeneRenamer(geneList, fileName);
 				return operation;
 			}
 		}
 		return null;
 	}
-	
-	
+
+
 	@Override
 	protected void doAtTheEnd(GeneList actionResult) {
 		if (actionResult != null) {

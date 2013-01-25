@@ -55,7 +55,7 @@ public final class PAExit extends AbstractAction {
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "PAExit";
+	public static final String ACTION_KEY = PAExit.class.getName();
 
 
 	/**

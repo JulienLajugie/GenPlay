@@ -29,9 +29,9 @@ import javax.swing.JOptionPane;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOAverage;
 import edu.yu.einstein.genplay.core.operation.Operation;
-import edu.yu.einstein.genplay.gui.dialog.ChromosomeChooser;
-import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
+import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -50,7 +50,7 @@ public class SCWLAAverage extends TrackListActionOperationWorker<Double> {
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "SCWLAAverage";
+	public static final String ACTION_KEY = SCWLAAverage.class.getName();
 
 
 	/**
@@ -68,7 +68,7 @@ public class SCWLAAverage extends TrackListActionOperationWorker<Double> {
 	public Operation<Double> initializeOperation() {
 		SCWLayer selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
-			boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane());
+			boolean[] selectedChromo = Utils.chooseChromosomes(getRootPane());
 			if (selectedChromo != null) {
 				ScoredChromosomeWindowList scwList = selectedLayer.getData();
 				operation = new SCWLOAverage(scwList, selectedChromo);

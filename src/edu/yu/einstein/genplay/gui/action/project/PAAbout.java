@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -40,22 +40,22 @@ import edu.yu.einstein.genplay.exception.ExceptionManager;
  * @version 0.1
  */
 public final class PAAbout extends AbstractAction {
-	
+
 	private static final long serialVersionUID = 2102571378866219218L; // generated ID
-	private static final String 	ABOUT_URL = 
-		"http://www.genplay.net/wiki/index.php/About_GenPlay";			// URL of the about file
+	private static final String 	ABOUT_URL =
+			"http://www.genplay.net/wiki/index.php/About_GenPlay";			// URL of the about file
 	private static final String 	DESCRIPTION = "Show About GenPlay"; // tooltip
 	private static final int 		MNEMONIC = KeyEvent.VK_A; 			// mnemonic key
 	private static final String 	ACTION_NAME = "About GenPlay";		// action name
 	private final 		Component 	parent;								// parent component
-	
-	
+
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "PAAbout";
-	
-	
+	public static final String ACTION_KEY = PAAbout.class.getName();
+
+
 	/**
 	 * Creates an instance of {@link PAAbout}
 	 * @param parent parent component
@@ -66,9 +66,9 @@ public final class PAAbout extends AbstractAction {
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
-        putValue(MNEMONIC_KEY, MNEMONIC);
+		putValue(MNEMONIC_KEY, MNEMONIC);
 	}
-	
+
 
 	/**
 	 * Shows the about dialog window

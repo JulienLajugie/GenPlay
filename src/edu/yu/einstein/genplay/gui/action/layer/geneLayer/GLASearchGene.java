@@ -28,9 +28,9 @@ import javax.swing.ActionMap;
 import javax.swing.KeyStroke;
 
 import edu.yu.einstein.genplay.core.list.geneList.GeneSearcher;
+import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.SearchGeneDialog;
 import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
-import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 
 
 /**
@@ -55,7 +55,7 @@ public final class GLASearchGene extends TrackListActionWorker<Void> {
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "GLASearchGene";
+	public static final String ACTION_KEY = GLASearchGene.class.getName();
 
 
 	/**

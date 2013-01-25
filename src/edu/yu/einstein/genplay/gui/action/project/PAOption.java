@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -43,26 +43,26 @@ public final class PAOption extends AbstractAction {
 	private static final String 	ACTION_NAME = "Option";		// action name
 	private final MainFrame 		mainFrame;					// main frame of the application
 
-	
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "PAOption";
-	
-	
+	public static final String ACTION_KEY = PAOption.class.getName();
+
+
 	/**
 	 * Creates an instance of {@link PAOption}
 	 * @param mainFrame {@link MainFrame} of the application
 	 */
 	public PAOption(MainFrame mainFrame) {
 		super();
-		this.mainFrame = mainFrame; 
-        putValue(NAME, ACTION_NAME);
-        putValue(ACTION_COMMAND_KEY, ACTION_KEY);
-        putValue(MNEMONIC_KEY, MNEMONIC);
+		this.mainFrame = mainFrame;
+		putValue(NAME, ACTION_NAME);
+		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
+		putValue(MNEMONIC_KEY, MNEMONIC);
 	}
-	
-	
+
+
 	/**
 	 * Shows the option screen
 	 */

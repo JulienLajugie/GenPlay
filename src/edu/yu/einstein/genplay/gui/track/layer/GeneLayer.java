@@ -37,14 +37,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.Gene;
+import edu.yu.einstein.genplay.core.gene.Gene;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.track.ScrollingManager;
 import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.util.colors.GenPlayColor;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 /**
@@ -133,7 +133,7 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 							if (x2 != 0) {
 								// Choose the color depending on if the gene is under the mouse and on the strand
 								boolean isHighlighted = ((geneUnderMouse != null) && (geneToPrint.equals(geneUnderMouse)));
-								g.setColor(GenPlayColor.geneToColor(geneToPrint.getStrand(), isHighlighted));
+								g.setColor(Colors.geneToColor(geneToPrint.getStrand(), isHighlighted));
 								// Draw the gene
 								g.drawLine(x1, currentHeight, x2, currentHeight);
 								// Draw the name of the gene if the zoom is small enough
@@ -159,9 +159,9 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 											if (geneToPrint.getExonScores() != null) {
 												// if we have just one exon score
 												if (geneToPrint.getExonScores().length == 1) {
-													g.setColor(GenPlayColor.scoreToColor(geneToPrint.getExonScores()[0], min, max));
+													g.setColor(Colors.scoreToColor(geneToPrint.getExonScores()[0], min, max));
 												} else { // if we have values for each exon
-													g.setColor(GenPlayColor.scoreToColor(geneToPrint.getExonScores()[j], min, max));
+													g.setColor(Colors.scoreToColor(geneToPrint.getExonScores()[j], min, max));
 												}
 											}
 											// case where the exon is not at all in a UTR (untranslated region)

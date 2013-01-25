@@ -21,11 +21,14 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.popupMenu.layerMenu;
 
+import java.awt.Color;
+
 import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JSeparator;
 
 import edu.yu.einstein.genplay.gui.popupMenu.TrackMenu;
+import edu.yu.einstein.genplay.gui.track.layer.ColoredLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.VersionedLayer;
 
@@ -45,6 +48,18 @@ public abstract class AbstractLayerMenu extends JMenu {
 	 */
 	public AbstractLayerMenu(Layer<?> layer) {
 		super(layer.getName());
+		// if the layer is a coloredlayer the menu color will be the same as the layer
+		if (layer instanceof ColoredLayer) {
+			Color menuColor = ((ColoredLayer) layer).getColor();
+			setForeground(menuColor);
+		}
+		// if the layer is a versioned layer we add the versionlayer sub-menu
+		if (layer instanceof VersionedLayer) {
+			JMenu versionedMenu = new VersionedLayerMenu((VersionedLayer<?>) layer);
+			add(versionedMenu);
+			add(new JSeparator());
+		}
+		// add all the menu items for the layer
 		for (Action currentAction: getLayerMenuActions()) {
 			if (currentAction == null) {
 				addSeparator();
@@ -52,11 +67,6 @@ public abstract class AbstractLayerMenu extends JMenu {
 				currentAction.putValue("Layer", layer);
 				add(currentAction);
 			}
-		}
-		if (layer instanceof VersionedLayer) {
-			JMenu versionedMenu = new VersionedLayerMenu((VersionedLayer<?>) layer);
-			add(versionedMenu, 0);
-			add(new JSeparator(), 1);
 		}
 	}
 

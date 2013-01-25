@@ -54,7 +54,7 @@ public final class TACopy extends TrackListActionWorker<Void> {
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "TACopy";
+	public static final String ACTION_KEY = TACopy.class.getName();
 
 
 	/**

@@ -55,7 +55,7 @@ public final class PARNAPosToDNAPos extends TrackListActionWorker<Void> {
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "PARNAPosToDNAPos";
+	public static final String ACTION_KEY = PARNAPosToDNAPos.class.getName();
 
 
 	/**

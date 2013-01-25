@@ -65,7 +65,7 @@ public final class TAAddBinLayer extends TrackListActionExtractorWorker<BinList>
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "TAAddBinLayer";
+	public static final String ACTION_KEY = TAAddBinLayer.class.getName();
 
 
 	/**

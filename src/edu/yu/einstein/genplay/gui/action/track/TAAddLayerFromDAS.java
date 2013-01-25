@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -22,14 +22,17 @@
 package edu.yu.einstein.genplay.gui.action.track;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.ActionMap;
+import javax.swing.KeyStroke;
 
-import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.DAS.DASConnector;
 import edu.yu.einstein.genplay.core.DAS.DASType;
 import edu.yu.einstein.genplay.core.DAS.DataSource;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
+import edu.yu.einstein.genplay.core.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
@@ -49,12 +52,19 @@ public class TAAddLayerFromDAS extends TrackListAction {
 	private static final String ACTION_NAME = "Add Layer From DAS Server"; 	// action name
 	private static final String DESCRIPTION = "Add a layer from " +
 			"data retrieved from a DAS server"; 							// tooltip
+	private static final int 	MNEMONIC = KeyEvent.VK_D; 					// mnemonic key
 
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "TAAddLayerFromDAS";
+	public static final String ACTION_KEY = TAAddLayerFromDAS.class.getName();
+
+
+	/**
+	 * action accelerator {@link KeyStroke}
+	 */
+	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK);
 
 
 	/**
@@ -65,6 +75,8 @@ public class TAAddLayerFromDAS extends TrackListAction {
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(MNEMONIC_KEY, MNEMONIC);
+		putValue(ACCELERATOR_KEY, ACCELERATOR);
 	}
 
 
@@ -90,12 +102,12 @@ public class TAAddLayerFromDAS extends TrackListAction {
 					int resType = dasDialog.getGenerateType();
 					int dataRange = dasDialog.getDataRange();
 					GenomeWindow genomeWindow = dasDialog.getUserSpecifiedGenomeWindow();
-					GenomeWindow currentWindow = ProjectManager.getInstance().getProjectWindow().getGenomeWindow();					
+					GenomeWindow currentWindow = ProjectManager.getInstance().getProjectWindow().getGenomeWindow();
 					if (resType == DASDialog.GENERATE_GENE_LIST) {
 						// case where the result type is a GeneList
 						new TAAddGeneLayerFromDAS(dataSource, dasConnector, dasType, dataRange, genomeWindow, currentWindow, selectedTrack).actionPerformed(arg0);
 					} else if (resType == DASDialog.GENERATE_SCW_LIST) {
-						// case where the result type is a SCWList 
+						// case where the result type is a SCWList
 						new TAAddSCWLayerFromDAS(dataSource, dasConnector, dasType, dataRange, genomeWindow, currentWindow, selectedTrack).actionPerformed(arg0);
 					}
 				}

@@ -29,9 +29,9 @@ import javax.swing.JOptionPane;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOStandardDeviation;
 import edu.yu.einstein.genplay.core.operation.Operation;
-import edu.yu.einstein.genplay.gui.dialog.ChromosomeChooser;
-import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
+import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -51,7 +51,7 @@ public final class SCWLAStandardDeviation extends TrackListActionOperationWorker
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "SCWLAStandardDeviation";
+	public static final String ACTION_KEY = SCWLAStandardDeviation.class.getName();
 
 
 	/**
@@ -69,7 +69,7 @@ public final class SCWLAStandardDeviation extends TrackListActionOperationWorker
 	public Operation<Double> initializeOperation() {
 		SCWLayer selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
-			boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane());
+			boolean[] selectedChromo = Utils.chooseChromosomes(getRootPane());
 			if (selectedChromo != null) {
 				ScoredChromosomeWindowList scwList = selectedLayer.getData();
 				Operation<Double> operation = new SCWLOStandardDeviation(scwList, selectedChromo);

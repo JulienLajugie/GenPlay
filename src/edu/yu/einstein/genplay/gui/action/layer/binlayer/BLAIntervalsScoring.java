@@ -65,7 +65,7 @@ public class BLAIntervalsScoring extends TrackListActionOperationWorker<BinList>
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "BLAIntervalsScoring";
+	public static final String ACTION_KEY = BLAIntervalsScoring.class.getName();
 
 
 	/**
@@ -86,7 +86,7 @@ public class BLAIntervalsScoring extends TrackListActionOperationWorker<BinList>
 			LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
 			layerChooserDialog.setLayers(getTrackListPanel().getAllLayers());
 			LayerType[] selectableLayers = {LayerType.BIN_LAYER};
-			layerChooserDialog.setSelectableLayers(selectableLayers);
+			layerChooserDialog.setSelectableLayerTypes(selectableLayers);
 			layerChooserDialog.setMultiselectable(false);
 			if (layerChooserDialog.showDialog(getRootPane(), "Select Interval Layer") == LayerChooserDialog.APPROVE_OPTION) {
 				intervalLayer = (BinLayer) layerChooserDialog.getSelectedLayer();

@@ -21,11 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.layer.versionnedLayer;
 
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-
 import javax.swing.ActionMap;
-import javax.swing.KeyStroke;
 
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.track.layer.VersionedLayer;
@@ -45,15 +41,9 @@ public final class VLARedo extends TrackListActionWorker<Void> {
 
 
 	/**
-	 * action accelerator {@link KeyStroke}
-	 */
-	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_Y, InputEvent.CTRL_DOWN_MASK);
-
-
-	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "VLARedo";
+	public static final String ACTION_KEY = VLARedo.class.getName();
 
 
 	/**
@@ -64,7 +54,6 @@ public final class VLARedo extends TrackListActionWorker<Void> {
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
-		putValue(ACCELERATOR_KEY, ACCELERATOR);
 	}
 
 

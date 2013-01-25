@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -22,6 +22,11 @@
 package edu.yu.einstein.genplay.util.colors;
 
 import java.awt.Color;
+import java.util.Random;
+
+import edu.yu.einstein.genplay.core.enums.Nucleotide;
+import edu.yu.einstein.genplay.core.enums.Strand;
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 
 /**
  * Set of colors for GenPlay.
@@ -184,4 +189,146 @@ public class Colors {
 
 	/** Selected color for the track handles */
 	public static final Color 	TRACK_HANDLE_SELECTED = new Color(157, 193, 228);
+
+
+	/**
+	 * @param color a color
+	 * @param transparency alpha value in the range (0 - 255)
+	 * @return a new color with the RGB values of the specified color and the alpha value of the specified transparency
+	 */
+	public static Color addTransparency(Color color, int transparency) {
+		return new Color(color.getRed(), color.getGreen(), color.getBlue(), transparency);
+	}
+
+
+	/**
+	 * Associates a color to a {@link Nucleotide}
+	 * @param nucleotide {@link Nucleotide}
+	 * @return a {@link Color}
+	 */
+	public static Color nucleotideToColor(Nucleotide nucleotide) {
+		switch (nucleotide) {
+		case ADENINE:
+			return Colors.ADENINE;
+		case CYTOSINE:
+			return Colors.CYTOSINE;
+		case GUANINE:
+			return Colors.GUANINE;
+		case THYMINE:
+			return Colors.THYMINE;
+		case ANY:
+			return Colors.ANY;
+		case BLANK:
+			return Colors.BLANK;
+		default:
+			return null;
+		}
+	}
+
+
+	/**
+	 * @return a color randomly generated
+	 */
+	public static Color generateRandomColor() {
+		Random randomGen = new Random();
+		int red = randomGen.nextInt(255);
+		int green = randomGen.nextInt(255);
+		int blue = randomGen.nextInt(255);
+		if ((red + green + blue) > 510) {
+			// we want dark colors
+			return generateRandomColor();
+		} else {
+			return new Color(red, green, blue);
+		}
+	}
+
+
+	/**
+	 * Associates a color to a gene depending on the strand of the gene and if the gene is highlighted
+	 * @param strand a {@link Strand}
+	 * @param isHighlighted true if the gene is highlighted
+	 * @return a {@link Color}
+	 */
+	public static Color geneToColor(Strand strand, boolean isHighlighted) {
+		if (strand == Strand.FIVE) {
+			if (isHighlighted) {
+				return new Color(255, 0, 0);
+			} else {
+				return new Color(180, 0, 0);
+			}
+		} else {
+			if (isHighlighted) {
+				return new Color(0, 100, 255);
+			} else {
+				return new Color(0, 0, 200);
+			}
+		}
+	}
+
+
+	/**
+	 * @param color a {@link Color}
+	 * @return a new color identical to the specified one but with no alpha component
+	 */
+	public static Color removeTransparency(Color color) {
+		return new Color(color.getRed(), color.getGreen(), color.getBlue());
+	}
+
+
+	/**
+	 * Returns a color associated to a score.
+	 * High intensities are red. Medium are green. Low are blue.
+	 * @param score A score indexed between min and max.
+	 * @param min minimum intensity value
+	 * @param max maximum intensity value
+	 * @return A color
+	 */
+	public static Color scoreToColor(double score, double min, double max) {
+		// set the score to min if the score is smaller than min
+		score = Math.max(min, score);
+		// set the score to max if the score is greater than max
+		score = Math.min(max, score);
+		double distance = max - min;
+		double newScore = score - min;
+		double distanceQuarter = distance / 4;
+		int r = 0;
+		int v = 0;
+		int b = 0;
+
+		if ((newScore >= 0) && (newScore <= distanceQuarter)) {
+			r = 0;
+			v = (int)((newScore * 255) / distanceQuarter);
+			b = 255;
+		} else if ((newScore > distanceQuarter) && (newScore <= (2 * distanceQuarter))) {
+			r = 0;
+			v = 255;
+			b = (int)(255 - (((newScore - distanceQuarter) * 255) / distanceQuarter));
+		} else if ((newScore > (2 * distanceQuarter)) && (newScore <= (3 * distanceQuarter))) {
+			r = (int)(((newScore - (2 * distanceQuarter)) * 255) / distanceQuarter);
+			v = 255;
+			b = 0;
+		} else if ((newScore > (3 * distanceQuarter)) && (newScore <= distance)) {
+			r = 255;
+			v = (int)(255 - (((newScore - (3 * distanceQuarter)) * 255) / distanceQuarter));
+			b = 0;
+		}
+		return new Color(r, v, b);
+	}
+
+
+	/**
+	 * Transforms a color used to display a variant stripe.
+	 * Must be called when the mouse is over the stripe!
+	 * @param color	the native color
+	 * @return		a new color
+	 */
+	public static Color stripeFilter (Color color) {
+		int stripesOpacity = MGDisplaySettings.getInstance().getVariousSettings().getColorOpacity();
+		int invert = 255 - stripesOpacity;
+		if (color == null) {
+			color = Colors.BLACK;
+		}
+		Color newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), invert);
+		return newColor;
+	}
 }

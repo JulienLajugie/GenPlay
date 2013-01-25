@@ -105,7 +105,7 @@ public class Ruler extends JPanel implements GenomeWindowListener {
 		BufferedImage image = new BufferedImage(rulerGraphics.getWidth(), rulerGraphics.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		Graphics g = image.getGraphics();
 		g.setFont(TrackConstants.FONT);
-		rulerGraphics.paint(g);
+		rulerGraphics.paintComponent(g);
 		return image;
 	}
 

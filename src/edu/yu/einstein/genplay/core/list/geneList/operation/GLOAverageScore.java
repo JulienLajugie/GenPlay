@@ -57,7 +57,11 @@ public class GLOAverageScore implements Operation<Double> {
 	public Double compute() throws InterruptedException, ExecutionException {
 		long geneNumber = new GLOCountNonNullGenes(geneList, chromoList).compute();
 		double totalScore = new GLOSumScore(geneList, chromoList).compute();
-		return totalScore / geneNumber;
+		if (geneNumber == 0) {
+			return 0d;
+		} else {
+			return totalScore / geneNumber;
+		}
 	}
 
 

@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.scatterPlot;
+package edu.yu.einstein.genplay.gui.customComponent.scatterPlot;
 
 import java.awt.Color;
 import java.awt.Graphics;

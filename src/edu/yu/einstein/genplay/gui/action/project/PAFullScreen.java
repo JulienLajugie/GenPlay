@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -43,20 +43,20 @@ public final class PAFullScreen extends AbstractAction {
 	private static final int 		MNEMONIC = KeyEvent.VK_U; 			// mnemonic key
 	private static final String 	ACTION_NAME = "Full Screen";		// action name
 	private final MainFrame 		mainFrame;							// main frame of the application
-	
-	
+
+
 	/**
 	 * action accelerator {@link KeyStroke}
 	 */
-	public static final KeyStroke 	ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_F11, 0); 
-	
-	
+	public static final KeyStroke 	ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_F11, 0);
+
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "fullscreen";
-	
-	
+	public static final String ACTION_KEY = PAFullScreen.class.getName();
+
+
 
 	/**
 	 * Creates an instance of {@link PAFullScreen}
@@ -65,13 +65,13 @@ public final class PAFullScreen extends AbstractAction {
 	public PAFullScreen(MainFrame mainFrame) {
 		super();
 		this.mainFrame = mainFrame;
-        putValue(NAME, ACTION_NAME);
-        putValue(ACTION_COMMAND_KEY, ACTION_KEY);
-        putValue(MNEMONIC_KEY, MNEMONIC);
-        putValue(ACCELERATOR_KEY, ACCELERATOR);
+		putValue(NAME, ACTION_NAME);
+		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
+		putValue(MNEMONIC_KEY, MNEMONIC);
+		putValue(ACCELERATOR_KEY, ACCELERATOR);
 	}
 
-	
+
 	/**
 	 * Toggles the main frame to fullscreen mode
 	 */

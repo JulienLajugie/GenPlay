@@ -28,7 +28,7 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.core.GenomeWindow;
+import edu.yu.einstein.genplay.core.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;

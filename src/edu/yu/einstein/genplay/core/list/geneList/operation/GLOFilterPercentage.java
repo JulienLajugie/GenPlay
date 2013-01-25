@@ -24,7 +24,7 @@ package edu.yu.einstein.genplay.core.list.geneList.operation;
 import java.util.Arrays;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.Gene;
+import edu.yu.einstein.genplay.core.gene.Gene;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 

@@ -35,7 +35,6 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackConstants;
 import edu.yu.einstein.genplay.util.colors.Colors;
-import edu.yu.einstein.genplay.util.colors.GenPlayColor;
 import edu.yu.einstein.genplay.util.colors.LayerColor;
 
 
@@ -218,7 +217,7 @@ public class BinLayer extends AbstractVersionedLayer<BinList> implements Layer<B
 					if ((currentGenomePosition >= 0) && (currentIndex < binListData.length)){
 						double currentIntensity = binListData[currentIndex];
 						int screenXPosition = projectWindow.genomeToScreenPosition(currentGenomePosition);
-						g.setColor(GenPlayColor.scoreToColor(currentIntensity, getTrack().getScore().getMinimumScore(), getTrack().getScore().getMaximumScore()));
+						g.setColor(Colors.scoreToColor(currentIntensity, getTrack().getScore().getMinimumScore(), getTrack().getScore().getMaximumScore()));
 						g.fillRect(screenXPosition, 0, screenWindowWidth, getTrack().getHeight());
 					}
 					i++;

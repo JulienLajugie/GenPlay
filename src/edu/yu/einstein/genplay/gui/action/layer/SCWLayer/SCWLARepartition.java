@@ -34,10 +34,10 @@ import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowLis
 import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLORepartition;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
+import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotData;
+import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotPane;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
 import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
-import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotData;
-import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotPane;
 import edu.yu.einstein.genplay.gui.track.layer.ColoredLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
@@ -63,7 +63,7 @@ public final class SCWLARepartition extends TrackListActionOperationWorker<doubl
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "SCWLARepartition";
+	public static final String ACTION_KEY = SCWLARepartition.class.getName();
 
 
 	/**
@@ -114,7 +114,7 @@ public final class SCWLARepartition extends TrackListActionOperationWorker<doubl
 					if (scwLayers.length > 1) {
 						LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
 						layerChooserDialog.setLayers(getTrackListPanel().getAllLayers());
-						layerChooserDialog.setSelectableLayers(availableLayerTypes);
+						layerChooserDialog.setSelectableLayerTypes(availableLayerTypes);
 						layerChooserDialog.setMultiselectable(true);
 						if (layerChooserDialog.showDialog(getRootPane(), "Select Layers to Paste") == LayerChooserDialog.APPROVE_OPTION) {
 							selectedLayers = layerChooserDialog.getSelectedLayers().toArray(new SCWLayer[0]);

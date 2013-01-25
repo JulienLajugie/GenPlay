@@ -23,8 +23,8 @@ package edu.yu.einstein.genplay.core.list.SCWList;
 
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 
 

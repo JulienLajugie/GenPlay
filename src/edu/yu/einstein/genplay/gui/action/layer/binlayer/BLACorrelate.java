@@ -53,7 +53,7 @@ public final class BLACorrelate extends TrackListActionOperationWorker<Double[]>
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "BLACorrelate";
+	public static final String ACTION_KEY = BLACorrelate.class.getName();
 
 
 	/**
@@ -74,7 +74,7 @@ public final class BLACorrelate extends TrackListActionOperationWorker<Double[]>
 			LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
 			layerChooserDialog.setLayers(getTrackListPanel().getAllLayers());
 			LayerType[] selectableLayers = {LayerType.BIN_LAYER};
-			layerChooserDialog.setSelectableLayers(selectableLayers);
+			layerChooserDialog.setSelectableLayerTypes(selectableLayers);
 			layerChooserDialog.setMultiselectable(false);
 			if (layerChooserDialog.showDialog(getRootPane(), "Select Layer") == LayerChooserDialog.APPROVE_OPTION) {
 				otherLayer = (BinLayer) layerChooserDialog.getSelectedLayer();
@@ -93,7 +93,7 @@ public final class BLACorrelate extends TrackListActionOperationWorker<Double[]>
 	@Override
 	protected void doAtTheEnd(Double[] actionResult) {
 		if (actionResult != null) {
-			CorrelationReportDialog.showDialog(getRootPane(), actionResult, selectedLayer.getName(), otherLayer.getName());
+			CorrelationReportDialog.showDialog(getRootPane(), actionResult, selectedLayer, otherLayer);
 		}
 	}
 }

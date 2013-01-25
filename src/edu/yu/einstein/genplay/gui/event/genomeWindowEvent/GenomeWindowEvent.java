@@ -23,9 +23,9 @@ package edu.yu.einstein.genplay.gui.event.genomeWindowEvent;
 
 import java.util.EventObject;
 
-import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleChromosomeWindow;
+import edu.yu.einstein.genplay.core.genomeWindow.GenomeWindow;
 
 
 /**

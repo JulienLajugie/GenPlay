@@ -24,8 +24,8 @@ package edu.yu.einstein.genplay.gui.scatterPlot.action;
 import javax.swing.AbstractAction;
 import javax.swing.JRootPane;
 
+import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotPane;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
-import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotPane;
 
 
 

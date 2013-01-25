@@ -109,7 +109,7 @@ public class ChromosomeChooserDialog extends JDialog {
 	 * Sets the list of selected chromosome
 	 * @param list list of chromosome
 	 */
-	public void setListOfSelectedChromosome (List<Chromosome> list) {
+	public void setSelectedChromosomeList (List<Chromosome> list) {
 		if (list == null) {
 			selectedChromosome = new ArrayList<Chromosome>();
 		} else {
@@ -139,7 +139,7 @@ public class ChromosomeChooserDialog extends JDialog {
 	/**
 	 * @return the list of selected chromosome
 	 */
-	public List<Chromosome> getListOfSelectedChromosome () {
+	public List<Chromosome> getSelectedChromosomeList () {
 		return selectedChromosome;
 	}
 

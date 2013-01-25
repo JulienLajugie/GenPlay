@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -31,9 +31,9 @@ import edu.yu.einstein.genplay.core.list.binList.operation.BLOFilterCount;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLOFilterPercentage;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLOFilterThreshold;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.filterDialog.FilterDialog;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
-import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 
 
 /**
@@ -45,15 +45,15 @@ public class BLAFilter extends TrackListActionOperationWorker<BinList> {
 
 	private static final long serialVersionUID = 2935767531786922267L; 	// generated ID
 	private static final String 	ACTION_NAME = "Filter";				// action name
-	private static final String 	DESCRIPTION = 
-		"Filter the selected layer";									// tooltip
+	private static final String 	DESCRIPTION =
+			"Filter the selected layer";									// tooltip
 	private BinLayer				selectedLayer;						// selected layer
 
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "BLAFilter";
+	public static final String ACTION_KEY = BLAFilter.class.getName();
 
 
 	/**
@@ -78,7 +78,7 @@ public class BLAFilter extends TrackListActionOperationWorker<BinList> {
 				BinList binList = selectedLayer.getData();
 				Number min = filterDialog.getMinInput();
 				Number max = filterDialog.getMaxInput();
-				boolean isSaturation = filterDialog.isSaturation(); 
+				boolean isSaturation = filterDialog.isSaturation();
 				switch (filterDialog.getFilterType()) {
 				case COUNT:
 					return new BLOFilterCount(binList, min.intValue(), max.intValue(), isSaturation);

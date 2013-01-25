@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -43,8 +43,8 @@ import edu.yu.einstein.genplay.exception.ExceptionManager;
 public final class PAHelp extends AbstractAction {
 
 	private static final long serialVersionUID = -8315224036423121225L; // generated ID
-	private static final String 	HELP_URL = 
-		"http://www.genplay.net/wiki/index.php/Documentation";	// URL of the help file
+	private static final String 	HELP_URL =
+			"http://www.genplay.net/wiki/index.php/Documentation";	// URL of the help file
 	private static final int 		MNEMONIC = KeyEvent.VK_H; 	// mnemonic key
 	private static final String 	ACTION_NAME = "Help";		// action name
 	private final 		 Component 	parent;						// parent component
@@ -59,7 +59,7 @@ public final class PAHelp extends AbstractAction {
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "PAHelp"; 
+	public static final String ACTION_KEY = PAHelp.class.getName();
 
 
 	/**

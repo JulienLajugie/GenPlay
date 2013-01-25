@@ -6,11 +6,11 @@ import java.util.List;
 
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.RepeatFamily;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.repeatFamilyList.RepeatFamilyList;
 import edu.yu.einstein.genplay.core.list.repeatFamilyList.operation.RFLOConvertIntoMask;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.core.repeatFamily.RepeatFamily;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.checkBoxTableChooser.CheckBoxTableChooserDialog;
 import edu.yu.einstein.genplay.gui.track.Track;

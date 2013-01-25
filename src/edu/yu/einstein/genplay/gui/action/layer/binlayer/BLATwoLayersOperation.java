@@ -64,7 +64,7 @@ public final class BLATwoLayersOperation extends TrackListActionOperationWorker<
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "BLATwoLayersOperation";
+	public static final String ACTION_KEY = BLATwoLayersOperation.class.getName();
 
 
 	/**
@@ -85,7 +85,7 @@ public final class BLATwoLayersOperation extends TrackListActionOperationWorker<
 			LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
 			layerChooserDialog.setLayers(getTrackListPanel().getAllLayers());
 			LayerType[] selectableLayers = {LayerType.BIN_LAYER, LayerType.SCW_LAYER, LayerType.MASK_LAYER};
-			layerChooserDialog.setSelectableLayers(selectableLayers);
+			layerChooserDialog.setSelectableLayerTypes(selectableLayers);
 			layerChooserDialog.setMultiselectable(false);
 			if (layerChooserDialog.showDialog(getRootPane(), "Select 2nd Layer") == LayerChooserDialog.APPROVE_OPTION) {
 				otherLayer = layerChooserDialog.getSelectedLayer();

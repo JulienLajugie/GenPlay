@@ -105,10 +105,10 @@ class ChromoSelectionPanel extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		ChromosomeChooserDialog chromosomeChooser = new ChromosomeChooserDialog();
 		chromosomeChooser.setFullChromosomeList(fullChromosomeList);
-		chromosomeChooser.setListOfSelectedChromosome(selectedChromosomes);
+		chromosomeChooser.setSelectedChromosomeList(selectedChromosomes);
 		chromosomeChooser.setOrdering(false);
 		if (chromosomeChooser.showDialog(getRootPane()) == ChromosomeChooserDialog.APPROVE_OPTION) {
-			selectedChromosomes = chromosomeChooser.getListOfSelectedChromosome();
+			selectedChromosomes = chromosomeChooser.getSelectedChromosomeList();
 			if (selectedChromosomes.size() == 0) {
 				JOptionPane.showMessageDialog(getRootPane(), "You must select at least one chromosome", "Nothing Selected", JOptionPane.WARNING_MESSAGE);
 			} else {

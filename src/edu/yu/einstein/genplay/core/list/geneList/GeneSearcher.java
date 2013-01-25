@@ -23,7 +23,7 @@ package edu.yu.einstein.genplay.core.list.geneList;
 
 import java.io.Serializable;
 
-import edu.yu.einstein.genplay.core.Gene;
+import edu.yu.einstein.genplay.core.gene.Gene;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 
 

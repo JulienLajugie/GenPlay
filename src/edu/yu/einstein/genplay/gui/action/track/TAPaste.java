@@ -23,6 +23,7 @@ package edu.yu.einstein.genplay.gui.action.track;
 
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -59,7 +60,7 @@ public final class TAPaste extends TrackListActionWorker<Void> {
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "TAPaste";
+	public static final String ACTION_KEY = TAPaste.class.getName();
 
 
 	/**
@@ -85,6 +86,8 @@ public final class TAPaste extends TrackListActionWorker<Void> {
 			if (layers.length > 1) {
 				LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
 				layerChooserDialog.setLayers(Arrays.asList(layers));
+				// since Arrays.asList create a list that doesn't support the remove method we convert it as an ArrayList
+				layerChooserDialog.setSelectedLayers(new ArrayList<Layer<?>>(Arrays.asList(layers)));
 				layerChooserDialog.setMultiselectable(true);
 				if (layerChooserDialog.showDialog(getRootPane(), "Select Layers to Paste") == LayerChooserDialog.APPROVE_OPTION) {
 					List<Layer<?>> selectedLayerList = layerChooserDialog.getSelectedLayers();

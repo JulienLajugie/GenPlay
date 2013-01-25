@@ -28,8 +28,8 @@ import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOMax;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.dialog.ChromosomeChooser;
 import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -49,7 +49,7 @@ public final class SCWLAMax extends TrackListActionOperationWorker<Double> {
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "SCWLAMax";
+	public static final String ACTION_KEY = SCWLAMax.class.getName();
 
 
 	/**
@@ -67,7 +67,7 @@ public final class SCWLAMax extends TrackListActionOperationWorker<Double> {
 	public Operation<Double> initializeOperation() {
 		selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
-			boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane());
+			boolean[] selectedChromo = Utils.chooseChromosomes(getRootPane());
 			if (selectedChromo != null) {
 				ScoredChromosomeWindowList scwList = selectedLayer.getData();
 				Operation<Double> operation = new SCWLOMax(scwList, selectedChromo);

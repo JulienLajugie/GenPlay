@@ -34,7 +34,7 @@ import java.io.Serializable;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import edu.yu.einstein.genplay.core.GenomeWindow;
+import edu.yu.einstein.genplay.core.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.core.manager.project.ProjectZoom;
@@ -230,7 +230,7 @@ public class GraphicsPanel extends JPanel implements Serializable, ComponentList
 
 
 	@Override
-	protected void paintComponent(Graphics g) {
+	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		g.setFont(TrackConstants.FONT);
 		//g.setClip(0, 0, getWidth(), getHeight());

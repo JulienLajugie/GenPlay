@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -28,7 +28,7 @@ import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.KeyStroke;
 
-import edu.yu.einstein.genplay.core.GenomeWindow;
+import edu.yu.einstein.genplay.core.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 
 
@@ -42,28 +42,28 @@ public final class PAZoomIn extends AbstractAction {
 
 	private static final long serialVersionUID = -8652598240640813151L;	// generated ID
 
-	
+
 	/**
 	 * action accelerator {@link KeyStroke}
 	 */
 	public static final KeyStroke 	ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0);
-	
-	
+
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "PAZoomIn";
-	
-	
+	public static final String ACTION_KEY = PAZoomIn.class.getName();
+
+
 	/**
 	 * Zooms the {@link GenomeWindow} displayed in the application in
 	 */
 	public PAZoomIn() {
 		super();
-        putValue(ACTION_COMMAND_KEY, ACTION_KEY);
-        putValue(ACCELERATOR_KEY, ACCELERATOR);
+		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
+		putValue(ACCELERATOR_KEY, ACCELERATOR);
 	}
-	
+
 
 	/**
 	 * Zooms the {@link GenomeWindow} displayed in the application in

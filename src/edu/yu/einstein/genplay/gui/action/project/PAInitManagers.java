@@ -75,7 +75,7 @@ public final class PAInitManagers extends AbstractAction {
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "PAInitManagers";
+	public static final String ACTION_KEY = PAInitManagers.class.getName();
 
 
 	/**

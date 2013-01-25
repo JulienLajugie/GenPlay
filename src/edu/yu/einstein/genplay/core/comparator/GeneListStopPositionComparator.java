@@ -23,7 +23,7 @@ package edu.yu.einstein.genplay.core.comparator;
 
 import java.util.Comparator;
 
-import edu.yu.einstein.genplay.core.Gene;
+import edu.yu.einstein.genplay.core.gene.Gene;
 
 
 /**

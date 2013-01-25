@@ -189,7 +189,7 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 	public BufferedImage getImage() {
 		BufferedImage image = new BufferedImage(graphicsPanel.getWidth(), graphicsPanel.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		Graphics g = image.createGraphics();
-		graphicsPanel.paint(g);
+		graphicsPanel.paintComponent(g);
 		return image;
 	}
 

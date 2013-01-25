@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -28,9 +28,9 @@ import javax.swing.ActionMap;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLODivideConstant;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
-import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 
 
 /**
@@ -42,15 +42,15 @@ public class BLADivideConstant extends TrackListActionOperationWorker<BinList> {
 
 	private static final long serialVersionUID = 5335750661672754072L;	// generated ID
 	private static final String 	ACTION_NAME = "Division (Constant)";// action name
-	private static final String 	DESCRIPTION = 
-		"Divide the scores of the selected layer by a constant";		// tooltip
+	private static final String 	DESCRIPTION =
+			"Divide the scores of the selected layer by a constant";		// tooltip
 	private BinLayer 				selectedLayer;						// selected layer
-	
+
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "BLADivideConstant";
+	public static final String ACTION_KEY = BLADivideConstant.class.getName();
 
 
 	/**

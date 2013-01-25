@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -45,26 +45,26 @@ public final class PAWarningReport extends AbstractAction {
 	private static final String 	ACTION_NAME = "Warnings report";	// action name
 	private final MainFrame 		mainFrame;							// main frame of the application
 
-	
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "PAErrorReport";
-	
-	
+	public static final String ACTION_KEY = PAWarningReport.class.getName();
+
+
 	/**
 	 * Creates an instance of {@link PAWarningReport}
 	 * @param mainFrame {@link MainFrame} of the application
 	 */
 	public PAWarningReport(MainFrame mainFrame) {
 		super();
-		this.mainFrame = mainFrame; 
-        putValue(NAME, ACTION_NAME);
-        putValue(ACTION_COMMAND_KEY, ACTION_KEY);
-        putValue(MNEMONIC_KEY, MNEMONIC);
+		this.mainFrame = mainFrame;
+		putValue(NAME, ACTION_NAME);
+		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
+		putValue(MNEMONIC_KEY, MNEMONIC);
 	}
-	
-	
+
+
 	/**
 	 * Shows the option screen
 	 */

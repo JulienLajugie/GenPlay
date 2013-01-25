@@ -22,16 +22,13 @@
 package edu.yu.einstein.genplay.gui.action.layer.versionnedLayer;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 
 import javax.swing.ActionMap;
-import javax.swing.KeyStroke;
 
+import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.dialog.HistoryDialog;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.VersionedLayer;
-import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.util.History;
 
 
@@ -49,15 +46,9 @@ public final class VLAHistory extends TrackListAction {
 
 
 	/**
-	 * action accelerator {@link KeyStroke}
-	 */
-	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_H, InputEvent.CTRL_DOWN_MASK);
-
-
-	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "VLAHistory";
+	public static final String ACTION_KEY = VLAHistory.class.getName();
 
 
 	/**
@@ -68,7 +59,6 @@ public final class VLAHistory extends TrackListAction {
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
-		putValue(ACCELERATOR_KEY, ACCELERATOR);
 	}
 
 

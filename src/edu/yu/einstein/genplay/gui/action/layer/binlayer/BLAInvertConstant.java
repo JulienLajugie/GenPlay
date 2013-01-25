@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -29,9 +29,9 @@ import javax.swing.JOptionPane;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLOInvertConstant;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
-import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 
 
 /**
@@ -43,8 +43,8 @@ public class BLAInvertConstant extends TrackListActionOperationWorker<BinList> {
 
 	private static final long serialVersionUID = 4027173438789911860L; 	// generated ID
 	private static final String 	ACTION_NAME = "Invert (Constant)";	// action name
-	private static final String 	DESCRIPTION = 
-		"Invert the values of the selected layer";						// tooltip
+	private static final String 	DESCRIPTION =
+			"Invert the values of the selected layer";						// tooltip
 
 	private BinLayer 				selectedLayer;						// selected layer
 
@@ -52,7 +52,7 @@ public class BLAInvertConstant extends TrackListActionOperationWorker<BinList> {
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "BLAInvertConstant";
+	public static final String ACTION_KEY = BLAInvertConstant.class.getName();
 
 
 	/**
@@ -83,8 +83,8 @@ public class BLAInvertConstant extends TrackListActionOperationWorker<BinList> {
 		}
 		return null;
 	}
-	
-	
+
+
 	@Override
 	protected void doAtTheEnd(BinList actionResult) {
 		if (actionResult != null) {

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -27,9 +27,9 @@ import javax.swing.JOptionPane;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLOLoessRegression;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.GenomeWidthChooser;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
-import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 
 
 /**
@@ -41,15 +41,15 @@ public final class BLALoessRegression extends TrackListActionOperationWorker<Bin
 
 	private static final long serialVersionUID = 6749094444366905914L;	// generated ID
 	private static final String 	ACTION_NAME = "Loess Regression";	// action name
-	private static final String 	DESCRIPTION = 
-		"Compute a Loess regression on the selected layer";				// tooltip
+	private static final String 	DESCRIPTION =
+			"Compute a Loess regression on the selected layer";				// tooltip
 	private BinLayer 				selectedLayer;						// selected layer
 
-	
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "BLALoessRegression";
+	public static final String ACTION_KEY = BLALoessRegression.class.getName();
 
 
 	/**

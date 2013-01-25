@@ -58,7 +58,7 @@ public final class SCWLATwoLayersOperation extends TrackListActionOperationWorke
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "SCWLATwoLayersOperation";
+	public static final String ACTION_KEY = SCWLATwoLayersOperation.class.getName();
 
 
 	/**
@@ -79,7 +79,7 @@ public final class SCWLATwoLayersOperation extends TrackListActionOperationWorke
 			LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
 			layerChooserDialog.setLayers(getTrackListPanel().getAllLayers());
 			LayerType[] selectableLayers = {LayerType.BIN_LAYER, LayerType.SCW_LAYER, LayerType.MASK_LAYER};
-			layerChooserDialog.setSelectableLayers(selectableLayers);
+			layerChooserDialog.setSelectableLayerTypes(selectableLayers);
 			layerChooserDialog.setMultiselectable(false);
 			if (layerChooserDialog.showDialog(getRootPane(), "Select 2nd Layer") == LayerChooserDialog.APPROVE_OPTION) {
 				otherLayer = layerChooserDialog.getSelectedLayer();

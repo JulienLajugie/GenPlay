@@ -50,7 +50,7 @@ public final class SCWLALog extends TrackListActionOperationWorker<ScoredChromos
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "SCWLALog";
+	public static final String ACTION_KEY = SCWLALog.class.getName();
 
 
 	/**

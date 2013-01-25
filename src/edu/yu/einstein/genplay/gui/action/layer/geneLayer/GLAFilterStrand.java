@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -44,12 +44,12 @@ public class GLAFilterStrand extends TrackListActionOperationWorker<GeneList> {
 	private static final String 	DESCRIPTION = "Remove the genes " +
 			"that are not on the specified strand"; 					// tooltip
 	private GeneLayer 				selectedLayer;						// selected layer
-	
-	
+
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "GLAFilterStrand";
+	public static final String ACTION_KEY = GLAFilterStrand.class.getName();
 
 
 	/**
@@ -70,7 +70,7 @@ public class GLAFilterStrand extends TrackListActionOperationWorker<GeneList> {
 			GeneList geneList = selectedLayer.getData();
 			Strand selectedStrand = (Strand) JOptionPane.showInputDialog(getRootPane(), "Keep the genes that are on the strand:", "Select Strand", JOptionPane.QUESTION_MESSAGE, null, Strand.values(), Strand.FIVE);
 			if (selectedStrand != null) {
-				operation = new GLOFilterStrand(geneList, selectedStrand); 
+				operation = new GLOFilterStrand(geneList, selectedStrand);
 				return operation;
 			}
 		}

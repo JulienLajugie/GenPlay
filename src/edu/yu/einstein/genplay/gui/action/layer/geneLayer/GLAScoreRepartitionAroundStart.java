@@ -34,11 +34,10 @@ import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOScoreRepartitionAroundStart;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.dialog.ChromosomeChooser;
+import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotData;
+import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotPane;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
 import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
-import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotData;
-import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotPane;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
 import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
@@ -64,7 +63,7 @@ public class GLAScoreRepartitionAroundStart extends TrackListActionOperationWork
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "GLAScoreRepartitionAroundStart";
+	public static final String ACTION_KEY = GLAScoreRepartitionAroundStart.class.getName();
 
 
 	/**
@@ -90,13 +89,13 @@ public class GLAScoreRepartitionAroundStart extends TrackListActionOperationWork
 			} else {
 				LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
 				layerChooserDialog.setLayers(getTrackListPanel().getAllLayers());
-				layerChooserDialog.setSelectableLayers(availableLayerTypes);
+				layerChooserDialog.setSelectableLayerTypes(availableLayerTypes);
 				layerChooserDialog.setMultiselectable(false);
 				if (layerChooserDialog.showDialog(getRootPane(), "Select Layer") == LayerChooserDialog.APPROVE_OPTION) {
 					BinLayer binLayer = (BinLayer) layerChooserDialog.getSelectedLayer();
 					if (binLayer != null) {
 						BinList binList = binLayer.getData();
-						boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane());
+						boolean[] selectedChromo = Utils.chooseChromosomes(getRootPane());
 						if (selectedChromo != null) {
 							Number binSize = NumberOptionPane.getValue(getRootPane(), "Enter Value", "Enter the size of the bins in bp", new DecimalFormat("0"), 1, Integer.MAX_VALUE, 10);
 							if (binSize != null) {

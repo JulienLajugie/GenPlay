@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -29,9 +29,9 @@ import edu.yu.einstein.genplay.core.list.geneList.operation.GLOFilterCount;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOFilterPercentage;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOFilterThreshold;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.filterDialog.FilterDialog;
 import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
-import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 
 
 /**
@@ -45,12 +45,12 @@ public class GLAFilter extends TrackListActionOperationWorker<GeneList> {
 	private static final String 	ACTION_NAME = "Filter";		 		// action name
 	private static final String 	DESCRIPTION = "Filter the selected layer";	// tooltip
 	private GeneLayer 				selectedLayer;						// selected layer
-	
-	
+
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "GLAFilter";
+	public static final String ACTION_KEY = GLAFilter.class.getName();
 
 
 	/**
@@ -73,7 +73,7 @@ public class GLAFilter extends TrackListActionOperationWorker<GeneList> {
 				GeneList geneList = selectedLayer.getData();
 				Number min = filterDialog.getMinInput();
 				Number max = filterDialog.getMaxInput();
-				boolean isSaturation = filterDialog.isSaturation(); 
+				boolean isSaturation = filterDialog.isSaturation();
 				switch (filterDialog.getFilterType()) {
 				case COUNT:
 					return new GLOFilterCount(geneList, min.intValue(), max.intValue(), isSaturation);

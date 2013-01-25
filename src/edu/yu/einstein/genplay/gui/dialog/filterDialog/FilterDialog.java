@@ -53,7 +53,7 @@ import edu.yu.einstein.genplay.util.Images;
 public final class FilterDialog extends JDialog implements TreeSelectionListener {
 
 	private static final long serialVersionUID = -4556158108666281869L;	// generated ID
-	private static final Dimension 	FILTER_DIALOG_DIMENSION = new Dimension(500, 350); // dimension of this window
+	private static final Dimension 	FILTER_DIALOG_DIMENSION = new Dimension(600, 350); // dimension of this window
 	private final JTree 			jt; 						// Tree
 	private final JScrollPane 		jspTreeView; 				// Scroll pane containing the tree
 	private final JPanel			jpFilter;					// right panel

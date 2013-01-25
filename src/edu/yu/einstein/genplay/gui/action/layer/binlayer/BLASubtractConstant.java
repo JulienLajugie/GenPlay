@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -28,9 +28,9 @@ import javax.swing.ActionMap;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLOSubtractConstant;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
-import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 
 
 /**
@@ -42,15 +42,15 @@ public class BLASubtractConstant extends TrackListActionOperationWorker<BinList>
 
 	private static final long serialVersionUID = 9085714881046182620L;		// generated ID
 	private static final String 	ACTION_NAME = "Subtraction (Constant)";	// action name
-	private static final String 	DESCRIPTION = 
-		"Subtract a constant from the scores of the selected layer";		// tooltip
+	private static final String 	DESCRIPTION =
+			"Subtract a constant from the scores of the selected layer";		// tooltip
 	private BinLayer 				selectedLayer;							// selected layer
 
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "BLASubtractConstant";
+	public static final String ACTION_KEY = BLASubtractConstant.class.getName();
 
 
 	/**

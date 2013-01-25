@@ -60,7 +60,7 @@ public final class MLAApplyMask extends TrackListActionOperationWorker<Chromosom
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "MLAApplyMask";
+	public static final String ACTION_KEY = MLAApplyMask.class.getName();
 
 
 	/**
@@ -81,12 +81,12 @@ public final class MLAApplyMask extends TrackListActionOperationWorker<Chromosom
 			LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
 			layerChooserDialog.setLayers(getTrackListPanel().getAllLayers());
 			LayerType[] selectableLayers = {LayerType.BIN_LAYER, LayerType.SCW_LAYER, LayerType.MASK_LAYER};
-			layerChooserDialog.setSelectableLayers(selectableLayers);
+			layerChooserDialog.setSelectableLayerTypes(selectableLayers);
 			layerChooserDialog.setMultiselectable(false);
 			if (layerChooserDialog.showDialog(getRootPane(), "Select Layer to Mask") == LayerChooserDialog.APPROVE_OPTION) {
 				maskedLayer = layerChooserDialog.getSelectedLayer();
 				if (maskedLayer != null) {
-					ChromosomeListOfLists<?> data = selectedLayer.getData();
+					ChromosomeListOfLists<?> data = (ChromosomeListOfLists<?>) maskedLayer.getData();
 					ChromosomeListOfLists<?> mask = selectedLayer.getData();
 					resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackListPanel().getModel().getTracks());
 					if (resultTrack != null) {
@@ -111,5 +111,4 @@ public final class MLAApplyMask extends TrackListActionOperationWorker<Chromosom
 			resultTrack.setActiveLayer(newLayer);
 		}
 	}
-
 }

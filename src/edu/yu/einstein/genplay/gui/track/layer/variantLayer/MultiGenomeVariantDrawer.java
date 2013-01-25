@@ -31,9 +31,9 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
+import edu.yu.einstein.genplay.core.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.VariantDisplayList;
@@ -44,7 +44,6 @@ import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.VariantDisp
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
 import edu.yu.einstein.genplay.util.colors.Colors;
-import edu.yu.einstein.genplay.util.colors.GenPlayColor;
 
 /**
  * @author Nicolas Fourel
@@ -215,7 +214,7 @@ class MultiGenomeVariantDrawer implements Serializable {
 		// Sets the stripe color
 		Color newColor;
 		if ((drawer.getVariantUnderMouse() != null) && drawer.getVariantUnderMouse().equals(variant)) {		// if there is a variant under the mouse
-			newColor = GenPlayColor.stripeFilter(color);							// we change the color of the variant
+			newColor = Colors.stripeFilter(color);									// we change the color of the variant
 		} else {																	// if not
 			newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), variantOpacity);	// we use the defined color taking into account the opacity
 		}

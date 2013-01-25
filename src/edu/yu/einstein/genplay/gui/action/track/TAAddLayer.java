@@ -55,7 +55,7 @@ public class TAAddLayer extends TrackListAction {
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "TAAddLayer";
+	public static final String ACTION_KEY = TAAddLayer.class.getName();
 
 
 	private static final String ACTION_NAME = "Add Layer"; 						// action name
@@ -81,12 +81,12 @@ public class TAAddLayer extends TrackListAction {
 		if (selectedTrack != null) {
 			LayerType[] layerTypes = {LayerType.BIN_LAYER, LayerType.SCW_LAYER, LayerType.MASK_LAYER, LayerType.GENE_LAYER, LayerType.REPEAT_FAMILY_LAYER, LayerType.NUCLEOTIDE_LAYER};
 			LayerType selectedLayerType = (LayerType)JOptionPane.showInputDialog(
-					getRootPane(), 
-					"Please select the type of layer to add", 
-					"Layer Type", 
-					JOptionPane.QUESTION_MESSAGE, 
-					null, 
-					layerTypes, 
+					getRootPane(),
+					"Please select the type of layer to add",
+					"Layer Type",
+					JOptionPane.QUESTION_MESSAGE,
+					null,
+					layerTypes,
 					layerTypes[0]);
 			if (selectedLayerType != null) {
 				switch (selectedLayerType) {

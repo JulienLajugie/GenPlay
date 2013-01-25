@@ -46,7 +46,10 @@ import edu.yu.einstein.genplay.core.enums.LogBase;
 import edu.yu.einstein.genplay.core.enums.SaturationType;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoLayersMethod;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
+import edu.yu.einstein.genplay.gui.dialog.chromosomeChooser.ChromosomeChooserDialog;
 import edu.yu.einstein.genplay.gui.fileFilter.BedFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.BedGraphFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.BedGraphWith0Filter;
@@ -73,7 +76,7 @@ import edu.yu.einstein.genplay.gui.track.layer.LayerType;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class Utils {
+public final class Utils {
 
 
 	/**
@@ -83,7 +86,7 @@ public class Utils {
 	 * @param extensions file extensions
 	 * @return a File with the specified extension
 	 */
-	public static File addExtension(File file, String... extensions) {
+	public final static File addExtension(File file, String... extensions) {
 		String currentExtension = getExtension(file);
 		boolean specifedExtensionsFound = false;
 		// if there is no extension specified we return the input file
@@ -116,7 +119,7 @@ public class Utils {
 	 * @param chromoList array of boolean.
 	 * @return true if all the booleans are set to true or if the array is null. False otherwise
 	 */
-	public static boolean allChromosomeSelected(boolean[] chromoList) {
+	public final static boolean allChromosomeSelected(boolean[] chromoList) {
 		if (chromoList == null) {
 			return true;
 		}
@@ -135,7 +138,7 @@ public class Utils {
 	 * @param f A file.
 	 * @return True if the user wants to cancel. False otherwise.
 	 */
-	final public static boolean cancelBecauseFileExist(Component parentComponent, File f) {
+	public final static boolean cancelBecauseFileExist(Component parentComponent, File f) {
 		if (f.exists()) {
 			int res = JOptionPane.showConfirmDialog(parentComponent, "The file " + f.getName() + " already exists. Do you want to replace the existing file?", "File already exists", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null);
 			if (res == JOptionPane.NO_OPTION) {
@@ -148,6 +151,33 @@ public class Utils {
 
 
 	/**
+	 * Opens a dialog box asking the user to choose some chromosomes among all the chromosomes available for the project
+	 * @param parentComponent determines the Frame in which the dialog is displayed; if null, or if the parentComponent has no Frame, a default Frame is used
+	 * @return an array of boolean with a length equal to the number of chromosome in the project.
+	 * The elements of the array are set to true if selected or false otherwise.
+	 */
+	public final static boolean[] chooseChromosomes(Component parentComponent) {
+		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		List<Chromosome> chromosomeList = Utils.getSortedChromosomeList(projectChromosome.getChromosomeList());
+		ChromosomeChooserDialog chromoChooser = new ChromosomeChooserDialog();
+		chromoChooser.setFullChromosomeList(chromosomeList);
+		chromoChooser.setSelectedChromosomeList(chromosomeList);
+		chromoChooser.setOrdering(false);
+		if (chromoChooser.showDialog(parentComponent) == ChromosomeChooserDialog.APPROVE_OPTION) {
+			if (chromoChooser.getSelectedChromosomeList() != null) {
+				boolean[] selectedChromo = new boolean[chromosomeList.size()];
+				for (int i = 0; i < chromosomeList.size(); i++) {
+					selectedChromo[i] = chromoChooser.getSelectedChromosomeList().contains(chromosomeList.get(i));
+				}
+				return selectedChromo;
+			}
+		}
+		return null;
+	}
+
+
+
+	/**
 	 * Opens a dialog box asking the user to choose a file to load
 	 * @param parentComponent determines the Frame in which the dialog is displayed; if null, or if the parentComponent has no Frame, a default Frame is used
 	 * @param title title of the open dialog
@@ -156,7 +186,7 @@ public class Utils {
 	 * @param allFiles allow the selection of every kind of file if true, disable the all file selection if false
 	 * @return a file to load
 	 */
-	final public static File chooseFileToLoad(Component parentComponent, String title, String defaultDirectory, FileFilter[] choosableFileFilters, boolean allFiles) {
+	public final static File chooseFileToLoad(Component parentComponent, String title, String defaultDirectory, FileFilter[] choosableFileFilters, boolean allFiles) {
 		JFileChooser jfc = new JFileChooser(defaultDirectory);
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		jfc.setDialogTitle(title);
@@ -187,7 +217,7 @@ public class Utils {
 	 * @param parentComponent the parent Component for the dialog
 	 * @return a {@link FilterType} value
 	 */
-	public static FilterType chooseFilterType(Component parentComponent) {
+	public final static FilterType chooseFilterType(Component parentComponent) {
 		return (FilterType)JOptionPane.showInputDialog(
 				parentComponent,
 				"Choose a type of filter",
@@ -204,7 +234,7 @@ public class Utils {
 	 * @param parentComponent the parent Component for the dialog
 	 * @return a {@link FilterType} value
 	 */
-	public static IslandResultType chooseIslandResultType(Component parentComponent) {
+	public final static IslandResultType chooseIslandResultType(Component parentComponent) {
 		return (IslandResultType)JOptionPane.showInputDialog(
 				parentComponent,
 				"Choose a type of result",
@@ -221,7 +251,7 @@ public class Utils {
 	 * @param parentComponent the parent Component for the dialog
 	 * @return a {@link LogBase} value
 	 */
-	public static LogBase chooseLogBase(Component parentComponent) {
+	public final static LogBase chooseLogBase(Component parentComponent) {
 		return (LogBase) JOptionPane.showInputDialog(
 				parentComponent,
 				"Choose a base for the logarithm",
@@ -238,7 +268,7 @@ public class Utils {
 	 * @param parentComponent the parent Component for the dialog
 	 * @return a {@link DataPrecision}
 	 */
-	public static DataPrecision choosePrecision(Component parentComponent) {
+	public final static DataPrecision choosePrecision(Component parentComponent) {
 		return (DataPrecision)JOptionPane.showInputDialog(
 				parentComponent,
 				"Choose a precision for the data of the fixed window list",
@@ -256,7 +286,7 @@ public class Utils {
 	 * @param defaultValue default value in the input box
 	 * @return a {@link DataPrecision}
 	 */
-	public static DataPrecision choosePrecision(Component parentComponent, DataPrecision defaultValue) {
+	public final static DataPrecision choosePrecision(Component parentComponent, DataPrecision defaultValue) {
 		return (DataPrecision)JOptionPane.showInputDialog(
 				parentComponent,
 				"Choose a precision for the data of the fixed window list",
@@ -273,7 +303,7 @@ public class Utils {
 	 * @param parentComponent the parent Component for the dialog
 	 * @return a {@link SaturationType}
 	 */
-	public static SaturationType chooseSaturationType(Component parentComponent) {
+	public final static SaturationType chooseSaturationType(Component parentComponent) {
 		return (SaturationType)JOptionPane.showInputDialog(
 				parentComponent,
 				"Choose a type of saturation",
@@ -290,7 +320,7 @@ public class Utils {
 	 * @param parentComponent the parent Component for the dialog
 	 * @return a {@link ScoreCalculationMethod}
 	 */
-	public static ScoreCalculationMethod chooseScoreCalculation(Component parentComponent) {
+	public final static ScoreCalculationMethod chooseScoreCalculation(Component parentComponent) {
 		return (ScoreCalculationMethod)JOptionPane.showInputDialog(
 				parentComponent,
 				"Choose a method for the calculation of the score",
@@ -307,7 +337,7 @@ public class Utils {
 	 * @param parentComponent the parent Component for the dialog
 	 * @return a {@link ScoreCalculationMethod}
 	 */
-	public static ScoreCalculationTwoLayersMethod chooseScoreCalculationTwoLayersMethod(Component parentComponent) {
+	public final static ScoreCalculationTwoLayersMethod chooseScoreCalculationTwoLayersMethod(Component parentComponent) {
 		return (ScoreCalculationTwoLayersMethod)JOptionPane.showInputDialog(
 				parentComponent,
 				"Choose a method for the calculation of the score",
@@ -323,7 +353,7 @@ public class Utils {
 	 * @param file a {@link File}
 	 * @return the extension of the file (without the dot), null if none.
 	 */
-	final public static String getExtension(File file) {
+	public final static String getExtension(File file) {
 		String fileName = file.getName();
 		if (fileName == null) {
 			return null;
@@ -341,7 +371,7 @@ public class Utils {
 	 * @param file a {@link File}
 	 * @return the name of a file without its extension
 	 */
-	public static String getFileNameWithoutExtension(File file) {
+	public final static String getFileNameWithoutExtension(File file) {
 		String fileName = file.getName();
 		int index = fileName.lastIndexOf('.');
 		if ((index > 0) && (index <= (file.getName().length() - 2))) {
@@ -355,7 +385,7 @@ public class Utils {
 	/**
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as BinList
 	 */
-	public static ExtendedFileFilter[] getReadableBinListFileFilters() {
+	public final static ExtendedFileFilter[] getReadableBinListFileFilters() {
 		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new GTFFilter(), new WiggleFilter(), new PairFilter(), new ElandExtendedFilter(), new PSLFilter(), new SAMFilter(), new SerializedBinListFilter()};
 		return filters;
 	}
@@ -364,7 +394,7 @@ public class Utils {
 	/**
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as GeneList
 	 */
-	public static ExtendedFileFilter[] getReadableGeneFileFilters() {
+	public final static ExtendedFileFilter[] getReadableGeneFileFilters() {
 		ExtendedFileFilter[] filters = {new BedFilter(), new GdpGeneFilter(), new GTFFilter(), new PSLFilter()};
 		return filters;
 	}
@@ -373,7 +403,7 @@ public class Utils {
 	/**
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as Repeats
 	 */
-	public static ExtendedFileFilter[] getReadableRepeatFileFilters() {
+	public final static ExtendedFileFilter[] getReadableRepeatFileFilters() {
 		ExtendedFileFilter[] filters = {new BedFilter(), new GFFFilter(), new GTFFilter(), new PSLFilter()};
 		return filters;
 	}
@@ -382,7 +412,7 @@ public class Utils {
 	/**
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as SCWList
 	 */
-	public static ExtendedFileFilter[] getReadableSCWFileFilters() {
+	public final static ExtendedFileFilter[] getReadableSCWFileFilters() {
 		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new GTFFilter(), new WiggleFilter(), new PSLFilter()};
 		return filters;
 	}
@@ -391,7 +421,7 @@ public class Utils {
 	/**
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as sequence track (aka nucleotide list)
 	 */
-	public static FileFilter[] getReadableSequenceFileFilters() {
+	public final static FileFilter[] getReadableSequenceFileFilters() {
 		ExtendedFileFilter[] filters = {new TwoBitFilter()};
 		return filters;
 	}
@@ -400,7 +430,7 @@ public class Utils {
 	/**
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as SNPList
 	 */
-	public static FileFilter[] getReadableSNPFileFilters() {
+	public final static FileFilter[] getReadableSNPFileFilters() {
 		ExtendedFileFilter[] filters = {new SOAPsnpFilter()};
 		return filters;
 	}
@@ -409,7 +439,7 @@ public class Utils {
 	/**
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as stripes
 	 */
-	public static ExtendedFileFilter[] getReadableStripeFileFilters() {
+	public final static ExtendedFileFilter[] getReadableStripeFileFilters() {
 		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new GTFFilter(), new WiggleFilter(), new PSLFilter()};
 		return filters;
 	}
@@ -420,7 +450,7 @@ public class Utils {
 	 * @param layerTypes a list of {@link LayerType}
 	 * @return all the layer from the list of tracks that are in the specified list of the {@link LayerType}. All layers if the layer type list is null
 	 */
-	public static Layer<?>[] getLayers(Track[] tracks, LayerType[] layerTypes) {
+	public final static Layer<?>[] getLayers(Track[] tracks, LayerType[] layerTypes) {
 		List<Layer<?>> layerList = new ArrayList<Layer<?>>();
 		for (Track currentTrack: tracks) {
 			for (Layer<?> currentLayer: currentTrack.getLayers()) {
@@ -437,7 +467,7 @@ public class Utils {
 	/**
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be saved as BinList
 	 */
-	public static ExtendedFileFilter[] getWritableBinListFileFilters() {
+	public final static ExtendedFileFilter[] getWritableBinListFileFilters() {
 		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedGraphWith0Filter(), new BedFilter(), new GFFFilter(), new WiggleFilter(), new SerializedBinListFilter()};
 		return filters;
 	}
@@ -446,7 +476,7 @@ public class Utils {
 	/**
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be saved as GeneList
 	 */
-	public static ExtendedFileFilter[] getWritableGeneFileFilters() {
+	public final static ExtendedFileFilter[] getWritableGeneFileFilters() {
 		ExtendedFileFilter[] filters = {new BedFilter(), new GdpGeneFilter()};
 		return filters;
 	}
@@ -455,7 +485,7 @@ public class Utils {
 	/**
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be saved as SCWList
 	 */
-	public static ExtendedFileFilter[] getWritableSCWFileFilter() {
+	public final static ExtendedFileFilter[] getWritableSCWFileFilter() {
 		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter()};
 		return filters;
 	}
@@ -467,7 +497,7 @@ public class Utils {
 	 * @param value value to l
 	 * @return a logarithm value
 	 */
-	public static double log(LogBase logBase, double value) {
+	public final static double log(LogBase logBase, double value) {
 		if (logBase == LogBase.BASE_E) {
 			// the Math.log function return the natural log (no needs to change the base)
 			return Math.log(value);
@@ -485,7 +515,7 @@ public class Utils {
 	 * @param line input line to parse
 	 * @return an array of strings containing the fields of the input line
 	 */
-	public static String[] parseLineTabAndSpace(String line) {
+	public final static String[] parseLineTabAndSpace(String line) {
 		List<String> parsedLine = new ArrayList<String>();
 		int i = 0;
 		while (i < line.length()) {
@@ -527,7 +557,7 @@ public class Utils {
 	 * @param line input line to parse
 	 * @return an array of strings containing the fields of the input line
 	 */
-	public static String[] parseLineTabOnly(String line) {
+	public final static String[] parseLineTabOnly(String line) {
 		List<String> parsedLine = new ArrayList<String>();
 		int i = 0;
 		while (i < line.length()) {
@@ -571,7 +601,7 @@ public class Utils {
 	 * @param positionStop
 	 * @return a sublist of the input list
 	 */
-	public static ArrayList<Variant> searchVariantInterval(List<Variant> list, int positionStart, int positionStop) {
+	public final static ArrayList<Variant> searchVariantInterval(List<Variant> list, int positionStart, int positionStop) {
 		if ((list == null) || (list.size() == 0)) {
 			return null;
 		}
@@ -636,7 +666,7 @@ public class Utils {
 	 * @param position the position to check
 	 * @return 0 is the position is in the variant, -1 if lower, 1 if higher.
 	 */
-	public static int containsVariantPosition (Variant variant, int position) {
+	public final static int containsVariantPosition (Variant variant, int position) {
 		if (position < variant.getStart()) {
 			return -1;
 		} else if (position > variant.getStop()) {
@@ -652,7 +682,7 @@ public class Utils {
 	 * @param positionStop	the stop position on the main frame
 	 * @return true if the element is in the main frame, false otherwise
 	 */
-	public static boolean isInVariant (Variant element, int positionStart, int positionStop) {
+	public final static boolean isInVariant (Variant element, int positionStart, int positionStop) {
 		if (element.getStop() < positionStart) {
 			return false;
 		}
@@ -676,7 +706,7 @@ public class Utils {
 	 * @param positionStop
 	 * @return a sublist of the input list
 	 */
-	public static <T extends ChromosomeWindow> List<T> searchChromosomeWindowInterval(List<T> list, int positionStart, int positionStop) {
+	public final static <T extends ChromosomeWindow> List<T> searchChromosomeWindowInterval(List<T> list, int positionStart, int positionStop) {
 		if ((list == null) || (list.size() == 0)) {
 			return null;
 		}
@@ -713,7 +743,7 @@ public class Utils {
 	 * @param windowStop	the stop position on the main frame
 	 * @return true if the element is in the main frame, false otherwise
 	 */
-	public static <T extends ChromosomeWindow> boolean isInWindow (T element, int windowStart, int windowStop) {
+	public final static <T extends ChromosomeWindow> boolean isInWindow (T element, int windowStart, int windowStop) {
 		if (element.getStop() < windowStart) {
 			return false;
 		}
@@ -768,7 +798,7 @@ public class Utils {
 	 * @param indexStop		index of the list to stop the scan
 	 * @return 				the index where the start value of the window is found or the index right after if the exact value is not found
 	 */
-	public static <T extends ChromosomeWindow> int findStart(List<T> list, int value, int indexStart, int indexStop) {
+	public final static <T extends ChromosomeWindow> int findStart(List<T> list, int value, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (indexStart == indexStop) {
 			return indexStart;
@@ -794,7 +824,7 @@ public class Utils {
 	 * @param indexStop		index of the list to stop the scan
 	 * @return 				the index where the stop value of the window is found or the index right before if the exact value is not found
 	 */
-	public static <T extends ChromosomeWindow> int findStop(List<T> list, int value, int indexStart, int indexStop) {
+	public final static <T extends ChromosomeWindow> int findStop(List<T> list, int value, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (indexStart == indexStop) {
 			return indexStart;
@@ -813,7 +843,7 @@ public class Utils {
 	 * @param list	a list of chromosome indexed by their name
 	 * @return		a list of chromosome sorted according to the names
 	 */
-	public static List<Chromosome> getSortedChromosomeList(List<Chromosome> list) {
+	public final static List<Chromosome> getSortedChromosomeList(List<Chromosome> list) {
 
 		Map<String, Chromosome> chromosomeMap = new HashMap<String, Chromosome>();
 		List<Chromosome> chromosomeList = new ArrayList<Chromosome>();
@@ -838,7 +868,7 @@ public class Utils {
 	 * Shows the chromosome details of a list of chromosomes
 	 * @param chromosomeList the list of chromosomes
 	 */
-	public static void showChromosomeList (List<Chromosome> chromosomeList) {
+	public final static void showChromosomeList (List<Chromosome> chromosomeList) {
 		String output = "---------- showChromosomeList\n";
 		for (Chromosome chromosome: chromosomeList) {
 			output += chromosome.getName() + " : " + chromosome.getLength() + "\n";
@@ -853,7 +883,7 @@ public class Utils {
 	 * @param b the int array
 	 * @return	the reversed array
 	 */
-	public static int[] reverse(int[] b) {
+	public final static int[] reverse(int[] b) {
 		int left  = 0;          // index of leftmost element
 		int right = b.length-1; // index of rightmost element
 
@@ -873,7 +903,7 @@ public class Utils {
 	/**
 	 * Tries to force the garbage collector to run
 	 */
-	public static void garbageCollect() {
+	public final static void garbageCollect() {
 		System.gc();/*System.gc();System.gc();System.gc();
 		System.gc();System.gc();System.gc();System.gc();
 		System.gc();System.gc();System.gc();System.gc();
@@ -888,7 +918,7 @@ public class Utils {
 	 * @param c	the integer code of the character
 	 * @return	an array containing the split string (or empty if the string is null)
 	 */
-	public static String[] split (String s, int c) {
+	public final static String[] split (String s, int c) {
 		List<String> list = new ArrayList<String>();
 		if (s != null) {
 			int pos = 0, end;
@@ -919,7 +949,7 @@ public class Utils {
 	 * @param s	the string to split
 	 * @return	an array containing the split string
 	 */
-	public static String[] splitWithTab (String s) {
+	public final static String[] splitWithTab (String s) {
 		return split(s, '	');
 	}
 
@@ -930,7 +960,7 @@ public class Utils {
 	 * @param index	index of the first integer
 	 * @return		the full integer starting at the index
 	 */
-	public static Integer getFullIntegerPart (String s, int index) {
+	public final static Integer getFullIntegerPart (String s, int index) {
 		Integer result = null;									// Initialize the result to null
 		int nextIndex = index + 1;								// Next index is initialized with index + 1
 		while (nextIndex <= s.length()) {						// while the next index is shorter or equal to the string length
@@ -952,7 +982,7 @@ public class Utils {
 	 * @param index		the index to start
 	 * @return			the index of the first int found in the string after the specified start, -1 if not found
 	 */
-	public static int getFirstIntegerOffset (String s, int index) {
+	public final static int getFirstIntegerOffset (String s, int index) {
 		for (int i = 0; i < s.length(); i++) {
 			int c = s.charAt(i);
 			if ((c >= 48) && (c <= 57)) {
@@ -972,7 +1002,7 @@ public class Utils {
 	 * @param fm		the font metrics
 	 * @return			the formatted line
 	 */
-	public static String[] splitStringWithLength (String s, int length, FontMetrics fm) {
+	public final static String[] splitStringWithLength (String s, int length, FontMetrics fm) {
 		List<String> result = new ArrayList<String>();
 		String[] array = split(s, ' ');
 		String current = array[0];
@@ -1006,7 +1036,7 @@ public class Utils {
 	 * @param metrics	the metrics
 	 * @return the length of the longest object (as a string), 0 otherwise
 	 */
-	public static int getMaximumLength (Object[] objects, FontMetrics metrics) {
+	public final static int getMaximumLength (Object[] objects, FontMetrics metrics) {
 		int result = 0;
 
 		if ((objects != null) && (objects.length > 0)) {
@@ -1017,5 +1047,4 @@ public class Utils {
 
 		return result;
 	}
-
 }

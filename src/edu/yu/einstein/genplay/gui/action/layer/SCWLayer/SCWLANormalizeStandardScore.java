@@ -47,7 +47,7 @@ public class SCWLANormalizeStandardScore extends TrackListActionOperationWorker<
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "SCWLANormalizeStandardScore";
+	public static final String ACTION_KEY = SCWLANormalizeStandardScore.class.getName();
 
 
 	/**

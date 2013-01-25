@@ -23,7 +23,7 @@ package edu.yu.einstein.genplay.core.list.geneList.operation.distanceCalculator;
 
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.Gene;
+import edu.yu.einstein.genplay.core.gene.Gene;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 
 

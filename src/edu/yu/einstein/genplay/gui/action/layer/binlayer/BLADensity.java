@@ -56,7 +56,7 @@ public class BLADensity extends TrackListActionOperationWorker<BinList> {
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "BLADensity";
+	public static final String ACTION_KEY = BLADensity.class.getName();
 
 
 	/**

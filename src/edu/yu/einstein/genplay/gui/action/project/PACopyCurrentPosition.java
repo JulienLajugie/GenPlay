@@ -56,7 +56,7 @@ public final class PACopyCurrentPosition extends AbstractAction {
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "PACopyCurrentPosition";
+	public static final String ACTION_KEY = PACopyCurrentPosition.class.getName();
 
 
 	/**

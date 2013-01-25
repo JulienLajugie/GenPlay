@@ -32,7 +32,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
-import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotPane;
+import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotPane;
 import edu.yu.einstein.genplay.util.Utils;
 
 

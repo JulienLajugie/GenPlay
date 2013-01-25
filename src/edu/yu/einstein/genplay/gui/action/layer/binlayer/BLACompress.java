@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -38,8 +38,8 @@ public class BLACompress extends TrackListActionWorker<BinList> {
 
 	private static final long serialVersionUID = 5156554955152029111L;	// generated ID
 	private static final String 	ACTION_NAME = "Compress";			// action name
-	private static final String 	DESCRIPTION = 
-		"Compress the data of the selected layer";						// tooltip
+	private static final String 	DESCRIPTION =
+			"Compress the data of the selected layer";						// tooltip
 
 	private BinLayer	 			selectedLayer;						// selected layer
 
@@ -47,7 +47,7 @@ public class BLACompress extends TrackListActionWorker<BinList> {
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "BLACompress";
+	public static final String ACTION_KEY = BLACompress.class.getName();
 
 
 	/**
@@ -82,7 +82,7 @@ public class BLACompress extends TrackListActionWorker<BinList> {
 			String actionDescription = new String();
 			if (selectedLayer.getData().isCompressed()) {
 				actionDescription = "Uncompressing Data";
-			} else { 
+			} else {
 				actionDescription = "Compressing Data";
 			}
 			BinList binList = selectedLayer.getData();

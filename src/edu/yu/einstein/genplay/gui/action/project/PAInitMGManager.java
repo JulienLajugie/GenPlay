@@ -49,7 +49,7 @@ public class PAInitMGManager extends TrackListActionWorker<Void> {
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "PAInitMGManager";
+	public static final String ACTION_KEY = PAInitMGManager.class.getName();
 
 	private boolean hasBeenInitialized;
 

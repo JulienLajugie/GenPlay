@@ -28,9 +28,9 @@ import javax.swing.ActionMap;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLOUniqueScore;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
-import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 
 
 /**
@@ -42,14 +42,14 @@ public final class BLAUniqueScore extends TrackListActionOperationWorker<BinList
 
 	private static final long serialVersionUID = 4027173438789911860L; 	// generated ID
 	private static final String 	ACTION_NAME = "Unique Score (Constant)";			// action name
-	private static final String 	DESCRIPTION = "Set a unique score for all windows.";// tooltip
+	private static final String 	DESCRIPTION = "Set a unique score for all non-null window.";// tooltip
 	private BinLayer 				selectedLayer;						// selected layer
 
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "BLAUniqueScore";
+	public static final String ACTION_KEY = BLAUniqueScore.class.getName();
 
 
 	/**

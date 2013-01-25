@@ -52,7 +52,7 @@ public class TAAddNucleotideLayer extends TrackListActionWorker<TwoBitSequenceLi
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "TAAddNucleotideLayer";
+	public static final String ACTION_KEY = TAAddNucleotideLayer.class.getName();
 
 
 	/**

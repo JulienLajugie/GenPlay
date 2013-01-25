@@ -28,7 +28,7 @@ import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.KeyStroke;
 
-import edu.yu.einstein.genplay.core.GenomeWindow;
+import edu.yu.einstein.genplay.core.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 
 
@@ -54,7 +54,7 @@ public final class PAMoveRight extends AbstractAction {
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "PAMoveRight";
+	public static final String ACTION_KEY = PAMoveRight.class.getName();
 
 
 	/**
