@@ -27,6 +27,7 @@ import edu.yu.einstein.genplay.gui.action.layer.LAConvert;
 import edu.yu.einstein.genplay.gui.action.layer.LASave;
 import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLAAverageScore;
 import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLACountAllGenes;
+import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLACountExons;
 import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLACountNonNullGenes;
 import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLADistanceCalculator;
 import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLAExtractExons;
@@ -67,6 +68,7 @@ public class GeneLayerMenu extends AbstractLayerMenu {
 				new GLAAverageScore(),
 				new GLACountAllGenes(),
 				new GLACountNonNullGenes(),
+				new GLACountExons(),
 				null,
 				new GLASearchGene(),
 				new GLAExtractInterval(),

@@ -28,7 +28,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import javax.swing.JCheckBox;
 import javax.swing.JFormattedTextField;
@@ -71,7 +71,7 @@ final class TrackOptionPanel extends OptionPanel {
 
 		jlTrackCount = new JLabel("Number of Tracks:");
 
-		jftfTrackCount = new JFormattedTextField(new DecimalFormat("#"));
+		jftfTrackCount = new JFormattedTextField(NumberFormat.getInstance());
 		((NumberFormatter) jftfTrackCount.getFormatter()).setMinimum(MIN_TRACK_COUNT);
 		((NumberFormatter) jftfTrackCount.getFormatter()).setMaximum(MAX_TRACK_COUNT);
 		jftfTrackCount.setColumns(5);
@@ -85,7 +85,7 @@ final class TrackOptionPanel extends OptionPanel {
 
 		jlTrackHeight = new JLabel("Default Track Height:");
 
-		jftfTrackHeight = new JFormattedTextField(new DecimalFormat("#"));
+		jftfTrackHeight = new JFormattedTextField(NumberFormat.getInstance());
 		((NumberFormatter) jftfTrackHeight.getFormatter()).setMinimum(MIN_TRACK_HEIGHT);
 		((NumberFormatter) jftfTrackHeight.getFormatter()).setMaximum(MAX_TRACK_HEIGHT);
 		jftfTrackHeight.setColumns(5);
@@ -99,7 +99,7 @@ final class TrackOptionPanel extends OptionPanel {
 		});
 
 		jlUndoCount = new JLabel("Undo Count:");
-		jftfUndoCount = new JFormattedTextField(new DecimalFormat("#"));
+		jftfUndoCount = new JFormattedTextField(NumberFormat.getInstance());
 		((NumberFormatter) jftfUndoCount.getFormatter()).setMinimum(0);
 		((NumberFormatter) jftfUndoCount.getFormatter()).setMaximum(Integer.MAX_VALUE);
 		jftfUndoCount.setColumns(5);

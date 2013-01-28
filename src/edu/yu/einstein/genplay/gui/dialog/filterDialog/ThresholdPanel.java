@@ -21,7 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.filterDialog;
 
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import javax.swing.JOptionPane;
 
@@ -42,7 +42,6 @@ final class ThresholdPanel extends FilterPanel {
 			"where X and Y are two specified threshold values.";			// description of the filter
 	private final static String TEXT_MIN = "Filter values lower than:";	// text of the min label
 	private final static String TEXT_MAX = "Filter values greater than:";// text of the max label
-	private final static DecimalFormat DF = new DecimalFormat("0.0");	// decimal format for the input numbers
 	private static Number 	defaultMin = Double.NEGATIVE_INFINITY;		// default/last min value
 	private static Number 	defaultMax = Double.POSITIVE_INFINITY;		// default/last max value
 	private static boolean 	defaultIsSaturation = false;				// default/last saturation state
@@ -52,7 +51,7 @@ final class ThresholdPanel extends FilterPanel {
 	 * Creates an instance of {@link ThresholdPanel}
 	 */
 	ThresholdPanel() {
-		super(NAME, FILTER_DESCRIPTION, TEXT_MIN, TEXT_MAX, DF, defaultMin, defaultMax, defaultIsSaturation);
+		super(NAME, FILTER_DESCRIPTION, TEXT_MIN, TEXT_MAX, NumberFormat.getInstance(), defaultMin, defaultMax, defaultIsSaturation);
 	}
 
 

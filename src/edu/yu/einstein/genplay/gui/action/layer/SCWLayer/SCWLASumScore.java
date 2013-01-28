@@ -21,7 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.layer.SCWLayer;
 
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
@@ -83,7 +83,7 @@ public class SCWLASumScore extends TrackListActionOperationWorker<Double> {
 	@Override
 	protected void doAtTheEnd(Double actionResult) {
 		if (actionResult != null) {
-			JOptionPane.showMessageDialog(getRootPane(), "Score count: \n" + new DecimalFormat("###,###,###,###,###,###,###.###").format(actionResult), "Score Count", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(getRootPane(), "Score count: \n" + NumberFormat.getInstance().format(actionResult), "Score Count", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 }

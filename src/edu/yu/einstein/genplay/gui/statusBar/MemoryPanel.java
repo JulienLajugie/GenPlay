@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -23,7 +23,6 @@ package edu.yu.einstein.genplay.gui.statusBar;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 import javax.swing.BorderFactory;
@@ -73,68 +72,69 @@ public final class MemoryPanel extends JProgressBar {
 	 * Creates an instance of {@link MemoryPanel}
 	 */
 	MemoryPanel() {
-		super(0, 100);				
+		super(0, 100);
 		setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, Colors.LIGHT_GREY));
 		setMinimumSize(new Dimension(getPreferredSize().width, HEIGHT));
 		setStringPainted(true);
 		new MemoryListener().start();
 	}
-	
-	
+
+
 	/**
 	 * Changes the color of the string painted on the memory panel
 	 */
 	void customizeUI() {
 		final Color stringColor = UIManager.getColor("Label.foreground");
 		BasicProgressBarUI ui = new BasicProgressBarUI() {
-		    protected Color getSelectionBackground() {
-		        return stringColor; // string color over the background
-		    }
-		    protected Color getSelectionForeground() {
-		        return stringColor;	// string color over the foreground
-		    }
+			@Override
+			protected Color getSelectionBackground() {
+				return stringColor; // string color over the background
+			}
+			@Override
+			protected Color getSelectionForeground() {
+				return stringColor;	// string color over the foreground
+			}
 		};
 		setUI(ui);
 	}
-	
-	
+
+
 	@Override
 	public void updateUI() {
 		super.updateUI();
 		customizeUI();
 	}
-	
-	
+
+
 	/**
-	 * Sets the memory string, the color of the progress bar and the value of the progress 
+	 * Sets the memory string, the color of the progress bar and the value of the progress
 	 * @param maxMemory memory available
 	 * @param usedMemory used memory
 	 */
 	private synchronized void setMemory(long maxMemory, long usedMemory) {
-		NumberFormat nf = new DecimalFormat("###,###,###");
 		// compute the percentage of memory used
-		int usedOnMax = (int)(usedMemory / (double)maxMemory * 100);
-		// use this percentage to set the progress of the progress bar 
+		int usedOnMax = (int)((usedMemory / (double)maxMemory) * 100);
+		// use this percentage to set the progress of the progress bar
 		setValue(usedOnMax);
 		// set the color of the progress bar
 		Color foregroundColor = memoryToColor(usedOnMax);
 		setForeground(foregroundColor);
 		// prepare the string that needs to be printed
-		String stringToPrint = " " + nf.format(usedMemory) + " MB / " + nf.format(maxMemory) + " MB (" + usedOnMax + "%)"; 
+		String stringToPrint = " " + NumberFormat.getInstance().format(usedMemory) + " MB / " + NumberFormat.getInstance().format(maxMemory) + " MB (" + usedOnMax + "%)";
 		// compute the width of the string to print
 		int width = getFontMetrics(getFont()).stringWidth(stringToPrint);
 		// if the string is too large for the component we make the component bigger
-		if (width + 10 > getMinimumSize().width) {
+		if ((width + 10) > getMinimumSize().width) {
 			setMinimumSize(new Dimension(width + 10, getMinimumSize().height));
 		}
 		// print the new string
 		setString(stringToPrint);
 	}
-	
-	
+
+
 	/**
-	 * Associates a color to a memory usage. 
-	 * Green = low usage / Yellow = medium usage / Red = high usage 
+	 * Associates a color to a memory usage.
+	 * Green = low usage / Yellow = medium usage / Red = high usage
 	 * @param memoryUsage a memory usage
 	 * @return a Color
 	 */
@@ -143,9 +143,9 @@ public final class MemoryPanel extends JProgressBar {
 		int green = 255;
 		int blue = 0;
 		if (memoryUsage < 50) {
-			red = (int) (memoryUsage / 50d * 255);
+			red = (int) ((memoryUsage / 50d) * 255);
 		} else {
-			green = (int) (255 - (memoryUsage - 50) / 50d * 255);			
+			green = (int) (255 - (((memoryUsage - 50) / 50d) * 255));
 		}
 		return new Color(red, green, blue);
 	}

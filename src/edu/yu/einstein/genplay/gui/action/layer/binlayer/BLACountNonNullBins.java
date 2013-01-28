@@ -21,7 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.layer.binlayer;
 
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
@@ -84,7 +84,7 @@ public final class BLACountNonNullBins extends TrackListActionOperationWorker<Lo
 	@Override
 	protected void doAtTheEnd(Long actionResult) {
 		if (actionResult != null) {
-			JOptionPane.showMessageDialog(getRootPane(), "Number of non-null bins: \n" + new DecimalFormat("###,###,###,###").format(actionResult), "Number of Bins", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(getRootPane(), "Number of non-null bins: \n" + NumberFormat.getInstance().format(actionResult), "Number of Bins", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 }

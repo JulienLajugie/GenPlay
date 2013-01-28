@@ -27,7 +27,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -91,7 +91,7 @@ public final class ExtractGeneIntervalsDialog extends JDialog implements ActionL
 		super();
 
 		jlStart1 = new JLabel("Extract intervals starting at ");
-		jftfStartDistance = new JFormattedTextField(new DecimalFormat("###,###,###"));
+		jftfStartDistance = new JFormattedTextField(NumberFormat.getInstance());
 		((NumberFormatter)jftfStartDistance.getFormatter()).setMinimum(0);
 		jftfStartDistance.setValue(0);
 		jftfStartDistance.setColumns(9);
@@ -99,7 +99,7 @@ public final class ExtractGeneIntervalsDialog extends JDialog implements ActionL
 		jcbStartFrom = new JComboBox(OPTIONS);
 
 		jlStop1 = new JLabel("and stop at ");
-		jftfStopDistance = new JFormattedTextField(new DecimalFormat("###,###,###"));
+		jftfStopDistance = new JFormattedTextField(NumberFormat.getInstance());
 		jftfStopDistance.setValue(0);
 		jftfStopDistance.setColumns(9);
 		jlStop2 = new JLabel(" bp ");

@@ -31,7 +31,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -57,7 +57,6 @@ public final class NumberOptionPane extends JDialog {
 	private static Number 				validValue;									// Valid number to return
 	private static double 				minValidValue;								// Max value of the input
 	private static double 				maxValidValue;								// SCWLAMin value of the input
-	private static DecimalFormat 		decimalFormat;								// Format of the input
 	private static String 				title;										// Title of the dialog
 	private static String 				label;										// Text of the JLabel jl
 	private static boolean 				validated;									// True if OK has been pressed
@@ -68,17 +67,15 @@ public final class NumberOptionPane extends JDialog {
 	 * @param parent the parent component of the dialog, can be null; see showDialog for details
 	 * @param aTitle Title of the dialog
 	 * @param aLabel Text of the inside label of the dialog
-	 * @param df DecimalFormat of the input value
 	 * @param defaultValue Default displayed value when the dialog is displayed
 	 * @param min Minimum allowed value for the input value
 	 * @param max Maximum allowed value for the input value
 	 */
-	private NumberOptionPane(Component parent, String aTitle, String aLabel, DecimalFormat df, double defaultValue, double min, double max) {
+	private NumberOptionPane(Component parent, String aTitle, String aLabel, double defaultValue, double min, double max) {
 		super();
 		setModal(true);
 		title = aTitle;
 		label = aLabel;
-		decimalFormat = df;
 		validValue = defaultValue;
 		minValidValue = min;
 		maxValidValue = max;
@@ -101,7 +98,7 @@ public final class NumberOptionPane extends JDialog {
 			jl = new JLabel(label);
 		}
 
-		jftfValue = new JFormattedTextField(decimalFormat);
+		jftfValue = new JFormattedTextField(NumberFormat.getInstance());
 		jftfValue.setValue(validValue);
 		jftfValue.setColumns(8);
 		jftfValue.addPropertyChangeListener(new PropertyChangeListener() {
@@ -197,7 +194,7 @@ public final class NumberOptionPane extends JDialog {
 		double currentValue = ((Number)(jftfValue.getValue())).doubleValue();
 
 		if((currentValue < minValidValue) || (currentValue > maxValidValue)) {
-			JOptionPane.showMessageDialog(this, "The input value must be between " + decimalFormat.format(minValidValue) + " and " + decimalFormat.format(maxValidValue) + "", "Incorrect value.", JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(this, "The input value must be between " + NumberFormat.getInstance().format(minValidValue) + " and " + NumberFormat.getInstance().format(maxValidValue) + "", "Incorrect value.", JOptionPane.WARNING_MESSAGE);
 			jftfValue.setValue(validValue);
 		} else {
 			validValue = currentValue;
@@ -210,14 +207,13 @@ public final class NumberOptionPane extends JDialog {
 	 * @param parent the parent component of the dialog, can be null; see showDialog for details
 	 * @param title Title of the dialog.
 	 * @param label Text of the inside label of the dialog.
-	 * @param df DecimalFormat of the input value.
 	 * @param min Minimum allowed value for the input value.
 	 * @param max Maximum allowed value for the input value.
 	 * @param defaultValue Default displayed value when the dialog is displayed.
 	 * @return A number if OK has been pressed, otherwise null.
 	 */
-	public static Number getValue(Component parent, String title, String label, DecimalFormat df, double min, double max, double defaultValue) {
-		NumberOptionPane NOP = new NumberOptionPane(parent, title, label, df, defaultValue, min, max);
+	public static Number getValue(Component parent, String title, String label, double min, double max, double defaultValue) {
+		NumberOptionPane NOP = new NumberOptionPane(parent, title, label, defaultValue, min, max);
 		NOP.setVisible(true);
 		if(validated) {
 			return validValue;
@@ -234,7 +230,7 @@ public final class NumberOptionPane extends JDialog {
 	 * @return A number if OK has been pressed, otherwise null.
 	 */
 	public static Integer getValueWindow(Component parent, int defaultValue) {
-		NumberOptionPane NOP = new NumberOptionPane(parent, "Window size:", null, new DecimalFormat("0"), defaultValue, 1, 1000000);
+		NumberOptionPane NOP = new NumberOptionPane(parent, "Window size:", null, defaultValue, 1, 1000000);
 		NOP.setVisible(true);
 		if (validated) {
 			return validValue.intValue();

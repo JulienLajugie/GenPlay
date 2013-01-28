@@ -21,7 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.layer.SCWLayer;
 
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
@@ -80,7 +80,7 @@ public class SCWLAWindowCount extends TrackListActionOperationWorker<Long> {
 	@Override
 	protected void doAtTheEnd(Long actionResult) {
 		if (actionResult != null) {
-			JOptionPane.showMessageDialog(getRootPane(), "Total number of windows: \n" + new DecimalFormat("###,###,###,###").format(actionResult), "Windows number", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(getRootPane(), "Total number of windows: \n" + NumberFormat.getInstance().format(actionResult), "Windows number", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 }

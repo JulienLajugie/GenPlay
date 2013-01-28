@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -25,7 +25,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.io.Serializable;
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import edu.yu.einstein.genplay.core.enums.LogBase;
 import edu.yu.einstein.genplay.util.Utils;
@@ -42,10 +42,8 @@ public class ScatterPlotAxis implements Serializable {
 	private static final long serialVersionUID = 487345102079879893L;	// generated ID
 	private static final int 	HALF_MAJOR_TICK_SIZE = 4;	// half size of the major ticks
 	private static final int 	HALF_MINOR_TICK_SIZE = 2;	// half size of the minor ticks
-	private static final DecimalFormat 	DF = 
-		new DecimalFormat("###,###,###.##");				// decimal format
 	private final boolean 		orientation;				// orientation of the axis
-	private double 				min;						// minimum of the axis 
+	private double 				min;						// minimum of the axis
 	private double 				max;						// maximum of the axis
 	private double 				majorUnit;					// major unit of the ticks
 	private double 				minorUnit;					// minor unit of the ticks
@@ -82,7 +80,7 @@ public class ScatterPlotAxis implements Serializable {
 
 
 	/**
-	 * Translates a  data value to its position on the screen 
+	 * Translates a  data value to its position on the screen
 	 * @param dataValue a value
 	 * @param clip area where the graph is plotted
 	 * @return the position on the screen on the axis
@@ -99,15 +97,15 @@ public class ScatterPlotAxis implements Serializable {
 				dataValue = Utils.log(logBase, dataValue);
 			}
 		}
-				
+
 		double position = 0;
 		if (orientation == HORIZONTAL) {
 			int padX = clip.x;
 			int width = clip.width;
 			if (min == max) {
 				position = padX;
-			} else {				
-				position = (dataValue - min) * width / (max - min) + padX;
+			} else {
+				position = (((dataValue - min) * width) / (max - min)) + padX;
 			}
 		} else {
 			int height = clip.height;
@@ -115,7 +113,7 @@ public class ScatterPlotAxis implements Serializable {
 			if (min == max) {
 				position = padY;
 			} else {
-				position = height - ((dataValue - min) * height / (max - min)) + padY;
+				position = (height - (((dataValue - min) * height) / (max - min))) + padY;
 			}
 		}
 		return (int) position;
@@ -138,7 +136,7 @@ public class ScatterPlotAxis implements Serializable {
 		}
 	}
 
-	
+
 	/**
 	 * Draws the grid if the showGrid option is set to true
 	 * @param g {@link Graphics}
@@ -150,7 +148,7 @@ public class ScatterPlotAxis implements Serializable {
 			double firstLine = ((int) (min / majorUnit)) * majorUnit;
 			for (double i = firstLine; i <= max; i += majorUnit) {
 				int pos = dataValueToScreenPosition(i, clip);
-				if (orientation == HORIZONTAL) {				
+				if (orientation == HORIZONTAL) {
 					g.drawLine(pos, clip.y, pos, clip.y + clip.height);
 				} else {
 					g.drawLine(clip.x, pos, clip.width + clip.x, pos);
@@ -159,7 +157,7 @@ public class ScatterPlotAxis implements Serializable {
 		}
 	}
 
-	
+
 	/**
 	 * Draws the major ticks with the numbers
 	 * @param g {@link Graphics}
@@ -173,33 +171,33 @@ public class ScatterPlotAxis implements Serializable {
 		int labelHeight = g.getFontMetrics().getHeight();
 		for (double i = firstTick; i <= max; i += majorUnit) {
 			int pos = dataValueToScreenPosition(i, clip);
-			String label = DF.format(i);
-			int labelWidth = g.getFontMetrics().stringWidth(label);			
-			if (orientation == HORIZONTAL) {				
+			String label = NumberFormat.getInstance().format(i);
+			int labelWidth = g.getFontMetrics().stringWidth(label);
+			if (orientation == HORIZONTAL) {
 				g.drawLine(pos, position - HALF_MAJOR_TICK_SIZE, pos, position + HALF_MAJOR_TICK_SIZE);
 				// compute the positions of the label
 				int labelXPosition = pos;
 				int labelYPosition = clip.y + clip.height + HALF_MAJOR_TICK_SIZE + labelHeight;
-				// draw the label only if there is enough room 
-				if ((lastLabelPosition == null) || (lastLabelPosition + labelWidth < labelXPosition)) {
+				// draw the label only if there is enough room
+				if ((lastLabelPosition == null) || ((lastLabelPosition + labelWidth) < labelXPosition)) {
 					g.drawString(label, labelXPosition, labelYPosition);
 					lastLabelPosition = labelXPosition;
 				}
-			} else {				
-				g.drawLine(position - HALF_MAJOR_TICK_SIZE, pos, position + HALF_MAJOR_TICK_SIZE, pos);				
+			} else {
+				g.drawLine(position - HALF_MAJOR_TICK_SIZE, pos, position + HALF_MAJOR_TICK_SIZE, pos);
 				// compute the positions of the label
 				int labelXPosition = clip.x - HALF_MAJOR_TICK_SIZE - labelWidth;
 				int labelYPosition = (int) (pos + (labelHeight / (double) 4));
-				// draw the label only if there is enough room 
-				if ((lastLabelPosition == null) || (lastLabelPosition - labelHeight > labelYPosition)) {
+				// draw the label only if there is enough room
+				if ((lastLabelPosition == null) || ((lastLabelPosition - labelHeight) > labelYPosition)) {
 					g.drawString(label, labelXPosition, labelYPosition);
 					lastLabelPosition = labelYPosition;
 				}
-			}		
+			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Draws the minor ticks
 	 * @param g {@link Graphics}
@@ -210,11 +208,11 @@ public class ScatterPlotAxis implements Serializable {
 		double firstTick = ((int) (min / minorUnit)) * minorUnit;
 		for (double i = firstTick; i <= max; i += minorUnit) {
 			int pos = dataValueToScreenPosition(i, clip);
-			if (orientation == HORIZONTAL) {				
+			if (orientation == HORIZONTAL) {
 				g.drawLine(pos, position - HALF_MINOR_TICK_SIZE, pos, position + HALF_MINOR_TICK_SIZE);
 			} else {
 				g.drawLine(position - HALF_MINOR_TICK_SIZE, pos, position + HALF_MINOR_TICK_SIZE, pos);
-			}		
+			}
 		}
 	}
 
@@ -229,7 +227,7 @@ public class ScatterPlotAxis implements Serializable {
 			max = 0;
 		} else {
 			int maxTmp = 1;
-			while (dataMax / maxTmp >= 10) {
+			while ((dataMax / maxTmp) >= 10) {
 				maxTmp *= 10;
 			}
 			max = maxTmp;
@@ -250,13 +248,13 @@ public class ScatterPlotAxis implements Serializable {
 			min = 0;
 		} else {
 			int minTmp = -1;
-			while (dataMin / minTmp >= 10) {
+			while ((dataMin / minTmp) >= 10) {
 				minTmp *= 10;
-			}			
+			}
 			min = minTmp;
 			while (min > dataMin) {
 				min += minTmp;
-			}			
+			}
 		}
 	}
 
@@ -267,7 +265,7 @@ public class ScatterPlotAxis implements Serializable {
 	private void findDefaultUnits() {
 		majorUnit = 1;
 		double range = max - min;
-		while (range / majorUnit >= 100) {
+		while ((range / majorUnit) >= 100) {
 			majorUnit *= 10;
 		}
 		minorUnit = majorUnit / 2;
@@ -408,8 +406,8 @@ public class ScatterPlotAxis implements Serializable {
 	public final void setName(String name) {
 		this.name = name;
 	}
-	
-	
+
+
 	/**
 	 * @param position the position of the axis to set (y position for an horizontal axis and x position for a vertical one)
 	 */

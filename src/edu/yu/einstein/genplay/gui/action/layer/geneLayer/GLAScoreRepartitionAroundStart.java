@@ -21,7 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.layer.geneLayer;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,9 +96,9 @@ public class GLAScoreRepartitionAroundStart extends TrackListActionOperationWork
 						BinList binList = binLayer.getData();
 						boolean[] selectedChromo = Utils.chooseChromosomes(getRootPane());
 						if (selectedChromo != null) {
-							Number binSize = NumberOptionPane.getValue(getRootPane(), "Enter Value", "Enter the size of the bins in bp", new DecimalFormat("0"), 1, Integer.MAX_VALUE, 10);
+							Number binSize = NumberOptionPane.getValue(getRootPane(), "Enter Value", "Enter the size of the bins in bp", 1, Integer.MAX_VALUE, 10);
 							if (binSize != null) {
-								Number binCount = NumberOptionPane.getValue(getRootPane(), "Enter Value", "Enter the number of bins each side of the promoters", new DecimalFormat("0"), 1, Integer.MAX_VALUE, 50);
+								Number binCount = NumberOptionPane.getValue(getRootPane(), "Enter Value", "Enter the number of bins each side of the promoters", 1, Integer.MAX_VALUE, 50);
 								if (binCount != null) {
 									ScoreCalculationMethod scm = Utils.chooseScoreCalculation(getRootPane());
 									if (scm != null) {

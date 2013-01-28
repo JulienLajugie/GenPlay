@@ -21,7 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.layer.geneLayer;
 
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
@@ -82,7 +82,7 @@ public final class GLAAverageScore extends TrackListActionOperationWorker<Double
 	@Override
 	protected void doAtTheEnd(Double actionResult) {
 		if (actionResult != null) {
-			JOptionPane.showMessageDialog(getRootPane(), "Average: \n" + new DecimalFormat("0.000").format(actionResult), "Average", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(getRootPane(), "Average: \n" + NumberFormat.getInstance().format(actionResult), "Average", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 }

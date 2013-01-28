@@ -33,7 +33,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.Point2D;
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.List;
 
 import javax.swing.JDialog;
@@ -64,8 +64,6 @@ public class ScatterPlotPane extends JPanel {
 			new Color(228, 236, 247);							// background color
 	private static final String X_AXIS_PREFIX = "X-Axis: ";	// prefix name of the x axis
 	private static final String Y_AXIS_PREFIX = "Y-Axis: ";	// prefix name of the y axis
-	private static final DecimalFormat 	DF =
-			new DecimalFormat("###,###,###.###");				// decimal format
 	private final ScatterPlotAxis 			xAxis;			// x axis
 	private final ScatterPlotAxis 			yAxis;			// y axis
 	private final List<ScatterPlotData> 	data;			// data to plot
@@ -128,7 +126,7 @@ public class ScatterPlotPane extends JPanel {
 				// we print the tooltip text only if the cursor is inside the chart area
 				if (clip.contains(e.getPoint())) {
 					Point2D p = getDataPoint(e.getPoint());
-					setToolTipText("(" + DF.format(p.getX()) + " : " + DF.format(p.getY()) + ")");
+					setToolTipText("(" + NumberFormat.getInstance().format(p.getX()) + " : " + NumberFormat.getInstance().format(p.getY()) + ")");
 				} else {
 					setToolTipText(null);
 				}

@@ -21,8 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.layer.binlayer;
 
-import java.text.DecimalFormat;
-
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.list.binList.BinList;
@@ -67,7 +65,7 @@ public final class BLAUniqueScore extends TrackListActionOperationWorker<BinList
 	public Operation<BinList> initializeOperation() {
 		selectedLayer = (BinLayer) getValue("Layer");
 		if (selectedLayer != null) {
-			Number constant = NumberOptionPane.getValue(getRootPane(), "Unique Score", "Enter a score for all windows", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
+			Number constant = NumberOptionPane.getValue(getRootPane(), "Unique Score", "Enter a score for all windows", Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
 			if ((constant != null) && (constant.doubleValue() != 0)) {
 				BinList binList = selectedLayer.getData();
 				operation = new BLOUniqueScore(binList, constant.doubleValue());

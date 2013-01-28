@@ -27,7 +27,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -38,7 +38,6 @@ import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 import edu.yu.einstein.genplay.core.enums.RNAToDNAResultType;
-
 
 
 /**
@@ -452,9 +451,9 @@ public class GeneRelativeToGenomePosition {
 				}
 			}
 
-			starts += new DecimalFormat("#########").format(individualExonStart) + ",";
-			stops += new DecimalFormat("#########").format(individualExonStop) + ",";
-			scores += new DecimalFormat("########.##").format(score) + ",";
+			starts += Integer.toString(individualExonStart) + ",";
+			stops += Integer.toString(individualExonStop) + ",";
+			scores += Double.toString(score) + ",";
 		}
 		bufWriter.write(key + "\t" + chrmomosome + "\t" + strand + "\t" + chrStart + "\t" + chrStop + "\t" + starts + "\t" + stops + "\t" + scores + "\n");
 	}
@@ -541,7 +540,7 @@ public class GeneRelativeToGenomePosition {
 			while (exonScoreTok.hasMoreTokens()) {
 				String token = exonScoreTok.nextToken();
 				scores.add(new Double((Double.parseDouble(token) * totalScoreOfAllExons) / (Integer.parseInt(stops.get(i)) - Integer.parseInt(starts.get(i)))).toString());
-				finalScores += new DecimalFormat("#########.##").format((Double.parseDouble(token) * totalScoreOfAllExons) / (Integer.parseInt(stops.get(i)) - Integer.parseInt(starts.get(i))))+",";
+				finalScores += NumberFormat.getInstance().format((Double.parseDouble(token) * totalScoreOfAllExons) / (Integer.parseInt(stops.get(i)) - Integer.parseInt(starts.get(i))))+",";
 			}
 			bufWriter.write(gene + "\t" + chr + "\t" + strand + "\t" + chrStart + "\t" + chrStop + "\t" + finalStarts + "\t" + finalStops + "\t" + finalScores + "\n");
 		}

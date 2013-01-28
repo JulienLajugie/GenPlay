@@ -21,7 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.exception.valueOutOfRangeException;
 
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import edu.yu.einstein.genplay.core.list.arrayList.ByteArrayAsDoubleList;
 
@@ -42,7 +42,7 @@ public class Invalid8BitValue extends ValueOutOfRangeException {
 	 * @param data the data that is out of range
 	 */
 	public Invalid8BitValue(Double data) {
-		super("Invalid Data (score = " + new DecimalFormat("#.#").format(data) + "). A 8Bit value must be between " + ByteArrayAsDoubleList.MIN_VALUE + " and " + ByteArrayAsDoubleList.MAX_VALUE);
+		super("Invalid Data (score = " + NumberFormat.getInstance().format(data) + "). A 8Bit value must be between " + ByteArrayAsDoubleList.MIN_VALUE + " and " + ByteArrayAsDoubleList.MAX_VALUE);
 	}
 
 
@@ -51,6 +51,6 @@ public class Invalid8BitValue extends ValueOutOfRangeException {
 	 * @param data the data that is out of range
 	 */
 	public Invalid8BitValue(Integer data) {
-		super("Invalid Data (score = " + new DecimalFormat("#.#").format(data) + "). A 8Bit value must be between " + ByteArrayAsDoubleList.MIN_VALUE + " and " + ByteArrayAsDoubleList.MAX_VALUE);
+		super("Invalid Data (score = " + NumberFormat.getInstance().format(data) + "). A 8Bit value must be between " + ByteArrayAsDoubleList.MIN_VALUE + " and " + ByteArrayAsDoubleList.MAX_VALUE);
 	}
 }

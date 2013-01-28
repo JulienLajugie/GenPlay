@@ -21,8 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.layer.binlayer;
 
-import java.text.DecimalFormat;
-
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
@@ -72,7 +70,7 @@ public class BLAChangeBinSize extends TrackListActionOperationWorker<BinList> {
 		selectedLayer = (BinLayer) getValue("Layer");
 		BinList binList = selectedLayer.getData();
 		if (selectedLayer != null) {
-			Number binSize = NumberOptionPane.getValue(getTrackListPanel().getRootPane(), "Fixed Window Size", "Enter window size", new DecimalFormat("#"), 0, Integer.MAX_VALUE, 1000);
+			Number binSize = NumberOptionPane.getValue(getTrackListPanel().getRootPane(), "Fixed Window Size", "Enter window size", 0, Integer.MAX_VALUE, 1000);
 			if (binSize != null) {
 				ScoreCalculationMethod method = Utils.chooseScoreCalculation(getTrackListPanel().getRootPane());
 				Operation<BinList> operation = new BLOChangeBinSize(binList, binSize.intValue(), method);

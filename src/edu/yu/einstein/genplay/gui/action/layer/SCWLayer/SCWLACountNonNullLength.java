@@ -21,7 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.layer.SCWLayer;
 
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
@@ -81,7 +81,7 @@ public class SCWLACountNonNullLength extends TrackListActionOperationWorker<Long
 	@Override
 	protected void doAtTheEnd(Long actionResult) {
 		if (actionResult != null) {
-			JOptionPane.showMessageDialog(getRootPane(), "Non-Null Length: \n" + new DecimalFormat("###,###,###,###").format(actionResult) + " bp", "Non-Null Length", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(getRootPane(), "Non-Null Length: \n" + NumberFormat.getInstance().format(actionResult) + " bp", "Non-Null Length", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 }

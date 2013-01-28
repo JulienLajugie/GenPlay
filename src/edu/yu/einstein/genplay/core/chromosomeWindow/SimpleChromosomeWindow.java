@@ -24,7 +24,7 @@ package edu.yu.einstein.genplay.core.chromosomeWindow;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 
 import edu.yu.einstein.genplay.exception.ChromosomeWindowException;
@@ -39,8 +39,6 @@ public class SimpleChromosomeWindow implements ChromosomeWindow, Serializable, C
 
 	private static final long serialVersionUID = -6548181911063983578L; // generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private static final DecimalFormat POSITION_FORMAT =
-			new DecimalFormat("###,###,###"); // Format used for the toString() method
 	private int  	start;		// Position start of the window
 	private int 	stop;		// Position stop of the window
 
@@ -92,8 +90,8 @@ public class SimpleChromosomeWindow implements ChromosomeWindow, Serializable, C
 	 * @param chromosomeWindow
 	 */
 	public SimpleChromosomeWindow(ChromosomeWindow chromosomeWindow) {
-		this.start = chromosomeWindow.getStart();
-		this.stop = chromosomeWindow.getStop();
+		start = chromosomeWindow.getStart();
+		stop = chromosomeWindow.getStop();
 	}
 
 
@@ -106,12 +104,12 @@ public class SimpleChromosomeWindow implements ChromosomeWindow, Serializable, C
 		String startStr = windowStr.substring(0, windowStr.lastIndexOf("-"));
 		String stopStr = windowStr.substring(windowStr.lastIndexOf("-") + 1);
 		try {
-			start = (POSITION_FORMAT.parse(startStr.trim())).intValue();
+			start = (NumberFormat.getInstance().parse(startStr.trim())).intValue();
 		} catch (ParseException e) {
 			throw new ChromosomeWindowException("Invalid start position.");
 		}
 		try {
-			stop = (POSITION_FORMAT.parse(stopStr.trim())).intValue();
+			stop = (NumberFormat.getInstance().parse(stopStr.trim())).intValue();
 		} catch (ParseException e) {
 			throw new ChromosomeWindowException("Invalid stop position.");
 		}
@@ -159,8 +157,8 @@ public class SimpleChromosomeWindow implements ChromosomeWindow, Serializable, C
 
 	@Override
 	public String toString() {
-		String startStr = POSITION_FORMAT.format(start);
-		String stopStr = POSITION_FORMAT.format(stop);
+		String startStr = NumberFormat.getInstance().format(start);
+		String stopStr = NumberFormat.getInstance().format(stop);
 		return startStr + "-" + stopStr;
 	}
 

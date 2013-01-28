@@ -28,7 +28,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Comparator;
 
 import javax.swing.JButton;
@@ -262,7 +262,6 @@ public class CorrelationReportDialog extends JDialog {
 	 */
 	private CorrelationReportDialog(Component parent, Double[] correlations, Layer<?> layer1, Layer<?> layer2) {
 		super();
-		DecimalFormat df = new DecimalFormat("#.##");
 		Object[][] tableData = new Object[correlations.length][2];
 		ProjectChromosome cm = ProjectManager.getInstance().getProjectChromosome();
 		// we fill the correlation for each chromosome
@@ -271,13 +270,13 @@ public class CorrelationReportDialog extends JDialog {
 			if (correlations[i] == null) {
 				tableData[i][1] = "-";
 			} else {
-				tableData[i][1] = df.format(correlations[i]);
+				tableData[i][1] = NumberFormat.getInstance().format(correlations[i]);
 			}
 		}
 		// we fill the total correlation
 		int lastIndex = tableData.length - 1;
 		tableData[lastIndex][0] = "Total";
-		tableData[lastIndex][1] = df.format(correlations[lastIndex]);
+		tableData[lastIndex][1] = NumberFormat.getInstance().format(correlations[lastIndex]);
 		// we fill the column names
 		Object[] columnNames = {"Chromosome", "Correlation"};
 		// create the jtable

@@ -14,17 +14,23 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.list.geneList.operation;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
+import edu.yu.einstein.genplay.core.gene.Gene;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 
 
 /**
@@ -35,7 +41,7 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 public class GLOCountNonNullGenes implements Operation<Long> {
 
 	private final GeneList 	geneList;		// input GeneList
-	private final boolean[] chromoList;		// 1 boolean / chromosome. 
+	private final boolean[] chromoList;		// 1 boolean / chromosome.
 	// each boolean sets to true means that the corresponding chromosome is selected
 	private boolean			stopped = false;// true if the operation must be stopped
 
@@ -44,8 +50,8 @@ public class GLOCountNonNullGenes implements Operation<Long> {
 	 * Creates an instance of {@link GLOCountNonNullGenes}.
 	 * Counts the genes on the selected chromosomes of the {@link GeneList}.
 	 * @param geneList input {@link GeneList}
-	 * @param chromoList list of boolean. A boolean set to true means that the 
-	 * chromosome with the same index is going to be used for the calculation. 
+	 * @param chromoList list of boolean. A boolean set to true means that the
+	 * chromosome with the same index is going to be used for the calculation.
 	 */
 	public GLOCountNonNullGenes(GeneList geneList, boolean[] chromoList) {
 		this.geneList = geneList;
@@ -56,19 +62,38 @@ public class GLOCountNonNullGenes implements Operation<Long> {
 
 	@Override
 	public Long compute() throws InterruptedException, ExecutionException {
-		long total = 0;
-		for (int i = 0; i < geneList.size() && !stopped; i++) {
+		final OperationPool op = OperationPool.getInstance();
+		final Collection<Callable<Long>> threadList = new ArrayList<Callable<Long>>();
+		for (int i = 0; i < geneList.size(); i++) {
 			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (geneList.get(i) != null)) {
-				for (int j = 0; j < geneList.size(i) && !stopped; j++) {
-					if ((geneList.get(i, j).getGeneRPKM() != null) && (geneList.get(i, j).getGeneRPKM() != 0))
-						total++;
-				}
+				final List<Gene> currentList = geneList.get(i);
+				Callable<Long> currentThread = new Callable<Long>() {
+					@Override
+					public Long call() throws Exception {
+						if (currentList == null) {
+							return null;
+						}
+						long total = 0;
+						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
+							if ((currentList.get(j).getGeneRPKM() != null) && (currentList.get(j).getGeneRPKM() != 0)) {
+								total++;
+							}
+						}
+						return total;
+					}
+				};
+				threadList.add(currentThread);
 			}
 		}
-		if (stopped) {
+		List<Long> result = op.startPool(threadList);
+		if (result == null) {
 			return null;
 		} else {
-			return total;
+			long exonCount = 0;
+			for (Long chromoCount: result) {
+				exonCount += chromoCount;
+			}
+			return exonCount;
 		}
 	}
 
@@ -87,12 +112,12 @@ public class GLOCountNonNullGenes implements Operation<Long> {
 
 	@Override
 	public String getProcessingDescription() {
-		return "Counting Non Null Windows";
+		return "Counting Genes";
 	}
 
 
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }

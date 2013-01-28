@@ -22,7 +22,6 @@
 package edu.yu.einstein.genplay.gui.action.layer.SCWLayer;
 
 import java.awt.Color;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,7 +105,7 @@ public final class SCWLARepartition extends TrackListActionOperationWorker<doubl
 				} else {
 					setGraphIndicator(SCWLORepartition.BASE_COUNT_GRAPH);
 				}
-				Number scoreBin = NumberOptionPane.getValue(getRootPane(), "Size", "Enter the size of the bin of score:", new DecimalFormat("0.0#####"), 0 + Double.MIN_NORMAL, 1000, 1);
+				Number scoreBin = NumberOptionPane.getValue(getRootPane(), "Size", "Enter the size of the bin of score:", 0 + Double.MIN_NORMAL, 1000, 1);
 				if (scoreBin != null) {
 					// we ask the user to choose the layers for the repartition only if there is more than one layer
 					LayerType[] availableLayerTypes = {LayerType.SCW_LAYER};

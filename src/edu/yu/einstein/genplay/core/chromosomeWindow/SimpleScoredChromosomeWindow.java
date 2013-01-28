@@ -24,7 +24,7 @@ package edu.yu.einstein.genplay.core.chromosomeWindow;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 
 /**
@@ -37,8 +37,6 @@ public final class SimpleScoredChromosomeWindow implements ScoredChromosomeWindo
 	private static final long serialVersionUID = 8073707507054963197L; // generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 
-	private static final DecimalFormat POSITION_FORMAT =
-			new DecimalFormat("###,###,###"); // Format used for the toString() method
 	private int  	start;		// Position start of the window
 	private int 	stop;		// Position stop of the window
 	private double score;	// score of the window
@@ -89,9 +87,9 @@ public final class SimpleScoredChromosomeWindow implements ScoredChromosomeWindo
 	 * @param scw a {@link ScoredChromosomeWindow}
 	 */
 	public SimpleScoredChromosomeWindow(ScoredChromosomeWindow scw) {
-		this.start = scw.getStart();
-		this.stop = scw.getStop();
-		this.score = scw.getScore();
+		start = scw.getStart();
+		stop = scw.getStop();
+		score = scw.getScore();
 	}
 
 	/**
@@ -102,8 +100,8 @@ public final class SimpleScoredChromosomeWindow implements ScoredChromosomeWindo
 
 	@Override
 	public String toString() {
-		String startStr = POSITION_FORMAT.format(start);
-		String stopStr = POSITION_FORMAT.format(stop);
+		String startStr = NumberFormat.getInstance().format(start);
+		String stopStr = NumberFormat.getInstance().format(stop);
 		return startStr + "-" + stopStr + " : " + score;
 	}
 

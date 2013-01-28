@@ -31,7 +31,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -60,7 +60,6 @@ public final class TwoNumbersOptionPane extends JDialog {
 	private static Number 				validValue2;								// second valid number to return
 	private static double 				minValidValue;								// Max value of the input
 	private static double 				maxValidValue;								// SCWLAMin value of the input
-	private static DecimalFormat 		decimalFormat;								// Format of the input
 	private static String 				title;										// Title of the dialog
 	private static String 				label1;										// Text of the first JLabel
 	private static String 				label2;										// Text of the second JLabel
@@ -73,19 +72,17 @@ public final class TwoNumbersOptionPane extends JDialog {
 	 * @param aTitle Title of the dialog
 	 * @param aLabel1 Text of the first inside label of the dialog
 	 * @param aLabel2 Text of the second inside label of the dialog
-	 * @param df DecimalFormat of the input value
 	 * @param defaultValue1 first default displayed value when the dialog is displayed
 	 * @param defaultValue2 second default displayed value when the dialog is displayed
 	 * @param min Minimum allowed value for the input value
 	 * @param max Maximum allowed value for the input value
 	 */
-	private TwoNumbersOptionPane(Component parent, String aTitle, String aLabel1, String aLabel2, DecimalFormat df, double defaultValue1, double defaultValue2, double min, double max) {
+	private TwoNumbersOptionPane(Component parent, String aTitle, String aLabel1, String aLabel2, double defaultValue1, double defaultValue2, double min, double max) {
 		super();
 		setModal(true);
 		title = aTitle;
 		label1 = aLabel1;
 		label2 = aLabel2;
-		decimalFormat = df;
 		validValue1 = defaultValue1;
 		validValue2 = defaultValue2;
 		minValidValue = min;
@@ -113,7 +110,7 @@ public final class TwoNumbersOptionPane extends JDialog {
 		}
 
 
-		jftfValue1 = new JFormattedTextField(decimalFormat);
+		jftfValue1 = new JFormattedTextField(NumberFormat.getInstance());
 		jftfValue1.setValue(validValue1);
 		jftfValue1.setColumns(8);
 		jftfValue1.addPropertyChangeListener(new PropertyChangeListener() {
@@ -133,7 +130,7 @@ public final class TwoNumbersOptionPane extends JDialog {
 		});
 
 
-		jftfValue2 = new JFormattedTextField(decimalFormat);
+		jftfValue2 = new JFormattedTextField(NumberFormat.getInstance());
 		jftfValue2.setValue(validValue2);
 		jftfValue2.setColumns(8);
 		jftfValue2.addPropertyChangeListener(new PropertyChangeListener() {
@@ -249,7 +246,7 @@ public final class TwoNumbersOptionPane extends JDialog {
 		double currentValue = ((Number)(jftfValue1.getValue())).doubleValue();
 
 		if((currentValue < minValidValue) || (currentValue > maxValidValue)) {
-			JOptionPane.showMessageDialog(this, "The input value must be between " + decimalFormat.format(minValidValue) + " and " + decimalFormat.format(maxValidValue) + "", "Incorrect value.", JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(this, "The input value must be between " + NumberFormat.getInstance().format(minValidValue) + " and " + NumberFormat.getInstance().format(maxValidValue) + "", "Incorrect value.", JOptionPane.WARNING_MESSAGE);
 			jftfValue1.setValue(validValue1);
 		} else {
 			validValue1 = currentValue;
@@ -265,7 +262,7 @@ public final class TwoNumbersOptionPane extends JDialog {
 		double currentValue = ((Number)(jftfValue2.getValue())).doubleValue();
 
 		if((currentValue < minValidValue) || (currentValue > maxValidValue)) {
-			JOptionPane.showMessageDialog(this, "The input value must be between " + decimalFormat.format(minValidValue) + " and " + decimalFormat.format(maxValidValue) + "", "Incorrect value.", JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(this, "The input value must be between " + NumberFormat.getInstance().format(minValidValue) + " and " + NumberFormat.getInstance().format(maxValidValue) + "", "Incorrect value.", JOptionPane.WARNING_MESSAGE);
 			jftfValue2.setValue(validValue2);
 		} else {
 			validValue2 = currentValue;
@@ -279,15 +276,14 @@ public final class TwoNumbersOptionPane extends JDialog {
 	 * @param title Title of the dialog.
 	 * @param label1 Text of the first inside label of the dialog.
 	 * @param label2 Text of the second inside label of the dialog.
-	 * @param df DecimalFormat of the input value.
 	 * @param min Minimum allowed value for the input value.
 	 * @param max Maximum allowed value for the input value.
 	 * @param defaultValue1 first default displayed value when the dialog is displayed.
 	 * @param defaultValue2 second default displayed value when the dialog is displayed.
 	 * @return an array containing 2 numbers if OK has been pressed, otherwise null.
 	 */
-	public static Number[] getValue(Component parent, String title, String label1, String label2, DecimalFormat df, double min, double max, double defaultValue1, double defaultValue2) {
-		TwoNumbersOptionPane NOP = new TwoNumbersOptionPane(parent, title, label1, label2, df, defaultValue1, defaultValue2, min, max);
+	public static Number[] getValue(Component parent, String title, String label1, String label2, double min, double max, double defaultValue1, double defaultValue2) {
+		TwoNumbersOptionPane NOP = new TwoNumbersOptionPane(parent, title, label1, label2, defaultValue1, defaultValue2, min, max);
 		NOP.setVisible(true);
 		if(validated) {
 			Number[] result = {validValue1, validValue2};

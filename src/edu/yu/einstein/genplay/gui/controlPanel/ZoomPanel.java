@@ -28,7 +28,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -60,7 +60,6 @@ import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindowListener {
 
 	private static final long serialVersionUID = -8481919273684304592L; // generated ID
-	private static final DecimalFormat SIZE_FORMAT = new DecimalFormat("###,###,###");	// Format of the zoom string
 	private final JLabel 							jlZoom;				// zoom label
 	private final JButton 							jbPlus;				// button '+'
 	private final JButton 							jbMinus;			// button '-'
@@ -74,9 +73,9 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 	 * @param genomeWindow a {@link GenomeWindow}
 	 */
 	ZoomPanel() {
-		this.projectZoom = ProjectManager.getInstance().getProjectZoom();
-		this.projectWindow = ProjectManager.getInstance().getProjectWindow();
-		jlZoom = new JLabel("Size: " + SIZE_FORMAT.format(projectWindow.getGenomeWindow().getSize()));
+		projectZoom = ProjectManager.getInstance().getProjectZoom();
+		projectWindow = ProjectManager.getInstance().getProjectWindow();
+		jlZoom = new JLabel("Size: " + NumberFormat.getInstance().format(projectWindow.getGenomeWindow().getSize()));
 		jbMinus = new JButton("-");
 		jbMinus.setMargin(new Insets(0, 3, 0, 3));
 		jbMinus.setFocusPainted(false);
@@ -194,7 +193,7 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 	public void genomeWindowChanged(GenomeWindowEvent evt) {
 		// we notify the gui
 		int currentZoom = evt.getNewWindow().getSize();
-		jlZoom.setText("Size: " + SIZE_FORMAT.format(currentZoom));
+		jlZoom.setText("Size: " + NumberFormat.getInstance().format(currentZoom));
 		// if the chromosome changes we change the maximum zoom
 		if (evt.getNewWindow().getChromosome() != evt.getOldWindow().getChromosome()) {
 			int	oldMaximumZoom = evt.getOldWindow().getChromosome().getLength() * 2;

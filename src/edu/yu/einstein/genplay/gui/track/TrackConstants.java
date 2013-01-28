@@ -23,7 +23,6 @@ package edu.yu.einstein.genplay.gui.track;
 
 import java.awt.Cursor;
 import java.awt.Font;
-import java.text.DecimalFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.border.Border;
@@ -154,12 +153,6 @@ public class TrackConstants {
 	 */
 	public static final Border REGULAR_BORDER =
 			BorderFactory.createMatteBorder(0, 0, 1, 0, Colors.BLACK);
-
-
-	/**
-	 * Decimal format for the score of a track
-	 */
-	public static final DecimalFormat SCORE_FORMAT = new DecimalFormat("#.###");
 
 
 	/**

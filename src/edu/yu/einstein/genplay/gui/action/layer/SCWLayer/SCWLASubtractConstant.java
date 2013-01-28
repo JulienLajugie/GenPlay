@@ -21,8 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.layer.SCWLayer;
 
-import java.text.DecimalFormat;
-
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
@@ -68,7 +66,7 @@ public final class SCWLASubtractConstant extends TrackListActionOperationWorker<
 	public Operation<ScoredChromosomeWindowList> initializeOperation() {
 		selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
-			Number constant = NumberOptionPane.getValue(getRootPane(), "Constant", "Enter a value C to subtract: f(x)=x - C", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
+			Number constant = NumberOptionPane.getValue(getRootPane(), "Constant", "Enter a value C to subtract: f(x)=x - C", Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
 			if ((constant != null) && (constant.doubleValue() != 0)) {
 				ScoredChromosomeWindowList scwList = selectedLayer.getData();
 				operation = new SCWLOSubtractConstant(scwList, constant.doubleValue());

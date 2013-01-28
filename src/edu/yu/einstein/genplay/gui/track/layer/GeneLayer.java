@@ -32,7 +32,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.net.URI;
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -59,8 +59,6 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 	private static final double 			SCORE_SATURATION = 0.01d;		// saturation of the score of the exon for the display
 	private static final short				GENE_HEIGHT = 6;				// size of a gene in pixel
 	private static final short				UTR_HEIGHT = 3;					// height of a UTR region of a gene in pixel
-	protected static final DecimalFormat 	SCORE_FORMAT =
-			new DecimalFormat("#.###");										// decimal format for the score
 	private int 							firstLineToDisplay;				// number of the first line to be displayed
 	private int 							geneLinesCount;					// number of line of genes
 	private int 							mouseStartDragY = -1;			// position of the mouse when start dragging
@@ -377,7 +375,7 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 						getTrack().getGraphicsPanel().setToolTipText(geneUnderMouse.getName());
 					} else {
 						// if there is a gene and an exon score
-						getTrack().getGraphicsPanel().setToolTipText(geneUnderMouse.getName() + ": " +  SCORE_FORMAT.format(scoreUnderMouse));
+						getTrack().getGraphicsPanel().setToolTipText(geneUnderMouse.getName() + ": " +  NumberFormat.getInstance().format(scoreUnderMouse));
 					}
 				}
 				// we repaint the track only if the gene under the mouse changed

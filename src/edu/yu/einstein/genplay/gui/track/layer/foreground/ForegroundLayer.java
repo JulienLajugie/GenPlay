@@ -25,6 +25,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.text.NumberFormat;
 
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackConstants;
@@ -139,7 +140,7 @@ public class ForegroundLayer extends AbstractLayer<ForegroundData> implements La
 					scoreYPosition = g.getFontMetrics().getHeight();
 				}
 				g.setColor(data.getScoreColor());
-				g.drawString("y=" + TrackConstants.SCORE_FORMAT.format(currentScore), (width / 2) + 3, scoreYPosition);
+				g.drawString(NumberFormat.getInstance().format(currentScore), (width / 2) + 3, scoreYPosition);
 			}
 		}
 	}

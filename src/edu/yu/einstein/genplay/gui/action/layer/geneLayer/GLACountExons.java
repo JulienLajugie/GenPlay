@@ -19,44 +19,44 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.action.layer.binlayer;
+package edu.yu.einstein.genplay.gui.action.layer.geneLayer;
 
 import java.text.NumberFormat;
 
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
-import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.core.list.binList.operation.BLOAverage;
+import edu.yu.einstein.genplay.core.list.geneList.GeneList;
+import edu.yu.einstein.genplay.core.list.geneList.operation.GLOCountExons;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
+import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
 import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
- * Computes the average of the scores of the selected {@link BinLayer}.
+ * Counts the number of exons of the selected {@link GeneLayer}
  * @author Julien Lajugie
+ * @author Nicolas Fourel
  * @version 0.1
  */
-public final class BLAAverage extends TrackListActionOperationWorker<Double> {
+public final class GLACountExons extends TrackListActionOperationWorker<Long> {
 
-	private static final long serialVersionUID = 922723721396065388L;	// generated ID
-	private static final String 	ACTION_NAME = "Average";			// action name
-	private static final String 	DESCRIPTION =
-			"Compute the average of the scores of the selected layer";		// tooltip
+	private static final long serialVersionUID = -7994020295916154454L;				// generated ID
+	private static final String 	ACTION_NAME = "Count Exons";					// action name
+	private static final String 	DESCRIPTION = "Count the number of exons";		// tooltip
 
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = BLAAverage.class.getName();
+	public static final String ACTION_KEY = GLACountExons.class.getName();
 
 
 	/**
-	 * Creates an instance of {@link BLAAverage}
+	 * Creates an instance of {@link GLACountExons}
 	 */
-	public BLAAverage() {
+	public GLACountExons() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -65,13 +65,13 @@ public final class BLAAverage extends TrackListActionOperationWorker<Double> {
 
 
 	@Override
-	public Operation<Double> initializeOperation() {
-		BinLayer selectedLayer = (BinLayer) getValue("Layer");
+	public Operation<Long> initializeOperation() {
+		GeneLayer selectedLayer = (GeneLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			boolean[] selectedChromo = Utils.chooseChromosomes(getRootPane());
 			if (selectedChromo != null) {
-				BinList binList = selectedLayer.getData();
-				operation = new BLOAverage(binList, selectedChromo);
+				GeneList binList = selectedLayer.getData();
+				Operation<Long> operation = new GLOCountExons(binList, selectedChromo);
 				return operation;
 			}
 		}
@@ -80,9 +80,9 @@ public final class BLAAverage extends TrackListActionOperationWorker<Double> {
 
 
 	@Override
-	protected void doAtTheEnd(Double actionResult) {
+	protected void doAtTheEnd(Long actionResult) {
 		if (actionResult != null) {
-			JOptionPane.showMessageDialog(getRootPane(), "Average: \n" + NumberFormat.getInstance().format(actionResult), "Average", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(getRootPane(), "Number of exons: \n" + NumberFormat.getInstance().format(actionResult), "Count Exons", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 }

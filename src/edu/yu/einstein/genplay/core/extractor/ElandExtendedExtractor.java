@@ -27,7 +27,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
@@ -99,35 +99,35 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 				// initialize the number of read per chromosome and the data for statistics
 				int total0M = 0, total1M = 0, total2M = 0;
 				BufferedWriter writer = new BufferedWriter(new FileWriter(logFile, true));
-				DecimalFormat df = new DecimalFormat("##.#");
+				NumberFormat nf = NumberFormat.getInstance();
 				writer.write("NM: " + NMCount);
 				writer.newLine();
-				writer.write("Percentage of NM: " + df.format(((double)NMCount / totalCount) * 100) + "%");
+				writer.write("Percentage of NM: " + nf.format(((double)NMCount / totalCount) * 100) + "%");
 				writer.newLine();
 				writer.write("QC: " + QCCount);
 				writer.newLine();
-				writer.write("Percentage of QC: " + df.format(((double)QCCount / totalCount) * 100) + "%");
+				writer.write("Percentage of QC: " + nf.format(((double)QCCount / totalCount) * 100) + "%");
 				writer.newLine();
 				writer.write("Multi match: " + multiMatchCount);
 				writer.newLine();
-				writer.write("Percentage of multimatch: " + df.format(((double)multiMatchCount / totalCount) * 100) + "%");
+				writer.write("Percentage of multimatch: " + nf.format(((double)multiMatchCount / totalCount) * 100) + "%");
 				writer.newLine();
 				writer.write("Chromosome\t0MM\t1MM\t2MM\tTotal");
 				writer.newLine();
 				for(short i = 0; i < projectChromosome.size(); i++) {
 					writer.write(projectChromosome.get(i) +
-							"\t\t" + df.format(((double)matchTypeCount[i][0] / lineCount)*100) +
-							"%\t" + df.format(((double)matchTypeCount[i][1] / lineCount)*100) +
-							"%\t" + df.format(((double)matchTypeCount[i][2] / lineCount)*100) +
-							"%\t" + df.format(((double)(matchTypeCount[i][0] + matchTypeCount[i][1] + matchTypeCount[i][2]) / lineCount)*100) + "%");
+							"\t\t" + nf.format(((double)matchTypeCount[i][0] / lineCount)*100) +
+							"%\t" + nf.format(((double)matchTypeCount[i][1] / lineCount)*100) +
+							"%\t" + nf.format(((double)matchTypeCount[i][2] / lineCount)*100) +
+							"%\t" + nf.format(((double)(matchTypeCount[i][0] + matchTypeCount[i][1] + matchTypeCount[i][2]) / lineCount)*100) + "%");
 					writer.newLine();
 					total0M+=matchTypeCount[i][0];
 					total1M+=matchTypeCount[i][1];
 					total2M+=matchTypeCount[i][2];
 				}
-				writer.write("Total:\t" + df.format(((double)total0M/lineCount)*100) +
-						"%\t" + df.format(((double)total1M/lineCount)*100) +
-						"%\t" + df.format(((double)total2M/lineCount)*100) +
+				writer.write("Total:\t" + nf.format(((double)total0M/lineCount)*100) +
+						"%\t" + nf.format(((double)total1M/lineCount)*100) +
+						"%\t" + nf.format(((double)total2M/lineCount)*100) +
 						"%\t\t100%");
 				writer.newLine();
 				writer.close();
@@ -325,7 +325,7 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 
 	@Override
 	public void setReadLengthAndShiftHandler(ReadLengthAndShiftHandler handler) {
-		this.readHandler = handler;
+		readHandler = handler;
 		if (readHandler.getReadLength() != 0) {
 			// if a read length is specified we need to have a stop position list
 			stopPositionList = new ChromosomeArrayListOfLists<Integer>();

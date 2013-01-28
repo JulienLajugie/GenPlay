@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -65,7 +65,7 @@ public class GLOExtractExons implements Operation<GeneList> {
 	 * @param exonOption used to specify to extract only the first exon, the last exon or all the exon
 	 */
 	public GLOExtractExons(GeneList geneList, int exonOption) {
-		this.geneList = geneList;		
+		this.geneList = geneList;
 		this.exonOption = exonOption;
 	}
 
@@ -77,13 +77,13 @@ public class GLOExtractExons implements Operation<GeneList> {
 		for(final List<Gene> currentList: geneList) {
 			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {
 				@Override
-				public List<Gene> call() throws Exception {					
+				public List<Gene> call() throws Exception {
 					if (currentList == null) {
 						return null;
 					}
 					List<Gene> resultList = new ArrayList<Gene>();
-					for (int j = 0; j < currentList.size() && !stopped; j++) {
-						Gene currentGene = currentList.get(j); 
+					for (int j = 0; (j < currentList.size()) && !stopped; j++) {
+						Gene currentGene = currentList.get(j);
 						switch (exonOption) {
 						case FIRST_EXON:
 							resultList.add(extractFirstExon(currentGene));
@@ -92,7 +92,7 @@ public class GLOExtractExons implements Operation<GeneList> {
 							resultList.add(extractLastExon(currentGene));
 							break;
 						case ALL_EXONS:
-							resultList.addAll(extractAllExon(currentGene));							
+							resultList.addAll(extractAllExon(currentGene));
 							break;
 						default:
 							// invalid argument
@@ -206,7 +206,7 @@ public class GLOExtractExons implements Operation<GeneList> {
 			outputGene.setExonStarts(exonStart);
 			// new exon stops
 			int[] exonStop = new int[1];
-			exonStop[0] = outputGene.getExonStops()[0];			
+			exonStop[0] = outputGene.getExonStops()[0];
 			outputGene.setExonStops(exonStop);
 			// new exon scores
 			if (outputGene.getExonScores() != null) {
@@ -227,7 +227,7 @@ public class GLOExtractExons implements Operation<GeneList> {
 	 */
 	private List<Gene> extractAllExon(Gene inputGene) {
 		List<Gene> outputGeneList = new ArrayList<Gene>();
-		if (inputGene.getStrand() == Strand.FIVE) {								
+		if (inputGene.getStrand() == Strand.FIVE) {
 			for (int i = 0; i < inputGene.getExonStarts().length; i++) {
 				Gene outputGene = new Gene(inputGene);
 				// new start
@@ -252,7 +252,7 @@ public class GLOExtractExons implements Operation<GeneList> {
 					}
 					outputGene.setExonScores(exonScore);
 				}
-				// new name				
+				// new name
 				outputGene.setName(outputGene.getName() + "(" + Integer.toString(i + 1) + ")");
 				// add new gene
 				outputGeneList.add(outputGene);
@@ -273,15 +273,15 @@ public class GLOExtractExons implements Operation<GeneList> {
 				exonStop[0] = outputGene.getExonStops()[i];
 				outputGene.setExonStops(exonStop);
 				// new exon scores
-				if ((outputGene.getExonScores() != null) && (outputGene.getExonScores().length > 0)) { 
+				if ((outputGene.getExonScores() != null) && (outputGene.getExonScores().length > 0)) {
 					double[] exonScore = new double[1];
-					if (outputGene.getExonScores().length == 1) {						
+					if (outputGene.getExonScores().length == 1) {
 						exonScore[0] = outputGene.getExonScores()[0];
 					} else {
 						exonScore[0] = outputGene.getExonScores()[i];
 					}
 					outputGene.setExonScores(exonScore);
-				}				
+				}
 				// new name
 				outputGene.setName(outputGene.getName() + "(" + Integer.toString(inputGene.getExonStarts().length - i) + ")");
 				// add new gene
@@ -321,6 +321,6 @@ public class GLOExtractExons implements Operation<GeneList> {
 
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }

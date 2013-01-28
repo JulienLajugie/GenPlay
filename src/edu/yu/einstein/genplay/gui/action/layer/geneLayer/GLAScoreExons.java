@@ -21,8 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.layer.geneLayer;
 
-import java.text.DecimalFormat;
-
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
@@ -94,7 +92,7 @@ public class GLAScoreExons  extends TrackListActionOperationWorker<GeneList> {
 			if (otherLayer != null) {
 				ScoreCalculationMethod method = Utils.chooseScoreCalculation(getRootPane());
 				if (method != null) {
-					Number constant = NumberOptionPane.getValue(getRootPane(), "Enter a value (optional)", "Enter a value (bp) to add to both side of each exon:", new DecimalFormat("0"), 0, 1000, 0);
+					Number constant = NumberOptionPane.getValue(getRootPane(), "Enter a value (optional)", "Enter a value (bp) to add to both side of each exon:", 0, 1000, 0);
 					if (constant != null) {
 						int offset = constant.intValue();
 						if (otherLayer.getData() instanceof BinList) {

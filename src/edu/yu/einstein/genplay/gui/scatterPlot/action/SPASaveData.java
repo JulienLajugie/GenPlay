@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -27,7 +27,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Arrays;
 
 import javax.swing.JFileChooser;
@@ -51,8 +51,8 @@ public class SPASaveData extends ScatterPlotAction {
 
 	private static final long serialVersionUID = -8095455417205967110L;
 	private static final String 	ACTION_NAME = "Save Data";		// action name
-	private static final String 	DESCRIPTION = 
-		"Save the data of the charts in a CSV file";				// tooltip
+	private static final String 	DESCRIPTION =
+			"Save the data of the charts in a CSV file";				// tooltip
 
 
 	/**
@@ -68,7 +68,7 @@ public class SPASaveData extends ScatterPlotAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		int selectedIndex = -1; 
+		int selectedIndex = -1;
 		if (getScatterPlotPane().getData().size() == 1) {
 			selectedIndex = 0;
 		} else {
@@ -79,7 +79,7 @@ public class SPASaveData extends ScatterPlotAction {
 			}
 		}
 		if (selectedIndex >= 0) {
-			String defaultDirectoryPath = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();		
+			String defaultDirectoryPath = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
 			JFileChooser jfc = new JFileChooser(defaultDirectoryPath);
 			jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV file (*.csv)", "csv");
@@ -111,13 +111,12 @@ public class SPASaveData extends ScatterPlotAction {
 				writer.write(Double.toString(scatterPlotData.getData()[i][0]));
 				writer.write(", ");
 				if (i < scatterPlotData.getData().length) {
-					DecimalFormat df = new DecimalFormat("#.###");
-					writer.write(df.format(scatterPlotData.getData()[i][1]));
+					writer.write(NumberFormat.getInstance().format(scatterPlotData.getData()[i][1]));
 				} else {
-					writer.write(Integer.toString(0));						
-				}					
+					writer.write(Integer.toString(0));
+				}
 				writer.newLine();
-			}			
+			}
 			writer.close();
 		} catch (FileNotFoundException e) {
 			ExceptionManager.handleException(getRootPane(), e, "Error while saving the scatter plot data as a CSV file. \n" + e.getLocalizedMessage());
@@ -127,44 +126,44 @@ public class SPASaveData extends ScatterPlotAction {
 	}
 
 
-//	/**
-//	 * Writes the data of the {@link ScatterPlotPane} in a specified file
-//	 * @param file {@link File}
-//	 */
-//	private void writeData(File file) {
-//		try {
-//			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-//			writer.write(getScatterPlotPane().getxAxis().getName());
-//			int maxLength = getScatterPlotPane().getData().get(0).getData().length;
-//			int graphNumber = 0;
-//			String[] graphNames = getScatterPlotPane().getGraphNames();
-//			List<ScatterPlotData> data = getScatterPlotPane().getData();
-//			for (int i = 0; i < graphNames.length; i++) {
-//				writer.write(", " + graphNames[i] + " " + getScatterPlotPane().getyAxis().getName());
-//				if (maxLength < data.get(i).getData().length) {
-//					maxLength = data.get(i).getData().length;
-//					graphNumber = i;
-//				}
-//			}	
-//			writer.newLine();
-//			for (int i = 0; i < maxLength; i++){
-//				writer.write(Double.toString(data.get(graphNumber).getData()[i][0]));
-//				for (int j = 0; j < data.size(); j++) {
-//					writer.write(", ");
-//					if (i < data.get(j).getData().length) {
-//						DecimalFormat df = new DecimalFormat("#.###");
-//						writer.write(df.format(data.get(j).getData()[i][1]));
-//					} else {
-//						writer.write(Integer.toString(0));						
-//					}					
-//				}
-//				writer.newLine();
-//			}			
-//			writer.close();
-//		} catch (FileNotFoundException e) {
-//			ExceptionManager.handleException(getRootPane(), e, "Error while saving the scatter plot data as a CSV file. \n" + e.getLocalizedMessage());
-//		} catch (IOException e) {
-//			ExceptionManager.handleException(getRootPane(), e, "Error while saving the scatter plot data as a CSV file");
-//		}
-//	}
+	//	/**
+	//	 * Writes the data of the {@link ScatterPlotPane} in a specified file
+	//	 * @param file {@link File}
+	//	 */
+	//	private void writeData(File file) {
+	//		try {
+	//			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+	//			writer.write(getScatterPlotPane().getxAxis().getName());
+	//			int maxLength = getScatterPlotPane().getData().get(0).getData().length;
+	//			int graphNumber = 0;
+	//			String[] graphNames = getScatterPlotPane().getGraphNames();
+	//			List<ScatterPlotData> data = getScatterPlotPane().getData();
+	//			for (int i = 0; i < graphNames.length; i++) {
+	//				writer.write(", " + graphNames[i] + " " + getScatterPlotPane().getyAxis().getName());
+	//				if (maxLength < data.get(i).getData().length) {
+	//					maxLength = data.get(i).getData().length;
+	//					graphNumber = i;
+	//				}
+	//			}
+	//			writer.newLine();
+	//			for (int i = 0; i < maxLength; i++){
+	//				writer.write(Double.toString(data.get(graphNumber).getData()[i][0]));
+	//				for (int j = 0; j < data.size(); j++) {
+	//					writer.write(", ");
+	//					if (i < data.get(j).getData().length) {
+	//						DecimalFormat df = new DecimalFormat("#.###");
+	//						writer.write(df.format(data.get(j).getData()[i][1]));
+	//					} else {
+	//						writer.write(Integer.toString(0));
+	//					}
+	//				}
+	//				writer.newLine();
+	//			}
+	//			writer.close();
+	//		} catch (FileNotFoundException e) {
+	//			ExceptionManager.handleException(getRootPane(), e, "Error while saving the scatter plot data as a CSV file. \n" + e.getLocalizedMessage());
+	//		} catch (IOException e) {
+	//			ExceptionManager.handleException(getRootPane(), e, "Error while saving the scatter plot data as a CSV file");
+	//		}
+	//	}
 }

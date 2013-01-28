@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -23,7 +23,7 @@ package edu.yu.einstein.genplay.gui.dialog.newCurveLayerDialog;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
@@ -43,7 +43,6 @@ import javax.swing.text.NumberFormatter;
 class ReadDefinitionPanel extends JPanel {
 
 	private static final long serialVersionUID = -4713934153945461579L;			// generated ID
-	private static final DecimalFormat DF = new DecimalFormat("###,###,###"); 	// decimal format
 
 	private final JCheckBox 			jcbShift;				// shift check box
 	private final JFormattedTextField 	jftfShift;				// shift input box
@@ -64,31 +63,31 @@ class ReadDefinitionPanel extends JPanel {
 	ReadDefinitionPanel() {
 		jcbShift = new JCheckBox("Shift:  ");
 		jcbShift.setSelected(jcbShiftDefaultState);
-		jcbShift.addChangeListener(new ChangeListener() {			
+		jcbShift.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent arg0) {
-				jftfShift.setEnabled(jcbShift.isSelected());				
+				jftfShift.setEnabled(jcbShift.isSelected());
 			}
 		});
 
-		jftfShift = new JFormattedTextField(DF);
+		jftfShift = new JFormattedTextField(NumberFormat.getInstance());
 		((NumberFormatter) jftfShift.getFormatter()).setMinimum(0);
 		jftfShift.setColumns(5);
-		jftfShift.setValue(jftfShiftDefaultValue);		
+		jftfShift.setValue(jftfShiftDefaultValue);
 		jftfShift.setEnabled(jcbShiftDefaultState);
 
 		jlShiftBP = new JLabel("bp");
 
 		jcbReadLength = new JCheckBox("Read Length:  ");
 		jcbReadLength.setSelected(jcbReadLengthDefaultState);
-		jcbReadLength.addChangeListener(new ChangeListener() {			
+		jcbReadLength.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				jftfReadLength.setEnabled(jcbReadLength.isSelected());				
+				jftfReadLength.setEnabled(jcbReadLength.isSelected());
 			}
 		});
 
-		jftfReadLength = new JFormattedTextField(DF);
+		jftfReadLength = new JFormattedTextField(NumberFormat.getInstance());
 		((NumberFormatter) jftfReadLength.getFormatter()).setMinimum(1);
 		jftfReadLength.setColumns(5);
 		jftfReadLength.setValue(jftfReadLengthDefaultValue);
@@ -115,7 +114,7 @@ class ReadDefinitionPanel extends JPanel {
 		add(jlShiftBP, c);
 
 		c = new GridBagConstraints();
-		c.gridx = 0; 
+		c.gridx = 0;
 		c.gridy = 1;
 		add(jcbReadLength, c);
 
@@ -148,7 +147,7 @@ class ReadDefinitionPanel extends JPanel {
 
 
 	/**
-	 * @return the read length value. Returns zero if the read length is not specified 
+	 * @return the read length value. Returns zero if the read length is not specified
 	 */
 	int getReadLengthValue() {
 		if (jcbReadLength.isSelected()) {

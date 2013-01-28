@@ -22,7 +22,6 @@
 package edu.yu.einstein.genplay.gui.action.layer.binlayer;
 
 import java.awt.Color;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,7 +77,7 @@ public final class BLARepartition extends TrackListActionOperationWorker<double 
 	public Operation<double [][][]> initializeOperation() {
 		BinLayer selectedLayer = (BinLayer) getValue("Layer");
 		if (selectedLayer != null) {
-			Number scoreBin = NumberOptionPane.getValue(getRootPane(), "Size", "Enter the size of the bin of score:", new DecimalFormat("0.0#####"), 0 + Double.MIN_NORMAL, 1000, 1);
+			Number scoreBin = NumberOptionPane.getValue(getRootPane(), "Size", "Enter the size of the bin of score:", 0 + Double.MIN_NORMAL, 1000, 1);
 			if (scoreBin != null) {
 				// we ask the user to choose the layers for the repartition only if there is more than one layer
 				LayerType[] availableLayerTypes = {LayerType.BIN_LAYER};

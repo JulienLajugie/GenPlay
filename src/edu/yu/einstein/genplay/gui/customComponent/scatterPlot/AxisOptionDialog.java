@@ -29,7 +29,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -58,7 +58,6 @@ import edu.yu.einstein.genplay.util.colors.Colors;
 public class AxisOptionDialog extends JDialog {
 
 	private static final long serialVersionUID = -989613090051981876L; // generated ID
-	private static final DecimalFormat 	DF = new DecimalFormat("###,###,###,###.###"); // decimal format for the input
 	private static final int 			PAD = 10;			// padding between elements
 	private final JLabel 				jlMin;				// min label
 	private final JFormattedTextField 	jftfMin;			// min text field
@@ -92,7 +91,7 @@ public class AxisOptionDialog extends JDialog {
 	 */
 	public AxisOptionDialog() {
 		jlMin = new JLabel("Minimum:");
-		jftfMin = new JFormattedTextField(DF);
+		jftfMin = new JFormattedTextField(NumberFormat.getInstance());
 		// min must be strictly smaller than the max
 		jftfMin.addFocusListener(new FocusAdapter() {
 			@Override
@@ -104,7 +103,7 @@ public class AxisOptionDialog extends JDialog {
 		});
 
 		jlMax = new JLabel("Maximum:");
-		jftfMax = new JFormattedTextField(DF);
+		jftfMax = new JFormattedTextField(NumberFormat.getInstance());
 		// max must be strictly greater than the min
 		jftfMax.addFocusListener(new FocusAdapter() {
 			@Override
@@ -116,7 +115,7 @@ public class AxisOptionDialog extends JDialog {
 		});
 
 		jlMajorUnit = new JLabel("Major unit:");
-		jftfMajorUnit = new JFormattedTextField(DF);
+		jftfMajorUnit = new JFormattedTextField(NumberFormat.getInstance());
 		// major unit must be greater or equal than minor unit
 		jftfMajorUnit.addFocusListener(new FocusAdapter() {
 			@Override
@@ -128,7 +127,7 @@ public class AxisOptionDialog extends JDialog {
 		});
 
 		jlMinorUnit = new JLabel("Minor unit:");
-		jftfMinorUnit = new JFormattedTextField(DF);
+		jftfMinorUnit = new JFormattedTextField(NumberFormat.getInstance());
 		// we just accept values > 0
 		((NumberFormatter) (jftfMinorUnit.getFormatter())).setMinimum(Double.MIN_NORMAL);
 		// minor unit must be smaller or equal than major unit

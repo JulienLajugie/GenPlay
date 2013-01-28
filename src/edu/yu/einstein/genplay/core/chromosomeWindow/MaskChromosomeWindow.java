@@ -24,7 +24,7 @@ package edu.yu.einstein.genplay.core.chromosomeWindow;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 
 /**
@@ -36,9 +36,6 @@ public final class MaskChromosomeWindow implements ScoredChromosomeWindow, Chrom
 
 	private static final long serialVersionUID = 8073707507054963197L; // generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-
-	private static final DecimalFormat POSITION_FORMAT =
-			new DecimalFormat("###,###,###"); // Format used for the toString() method
 	private int  	start;		// Position start of the window
 	private int 	stop;		// Position stop of the window
 
@@ -77,15 +74,15 @@ public final class MaskChromosomeWindow implements ScoredChromosomeWindow, Chrom
 		this.start = start;
 		this.stop = stop;
 	}
-	
-	
+
+
 	/**
 	 * Creates an instance of a {@link MaskChromosomeWindow}
 	 * @param chromosomeWindow a chromosome window
 	 */
 	public MaskChromosomeWindow(ChromosomeWindow chromosomeWindow) {
-		this.start = chromosomeWindow.getStart();
-		this.stop = chromosomeWindow.getStop();
+		start = chromosomeWindow.getStart();
+		stop = chromosomeWindow.getStop();
 	}
 
 
@@ -94,15 +91,15 @@ public final class MaskChromosomeWindow implements ScoredChromosomeWindow, Chrom
 	 * @param scw a {@link ScoredChromosomeWindow}
 	 */
 	public MaskChromosomeWindow(ScoredChromosomeWindow scw) {
-		this.start = scw.getStart();
-		this.stop = scw.getStop();
+		start = scw.getStart();
+		stop = scw.getStop();
 	}
 
 
 	@Override
 	public String toString() {
-		String startStr = POSITION_FORMAT.format(start);
-		String stopStr = POSITION_FORMAT.format(stop);
+		String startStr = NumberFormat.getInstance().format(start);
+		String stopStr = NumberFormat.getInstance().format(stop);
 		return startStr + "-" + stopStr + " : 1";
 	}
 

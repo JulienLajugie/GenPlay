@@ -24,7 +24,7 @@ package edu.yu.einstein.genplay.gui.dialog.peakFinderDialog;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFormattedTextField;
@@ -80,7 +80,7 @@ class DensityFinderPanel extends JPanel implements PeakFinderPanel {
 		this.bloFindPeaks = bloFindPeaks;
 
 		setName(NAME);
-		this.setBorder(BorderFactory.createTitledBorder("Input"));
+		setBorder(BorderFactory.createTitledBorder("Input"));
 
 		jtaDescription = new JTextArea("Please refere to the help file for an explanation of the parameters L, H, S and P");
 		jtaDescription.setEditable(false);
@@ -89,19 +89,19 @@ class DensityFinderPanel extends JPanel implements PeakFinderPanel {
 		jtaDescription.setWrapStyleWord(true);
 
 		jlLowThreshold = new JLabel("Enter the low threshold L");
-		jftfLowThreshold = new JFormattedTextField(new DecimalFormat("0.0"));
+		jftfLowThreshold = new JFormattedTextField(NumberFormat.getInstance());
 		jftfLowThreshold.setValue(defaultLowThreshold);
 		jftfLowThreshold.setHorizontalAlignment(SwingConstants.RIGHT);
 		jftfLowThreshold.setColumns(8);
 
 		jlHighTreshold = new JLabel("Enter the high threshold H");
-		jftfHighThreshold = new JFormattedTextField(new DecimalFormat("0.0"));
+		jftfHighThreshold = new JFormattedTextField(NumberFormat.getInstance());
 		jftfHighThreshold.setValue(defaultHighThreshold);
 		jftfHighThreshold.setHorizontalAlignment(SwingConstants.RIGHT);
 		jftfHighThreshold.setColumns(8);
 
 		jlRegionWidth = new JLabel("Enter the region half size S (in windows)");
-		jftfRegionWidth = new JFormattedTextField(new DecimalFormat("0"));
+		jftfRegionWidth = new JFormattedTextField(NumberFormat.getInstance());
 		jftfRegionWidth.setValue(defaultRegionWidth);
 		jftfRegionWidth.setHorizontalAlignment(SwingConstants.RIGHT);
 		jftfRegionWidth.setColumns(8);
@@ -110,8 +110,8 @@ class DensityFinderPanel extends JPanel implements PeakFinderPanel {
 
 		jlPercentage = new JLabel("Enter percentage P");
 		// create the formatter for the percentage input box
-		DecimalFormat df = new DecimalFormat("0%");
-		NumberFormatter nf = new NumberFormatter(df);
+		NumberFormat percentageFormat = NumberFormat.getPercentInstance();
+		NumberFormatter nf = new NumberFormatter(percentageFormat);
 		nf.setMinimum(0.0);
 		nf.setMaximum(1.0);
 		jftfPercentage = new JFormattedTextField(nf);

@@ -28,7 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Random;
 import java.util.TreeSet;
 
@@ -254,13 +254,13 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 		super.logExecutionInfo();
 		if(logFile != null) {
 			try {
-				DecimalFormat df = new DecimalFormat("##.#");
+				NumberFormat nf = NumberFormat.getInstance();
 				BufferedWriter writer = new BufferedWriter(new FileWriter(logFile, true));
 				writer.write("Number lines in the file: " + totalCount);
 				writer.newLine();
 				writer.write("Number of lines extracted: " + lineCount);
 				writer.newLine();
-				writer.write("Percentage of lines extracted: " + df.format(((double)lineCount / totalCount) * 100) + "%");
+				writer.write("Percentage of lines extracted: " + nf.format(((double)lineCount / totalCount) * 100) + "%");
 				writer.newLine();
 				writer.close();
 			} catch (IOException e) {

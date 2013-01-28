@@ -22,7 +22,7 @@
 package edu.yu.einstein.genplay.gui.action.track;
 
 import java.io.File;
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
@@ -85,8 +85,7 @@ public final class TAAddBinLayer extends TrackListActionExtractorWorker<BinList>
 			Track selectedTrack = getTrackListPanel().getSelectedTrack();
 			BinLayer newLayer = new BinLayer(selectedTrack, actionResult, fileToExtract.getName());
 			// add the history to the layer
-			DecimalFormat dF = new DecimalFormat("###,###,###,###,###,###.##");
-			String history = "Bin Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision() + ", Score Count = " + dF.format(actionResult.getSumScore());
+			String history = "Bin Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision() + ", Score Count = " + NumberFormat.getInstance().format(actionResult.getSumScore());
 			if (binListGenerator.isCriterionNeeded()) {
 				history += ", Method of Calculation = " + scoreCalculation;
 			}

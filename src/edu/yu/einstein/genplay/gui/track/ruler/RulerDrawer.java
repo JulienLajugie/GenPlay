@@ -23,7 +23,7 @@ package edu.yu.einstein.genplay.gui.track.ruler;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
@@ -47,9 +47,8 @@ public class RulerDrawer implements Drawer {
 	private static final Color			MIDDLE_LINE_COLOR = Colors.RED;				// color of the line in the middle
 	private static final int 			MAJOR_TEXT_HEIGHT = 11;						// height of the absolute position text
 	private static final int 			MINOR_TEXT_HEIGHT = 2;						// height of the relative position text
-	private static final DecimalFormat 	DF = new DecimalFormat("###,###,###");		// decimal format
-	
-	
+
+
 	@Override
 	public void draw(Graphics g, int width, int height) {
 		drawRelativeUnits(g, width, height);
@@ -97,7 +96,7 @@ public class RulerDrawer implements Drawer {
 		if (position == -1000000000) {
 			return "-";
 		}
-		return DF.format(position);
+		return NumberFormat.getInstance().format(position);
 	}
 
 
@@ -118,7 +117,7 @@ public class RulerDrawer implements Drawer {
 			int x1 = (int)Math.round(i * gap);
 			int x2 = (int)Math.round((((2 * i) + 1) * gap) / 2d);
 			int distanceFromMiddle = (Math.abs(i - (LINE_COUNT / 2)) * (positionStop - positionStart)) / LINE_COUNT;
-			String stringToPrint = DF.format(distanceFromMiddle);
+			String stringToPrint = NumberFormat.getInstance().format(distanceFromMiddle);
 			if (x1 >= lastTextStopPos) {
 				g.setColor(TEXT_COLOR);
 				g.drawString(stringToPrint, x1 + 2, y);

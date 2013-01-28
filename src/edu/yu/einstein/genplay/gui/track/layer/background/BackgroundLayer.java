@@ -24,8 +24,7 @@ package edu.yu.einstein.genplay.gui.track.layer.background;
 import java.awt.Graphics;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.AbstractLayer;
@@ -82,9 +81,9 @@ public class BackgroundLayer extends AbstractLayer<BackgroundData> implements La
 				if (intensityLineY >= scoreMin) {
 					int screenLineY = getTrack().getScore().scoreToScreenPosition(intensityLineY);
 					g.drawLine(0, screenLineY, width, screenLineY);
-					DecimalFormat formatter = new DecimalFormat("#.#####");
-					formatter.setRoundingMode(RoundingMode.DOWN);
-					String positionStr = formatter.format(intensityLineY);
+					NumberFormat nf = NumberFormat.getInstance();
+					nf.setMaximumFractionDigits(3);
+					String positionStr = nf.format(intensityLineY);
 					g.drawString(positionStr, 2, screenLineY);
 				}
 			}

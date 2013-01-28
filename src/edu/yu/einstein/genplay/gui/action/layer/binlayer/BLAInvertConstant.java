@@ -21,8 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.layer.binlayer;
 
-import java.text.DecimalFormat;
-
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
@@ -70,7 +68,7 @@ public class BLAInvertConstant extends TrackListActionOperationWorker<BinList> {
 	public Operation<BinList> initializeOperation() {
 		selectedLayer = (BinLayer) getValue("Layer");
 		if (selectedLayer != null) {
-			Number constant = NumberOptionPane.getValue(getRootPane(), "Constant", "Enter a value C in: f(x)= C / x", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 1);
+			Number constant = NumberOptionPane.getValue(getRootPane(), "Constant", "Enter a value C in: f(x)= C / x", Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 1);
 			if (constant != null) {
 				if (constant.doubleValue() == 0) {
 					JOptionPane.showMessageDialog(getRootPane(), "The constant must be different from 0", "Invalid Parameter", JOptionPane.WARNING_MESSAGE);

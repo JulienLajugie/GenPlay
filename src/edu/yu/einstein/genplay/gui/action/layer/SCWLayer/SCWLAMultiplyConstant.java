@@ -21,8 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.layer.SCWLayer;
 
-import java.text.DecimalFormat;
-
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
@@ -68,7 +66,7 @@ public final class SCWLAMultiplyConstant extends TrackListActionOperationWorker<
 	public Operation<ScoredChromosomeWindowList> initializeOperation() {
 		selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
-			Number constant = NumberOptionPane.getValue(getRootPane(), "Constant", "Multiply the scores of the layer by", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
+			Number constant = NumberOptionPane.getValue(getRootPane(), "Constant", "Multiply the scores of the layer by", Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
 			if ((constant != null) && (constant.doubleValue() != 0)) {
 				ScoredChromosomeWindowList scwList = selectedLayer.getData();
 				operation = new SCWLOMultiplyConstant(scwList, constant.doubleValue());

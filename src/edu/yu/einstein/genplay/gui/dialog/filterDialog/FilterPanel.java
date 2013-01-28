@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -24,7 +24,7 @@ package edu.yu.einstein.genplay.gui.dialog.filterDialog;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JFormattedTextField;
@@ -50,7 +50,7 @@ abstract class FilterPanel extends JPanel {
 	private final JFormattedTextField 	jftfMax;		// max input box
 	private final JRadioButton 			jrbRemove;		// radio button remove
 	private final JRadioButton 			jrbSaturate;	// radio button saturate
-	private final JTextArea 			jtaRadioText;	// text area with explanation for the radio buttons 
+	private final JTextArea 			jtaRadioText;	// text area with explanation for the radio buttons
 
 
 	/**
@@ -59,11 +59,11 @@ abstract class FilterPanel extends JPanel {
 	 * @param filterDescription description of the filter
 	 * @param textMin text of the label describing the min input box
 	 * @param textMax text of the label describing the max input box
-	 * @param df decimal format for the input
+	 * @param nf decimal format for the input
 	 * @param defaultMin default min
 	 * @param defaultMax default max
 	 */
-	FilterPanel(String name, String filterDescription, String textMin, String textMax, DecimalFormat df, Number defaultMin, Number defaultMax, boolean defaultIsSaturation) {		
+	FilterPanel(String name, String filterDescription, String textMin, String textMax, NumberFormat nf, Number defaultMin, Number defaultMax, boolean defaultIsSaturation) {
 		super();
 		// set the name of the filter panel
 		setName(name);
@@ -75,13 +75,13 @@ abstract class FilterPanel extends JPanel {
 		jlMin = new JLabel(textMin);
 		jlMax = new JLabel(textMax);
 		// create the input boxes
-		jftfMin = new JFormattedTextField(df);
+		jftfMin = new JFormattedTextField(nf);
 		jftfMin.setValue(defaultMin);
-		jftfMax = new JFormattedTextField(df);
+		jftfMax = new JFormattedTextField(nf);
 		jftfMax.setValue(defaultMax);
 		// create the radio buttons
 		jrbRemove = new JRadioButton("Remove");
-		jrbSaturate = new JRadioButton("Saturate");		
+		jrbSaturate = new JRadioButton("Saturate");
 		// group for the radio buttons
 		ButtonGroup radioGroup = new ButtonGroup();
 		radioGroup.add(jrbRemove);
@@ -90,11 +90,11 @@ abstract class FilterPanel extends JPanel {
 		jrbSaturate.setSelected(defaultIsSaturation);
 		// create the text area with explanation for the ratio buttons
 		jtaRadioText = new JTextArea("Choose Remove to set the filtered values to zero\n" +
-		"Choose Saturate to set the filtered values to the boundary value");
+				"Choose Saturate to set the filtered values to the boundary value");
 		jtaRadioText.setEditable(false);
 		jtaRadioText.setBackground(getBackground());
 
-		// add the components 
+		// add the components
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 
@@ -177,7 +177,7 @@ abstract class FilterPanel extends JPanel {
 	 */
 	boolean isSaturation() {
 		if (isSaturable()) {
-			return jrbSaturate.isSelected();	
+			return jrbSaturate.isSelected();
 		} else {
 			// if the saturation option is not available we return false
 			return false;
@@ -192,13 +192,13 @@ abstract class FilterPanel extends JPanel {
 
 
 	/**
-	 * Saves the maximum input 
+	 * Saves the maximum input
 	 */
 	abstract void saveMax();
 
 
 	/**
-	 * Saves the minimum input 
+	 * Saves the minimum input
 	 */
 	abstract void saveMin();
 

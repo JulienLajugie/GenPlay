@@ -21,8 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.layer.SCWLayer;
 
-import java.text.DecimalFormat;
-
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
@@ -68,7 +66,7 @@ public class SCWLANormalize extends TrackListActionOperationWorker<ScoredChromos
 	public Operation<ScoredChromosomeWindowList> initializeOperation() {
 		selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
-			Number factor = NumberOptionPane.getValue(getRootPane(), "Multiplicative constant", "Enter a factor of X:", new DecimalFormat("###,###,###,###"), 0, 1000000000, 10000000);
+			Number factor = NumberOptionPane.getValue(getRootPane(), "Multiplicative constant", "Enter a factor of X:", 0, 1000000000, 10000000);
 			if(factor != null) {
 				ScoredChromosomeWindowList inputList = selectedLayer.getData();
 				Operation<ScoredChromosomeWindowList> operation = new SCWLONormalize(inputList, factor.doubleValue());

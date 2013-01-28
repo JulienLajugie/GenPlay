@@ -21,7 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.layer.binlayer;
 
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
@@ -82,7 +82,7 @@ public final class BLAStandardDeviation extends TrackListActionOperationWorker<D
 	@Override
 	protected void doAtTheEnd(Double actionResult) {
 		if (actionResult != null) {
-			JOptionPane.showMessageDialog(getRootPane(), "Standard deviation: \n" + new DecimalFormat("0.000").format(actionResult), "Standard Deviation", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(getRootPane(), "Standard deviation: \n" + NumberFormat.getInstance().format(actionResult), "Standard Deviation", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 }

@@ -27,7 +27,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -97,8 +97,7 @@ public class TransfragDialog extends JDialog {
 	public TransfragDialog(int transfragType) {
 		super();
 		jlGapSize = new JLabel("Enter the Gap: ");
-		DecimalFormat numFormat = new DecimalFormat("##.##");
-		NumberFormatter num = new NumberFormatter(numFormat);
+		NumberFormatter num = new NumberFormatter(NumberFormat.getInstance());
 		num.setAllowsInvalid(false);
 		jftGapSize = new JFormattedTextField(num);
 		jftGapSize.setValue(0);

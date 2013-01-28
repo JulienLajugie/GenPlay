@@ -24,7 +24,7 @@ package edu.yu.einstein.genplay.gui.dialog.peakFinderDialog;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFormattedTextField;
@@ -71,7 +71,7 @@ class StDevFinderPanel extends JPanel implements PeakFinderPanel {
 		this.bloFindPeaks = bloFindPeaks;
 
 		setName(NAME);
-		this.setBorder(BorderFactory.createTitledBorder("Input"));
+		setBorder(BorderFactory.createTitledBorder("Input"));
 		/*
 		 * Compute the standard deviation of each chromosome.
 		 * Compute, for each window W of a chromosome, the standard deviation on
@@ -86,7 +86,7 @@ class StDevFinderPanel extends JPanel implements PeakFinderPanel {
 		jtaDescription.setWrapStyleWord(true);
 
 		jlRegionWidth1 = new JLabel("Enter the half size, S = ");
-		jftfRegionWidth = new JFormattedTextField(new DecimalFormat("0"));
+		jftfRegionWidth = new JFormattedTextField(NumberFormat.getInstance());
 		jftfRegionWidth.setValue(defaultRegionWidth);
 		jftfRegionWidth.setHorizontalAlignment(SwingConstants.RIGHT);
 		jftfRegionWidth.setColumns(4);
@@ -94,7 +94,7 @@ class StDevFinderPanel extends JPanel implements PeakFinderPanel {
 		jlRegionWidth2 = new JLabel(" windows");
 
 		jlThreshold1 = new JLabel("Enter the threshold, T = ");
-		jftfThreshold = new JFormattedTextField(new DecimalFormat("0.0"));
+		jftfThreshold = new JFormattedTextField(NumberFormat.getInstance());
 		jftfThreshold.setValue(defaultThreshold);
 		jftfThreshold.setHorizontalAlignment(SwingConstants.RIGHT);
 		jftfThreshold.setColumns(4);

@@ -22,7 +22,6 @@
 package edu.yu.einstein.genplay.gui.action.layer.binlayer;
 
 import java.awt.Color;
-import java.text.DecimalFormat;
 
 import javax.swing.ActionMap;
 
@@ -91,7 +90,7 @@ public class BLAIntervalsScoring extends TrackListActionOperationWorker<BinList>
 			if (layerChooserDialog.showDialog(getRootPane(), "Select Interval Layer") == LayerChooserDialog.APPROVE_OPTION) {
 				intervalLayer = (BinLayer) layerChooserDialog.getSelectedLayer();
 				if(intervalLayer != null) {
-					percentage = NumberOptionPane.getValue(getRootPane(), "Enter a percentage", "Perform the calculation on the x% greatest values of each interval:", new DecimalFormat("0"), 0, 100, 100);
+					percentage = NumberOptionPane.getValue(getRootPane(), "Enter a percentage", "Perform the calculation on the x% greatest values of each interval:", 0, 100, 100);
 					if (percentage != null) {
 						method = Utils.chooseScoreCalculation(getRootPane());
 						if (method != null) {

@@ -21,8 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.layer.SCWLayer;
 
-import java.text.DecimalFormat;
-
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.enums.LogBase;
@@ -73,7 +71,7 @@ public final class SCWLALogOnAvgWithDamper extends TrackListActionOperationWorke
 		if (selectedLayer != null) {
 			LogBase logBase = Utils.chooseLogBase(getRootPane());
 			if (logBase != null) {
-				Number damper = NumberOptionPane.getValue(getRootPane(), "Damper", "Enter a value for damper to add: f(x)=x + damper", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
+				Number damper = NumberOptionPane.getValue(getRootPane(), "Damper", "Enter a value for damper to add: f(x)=x + damper", Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
 				if(damper != null) {
 					ScoredChromosomeWindowList scwList = selectedLayer.getData();
 					Operation<ScoredChromosomeWindowList> operation = new SCWLOLogOnAvgWithDamper(scwList, logBase, damper.doubleValue());

@@ -32,7 +32,7 @@ import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -90,7 +90,7 @@ public final class GenomeWidthChooser extends JDialog {
 			}
 		});
 
-		jftfGenomeWidth = new JFormattedTextField(new DecimalFormat("###,###,###"));
+		jftfGenomeWidth = new JFormattedTextField(NumberFormat.getInstance());
 		jftfGenomeWidth.setValue(validGenomeWidth);
 		jftfGenomeWidth.setColumns(8);
 		jftfGenomeWidth.addPropertyChangeListener(new PropertyChangeListener() {

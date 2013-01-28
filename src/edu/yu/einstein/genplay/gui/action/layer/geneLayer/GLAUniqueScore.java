@@ -21,8 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.layer.geneLayer;
 
-import java.text.DecimalFormat;
-
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
@@ -68,7 +66,7 @@ public class GLAUniqueScore  extends TrackListActionOperationWorker<GeneList> {
 	public Operation<GeneList> initializeOperation() throws Exception {
 		selectedLayer = (GeneLayer) getValue("Layer");
 		if (selectedLayer != null) {
-			Number constant = NumberOptionPane.getValue(getRootPane(), "Unique Score", "Enter a score for all exons", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
+			Number constant = NumberOptionPane.getValue(getRootPane(), "Unique Score", "Enter a score for all exons", Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
 			if ((constant != null) && (constant.doubleValue() != 0)) {
 				GeneList geneList = selectedLayer.getData();
 				operation = new GLOUniqueScore(geneList, constant.doubleValue());

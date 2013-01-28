@@ -21,7 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.filterDialog;
 
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import javax.swing.JOptionPane;
 
@@ -42,7 +42,6 @@ final class BandStopPanel extends FilterPanel {
 			"Filter (discard) values between two specified threshold values.\n";		// description of the filter
 	private final static String TEXT_MIN = "Remove values between:";		// text of the min label
 	private final static String TEXT_MAX = "And:";						// text of the max label
-	private final static DecimalFormat DF = new DecimalFormat("0.0");	// decimal format for the input numbers
 	private static Number 	defaultMin = 0;								// default/last min value
 	private static Number 	defaultMax = 100;							// default/last max value
 
@@ -51,7 +50,7 @@ final class BandStopPanel extends FilterPanel {
 	 * Creates an instance of {@link BandStopPanel}
 	 */
 	BandStopPanel() {
-		super(NAME, FILTER_DESCRIPTION, TEXT_MIN, TEXT_MAX, DF, defaultMin, defaultMax, false);
+		super(NAME, FILTER_DESCRIPTION, TEXT_MIN, TEXT_MAX, NumberFormat.getInstance(), defaultMin, defaultMax, false);
 	}
 
 

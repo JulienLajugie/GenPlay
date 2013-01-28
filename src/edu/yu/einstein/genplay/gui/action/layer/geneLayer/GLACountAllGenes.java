@@ -21,6 +21,8 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.layer.geneLayer;
 
+import java.text.NumberFormat;
+
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
@@ -41,7 +43,7 @@ import edu.yu.einstein.genplay.util.Utils;
 public final class GLACountAllGenes extends TrackListActionOperationWorker<Long> {
 
 	private static final long serialVersionUID = -7198642565173540167L;	// generated ID
-	private static final String 	ACTION_NAME = "Count all genes";				// action name
+	private static final String 	ACTION_NAME = "Count Genes";					// action name
 	private static final String 	DESCRIPTION = "Count the number of genes";		// tooltip
 
 
@@ -80,7 +82,7 @@ public final class GLACountAllGenes extends TrackListActionOperationWorker<Long>
 	@Override
 	protected void doAtTheEnd(Long actionResult) {
 		if (actionResult != null) {
-			JOptionPane.showMessageDialog(getRootPane(), "Number of genes: \n" + actionResult, "Count all genes", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(getRootPane(), "Number of genes: \n" + NumberFormat.getInstance().format(actionResult), "Count Genes", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 }

@@ -21,8 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.layer.binlayer;
 
-import java.text.DecimalFormat;
-
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
@@ -73,9 +71,9 @@ public final class BLAIndex extends TrackListActionOperationWorker<BinList> {
 			if (selectedLayer.getData().getPrecision() == DataPrecision.PRECISION_1BIT) {
 				JOptionPane.showMessageDialog(getRootPane(), "Error, indexation is not available for 1-Bit data", "Error", JOptionPane.ERROR_MESSAGE);
 			}
-			Number indexMin = NumberOptionPane.getValue(getRootPane(), "Minimum", "New minimum score:", new DecimalFormat("0.0"), -1000000, 1000000, 0);
+			Number indexMin = NumberOptionPane.getValue(getRootPane(), "Minimum", "New minimum score:", -1000000, 1000000, 0);
 			if (indexMin != null) {
-				Number indexMax = NumberOptionPane.getValue(getRootPane(), "Maximum", "New maximum score:", new DecimalFormat("0.0"), -1000000, 1000000, 100);
+				Number indexMax = NumberOptionPane.getValue(getRootPane(), "Maximum", "New maximum score:", -1000000, 1000000, 100);
 				if(indexMax != null) {
 					BinList binList = selectedLayer.getData();
 					Operation<BinList> operation = new BLOIndex(binList, indexMin.doubleValue(), indexMax.doubleValue());

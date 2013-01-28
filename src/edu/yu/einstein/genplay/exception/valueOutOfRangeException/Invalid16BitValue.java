@@ -14,14 +14,14 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
 package edu.yu.einstein.genplay.exception.valueOutOfRangeException;
 
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import edu.yu.einstein.genplay.core.list.arrayList.ShortArrayAsDoubleList;
 
@@ -36,12 +36,12 @@ public class Invalid16BitValue	extends ValueOutOfRangeException {
 
 	private static final long serialVersionUID = 5100775209357414910L; // generated ID
 
-	
+
 	/**
 	 * Creates an instance of {@link Invalid16BitValue}
 	 * @param data the data that is out of range
 	 */
 	public Invalid16BitValue(Double data) {
-		super("Invalid Data (score = " + new DecimalFormat("#.#").format(data) + "). A 16Bit value must be between " + ShortArrayAsDoubleList.MIN_VALUE + " and " + ShortArrayAsDoubleList.MAX_VALUE);
+		super("Invalid Data (score = " + NumberFormat.getInstance().format(data) + "). A 16Bit value must be between " + ShortArrayAsDoubleList.MIN_VALUE + " and " + ShortArrayAsDoubleList.MAX_VALUE);
 	}
 }

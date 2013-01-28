@@ -21,8 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.layer.binlayer;
 
-import java.text.DecimalFormat;
-
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.list.binList.BinList;
@@ -75,7 +73,7 @@ public class BLADensity extends TrackListActionOperationWorker<BinList> {
 		selectedLayer = (BinLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			BinList binList = selectedLayer.getData();
-			halfWidth = NumberOptionPane.getValue(getRootPane(), "Enter Value", "<html>Enter the half width<br><center>(in number of bins)</center></html>", new DecimalFormat("0"), 1, Integer.MAX_VALUE, 5);
+			halfWidth = NumberOptionPane.getValue(getRootPane(), "Enter Value", "<html>Enter the half width<br><center>(in number of bins)</center></html>", 1, Integer.MAX_VALUE, 5);
 			if(halfWidth != null) {
 				resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackListPanel().getModel().getTracks());
 				if (resultTrack != null) {

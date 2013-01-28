@@ -21,53 +21,90 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.list.geneList.operation;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
+import edu.yu.einstein.genplay.core.gene.Gene;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.operation.Operation;
-
+import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 
 
 /**
- * Computes the average value of the scores of a {@link GeneList}
+ * Counts the number of exons on the specified chromosomes
  * @author Julien Lajugie
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class GLOAverageScore implements Operation<Double> {
+public class GLOCountExons implements Operation<Long> {
 
 	private final GeneList 	geneList;		// input GeneList
 	private final boolean[] chromoList;		// 1 boolean / chromosome.
 	// each boolean sets to true means that the corresponding chromosome is selected
+	private boolean			stopped = false;// true if the operation must be stopped
 
 
 	/**
-	 *  Computes the average value of the scores of a specified {@link GeneList}
+	 * Creates an instance of {@link GLOCountExons}.
+	 * Counts the exons on the selected chromosomes of the {@link GeneList}.
 	 * @param geneList input {@link GeneList}
 	 * @param chromoList list of boolean. A boolean set to true means that the
 	 * chromosome with the same index is going to be used for the calculation.
 	 */
-	public GLOAverageScore(GeneList geneList, boolean[] chromoList) {
+	public GLOCountExons(GeneList geneList, boolean[] chromoList) {
 		this.geneList = geneList;
 		this.chromoList = chromoList;
 	}
 
 
+
 	@Override
-	public Double compute() throws InterruptedException, ExecutionException {
-		long geneNumber = new GLOCountExons(geneList, chromoList).compute();
-		double totalScore = new GLOSumScore(geneList, chromoList).compute();
-		if (geneNumber == 0) {
-			return 0d;
+	public Long compute() throws InterruptedException, ExecutionException {
+		final OperationPool op = OperationPool.getInstance();
+		final Collection<Callable<Long>> threadList = new ArrayList<Callable<Long>>();
+		for (int i = 0; i < geneList.size(); i++) {
+			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (geneList.get(i) != null)) {
+				final List<Gene> currentList = geneList.get(i);
+				Callable<Long> currentThread = new Callable<Long>() {
+					@Override
+					public Long call() throws Exception {
+						if (currentList == null) {
+							return null;
+						}
+						Long result = 0l;
+						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
+							Gene currentGene = currentList.get(j);
+							if ((currentGene != null) && (currentGene.getExonStarts() != null) && (currentGene.getExonStarts().length > 0)) {
+								result += currentGene.getExonStarts().length;
+							}
+						}
+						// tell the operation pool that a chromosome is done
+						op.notifyDone();
+						return result;
+					}
+				};
+				threadList.add(currentThread);
+			}
+		}
+		List<Long> result = op.startPool(threadList);
+		if (result == null) {
+			return null;
 		} else {
-			return totalScore / geneNumber;
+			long exonCount = 0;
+			for (Long chromoCount: result) {
+				exonCount += chromoCount;
+			}
+			return exonCount;
 		}
 	}
 
 
 	@Override
 	public String getDescription() {
-		return "Operation: Average";
+		return "Operation: Count Exons";
 	}
 
 
@@ -79,10 +116,12 @@ public class GLOAverageScore implements Operation<Double> {
 
 	@Override
 	public String getProcessingDescription() {
-		return "Computing Average";
+		return "Counting Exons";
 	}
 
 
 	@Override
-	public void stop() {}
+	public void stop() {
+		stopped = true;
+	}
 }

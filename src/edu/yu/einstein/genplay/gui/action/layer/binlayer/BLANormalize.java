@@ -21,8 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.layer.binlayer;
 
-import java.text.DecimalFormat;
-
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.list.binList.BinList;
@@ -68,7 +66,7 @@ public final class BLANormalize extends TrackListActionOperationWorker<BinList> 
 	public Operation<BinList> initializeOperation() {
 		selectedLayer = (BinLayer) getValue("Layer");
 		if (selectedLayer != null) {
-			Number factor = NumberOptionPane.getValue(getRootPane(), "Multiplicative constant", "Enter a factor of X:", new DecimalFormat("###,###,###,###"), 0, 1000000000, 10000000);
+			Number factor = NumberOptionPane.getValue(getRootPane(), "Multiplicative constant", "Enter a factor of X:", 0, 1000000000, 10000000);
 			if(factor != null) {
 				BinList binList = selectedLayer.getData();
 				Operation<BinList> operation = new BLONormalize(binList, factor.doubleValue());
