@@ -132,6 +132,8 @@ public class DASDialog extends JDialog {
 				jbOkClicked();
 			}
 		});
+		// we want the size of the two buttons to be equal
+		jbOk.setPreferredSize(jbCancel.getPreferredSize());
 
 		// add the components
 		setLayout(new GridBagLayout());

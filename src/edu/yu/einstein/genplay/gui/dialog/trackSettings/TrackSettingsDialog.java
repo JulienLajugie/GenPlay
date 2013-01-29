@@ -73,6 +73,8 @@ public class TrackSettingsDialog extends JDialog implements ActionListener  {
 		jbOk.addActionListener(this);
 		jbCancel = new JButton("Cancel");
 		jbCancel.addActionListener(this);
+		// we want the size of the two buttons to be equal
+		jbOk.setPreferredSize(jbCancel.getPreferredSize());
 
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();

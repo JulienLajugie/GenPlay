@@ -143,6 +143,9 @@ public class NewCurveLayerDialog extends JDialog {
 			}
 		});
 
+		// we want the size of the two buttons to be equal
+		jbOk.setPreferredSize(jbCancel.getPreferredSize());
+
 		// if there is no chromosome selection panel the other panels
 		int leftPanelsGridWidth = 1;
 		if (!isChromoSelectionNeeded) {

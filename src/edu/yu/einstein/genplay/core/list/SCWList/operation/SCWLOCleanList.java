@@ -27,19 +27,20 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.list.SCWList.MaskWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 
 
 
 /**
- * Cleans a {@link SimpleScoredChromosomeWindow}.
+ * Cleans a {@link ScoredChromosomeWindow}.
  * Sometimes, generating a scored chromosome window involve complex controls before inserting windows.
  * These controls can also be difficult to re-code every time.
- * This method generate a new {@link SimpleScoredChromosomeWindow} that does not contain:
+ * This method generate a new {@link ScoredChromosomeWindow} that does not contain:
  * - duplicates
  * - windows with length of 0bp
  * 
@@ -50,12 +51,12 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
  */
 public class SCWLOCleanList implements Operation<ScoredChromosomeWindowList> {
 
-	private final ScoredChromosomeWindowList 	scwList;	// input list
-	private boolean				stopped = false;// true if the operation must be stopped
+	private final ScoredChromosomeWindowList 	scwList;		// input list
+	private boolean								stopped = false;// true if the operation must be stopped
 
 
 	/**
-	 * Cleans a {@link SimpleScoredChromosomeWindow}.
+	 * Cleans a {@link ScoredChromosomeWindow}.
 	 * @param scwList input list
 	 */
 	public SCWLOCleanList(ScoredChromosomeWindowList scwList) {
@@ -76,20 +77,22 @@ public class SCWLOCleanList implements Operation<ScoredChromosomeWindowList> {
 				public List<ScoredChromosomeWindow> call() throws Exception {
 					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
 					if ((currentList != null) && (currentList.size() != 0)) {
-						int index = 0;
-						while (isIndexValid(currentList, index) && !stopped) {
-							ScoredChromosomeWindow currentWindow = currentList.get(index);
-							int nextIndex = getNextInvolvedIndex(currentList, index);
-							ScoredChromosomeWindow resultWindow = null;
-							if (index == nextIndex) {
-								resultWindow = new SimpleScoredChromosomeWindow(currentWindow.getStart(), currentWindow.getStop(), currentWindow.getScore());
+						int firstIndex = 0;
+						while (isIndexValid(currentList, firstIndex) && !stopped) {
+							ScoredChromosomeWindow currentWindow = currentList.get(firstIndex);
+							int lastIndex = getLastInvolvedIndex(currentList, firstIndex);
+							ScoredChromosomeWindow resultWindow = currentWindow.getClass().newInstance();
+							if (firstIndex == lastIndex) {
+								resultWindow.setStart(currentWindow.getStart());
+								resultWindow.setStop(currentWindow.getStop());
+								resultWindow.setScore(currentWindow.getScore());
 							} else {
-								resultWindow = getMergedWindow(currentList, index, nextIndex);
+								resultWindow = getMergedWindow(currentList, firstIndex, lastIndex);
 							}
+							firstIndex = lastIndex + 1;
 							if (resultWindow.getSize() > 0) {
 								resultList.add(resultWindow);
 							}
-							index = nextIndex + 1;
 						}
 					}
 					// tell the operation pool that a chromosome is done
@@ -97,12 +100,12 @@ public class SCWLOCleanList implements Operation<ScoredChromosomeWindowList> {
 					return resultList;
 				}
 			};
-
 			threadList.add(currentThread);
 		}
 		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			ScoredChromosomeWindowList resultList = new SimpleScoredChromosomeWindowList(result);
+			ScoredChromosomeWindowList resultList = scwList.getClass().newInstance();
+			resultList.addAll(result);
 			return resultList;
 		} else {
 			return null;
@@ -111,19 +114,47 @@ public class SCWLOCleanList implements Operation<ScoredChromosomeWindowList> {
 
 
 	/**
+	 * @param list the {@link ChromosomeWindowList} for the current chromosome
+	 * @param indexStart index of the first window of the cluster to merge
+	 * @param indexStop index of the last window of the cluster to merge
+	 * @return a single window that is the merging of the specified ones
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 */
+	private ScoredChromosomeWindow getMergedWindow(List<ScoredChromosomeWindow> list, int indexStart, int indexStop) throws InstantiationException, IllegalAccessException {
+		int start = list.get(indexStart).getStart();
+		int stop = list.get(indexStart).getStop();
+		int score = 0;
+		// compute stop position
+		for (int i = indexStart + 1; i <= indexStop; i++) {
+			stop = Math.max(stop, list.get(i).getStop());
+		}
+		// compute score
+		for (int i = indexStart; i <= indexStop; i++) {
+			score += list.get(i).getScore();
+		}
+		ScoredChromosomeWindow resultWindow = list.get(indexStart).getClass().newInstance();
+		resultWindow.setStart(start);
+		resultWindow.setStop(stop);
+		resultWindow.setScore(score);
+		return resultWindow;
+	}
+
+
+	/**
 	 * Goes to the next index involved in an overlap
 	 * @param list		the list of {@link ScoredChromosomeWindow}
 	 * @param index		the index to start the search
-	 * @return			the last index involved in th potential current overlap
+	 * @return			the last index involved in the potential current overlap
 	 */
-	private int getNextInvolvedIndex (List<ScoredChromosomeWindow> list, int index) {
-		int nextIndex = index + 1;
-		if (isIndexValid(list, nextIndex)) {
-			if (overlap(list.get(index), list.get(nextIndex))) {
-				return getNextInvolvedIndex(list, nextIndex);
-			}
+	private int getLastInvolvedIndex (List<ScoredChromosomeWindow> list, int index) {
+		int lastIndex = index + 1;
+		int currentStopPosition = list.get(index).getStop();
+		while (((lastIndex < (list.size())) && (currentStopPosition >= list.get(lastIndex).getStart()))) {
+			currentStopPosition = Math.max(currentStopPosition, list.get(lastIndex).getStop());
+			lastIndex++;
 		}
-		return index;
+		return lastIndex - 1;
 	}
 
 
@@ -136,50 +167,6 @@ public class SCWLOCleanList implements Operation<ScoredChromosomeWindowList> {
 	private boolean isIndexValid (List<ScoredChromosomeWindow> list, int index) {
 		return index < list.size();
 	}
-
-
-	/**
-	 * Looks if two windows are overlapping
-	 * @param window01	the first window
-	 * @param window02	the second window
-	 * @return	true if the second window overlaps the first window
-	 */
-	private boolean overlap (ScoredChromosomeWindow window01, ScoredChromosomeWindow window02) {
-		boolean overlap = false;
-		if (window01.getStop() > window02.getStart()) {
-			overlap = true;
-		}
-		return overlap;
-	}
-
-
-	/**
-	 * Merges windows of a list from an index to anoteher one
-	 * @param list			the list of {@link ScoredChromosomeWindow}
-	 * @param firstIndex	the first index to include
-	 * @param lastIndex		the last index to include
-	 * @return				the merged {@link ScoredChromosomeWindow}
-	 */
-	private ScoredChromosomeWindow getMergedWindow (List<ScoredChromosomeWindow> list, int firstIndex, int lastIndex) {
-		int start = list.get(firstIndex).getStart();
-		int stop = list.get(firstIndex).getStop();
-		double sumScore = 0;
-		for (int i = firstIndex + 1; i <= lastIndex; i++) {
-			ScoredChromosomeWindow currentWindow = list.get(i);
-			int currentStart =  currentWindow.getStart();
-			int currentStop = currentWindow.getStop();
-			if (currentStart < start) {
-				start = currentStart;
-			}
-			if (currentStop > stop) {
-				currentStop = stop;
-			}
-			sumScore += currentWindow.getScore();
-		}
-		double score = sumScore;
-		return new SimpleScoredChromosomeWindow(start, stop, score);
-	}
-
 
 
 	@Override
@@ -196,12 +183,18 @@ public class SCWLOCleanList implements Operation<ScoredChromosomeWindowList> {
 
 	@Override
 	public int getStepCount() {
-		return 1 + SimpleScoredChromosomeWindowList.getCreationStepCount();
+		if (scwList instanceof SimpleScoredChromosomeWindowList) {
+			return 1 + SimpleScoredChromosomeWindowList.getCreationStepCount();
+		} else if (scwList instanceof MaskWindowList) {
+			return MaskWindowList.getCreationStepCount();
+		} else {
+			return 1;
+		}
 	}
 
 
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }

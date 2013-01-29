@@ -30,7 +30,7 @@ import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.util.colors.LayerColor;
+import edu.yu.einstein.genplay.util.colors.LayerColors;
 
 
 /**
@@ -51,7 +51,7 @@ public class MaskLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList
 	 */
 	public MaskLayer(Track track, ScoredChromosomeWindowList data, String name) {
 		super(track, data, name);
-		color = LayerColor.getLayerColor();
+		color = LayerColors.getLayerColor();
 	}
 
 

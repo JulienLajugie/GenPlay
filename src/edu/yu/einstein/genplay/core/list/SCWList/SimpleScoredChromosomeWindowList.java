@@ -176,6 +176,12 @@ public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLis
 
 
 	/**
+	 * Default constructor
+	 */
+	public SimpleScoredChromosomeWindowList() {}
+
+
+	/**
 	 * Creates an instance of {@link SimpleScoredChromosomeWindow} from a specified {@link BinList}
 	 * @param binList BinList used for the creation of the {@link SimpleScoredChromosomeWindow}
 	 * @throws ExecutionException

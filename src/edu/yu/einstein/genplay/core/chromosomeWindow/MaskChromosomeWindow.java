@@ -66,6 +66,14 @@ public final class MaskChromosomeWindow implements ScoredChromosomeWindow, Chrom
 
 
 	/**
+	 * Default constructor
+	 */
+	public MaskChromosomeWindow() {
+		this(0, 0);
+	}
+
+
+	/**
 	 * Creates an instance of a {@link MaskChromosomeWindow}
 	 * @param start start position
 	 * @param stop stop position

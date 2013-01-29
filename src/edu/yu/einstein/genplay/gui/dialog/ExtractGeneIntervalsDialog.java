@@ -22,7 +22,6 @@
 package edu.yu.einstein.genplay.gui.dialog;
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -107,13 +106,14 @@ public final class ExtractGeneIntervalsDialog extends JDialog implements ActionL
 		jcbStopFrom = new JComboBox(OPTIONS);
 
 		jbOk = new JButton("Ok");
-		jbOk.setPreferredSize(new Dimension(75, 30));
 		jbOk.setDefaultCapable(true);
 		jbOk.addActionListener(this);
 
 		jbCancel = new JButton("Cancel");
-		jbCancel.setPreferredSize(new Dimension(75, 30));
 		jbCancel.addActionListener(this);
+
+		// we want the size of the two buttons to be equal
+		jbOk.setPreferredSize(jbCancel.getPreferredSize());
 
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();

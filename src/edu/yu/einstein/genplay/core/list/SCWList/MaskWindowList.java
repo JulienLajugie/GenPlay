@@ -173,6 +173,12 @@ public final class MaskWindowList extends DisplayableListOfLists<ScoredChromosom
 
 
 	/**
+	 * Default constructor
+	 */
+	public MaskWindowList() {}
+
+
+	/**
 	 * Creates an instance of {@link MaskChromosomeWindow} from a specified {@link BinList}
 	 * @param binList BinList used for the creation of the {@link MaskChromosomeWindow}
 	 * @throws ExecutionException

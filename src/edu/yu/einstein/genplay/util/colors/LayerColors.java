@@ -29,13 +29,13 @@ import edu.yu.einstein.genplay.gui.track.layer.ColoredLayer;
 /**
  * This enumeration contains a single static method that returns
  * a color for a layer. The color is selected amid all
- * the elements of the enumeration {@link LayerColor}. When all
+ * the elements of the enumeration {@link LayerColors}. When all
  * the colors of the enumeration have been selected the algorithm
  * start from the first color again.
  * @author Julien Lajugie
  * @version 0.1
  */
-public enum LayerColor {
+public enum LayerColors {
 
 	/** Dark blue {@link Color}  */
 	DARK_BLUE (new Color(0x0000CD)),
@@ -77,22 +77,22 @@ public enum LayerColor {
 
 
 	/**
-	 * Private constructor. Creates an instance of a {@link LayerColor}
+	 * Private constructor. Creates an instance of a {@link LayerColors}
 	 * @param color color of the enum element
 	 */
-	private LayerColor(Color color){
+	private LayerColors(Color color){
 		this.color = color;
 	}
 
 
 	/**
 	 * @return a color for a {@link ColoredLayer}. The color is selected amid all
-	 * the elements of the enumeration {@link LayerColor}. When all
+	 * the elements of the enumeration {@link LayerColors}. When all
 	 * the colors of the enumeration have been selected the algorithm
 	 * start from the first color again.
 	 */
 	public static Color getLayerColor() {
-		LayerColor[] trackColors = LayerColor.values();
+		LayerColors[] trackColors = LayerColors.values();
 		Color currentColor = trackColors[currentColorInt].color;
 		currentColor = Colors.addTransparency(currentColor, DEFAULT_TRANSPARENCY);
 		currentColorInt++;

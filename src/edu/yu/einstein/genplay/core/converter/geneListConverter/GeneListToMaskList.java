@@ -25,6 +25,8 @@ import edu.yu.einstein.genplay.core.converter.Converter;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.SCWList.MaskWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOCleanList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 
 
@@ -67,6 +69,8 @@ public class GeneListToMaskList implements Converter {
 	@Override
 	public void convert() throws Exception {
 		result = new MaskWindowList(list, method);
+		SCWLOCleanList operation = new SCWLOCleanList((ScoredChromosomeWindowList) result);
+		result = operation.compute();
 	}
 
 

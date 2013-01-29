@@ -423,6 +423,25 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 	}
 
 
+	@Override
+	public void setData(GeneList data) {
+		super.setData(data);
+		// tells the track score object to auto-rescale the score axis
+		if ((getTrack() != null) && (getTrack().getScore() != null)) {
+			getTrack().getScore().autorescaleScoreAxis();
+		}
+	}
+
+
+	@Override
+	public void setData(GeneList data, String description) {
+		super.setData(data, description);
+		// tells the track score object to auto-rescale the score axis
+		if ((getTrack() != null) && (getTrack().getScore() != null)) {
+			getTrack().getScore().autorescaleScoreAxis();
+		}
+	}
+
 
 	/**
 	 *  Computes the minimum and maximum saturated values of the exon scores

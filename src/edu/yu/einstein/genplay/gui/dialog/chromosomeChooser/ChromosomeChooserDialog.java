@@ -206,6 +206,9 @@ public class ChromosomeChooserDialog extends JDialog {
 			}
 		});
 
+		// we want the size of the two buttons to be equal
+		confirmChr.setPreferredSize(cancelChr.getPreferredSize());
+
 		//Select button
 		JButton selectChr = new JButton("Select");
 		selectChr.setToolTipText(ProjectFrame.SELECT_FILES);

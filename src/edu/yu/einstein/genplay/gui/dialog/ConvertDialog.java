@@ -439,6 +439,9 @@ public class ConvertDialog extends JDialog {
 			}
 		});
 
+		// we want the size of the two buttons to be equal
+		jbOk.setPreferredSize(jbCancel.getPreferredSize());
+
 		// Creates the panel
 		JPanel panel = new JPanel();
 		panel.add(jbOk);

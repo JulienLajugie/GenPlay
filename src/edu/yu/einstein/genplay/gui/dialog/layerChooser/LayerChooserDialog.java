@@ -194,6 +194,9 @@ public class LayerChooserDialog extends JDialog {
 			}
 		});
 
+		// we want the size of the two buttons to be equal
+		jbConfirm.setPreferredSize(jbCancel.getPreferredSize());
+
 		//Select button
 		JButton jbSelect = new JButton("Select");
 		jbSelect.setToolTipText(ProjectFrame.SELECT_FILES);

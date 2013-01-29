@@ -126,7 +126,7 @@ public abstract class AbstractVersionedLayer<T extends Serializable> extends Abs
 	public void redo() {
 		try {
 			if (isRedoable()) {
-				setData(urrManager.redo());
+				super.setData(urrManager.redo());
 				getTrack().repaint();
 				history.redo();
 			}
@@ -141,7 +141,7 @@ public abstract class AbstractVersionedLayer<T extends Serializable> extends Abs
 	public void reset() {
 		try {
 			if (isResetable()) {
-				setData(urrManager.reset());
+				super.setData(urrManager.reset());
 				getTrack().repaint();
 				history.reset();
 			}
@@ -160,7 +160,6 @@ public abstract class AbstractVersionedLayer<T extends Serializable> extends Abs
 				super.setData(data);
 			} catch (Exception e) {
 				ExceptionManager.handleException(getTrack().getRootPane(), e, "Error while updating the track");
-				history.setLastAsError();
 			}
 		}
 	}
@@ -195,7 +194,7 @@ public abstract class AbstractVersionedLayer<T extends Serializable> extends Abs
 	public void undo() {
 		try {
 			if (isUndoable()) {
-				setData(urrManager.undo());
+				super.setData(urrManager.undo());
 				getTrack().repaint();
 				history.undo();
 			}

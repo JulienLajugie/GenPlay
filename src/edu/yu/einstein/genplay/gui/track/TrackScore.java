@@ -59,6 +59,32 @@ public class TrackScore implements Serializable {
 
 
 	/**
+	 * Auto rescales the score axis of the track if the autorescale mode is on
+	 */
+	public void autorescaleScoreAxis() {
+		if (isScoreAxisAutorescaled()) {
+			List<Double> minimumScores = new ArrayList<Double>();
+			List<Double> maximumScores = new ArrayList<Double>();
+			for (Layer<?> currentLayer: getTrack().getLayers()) {
+				if (currentLayer instanceof ScoredLayer) {
+					// for each scoredLayer of the track we save the minimum and maximum value to display
+					ScoredLayer scoredLayer = (ScoredLayer)currentLayer;
+					minimumScores.add(scoredLayer.getMinimumScoreToDisplay());
+					maximumScores.add(scoredLayer.getMaximumScoreToDisplay());
+				}
+			}
+			if (!minimumScores.isEmpty()) {
+				// the minimum score displayed in the track is the minimum of the ScoredLayer minimums
+				setMinimumScore(Collections.min(minimumScores));
+				// we do the opposite for the maximum
+				setMaximumScore(Collections.max(maximumScores));
+				getTrack().repaint();
+			}
+		}
+	}
+
+
+	/**
 	 * @return the score displayed in the middle of the track
 	 */
 	public Double getCurrentScore() {
@@ -102,6 +128,15 @@ public class TrackScore implements Serializable {
 	public double getYRatio() {
 		double scoreRange = maximumScore - minimumScore;
 		return track.getHeight() / scoreRange;
+	}
+
+
+	/**
+	 * @return true if the score axis of the track will be
+	 * automatically rescaled after an operation, false otherwise
+	 */
+	public boolean isScoreAxisAutorescaled() {
+		return isScoreAxisAutorescaled;
 	}
 
 
@@ -155,6 +190,15 @@ public class TrackScore implements Serializable {
 
 
 	/**
+	 * @param isScoreAxisAutorescaled set to true in order to automatically rescale
+	 * a track after an operation
+	 */
+	public void setScoreAxisAutorescaled(boolean isScoreAxisAutorescaled) {
+		this.isScoreAxisAutorescaled = isScoreAxisAutorescaled;
+	}
+
+
+	/**
 	 * The track that displays this score
 	 * @param track the track to set
 	 */
@@ -174,49 +218,5 @@ public class TrackScore implements Serializable {
 		out.writeDouble(maximumScore);
 		out.writeBoolean(isScoreAxisAutorescaled);
 		out.writeObject(track);
-	}
-
-
-	/**
-	 * @return true if the score axis of the track will be
-	 * automatically rescaled after an operation, false otherwise
-	 */
-	public boolean isScoreAxisAutorescaled() {
-		return isScoreAxisAutorescaled;
-	}
-
-
-	/**
-	 * @param isScoreAxisAutorescaled set to true in order to automatically rescale
-	 * a track after an operation
-	 */
-	public void setScoreAxisAutorescaled(boolean isScoreAxisAutorescaled) {
-		this.isScoreAxisAutorescaled = isScoreAxisAutorescaled;
-	}
-
-
-	/**
-	 * Auto rescales the score axis of the track if the autorescale mode is on
-	 */
-	public void autorescaleScoreAxis() {
-		if (isScoreAxisAutorescaled()) {
-			List<Double> minimumScores = new ArrayList<Double>();
-			List<Double> maximumScores = new ArrayList<Double>();
-			for (Layer<?> currentLayer: getTrack().getLayers()) {
-				if (currentLayer instanceof ScoredLayer) {
-					// for each scoredLayer of the track we save the minimum and maximum value to display
-					ScoredLayer scoredLayer = (ScoredLayer)currentLayer;
-					minimumScores.add(scoredLayer.getMinimumScoreToDisplay());
-					maximumScores.add(scoredLayer.getMaximumScoreToDisplay());
-				}
-			}
-			if (!minimumScores.isEmpty()) {
-				// the minimum score displayed in the track is the minimum of the ScoredLayer minimums
-				setMinimumScore(Collections.min(minimumScores));
-				// we do the opposite for the maximum
-				setMaximumScore(Collections.max(maximumScores));
-				getTrack().repaint();
-			}
-		}
 	}
 }

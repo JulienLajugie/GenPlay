@@ -35,7 +35,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackConstants;
 import edu.yu.einstein.genplay.util.colors.Colors;
-import edu.yu.einstein.genplay.util.colors.LayerColor;
+import edu.yu.einstein.genplay.util.colors.LayerColors;
 
 
 /**
@@ -58,7 +58,7 @@ public class BinLayer extends AbstractVersionedLayer<BinList> implements Layer<B
 	public BinLayer(Track track, BinList data, String name) {
 		super(track, data, name);
 		setGraphType(TrackConstants.DEFAULT_GRAPH_TYPE);
-		color = LayerColor.getLayerColor();
+		color = LayerColors.getLayerColor();
 	}
 
 
@@ -101,11 +101,13 @@ public class BinLayer extends AbstractVersionedLayer<BinList> implements Layer<B
 			if (binListData != null) {
 				int windowData = getData().getFittedBinSize();
 				// Compute the reverse color
-				Color reverseCurveColor = Colors.GREY;
-				if (!getColor().equals(Color.black)) {
+				Color reverseCurveColor;
+				if (!getColor().equals(Color.BLACK)) {
 					reverseCurveColor = new Color(getColor().getRGB() ^ 0xffffff);
-					reverseCurveColor = new Color(reverseCurveColor.getRed(), reverseCurveColor.getGreen(), reverseCurveColor.getBlue(), getColor().getTransparency());
+				} else {
+					reverseCurveColor = Colors.GREY;
 				}
+				reverseCurveColor = new Color(reverseCurveColor.getRed(), reverseCurveColor.getGreen(), reverseCurveColor.getBlue(), getColor().getAlpha());
 				int currentMinX = projectWindow.getGenomeWindow().getStart();
 				int currentMaxX = projectWindow.getGenomeWindow().getStop();
 				// Compute the Y = 0 position
@@ -122,7 +124,7 @@ public class BinLayer extends AbstractVersionedLayer<BinList> implements Layer<B
 						int screenWindowWidth = projectWindow.genomeToScreenPosition(currentGenomePosition + windowData) - screenXPosition;
 						int screenYPosition = getTrack().getScore().scoreToScreenPosition(currentIntensity);
 						int rectHeight = screenYPosition - screenY0;
-						if (currentIntensity > 0) {
+						if (currentIntensity >= 0) {
 							g.setColor(getColor());
 							rectHeight *= -1;
 						} else {
@@ -315,6 +317,26 @@ public class BinLayer extends AbstractVersionedLayer<BinList> implements Layer<B
 	@Override
 	public void setColor(Color color) {
 		this.color = color;
+	}
+
+
+	@Override
+	public void setData(BinList data) {
+		super.setData(data);
+		// tells the track score object to auto-rescale the score axis
+		if ((getTrack() != null) && (getTrack().getScore() != null)) {
+			getTrack().getScore().autorescaleScoreAxis();
+		}
+	}
+
+
+	@Override
+	public void setData(BinList data, String description) {
+		super.setData(data, description);
+		// tells the track score object to auto-rescale the score axis
+		if ((getTrack() != null) && (getTrack().getScore() != null)) {
+			getTrack().getScore().autorescaleScoreAxis();
+		}
 	}
 
 

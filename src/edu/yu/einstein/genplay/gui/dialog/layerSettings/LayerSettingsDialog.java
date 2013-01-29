@@ -159,6 +159,9 @@ public class LayerSettingsDialog extends JDialog {
 			}
 		});
 
+		// we want the size of the two buttons to be equal
+		jbConfirm.setPreferredSize(jbCancel.getPreferredSize());
+
 		// Move up button
 		JButton jbUp = new JButton("Up");
 		jbUp.setToolTipText(ProjectFrame.SELECT_FILES);

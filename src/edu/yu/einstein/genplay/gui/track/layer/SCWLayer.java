@@ -37,7 +37,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackConstants;
 import edu.yu.einstein.genplay.util.colors.Colors;
-import edu.yu.einstein.genplay.util.colors.LayerColor;
+import edu.yu.einstein.genplay.util.colors.LayerColors;
 
 
 /**
@@ -60,7 +60,7 @@ public class SCWLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList>
 	public SCWLayer(Track track, ScoredChromosomeWindowList data, String name) {
 		super(track, data, name);
 		setGraphType(TrackConstants.DEFAULT_GRAPH_TYPE);
-		color = LayerColor.getLayerColor();
+		color = LayerColors.getLayerColor();
 	}
 
 
@@ -100,11 +100,13 @@ public class SCWLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList>
 		if (getData() != null) {
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
 			int screenY0 = getTrack().getScore().scoreToScreenPosition(0);
-			Color reverseCurveColor = Colors.GREY;
-			if (!getColor().equals(Colors.BLACK)) {
+			Color reverseCurveColor;
+			if (!getColor().equals(Color.BLACK)) {
 				reverseCurveColor = new Color(getColor().getRGB() ^ 0xffffff);
-				reverseCurveColor = new Color(reverseCurveColor.getRed(), reverseCurveColor.getGreen(), reverseCurveColor.getBlue(), getColor().getTransparency());
+			} else {
+				reverseCurveColor = Colors.GREY;
 			}
+			reverseCurveColor = new Color(reverseCurveColor.getRed(), reverseCurveColor.getGreen(), reverseCurveColor.getBlue(), getColor().getAlpha());
 			List<ScoredChromosomeWindow> listToPrint = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
 			if (listToPrint != null) {
 				for (ScoredChromosomeWindow currentWindow: listToPrint) {
@@ -278,6 +280,26 @@ public class SCWLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList>
 	@Override
 	public void setColor(Color color) {
 		this.color = color;
+	}
+
+
+	@Override
+	public void setData(ScoredChromosomeWindowList data) {
+		super.setData(data);
+		// tells the track score object to auto-rescale the score axis
+		if ((getTrack() != null) && (getTrack().getScore() != null)) {
+			getTrack().getScore().autorescaleScoreAxis();
+		}
+	}
+
+
+	@Override
+	public void setData(ScoredChromosomeWindowList data, String description) {
+		super.setData(data, description);
+		// tells the track score object to auto-rescale the score axis
+		if ((getTrack() != null) && (getTrack().getScore() != null)) {
+			getTrack().getScore().autorescaleScoreAxis();
+		}
 	}
 
 

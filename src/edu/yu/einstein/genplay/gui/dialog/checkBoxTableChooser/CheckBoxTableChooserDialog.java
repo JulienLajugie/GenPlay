@@ -194,6 +194,9 @@ public class CheckBoxTableChooserDialog<T> extends JDialog {
 			}
 		});
 
+		// we want the size of the two buttons to be equal
+		confirmChr.setPreferredSize(cancelChr.getPreferredSize());
+
 		//Select button
 		JButton jbSelect = new JButton("Select");
 		jbSelect.addActionListener(new ActionListener() {

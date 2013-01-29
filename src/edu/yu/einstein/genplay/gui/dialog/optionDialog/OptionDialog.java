@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -81,19 +81,19 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 	private final boolean				legend;				// show legend (multi genome)
 	private int 			approved = CANCEL_OPTION; 		// Equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
 
-	
+
 	/**
 	 * Return value when OK has been clicked.
 	 */
 	public static final int APPROVE_OPTION = 0;
 
-	
+
 	/**
 	 * Return value when Cancel has been clicked.
 	 */
 	public static final int CANCEL_OPTION = 1;
 
-	
+
 	/**
 	 * Creates an instance of {@link OptionDialog}
 	 */
@@ -165,6 +165,9 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 			}
 		});
 
+		// we want the size of the two buttons to be equal
+		jbOk.setPreferredSize(jbCancel.getPreferredSize());
+
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 
@@ -217,7 +220,7 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 		getRootPane().setDefaultButton(jbOk);
 	}
 
-	
+
 	/**
 	 * Creates the data of the tree.
 	 * @param top Root DefaultMutableTreeNode of the tree.
@@ -241,7 +244,7 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 		top.add(category);
 	}
 
-	
+
 	/**
 	 * Changes the panel displayed when the node of the tree changes.
 	 */
@@ -260,7 +263,7 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 		jpOption.repaint();
 	}
 
-	
+
 	/**
 	 * Shows the component.
 	 * @param parent the parent component of the dialog, can be null; see showDialog for details
@@ -272,7 +275,7 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 		return approved;
 	}
 
-	
+
 	/**
 	 * Restores the data and regenerate the tree when the option restore
 	 * configuration is clicked.
@@ -288,14 +291,14 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 		}
 	}
 
-	
+
 	/**
 	 * @return true if logFile changed
 	 */
 	public boolean logFileChanged() {
 		return !logFile.equals(cm.getLogFile());
 	}
-	
+
 
 	/**
 	 * @return true if dasServerListFile changed
@@ -303,7 +306,7 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 	public boolean dasServerListFileChanged() {
 		return !dasServerListFile.equals(cm.getDASServerListFile());
 	}
-	
+
 
 	/**
 	 * @return true if defaultDirectory changed
@@ -311,7 +314,7 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 	public boolean defaultDirectoryChanged() {
 		return !defaultDirectory.equals(cm.getDefaultDirectory());
 	}
-	
+
 
 	/**
 	 * @return true if lookAndFeel changed
@@ -319,7 +322,7 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 	public boolean lookAndFeelChanged() {
 		return !lookAndFeel.equals(cm.getLookAndFeel());
 	}
-	
+
 
 	/**
 	 * @return true if trackCount changed
@@ -327,7 +330,7 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 	public boolean trackCountChanged() {
 		return trackCount != cm.getTrackCount();
 	}
-	
+
 
 	/**
 	 * @return true if trackHeight changed
@@ -335,7 +338,7 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 	public boolean trackHeightChanged() {
 		return trackHeight != cm.getTrackHeight();
 	}
-	
+
 
 	/**
 	 * @return true if the undo count changed
@@ -343,16 +346,16 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 	public boolean undoCountChanged() {
 		return undoCount != cm.getUndoCount();
 	}
-	
-	
+
+
 	/**
 	 * @return true if the reset track parameter changed
 	 */
 	public boolean resetTrackChanged() {
 		return resetTrack != cm.isResetTrack();
 	}
-	
-	
+
+
 	/**
 	 * @return true if the legend parameter changed
 	 */

@@ -150,6 +150,9 @@ public class PeakFinderDialog extends JDialog implements TreeSelectionListener {
 			}
 		});
 
+		// we want the size of the two buttons to be equal
+		jbOk.setPreferredSize(jbCancel.getPreferredSize());
+
 		// add the components
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();

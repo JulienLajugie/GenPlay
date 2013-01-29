@@ -22,7 +22,6 @@
 package edu.yu.einstein.genplay.gui.dialog;
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -132,13 +131,14 @@ public class DupReadFilterDialog extends JDialog implements ActionListener{
 		jlTo = new JLabel(" and ");
 
 		jbOK = new JButton("OK");
-		jbOK.setPreferredSize(new Dimension(75, 30));
 		jbOK.setDefaultCapable(true);
 		jbOK.addActionListener(this);
 
 		jbCancel = new JButton("Cancel");
-		jbCancel.setPreferredSize(new Dimension(75, 30));
 		jbCancel.addActionListener(this);
+
+		// we want the size of the two buttons to be equal
+		jbOK.setPreferredSize(jbCancel.getPreferredSize());
 
 		ButtonGroup radioGroup = new ButtonGroup();
 		radioGroup.add(jrbLE);
