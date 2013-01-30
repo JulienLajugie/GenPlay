@@ -29,6 +29,7 @@ import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
@@ -79,14 +80,14 @@ public class TAAddLayer extends TrackListAction {
 	public void actionPerformed(ActionEvent evt) {
 		Track selectedTrack = getTrackListPanel().getSelectedTrack();
 		if (selectedTrack != null) {
-			LayerType[] layerTypes = {LayerType.BIN_LAYER, LayerType.SCW_LAYER, LayerType.MASK_LAYER, LayerType.GENE_LAYER, LayerType.REPEAT_FAMILY_LAYER, LayerType.NUCLEOTIDE_LAYER};
+			LayerType[] layerTypes = getLayerTypes();
 			LayerType selectedLayerType = (LayerType)JOptionPane.showInputDialog(
-					getRootPane(), 
-					"Please select the type of layer to add", 
-					"Layer Type", 
-					JOptionPane.QUESTION_MESSAGE, 
-					null, 
-					layerTypes, 
+					getRootPane(),
+					"Please select the type of layer to add",
+					"Layer Type",
+					JOptionPane.QUESTION_MESSAGE,
+					null,
+					layerTypes,
 					layerTypes[0]);
 			if (selectedLayerType != null) {
 				switch (selectedLayerType) {
@@ -95,9 +96,6 @@ public class TAAddLayer extends TrackListAction {
 					break;
 				case SCW_LAYER:
 					new TAAddSCWLayer().actionPerformed(evt);
-					break;
-				case MASK_LAYER:
-					new TAAddMask().actionPerformed(evt);
 					break;
 				case GENE_LAYER:
 					new TAAddGeneLayer().actionPerformed(evt);
@@ -108,11 +106,30 @@ public class TAAddLayer extends TrackListAction {
 				case NUCLEOTIDE_LAYER:
 					new TAAddNucleotideLayer().actionPerformed(evt);
 					break;
+				case VARIANT_LAYER:
+					new TAAddVariantLayer().actionPerformed(evt);
+					break;
+				case MASK_LAYER:
+					new TAAddMask().actionPerformed(evt);
+					break;
 				default:
 					// do nothing
 					break;
 				}
 			}
 		}
+	}
+
+
+	/**
+	 * @return the {@link LayerType} that can be added
+	 */
+	private LayerType[] getLayerTypes () {
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			LayerType[] layerTypes = {LayerType.BIN_LAYER, LayerType.SCW_LAYER, LayerType.GENE_LAYER, LayerType.REPEAT_FAMILY_LAYER, LayerType.NUCLEOTIDE_LAYER, LayerType.VARIANT_LAYER, LayerType.MASK_LAYER};
+			return layerTypes;
+		}
+		LayerType[] layerTypes = {LayerType.BIN_LAYER, LayerType.SCW_LAYER, LayerType.GENE_LAYER, LayerType.REPEAT_FAMILY_LAYER, LayerType.NUCLEOTIDE_LAYER, LayerType.MASK_LAYER};
+		return layerTypes;
 	}
 }

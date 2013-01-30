@@ -32,9 +32,9 @@ import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.d
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.display.DescriptionDisplayPanel;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.editing.AdvancedFilterEditingPanel;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.selection.AdvancedFilterSelectionPanel;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.selection.TrackSelectionPanel;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.selection.LayerSelectionPanel;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.filters.FiltersData;
-import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.track.layer.Layer;
 
 
 /**
@@ -47,7 +47,7 @@ public class EditingDialogManagerForAdvancedFilters implements EditingDialogMana
 	private final AdvancedFilterSelectionPanel	advancedFilterEditingPanel;	// Panel to select the filter
 	private final DescriptionDisplayPanel		descriptionEditingPanel;	// Description panel for the filter
 	private final AdvancedFilterEditingPanel 	filterEditingPanel;			// Panel to edit the filter
-	private final TrackSelectionPanel 			trackEditingPanel;			// Panel to edit the tracks
+	private final LayerSelectionPanel 			layerEditingPanel;			// Panel to edit the layers
 	private FiltersData 						currentData;				// The current filter data (can be null)
 
 
@@ -67,11 +67,11 @@ public class EditingDialogManagerForAdvancedFilters implements EditingDialogMana
 		advancedFilterEditingPanel.addPanelListener(filterEditingPanel);
 
 		// Tracks editing panel
-		trackEditingPanel = new TrackSelectionPanel();
+		layerEditingPanel = new LayerSelectionPanel();
 
 		// List of editing panel
 		editingPanelList = new ArrayList<EditingPanel<?>>();
-		editingPanelList.add(trackEditingPanel);
+		editingPanelList.add(layerEditingPanel);
 		editingPanelList.add(advancedFilterEditingPanel);
 		editingPanelList.add(descriptionEditingPanel);
 		editingPanelList.add(filterEditingPanel);
@@ -99,7 +99,7 @@ public class EditingDialogManagerForAdvancedFilters implements EditingDialogMana
 
 			filterEditingPanel.initialize(currentData.getFilter());
 
-			trackEditingPanel.initialize(currentData.getTrackList());
+			layerEditingPanel.initialize(currentData.getLayers());
 		}
 	}
 
@@ -122,14 +122,14 @@ public class EditingDialogManagerForAdvancedFilters implements EditingDialogMana
 	 */
 	private List<FiltersData> retrieveData () {
 		FilterInterface filter = filterEditingPanel.getFilter();
-		Track[] trackList = trackEditingPanel.getSelectedTracks();
+		Layer<?>[] trackList = layerEditingPanel.getSelectedLayers();
 
 		List<FiltersData> result = new ArrayList<FiltersData>();
 		FiltersData data;
 
 		if (currentData != null) {
 			currentData.getMGFilter().setFilter(filter);
-			currentData.setTrackList(trackList);
+			currentData.setLayers(trackList);
 
 			data = currentData;
 		} else {

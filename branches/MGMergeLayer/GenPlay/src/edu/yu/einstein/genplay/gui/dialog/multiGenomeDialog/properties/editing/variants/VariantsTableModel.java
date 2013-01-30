@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -37,7 +37,7 @@ public class VariantsTableModel extends EditingTableModel<VariantData> {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 3478197435828366331L;
-	
+
 
 	/**
 	 * Constructor of {@link VariantsTableModel}
@@ -60,8 +60,6 @@ public class VariantsTableModel extends EditingTableModel<VariantData> {
 			return stripesData.getAlleleTypeForDisplay();
 		case VariantData.VARIANT_INDEX:
 			return stripesData.getVariationTypeListForDisplay();
-		case VariantData.TRACK_INDEX:
-			return stripesData.getTrackListForDisplay();
 		default:
 			return new Object();
 		}
@@ -80,8 +78,6 @@ public class VariantsTableModel extends EditingTableModel<VariantData> {
 			return String.class;
 		case VariantData.VARIANT_INDEX:
 			return JPanel.class;
-		case VariantData.TRACK_INDEX:
-			return String.class;
 		default:
 			return Object.class;
 		}
@@ -91,6 +87,7 @@ public class VariantsTableModel extends EditingTableModel<VariantData> {
 	/**
 	 * @return the data
 	 */
+	@Override
 	protected List<VariantData> getData() {
 		return data;
 	}
@@ -99,6 +96,7 @@ public class VariantsTableModel extends EditingTableModel<VariantData> {
 	/**
 	 * @param data the data to set
 	 */
+	@Override
 	protected void setData(List<VariantData> data) {
 		this.data = data;
 		buttons = new ArrayList<JButton>();
@@ -107,7 +105,6 @@ public class VariantsTableModel extends EditingTableModel<VariantData> {
 			fireTableCellUpdated(row, VariantData.GENOME_INDEX);
 			fireTableCellUpdated(row, VariantData.ALLELE_INDEX);
 			fireTableCellUpdated(row, VariantData.VARIANT_INDEX);
-			fireTableCellUpdated(row, VariantData.TRACK_INDEX);
 			fireTableCellUpdated(row, buttonColumnIndex);
 		}
 	}

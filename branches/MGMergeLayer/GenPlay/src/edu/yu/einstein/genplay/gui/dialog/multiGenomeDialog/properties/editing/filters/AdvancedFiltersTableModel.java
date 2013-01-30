@@ -59,7 +59,7 @@ public class AdvancedFiltersTableModel extends EditingTableModel<FiltersData> {
 		case 1:
 			return filtersData.getFilterForDisplay();
 		case 2:
-			return filtersData.getTrackListForDisplay();
+			return filtersData.getLayersForDisplay();
 		default:
 			return new Object();
 		}

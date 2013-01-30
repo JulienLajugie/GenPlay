@@ -32,7 +32,7 @@ import edu.yu.einstein.genplay.core.multiGenome.filter.FilterInterface;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFFilter;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.IDFilterInterface;
-import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.track.layer.Layer;
 
 /**
  * @author Nicolas Fourel
@@ -44,8 +44,8 @@ public class FiltersData implements Serializable {
 	private static final long serialVersionUID = 2767629722281248634L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 
-	/** Index used for track column */
-	public static final int TRACK_INDEX 	= 1;
+	/** Index used for layer column */
+	public static final int LAYER_INDEX 	= 1;
 	/** Index used for the vcf header id column */
 	public static final int ID_INDEX 	= 2;
 	/** Index used for the filter column */
@@ -53,8 +53,8 @@ public class FiltersData implements Serializable {
 	/** Index used for vcf file column */
 	public static final int VCF_FILE_INDEX 	= 4;
 
-	private MGFilter			filter;
-	private Track[] 			trackList;		// list of track
+	private MGFilter	filter;
+	private Layer<?>[] 	layers;		// list of layers
 
 
 	/**
@@ -62,18 +62,18 @@ public class FiltersData implements Serializable {
 	 */
 	protected FiltersData() {
 		filter = null;
-		trackList = null;
+		layers = null;
 	}
 
 
 	/**
 	 * Constructor of {@link FiltersData}
 	 * @param filter 		the {@link MGFilter}
-	 * @param trackList		list of track
+	 * @param layers		list of layers
 	 */
-	public FiltersData(MGFilter filter, Track[] trackList) {
+	public FiltersData(MGFilter filter, Layer<?>[] layers) {
 		this.filter = filter.getDuplicate();
-		this.trackList = trackList;
+		this.layers = layers;
 	}
 
 
@@ -83,7 +83,7 @@ public class FiltersData implements Serializable {
 	public FiltersData getDuplicate () {
 		FiltersData duplicate = new FiltersData();
 		duplicate.setMGFilter(getMGFilter().getDuplicate());
-		duplicate.setTrackList(getTrackList());
+		duplicate.setLayers(getLayers());
 		return duplicate;
 	}
 
@@ -151,23 +151,23 @@ public class FiltersData implements Serializable {
 
 
 	/**
-	 * @return the trackList
+	 * @return the list of layers
 	 */
-	public Track[] getTrackList() {
-		return trackList;
+	public Layer<?>[] getLayers() {
+		return layers;
 	}
 
 
 	//////////////////// Getters for display
 
 	/**
-	 * @return the trackList
+	 * @return the layers list for display
 	 */
-	public String getTrackListForDisplay() {
+	public String getLayersForDisplay() {
 		String text = "";
-		for (int i = 0; i < trackList.length; i++) {
-			text += trackList[i];
-			if (i < (trackList.length - 1)) {
+		for (int i = 0; i < layers.length; i++) {
+			text += layers[i];
+			if (i < (layers.length - 1)) {
 				text += ", ";
 			}
 		}
@@ -184,20 +184,20 @@ public class FiltersData implements Serializable {
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		filter = (MGFilter) in.readObject();
-		trackList = (Track[]) in.readObject();
+		layers = (Layer[]) in.readObject();
 	}
 
 
 	/**
-	 * When a new track is loaded, the settings will still refer to the previous track if this method is not called.
-	 * It will replace the references to the old track by the one of the new track.
-	 * @param oldTrack the old track
-	 * @param newTrack the new track
+	 * When a new layer is loaded, the settings will still refer to the previous layer if this method is not called.
+	 * It will replace the references to the old layer by the one of the new layer.
+	 * @param oldLayer the old layer
+	 * @param newLayer the new layer
 	 */
-	public void replaceTrack (Track oldTrack, Track newTrack) {
-		for (int i = 0; i < trackList.length; i++) {
-			if (trackList[i].equals(oldTrack)) {
-				trackList[i] = newTrack;
+	public void replaceLayer (Layer<?> oldLayer, Layer<?> newLayer) {
+		for (int i = 0; i < layers.length; i++) {
+			if (layers[i].equals(oldLayer)) {
+				layers[i] = newLayer;
 			}
 		}
 	}
@@ -212,10 +212,10 @@ public class FiltersData implements Serializable {
 
 
 	/**
-	 * @param trackList the trackList to set
+	 * @param layers the layers to set
 	 */
-	public void setTrackList(Track[] trackList) {
-		this.trackList = trackList;
+	public void setLayers(Layer<?>[] layers) {
+		this.layers = layers;
 	}
 
 
@@ -227,6 +227,6 @@ public class FiltersData implements Serializable {
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeObject(filter);
-		out.writeObject(trackList);
+		out.writeObject(layers);
 	}
 }

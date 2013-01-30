@@ -53,7 +53,7 @@ public class AdvancedFiltersTable extends EditingTable<FiltersData> {
 		for (int i = 0; i < data.size(); i++) {
 			FiltersData rowData = new FiltersData();
 			rowData.setMGFilter(data.get(i).getMGFilter());
-			rowData.setTrackList(data.get(i).getTrackList());
+			rowData.setLayers(data.get(i).getLayers());
 			newData.add(rowData);
 		}
 		((AdvancedFiltersTableModel)getModel()).setData(newData);
@@ -80,7 +80,7 @@ public class AdvancedFiltersTable extends EditingTable<FiltersData> {
 					width = fm.stringWidth(filtersData.getFilterForDisplay()) + 10;
 					break;
 				case 2:
-					width = fm.stringWidth(filtersData.getTrackListForDisplay().toString()) + 10;
+					width = fm.stringWidth(filtersData.getLayersForDisplay().toString()) + 10;
 					break;
 				default:
 					width = 0;

@@ -62,7 +62,6 @@ class GenomeProjectTypePanel extends JPanel implements ActionListener {
 		singleRadio = new JRadioButton("Single Genome Project");
 		singleRadio.setSelected(true);
 		multiRadio = new JRadioButton("Multi Genome Project");
-		multiRadio.setEnabled(false);					// FIXME MG: this has to be removed once the MG will be fully merged with the new layer system!
 
 		//Color
 		setBackground(ProjectFrame.GENOME_COLOR);

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *     
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -28,9 +28,8 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.ButtonGroup;
+import javax.swing.JCheckBox;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 
 import edu.yu.einstein.genplay.core.comparator.ListComparator;
 import edu.yu.einstein.genplay.core.enums.VCFColumnName;
@@ -42,29 +41,27 @@ import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.d
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class GenomeEditingPanel extends EditingPanel<List<String>> implements ActionListener {
+public class MultiGenomeEditingPanel extends EditingPanel<List<String>> implements ActionListener {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -4060807866730514644L;
-	private JRadioButton[] radios;
+	private JCheckBox[] boxes;
 
 	private VCFFile file;
 	private VCFHeaderType header;
-	private final boolean formatHeaderDependant;
-	private boolean enable;
+	private boolean formatHeaderDependant;
 
 
 	/**
-	 * Constructor of {@link GenomeEditingPanel}
+	 * Constructor of {@link MultiGenomeEditingPanel}
 	 * @param formatHeaderDependant true if the panel must react only to a FORMAT header, false otherwise
 	 */
-	public GenomeEditingPanel(boolean formatHeaderDependant) {
+	public MultiGenomeEditingPanel(boolean formatHeaderDependant) {
 		super("Genome(s)");
-		radios = null;
+		boxes = null;
 		file = null;
 		header = null;
 		this.formatHeaderDependant = formatHeaderDependant;
-		enable = true;
 	}
 
 
@@ -76,13 +73,13 @@ public class GenomeEditingPanel extends EditingPanel<List<String>> implements Ac
 	@Override
 	public void update(Object object) {
 		if (object instanceof List<?>) {
-			if ((((List<?>)object).size() > 0) && (((List<?>)object).get(0) instanceof String)) {
+			if (((List<?>)object).size() > 0 && ((List<?>)object).get(0) instanceof String) {
 				createPanel((List<String>)object);
 			}
 		} else if (object instanceof VCFFile) {
 			VCFFile file = getVCFFile(object);
 			if (file == null) {
-				radios = null;
+				boxes = null;
 				resetContentPanel();
 			} else {
 				if (!file.equals(this.file)) {
@@ -90,14 +87,14 @@ public class GenomeEditingPanel extends EditingPanel<List<String>> implements Ac
 					createPanel(file.getHeader().getGenomeNames());
 				}
 			}
-		} else if ((radios != null) && (object instanceof VCFHeaderType)) {
+		} else if (boxes != null && object instanceof VCFHeaderType) {
 			VCFHeaderType header = (VCFHeaderType) object;
 			if (header.getColumnCategory() == VCFColumnName.FORMAT) {
-				for (JRadioButton radio: radios) {
-					radio.setEnabled(true);
+				for (JCheckBox box: boxes) {
+					box.setEnabled(true);
 				}
 			} else {
-				for (JRadioButton box: radios) {
+				for (JCheckBox box: boxes) {
 					box.setEnabled(false);
 				}
 			}
@@ -107,11 +104,10 @@ public class GenomeEditingPanel extends EditingPanel<List<String>> implements Ac
 
 
 	/**
-	 * Creates the radios panel
+	 * Creates the boxes panel
 	 */
 	private void createPanel (List<String> genomeNames) {
-		radios = new JRadioButton[genomeNames.size()];
-		ButtonGroup group = new ButtonGroup();
+		boxes = new JCheckBox[genomeNames.size()];
 		String[] paths = new String[genomeNames.size()];
 
 		boolean enable = mustBeDefaultEnabled();
@@ -127,19 +123,14 @@ public class GenomeEditingPanel extends EditingPanel<List<String>> implements Ac
 
 		for (int i = 0; i < genomeNames.size(); i++) {
 			paths[i] = genomeNames.get(i);
-			JRadioButton radioBox = new JRadioButton(genomeNames.get(i));
-			if (this.enable) {
-				radioBox.setEnabled(enable);
-			} else {
-				radioBox.setEnabled(false);
-			}
-			group.add(radioBox);
-			radios[i] = radioBox;
-			radios[i].addActionListener(this);
+			JCheckBox checkBox = new JCheckBox(genomeNames.get(i));
+			checkBox.setEnabled(enable);
+			boxes[i] = checkBox;
+			boxes[i].addActionListener(this);
 			if (i == (genomeNames.size() - 1)) {
 				gbc.weighty = 1;
 			}
-			content.add(radios[i], gbc);
+			content.add(boxes[i], gbc);
 			gbc.gridy++;
 		}
 		int width = getMaxStringLength(paths);
@@ -160,7 +151,7 @@ public class GenomeEditingPanel extends EditingPanel<List<String>> implements Ac
 	 */
 	private boolean mustBeDefaultEnabled () {
 		if (formatHeaderDependant) {
-			if ((header != null) && (header.getColumnCategory() == VCFColumnName.FORMAT)) {
+			if (header != null && header.getColumnCategory() == VCFColumnName.FORMAT) {
 				return true;
 			} else {
 				return false;
@@ -189,7 +180,7 @@ public class GenomeEditingPanel extends EditingPanel<List<String>> implements Ac
 		List<String> previousGenomes = null;
 
 		if (element != null) {
-			previousGenomes = element;
+			previousGenomes = (List<String>) element;
 		}
 
 		ListComparator<String> comparator = new ListComparator<String>();
@@ -204,16 +195,10 @@ public class GenomeEditingPanel extends EditingPanel<List<String>> implements Ac
 	 */
 	public List<String> getSelectedGenomes () {
 		List<String> selectedGenomes = new ArrayList<String>();
-		if (radios != null) {
-			for (JRadioButton radio: radios) {
-				if (radio.isSelected()) {
-					if (enable) {
-						if (radio.isEnabled()) {
-							selectedGenomes.add(radio.getText());
-						}
-					} else {
-						selectedGenomes.add(radio.getText());
-					}
+		if (boxes != null) {
+			for (JCheckBox box: boxes) {
+				if (box.isEnabled() && box.isSelected()) {
+					selectedGenomes.add(box.getText());
 				}
 			}
 		}
@@ -224,17 +209,15 @@ public class GenomeEditingPanel extends EditingPanel<List<String>> implements Ac
 	@Override
 	public String getErrors() {
 		String errors = "";
-		if (enable) {
-			if (formatHeaderDependant) {
-				if ((header != null) && (header.getColumnCategory() == VCFColumnName.FORMAT)) {
-					if (getSelectedGenomes().size() == 0) {
-						errors += "Genome(s) selection\n";
-					}
-				}
-			} else {
+		if (formatHeaderDependant) {
+			if (header != null && header.getColumnCategory() == VCFColumnName.FORMAT) {
 				if (getSelectedGenomes().size() == 0) {
 					errors += "Genome(s) selection\n";
 				}
+			}
+		} else {
+			if (getSelectedGenomes().size() == 0) {
+				errors += "Genome(s) selection\n";
 			}
 		}
 		return errors;
@@ -253,28 +236,14 @@ public class GenomeEditingPanel extends EditingPanel<List<String>> implements Ac
 	@Override
 	public void initialize(List<String> element) {
 		if (element != null) {
-			for (JRadioButton radio: radios) {
-				if (element.contains(radio.getText())) {
-					radio.setSelected(true);
+			for (JCheckBox box: boxes) {
+				if (element.contains(box.getText())) {
+					box.setSelected(true);
 				} else {
-					radio.setSelected(false);
+					box.setSelected(false);
 				}
 			}
 			setElement(element);
 		}
-	}
-
-
-	/**
-	 * Enable/Disable the selection of the genome
-	 * @param enable true to enable, false to disable
-	 */
-	public void setEnableSelection (boolean enable) {
-		this.enable = enable;
-		/*if (radios != null) {
-			for (JRadioButton radio: radios) {
-				radio.setEnabled(enable);
-			}
-		}*/
 	}
 }

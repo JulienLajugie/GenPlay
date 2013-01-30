@@ -75,7 +75,6 @@ public class MultiGenomeDrawer implements Serializable {
 	private Variant 						variantUnderMouse;
 
 
-
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -225,16 +224,19 @@ public class MultiGenomeDrawer implements Serializable {
 
 			for (int i = 0; i < variantDataList.size(); i++) {
 				VariantData newData = variantDataList.get(i);
-				newVariantDataList.add(newData);
-				int dataIndex = this.variantDataList.indexOf(newData);
-				if (dataIndex > -1) {
-					newVariantDisplayList.add(this.variantDisplayList.get(dataIndex));
-				} else {
-					generateLists = true;
-					VariantDisplayList newList = new VariantDisplayList();
-					newList.initialize(newData.getGenome(), newData.getVariationTypeList());
-					newList.generateLists();
-					newVariantDisplayList.add(newList);
+				if (newData != null) {
+					newVariantDataList.add(newData);
+					int dataIndex = this.variantDataList.indexOf(newData);
+					if ((dataIndex > -1) && !newData.hasChanged()) {
+						newVariantDisplayList.add(this.variantDisplayList.get(dataIndex));
+					} else {
+						generateLists = true;
+						newData.setHasChanged(false);
+						VariantDisplayList newList = new VariantDisplayList();
+						newList.initialize(newData.getGenome(), newData.getVariationTypeList());
+						newList.generateLists();
+						newVariantDisplayList.add(newList);
+					}
 				}
 			}
 
@@ -348,27 +350,29 @@ public class MultiGenomeDrawer implements Serializable {
 	/**
 	 * Draws stripes showing information for multi genome. The method checks if the track must show both allele or only one, in order to split the track or not.
 	 * @param g graphics object
-	 * @param genomeWindow the genome window
-	 * @param xFactor the x factor
+	 * @param width
+	 * @param height
 	 */
-	public void drawMultiGenomeInformation(Graphics g, GenomeWindow genomeWindow, double xFactor) {
+	public void drawMultiGenomeInformation(Graphics g, int width, int height) {
 		if ((variantDataList != null) && (variantDataList.size() > 0)) {
 			variantDrawer.initializeStripesOpacity();
 			if (!locked) { // if there are stripes
-				int halfHeight = g.getClipBounds().height / 2; // calculates the half of the height track
-				Graphics allele01Graphic = g.create(0, 0, g.getClipBounds().width, halfHeight); // create a graphics for the first allele that correspond to the upper half of the track
-				Graphics2D allele02Graphic = (Graphics2D) g.create(0, halfHeight, g.getClipBounds().width, halfHeight); // create a 2D graphics for the second allele that correspond to the lower
+				GenomeWindow genomeWindow = ProjectManager.getInstance().getProjectWindow().getGenomeWindow();
+				double xRatio = ProjectManager.getInstance().getProjectWindow().getXRatio();
+				int halfHeight = height / 2; 																	// calculates the half of the height track
+				Graphics allele01Graphic = g.create(0, 0, width, halfHeight); 									// create a graphics for the first allele that correspond to the upper half of the track
+				Graphics2D allele02Graphic = (Graphics2D) g.create(0, halfHeight, width, halfHeight); 			// create a 2D graphics for the second allele that correspond to the lower
 				// half of the track
-				allele02Graphic.scale(1, -1); // all Y axis (vertical) coordinates must be reversed for the second allele
-				allele02Graphic.translate(0, -allele02Graphic.getClipBounds().height - 1); // translates all coordinates of the graphic for the second allele
+				allele02Graphic.scale(1, -1); 																	// all Y axis (vertical) coordinates must be reversed for the second allele
+				allele02Graphic.translate(0, -allele02Graphic.getClipBounds().height - 1); 						// translates all coordinates of the graphic for the second allele
 				if (forceFitToScreen) {
-					handler.forceFitToScreen(xFactor);
+					handler.forceFitToScreen(xRatio);
 					forceFitToScreen = false;
 				}
 				variantDrawer.setCurrentAllele(AlleleType.ALLELE01);
-				variantDrawer.drawGenome(allele01Graphic, genomeWindow, handler.getFittedData(genomeWindow, xFactor, 0)); // draw the stripes for the first allele
+				variantDrawer.drawGenome(allele01Graphic, genomeWindow, handler.getFittedData(genomeWindow, xRatio, 0)); // draw the stripes for the first allele
 				variantDrawer.setCurrentAllele(AlleleType.ALLELE02);
-				variantDrawer.drawGenome(allele02Graphic, genomeWindow, handler.getFittedData(genomeWindow, xFactor, 1)); // draw the stripes for the second allele
+				variantDrawer.drawGenome(allele02Graphic, genomeWindow, handler.getFittedData(genomeWindow, xRatio, 1)); // draw the stripes for the second allele
 				variantDrawer.drawMultiGenomeLine(g); // draw a line in the middle of the track to distinguish upper and lower half.
 			} else {
 				variantDrawer.drawMultiGenomeMask(g, "Multi genome display interupted while loading information.");

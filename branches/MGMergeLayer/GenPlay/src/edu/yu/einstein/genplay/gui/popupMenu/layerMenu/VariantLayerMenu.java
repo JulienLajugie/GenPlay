@@ -21,40 +21,46 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.popupMenu.layerMenu;
 
-import javax.swing.JMenu;
+import javax.swing.Action;
 
+import edu.yu.einstein.genplay.gui.action.multiGenome.VCFAction.MGAVCFStatistics;
+import edu.yu.einstein.genplay.gui.action.multiGenome.convert.MGASCWLConvert;
+import edu.yu.einstein.genplay.gui.action.multiGenome.export.MGAGlobalVCFExport;
+import edu.yu.einstein.genplay.gui.action.multiGenome.update.MGAVCFApplyGenotype;
+import edu.yu.einstein.genplay.gui.action.track.TAEditVariantLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
+import edu.yu.einstein.genplay.gui.track.layer.variantLayer.VariantLayer;
 
 /**
- * Factory that creates a {@link JMenu} that inherit from {@link AbstractLayerMenu} with the actions for the specified layer
+ * Menu containing all the actions available for a {@link VariantLayer}
  * @author Julien Lajugie
+ * @author Nicolas Fourel
  */
-public class LayerMenuFactory {
+public class VariantLayerMenu extends AbstractLayerMenu {
+
+	private static final long serialVersionUID = -3827457549561342225L; // generated ID
+
 
 	/**
-	 * Creates a {@link JMenu} that inherit from {@link AbstractLayerMenu} with the actions for the specified layer
-	 * @param layer a {@link Layer}
-	 * @return a
-	 * @throws IllegalArgumentException
+	 * Creates an instance of {@link VariantLayerMenu}
+	 * @param layer the layer for the action
 	 */
-	public static AbstractLayerMenu createLayerMenu(Layer<?> layer) {
-		switch (layer.getType()) {
-		case BIN_LAYER:
-			return new BinLayerMenu(layer);
-		case GENE_LAYER:
-			return new GeneLayerMenu(layer);
-		case MASK_LAYER:
-			return new MaskLayerMenu(layer);
-		case NUCLEOTIDE_LAYER:
-			return null;
-		case REPEAT_FAMILY_LAYER:
-			return new RepeatLayerMenu(layer);
-		case SCW_LAYER:
-			return new SCWLayerMenu(layer);
-		case VARIANT_LAYER:
-			return new VariantLayerMenu(layer);
-		default :
-			return null;
-		}
+	public VariantLayerMenu(Layer<?> layer) {
+		super(layer);
+	}
+
+
+	@Override
+	protected Action[] getLayerMenuActions() {
+		Action[] actions = {
+				new TAEditVariantLayer(),
+				null,
+				new MGAVCFStatistics(),
+				null,
+				new MGAGlobalVCFExport(),
+				new MGASCWLConvert(),
+				new MGAVCFApplyGenotype()
+		};
+		return actions;
 	}
 }

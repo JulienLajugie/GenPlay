@@ -79,7 +79,7 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 
 
 	/**
-	 * Creates an instance of {@link Track}
+	 * Creates an instance of {@link Layer}
 	 * @param trackNumber number of the track
 	 */
 	public Track(int trackNumber) {

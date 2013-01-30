@@ -53,7 +53,7 @@ public class FiltersTable extends EditingTable<FiltersData> {
 		for (int i = 0; i < data.size(); i++) {
 			FiltersData rowData = new FiltersData();
 			rowData.setMGFilter(data.get(i).getMGFilter());
-			rowData.setTrackList(data.get(i).getTrackList());
+			rowData.setLayers(data.get(i).getLayers());
 			newData.add(rowData);
 		}
 		((FiltersTableModel)getModel()).setData(newData);
@@ -82,8 +82,8 @@ public class FiltersTable extends EditingTable<FiltersData> {
 				case FiltersData.FILTER_INDEX:
 					width = fm.stringWidth(filtersData.getFilterForDisplay()) + 10;
 					break;
-				case FiltersData.TRACK_INDEX:
-					width = fm.stringWidth(filtersData.getTrackListForDisplay().toString()) + 10;
+				case FiltersData.LAYER_INDEX:
+					width = fm.stringWidth(filtersData.getLayersForDisplay().toString()) + 10;
 					break;
 				default:
 					width = 0;

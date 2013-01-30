@@ -37,6 +37,7 @@ import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.fileFilter.GenPlayProjectFilter;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.trackList.TrackListModel;
 import edu.yu.einstein.genplay.gui.trackList.TrackListPanel;
 import edu.yu.einstein.genplay.util.Utils;
@@ -97,7 +98,9 @@ public class PALoadProject extends TrackListActionWorker<Track[]> {
 			TrackListPanel trackListPanel = MainFrame.getInstance().getTrackListPanel();
 			Track[] tracks = trackListPanel.getModel().getTracks();
 			for (Track currentTrack : tracks) {
-				MGDisplaySettings.getInstance().restoreInformation(currentTrack);
+				for (Layer<?> layer: currentTrack.getLayers().getLayers()) {
+					MGDisplaySettings.getInstance().restoreInformation(layer);
+				}
 			}
 
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {

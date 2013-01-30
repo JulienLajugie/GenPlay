@@ -34,31 +34,25 @@ import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.d
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.EditingPanel;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.editing.GenomeEditingPanel;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.editing.VariationTypeEditingPanel;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.selection.TrackSelectionPanel;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
-import edu.yu.einstein.genplay.gui.track.Track;
 
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class EditingDialogManagerForStripes implements EditingDialogManagerInterface<VariantData>{
+public class EditingDialogManagerForVariants implements EditingDialogManagerInterface<VariantData>{
 
 	private final List<EditingPanel<?>> 			editingPanelList;			// List of editing panel
-	private final TrackSelectionPanel 				trackEditingPanel;			// Panel to edit the tracks
 	private final GenomeEditingPanel 				genomeEditingPanel;			// Panel to edit the genomes
 	private final VariationTypeEditingPanel 		variationTypeEditingPanel;	// Panel to edit the variations
 	private VariantData 							currentData;				// The current stripe data (can be null)
 
 
 	/**
-	 * Constructor of {@link EditingDialogManagerForStripes}
+	 * Constructor of {@link EditingDialogManagerForVariants}
 	 */
-	public EditingDialogManagerForStripes () {
-		// Tracks editing panel
-		trackEditingPanel = new TrackSelectionPanel();
-
+	public EditingDialogManagerForVariants () {
 		// Genomes editing panel
 		genomeEditingPanel = new GenomeEditingPanel(false);
 
@@ -69,7 +63,6 @@ public class EditingDialogManagerForStripes implements EditingDialogManagerInter
 
 		// List of editing panel
 		editingPanelList = new ArrayList<EditingPanel<?>>();
-		editingPanelList.add(trackEditingPanel);
 		editingPanelList.add(genomeEditingPanel);
 		editingPanelList.add(variationTypeEditingPanel);
 	}
@@ -78,6 +71,15 @@ public class EditingDialogManagerForStripes implements EditingDialogManagerInter
 	@Override
 	public List<EditingPanel<?>> getEditingPanelList() {
 		return editingPanelList;
+	}
+
+
+	/**
+	 * Enable/Disable the selection of the genome
+	 * @param enable true to enable, false to disable
+	 */
+	public void setEnableSelection (boolean enable) {
+		genomeEditingPanel.setEnableSelection(enable);
 	}
 
 
@@ -90,8 +92,6 @@ public class EditingDialogManagerForStripes implements EditingDialogManagerInter
 			genomeEditingPanel.initialize(genomeNames);
 
 			variationTypeEditingPanel.initialize(currentData.getVariationTypeList());
-
-			trackEditingPanel.initialize(currentData.getTrackList());
 		}
 	}
 
@@ -114,47 +114,29 @@ public class EditingDialogManagerForStripes implements EditingDialogManagerInter
 	 */
 	private List<VariantData> retrieveData () {
 		List<String> genomeNames = genomeEditingPanel.getSelectedGenomes();
-		AlleleType alleleType = variationTypeEditingPanel.getSelectedAlleleType();
 		List<VariantType> variantList = variationTypeEditingPanel.getSelectedVariantTypes();
 		List<Color> colorList = variationTypeEditingPanel.getSelectedColors();
-		Track[] trackList = trackEditingPanel.getSelectedTracks();
 
 		List<VariantData> result = new ArrayList<VariantData>();
 
 		if (currentData != null) {
 			currentData.setGenome(genomeNames.get(0));
-			currentData.setAlleleType(alleleType);
+			currentData.setAlleleType(AlleleType.BOTH);
 			currentData.setVariationTypeList(variantList);
 			currentData.setColorList(colorList);
-			currentData.setTrackList(trackList);
 			VariantData data = currentData;
 			result.add(data);
 			if (genomeNames.size() > 1) {
 				String message = "You are editing a stripe and more than one genome has been selected.\n";
 				message += "Only the first genome will be taken into account:\n";
 				message += genomeNames.get(0);
-				JOptionPane.showMessageDialog(null, message, "Stripe editing message", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(null, message, "Variant editing message", JOptionPane.INFORMATION_MESSAGE);
 			}
 		} else {
 			for (String genomeName: genomeNames) {
-				result.add(new VariantData(genomeName, alleleType, variantList, colorList, trackList));
+				result.add(new VariantData(genomeName, AlleleType.BOTH, variantList, colorList));
 			}
 		}
-
-		/*for (String genomeName: genomeNames) {
-			StripesData data;
-			if (currentData != null) {
-				currentData.setGenome(genomeName);
-				currentData.setAlleleType(alleleType);
-				currentData.setVariationTypeList(variantList);
-				currentData.setColorList(colorList);
-				currentData.setTrackList(trackList);
-				data = currentData;
-			} else {
-				data = new StripesData(genomeName, alleleType, variantList, colorList, trackList);
-			}
-			result.add(data);
-		}*/
 
 		return result;
 	}
@@ -170,7 +152,8 @@ public class EditingDialogManagerForStripes implements EditingDialogManagerInter
 	public List<VariantData> showDialog() {
 		initializePanels();
 		EditingDialog<VariantData> editingDialog = new EditingDialog<VariantData>(this);
-		List<VariantData> data = null;
+		editingDialog.setTitle("Add a Variant Layer");
+		List<VariantData> data = new ArrayList<VariantData>();
 		if (editingDialog.showDialog(null) == EditingDialog.APPROVE_OPTION) {
 			data = retrieveData();
 		}
