@@ -38,33 +38,33 @@ import edu.yu.einstein.genplay.gui.track.layer.ColoredLayer;
 public enum LayerColors {
 
 	/** Dark blue {@link Color}  */
-	DARK_BLUE (new Color(0x0000CD)),
+	DARK_BLUE (new Color(0x0000FF)),
 	/**  Dark green {@link Color} */
-	DARK_GREEN (new Color(0x006400)),
+	DARK_GREEN (new Color(0x005000)),
 	/** Orange {@link Color}  */
 	ORANGE (new Color(0xFF4500)),
 	/** Purple {@link Color}  */
 	PURPLE (new Color(0x800080)),
 	/** Light blue {@link Color}  */
-	LIGHT_BLUE (new Color(0xADD8E6)),
+	LIGHT_BLUE (new Color(0x00B6FF)),
 	/** Red {@link Color}  */
 	RED (Color.RED),
 	/** Light blue {@link Color}  */
-	LIGHT_GREEN(new Color(0x7FFF00)),
+	LIGHT_GREEN(new Color(0x00FF00)),
 	/** Gray {@link Color}  */
 	GRAY (new Color(0x696969)),
 	/** Pink {@link Color}  */
-	PINK (new Color(0xFF69B4)),
+	PINK (new Color(0xFF00FF)),
 	/**  Brown {@link Color} */
 	BROWN (new Color(0x8B4513)),
 	/** Light cyan {@link Color}  */
 	LIGHT_CYAN (new Color(0x00FFFF)),
 	/** Black {@link Color}  */
 	BLACK (Color.BLACK),
-	/** Yellow {@link Color}  */
-	YELLOW (new Color(0xFFD700)),
 	/** Dark cyan {@link Color}  */
-	DARK_CYAN (new Color(0x008B8B));
+	DARK_CYAN (new Color(0x008B8B)),
+	/** Yellow {@link Color}  */
+	YELLOW (new Color(0xFFD700));
 
 	/**
 	 * Default transparency of a layer

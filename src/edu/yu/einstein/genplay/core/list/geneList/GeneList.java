@@ -62,7 +62,7 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 	private static final long serialVersionUID = 1068181566225377150L; 	// generated ID
 	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private static final int 	MIN_DISTANCE_BETWEEN_2_GENES = 5;		// minimum distance in pixel between two genes
-	private ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome(); // Instance of the Chromosome Manager
+	private ProjectChromosome 	projectChromosome = ProjectManager.getInstance().getProjectChromosome(); // Instance of the Chromosome Manager
 	private FontMetrics			fontMetrics = null;						// dimension of the font used to print the name of the genes
 	private String				searchURL = null;						// URL of the gene database
 	private GeneSearcher		geneSearcher = null;					// object used to search genes
