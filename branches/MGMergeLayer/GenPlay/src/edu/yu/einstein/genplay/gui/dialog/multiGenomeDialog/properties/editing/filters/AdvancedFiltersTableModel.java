@@ -43,7 +43,7 @@ public class AdvancedFiltersTableModel extends EditingTableModel<FiltersData> {
 	 * Constructor of {@link AdvancedFiltersTableModel}
 	 */
 	protected AdvancedFiltersTableModel () {
-		super(new String[]{"Filter", "Description", "Track"});
+		super(new String[]{"Filter", "Description", "Layer"});
 	}
 
 

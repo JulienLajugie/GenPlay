@@ -43,7 +43,7 @@ public class FiltersTableModel extends EditingTableModel<FiltersData> {
 	 * Constructor of {@link FiltersTableModel}
 	 */
 	protected FiltersTableModel () {
-		super(new String[]{"Track", "ID", "Filter", "File"});
+		super(new String[]{"Layer", "ID", "Filter", "File"});
 	}
 
 

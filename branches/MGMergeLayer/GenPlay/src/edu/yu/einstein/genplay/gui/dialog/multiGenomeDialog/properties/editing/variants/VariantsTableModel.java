@@ -43,7 +43,7 @@ public class VariantsTableModel extends EditingTableModel<VariantData> {
 	 * Constructor of {@link VariantsTableModel}
 	 */
 	protected VariantsTableModel () {
-		super(new String[]{"Genome", "Allele", "Variation", "Track"});
+		super(new String[]{"Genome", "Allele", "Variation", "Layer"});
 	}
 
 

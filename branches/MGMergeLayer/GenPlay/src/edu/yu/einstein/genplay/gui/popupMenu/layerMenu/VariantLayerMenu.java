@@ -26,6 +26,7 @@ import javax.swing.Action;
 import edu.yu.einstein.genplay.gui.action.multiGenome.VCFAction.MGAVCFStatistics;
 import edu.yu.einstein.genplay.gui.action.multiGenome.convert.MGASCWLConvert;
 import edu.yu.einstein.genplay.gui.action.multiGenome.export.MGAGlobalVCFExport;
+import edu.yu.einstein.genplay.gui.action.multiGenome.properties.MGAFilterProperties;
 import edu.yu.einstein.genplay.gui.action.multiGenome.update.MGAVCFApplyGenotype;
 import edu.yu.einstein.genplay.gui.action.track.TAEditVariantLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
@@ -54,8 +55,9 @@ public class VariantLayerMenu extends AbstractLayerMenu {
 	protected Action[] getLayerMenuActions() {
 		Action[] actions = {
 				new TAEditVariantLayer(),
-				null,
 				new MGAVCFStatistics(),
+				null,
+				new MGAFilterProperties(),
 				null,
 				new MGAGlobalVCFExport(),
 				new MGASCWLConvert(),
@@ -63,4 +65,5 @@ public class VariantLayerMenu extends AbstractLayerMenu {
 		};
 		return actions;
 	}
+
 }

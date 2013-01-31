@@ -237,7 +237,10 @@ public class VariantDisplayListIterator implements Iterator<Variant> {
 	 * @param position	a position on the meta genome
 	 */
 	public void setIteratorPosition (int position) {
-		int index = getIndex(variantList, position, 0, variantList.size() - 1);
+		int index = -1;
+		if (variantList.size() > 0) {
+			index = getIndex(variantList, position, 0, variantList.size() - 1);
+		}
 		currentIndex = index;
 	}
 

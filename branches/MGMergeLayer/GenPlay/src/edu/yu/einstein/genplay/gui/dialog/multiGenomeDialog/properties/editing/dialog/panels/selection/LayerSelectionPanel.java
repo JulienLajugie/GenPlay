@@ -45,6 +45,7 @@ public class LayerSelectionPanel extends EditingPanel<Layer<?>[]> implements Act
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -4060807866730514644L;
+	private static final String SELECT_TEXT = "Select Layer(s)";
 
 	private JList jlElements;
 	private JButton jbLayers;
@@ -129,7 +130,7 @@ public class LayerSelectionPanel extends EditingPanel<Layer<?>[]> implements Act
 	@Override
 	public void reset() {
 		jlElements = new JList();
-		jbLayers = new JButton("Select Layer(s)");
+		jbLayers = new JButton(SELECT_TEXT);
 		jbLayers.addActionListener(this);
 	}
 
@@ -140,12 +141,17 @@ public class LayerSelectionPanel extends EditingPanel<Layer<?>[]> implements Act
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource().equals(jbLayers)) {
-			LayerChooserDialog dialog = new LayerChooserDialog();
-			dialog.setLayers(MainFrame.getInstance().getTrackListPanel().getAllVariantLayers());
-			dialog.setSelectedLayers(getLayers());
-			if (dialog.showDialog(this, "Select Variant Layers") == LayerChooserDialog.APPROVE_OPTION) {
-				jlElements.setListData(dialog.getSelectedLayers().toArray());
+		// I compare the text of the button instead of the button itself since the button can be recreated on the way and does not match the source of the event.
+		if (e.getSource() instanceof JButton) {
+			String text = ((JButton)e.getSource()).getText();
+			if (text.equals(SELECT_TEXT)) {
+				LayerChooserDialog dialog = new LayerChooserDialog();
+				dialog.setMultiselectable(true);
+				dialog.setLayers(MainFrame.getInstance().getTrackListPanel().getAllVariantLayers());
+				dialog.setSelectedLayers(getLayers());
+				if (dialog.showDialog(this, "Select Variant Layers") == LayerChooserDialog.APPROVE_OPTION) {
+					jlElements.setListData(dialog.getSelectedLayers().toArray());
+				}
 			}
 		}
 	}

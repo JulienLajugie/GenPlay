@@ -85,8 +85,6 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 	public static final		String			FILTERS_FILE		= "VCF Files";
 	/** Text for ADVANCED FILTERS tree node */
 	public static final		String			FILTERS_ADVANCED	= "Advanced";
-	/** Text for STRIPES tree node */
-	public static final		String			VARIANTS 			= "Variants";
 
 
 	/** Insets for the first title in top of the content panel */
@@ -397,7 +395,7 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 	 */
 	public static String[] getPropertiesDialogMainItems () {
 		//String[] items = {GENERAL, SETTINGS, FILTERS_FILE, FILTERS_ADVANCED, STRIPES};
-		String[] items = {GENERAL, SETTINGS, FILTERS, VARIANTS};
+		String[] items = {GENERAL, SETTINGS, FILTERS};
 		return items;
 	}
 }
