@@ -89,7 +89,7 @@ public class GLAScoreRepartitionAroundStart extends TrackListActionOperationWork
 				JOptionPane.showMessageDialog(getRootPane(), "You need to load at least one Fixed or Variable Window layer before using this operation", "Warning", JOptionPane.WARNING_MESSAGE);
 			} else {
 				LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
-				layerChooserDialog.setLayers(getTrackListPanel().getAllLayers());
+				layerChooserDialog.setLayers(getTrackListPanel().getModel().getAllLayers());
 				layerChooserDialog.setSelectableLayers(availableLayerTypes);
 				layerChooserDialog.setMultiselectable(false);
 				if (layerChooserDialog.showDialog(getRootPane(), "Select Layer") == LayerChooserDialog.APPROVE_OPTION) {

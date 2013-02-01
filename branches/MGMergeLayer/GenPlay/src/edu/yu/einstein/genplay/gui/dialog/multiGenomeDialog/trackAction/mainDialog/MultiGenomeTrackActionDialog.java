@@ -40,6 +40,7 @@ import javax.swing.JTextField;
 
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportUtils;
+import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.util.Images;
 
 /**
@@ -73,8 +74,9 @@ public abstract class MultiGenomeTrackActionDialog extends JDialog {
 	 * Constructor of {@link MultiGenomeTrackActionDialog}
 	 * @param settings the export settings
 	 * @param title title of the dialog
+	 * @param layer the selected {@link Layer}
 	 */
-	public MultiGenomeTrackActionDialog (ExportSettings settings, String title) {
+	public MultiGenomeTrackActionDialog (ExportSettings settings, String title, Layer<?> layer) {
 		this.settings = settings;
 
 		// Layout
@@ -83,7 +85,7 @@ public abstract class MultiGenomeTrackActionDialog extends JDialog {
 
 		initializeContentPanel();
 
-		lengendPanel = new LegendPane(settings.getVariationMap(), settings.getFileList());
+		lengendPanel = new LegendPane(this, layer);
 		validationPanel = new ValidationPane(this);
 
 		add(lengendPanel, BorderLayout.NORTH);
@@ -225,6 +227,17 @@ public abstract class MultiGenomeTrackActionDialog extends JDialog {
 
 	protected abstract String getErrors ();
 	///////////////////////////////////////////////////////////
+
+
+	protected void revalidate () {
+		if (lengendPanel != null) {
+			lengendPanel.revalidate();
+		}
+		if (contentPanel != null) {
+			contentPanel.revalidate();
+		}
+		pack();
+	}
 
 
 	/**

@@ -85,7 +85,7 @@ public final class BLARepartition extends TrackListActionOperationWorker<double 
 				Layer<?>[] binLayers = Utils.getLayers(getTrackListPanel().getModel().getTracks(), availableLayerTypes);
 				if (binLayers.length > 1) {
 					LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
-					layerChooserDialog.setLayers(getTrackListPanel().getAllLayers());
+					layerChooserDialog.setLayers(getTrackListPanel().getModel().getAllLayers());
 					layerChooserDialog.setSelectableLayers(availableLayerTypes);
 					layerChooserDialog.setMultiselectable(true);
 					if (layerChooserDialog.showDialog(getRootPane(), "Select Layers") == LayerChooserDialog.APPROVE_OPTION) {

@@ -36,6 +36,8 @@ import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.EditingPanel;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
+import edu.yu.einstein.genplay.gui.track.layer.LayerType;
+import edu.yu.einstein.genplay.util.Utils;
 
 /**
  * @author Nicolas Fourel
@@ -145,9 +147,13 @@ public class LayerSelectionPanel extends EditingPanel<Layer<?>[]> implements Act
 		if (e.getSource() instanceof JButton) {
 			String text = ((JButton)e.getSource()).getText();
 			if (text.equals(SELECT_TEXT)) {
+				LayerType[] filter = {LayerType.VARIANT_LAYER};
+				List<Layer<?>> allLayers = MainFrame.getInstance().getTrackListPanel().getModel().getAllLayers();
+				List<Layer<?>> layers = Utils.getLayers(allLayers, filter);
+
 				LayerChooserDialog dialog = new LayerChooserDialog();
 				dialog.setMultiselectable(true);
-				dialog.setLayers(MainFrame.getInstance().getTrackListPanel().getAllVariantLayers());
+				dialog.setLayers(layers);
 				dialog.setSelectedLayers(getLayers());
 				if (dialog.showDialog(this, "Select Variant Layers") == LayerChooserDialog.APPROVE_OPTION) {
 					jlElements.setListData(dialog.getSelectedLayers().toArray());

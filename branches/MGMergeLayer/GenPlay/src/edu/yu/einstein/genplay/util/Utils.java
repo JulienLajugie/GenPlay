@@ -1018,4 +1018,29 @@ public class Utils {
 		return result;
 	}
 
+
+
+	/**
+	 * @param layers a list of {@link Layer}
+	 * @param filter an array of {@link LayerType} as filters
+	 * @return a list of {@link Layer} containing only the {@link LayerType} defined in the filters.
+	 */
+	public static List<Layer<?>> getLayers (List<Layer<?>> layers, LayerType[] filter) {
+		List<Layer<?>> result = new ArrayList<Layer<?>>();
+		for (Layer<?> layer: layers) {
+			boolean found = false;
+			int index = 0;
+			while (!found & (index < filter.length)) {
+				if (layer.getType() == filter[index]) {
+					found = true;
+				}
+				index++;
+			}
+			if (found) {
+				result.add(layer);
+			}
+		}
+		return result;
+	}
+
 }

@@ -85,7 +85,7 @@ public class MGATrackDisplayRefresh extends TrackListActionWorker<Boolean> {
 			settings = MGDisplaySettings.getInstance();
 
 			// Update tracks
-			List<Layer<?>> layers = MainFrame.getInstance().getTrackListPanel().getAllLayers();
+			List<Layer<?>> layers = MainFrame.getInstance().getTrackListPanel().getModel().getAllLayers();
 			for (Layer<?> layer: layers) {
 				if (layer instanceof VariantLayer) {
 					List<MGFilter> filtersList = settings.getFilterSettings().getMGFiltersForTrack(layer);

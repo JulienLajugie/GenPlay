@@ -113,7 +113,7 @@ public final class SCWLARepartition extends TrackListActionOperationWorker<doubl
 					Layer<?>[] scwLayers = Utils.getLayers(getTrackListPanel().getModel().getTracks(), availableLayerTypes);
 					if (scwLayers.length > 1) {
 						LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
-						layerChooserDialog.setLayers(getTrackListPanel().getAllLayers());
+						layerChooserDialog.setLayers(getTrackListPanel().getModel().getAllLayers());
 						layerChooserDialog.setSelectableLayers(availableLayerTypes);
 						layerChooserDialog.setMultiselectable(true);
 						if (layerChooserDialog.showDialog(getRootPane(), "Select Layers to Paste") == LayerChooserDialog.APPROVE_OPTION) {

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -30,6 +30,7 @@ import javax.swing.event.ListDataListener;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.track.layer.Layer;
 
 /**
  * Model that manages a list of tracks
@@ -54,7 +55,7 @@ public class TrackListModel implements Serializable {
 	}
 
 
-	private List<ListDataListener>		dataListeners;		// list of listeners that is notified each time a change to the data model occurs
+	private final List<ListDataListener>		dataListeners;		// list of listeners that is notified each time a change to the data model occurs
 	private Track[] 					tracks; 			// array of tracks displayed in the table
 
 
@@ -221,5 +222,17 @@ public class TrackListModel implements Serializable {
 		// we notify the listeners that the data changed
 		ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, tracks.length - 1);
 		notifyListeners(event);
+	}
+
+
+	/**
+	 * @return the list of all the layers displayed in the {@link TrackListPanel}
+	 */
+	public List<Layer<?>> getAllLayers() {
+		List<Layer<?>> allLayers = new ArrayList<Layer<?>>();
+		for (Track currentTrack: tracks) {
+			allLayers.addAll(currentTrack.getLayers());
+		}
+		return allLayers;
 	}
 }

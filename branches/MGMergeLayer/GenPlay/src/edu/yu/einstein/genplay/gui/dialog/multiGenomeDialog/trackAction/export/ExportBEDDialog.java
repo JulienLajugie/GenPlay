@@ -50,6 +50,7 @@ import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSe
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportUtils;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.mainDialog.MultiGenomeTrackActionDialog;
 import edu.yu.einstein.genplay.gui.fileFilter.BedFilter;
+import edu.yu.einstein.genplay.gui.track.layer.Layer;
 
 /**
  * @author Nicolas Fourel
@@ -71,9 +72,10 @@ public class ExportBEDDialog extends MultiGenomeTrackActionDialog {
 	/**
 	 * Constructor of {@link ExportBEDDialog}
 	 * @param settings the export settings
+	 * @param layer the selected {@link Layer}
 	 */
-	public ExportBEDDialog(ExportSettings settings) {
-		super(settings, DIALOG_TITLE);
+	public ExportBEDDialog(ExportSettings settings, Layer<?> layer) {
+		super(settings, DIALOG_TITLE, layer);
 	}
 
 

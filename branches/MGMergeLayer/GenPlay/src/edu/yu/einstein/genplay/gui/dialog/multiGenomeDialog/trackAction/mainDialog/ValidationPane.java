@@ -62,6 +62,9 @@ class ValidationPane extends JPanel implements ActionListener  {
 		jbCancel = new JButton("Cancel");
 		jbCancel.addActionListener(this);
 
+		// Set the button size
+		jbOk.setPreferredSize(jbCancel.getPreferredSize());
+
 		// Creates the panel
 		add(jbOk);
 		add(jbCancel);

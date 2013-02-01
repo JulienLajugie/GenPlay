@@ -24,122 +24,108 @@ package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.mainDia
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
-import edu.yu.einstein.genplay.core.enums.VariantType;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
+import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
+import edu.yu.einstein.genplay.gui.track.layer.Layer;
+import edu.yu.einstein.genplay.gui.track.layer.LayerType;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
  */
-class LegendPane extends JPanel {
+class LegendPane extends JPanel implements ActionListener {
 
 	/** Generated default serial version ID */
 	private static final long serialVersionUID = -5372729762581187391L;
+	private static final String SELECT_TEXT = "Select Layer(s)";
 
+	private final MultiGenomeTrackActionDialog dialog;
+	private JButton jbLayers;
+	private List<Layer<?>> selectedLayers;
 
 	/**
 	 * Constructor of {@link LegendPane}
-	 * @param panel a panel {@link ExportVCFPane} or
+	 * @param layer the selected {@link Layer}
 	 */
-	protected LegendPane (Map<String, List<VariantType>> variationMap, List<VCFFile> fileList) {
+	protected LegendPane (MultiGenomeTrackActionDialog dialog, Layer<?> layer) {
+		this.dialog = dialog;
+		List<Layer<?>> layers = new ArrayList<Layer<?>>();
+		layers.add(layer);
+		initialize(layers);
+	}
+
+
+	public void initialize (List<Layer<?>> layers) {
+		this.selectedLayers = layers;
+		removeAll();
+
 		// Create the field set effect
-		TitledBorder titledBorder = BorderFactory.createTitledBorder("Stripes content");
+		TitledBorder titledBorder = BorderFactory.createTitledBorder("Layer(s)");
 		setBorder(titledBorder);
-
-		// Create the genomes information
-		JLabel genomesTitle = new JLabel("Genomes:");
-		List<String> genomesInformation = getGenomesInformation(variationMap);
-
-		// Create the files information
-		JLabel filesTitle = new JLabel("Files:");
-		List<String> filesInformation = getFilesInformation(fileList);
-
-		// Create the inset
-		Insets titleInset = new Insets(2, 6, 2, 0);
-		Insets valueInset = new Insets(0, 15, 0, 10);
-		Insets lastValueInset = new Insets(0, 15, 10, 10);
 
 		// Layout settings
 		GridBagLayout layout = new GridBagLayout();
 		setLayout(layout);
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbc.insets = new Insets(0, 15, 0, 10);
 		gbc.weightx = 1;
 		gbc.weighty = 0;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 
-		// Genomes title
-		gbc.insets = titleInset;
-		add(genomesTitle, gbc);
-
 		// Genomes values
-		gbc.insets = valueInset;
-		for (int i = 0; i < genomesInformation.size(); i++) {
-			if (i == (genomesInformation.size() - 1)) {
+		for (int i = 0; i < layers.size(); i++) {
+			/*if (i == (layers.size() - 1)) {
 				gbc.insets = lastValueInset;
-			}
+			}*/
 			gbc.gridy++;
-			add(new JLabel(genomesInformation.get(i)), gbc);
+			add(new JLabel(layers.get(i).getName()), gbc);
 		}
 
-		// Files title
-		gbc.insets = titleInset;
+		jbLayers = new JButton(SELECT_TEXT);
+		jbLayers.addActionListener(this);
+		jbLayers.setEnabled(false);
+
 		gbc.gridy++;
-		add(filesTitle, gbc);
+		gbc.insets = new Insets(10, 15, 5, 0);
+		add(jbLayers, gbc);
 
-		// Files values
-		gbc.insets = valueInset;
-		for (int i = 0; i < filesInformation.size(); i++) {
-			if (i == (filesInformation.size() - 1)) {
-				gbc.weighty = 1;
-				gbc.insets = lastValueInset;
-			}
-			gbc.gridy++;
-			add(new JLabel(filesInformation.get(i)), gbc);
-		}
+		dialog.revalidate();
 	}
 
 
-	/**
-	 * @param variationMap the variation map with genome names
-	 * @return a description of the requested genomes and their variations
-	 */
-	private List<String> getGenomesInformation (Map<String, List<VariantType>> variationMap) {
-		List<String> genomesInformation = new ArrayList<String>();
-		for (String genomeName: variationMap.keySet()) {
-			String current = genomeName + ": ";
-			for (int j = 0; j < variationMap.get(genomeName).size(); j++) {
-				current += variationMap.get(genomeName).get(j);
-				if (j < (variationMap.get(genomeName).size() - 1)) {
-					current += ", ";
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// I compare the text of the button instead of the button itself since the button can be recreated on the way and does not match the source of the event.
+		if (e.getSource() instanceof JButton) {
+			String text = ((JButton)e.getSource()).getText();
+			if (text.equals(SELECT_TEXT)) {
+				LayerType[] filter = {LayerType.VARIANT_LAYER};
+				List<Layer<?>> allLayers = MainFrame.getInstance().getTrackListPanel().getModel().getAllLayers();
+				List<Layer<?>> layers = Utils.getLayers(allLayers, filter);
+
+				LayerChooserDialog dialog = new LayerChooserDialog();
+				dialog.setMultiselectable(true);
+				dialog.setLayers(layers);
+				dialog.setSelectedLayers(selectedLayers);
+				if (dialog.showDialog(this, "Select Variant Layers") == LayerChooserDialog.APPROVE_OPTION) {
+					initialize(dialog.getSelectedLayers());
 				}
 			}
-			genomesInformation.add(current);
 		}
-		return genomesInformation;
-	}
-
-
-	/**
-	 * @param fileList a list of files
-	 * @return a description of the requested files
-	 */
-	private List<String> getFilesInformation (List<VCFFile> fileList) {
-		List<String> filesInformation = new ArrayList<String>();
-		for (VCFFile currentFile: fileList) {
-			filesInformation.add(currentFile.getFile().getName());
-		}
-		return filesInformation;
 	}
 }

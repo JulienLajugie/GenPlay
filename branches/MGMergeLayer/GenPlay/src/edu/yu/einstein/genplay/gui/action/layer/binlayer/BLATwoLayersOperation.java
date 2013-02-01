@@ -83,7 +83,7 @@ public final class BLATwoLayersOperation extends TrackListActionOperationWorker<
 		selectedLayer = (BinLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
-			layerChooserDialog.setLayers(getTrackListPanel().getAllLayers());
+			layerChooserDialog.setLayers(getTrackListPanel().getModel().getAllLayers());
 			LayerType[] selectableLayers = {LayerType.BIN_LAYER, LayerType.SCW_LAYER, LayerType.MASK_LAYER};
 			layerChooserDialog.setSelectableLayers(selectableLayers);
 			layerChooserDialog.setMultiselectable(false);
