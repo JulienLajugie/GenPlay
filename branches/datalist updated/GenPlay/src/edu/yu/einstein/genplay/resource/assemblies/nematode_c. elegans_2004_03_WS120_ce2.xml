@@ -1,0 +1,9 @@
+<assembly clade="nematode" genome="c. elegans" name="WS120/ce2" date="03 2004">
+	<chromosome name="chrI" length="15080483"/>
+	<chromosome name="chrII" length="15279308"/>
+	<chromosome name="chrIII" length="13783313"/>
+	<chromosome name="chrIV" length="17493791"/>
+	<chromosome name="chrM" length="13794"/>
+	<chromosome name="chrV" length="20922231"/>
+	<chromosome name="chrX" length="17718849"/>
+</assembly>
