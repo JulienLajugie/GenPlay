@@ -160,7 +160,8 @@ public class MGFileContentManager implements Serializable {
 	 */
 	public VCFFile getFile (Chromosome chromosome, MGChromosomeContent chromosomeContent) {
 		for (VCFFile file: getFileList()) {
-			if (lists.get(file).get(chromosome).equals(chromosomeContent)) {
+			MGChromosomeContent currentChromosomeContent = lists.get(file).get(chromosome);
+			if ((currentChromosomeContent != null) && currentChromosomeContent.equals(chromosomeContent)) {
 				return file;
 			}
 		}

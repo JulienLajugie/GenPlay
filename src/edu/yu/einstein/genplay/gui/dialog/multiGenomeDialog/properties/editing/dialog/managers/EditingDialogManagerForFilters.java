@@ -34,13 +34,13 @@ import edu.yu.einstein.genplay.core.multiGenome.filter.utils.FormatFilterOperato
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.EditingDialog;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.EditingPanel;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.FilterEditingPanel;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.editing.GenomeEditingPanel;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.editing.MultiGenomeEditingPanel;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.editing.OperatorEditingPanel;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.selection.FileSelectionPanel;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.selection.IDFilterSelectionPanel;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.selection.TrackSelectionPanel;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.selection.LayerSelectionPanel;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.filters.FiltersData;
-import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.track.layer.Layer;
 
 
 /**
@@ -50,10 +50,10 @@ import edu.yu.einstein.genplay.gui.track.Track;
 public class EditingDialogManagerForFilters implements EditingDialogManagerInterface<FiltersData>{
 
 	private final List<EditingPanel<?>> 		editingPanelList;		// List of editing panel
-	private final TrackSelectionPanel 			trackEditingPanel;		// Panel to edit the tracks
+	private final LayerSelectionPanel 			layerEditingPanel;		// Panel to edit the tracks
 	private final FileSelectionPanel 			fileEditingPanel;		// Panel to edit the file
 	private final IDFilterSelectionPanel 		IDEditingPanel;			// Panel to edit the ID
-	private final GenomeEditingPanel			genomeEditingPanel;		// Panel to edit the genomes
+	private final MultiGenomeEditingPanel		genomeEditingPanel;		// Panel to edit the genomes
 	private final OperatorEditingPanel 			operatorEditingPanel;	// Panel to edit the operator
 	private final FilterEditingPanel 			filterEditingPanel;		// Panel to edit the filter
 
@@ -64,8 +64,8 @@ public class EditingDialogManagerForFilters implements EditingDialogManagerInter
 	 * Constructor of {@link EditingDialogManagerForFilters}
 	 */
 	public EditingDialogManagerForFilters () {
-		// Tracks editing panel
-		trackEditingPanel = new TrackSelectionPanel();
+		// Layers editing panel
+		layerEditingPanel = new LayerSelectionPanel();
 
 		// File editing panel
 		fileEditingPanel = new FileSelectionPanel();
@@ -75,7 +75,7 @@ public class EditingDialogManagerForFilters implements EditingDialogManagerInter
 		fileEditingPanel.addPanelListener(IDEditingPanel);
 
 		// Genomes editing panel
-		genomeEditingPanel = new GenomeEditingPanel(true);
+		genomeEditingPanel = new MultiGenomeEditingPanel(true);
 		fileEditingPanel.addPanelListener(genomeEditingPanel);
 		IDEditingPanel.addPanelListener(genomeEditingPanel);
 
@@ -92,7 +92,7 @@ public class EditingDialogManagerForFilters implements EditingDialogManagerInter
 
 		// List of editing panel
 		editingPanelList = new ArrayList<EditingPanel<?>>();
-		editingPanelList.add(trackEditingPanel);
+		editingPanelList.add(layerEditingPanel);
 		editingPanelList.add(fileEditingPanel);
 		editingPanelList.add(IDEditingPanel);
 		editingPanelList.add(genomeEditingPanel);
@@ -121,7 +121,7 @@ public class EditingDialogManagerForFilters implements EditingDialogManagerInter
 
 			filterEditingPanel.initialize(currentData.getFilter());
 
-			trackEditingPanel.initialize(currentData.getTrackList());
+			layerEditingPanel.initialize(currentData.getLayers());
 		}
 	}
 
@@ -145,7 +145,7 @@ public class EditingDialogManagerForFilters implements EditingDialogManagerInter
 	private List<FiltersData> retrieveData () {
 		VCFFile vcfFile = fileEditingPanel.getSelectedVCFFile();
 		IDFilterInterface IDFilter = (IDFilterInterface) filterEditingPanel.getFilter();
-		Track[] trackList = trackEditingPanel.getSelectedTracks();
+		Layer<?>[] layers = layerEditingPanel.getSelectedLayers();
 
 		if ((IDFilter.getHeaderType() != null) && (IDFilter.getHeaderType().getColumnCategory() == VCFColumnName.FORMAT)) {
 			List<String> genomeNames = genomeEditingPanel.getSelectedGenomes();
@@ -163,12 +163,12 @@ public class EditingDialogManagerForFilters implements EditingDialogManagerInter
 		if (currentData != null) {
 			((VCFFilter) currentData.getMGFilter()).setVCFFile(vcfFile);
 			currentData.getMGFilter().setFilter(IDFilter);
-			currentData.setTrackList(trackList);
+			currentData.setLayers(layers);
 
 			data = currentData;
 		} else {
 			MGFilter filter = new VCFFilter(IDFilter, vcfFile);
-			data = new FiltersData(filter, trackList);
+			data = new FiltersData(filter, layers);
 		}
 
 		result.add(data);

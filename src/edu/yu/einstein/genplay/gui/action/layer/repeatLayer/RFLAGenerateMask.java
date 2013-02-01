@@ -13,10 +13,10 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.repeatFamily.RepeatFamily;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.checkBoxTableChooser.CheckBoxTableChooserDialog;
+import edu.yu.einstein.genplay.gui.dialog.trackChooser.TrackChooser;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.MaskLayer;
 import edu.yu.einstein.genplay.gui.track.layer.RepeatLayer;
-import edu.yu.einstein.genplay.gui.trackChooser.TrackChooser;
 
 
 /**

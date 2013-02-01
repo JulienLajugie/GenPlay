@@ -28,11 +28,12 @@ import javax.swing.BorderFactory;
 import javax.swing.border.Border;
 
 import edu.yu.einstein.genplay.core.enums.GraphType;
+import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 /**
- * This class defines the constants used by {@link Track}
+ * This class defines the constants used by {@link Layer}
  * @author Julien Lajugie
  */
 public class TrackConstants {

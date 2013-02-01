@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.trackChooser;
+package edu.yu.einstein.genplay.gui.dialog.trackChooser;
 
 import java.awt.Color;
 import java.awt.Component;

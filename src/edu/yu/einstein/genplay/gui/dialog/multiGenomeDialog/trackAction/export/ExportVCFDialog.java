@@ -44,6 +44,7 @@ import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSe
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportUtils;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.mainDialog.MultiGenomeTrackActionDialog;
 import edu.yu.einstein.genplay.gui.fileFilter.VCFFilter;
+import edu.yu.einstein.genplay.gui.track.layer.Layer;
 
 /**
  * @author Nicolas Fourel
@@ -63,9 +64,10 @@ public class ExportVCFDialog extends MultiGenomeTrackActionDialog {
 	/**
 	 * Constructor of {@link ExportVCFDialog}
 	 * @param settings the export settings
+	 * @param layer the selected {@link Layer}
 	 */
-	public ExportVCFDialog(ExportSettings settings) {
-		super(settings, DIALOG_TITLE);
+	public ExportVCFDialog(ExportSettings settings, Layer<?> layer) {
+		super(settings, DIALOG_TITLE, layer);
 	}
 
 

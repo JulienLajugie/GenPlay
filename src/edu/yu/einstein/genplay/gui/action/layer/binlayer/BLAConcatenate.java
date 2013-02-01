@@ -77,7 +77,7 @@ public class BLAConcatenate extends TrackListActionWorker<Void> {
 	@Override
 	protected Void processAction() throws Exception {
 		LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
-		layerChooserDialog.setLayers(getTrackListPanel().getAllLayers());
+		layerChooserDialog.setLayers(getTrackListPanel().getModel().getAllLayers());
 		LayerType[] selectableLayers = {LayerType.BIN_LAYER};
 		layerChooserDialog.setSelectableLayerTypes(selectableLayers);
 		layerChooserDialog.setMultiselectable(true);

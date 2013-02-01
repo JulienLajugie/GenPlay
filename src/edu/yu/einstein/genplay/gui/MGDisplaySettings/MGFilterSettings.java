@@ -30,7 +30,7 @@ import java.util.List;
 
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.filters.FiltersData;
-import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.track.layer.Layer;
 
 /**
  * @author Nicolas Fourel
@@ -56,17 +56,17 @@ public class MGFilterSettings implements Serializable {
 
 
 	/**
-	 * When pasting a track, associated filters settings to the copying track must be given to the pasting track.
-	 * This method create duplicates of the settings related to the copied track updated for the pasted track.
-	 * @param copiedTrack	the copied track
-	 * @param newTrack		the pasted track
+	 * When pasting a layer, associated filters settings to the copying layer must be given to the pasting layer.
+	 * This method create duplicates of the settings related to the copied layer updated for the pasted layer.
+	 * @param copiedLayer	the copied layer
+	 * @param newLayer		the pasted layer
 	 */
-	public void copyData (Track copiedTrack, Track newTrack) {
-		List<FiltersData> filterList = getFiltersForTrack(copiedTrack);
+	public void copyData (Layer<?> copiedLayer, Layer<?> newLayer) {
+		List<FiltersData> filterList = getFiltersForLayer(copiedLayer);
 		if (filterList != null) {
 			for (FiltersData data: filterList) {
-				Track[] track = {newTrack};
-				FiltersData newData = new FiltersData(data.getMGFilter(), track);
+				Layer<?>[] layer = {newLayer};
+				FiltersData newData = new FiltersData(data.getMGFilter(), layer);
 				if (!filterList.contains(newData)) {
 					filtersList.add(newData);
 				}
@@ -76,38 +76,38 @@ public class MGFilterSettings implements Serializable {
 
 
 	/**
-	 * Create a copy of the information related to the given track in the temporary list.
+	 * Create a copy of the information related to the given layer in the temporary list.
 	 * This method is used when multi genome information cannot be serialized.
-	 * @param track the track to save information
+	 * @param layer the layer to save information
 	 */
-	public void copyTemporaryFilters(Track track) {
-		copiedFiltersList = getFiltersForTrack(track);
+	public void copyTemporaryFilters(Layer<?> layer) {
+		copiedFiltersList = getFiltersForLayer(layer);
 	}
 
 
 	/**
-	 * When deleting a track, all its settings must be deleted.
-	 * The setting of a track can be mixed with the ones of other tracks.
-	 * Therefore, deleting settings must be processed carefully, taking into account the other track.
-	 * @param deleteTrack the deleted track
+	 * When deleting a layer, all its settings must be deleted.
+	 * The setting of a layer can be mixed with the ones of other tracks.
+	 * Therefore, deleting settings must be processed carefully, taking into account the other layer.
+	 * @param deleteLayer the deleted layer
 	 */
-	public void deleteData (Track deleteTrack) {
-		List<FiltersData> filterList = getFiltersForTrack(deleteTrack);
+	public void deleteData (Layer<?> deleteLayer) {
+		List<FiltersData> filterList = getFiltersForLayer(deleteLayer);
 		if (filterList != null) {
 			for (FiltersData data: filterList) {
-				Track[] trackList = data.getTrackList();
-				if (trackList.length == 1) {
+				Layer<?>[] layers = data.getLayers();
+				if (layers.length == 1) {
 					filtersList.remove(data);
 				} else {
-					Track[] newTrackList = new Track[trackList.length - 1];
+					Layer<?>[] newLayers = new Layer<?>[layers.length - 1];
 					int cpt = 0;
-					for (Track track: trackList) {
-						if (!deleteTrack.toString().equals(track.toString())) {
-							newTrackList[cpt] = track;
+					for (Layer<?> layer: layers) {
+						if (!deleteLayer.toString().equals(layer.toString())) {
+							newLayers[cpt] = layer;
 							cpt++;
 						}
 					}
-					data.setTrackList(newTrackList);
+					data.setLayers(newLayers);
 				}
 			}
 		}
@@ -139,17 +139,17 @@ public class MGFilterSettings implements Serializable {
 
 
 	/**
-	 * Creates the list of filters according to a track
-	 * @param track the track
+	 * Creates the list of filters according to a layer
+	 * @param layer the layer
 	 * @return		its list of filters
 	 */
-	public List<FiltersData> getFiltersForTrack (Track track) {
+	public List<FiltersData> getFiltersForLayer (Layer<?> layer) {
 		List<FiltersData> list = new ArrayList<FiltersData>();
 
 		for (FiltersData data: filtersList) {
-			Track[] trackList = data.getTrackList();
-			for (Track currentTrack: trackList) {
-				if (currentTrack.toString().equals(track.toString())) {
+			Layer<?>[] layers = data.getLayers();
+			for (Layer<?> currentLayer: layers) {
+				if (currentLayer.toString().equals(layer.toString())) {
 					list.add(data);
 					break;
 				}
@@ -169,17 +169,17 @@ public class MGFilterSettings implements Serializable {
 
 
 	/**
-	 * Creates the list of {@link MGFilter} according to a track
-	 * @param track the track
+	 * Creates the list of {@link MGFilter} according to a layer
+	 * @param layer the layer
 	 * @return		its list of filters
 	 */
-	public List<MGFilter> getMGFiltersForTrack (Track track) {
+	public List<MGFilter> getMGFiltersForTrack (Layer<?> layer) {
 		List<MGFilter> mgFiltersList = new ArrayList<MGFilter>();
 
 		for (FiltersData filterData: filtersList) {
-			Track[] trackList = filterData.getTrackList();
-			for (Track currentTrack: trackList) {
-				if (currentTrack.equals(track)) {
+			Layer<?>[] layers = filterData.getLayers();
+			for (Layer<?> currentTrack: layers) {
+				if (currentTrack.equals(layer)) {
 					if (filterData.getMGFilter() != null) {
 						mgFiltersList.add(filterData.getMGFilter());
 					}
@@ -192,15 +192,15 @@ public class MGFilterSettings implements Serializable {
 
 
 	/**
-	 * Copy the information from the temporary list to the actual list changing their target track.
+	 * Copy the information from the temporary list to the actual list changing their target layer.
 	 * It does not erase the temporary list in order to use it again later on.
-	 * @param track the new track for the information
+	 * @param layer the new layer for the information
 	 */
-	public void pasteTemporaryFilters (Track track) {
+	public void pasteTemporaryFilters (Layer<?> layer) {
 		if (copiedFiltersList != null) {
 			for (FiltersData data: copiedFiltersList) {
-				Track[] tracks = {track};
-				FiltersData newData = new FiltersData(data.getMGFilter(), tracks);
+				Layer<?>[] layers = {layer};
+				FiltersData newData = new FiltersData(data.getMGFilter(), layers);
 				filtersList.add(newData);
 			}
 		}
@@ -222,14 +222,14 @@ public class MGFilterSettings implements Serializable {
 
 
 	/**
-	 * When a new track is loaded, the settings will still refer to the previous track if this method is not called.
-	 * It will replace the references to the old track by the one of the new track.
-	 * @param oldTrack the old track
-	 * @param newTrack the new track
+	 * When a new layer is loaded, the settings will still refer to the previous layer if this method is not called.
+	 * It will replace the references to the old layer by the one of the new layer.
+	 * @param oldLayer the old layer
+	 * @param newLayer the new layer
 	 */
-	public void replaceTrack (Track oldTrack, Track newTrack) {
+	public void replaceTrack (Layer<?> oldLayer, Layer<?> newLayer) {
 		for (FiltersData filter: filtersList) {
-			filter.replaceTrack(oldTrack, newTrack);
+			filter.replaceLayer(oldLayer, newLayer);
 		}
 	}
 

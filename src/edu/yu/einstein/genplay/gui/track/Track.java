@@ -79,7 +79,7 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 
 
 	/**
-	 * Creates an instance of {@link Track}
+	 * Creates an instance of {@link Layer}
 	 * @param trackNumber number of the track
 	 */
 	public Track(int trackNumber) {
@@ -189,7 +189,7 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 	public BufferedImage getImage() {
 		BufferedImage image = new BufferedImage(graphicsPanel.getWidth(), graphicsPanel.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		Graphics g = image.createGraphics();
-		graphicsPanel.paintComponent(g);
+		graphicsPanel.paint(g);
 		return image;
 	}
 

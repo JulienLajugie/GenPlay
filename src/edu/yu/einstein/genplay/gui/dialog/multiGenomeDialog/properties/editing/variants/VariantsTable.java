@@ -57,7 +57,6 @@ public class VariantsTable extends EditingTable<VariantData> {
 			rowData.setAlleleType(data.get(i).getAlleleType());
 			rowData.setVariationTypeList(data.get(i).getVariationTypeList());
 			rowData.setColorList(data.get(i).getColorList());
-			rowData.setTrackList(data.get(i).getTrackList());
 			newData.add(rowData);
 		}
 		((VariantsTableModel)getModel()).setData(newData);
@@ -86,9 +85,6 @@ public class VariantsTable extends EditingTable<VariantData> {
 					break;
 				case VariantData.VARIANT_INDEX:
 					width = fm.stringWidth(stripesData.getVariationTypeList().toString()) + 10;
-					break;
-				case VariantData.TRACK_INDEX:
-					width = fm.stringWidth(stripesData.getTrackListForDisplay().toString()) + 10;
 					break;
 				default:
 					width = 0;

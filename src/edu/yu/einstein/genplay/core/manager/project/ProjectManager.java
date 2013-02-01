@@ -52,7 +52,7 @@ public class ProjectManager implements Serializable {
 	private final ProjectWindow			projectWindow;				// Instance of the Genome Window Manager
 	private final ProjectZoom 			projectZoom;				// Instance of the Zoom Manager
 	private final ProjectChromosome		projectChromosome;			// Instance of the Chromosome Manager
-	private MultiGenomeProject				multiGenomeProject;			// Instance of the Multi Genome Project
+	private MultiGenomeProject			multiGenomeProject;			// Instance of the Multi Genome Project
 
 
 	/**

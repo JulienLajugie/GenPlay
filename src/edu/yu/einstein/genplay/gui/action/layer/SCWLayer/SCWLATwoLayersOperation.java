@@ -30,11 +30,11 @@ import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOTwoLayers;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
+import edu.yu.einstein.genplay.gui.dialog.trackChooser.TrackChooser;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
 import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
-import edu.yu.einstein.genplay.gui.trackChooser.TrackChooser;
 import edu.yu.einstein.genplay.util.Utils;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
@@ -77,7 +77,7 @@ public final class SCWLATwoLayersOperation extends TrackListActionOperationWorke
 		selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
-			layerChooserDialog.setLayers(getTrackListPanel().getAllLayers());
+			layerChooserDialog.setLayers(getTrackListPanel().getModel().getAllLayers());
 			LayerType[] selectableLayers = {LayerType.BIN_LAYER, LayerType.SCW_LAYER, LayerType.MASK_LAYER};
 			layerChooserDialog.setSelectableLayerTypes(selectableLayers);
 			layerChooserDialog.setMultiselectable(false);

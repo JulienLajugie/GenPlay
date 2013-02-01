@@ -36,6 +36,9 @@ import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.track.layer.Layer;
+import edu.yu.einstein.genplay.gui.track.layer.LayerType;
+import edu.yu.einstein.genplay.gui.track.layer.variantLayer.VariantLayer;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -133,12 +136,14 @@ public final class MGARefresh extends TrackListAction {
 
 		private void setTrackLock (boolean lock) {
 			// Update tracks
-			Track[] tracks = MainFrame.getInstance().getTrackListPanel().getModel().getTracks();
-			for (Track track: tracks) {
+			LayerType[] filter = {LayerType.VARIANT_LAYER};
+			List<Layer<?>> allLayers = MainFrame.getInstance().getTrackListPanel().getModel().getAllLayers();
+			List<Layer<?>> layers = Utils.getLayers(allLayers, filter);
+			for (Layer<?> layer: layers) {
 				if (lock) {
-					track.getMultiGenomeDrawer().lockPainting();
+					((VariantLayer)layer).getGenomeDrawer().lockPainting();
 				} else {
-					track.getMultiGenomeDrawer().unlockPainting();
+					((VariantLayer)layer).getGenomeDrawer().unlockPainting();
 				}
 			}
 		}

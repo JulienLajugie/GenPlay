@@ -14,34 +14,54 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.trackChooser;
+package edu.yu.einstein.genplay.gui.customComponent.scatterPlot.action;
 
-import javax.swing.DefaultListSelectionModel;
+import javax.swing.AbstractAction;
+import javax.swing.JRootPane;
+
+import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotPane;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
+
 
 
 /**
- * @author Nicolas Fourel
+ * Abstract class extended by the different classes
+ * defining action on a {@link ScatterPlotPane}
+ * @author Julien Lajugie
  * @version 0.1
  */
-public class ExpressTrackChooserListSelectionModel extends DefaultListSelectionModel {
+public abstract class ScatterPlotAction extends AbstractAction {
 
-	/** Default generated serial version ID */
-	private static final long serialVersionUID = 5098651085096688343L;
+	private static final long serialVersionUID = 7889036761995344801L;	// generated ID
+	private final ScatterPlotPane scatterPlotPane;	// scatter plot pane
 
-	
-	@Override
-	public void setSelectionInterval(int index0, int index1) {
-		if(super.isSelectedIndex(index0)) {
-			super.removeSelectionInterval(index0, index1);
-		}
-		else {
-			super.addSelectionInterval(index0, index1);
-		}
+
+	/**
+	 * Public constructor
+	 * @param scatterPlotPane
+	 */
+	public ScatterPlotAction(ScatterPlotPane scatterPlotPane) {
+		this.scatterPlotPane = scatterPlotPane;
 	}
-	
+
+
+	/**
+	 * @return the {@link JRootPane}
+	 */
+	protected JRootPane getRootPane() {
+		return MainFrame.getInstance().getTrackListPanel().getRootPane();
+	}
+
+
+	/**
+	 * @return the scatterPlotPane
+	 */
+	protected ScatterPlotPane getScatterPlotPane() {
+		return scatterPlotPane;
+	}
 }

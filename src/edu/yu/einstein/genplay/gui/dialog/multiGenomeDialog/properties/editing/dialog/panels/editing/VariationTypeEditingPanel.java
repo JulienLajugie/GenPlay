@@ -34,11 +34,9 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
@@ -56,7 +54,6 @@ public class VariationTypeEditingPanel extends EditingPanel<List<VariantType>> {
 	private static final long serialVersionUID = -4060807866730514644L;
 
 	private Color[]				defaultVariationColor;	// Array of default variation colors (Insertion, Deletion, SNPs)
-	private JComboBox 			jcbAllele;			// The combo box for the allele selection
 	private List<VariantType> 	variationName;		// Variation names list
 	private List<JCheckBox> 	selectedVariation;	// Variation check box selection list
 	private List<JButton> 		variationColor;		// Variation color list
@@ -72,7 +69,6 @@ public class VariationTypeEditingPanel extends EditingPanel<List<VariantType>> {
 
 	@Override
 	protected void initializeContentPanel() {
-		JLabel jlAllele = new JLabel("Allele");
 		JLabel jlVariation = new JLabel("Variations");
 
 		defaultVariationColor = new Color[3];
@@ -88,19 +84,9 @@ public class VariationTypeEditingPanel extends EditingPanel<List<VariantType>> {
 		gbc.weightx = 1;
 		gbc.weighty = 0;
 
-		// Allele selection title
-		gbc.gridy++;
-		gbc.insets = new Insets(10, 10, 10, 0);
-		contentPanel.add(jlAllele, gbc);
-
-		// Allele selection box
-		gbc.gridy++;
-		gbc.insets = new Insets(5, 20, 0, 0);
-		contentPanel.add(getAlleleBox(), gbc);
-
 		// Variation selection title
 		gbc.gridy++;
-		gbc.insets = new Insets(20, 10, 10, 0);
+		gbc.insets = new Insets(10, 10, 10, 0);
 		contentPanel.add(jlVariation, gbc);
 
 		// Variation selection panel
@@ -108,33 +94,6 @@ public class VariationTypeEditingPanel extends EditingPanel<List<VariantType>> {
 		gbc.insets = new Insets(5, 20, 0, 0);
 		gbc.weighty = 1;
 		contentPanel.add(getVariationSelectionPanel(), gbc);
-	}
-
-
-	/**
-	 * Creates a combo box containing in order to choose the allele
-	 * @return the combo box
-	 */
-	private JComboBox getAlleleBox () {
-		// Creates the array containing the different alleles
-		Object[] alleles = new Object[]{AlleleType.BOTH, AlleleType.ALLELE01, AlleleType.ALLELE02};
-
-		// Creates the box
-		jcbAllele = new JComboBox(alleles);
-		int height = jcbAllele.getFontMetrics(jcbAllele.getFont()).getHeight() + 5;
-		Dimension dimension = new Dimension(100, height);
-		jcbAllele.setPreferredSize(dimension);
-		jcbAllele.setMinimumSize(dimension);
-		jcbAllele.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				JComboBox box = (JComboBox)e.getSource();
-				String element = box.getSelectedItem().toString();
-				box.setToolTipText(element);
-			}
-		});
-		jcbAllele.setToolTipText("Select an allele.");
-		return jcbAllele;
 	}
 
 
@@ -279,14 +238,6 @@ public class VariationTypeEditingPanel extends EditingPanel<List<VariantType>> {
 	 */
 	protected Component getCurrentInstance() {
 		return this;
-	}
-
-
-	/**
-	 * @return the selected {@link AlleleType}
-	 */
-	public AlleleType getSelectedAlleleType () {
-		return (AlleleType) jcbAllele.getSelectedItem();
 	}
 
 

@@ -24,8 +24,6 @@ package edu.yu.einstein.genplay.gui.trackList;
 import java.awt.Component;
 import java.awt.Point;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
@@ -117,19 +115,6 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 				ExceptionManager.handleException(this, e, "Error while cutting the track");
 			}
 		}
-	}
-
-
-	/**
-	 * @return the list of all the layers displayed in the
-	 *         {@link TrackListPanel}
-	 */
-	public List<Layer<?>> getAllLayers() {
-		List<Layer<?>> allLayers = new ArrayList<Layer<?>>();
-		for (Track currentTrack : getModel().getTracks()) {
-			allLayers.addAll(currentTrack.getLayers());
-		}
-		return allLayers;
 	}
 
 

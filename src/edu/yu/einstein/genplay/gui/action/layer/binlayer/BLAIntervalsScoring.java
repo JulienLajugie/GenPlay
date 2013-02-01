@@ -33,10 +33,10 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
 import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
+import edu.yu.einstein.genplay.gui.dialog.trackChooser.TrackChooser;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
-import edu.yu.einstein.genplay.gui.trackChooser.TrackChooser;
 import edu.yu.einstein.genplay.util.Utils;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
@@ -83,7 +83,7 @@ public class BLAIntervalsScoring extends TrackListActionOperationWorker<BinList>
 		selectedLayer = (BinLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
-			layerChooserDialog.setLayers(getTrackListPanel().getAllLayers());
+			layerChooserDialog.setLayers(getTrackListPanel().getModel().getAllLayers());
 			LayerType[] selectableLayers = {LayerType.BIN_LAYER};
 			layerChooserDialog.setSelectableLayerTypes(selectableLayers);
 			layerChooserDialog.setMultiselectable(false);

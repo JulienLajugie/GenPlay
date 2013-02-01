@@ -37,10 +37,10 @@ import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.convert.ConvertSCWDialog;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.mainDialog.MultiGenomeTrackActionDialog;
-import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 import edu.yu.einstein.genplay.gui.track.layer.variantLayer.MultiGenomeDrawer;
+import edu.yu.einstein.genplay.gui.track.layer.variantLayer.VariantLayer;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
@@ -85,15 +85,15 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 		ProjectManager projectManager = ProjectManager.getInstance();
 		if (projectManager.isMultiGenomeProject()) {
 
-			// Get track information
-			Track track = MainFrame.getInstance().getTrackListPanel().getSelectedTrack();
-			MultiGenomeDrawer genomeDrawer = track.getMultiGenomeDrawer();
+			// Get layer information
+			VariantLayer selectedLayer = (VariantLayer) getValue("Layer");
+			MultiGenomeDrawer genomeDrawer = selectedLayer.getGenomeDrawer();
 
 			// Create the export settings
 			ExportSettings settings = new ExportSettings(genomeDrawer);
 
 			// Create the dialog
-			dialog = new ConvertSCWDialog(settings);
+			dialog = new ConvertSCWDialog(settings, selectedLayer);
 
 			// Show the dialog
 			if (dialog.showDialog(null) == MultiGenomeTrackActionDialog.APPROVE_OPTION) {

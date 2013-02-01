@@ -100,9 +100,6 @@ public final class MGAProperties extends TrackListAction{
 				// Set the filters
 				settings.getFilterSettings().setFiltersSettings(dialog.getFiltersData());
 
-				// Set the variants
-				settings.getVariantSettings().setVariantsSettings(dialog.getVariantsData());
-
 				// Set the static options
 				MGDisplaySettings.DRAW_FILTERED_VARIANT = dialog.getOptionValueList().get(0);
 				MGDisplaySettings.DRAW_INSERTION_EDGE = dialog.getOptionValueList().get(1);
@@ -119,7 +116,7 @@ public final class MGAProperties extends TrackListAction{
 				// Set the reference stripes showing
 				MGDisplaySettings.getInstance().setReferencePolicy(dialog.isShowReference());
 
-				// Updates track (SNPs, filters, display)
+				// Updates track (filters, display)
 				MGARefresh action = new MGARefresh();
 				action.setPreviousFilterList(previousFilterList);
 				action.actionPerformed(null);

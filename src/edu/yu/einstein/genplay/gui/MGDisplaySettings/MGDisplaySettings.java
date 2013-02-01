@@ -31,9 +31,9 @@ import java.util.List;
 import edu.yu.einstein.genplay.core.enums.CoordinateSystemType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
-import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.track.layer.Layer;
+import edu.yu.einstein.genplay.gui.track.layer.variantLayer.VariantLayer;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
@@ -103,7 +103,6 @@ public class MGDisplaySettings implements Serializable {
 	private static MGDisplaySettings 	instance;	// Instance of the class
 
 	private MGFilterSettings 	filterSettings; 	// All settings about the filters
-	private MGVariantSettings 	variantSettings; 	// All settings about the stripes
 	private MGVariousSettings 	variousSettings;	// All settings about various settings
 	private String savedCoordinate;
 
@@ -117,7 +116,6 @@ public class MGDisplaySettings implements Serializable {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeObject(instance);
 		out.writeObject(filterSettings);
-		out.writeObject(variantSettings);
 		out.writeObject(variousSettings);
 
 		out.writeInt(DRAW_FILTERED_VARIANT);
@@ -145,7 +143,6 @@ public class MGDisplaySettings implements Serializable {
 		in.readInt();
 		instance = (MGDisplaySettings) in.readObject();
 		filterSettings = (MGFilterSettings) in.readObject();
-		variantSettings = (MGVariantSettings) in.readObject();
 		variousSettings = (MGVariousSettings) in.readObject();
 
 		DRAW_FILTERED_VARIANT = in.readInt();
@@ -180,7 +177,6 @@ public class MGDisplaySettings implements Serializable {
 	 */
 	private MGDisplaySettings () {
 		filterSettings = new MGFilterSettings();
-		variantSettings = new MGVariantSettings();
 		variousSettings = new MGVariousSettings();
 	}
 
@@ -194,14 +190,6 @@ public class MGDisplaySettings implements Serializable {
 
 
 	/**
-	 * @return the stripeSettings
-	 */
-	public MGVariantSettings getVariantSettings() {
-		return variantSettings;
-	}
-
-
-	/**
 	 * @return the variousSettings
 	 */
 	public MGVariousSettings getVariousSettings() {
@@ -210,84 +198,77 @@ public class MGDisplaySettings implements Serializable {
 
 
 	/**
-	 * Create a copy of the information related to the given track in temporary lists.
+	 * Create a copy of the information related to the given layer in temporary lists.
 	 * This method is used when multi genome information cannot be serialized.
-	 * @param track the track to save information
+	 * @param layer the layer to save information
 	 */
-	public void copyTemporaryTrack (Track track) {
+	public void copyTemporaryTrack (Layer<?> layer) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			variantSettings.copyTemporaryStripes(track);
-			filterSettings.copyTemporaryFilters(track);
+			filterSettings.copyTemporaryFilters(layer);
 		}
 	}
 
 
 	/**
-	 * Copy the information from the temporary lists to the actual list changing their target track.
+	 * Copy the information from the temporary lists to the actual list changing their target layer.
 	 * It does not erase the temporary lists in order to use them again later on.
-	 * @param track the new track for the information
+	 * @param layer the new layer for the information
 	 */
-	public void pasteTemporaryTrack (Track track) {
+	public void pasteTemporaryTrack (Layer<?> layer) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			variantSettings.pasteTemporaryStripes(track);
-			filterSettings.pasteTemporaryFilters(track);
+			filterSettings.pasteTemporaryFilters(layer);
 		}
 	}
 
 
 
 	/**
-	 * When a new track is loaded, the settings will still refer to the previous track if this method is not called.
-	 * It will replace the references to the old track by the one of the new track.
-	 * @param oldTrack the old track
-	 * @param newTrack the new track
+	 * When a new layer is loaded, the settings will still refer to the previous layer if this method is not called.
+	 * It will replace the references to the old layer by the one of the new layer.
+	 * @param oldTrack the old layer
+	 * @param newTrack the new layer
 	 */
-	public void replaceTrack (Track oldTrack, Track newTrack) {
+	public void replaceTrack (Layer<?> oldTrack, Layer<?> newTrack) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			filterSettings.replaceTrack(oldTrack, newTrack);
-			variantSettings.replaceTrack(oldTrack, newTrack);
 		}
 	}
 
 
 	/**
-	 * When pasting a track, associated stripes settings to the copying track must be given to the pasting track.
-	 * This method create duplicates of the settings related to the copied track updated for the pasted track.
-	 * @param copiedTrack	the copied track
-	 * @param newTrack		the pasted track
+	 * When pasting a layer, associated stripes settings to the copying layer must be given to the pasting layer.
+	 * This method create duplicates of the settings related to the copied layer updated for the pasted layer.
+	 * @param copiedTrack	the copied layer
+	 * @param newTrack		the pasted layer
 	 */
-	public void copyTrack (Track copiedTrack, Track newTrack) {
+	public void copyTrack (Layer<?> copiedTrack, Layer<?> newTrack) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			filterSettings.copyData(copiedTrack, newTrack);
-			variantSettings.copyData(copiedTrack, newTrack);
 		}
 	}
 
 
 	/**
-	 * When deleting a track, all its settings must be deleted.
-	 * The setting of a track can be mixed with the ones of other tracks.
-	 * Therefore, deleting settings must be processed carefully, taking into account the other track.
-	 * @param deleteTrack the deleted track
+	 * When deleting a layer, all its settings must be deleted.
+	 * The setting of a layer can be mixed with the ones of other tracks.
+	 * Therefore, deleting settings must be processed carefully, taking into account the other layer.
+	 * @param deleteTrack the deleted layer
 	 */
-	public void deleteTrack (Track deleteTrack) {
+	public void deleteTrack (Layer<?> deleteTrack) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			filterSettings.deleteData(deleteTrack);
-			variantSettings.deleteData(deleteTrack);
 		}
 	}
 
 
 	/**
-	 * Restore multi genome information to a track
-	 * @param track the track
+	 * Restore multi genome information to a layer
+	 * @param layer the layer
 	 */
-	public void restoreInformation (Track track) {
-		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			List<MGFilter> filterList = filterSettings.getMGFiltersForTrack(track);
-			List<VariantData> stripeList = variantSettings.getVariantsForTrack(track);
-			track.getMultiGenomeDrawer().setVariantDataList(stripeList);
-			track.getMultiGenomeDrawer().setFiltersList(filterList);
+	public void restoreInformation (Layer<?> layer) {
+		if (ProjectManager.getInstance().isMultiGenomeProject() && (layer instanceof VariantLayer)) {
+			List<MGFilter> filterList = filterSettings.getMGFiltersForTrack(layer);
+			((VariantLayer)layer).getGenomeDrawer().setFiltersList(filterList);
 		}
 	}
 
@@ -361,7 +342,6 @@ public class MGDisplaySettings implements Serializable {
 	public void showSettings () {
 		variousSettings.showSettings();
 		filterSettings.showSettings();
-		variantSettings.showSettings();
 	}
 
 }

@@ -44,6 +44,7 @@ import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSe
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.mainDialog.MultiGenomeTrackActionDialog;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.track.layer.Layer;
 
 /**
  * @author Nicolas Fourel
@@ -65,9 +66,10 @@ public class ConvertSCWDialog extends MultiGenomeTrackActionDialog {
 	/**
 	 * Constructor of {@link ConvertSCWDialog}
 	 * @param settings the export settings
+	 * @param layer the selected {@link Layer}
 	 */
-	public ConvertSCWDialog(ExportSettings settings) {
-		super(settings, DIALOG_TITLE);
+	public ConvertSCWDialog(ExportSettings settings, Layer<?> layer) {
+		super(settings, DIALOG_TITLE, layer);
 	}
 
 

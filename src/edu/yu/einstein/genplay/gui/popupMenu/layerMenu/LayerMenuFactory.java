@@ -22,6 +22,7 @@
 package edu.yu.einstein.genplay.gui.popupMenu.layerMenu;
 
 import javax.swing.JMenu;
+
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 
 /**
@@ -33,7 +34,7 @@ public class LayerMenuFactory {
 	/**
 	 * Creates a {@link JMenu} that inherit from {@link AbstractLayerMenu} with the actions for the specified layer
 	 * @param layer a {@link Layer}
-	 * @return a 
+	 * @return a
 	 * @throws IllegalArgumentException
 	 */
 	public static AbstractLayerMenu createLayerMenu(Layer<?> layer) {
@@ -50,6 +51,8 @@ public class LayerMenuFactory {
 			return new RepeatLayerMenu(layer);
 		case SCW_LAYER:
 			return new SCWLayerMenu(layer);
+		case VARIANT_LAYER:
+			return new VariantLayerMenu(layer);
 		default :
 			return null;
 		}

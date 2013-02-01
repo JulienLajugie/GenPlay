@@ -82,7 +82,7 @@ public class GLAScoreExons  extends TrackListActionOperationWorker<GeneList> {
 				JOptionPane.showMessageDialog(getRootPane(), "You need to load at least one Fixed or Variable Window layer before using this operation", "Warning", JOptionPane.WARNING_MESSAGE);
 			} else {
 				LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
-				layerChooserDialog.setLayers(getTrackListPanel().getAllLayers());
+				layerChooserDialog.setLayers(getTrackListPanel().getModel().getAllLayers());
 				layerChooserDialog.setSelectableLayerTypes(availableLayerTypes);
 				layerChooserDialog.setMultiselectable(false);
 				if (layerChooserDialog.showDialog(getRootPane(), "Select Layer With The Scores") == LayerChooserDialog.APPROVE_OPTION) {

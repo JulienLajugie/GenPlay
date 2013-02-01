@@ -43,7 +43,7 @@ public class FiltersTableModel extends EditingTableModel<FiltersData> {
 	 * Constructor of {@link FiltersTableModel}
 	 */
 	protected FiltersTableModel () {
-		super(new String[]{"Track", "ID", "Filter", "File"});
+		super(new String[]{"Layer", "ID", "Filter", "File"});
 	}
 
 
@@ -60,8 +60,8 @@ public class FiltersTableModel extends EditingTableModel<FiltersData> {
 			return filtersData.getIDForDisplay();
 		case FiltersData.FILTER_INDEX:
 			return filtersData.getFilterForDisplay();
-		case FiltersData.TRACK_INDEX:
-			return filtersData.getTrackListForDisplay();
+		case FiltersData.LAYER_INDEX:
+			return filtersData.getLayersForDisplay();
 		default:
 			return new Object();
 		}
@@ -77,7 +77,7 @@ public class FiltersTableModel extends EditingTableModel<FiltersData> {
 			return String.class;
 		case FiltersData.FILTER_INDEX:
 			return String.class;
-		case FiltersData.TRACK_INDEX:
+		case FiltersData.LAYER_INDEX:
 			return String.class;
 		default:
 			return Object.class;
@@ -106,7 +106,7 @@ public class FiltersTableModel extends EditingTableModel<FiltersData> {
 			fireTableCellUpdated(row, FiltersData.VCF_FILE_INDEX);
 			fireTableCellUpdated(row, FiltersData.ID_INDEX);
 			fireTableCellUpdated(row, FiltersData.FILTER_INDEX);
-			fireTableCellUpdated(row, FiltersData.TRACK_INDEX);
+			fireTableCellUpdated(row, FiltersData.LAYER_INDEX);
 			fireTableCellUpdated(row, buttonColumnIndex);
 		}
 	}

@@ -25,15 +25,15 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
 
-import edu.yu.einstein.genplay.gui.scatterPlot.action.SPABarChart;
-import edu.yu.einstein.genplay.gui.scatterPlot.action.SPAChangeColor;
-import edu.yu.einstein.genplay.gui.scatterPlot.action.SPACurveChart;
-import edu.yu.einstein.genplay.gui.scatterPlot.action.SPALoadData;
-import edu.yu.einstein.genplay.gui.scatterPlot.action.SPAPointChart;
-import edu.yu.einstein.genplay.gui.scatterPlot.action.SPASaveData;
-import edu.yu.einstein.genplay.gui.scatterPlot.action.SPASaveImage;
-import edu.yu.einstein.genplay.gui.scatterPlot.action.SPAXAxisOptions;
-import edu.yu.einstein.genplay.gui.scatterPlot.action.SPAYAxisOptions;
+import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.action.SPABarChart;
+import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.action.SPAChangeColor;
+import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.action.SPACurveChart;
+import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.action.SPALoadData;
+import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.action.SPAPointChart;
+import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.action.SPASaveData;
+import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.action.SPASaveImage;
+import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.action.SPAXAxisOptions;
+import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.action.SPAYAxisOptions;
 
 
 

@@ -43,7 +43,7 @@ public class AdvancedFiltersTableModel extends EditingTableModel<FiltersData> {
 	 * Constructor of {@link AdvancedFiltersTableModel}
 	 */
 	protected AdvancedFiltersTableModel () {
-		super(new String[]{"Filter", "Description", "Track"});
+		super(new String[]{"Filter", "Description", "Layer"});
 	}
 
 
@@ -59,7 +59,7 @@ public class AdvancedFiltersTableModel extends EditingTableModel<FiltersData> {
 		case 1:
 			return filtersData.getFilterForDisplay();
 		case 2:
-			return filtersData.getTrackListForDisplay();
+			return filtersData.getLayersForDisplay();
 		default:
 			return new Object();
 		}

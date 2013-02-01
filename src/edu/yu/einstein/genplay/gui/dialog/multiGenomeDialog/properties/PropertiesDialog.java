@@ -46,12 +46,9 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.managers.EditingDialogManagerForFilters;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.managers.EditingDialogManagerForStripes;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.filters.FiltersData;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.filters.FiltersTable;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.table.TableEditingPanel;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantsTable;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.statistics.StatisticPanel;
 import edu.yu.einstein.genplay.util.Images;
 
@@ -88,8 +85,6 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 	public static final		String			FILTERS_FILE		= "VCF Files";
 	/** Text for ADVANCED FILTERS tree node */
 	public static final		String			FILTERS_ADVANCED	= "Advanced";
-	/** Text for STRIPES tree node */
-	public static final		String			VARIANTS 			= "Variants";
 
 
 	/** Insets for the first title in top of the content panel */
@@ -109,7 +104,6 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 	private final JPanel 							contentPane;			// right part of the dialog
 	private final GeneralPanel 						generalPanel;			// the general information panel
 	private final SettingsPanel 					settingsPanel;			// the settings panel
-	private final TableEditingPanel<VariantData> 	variantsPanel;			// the variants panel
 	private final TableEditingPanel<FiltersData> 	fileFiltersPanel;		// the file filters panel
 	//private final TableEditingPanel<FiltersData> 	advancedFiltersPanel;	// the advanced filters panel DO NOT ERASE ANYTHING ABOUT ADVANCED FILTER, WE MAY NEED IT!!!
 
@@ -146,9 +140,6 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 
 		// Creates the settings panel
 		settingsPanel = new SettingsPanel();
-
-		// Creates the variants panel
-		variantsPanel = new TableEditingPanel<VariantData>("Variations settings", new VariantsTable(), new EditingDialogManagerForStripes());
 
 		// Creates the file filters panel
 		fileFiltersPanel = new TableEditingPanel<FiltersData>("VCF Files Filters settings", new FiltersTable(), new EditingDialogManagerForFilters());
@@ -191,12 +182,6 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 			setScrollableCenterPanel(settingsPanel);
 		} else if (accessor.equals(FILTERS)) {
 			setScrollableCenterPanel(fileFiltersPanel);
-		} /*else if (accessor.equals(FILTERS_FILE)) {
-			setScrollableCenterPanel(fileFiltersPanel);
-		} else if (accessor.equals(FILTERS_ADVANCED)) {
-			setScrollableCenterPanel(advancedFiltersPanel);
-		}*/ else if (accessor.equals(VARIANTS)) {
-			setScrollableCenterPanel(variantsPanel);
 		}
 
 		// Gets the tree path if exists and select it
@@ -267,25 +252,8 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 			setScrollableCenterPanel(new StatisticPanel(vcfFile.getStatistics()));
 		} else if (nodeInfo.equals(FILTERS)) {
 			setScrollableCenterPanel(fileFiltersPanel);
-		}/* else if (nodeInfo.equals(FILTERS_FILE)) {
-			setScrollableCenterPanel(fileFiltersPanel);
-		} else if (nodeInfo.equals(FILTERS_ADVANCED)) {
-			//setScrollableCenterPanel(advancedFiltersPanel);
-			setScrollableCenterPanel(getEmptyPanel());
-		}*/ else if (nodeInfo.equals(VARIANTS)) {
-			setScrollableCenterPanel(variantsPanel);
 		}
 	}
-
-	/**
-	 * TEST
-	 * @return
-	 */
-	/*private JPanel getEmptyPanel () {
-		JPanel emptyPane = new JPanel();
-		emptyPane.add(new JLabel("Coming soon..."));
-		return emptyPane;
-	}*/
 
 
 	/**
@@ -349,10 +317,6 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 		// File Filter settings panel
 		fileFiltersPanel.setData(settings.getFilterSettings().getDuplicatedFileFiltersList());
 		fileFiltersPanel.refreshPanel();
-
-		// Variants settings panel
-		variantsPanel.setData(settings.getVariantSettings().getVariantsList());
-		variantsPanel.refreshPanel();
 	}
 
 
@@ -427,19 +391,11 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 
 
 	/**
-	 * @return the filters list
-	 */
-	public List<VariantData> getVariantsData () {
-		return variantsPanel.getData();
-	}
-
-
-	/**
 	 * @return an array of Strings containing the 4 main items (GENERAL, SETTINGS, FILTERS_BASIC, FILTERS_ADVANCED, STRIPES)
 	 */
 	public static String[] getPropertiesDialogMainItems () {
 		//String[] items = {GENERAL, SETTINGS, FILTERS_FILE, FILTERS_ADVANCED, STRIPES};
-		String[] items = {GENERAL, SETTINGS, FILTERS, VARIANTS};
+		String[] items = {GENERAL, SETTINGS, FILTERS};
 		return items;
 	}
 }

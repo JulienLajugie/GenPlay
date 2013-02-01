@@ -39,6 +39,7 @@ import edu.yu.einstein.genplay.core.manager.ProjectFiles;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.InvalidFileTypeException;
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.trackList.TrackListPanel;
@@ -244,6 +245,10 @@ public class ProjectRecording {
 			updatesCurrentProjectInformation();
 			oos.writeObject(projectInformation);
 			oos.writeObject(ProjectManager.getInstance());
+			if (ProjectManager.getInstance().isMultiGenomeProject()) {
+				oos.writeObject(ProjectManager.getInstance().getMultiGenomeProject());
+				oos.writeObject(MGDisplaySettings.getInstance());
+			}
 			oos.writeObject(trackListPanel.getModel().getTracks());
 
 			// there is bug during the serialization with the nimbus LAF if the

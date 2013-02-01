@@ -28,9 +28,9 @@ import edu.yu.einstein.genplay.core.list.binList.operation.BLODensity;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
+import edu.yu.einstein.genplay.gui.dialog.trackChooser.TrackChooser;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
-import edu.yu.einstein.genplay.gui.trackChooser.TrackChooser;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 

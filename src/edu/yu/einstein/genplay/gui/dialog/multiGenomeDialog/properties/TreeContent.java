@@ -112,11 +112,6 @@ class TreeContent {
 		currentNode = new DefaultMutableTreeNode(PropertiesDialog.FILTERS);
 		root.add(currentNode);
 		nodes.add(currentNode);
-
-		// STRIPES node
-		currentNode = new DefaultMutableTreeNode(PropertiesDialog.VARIANTS);
-		root.add(currentNode);
-		nodes.add(currentNode);
 	}
 
 

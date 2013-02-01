@@ -34,9 +34,6 @@ import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
-import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
-import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.gui.trackList.TrackListPanel;
 
 
 /**
@@ -54,14 +51,12 @@ public class VariantData implements Serializable {
 	public static final int ALLELE_INDEX 	= 2;
 	/** Index used for variant column */
 	public static final int VARIANT_INDEX 	= 3;
-	/** Index used for track column */
-	public static final int TRACK_INDEX 	= 4;
 
 	private String 				genome;				// name of the genome
 	private AlleleType			alleleType;			// type of allele (paternal, maternal or both)
 	private List<VariantType> 	variationTypeList;	// list of variation
 	private List<Color> 		colorList;			// list of color
-	private Track[] 			trackList;			// list of track
+	private boolean				hasChanged;
 
 
 	/**
@@ -72,7 +67,6 @@ public class VariantData implements Serializable {
 		alleleType = null;
 		variationTypeList = null;
 		colorList = null;
-		trackList = null;
 	}
 
 
@@ -82,15 +76,13 @@ public class VariantData implements Serializable {
 	 * @param alleleType 	type of the allele
 	 * @param variantList	list of variation
 	 * @param colorList		list of color
-	 * @param trackList		list of track
 	 */
-	public VariantData(String genome, AlleleType alleleType, List<VariantType> variantList,
-			List<Color> colorList, Track[] trackList) {
+	public VariantData(String genome, AlleleType alleleType, List<VariantType> variantList, List<Color> colorList) {
 		this.genome = genome;
 		this.alleleType = alleleType;
 		variationTypeList = variantList;
 		this.colorList = colorList;
-		this.trackList = trackList;
+		hasChanged = false;
 	}
 
 
@@ -108,8 +100,7 @@ public class VariantData implements Serializable {
 		return genome.equals(test.getGenome()) &&
 				(alleleType == test.getAlleleType()) &&
 				hasSameVariationTypeList(test.getVariationTypeList()) &&
-				hasSameColorList(test.getColorList()) &&
-				hasSameTrackList(test.getTrackList());
+				hasSameColorList(test.getColorList());
 	}
 
 
@@ -146,6 +137,22 @@ public class VariantData implements Serializable {
 	}
 
 
+	/**
+	 * @return the hasChanged
+	 */
+	public boolean hasChanged() {
+		return hasChanged;
+	}
+
+
+	/**
+	 * @param hasChanged the hasChanged to set
+	 */
+	public void setHasChanged(boolean hasChanged) {
+		this.hasChanged = hasChanged;
+	}
+
+
 	//////////////////// Getters for display
 	/**
 	 * @return the genome
@@ -177,29 +184,6 @@ public class VariantData implements Serializable {
 
 		return listOfVariantList;
 	}*/
-
-
-	/**
-	 * @return the trackList
-	 */
-	public Track[] getTrackList() {
-		return trackList;
-	}
-
-
-	/**
-	 * @return the trackList
-	 */
-	public String getTrackListForDisplay() {
-		String text = "";
-		for (int i = 0; i < trackList.length; i++) {
-			text += trackList[i];
-			if (i < (trackList.length - 1)) {
-				text += ", ";
-			}
-		}
-		return text;
-	}
 
 
 	/**
@@ -257,39 +241,6 @@ public class VariantData implements Serializable {
 
 
 	/**
-	 * Compare a list of track to the current one
-	 * @param trackList	the list of track to compare
-	 * @return	true if both list contain same values, false otherwise
-	 */
-	private boolean hasSameTrackList (Track[] trackList) {
-		if ((this.trackList == null) && (trackList == null)) {
-			return true;
-		} else if ((this.trackList != null) && (trackList == null)) {
-			return false;
-		} else if ((this.trackList == null) && (trackList != null)) {
-			return false;
-		} else {
-			if (this.trackList.length != trackList.length) {
-				return false;
-			} else {
-				for (Track track: trackList) {
-					boolean contain = false;
-					for (Track currentTrack: this.trackList) {
-						if (track.equals(currentTrack)) {
-							contain = true;
-						}
-					}
-					if (!contain) {
-						return false;
-					}
-				}
-				return true;
-			}
-		}
-	}
-
-
-	/**
 	 * Compare a variation type list to the current one
 	 * @param variationTypeList	the variation list to compare
 	 * @return	true if both list contain same values, false otherwise
@@ -329,22 +280,6 @@ public class VariantData implements Serializable {
 		alleleType = (AlleleType) in.readObject();
 		variationTypeList = (List<VariantType>) in.readObject();
 		colorList = (List<Color>) in.readObject();
-		trackList = (Track[]) in.readObject();
-	}
-
-
-	/**
-	 * When a new track is loaded, the settings will still refer to the previous track if this method is not called.
-	 * It will replace the references to the old track by the one of the new track.
-	 * @param oldTrack the old track
-	 * @param newTrack the new track
-	 */
-	public void replaceTrack (Track oldTrack, Track newTrack) {
-		for (int i = 0; i < trackList.length; i++) {
-			if (trackList[i].equals(oldTrack)) {
-				trackList[i] = newTrack;
-			}
-		}
 	}
 
 
@@ -374,14 +309,6 @@ public class VariantData implements Serializable {
 
 
 	/**
-	 * @param trackList the trackList to set
-	 */
-	public void setTrackList(Track[] trackList) {
-		this.trackList = trackList;
-	}
-
-
-	/**
 	 * @param variantList the variantList to set
 	 */
 	public void setVariationTypeList(List<VariantType> variantList) {
@@ -398,11 +325,6 @@ public class VariantData implements Serializable {
 			info += " [" + variationTypeList.get(i) + ", ";
 			info += colorList.get(i) + "]";
 		}
-		info += " [";
-		for (Track track: trackList) {
-			info += track + ", ";
-		}
-		info += "]";
 		return info;
 	}
 
@@ -418,17 +340,32 @@ public class VariantData implements Serializable {
 		out.writeObject(alleleType);
 		out.writeObject(variationTypeList);
 		out.writeObject(colorList);
+	}
 
-		TrackListPanel trackListPanel = MainFrame.getInstance().getTrackListPanel();
-		for (Track currentTrack: trackList) {
-			currentTrack.removeTrackListener(trackListPanel);
+
+	/**
+	 * @return a description of the {@link VariantData} settings
+	 */
+	public String getDescription() {
+		String description = (genome + " (");		// add the name and " ("
+
+		for (int i = 0; i < variationTypeList.size(); i++) {
+			VariantType type = variationTypeList.get(i);
+			// Add the variant type shortcut
+			if (type == VariantType.INSERTION) {
+				description += "Ins";
+			} else if (type == VariantType.DELETION) {
+				description += "Del";
+			} else if (type == VariantType.SNPS) {
+				description += "SNPs";
+			}
+			if (i < (variationTypeList.size() - 1)) {
+				description += ", ";
+			}
 		}
 
-		out.writeObject(trackList);
+		description += ")";							// add a ")" for closing
 
-		// rebuild the references to the listener
-		for (Track currentTrack: trackList) {
-			currentTrack.addTrackListener(trackListPanel);
-		}
+		return description;
 	}
 }
