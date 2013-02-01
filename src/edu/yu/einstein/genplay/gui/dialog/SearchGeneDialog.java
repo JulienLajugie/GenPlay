@@ -257,14 +257,14 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 				jbPreviousGene.setEnabled(true);
 				// we want to see larger than the gene found
 				int windowStart = geneFound.getStart() - ((geneFound.getStop() - geneFound.getStart()) * 3);
-				int minimumDisplayableStart = - geneFound.getChromo().getLength();
+				int minimumDisplayableStart = - geneFound.getChromosome().getLength();
 				// we don't want the start to be smaller than the minimum displayable position
 				windowStart = Math.max(windowStart, minimumDisplayableStart);
 				int windowStop = geneFound.getStop() + ((geneFound.getStop() - geneFound.getStart()) * 3);
-				int maximumDisplayableStop = geneFound.getChromo().getLength() * 2;
+				int maximumDisplayableStop = geneFound.getChromosome().getLength() * 2;
 				// we don't want the stop to be greater than the maximum displayable position
 				windowStop = Math.min(windowStop, maximumDisplayableStop);
-				GenomeWindow genomeWindow = new GenomeWindow(geneFound.getChromo(), windowStart, windowStop);
+				GenomeWindow genomeWindow = new GenomeWindow(geneFound.getChromosome(), windowStart, windowStop);
 				ProjectManager.getInstance().getProjectWindow().setGenomeWindow(genomeWindow);
 				setEditorColor(true);
 			}
@@ -286,7 +286,7 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 	 */
 	private boolean canMove (Gene geneFound) {
 		if (jcbChromosome.isSelected()) {
-			if (!geneFound.getChromo().equals(ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome())) {
+			if (!geneFound.getChromosome().equals(ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome())) {
 				return false;
 			}
 		}

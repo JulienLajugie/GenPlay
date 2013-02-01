@@ -189,7 +189,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case POSITIVE_MIDDLE_START:	
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 0, 1, 0, (int)firstList.get(j).getMiddle());
+				dc = new DistanceCalculator(secondList, chrindex, 0, 1, 0, (int)firstList.get(j).getMiddlePosition());
 				if (dc.getClosestDistance() >= 0) {
 					distanceArray[k++] = dc.getClosestDistance();
 				}											
@@ -199,7 +199,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case POSITIVE_MIDDLE_MIDDLE:
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 0, 1, 1, (int)firstList.get(j).getMiddle());
+				dc = new DistanceCalculator(secondList, chrindex, 0, 1, 1, (int)firstList.get(j).getMiddlePosition());
 				if (dc.getClosestDistance() >= 0) {
 					distanceArray[k++] = dc.getClosestDistance();
 				}											
@@ -209,7 +209,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case POSITIVE_MIDDLE_STOP:
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 0, 1, 2, (int)firstList.get(j).getMiddle());
+				dc = new DistanceCalculator(secondList, chrindex, 0, 1, 2, (int)firstList.get(j).getMiddlePosition());
 				if (dc.getClosestDistance() >= 0) {
 					distanceArray[k++] = dc.getClosestDistance();
 				}											
@@ -289,7 +289,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case NEGATIVE_MIDDLE_MIDDLE:
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 1, 1, 1, (int)firstList.get(j).getMiddle());
+				dc = new DistanceCalculator(secondList, chrindex, 1, 1, 1, (int)firstList.get(j).getMiddlePosition());
 				if (dc.getClosestDistance() >= 0) {
 					distanceArray[k++] = dc.getClosestDistance();
 				}											
@@ -299,7 +299,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case NEGATIVE_MIDDLE_STOP:
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 1, 1, 2, (int)firstList.get(j).getMiddle());
+				dc = new DistanceCalculator(secondList, chrindex, 1, 1, 2, (int)firstList.get(j).getMiddlePosition());
 				if (dc.getClosestDistance() >= 0) {
 					distanceArray[k++] = dc.getClosestDistance();
 				}											

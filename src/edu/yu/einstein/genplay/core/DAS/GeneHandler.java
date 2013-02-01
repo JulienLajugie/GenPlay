@@ -120,7 +120,7 @@ public class GeneHandler extends DefaultHandler {
 				currentGene.setStop(getMultiGenomePosition(currentGene.getExonStops()[currentGene.getExonStops().length - 1]));
 				currentGene.setName(name);
 				currentGene.setStrand(orientation);
-				currentGene.setChromo(chromosome);
+				currentGene.setChromosome(chromosome);
 				geneList.add(currentGene);
 				previousGroupID = groupID;
 				currentGene = new Gene();

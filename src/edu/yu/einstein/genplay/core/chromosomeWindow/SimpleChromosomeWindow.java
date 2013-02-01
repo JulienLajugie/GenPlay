@@ -224,23 +224,19 @@ public class SimpleChromosomeWindow implements ChromosomeWindow, Serializable, C
 
 
 	/**
-	 * A ChromosomeWindow is superior to another one if its position start is greater
+	 * A ChromosomeWindow is greater to another one if its position start is greater
 	 * or if its position start is equal but its position stop is greater.
+	 * A {@link ChromosomeWindow} is equal to another one if both its start and stop positions are equals.
+	 * A ChromosomeWindow is smaller to another one if its position start is smaller
+	 * or if its position start is equal but its position stop is smaller.
 	 */
 	@Override
 	public int compareTo(ChromosomeWindow otherChromosomeWindow) {
-		if (start > otherChromosomeWindow.getStart()) {
-			return 1;
-		} else if (start < otherChromosomeWindow.getStart()) {
-			return -1;
-		} else {
-			if (stop > otherChromosomeWindow.getStop()) {
-				return 1;
-			} else if (stop < otherChromosomeWindow.getStop()) {
-				return -1;
-			} else {
-				return 0;
-			}
+		int startComparison = new ChromosomeWindowStartComparator().compare(this, otherChromosomeWindow);
+		// if the start positions are equals we compare the stop positions
+		if (startComparison == 0) {
+			return new ChromosomeWindowStopComparator().compare(this, otherChromosomeWindow);
 		}
+		return startComparison;
 	}
 }

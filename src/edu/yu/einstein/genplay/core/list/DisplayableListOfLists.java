@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -31,9 +31,9 @@ import edu.yu.einstein.genplay.core.genomeWindow.GenomeWindow;
 
 
 /**
- * A list of {@link Chromosome} with a list of data for each {@link Chromosome}. 
+ * A list of {@link Chromosome} with a list of data for each {@link Chromosome}.
  * This abstract class is the template for the different kind of data that extends this class.
- * The methods to adapt the data to the screen resolution must be defined in the subclasses  
+ * The methods to adapt the data to the screen resolution must be defined in the subclasses
  * @author Julien Lajugie
  * @version 0.1
  * @param <T> type of the data
@@ -47,7 +47,7 @@ public abstract class DisplayableListOfLists<T, U> extends ChromosomeArrayListOf
 	protected Chromosome				fittedChromosome = null;		// Chromosome with the adapted data
 	protected Double					fittedXRatio = null;			// xRatio of the adapted data (ie ratio between the number of pixel and the number of base to display )
 
-	
+
 	/**
 	 * Saves the format version number during serialization
 	 * @param out
@@ -56,8 +56,8 @@ public abstract class DisplayableListOfLists<T, U> extends ChromosomeArrayListOf
 	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 	}
-	
-	
+
+
 	/**
 	 * Unserializes the save format version number
 	 * @param in
@@ -70,45 +70,45 @@ public abstract class DisplayableListOfLists<T, U> extends ChromosomeArrayListOf
 		fittedXRatio = null;
 		fittedDataList = null;
 	}
-	
-	
+
+
 	/**
 	 * Adapts the data to the screen resolution.
-	 * This method is called when the adapted chromosome or xFactor change 
+	 * This method is called when the adapted chromosome or xFactor change
 	 */
 	abstract protected void fitToScreen();
-	
-	
+
+
 	/**
 	 * @param start a start position
 	 * @param stop a stop position
 	 * @return the fitted data between position start and position stop
 	 */
 	abstract protected U getFittedData(int start, int stop);
-	
-	
+
+
 	/**
 	 * Constructor
 	 */
 	public DisplayableListOfLists() {
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Called when the fitted chromosome changes.
 	 * Do nothing but might be overridden
 	 */
 	protected void chromosomeChanged() {}
-	
-	
+
+
 	/**
 	 * Called when the fitted xFactor changes.
-	 * Do nothing but might be overridden 
+	 * Do nothing but might be overridden
 	 */
 	protected void xRatioChanged() {}
-	
-	
+
+
 	@Override
 	public final U getFittedData(GenomeWindow window, double xRatio) {
 		if ((fittedChromosome == null) || (!fittedChromosome.equals(window.getChromosome()))) {

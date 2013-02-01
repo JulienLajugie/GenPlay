@@ -81,7 +81,7 @@ public final class GeneListAsBedWriter extends GeneListWriter implements Stoppab
 							outputFile.delete();
 							throw new InterruptedException();
 						}
-						Chromosome currentChromosome = currentGene.getChromo();
+						Chromosome currentChromosome = currentGene.getChromosome();
 						int currentChromosomeSize = currentChromosome.getLength();
 						int start = currentGene.getStart();
 						int stop = currentGene.getStop();
