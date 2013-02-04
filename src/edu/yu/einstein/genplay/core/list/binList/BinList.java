@@ -567,7 +567,6 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * Tells the accelerator BinList that the chromosome changed
 	 * And copies the values of the current chromosome in the accelerator array
 	 */
-	@Override
 	protected void chromosomeChanged() {
 		List<Double> currentList = get(fittedChromosome);;
 		boolean uncompressed = false;
@@ -594,7 +593,6 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 			acceleratorBinList.fittedChromosome = fittedChromosome;
 			acceleratorBinList.chromosomeChanged();
 		}
-		super.chromosomeChanged();
 		// if we uncompressed the list we need to recompress it
 		if (uncompressed) {
 			try {
@@ -731,19 +729,19 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 				}
 				acceleratorBinList.fittedXRatio = fittedXRatio;
 				acceleratorBinList.fitToScreen();
-				this.fittedDataList = acceleratorBinList.fittedDataList;
-				this.fittedBinSize = acceleratorBinList.fittedBinSize;
+				fittedDataList = acceleratorBinList.fittedDataList;
+				fittedBinSize = acceleratorBinList.fittedBinSize;
 				// else even if the binsize of the current binlist is adapted,
 				// we might still need to calculate the average if we have to print
 				//more than one bin per pixel
 			} else {
 				// we calculate how many windows are printable depending on the screen resolution
-				this.fittedBinSize = binSize * (int)( 1 / (fittedXRatio * binSize));
+				fittedBinSize = binSize * (int)( 1 / (fittedXRatio * binSize));
 				int binSizeRatio  = fittedBinSize / binSize;
 				// if the fitted bin size is smaller than the regular bin size we don't modify the data
 				if (fittedBinSize <= binSize) {
-					this.fittedDataList = acceleratorCurrentChromo;
-					this.fittedBinSize = binSize;
+					fittedDataList = acceleratorCurrentChromo;
+					fittedBinSize = binSize;
 				} else {
 					// otherwise we calculate the average because we have to print more than
 					// one bin per pixel

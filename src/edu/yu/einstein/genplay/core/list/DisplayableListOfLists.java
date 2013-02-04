@@ -95,20 +95,6 @@ public abstract class DisplayableListOfLists<T, U> extends ChromosomeArrayListOf
 	}
 
 
-	/**
-	 * Called when the fitted chromosome changes.
-	 * Do nothing but might be overridden
-	 */
-	protected void chromosomeChanged() {}
-
-
-	/**
-	 * Called when the fitted xFactor changes.
-	 * Do nothing but might be overridden
-	 */
-	protected void xRatioChanged() {}
-
-
 	@Override
 	public final U getFittedData(GenomeWindow window, double xRatio) {
 		if ((fittedChromosome == null) || (!fittedChromosome.equals(window.getChromosome()))) {
@@ -116,11 +102,9 @@ public abstract class DisplayableListOfLists<T, U> extends ChromosomeArrayListOf
 			if ((fittedXRatio == null) || (fittedXRatio != xRatio)) {
 				fittedXRatio = xRatio;
 			}
-			chromosomeChanged();
 			fitToScreen();
 		} else if ((fittedXRatio == null) || (fittedXRatio != xRatio)) {
 			fittedXRatio = xRatio;
-			xRatioChanged();
 			fitToScreen();
 		}
 		return getFittedData(window.getStart(), window.getStop());

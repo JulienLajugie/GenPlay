@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -34,13 +34,13 @@ import edu.yu.einstein.genplay.core.genomeWindow.GenomeWindow;
  * @version 0.1
  */
 public final class GenomeWindowEvent extends EventObject {
-	
+
 	private static final long serialVersionUID = -5909384700520572038L;	// generated ID
 	private final GenomeWindowEventsGenerator 	source;		// GenomeWindowEventsGenerator that emitted the event
 	private final GenomeWindow 					oldWindow;	// old GenomeWindow
 	private final GenomeWindow 					newWindow;	// new GenomeWindow
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link GenomeWindowEvent}
 	 * @param source {@link GenomeWindowEventsGenerator} that emitted this event
@@ -58,6 +58,7 @@ public final class GenomeWindowEvent extends EventObject {
 	/**
 	 * @return the source
 	 */
+	@Override
 	public final GenomeWindowEventsGenerator getSource() {
 		return source;
 	}
@@ -77,32 +78,31 @@ public final class GenomeWindowEvent extends EventObject {
 	public final GenomeWindow getNewWindow() {
 		return newWindow;
 	}
-	
-	
+
+
 	/**
 	 * @return true if the size of the {@link GenomeWindow} changed
 	 */
 	public boolean zoomChanged() {
 		return oldWindow.getSize() != newWindow.getSize();
 	}
-	
-	
+
+
 	/**
 	 * @return true if the {@link Chromosome} of the {@link GenomeWindow} changed
 	 */
 	public boolean chromosomeChanged() {
-		if (oldWindow == null && newWindow != null) {
+		if ((oldWindow == null) && (newWindow != null)) {
 			return true;
 		}
 		return !oldWindow.getChromosome().equals(newWindow.getChromosome());
 	}
-	
-	
+
+
 	/**
 	 * @return true if the {@link SimpleChromosomeWindow} of the {@link GenomeWindow} changed
 	 */
 	public boolean chromosomeWindowChanged() {
-		return !((SimpleChromosomeWindow)oldWindow).equals((SimpleChromosomeWindow)newWindow);
+		return !((SimpleChromosomeWindow)oldWindow).equals(newWindow);
 	}
-	
 }

@@ -35,7 +35,7 @@ import edu.yu.einstein.genplay.core.enums.Strand;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class Gene extends SimpleChromosomeWindow implements Serializable, Cloneable, ChromosomeWindow {
+public final class Gene implements Serializable, Cloneable, ChromosomeWindow {
 
 	private static final long serialVersionUID = -9086602517817950291L; // generated ID
 	private String 		name; 			// name of the gene
@@ -77,23 +77,7 @@ public final class Gene extends SimpleChromosomeWindow implements Serializable, 
 
 
 	/**
-	 * Public constructor.
-	 * @param name Name of gene.
-	 * @param chromosome chromosome
-	 * @param strand Strand of the gene.
-	 * @param start Transcription start position.
-	 * @param stop Transcription end position.
-	 * @param exonStarts Exon start positions.
-	 * @param exonStops Exon end positions.
-	 * @param exonScores Exon scores
-	 */
-	public Gene(String name, Chromosome chromosome, Strand strand, int start, int stop, int[] exonStarts, int[] exonStops, double[] exonScores) {
-		this(name, chromosome, strand, start, stop, start, stop, exonStarts, exonStops, exonScores);
-	}
-
-
-	/**
-	 * Public constructor.
+	 * Creates an instance of Gene.
 	 * @param name Name of gene
 	 * @param chromosome chromosome
 	 * @param strand Strand of the gene
@@ -117,6 +101,22 @@ public final class Gene extends SimpleChromosomeWindow implements Serializable, 
 		this.exonStarts = exonStarts;
 		this.exonStops = exonStops;
 		this.exonScores = exonScores;
+	}
+
+
+	/**
+	 * Creates an instance of Gene.
+	 * @param name Name of gene.
+	 * @param chromosome chromosome
+	 * @param strand Strand of the gene.
+	 * @param start Transcription start position.
+	 * @param stop Transcription end position.
+	 * @param exonStarts Exon start positions.
+	 * @param exonStops Exon end positions.
+	 * @param exonScores Exon scores
+	 */
+	public Gene(String name, Chromosome chromosome, Strand strand, int start, int stop, int[] exonStarts, int[] exonStops, double[] exonScores) {
+		this(name, chromosome, strand, start, stop, start, stop, exonStarts, exonStops, exonScores);
 	}
 
 
@@ -180,6 +180,18 @@ public final class Gene extends SimpleChromosomeWindow implements Serializable, 
 			exonStops = exonStopsTmp;
 			exonScores = exonScoresTmp;
 		}
+	}
+
+
+	@Override
+	public int compareTo(ChromosomeWindow chromosomeWindow) {
+		return new SimpleChromosomeWindow(start, stop).compareTo(chromosomeWindow);
+	}
+
+
+	@Override
+	public int containsPosition(int position) {
+		return new SimpleChromosomeWindow(start, stop).containsPosition(position);
 	}
 
 
@@ -256,6 +268,12 @@ public final class Gene extends SimpleChromosomeWindow implements Serializable, 
 	 */
 	public String getName() {
 		return name;
+	}
+
+
+	@Override
+	public int getSize() {
+		return new SimpleChromosomeWindow(start, stop).getSize();
 	}
 
 

@@ -37,7 +37,10 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ChromosomeWindowStartComparator;
 import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.Strand;
 import edu.yu.einstein.genplay.core.gene.Gene;
 import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
@@ -506,52 +509,6 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 
 
 	/**
-	 * Recursive and dichotomic search algorithm.
-	 * @param list List in which the search is performed.
-	 * @param value Searched value.
-	 * @param indexStart Start index where to look for the value.
-	 * @param indexStop Stop index where to look for the value.
-	 * @return The index of a gene with a position start equals to value.
-	 * Index of the first gene with a start position superior to value if nothing found.
-	 */
-	private int findStart(List<Gene> list, int value, int indexStart, int indexStop) {
-		int middle = (indexStop - indexStart) / 2;
-		if (indexStart == indexStop) {
-			return indexStart;
-		} else if (value == list.get(indexStart + middle).getStart()) {
-			return indexStart + middle;
-		} else if (value > list.get(indexStart + middle).getStart()) {
-			return findStart(list, value, indexStart + middle + 1, indexStop);
-		} else {
-			return findStart(list, value, indexStart, indexStart + middle);
-		}
-	}
-
-
-	/**
-	 * Recursive and dichotomic search algorithm.
-	 * @param list List in which the search is performed.
-	 * @param value Searched value.
-	 * @param indexStart Start index where to look for the value.
-	 * @param indexStop Stop index where to look for the value.
-	 * @return The index of a gene with a position stop equals to value.
-	 * Index of the first gene with a stop position superior to value if nothing found.
-	 */
-	private int findStop(List<Gene> list, int value, int indexStart, int indexStop) {
-		int middle = (indexStop - indexStart) / 2;
-		if (indexStart == indexStop) {
-			return indexStart;
-		} else if (value == list.get(indexStart + middle).getStop()) {
-			return indexStart + middle;
-		} else if (value > list.get(indexStart + middle).getStop()) {
-			return findStop(list, value, indexStart + middle + 1, indexStop);
-		} else {
-			return findStop(list, value, indexStart, indexStart + middle);
-		}
-	}
-
-
-	/**
 	 * Organizes the list of genes by line so two genes don't overlap on the screen
 	 */
 	@Override
@@ -629,6 +586,8 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 
 	@Override
 	protected List<List<Gene>> getFittedData(int start, int stop) {
+		ChromosomeWindow startGenomeWindow = new SimpleChromosomeWindow(start, start);
+		ChromosomeWindow stopGenomeWindow = new SimpleChromosomeWindow(stop, stop);
 		if (fittedDataList == null) {
 			return null;
 		}
@@ -636,17 +595,21 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 		// search genes for each line
 		for (List<Gene> currentLine : fittedDataList) {
 			// search the start
-			int indexStart = findStart(currentLine, start, 0, currentLine.size() - 1);
-			// search if the there is a previous stop (stop of the gene or stop of the name of the string) stopping after the start
-			if (indexStart > 0) {
-				indexStart = indexStart - 1;
+			int indexStart = Collections.binarySearch(currentLine, startGenomeWindow, new ChromosomeWindowStartComparator());
+			if (indexStart < 0) {
+				indexStart = -indexStart - 1;
 			}
+			indexStart = Math.max(0, indexStart - 1);
 			// search the stop
-			int indexStop = findStop(currentLine, stop, 0, currentLine.size() - 1);
+			int indexStop = Collections.binarySearch(currentLine, stopGenomeWindow, new ChromosomeWindowStartComparator());
+			if (indexStop < 0) {
+				indexStop = -indexStop - 1;
+			}
+			indexStop = Math.min(currentLine.size(), indexStop);
 			if (currentLine.get(indexStart) != null) {
 				// add all the genes found for the current line between index start and index stop to the result list
 				resultList.add(new ArrayList<Gene>());
-				for (int i = indexStart; i <= indexStop; i++) {
+				for (int i = indexStart; i < indexStop; i++) {
 					resultList.get(resultList.size() - 1).add(currentLine.get(i));
 				}
 			}
