@@ -32,7 +32,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
-import edu.yu.einstein.genplay.gui.track.layer.variantLayer.MultiGenomeDrawer;
+import edu.yu.einstein.genplay.gui.track.layer.variantLayer.VariantLayer;
 
 /**
  * @author Nicolas Fourel
@@ -40,21 +40,55 @@ import edu.yu.einstein.genplay.gui.track.layer.variantLayer.MultiGenomeDrawer;
  */
 public class ExportSettings {
 
-	private final Map<String, List<VariantType>> variationMap;
-	private final Map<String, List<VCFFile>> fileMap;
-	private final List<MGFilter> filterList;
-	private final List<VCFFile> fileList;
+	private Map<String, List<VariantType>> variationMap;
+	private Map<String, List<VCFFile>> fileMap;
+	private List<MGFilter> filterList;
+	private List<VCFFile> fileList;
 
 
 	/**
 	 * Constructor of {@link ExportSettings}
-	 * @param genomeDrawer the genome drawer
+	 * @param layer a {@link VariantLayer}
 	 */
-	public ExportSettings (MultiGenomeDrawer genomeDrawer) {
-		variationMap = getVariationMap(genomeDrawer.getVariantDataList());
-		fileMap = getGenomeFileMap(genomeDrawer.getVariantDataList());
-		filterList = genomeDrawer.getFiltersList();
+	public ExportSettings (VariantLayer layer) {
+		List<VariantLayer> layers = new ArrayList<VariantLayer>();
+		layers.add(layer);
+		initialize(layers);
+	}
+
+
+	/**
+	 * Constructor of {@link ExportSettings}
+	 * @param layers a list {@link VariantLayer}
+	 */
+	public ExportSettings (List<VariantLayer> layers) {
+		initialize(layers);
+	}
+
+
+	/**
+	 * Initializes the export settings
+	 * @param layers a list of {@link VariantLayer}
+	 */
+	public void initialize (List<VariantLayer> layers) {
+		List<VariantData> data = getDataList(layers);
+		variationMap = getVariationMap(data);
+		fileMap = getGenomeFileMap(data);
 		fileList = getFileList(fileMap);
+		filterList = getFilters(layers);
+	}
+
+
+	/**
+	 * @param layers a list of {@link VariantLayer}
+	 * @return the {@link VariantData} list from the {@link VariantLayer} list
+	 */
+	private List<VariantData> getDataList (List<VariantLayer> layers) {
+		List<VariantData> data = new ArrayList<VariantData>();
+		for (VariantLayer layer: layers) {
+			data.add(layer.getData());
+		}
+		return data;
 	}
 
 
@@ -140,6 +174,19 @@ public class ExportSettings {
 			}
 		}
 		return fileList;
+	}
+
+
+	private List<MGFilter> getFilters (List<VariantLayer> layers) {
+		List<MGFilter> filters = new ArrayList<MGFilter>();
+		for (VariantLayer layer: layers) {
+			for (MGFilter filter: layer.getFilters()) {
+				if (!filters.contains(filter)) {
+					filters.add(filter);
+				}
+			}
+		}
+		return filters;
 	}
 
 

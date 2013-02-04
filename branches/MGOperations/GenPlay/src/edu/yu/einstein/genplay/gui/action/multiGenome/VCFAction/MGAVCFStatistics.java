@@ -35,8 +35,8 @@ import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.statistics.MGStatisticsDialog;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSettings;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
-import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.variantLayer.MultiGenomeDrawer;
+import edu.yu.einstein.genplay.gui.track.layer.variantLayer.VariantLayer;
 
 
 /**
@@ -78,14 +78,14 @@ public class MGAVCFStatistics extends TrackListActionWorker<VCFFileStatistics> {
 		VCFFileStatistics result = null;
 		if (projectManager.isMultiGenomeProject()) {
 
-			// Get track information
-			Track track = MainFrame.getInstance().getTrackListPanel().getSelectedTrack();
-			MultiGenomeDrawer genomeDrawer = track.getMultiGenomeDrawer();
+			// Get layer information
+			VariantLayer selectedLayer = (VariantLayer) getValue("Layer");
+			MultiGenomeDrawer genomeDrawer = selectedLayer.getGenomeDrawer();
 
 			if (genomeDrawer.getStatistics() == null) {
 
 				// Create the export settings
-				ExportSettings settings = new ExportSettings(genomeDrawer);
+				ExportSettings settings = new ExportSettings(selectedLayer);
 
 				// Create the operation
 				operation = new MGOVCFStatisticsSingleFile();

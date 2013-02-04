@@ -39,7 +39,6 @@ import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.convert.
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.mainDialog.MultiGenomeTrackActionDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
-import edu.yu.einstein.genplay.gui.track.layer.variantLayer.MultiGenomeDrawer;
 import edu.yu.einstein.genplay.gui.track.layer.variantLayer.VariantLayer;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
@@ -87,10 +86,9 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 
 			// Get layer information
 			VariantLayer selectedLayer = (VariantLayer) getValue("Layer");
-			MultiGenomeDrawer genomeDrawer = selectedLayer.getGenomeDrawer();
 
 			// Create the export settings
-			ExportSettings settings = new ExportSettings(genomeDrawer);
+			ExportSettings settings = new ExportSettings(selectedLayer);
 
 			// Create the dialog
 			dialog = new ConvertSCWDialog(settings, selectedLayer);
