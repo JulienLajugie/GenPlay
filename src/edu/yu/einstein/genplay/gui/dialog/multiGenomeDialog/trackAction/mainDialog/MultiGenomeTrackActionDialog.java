@@ -199,6 +199,7 @@ public abstract class MultiGenomeTrackActionDialog extends JDialog {
 		String errors = getErrors();
 
 		if (errors.isEmpty()) {
+			settings.initialize(lengendPanel.getSelectedLayers());
 			approved = APPROVE_OPTION;
 			setVisible(false);
 		} else {

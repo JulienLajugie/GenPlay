@@ -39,6 +39,7 @@ import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
+import edu.yu.einstein.genplay.gui.track.layer.variantLayer.VariantLayer;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -68,6 +69,10 @@ class LegendPane extends JPanel implements ActionListener {
 	}
 
 
+	/**
+	 * Initializes the panel
+	 * @param layers a list of {@link Layer}
+	 */
 	public void initialize (List<Layer<?>> layers) {
 		this.selectedLayers = layers;
 		removeAll();
@@ -98,13 +103,25 @@ class LegendPane extends JPanel implements ActionListener {
 
 		jbLayers = new JButton(SELECT_TEXT);
 		jbLayers.addActionListener(this);
-		jbLayers.setEnabled(false);
+		//jbLayers.setEnabled(false);
 
 		gbc.gridy++;
 		gbc.insets = new Insets(10, 15, 5, 0);
 		add(jbLayers, gbc);
 
 		dialog.revalidate();
+	}
+
+
+	/**
+	 * @return the selectedLayers
+	 */
+	public List<VariantLayer> getSelectedLayers() {
+		List<VariantLayer> layers = new ArrayList<VariantLayer>();
+		for (Layer<?> layer: selectedLayers) {
+			layers.add((VariantLayer) layer);
+		}
+		return layers;
 	}
 
 
