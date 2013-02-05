@@ -1,0 +1,13 @@
+<assembly clade="mammal" genome="opossum" name="Broad/monDom5" date="10 2006">
+	<chromosome name="chr1" length="748055161"/>
+	<chromosome name="chr2" length="541556283"/>
+	<chromosome name="chr3" length="527952102"/>
+	<chromosome name="chr4" length="435153693"/>
+	<chromosome name="chr8" length="312544902"/>
+	<chromosome name="chr5" length="304825324"/>
+	<chromosome name="chr6" length="292091736"/>
+	<chromosome name="chr7" length="260857928"/>
+	<chromosome name="chrUn" length="103241611"/>
+	<chromosome name="chrX" length="79335909"/>
+	<chromosome name="chrM" length="17079"/>
+</assembly>
