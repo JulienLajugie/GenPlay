@@ -52,7 +52,8 @@ import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 
 
 /**
@@ -517,7 +518,7 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 		try {
 			currentList = get(fittedChromosome);
 		} catch (InvalidChromosomeException e) {
-			e.printStackTrace();
+			ExceptionManager.getInstance().handleException(e);
 			fittedDataList = null;
 			return;
 		}
@@ -631,7 +632,7 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 			ObjectInputStream ois = new ObjectInputStream(bais);
 			return ((GeneList)ois.readObject());
 		} catch (Exception e) {
-			e.printStackTrace();
+			ExceptionManager.getInstance().handleException(e);
 			return null;
 		}
 	}

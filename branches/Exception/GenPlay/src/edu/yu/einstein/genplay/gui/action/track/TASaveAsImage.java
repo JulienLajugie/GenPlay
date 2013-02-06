@@ -98,7 +98,7 @@ public final class TASaveAsImage extends TrackListActionWorker<Void> {
 					try {
 						ImageIO.write(createImage(selectedTrack), "PNG", file);
 					}catch(Exception e) {
-						ExceptionManager.handleException(getRootPane(), e, "Error while saving the tracks as an image");
+						ExceptionManager.getInstance().handleException(getRootPane(), e, "Error while saving the tracks as an image");
 					}
 				}
 			}

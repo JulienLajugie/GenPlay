@@ -124,8 +124,8 @@ public class BLATransfrag extends TrackListAction {
 							}.actionPerformed(null);
 						}
 					} catch (Exception e) {
-						ExceptionManager.handleException(getRootPane(), e, "Error generating Transfrag");
-						e.printStackTrace();
+						ExceptionManager.getInstance().handleException(getRootPane(), e, "Error generating Transfrag");
+						ExceptionManager.getInstance().handleException(e);
 					}
 				}
 			}

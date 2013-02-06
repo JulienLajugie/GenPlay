@@ -19,24 +19,32 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.exception.valueOutOfRangeException;
+package edu.yu.einstein.genplay.exception.exceptions;
 
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleChromosomeWindow;
 
 /**
- * {@link RuntimeException} thrown when a value is out of the range of a specific data type
+ * The ChromosomeWindowException class represents an exception associated to a {@link SimpleChromosomeWindow}. 
  * @author Julien Lajugie
  * @version 0.1
  */
-public class ValueOutOfRangeException extends RuntimeException {
+public final class ChromosomeWindowException extends Exception {
 
-	private static final long serialVersionUID = 7840275107495242440L; // generated ID
-
+	private static final long serialVersionUID = -4357641195693048950L;	// Generated ID
 	
 	/**
-	 * Creates an instance of {@link ValueOutOfRangeException}
-	 * @param message error message
+	 * Creates an instance of {@link ChromosomeWindowException}.
 	 */
-	public ValueOutOfRangeException(String message) {
-		super(message);
+	public ChromosomeWindowException() {
+		super("Invalid window");
 	}
+	
+	
+	/**
+	 * Creates an instance of {@link ChromosomeWindowException}.
+	 * @param msg message of the error
+	 */
+	public ChromosomeWindowException(String msg) {
+		super (msg);
+	}	
 }

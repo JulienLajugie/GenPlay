@@ -24,7 +24,7 @@ package edu.yu.einstein.genplay.core.stat;
 import java.io.Serializable;
 import java.util.HashMap;
 
-import edu.yu.einstein.genplay.exception.InvalidFactorialParameterException;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidFactorialParameterException;
 
 /**
  * Factorial

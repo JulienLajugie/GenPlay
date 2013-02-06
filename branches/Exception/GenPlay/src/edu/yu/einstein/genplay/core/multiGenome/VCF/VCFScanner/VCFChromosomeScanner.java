@@ -28,6 +28,7 @@ import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 
 /**
  * See the {@link VCFScanner} description for further information on scanners.
@@ -65,7 +66,7 @@ public class VCFChromosomeScanner extends VCFScanner {
 		try {
 			result = vcfFile.getReader().query(chromosome.getName(), 0, chromosome.getLength());
 		} catch (IOException e) {
-			e.printStackTrace();
+			ExceptionManager.getInstance().handleException(e);
 		}
 		return getCurrentLine();
 	}

@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.exception;
+package edu.yu.einstein.genplay.exception.exceptions;
 
 import java.awt.FontMetrics;
 import java.io.File;

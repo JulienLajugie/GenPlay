@@ -112,7 +112,7 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 				getModel().deleteTrack(selectedTrack);
 				selectedTrack = null;
 			} catch (Exception e) {
-				ExceptionManager.handleException(this, e, "Error while cutting the track");
+				ExceptionManager.getInstance().handleException(this, e, "Error while cutting the track");
 			}
 		}
 	}

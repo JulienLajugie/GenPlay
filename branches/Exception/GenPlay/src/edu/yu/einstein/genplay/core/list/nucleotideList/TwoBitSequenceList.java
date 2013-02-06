@@ -35,8 +35,9 @@ import edu.yu.einstein.genplay.core.enums.Nucleotide;
 import edu.yu.einstein.genplay.core.list.DisplayableListOfLists;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
-import edu.yu.einstein.genplay.exception.InvalidFileTypeException;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
 
@@ -224,7 +225,7 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 		try {
 			currentList = get(fittedChromosome);
 		} catch (InvalidChromosomeException e) {
-			e.printStackTrace();
+			ExceptionManager.getInstance().handleException(e);
 			fittedDataList = null;
 			return null;
 		}

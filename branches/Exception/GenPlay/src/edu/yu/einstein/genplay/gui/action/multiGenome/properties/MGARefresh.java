@@ -33,6 +33,7 @@ import javax.swing.KeyStroke;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -173,7 +174,7 @@ public final class MGARefresh extends TrackListAction {
 				try {
 					filterLatch.await();
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					ExceptionManager.getInstance().handleException(e);
 				}
 			}
 
@@ -187,7 +188,7 @@ public final class MGARefresh extends TrackListAction {
 			try {
 				trackLatch.await();
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				ExceptionManager.getInstance().handleException(e);
 			}
 
 			// Many data has been loaded, removed, garbage collecting free some memory

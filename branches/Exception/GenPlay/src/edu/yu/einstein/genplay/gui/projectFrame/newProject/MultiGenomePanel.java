@@ -47,6 +47,7 @@ import org.xml.sax.SAXException;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLoader.SettingsHandler;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLoader.VCFData;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLoader.VCFLoaderDialog;
@@ -182,16 +183,16 @@ class MultiGenomePanel extends JPanel {
 				closeXML(xml);
 			} catch (ParserConfigurationException e1) {
 				closeXML(xml);
-				e1.printStackTrace();
+				ExceptionManager.getInstance().handleException(e1);
 			} catch (SAXException e1) {
 				closeXML(xml);
-				e1.printStackTrace();
+				ExceptionManager.getInstance().handleException(e1);
 			} catch (FileNotFoundException e) {
 				closeXML(xml);
-				e.printStackTrace();
+				ExceptionManager.getInstance().handleException(e);
 			} catch (IOException e) {
 				closeXML(xml);
-				e.printStackTrace();
+				ExceptionManager.getInstance().handleException(e);
 			}
 			closeXML(xml);
 			// Manager initialization
@@ -213,7 +214,7 @@ class MultiGenomePanel extends JPanel {
 			try {
 				xml.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				ExceptionManager.getInstance().handleException(e);
 			}
 		}
 	}

@@ -34,6 +34,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.content.MGChromosomeContent;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 
 /**
  * @author Nicolas Fourel
@@ -222,7 +223,7 @@ public abstract class Variant implements Serializable {
 		try {
 			results = file.getReader().query(chromosome.getName(), referencePosition - 1, referencePosition);
 		} catch (IOException e) {
-			e.printStackTrace();
+			ExceptionManager.getInstance().handleException(e);
 		}
 
 

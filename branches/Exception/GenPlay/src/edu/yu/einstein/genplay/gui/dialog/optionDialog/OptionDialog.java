@@ -51,6 +51,7 @@ import edu.yu.einstein.genplay.core.DAS.DASServerListWriter;
 import edu.yu.einstein.genplay.core.manager.project.ProjectConfiguration;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.util.Images;
 
 
@@ -153,7 +154,7 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 					}
 				} catch (IOException er) {
 					JOptionPane.showMessageDialog(getRootPane(), "Error while saving the configuration", "Error", JOptionPane.ERROR_MESSAGE);
-					er.printStackTrace();
+					ExceptionManager.getInstance().handleException(er);
 				}
 			}
 		});

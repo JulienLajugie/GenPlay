@@ -39,6 +39,7 @@ import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.util.History;
 import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.Utils;
@@ -154,7 +155,7 @@ public final class HistoryDialog extends JDialog {
 					history.save(selectedFile);
 				} catch (IOException e) {
 					JOptionPane.showMessageDialog(getRootPane(), "Error while saving the history", "Error", JOptionPane.ERROR_MESSAGE);
-					e.printStackTrace();
+					ExceptionManager.getInstance().handleException(e);
 				}
 			}
 		}

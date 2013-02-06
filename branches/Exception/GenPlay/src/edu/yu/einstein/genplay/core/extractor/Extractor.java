@@ -39,6 +39,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.event.invalidDataEvent.InvalidDataEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.invalidDataEvent.InvalidDataListener;
 import edu.yu.einstein.genplay.util.Utils;
@@ -139,7 +140,7 @@ public abstract class Extractor implements Serializable, InvalidDataEventsGenera
 				writer.newLine();
 				writer.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				ExceptionManager.getInstance().handleException(e);
 			}
 		}
 	}
@@ -158,7 +159,7 @@ public abstract class Extractor implements Serializable, InvalidDataEventsGenera
 				writer.newLine();
 				writer.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				ExceptionManager.getInstance().handleException(e);
 			}
 		}
 	}
@@ -176,7 +177,7 @@ public abstract class Extractor implements Serializable, InvalidDataEventsGenera
 				writer.newLine();
 				writer.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				ExceptionManager.getInstance().handleException(e);
 			}
 		}
 	}

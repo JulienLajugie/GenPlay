@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -32,7 +32,8 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import edu.yu.einstein.genplay.exception.CompressionException;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
+import edu.yu.einstein.genplay.exception.exceptions.CompressionException;
 
 
 
@@ -51,7 +52,7 @@ public abstract class ArrayAsDoubleList<T> extends AbstractList<Double> implemen
 	protected static final int 	RESIZE_MAX = 10000000;	// maximum length added every time the array is resized
 	protected static final int 	RESIZE_FACTOR = 2;		// multiplication factor of the length of the array every time it's resized
 	protected T					data;					// byte data array (8 booleans / byte)
-	protected int 				size = 0;				// size of the list	
+	protected int 				size = 0;				// size of the list
 	private boolean				isCompressed = false;	// true if the list is compressed
 	transient private ByteArrayOutputStream	compressedData = null; 	// list compressed as a ByteArrayOutputStream
 
@@ -71,7 +72,7 @@ public abstract class ArrayAsDoubleList<T> extends AbstractList<Double> implemen
 				out.writeObject(data);
 				compress();
 			} catch (CompressionException e) {
-				e.printStackTrace();
+				ExceptionManager.getInstance().handleException(e);
 			}
 		} else {
 			out.writeObject(data);

@@ -38,7 +38,7 @@ import javax.swing.UIManager;
 import edu.yu.einstein.genplay.core.manager.ProjectFiles;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
-import edu.yu.einstein.genplay.exception.InvalidFileTypeException;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -83,19 +83,19 @@ public class ProjectRecording {
 		try {
 			ois.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			ExceptionManager.getInstance().handleException(e);
 		}
 
 		try {
 			gz.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			ExceptionManager.getInstance().handleException(e);
 		}
 
 		try {
 			fis.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			ExceptionManager.getInstance().handleException(e);
 		}
 
 		ois = null;
@@ -131,9 +131,9 @@ public class ProjectRecording {
 				trackListReadyToLoad = false;
 				closeStreams();
 			} catch (IOException e) {
-				e.printStackTrace();
+				ExceptionManager.getInstance().handleException(e);
 			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
+				ExceptionManager.getInstance().handleException(e);
 			}
 			return trackList;
 		}
@@ -269,7 +269,7 @@ public class ProjectRecording {
 			// ProjectManager.getInstance().getProjectConfiguration().writeConfigurationFile();
 			// // deactivate the configuration file saving
 		} catch (IOException e) {
-			ExceptionManager.handleException(MainFrame.getInstance().getRootPane(), e, "An error occurred while saving the project");
+			ExceptionManager.getInstance().handleException(MainFrame.getInstance().getRootPane(), e, "An error occurred while saving the project");
 			return false;
 		}
 		return true;

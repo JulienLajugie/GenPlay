@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -44,6 +44,7 @@ import edu.yu.einstein.genplay.core.genome.Assembly;
 import edu.yu.einstein.genplay.core.genome.Clade;
 import edu.yu.einstein.genplay.core.genome.Genome;
 import edu.yu.einstein.genplay.core.genome.RetrieveAssemblies;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.dialog.chromosomeChooser.ChromosomeChooserDialog;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 import edu.yu.einstein.genplay.util.Images;
@@ -59,7 +60,7 @@ class AssemblyPanel extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = -5768796908632202321L; //generated ID
 
-	private 	 			ImageIcon	icon; 
+	private final 	 			ImageIcon	icon;
 
 	private static final int COMBO_WIDTH = 200;	// Combo box width value
 	private static final int COMBO_HEIGTH = 20;	// Combo box height value
@@ -67,13 +68,13 @@ class AssemblyPanel extends JPanel implements ActionListener {
 	private static final String CLADE_DEFAULT_VALUE = "mammal";	// Default clade value
 	private static final String GENOME_DEFAULT_VALUE = "human";	// Default genome value
 
-	private JLabel 				jlClade;			// Clade label
-	private JLabel 				jlGenome;			// Genome label
-	private JLabel 				jlAssembly;			// Assembly label
-	private JComboBox 			jcClade;			// Clade combo box
-	private JComboBox 			jcGenome;			// Genome combo box
-	private JComboBox 			jcAssembly;			// Assembly combo box
-	private JButton 			jbChromosome;		// Button to create a chromosome chooser object
+	private final JLabel 				jlClade;			// Clade label
+	private final JLabel 				jlGenome;			// Genome label
+	private final JLabel 				jlAssembly;			// Assembly label
+	private final JComboBox 			jcClade;			// Clade combo box
+	private final JComboBox 			jcGenome;			// Genome combo box
+	private final JComboBox 			jcAssembly;			// Assembly combo box
+	private final JButton 			jbChromosome;		// Button to create a chromosome chooser object
 
 	private Map<String, Clade> 	cladeList;			// list of all the assembly available for GenPlay retrived from an XML file
 	private Clade 				selectedClade;		// Selected Clade
@@ -247,7 +248,7 @@ class AssemblyPanel extends JPanel implements ActionListener {
 			RetrieveAssemblies genomeHandler = new RetrieveAssemblies();
 			cladeList = genomeHandler.getCladeList();
 		} catch (Exception e) {
-			e.printStackTrace();
+			ExceptionManager.getInstance().handleException(e);
 		}
 		List<String> cladeNames = new ArrayList<String>(cladeList.keySet());
 		Collections.sort(cladeNames);
@@ -301,20 +302,20 @@ class AssemblyPanel extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if (arg0.getSource() == jcClade) {
-			if (selectedClade == null || !selectedClade.equals(((JComboBox)arg0.getSource()).getSelectedItem())) {
+			if ((selectedClade == null) || !selectedClade.equals(((JComboBox)arg0.getSource()).getSelectedItem())) {
 				selectedClade = (Clade) ((JComboBox) arg0.getSource()).getSelectedItem();
 				initGenome();
 			}
 		} else if (arg0.getSource() == jcGenome) {
 			if (jcGenome.getSelectedItem() != null) {
-				if (selectedGenome == null || !selectedGenome.equals(((JComboBox)arg0.getSource()).getSelectedItem())) {
+				if ((selectedGenome == null) || !selectedGenome.equals(((JComboBox)arg0.getSource()).getSelectedItem())) {
 					selectedGenome = (Genome) ((JComboBox)arg0.getSource()).getSelectedItem();
 					initAssembly();
 				}
 			}
 		} else if (arg0.getSource() == jcAssembly) {
 			if (jcAssembly.getSelectedItem() != null) {
-				if (selectedAssembly == null || !selectedAssembly.equals(((JComboBox)arg0.getSource()).getSelectedItem())) {
+				if ((selectedAssembly == null) || !selectedAssembly.equals(((JComboBox)arg0.getSource()).getSelectedItem())) {
 					selectedAssembly = (Assembly) ((JComboBox)arg0.getSource()).getSelectedItem();
 					fullChromosomeList = Utils.getSortedChromosomeList(selectedAssembly.getChromosomeList());
 					selectedChromosomes = fullChromosomeList;

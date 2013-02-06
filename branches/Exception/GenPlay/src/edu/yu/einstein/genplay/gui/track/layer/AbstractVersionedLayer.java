@@ -131,7 +131,7 @@ public abstract class AbstractVersionedLayer<T extends Serializable> extends Abs
 				history.redo();
 			}
 		} catch (Exception e) {
-			ExceptionManager.handleException(getTrack().getRootPane(), e, "Error while redoing the " + getName() + " layer");
+			ExceptionManager.getInstance().handleException(getTrack().getRootPane(), e, "Error while redoing the " + getName() + " layer");
 			history.setLastAsError();
 		}
 	}
@@ -146,7 +146,7 @@ public abstract class AbstractVersionedLayer<T extends Serializable> extends Abs
 				history.reset();
 			}
 		} catch (Exception e) {
-			ExceptionManager.handleException(getTrack().getRootPane(), e, "Error while reseting the " + getName() + " layer");
+			ExceptionManager.getInstance().handleException(getTrack().getRootPane(), e, "Error while reseting the " + getName() + " layer");
 			history.setLastAsError();
 		}
 	}
@@ -159,7 +159,7 @@ public abstract class AbstractVersionedLayer<T extends Serializable> extends Abs
 				urrManager.set(data);
 				super.setData(data);
 			} catch (Exception e) {
-				ExceptionManager.handleException(getTrack().getRootPane(), e, "Error while updating the track");
+				ExceptionManager.getInstance().handleException(getTrack().getRootPane(), e, "Error while updating the track");
 			}
 		}
 	}
@@ -177,7 +177,7 @@ public abstract class AbstractVersionedLayer<T extends Serializable> extends Abs
 				urrManager.set(data);
 				super.setData(data);
 			} catch (Exception e) {
-				ExceptionManager.handleException(getTrack().getRootPane(), e, "Error while updating the track");
+				ExceptionManager.getInstance().handleException(getTrack().getRootPane(), e, "Error while updating the track");
 				history.setLastAsError();
 			}
 		}
@@ -199,7 +199,7 @@ public abstract class AbstractVersionedLayer<T extends Serializable> extends Abs
 				history.undo();
 			}
 		} catch (Exception e) {
-			ExceptionManager.handleException(getTrack().getRootPane(), e, "Error while undoing the " + getName() + " layer");
+			ExceptionManager.getInstance().handleException(getTrack().getRootPane(), e, "Error while undoing the " + getName() + " layer");
 			history.setLastAsError();
 		}
 	}

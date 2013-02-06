@@ -35,6 +35,7 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotData;
 import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotPane;
 import edu.yu.einstein.genplay.util.Utils;
@@ -129,7 +130,7 @@ public class SPALoadData extends ScatterPlotAction {
 			try {
 				reader.close();
 			} catch (IOException e1) {
-				e1.printStackTrace();
+				ExceptionManager.getInstance().handleException(e);
 			}
 			JOptionPane.showMessageDialog(getRootPane(), "The specified file is not valid", "Invalid File", JOptionPane.ERROR_MESSAGE);
 		}

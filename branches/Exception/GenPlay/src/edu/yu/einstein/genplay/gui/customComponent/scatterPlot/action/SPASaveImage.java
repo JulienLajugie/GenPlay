@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -38,7 +38,7 @@ import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
- * Saves the ScatterPlot chart as a PNG image 
+ * Saves the ScatterPlot chart as a PNG image
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -46,8 +46,8 @@ public class SPASaveImage extends ScatterPlotAction {
 
 	private static final long serialVersionUID = -8313148262612777559L;	// generated ID
 	private static final String 	ACTION_NAME = "Save As Image";		// action name
-	private static final String 	DESCRIPTION = 
-		"Save the chart as a PNG image";								// tooltip
+	private static final String 	DESCRIPTION =
+			"Save the chart as a PNG image";								// tooltip
 
 
 	/**
@@ -63,7 +63,7 @@ public class SPASaveImage extends ScatterPlotAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		String defaultDirectoryPath = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();		
+		String defaultDirectoryPath = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
 		JFileChooser jfc = new JFileChooser(defaultDirectoryPath);
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("PNG file (*.PNG)", "png");
@@ -77,10 +77,10 @@ public class SPASaveImage extends ScatterPlotAction {
 				BufferedImage image = new BufferedImage(getScatterPlotPane().getWidth(), getScatterPlotPane().getHeight(), BufferedImage.TYPE_INT_RGB);
 				Graphics2D g = image.createGraphics();
 				getScatterPlotPane().paint(g);
-				try {         
+				try {
 					ImageIO.write(image, "png", file);
 				}catch(Exception ex) {
-					ExceptionManager.handleException(getScatterPlotPane(), ex, "Error while saving the scatter plot as an image");
+					ExceptionManager.getInstance().handleException(getScatterPlotPane(), ex, "Error while saving the scatter plot as an image");
 				}
 			}
 		}

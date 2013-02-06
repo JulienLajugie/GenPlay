@@ -49,8 +49,9 @@ import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.repeatFamilyList.RepeatFamilyList;
-import edu.yu.einstein.genplay.exception.DataLineException;
-import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
+import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -238,7 +239,7 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 				}
 			} catch (InvalidChromosomeException e) {
 				//throw new InvalidDataLineException(extractedLine);
-				e.printStackTrace();
+				ExceptionManager.getInstance().handleException(e);
 				throw new DataLineException(DataLineException.INVALID_FORMAT_NUMBER);
 			}
 		}

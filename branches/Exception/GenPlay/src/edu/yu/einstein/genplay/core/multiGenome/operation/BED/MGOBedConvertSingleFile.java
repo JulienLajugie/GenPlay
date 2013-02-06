@@ -41,7 +41,7 @@ import edu.yu.einstein.genplay.core.multiGenome.operation.ExportEngine;
 import edu.yu.einstein.genplay.core.multiGenome.operation.fileScanner.FileScannerInterface;
 import edu.yu.einstein.genplay.core.multiGenome.operation.fileScanner.SingleFileScanner;
 import edu.yu.einstein.genplay.core.multiGenome.utils.VCFLineUtility;
-import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.Utils;
 

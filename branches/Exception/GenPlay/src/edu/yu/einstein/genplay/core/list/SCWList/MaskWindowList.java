@@ -46,7 +46,8 @@ import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 import edu.yu.einstein.genplay.util.DoubleLists;
 import edu.yu.einstein.genplay.util.Utils;
 
@@ -98,7 +99,7 @@ public final class MaskWindowList extends DisplayableListOfLists<ScoredChromosom
 		try {
 			generateStatistics();
 		} catch (Exception e) {
-			e.printStackTrace();
+			ExceptionManager.getInstance().handleException(e);
 		}
 	}
 
@@ -401,7 +402,7 @@ public final class MaskWindowList extends DisplayableListOfLists<ScoredChromosom
 			ObjectInputStream ois = new ObjectInputStream(bais);
 			return ((MaskWindowList)ois.readObject());
 		} catch (Exception e) {
-			e.printStackTrace();
+			ExceptionManager.getInstance().handleException(e);
 			return null;
 		}
 	}
@@ -416,7 +417,7 @@ public final class MaskWindowList extends DisplayableListOfLists<ScoredChromosom
 		try {
 			currentChromosomeList = get(fittedChromosome);
 		} catch (InvalidChromosomeException e) {
-			e.printStackTrace();
+			ExceptionManager.getInstance().handleException(e);
 			fittedChromosome = null;
 			return;
 		}

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Locale;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 
 /**
  * This class contains assembly information
@@ -48,8 +49,8 @@ public class Assembly implements Serializable {
 	private String 					indexName;
 	private SimpleDateFormat 		sdf;
 	private long 					genomeLength = 0;
-	
-	
+
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -82,8 +83,8 @@ public class Assembly implements Serializable {
 		sdf = (SimpleDateFormat) in.readObject();
 		genomeLength = in.readLong();
 	}
-	
-	
+
+
 	/**
 	 * Constructor of {@link Assembly}
 	 * @param name	name of the assembly
@@ -97,22 +98,22 @@ public class Assembly implements Serializable {
 			this.date = sdf.parse(date);
 			sdf.applyPattern("yyyy MM");
 		} catch (ParseException e) {
-			e.printStackTrace();
+			ExceptionManager.getInstance().handleException(e);
 		}
 		sdf.applyPattern("yyyy MM ");
 		indexName = sdf.format(this.date);
 		indexName = indexName.concat(name);
 	}
-	
-	
+
+
 	/**
 	 * @return the list of chromosome
 	 */
 	public List<Chromosome> getChromosomeList() {
 		return chromosomeList;
 	}
-	
-	
+
+
 	/**
 	 * @param chromosomeList the new chromosome list
 	 */
@@ -131,8 +132,8 @@ public class Assembly implements Serializable {
 			genomeLength += currenChromosome.getLength();
 		}
 	}
-	
-	
+
+
 	/**
 	 * @return the assembly name for display
 	 */
@@ -140,9 +141,9 @@ public class Assembly implements Serializable {
 		sdf.applyPattern("MMM yyyy (");
 		return sdf.format(this.date).concat(name).concat(")");
 	}
-	
-	
-	
+
+
+
 	/**
 	 * @return the assembly name
 	 */
@@ -157,8 +158,8 @@ public class Assembly implements Serializable {
 	public Date getDate() {
 		return date;
 	}
-	
-	
+
+
 	/**
 	 * @return the full name of the assembly: name (mm/yyyy)
 	 */
@@ -173,8 +174,8 @@ public class Assembly implements Serializable {
 	public long getGenomeLength() {
 		return genomeLength;
 	}
-	
-	
+
+
 	@Override
 	public String toString() {
 		return getDisplayName();

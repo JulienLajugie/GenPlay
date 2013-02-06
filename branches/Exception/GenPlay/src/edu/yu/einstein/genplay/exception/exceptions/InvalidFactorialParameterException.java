@@ -19,32 +19,32 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.exception;
-
+package edu.yu.einstein.genplay.exception.exceptions;
 
 /**
- * Exception thrown when there is a problem during data compression
- * @author Julien Lajugie
+ * Exception thrown when the factorial parameter is inferior or equal to zero
+ * @author Nicolas Fourel
  * @version 0.1
  */
-public class CompressionException extends RuntimeException {
 
-	private static final long serialVersionUID = -7441678640263974386L; // generated ID
+public final class InvalidFactorialParameterException extends Exception {
+	
+	private static final long serialVersionUID = 6501319100070818381L;	// generated ID
 
 	
 	/**
-	 * Creates an instance of {@link CompressionException}
+	 * Creates an instance of {@link InvalidFactorialParameterException}
 	 */
-	public CompressionException() {
-		super();
+	public InvalidFactorialParameterException() {
+		super("Factorial parameter cannot be negative.");
 	}
-
-
+	
+	
 	/**
-	 * Creates an instance of {@link CompressionException}
-	 * @param message error message
+	 * Creates an instance of {@link InvalidFactorialParameterException} 
+	 * @param message the message of the exception
 	 */
-	public CompressionException(String message) {
+	public InvalidFactorialParameterException(String message) {
 		super(message);
 	}
 }

@@ -119,9 +119,9 @@ public class SPASaveData extends ScatterPlotAction {
 			}
 			writer.close();
 		} catch (FileNotFoundException e) {
-			ExceptionManager.handleException(getRootPane(), e, "Error while saving the scatter plot data as a CSV file. \n" + e.getLocalizedMessage());
+			ExceptionManager.getInstance().handleException(getRootPane(), e, "Error while saving the scatter plot data as a CSV file. \n" + e.getLocalizedMessage());
 		} catch (IOException e) {
-			ExceptionManager.handleException(getRootPane(), e, "Error while saving the scatter plot data as a CSV file");
+			ExceptionManager.getInstance().handleException(getRootPane(), e, "Error while saving the scatter plot data as a CSV file");
 		}
 	}
 

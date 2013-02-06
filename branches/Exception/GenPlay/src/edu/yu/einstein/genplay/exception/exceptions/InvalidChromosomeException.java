@@ -19,32 +19,23 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.exception;
+package edu.yu.einstein.genplay.exception.exceptions;
+
 
 /**
- * Exception thrown when the lambda parameter for Poisson calculation is inferior or equal to zero
- * @author Nicolas Fourel
+ * The InvalidChromosomeException class is thrown when a Chromosome is not valid. 
+ * @author Julien Lajugie
  * @version 0.1
  */
+public final class InvalidChromosomeException extends RuntimeException {
 
-public final class InvalidLambdaPoissonParameterException extends Exception {
+	private static final long serialVersionUID = -2244843030262784715L;	// Generated ID
 	
-	private static final long serialVersionUID = 6501319100070818381L;	// generated ID
-
-	
-	/**
-	 * Creates an instance of {@link InvalidLambdaPoissonParameterException}
-	 */
-	public InvalidLambdaPoissonParameterException() {
-		super("Lambda parameter cannot be negative or equal to 0 to calculate Poisson value.");
-	}
-
 	
 	/**
-	 * Creates an instance of {@link InvalidLambdaPoissonParameterException}
-	 * @param message message of the exception
+	 * Creates an instance of {@link InvalidChromosomeException}
 	 */
-	public InvalidLambdaPoissonParameterException(String message) {
-		super(message);
+	public InvalidChromosomeException() {
+		super("Invalid chromosome");
 	}
 }

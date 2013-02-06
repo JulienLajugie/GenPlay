@@ -22,7 +22,7 @@
 package edu.yu.einstein.genplay.core.RNAPosToDNAPos;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 
 
 /**

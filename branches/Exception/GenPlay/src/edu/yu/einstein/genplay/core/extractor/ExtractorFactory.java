@@ -26,7 +26,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import edu.yu.einstein.genplay.exception.InvalidFileTypeException;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
 import edu.yu.einstein.genplay.util.Utils;
 
 

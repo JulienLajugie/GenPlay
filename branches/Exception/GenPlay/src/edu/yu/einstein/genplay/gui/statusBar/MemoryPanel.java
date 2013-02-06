@@ -30,6 +30,7 @@ import javax.swing.JProgressBar;
 import javax.swing.UIManager;
 import javax.swing.plaf.basic.BasicProgressBarUI;
 
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
@@ -61,7 +62,7 @@ public final class MemoryPanel extends JProgressBar {
 				try {
 					sleep(3000);
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					ExceptionManager.getInstance().handleException(e);
 				}
 			}
 		}

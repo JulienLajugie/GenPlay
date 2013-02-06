@@ -24,9 +24,10 @@ package edu.yu.einstein.genplay.gui.track;
 import edu.yu.einstein.genplay.core.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 
 /**
- * Singleton used by tracks to scroll the genome window displayed when the scrolling mode is on 
+ * Singleton used by tracks to scroll the genome window displayed when the scrolling mode is on
  * (the scrolling mode can be turned on and off using the mouse middle button)
  * @author Julien Lajugie
  */
@@ -157,7 +158,7 @@ public class ScrollingManager {
 							sleep(10);
 						}
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						ExceptionManager.getInstance().handleException(e);
 					}
 				}
 			}

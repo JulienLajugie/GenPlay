@@ -26,6 +26,7 @@ import java.io.IOException;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.BGZIPReader;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 
 /**
  * See the {@link VCFScanner} description for further information on scanners.
@@ -65,7 +66,7 @@ public class VCFGenomeScanner extends VCFScanner {
 		try {
 			reader.goNextLine();
 		} catch (IOException e) {
-			e.printStackTrace();
+			ExceptionManager.getInstance().handleException(e);
 		}
 		return reader.getCurrentLine();
 	}

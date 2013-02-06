@@ -36,6 +36,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.recording.ProjectInformation;
 import edu.yu.einstein.genplay.core.manager.recording.ProjectRecording;
 import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.dialog.invalidFileDialog.InvalidFileDialog;
 
 
@@ -114,7 +115,7 @@ public final class PAInitManagers extends AbstractAction {
 				}
 			} catch (Exception e) {
 				error = "Could not open the project file.";
-				e.printStackTrace();
+				ExceptionManager.getInstance().handleException(e);
 			}
 
 
@@ -125,7 +126,7 @@ public final class PAInitManagers extends AbstractAction {
 					projectRecording.initProjectInformation();
 				} catch (Exception e) {
 					error = "Could not read the project information.";
-					e.printStackTrace();
+					ExceptionManager.getInstance().handleException(e);
 				}
 
 				if (!isValidProjectType()) {
@@ -185,7 +186,7 @@ public final class PAInitManagers extends AbstractAction {
 								projectRecording.initProjectManager();
 							} catch (Exception e) {
 								error = "Could not read the managers.";
-								e.printStackTrace();
+								ExceptionManager.getInstance().handleException(e);
 							}
 						}
 					}
@@ -196,7 +197,7 @@ public final class PAInitManagers extends AbstractAction {
 					inputStream.close();
 				} catch (IOException e) {
 					inputStream = null;
-					e.printStackTrace();
+					ExceptionManager.getInstance().handleException(e);
 				}
 			}
 		}

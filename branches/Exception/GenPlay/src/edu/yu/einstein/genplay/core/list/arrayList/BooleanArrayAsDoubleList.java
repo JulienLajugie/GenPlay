@@ -27,7 +27,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.List;
 
-import edu.yu.einstein.genplay.exception.CompressionException;
+import edu.yu.einstein.genplay.exception.exceptions.CompressionException;
 
 
 

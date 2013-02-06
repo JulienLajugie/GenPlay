@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -24,21 +24,22 @@ package edu.yu.einstein.genplay.core.stat;
 import java.io.Serializable;
 import java.util.HashMap;
 
-import edu.yu.einstein.genplay.exception.InvalidFactorialParameterException;
-import edu.yu.einstein.genplay.exception.InvalidLambdaPoissonParameterException;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidFactorialParameterException;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidLambdaPoissonParameterException;
 
 /**
  * MyMathClass
  * This class gather some methods to calculate Poisson values.
  * These methods are developed for IslandFinder class.
- * @author Nicolas Fourel 
+ * @author Nicolas Fourel
  */
 public class Poisson implements Serializable {
-	
+
 	private static final long serialVersionUID = 256395258875515443L;
 	//Attribute to store Poisson values with parameter k as index, lambda on first double array position and the value on the second position
 	private volatile static HashMap<Integer, HashMap<Double, Double>> poissonStorage = new HashMap<Integer, HashMap<Double, Double>>();
-	
+
 	/**
 	 * logPoisson method
 	 * Calculate the Poisson value logarithm with Poisson parameters
@@ -61,13 +62,13 @@ public class Poisson implements Serializable {
 				double res1 = Math.log10(Math.exp(-lambda));
 				double res2 = k * Math.log10(lambda);
 				double res3 = Factorial.logFactorial(k);
-				result = res1 + res2 - res3;
+				result = (res1 + res2) - res3;
 				setPoissonValue(lambda, k, result);
 			}
 		}
 		return result;
 	}
-	
+
 	/**
 	 * poisson method
 	 * Calculate the Poisson value with Poisson parameters
@@ -81,8 +82,8 @@ public class Poisson implements Serializable {
 	public static double poisson (double lambda, int k) throws InvalidLambdaPoissonParameterException, InvalidFactorialParameterException {
 		return MathFunctions.unlogValue(logPoisson(lambda, k));
 	}
-	
-	
+
+
 	/**
 	 * getPoissonValue method
 	 * This method allow to get a Poisson value if it is stored
@@ -101,14 +102,14 @@ public class Poisson implements Serializable {
 				} catch (Exception e) {
 					result = -1.0;
 					System.out.println("getPoissonValue error; lambda: " + lambda + "; k: " + k);
-					
-					e.printStackTrace();
+
+					ExceptionManager.getInstance().handleException(e);
 				}
 			}
 		}
 		return result;
 	}
-	
+
 	/**
 	 * setPoissonValue method
 	 * This method allow to store a Poisson value in the HashMap
@@ -118,15 +119,15 @@ public class Poisson implements Serializable {
 	 * @param value		the Poisson value calculated with lambda and k values
 	 */
 	private static void setPoissonValue (double lambda, int k, double value) {
-		if (!poissonStorage.containsKey(k) | poissonStorage.get(k)==null){
+		if (!poissonStorage.containsKey(k) | (poissonStorage.get(k)==null)){
 			poissonStorage.put(k, new HashMap<Double, Double>());
 		}
 		try{
 			poissonStorage.get(k);
 			poissonStorage.get(k).put(lambda , value);
 		} catch (Exception e) {
-			e.printStackTrace();
+			ExceptionManager.getInstance().handleException(e);
 		}
 	}
-	
+
 }

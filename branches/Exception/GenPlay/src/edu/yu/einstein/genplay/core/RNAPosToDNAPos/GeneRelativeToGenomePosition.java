@@ -38,6 +38,7 @@ import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 import edu.yu.einstein.genplay.core.enums.RNAToDNAResultType;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 
 
 /**
@@ -731,7 +732,7 @@ public class GeneRelativeToGenomePosition {
 			}
 
 		}catch (IOException e) {
-			e.printStackTrace();
+			ExceptionManager.getInstance().handleException(e);
 		}
 	}
 }

@@ -38,8 +38,9 @@ import javax.swing.SwingConstants;
 import javax.swing.text.NumberFormatter;
 
 import edu.yu.einstein.genplay.core.list.binList.operation.peakFinder.IslandFinder;
-import edu.yu.einstein.genplay.exception.InvalidFactorialParameterException;
-import edu.yu.einstein.genplay.exception.InvalidLambdaPoissonParameterException;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidFactorialParameterException;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidLambdaPoissonParameterException;
 import edu.yu.einstein.genplay.util.Images;
 
 
@@ -205,9 +206,9 @@ final class IslandDialogInput extends IslandDialogFieldset{
 				try {
 					toPValue();
 				} catch (InvalidLambdaPoissonParameterException e) {
-					e.printStackTrace();
+					ExceptionManager.getInstance().handleException(e);
 				} catch (InvalidFactorialParameterException e) {
-					e.printStackTrace();
+					ExceptionManager.getInstance().handleException(e);
 				}
 			}
 		});
@@ -390,7 +391,7 @@ final class IslandDialogInput extends IslandDialogFieldset{
 			try {
 				this.jftfWindowMinValueValue.commitEdit();
 			} catch (ParseException e) {
-				e.printStackTrace();
+				ExceptionManager.getInstance().handleException(e);
 			}
 			read = Double.parseDouble(this.jftfWindowMinValueValue.getValue().toString());
 			pvalue = this.getIsland().findPValue(read);

@@ -28,8 +28,8 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
-import edu.yu.einstein.genplay.exception.CompressionException;
-import edu.yu.einstein.genplay.exception.valueOutOfRangeException.Invalid8BitValue;
+import edu.yu.einstein.genplay.exception.exceptions.CompressionException;
+import edu.yu.einstein.genplay.exception.exceptions.valueOutOfRangeException.Invalid8BitValue;
 
 
 

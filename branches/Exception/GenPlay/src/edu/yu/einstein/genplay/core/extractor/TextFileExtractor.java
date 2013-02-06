@@ -32,7 +32,8 @@ import java.text.NumberFormat;
 import java.util.Random;
 import java.util.TreeSet;
 
-import edu.yu.einstein.genplay.exception.DataLineException;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
+import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
 import edu.yu.einstein.genplay.gui.event.invalidDataEvent.InvalidDataListener;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 import edu.yu.einstein.genplay.util.Utils;
@@ -111,7 +112,7 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 			try {
 				reader.close();
 			} catch (IOException e1) {
-				e1.printStackTrace();
+				ExceptionManager.getInstance().handleException(e);
 			}
 			return null;
 		}
@@ -264,7 +265,7 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 				writer.newLine();
 				writer.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				ExceptionManager.getInstance().handleException(e);
 			}
 		}
 	}

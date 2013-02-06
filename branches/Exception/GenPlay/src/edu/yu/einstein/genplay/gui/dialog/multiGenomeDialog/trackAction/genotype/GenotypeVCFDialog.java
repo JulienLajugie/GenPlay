@@ -43,6 +43,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportUtils;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.mainDialog.MultiGenomeTrackActionDialog;
@@ -170,7 +171,7 @@ public class GenotypeVCFDialog extends MultiGenomeTrackActionDialog {
 							List<String> names = vcfToGenotype.getHeader().getGenomeRawNames();
 							genomePanel.initialize(settings.getGenomeNames(), names);
 						} catch (IOException e1) {
-							e1.printStackTrace();
+							ExceptionManager.getInstance().handleException(e1);
 						}
 					}
 				}

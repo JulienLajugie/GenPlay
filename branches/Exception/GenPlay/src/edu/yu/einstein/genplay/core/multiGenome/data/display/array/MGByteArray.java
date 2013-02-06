@@ -26,7 +26,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import edu.yu.einstein.genplay.exception.valueOutOfRangeException.Invalid8BitValue;
+import edu.yu.einstein.genplay.exception.exceptions.valueOutOfRangeException.Invalid8BitValue;
 
 /**
  * @author Nicolas Fourel

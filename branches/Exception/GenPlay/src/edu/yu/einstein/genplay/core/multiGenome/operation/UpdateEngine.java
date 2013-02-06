@@ -29,6 +29,7 @@ import java.util.Map;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.operation.VCF.MGOApplyVCFGenotype;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 
 /**
  * The update engine is made to create a new VCF file based on a file to update, using data from a current VCF track.
@@ -67,7 +68,7 @@ public abstract class UpdateEngine extends BasicEngine {
 				file.createNewFile();
 			} catch (IOException e) {
 				errors = addErrorMessage(errors, "The file could not created, the path may not be valid: " + path + ".");
-				e.printStackTrace();
+				ExceptionManager.getInstance().handleException(e);
 			}
 			if (!file.isFile()) {
 				errors = addErrorMessage(errors, "The path of the new VCF file is not a valid file: " + path + ".");

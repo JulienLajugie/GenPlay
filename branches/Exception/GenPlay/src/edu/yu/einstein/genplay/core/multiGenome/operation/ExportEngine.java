@@ -24,6 +24,8 @@ package edu.yu.einstein.genplay.core.multiGenome.operation;
 import java.io.File;
 import java.io.IOException;
 
+import edu.yu.einstein.genplay.exception.ExceptionManager;
+
 /**
  * The export engine gives basic attributes and control to export a track as a file.
  * 
@@ -53,7 +55,7 @@ public abstract class ExportEngine extends BasicEngine {
 					file.createNewFile();
 				} catch (IOException e) {
 					errors = addErrorMessage(errors, "The file could not created, the path may not be valid: " + path + ".");
-					e.printStackTrace();
+					ExceptionManager.getInstance().handleException(e);
 				}
 				if (!file.isFile()) {
 					errors = addErrorMessage(errors, "The path of the new VCF file is not a valid file: " + path + ".");
