@@ -80,6 +80,9 @@ public class SNPVariant extends SingleNucleotideVariant {
 		if (line != null) {
 			line.processForAnalyse();
 			String chain = line.getAlternativeFromFullName(genomeName, alleType);
+			if (chain == null) {
+				chain = line.getREF();
+			}
 			return chain;
 		}
 		return super.getVariantSequence();

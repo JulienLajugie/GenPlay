@@ -143,7 +143,7 @@ public class GraphicsPanel extends JPanel implements Serializable, ComponentList
 			int screenWidth = mouseStartDragX - e.getX();
 			// compute the corresponding genomic distance
 			double genomeWidth = projectWindow.screenToGenomeWidth(screenWidth);
-			if ((genomeWidth > 1) || (genomeWidth < -1)) {
+			if ((genomeWidth >= 1) || (genomeWidth <= -1)) {
 				GenomeWindow newWindow = new GenomeWindow();
 				newWindow.setChromosome(projectWindow.getGenomeWindow().getChromosome());
 				newWindow.setStart(projectWindow.getGenomeWindow().getStart()+ (int) genomeWidth);
