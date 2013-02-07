@@ -388,7 +388,8 @@ public class MultiGenomeDrawer implements Serializable {
 	 */
 	public void showVariantInformationDialog(int height, MouseEvent e) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) { // we must be in a multi genome project
-			if (isOverVariant(height, e)) {
+			//if (isOverVariant(height, e)) {
+			if (variantUnderMouse != null) {
 				VariantInformationDialog toolTip = new VariantInformationDialog(this); // we create the information dialog
 				variantDialogs.add(toolTip);
 				int pos = Math.round(ProjectManager.getInstance().getProjectWindow().screenToGenomePosition(e.getX())); // we translate the position on the screen into a position on the genome
@@ -451,8 +452,9 @@ public class MultiGenomeDrawer implements Serializable {
 		}
 
 		// Get the meta genome position
-		int pos = Math.round(ProjectManager.getInstance().getProjectWindow().screenToGenomePosition(x)); // we translate the position on the screen into a position on the genome
+		int pos = ProjectManager.getInstance().getProjectWindow().screenToGenomePosition(x); // we translate the position on the screen into a position on the genome
 
+		// Get the right list of variants in the area of the actual position
 		List<Variant> results = new ArrayList<Variant>();
 		for (VariantDisplayList list: variantDisplayList) {
 			List<Variant> result = list.getVariantsInArea(alleleIndex, pos);
@@ -461,7 +463,10 @@ public class MultiGenomeDrawer implements Serializable {
 			}
 		}
 
+		// If at least one variant has been found
 		if (results.size() > 0) {
+
+			// Sort the list by score
 			Collections.sort(results, new Comparator<Variant>() {
 				@Override
 				public int compare(Variant o1, Variant o2) {

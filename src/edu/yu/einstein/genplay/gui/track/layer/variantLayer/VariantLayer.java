@@ -22,11 +22,15 @@
 package edu.yu.einstein.genplay.gui.track.layer.variantLayer;
 
 import java.awt.Graphics;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
+import edu.yu.einstein.genplay.gui.track.ScrollingManager;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.AbstractLayer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
@@ -35,7 +39,7 @@ import edu.yu.einstein.genplay.gui.track.layer.LayerType;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class VariantLayer extends AbstractLayer<VariantData> {
+public class VariantLayer extends AbstractLayer<VariantData> implements MouseListener, MouseMotionListener {
 
 	/** Generated default serial version ID */
 	private static final long serialVersionUID = -7054772225249273886L;
@@ -103,5 +107,44 @@ public class VariantLayer extends AbstractLayer<VariantData> {
 	 */
 	public List<MGFilter> getFilters() {
 		return filters;
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		if ((e.getButton() == MouseEvent.BUTTON3)) {
+			genomeDrawer.showVariantInformationDialog(getTrack().getHeight(), e);
+		}
+	}
+
+
+	// MouseListener implementation
+
+	@Override
+	public void mousePressed(MouseEvent e) {}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		if (!ScrollingManager.getInstance().isScrollingEnabled() && (genomeDrawer != null) && genomeDrawer.hasToBeRepaintAfterExit()) {
+			getTrack().repaint();
+		}
+	}
+
+
+	// MouseMotion implementation
+
+	@Override
+	public void mouseDragged(MouseEvent e) {}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		if (!ScrollingManager.getInstance().isScrollingEnabled() && (genomeDrawer != null) && genomeDrawer.isOverVariant(getTrack().getHeight(), e)) {
+			getTrack().repaint();
+		}
 	}
 }

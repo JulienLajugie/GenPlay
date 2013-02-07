@@ -172,7 +172,8 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 	 * @return position on the genome in bp
 	 */
 	public int screenToGenomePosition(int xScreen) {
-		double result = (xScreen / xRatio) + genomeWindow.getStart();
+		double result = Math.floor(xScreen / xRatio);	// the value must be rounded the lowest int. Position 10,5 is still 10, not 11.
+		result += genomeWindow.getStart();
 		return doubleToInt(result);
 	}
 
