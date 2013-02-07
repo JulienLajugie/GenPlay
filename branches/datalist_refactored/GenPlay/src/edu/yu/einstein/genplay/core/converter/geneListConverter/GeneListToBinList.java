@@ -24,7 +24,7 @@ package edu.yu.einstein.genplay.core.converter.geneListConverter;
 import edu.yu.einstein.genplay.core.converter.Converter;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 
@@ -41,7 +41,7 @@ public class GeneListToBinList implements Converter {
 	private final int 							binSize;		// size of the bin of the result binlist
 	private final DataPrecision 				precision;		// precision of the result binlist
 	private final ScoreCalculationMethod 		method; 		// method for the calculation of the scores of the result binlist
-	private ChromosomeListOfLists<?> 			result;			// The output list.
+	private GenomicDataList<?> 			result;			// The output list.
 
 
 	/**
@@ -78,7 +78,7 @@ public class GeneListToBinList implements Converter {
 
 
 	@Override
-	public ChromosomeListOfLists<?> getList() {
+	public GenomicDataList<?> getList() {
 		return result;
 	}
 }

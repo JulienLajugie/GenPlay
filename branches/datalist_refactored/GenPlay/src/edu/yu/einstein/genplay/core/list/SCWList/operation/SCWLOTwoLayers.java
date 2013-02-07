@@ -30,7 +30,7 @@ import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoLayersMethod;
-import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.overLap.SCWLTwoLayersManagement;
@@ -47,7 +47,7 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class SCWLOTwoLayers implements Operation<ChromosomeListOfLists<?>>, Stoppable {
+public class SCWLOTwoLayers implements Operation<GenomicDataList<?>>, Stoppable {
 
 	private final ScoreCalculationTwoLayersMethod 	scm;
 	private final SCWLTwoLayersManagement 		twoLayers;			// manage the operation between two Layers
@@ -59,8 +59,8 @@ public class SCWLOTwoLayers implements Operation<ChromosomeListOfLists<?>>, Stop
 	 * @param list2 2nd input list
 	 * @param scm {@link ScoreCalculationTwoLayersMethod}
 	 */
-	public SCWLOTwoLayers(	ChromosomeListOfLists<?> list1,
-			ChromosomeListOfLists<?> list2,
+	public SCWLOTwoLayers(	GenomicDataList<?> list1,
+			GenomicDataList<?> list2,
 			ScoreCalculationTwoLayersMethod scm) {
 		this.scm = scm;
 		twoLayers = new SCWLTwoLayersManagement(list1, list2, scm);

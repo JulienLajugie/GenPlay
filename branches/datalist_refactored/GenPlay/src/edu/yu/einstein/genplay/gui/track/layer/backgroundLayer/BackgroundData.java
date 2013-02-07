@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.track.layer.background;
+package edu.yu.einstein.genplay.gui.track.layer.backgroundLayer;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

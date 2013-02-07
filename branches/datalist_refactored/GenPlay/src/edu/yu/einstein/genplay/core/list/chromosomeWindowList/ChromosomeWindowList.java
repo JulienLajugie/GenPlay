@@ -34,7 +34,7 @@ import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleChromosomeWindow;
-import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.DisplayableListOfLists;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
@@ -82,8 +82,8 @@ public class ChromosomeWindowList extends DisplayableListOfLists<SimpleChromosom
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public ChromosomeWindowList(final ChromosomeListOfLists<Integer> startList,
-			final ChromosomeListOfLists<Integer> stopList) throws InvalidChromosomeException, InterruptedException, ExecutionException {
+	public ChromosomeWindowList(final GenomicDataList<Integer> startList,
+			final GenomicDataList<Integer> stopList) throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		super();
 		// retrieve the instance of the OperationPool
 		final OperationPool op = OperationPool.getInstance();

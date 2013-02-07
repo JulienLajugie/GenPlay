@@ -45,7 +45,7 @@ import javax.swing.text.NumberFormatter;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackConstants;
 import edu.yu.einstein.genplay.gui.track.TrackScore;
-import edu.yu.einstein.genplay.gui.track.layer.foreground.ForegroundData;
+import edu.yu.einstein.genplay.gui.track.layer.foregroundLayer.ForegroundData;
 import edu.yu.einstein.genplay.util.colors.GenPlayColorChooser;
 
 /**

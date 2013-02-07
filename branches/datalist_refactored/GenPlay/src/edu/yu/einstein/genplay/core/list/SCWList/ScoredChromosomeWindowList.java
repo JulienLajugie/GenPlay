@@ -25,14 +25,14 @@ import java.util.List;
 
 import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.genomeWindow.GenomeWindow;
-import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
  */
-public interface ScoredChromosomeWindowList extends List<List<ScoredChromosomeWindow>>, ChromosomeListOfLists<ScoredChromosomeWindow> {
+public interface ScoredChromosomeWindowList extends List<List<ScoredChromosomeWindow>>, GenomicDataList<ScoredChromosomeWindow> {
 
 	/**
 	 * Performs a deep clone of the current object

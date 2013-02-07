@@ -40,8 +40,8 @@ import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLAScoreRepartitionAro
 import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLASearchGene;
 import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLASumScore;
 import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLAUniqueScore;
-import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
+import edu.yu.einstein.genplay.gui.track.layer.geneLayer.GeneLayer;
 
 /**
  * Menu containing all the actions available for a {@link GeneLayer}

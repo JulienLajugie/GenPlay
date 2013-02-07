@@ -45,7 +45,6 @@ import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAIntervalsScoring;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAInvertConstant;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLALoessRegression;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLALog;
-import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLALogOnAvgWithDamper;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAMax;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAMin;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAMovingAverage;
@@ -116,7 +115,6 @@ public class BinLayerMenu extends AbstractLayerMenu {
 				new BLAIndex(),
 				new BLAIndexByChromosome(),
 				new BLALog(),
-				new BLALogOnAvgWithDamper(),
 				new BLANormalize(),
 				new BLANormalizeStandardScore(),
 				null,

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -32,6 +32,7 @@ import edu.yu.einstein.genplay.core.enums.Strand;
 import edu.yu.einstein.genplay.core.gene.Gene;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
+import edu.yu.einstein.genplay.core.list.geneList.GeneListFactory;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
@@ -40,7 +41,7 @@ import edu.yu.einstein.genplay.util.DoubleLists;
 
 
 /**
- * Defines regions as "islands" of non zero value bins 
+ * Defines regions as "islands" of non zero value bins
  * separated by more than a specified number of zero value bins.
  * Computes the average on these regions.
  * Returns a new {@link GeneList} with the defined regions having their average/max/sum as a score
@@ -54,10 +55,10 @@ public class BLOTransfragGeneList implements Operation<GeneList> {
 	private final ScoreCalculationMethod 	operation;		//sum / average / max
 	private final ProjectChromosome projectChromosome; // Instance of the Chromosome Manager
 	private boolean							stopped = false;// true if the operation must be stopped
-	
+
 
 	/**
-	 * Defines regions as "islands" of non zero value bins 
+	 * Defines regions as "islands" of non zero value bins
 	 * separated by more than a specified number of zero value bins.
 	 * Computes the average on these regions.
 	 * Returns a new {@link GeneList} with the defined regions having their average/max/sum as a score
@@ -72,26 +73,26 @@ public class BLOTransfragGeneList implements Operation<GeneList> {
 		projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 	}
 
-	
+
 	@Override
 	public GeneList compute() throws Exception {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();
 
 		for (short i = 0; i < binList.size(); i++) {
-			final List<Double> currentList = binList.get(i);			
+			final List<Double> currentList = binList.get(i);
 			final String chromosomeName = projectChromosome.get(i).getName();
 			final int chromosomeLength = projectChromosome.get(i).getLength();
-			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {	
+			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {
 				@Override
 				public List<Gene> call() throws Exception {
-					
+
 					List<Gene> resultGeneList = new ArrayList<Gene>();
 					Gene newGene;
 					if ((currentList != null) && (currentList.size() != 0)) {
-						int j = 0;	
+						int j = 0;
 						int geneCounter = 1;
-						while (j < currentList.size() && !stopped) {
+						while ((j < currentList.size()) && !stopped) {
 							// skip zero values
 							while ((j < currentList.size()) && (currentList.get(j) == 0) && !stopped) {
 								j++;
@@ -102,7 +103,7 @@ public class BLOTransfragGeneList implements Operation<GeneList> {
 							int[] exonStart = new int[1];
 							int[] exonStop = new int[1];
 							double[] exonScore = new double[1];
-							
+
 							// a region stops when there is maxZeroWindowGap consecutive zero bins
 							while ((j < currentList.size()) && (zeroWindowCount <= zeroBinGap) && !stopped) {
 								if (currentList.get(j) == 0) {
@@ -148,34 +149,33 @@ public class BLOTransfragGeneList implements Operation<GeneList> {
 		}
 		List<List<Gene>> result = op.startPool(threadList);
 		if (result != null) {
-			GeneList resultList = new GeneList(result);
-			return resultList;
+			return GeneListFactory.createGeneList(result);
 		} else {
 			return null;
 		}
 	}
 
-	
+
 	@Override
 	public String getDescription() {
 		return "Operation: Transfrag, Gap Size = " + zeroBinGap + " Zero Value Successive Bins";
 	}
-	
+
 
 	@Override
 	public String getProcessingDescription() {
 		return "Computing Transfrag";
 	}
 
-	
+
 	@Override
 	public int getStepCount() {
 		return BinList.getCreationStepCount(binList.getBinSize()) + 1;
 	}
-	
-	
+
+
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }

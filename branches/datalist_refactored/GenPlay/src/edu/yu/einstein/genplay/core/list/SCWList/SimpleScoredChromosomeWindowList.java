@@ -38,8 +38,8 @@ import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.DisplayableListOfLists;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.SCWList.overLap.OverLappingManagement;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
@@ -47,6 +47,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
+import edu.yu.einstein.genplay.util.ChromosomeWindowLists;
 import edu.yu.einstein.genplay.util.DoubleLists;
 import edu.yu.einstein.genplay.util.Utils;
 
@@ -122,7 +123,7 @@ public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLis
 	 * @param	stopList	list of position stop
 	 * @return	true is an overlapping region is found
 	 */
-	public static boolean overLappingExist (ChromosomeListOfLists<Integer> startList, ChromosomeListOfLists<Integer> stopList) {
+	public static boolean overLappingExist (GenomicDataList<Integer> startList, GenomicDataList<Integer> stopList) {
 		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		int index = 0;
 		boolean isFound = false;
@@ -152,8 +153,8 @@ public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLis
 	 * @return						 true if the current index is involved on an overlapping region
 	 */
 	private static boolean searchOverLappingPositionsForIndex (	ProjectChromosome projectChromosomeTmp,
-			ChromosomeListOfLists<Integer> startList,
-			ChromosomeListOfLists<Integer> stopList,
+			GenomicDataList<Integer> startList,
+			GenomicDataList<Integer> stopList,
 			Chromosome currentChromosome,
 			int index) {
 		int size = startList.get(projectChromosomeTmp.getIndex(currentChromosome)).size();
@@ -257,9 +258,9 @@ public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLis
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public SimpleScoredChromosomeWindowList(	final ChromosomeListOfLists<Integer> startList,
-			final ChromosomeListOfLists<Integer> stopList,
-			final ChromosomeListOfLists<Double> scoreList,
+	public SimpleScoredChromosomeWindowList(	final GenomicDataList<Integer> startList,
+			final GenomicDataList<Integer> stopList,
+			final GenomicDataList<Double> scoreList,
 			final ScoreCalculationMethod scm) throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		super();
 
@@ -330,8 +331,8 @@ public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLis
 	public SimpleScoredChromosomeWindowList(final GeneList geneList, final ScoreCalculationMethod scm) throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		super();
 
-		final ChromosomeListOfLists<Integer> startList = geneList.getStartList();
-		final ChromosomeListOfLists<Integer> stopList = geneList.getStopList();
+		final GenomicDataList<Integer> startList = ChromosomeWindowLists.getStartList(geneList);
+		final GenomicDataList<Integer> stopList = ChromosomeWindowLists.getStopList(geneList);
 
 		// retrieve the instance of the OperationPool
 		final OperationPool op = OperationPool.getInstance();

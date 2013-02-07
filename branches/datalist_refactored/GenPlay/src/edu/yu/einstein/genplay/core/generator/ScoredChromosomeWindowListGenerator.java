@@ -24,13 +24,13 @@ package edu.yu.einstein.genplay.core.generator;
 import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
+import edu.yu.einstein.genplay.core.list.GenomicDataArrayList;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 
 
 /**
- * The interface ScoredChromosomeWindowListGenerator could be implemented by a class able to create a {@link ChromosomeArrayListOfLists}
+ * The interface ScoredChromosomeWindowListGenerator could be implemented by a class able to create a {@link GenomicDataArrayList}
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -38,7 +38,7 @@ public interface ScoredChromosomeWindowListGenerator extends Generator {
 
 	/**
 	 * @param scm ScoreCalculationMethod to know how to calculate score in case of overlapping
-	 * @return a new {@link ChromosomeArrayListOfLists}
+	 * @return a new {@link GenomicDataArrayList}
 	 * @throws InvalidChromosomeException
 	 * @throws InterruptedException
 	 * @throws ExecutionException
@@ -47,7 +47,7 @@ public interface ScoredChromosomeWindowListGenerator extends Generator {
 
 	
 	/**
-	 * @return a new {@link ChromosomeArrayListOfLists}
+	 * @return a new {@link GenomicDataArrayList}
 	 * @throws InvalidChromosomeException
 	 * @throws InterruptedException
 	 * @throws ExecutionException

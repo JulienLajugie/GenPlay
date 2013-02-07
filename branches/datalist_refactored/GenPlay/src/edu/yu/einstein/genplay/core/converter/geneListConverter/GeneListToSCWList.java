@@ -23,7 +23,7 @@ package edu.yu.einstein.genplay.core.converter.geneListConverter;
 
 import edu.yu.einstein.genplay.core.converter.Converter;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOCleanList;
@@ -40,7 +40,7 @@ public class GeneListToSCWList implements Converter {
 
 	private final GeneList 						list; 			// The input list.
 	private final ScoreCalculationMethod 		method; 		// method for the calculation of the scores of the result binlist
-	private ChromosomeListOfLists<?> 			result;			// The output list.
+	private GenomicDataList<?> 			result;			// The output list.
 
 
 	/**
@@ -75,7 +75,7 @@ public class GeneListToSCWList implements Converter {
 
 
 	@Override
-	public ChromosomeListOfLists<?> getList() {
+	public GenomicDataList<?> getList() {
 		return result;
 	}
 }

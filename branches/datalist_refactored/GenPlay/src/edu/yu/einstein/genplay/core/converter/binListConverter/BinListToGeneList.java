@@ -22,7 +22,7 @@
 package edu.yu.einstein.genplay.core.converter.binListConverter;
 
 import edu.yu.einstein.genplay.core.converter.Converter;
-import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
@@ -36,8 +36,8 @@ import edu.yu.einstein.genplay.core.list.geneList.GeneList;
  */
 public class BinListToGeneList implements Converter {
 
-	private final BinList 				list; 		// The input list.
-	private ChromosomeListOfLists<?> 	result;			// The output list.
+	private final BinList 		list;	 		// The input list.
+	private GenomicDataList<?> 	result;			// The output list.
 
 
 	/**
@@ -63,12 +63,14 @@ public class BinListToGeneList implements Converter {
 
 	@Override
 	public void convert() throws Exception {
-		result = new GeneList(list);
+		// TODO update binlists so it implements the genomicdatalist<SCW> and so we can use the genelist factory
+		throw new Exception("The convert binlist function has been removed");
+		//result = GeneListFactory.createGeneList(list);
 	}
 
 
 	@Override
-	public ChromosomeListOfLists<?> getList() {
+	public GenomicDataList<?> getList() {
 		return result;
 	}
 }

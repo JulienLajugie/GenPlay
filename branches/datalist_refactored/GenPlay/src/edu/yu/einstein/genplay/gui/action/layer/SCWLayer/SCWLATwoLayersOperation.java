@@ -24,7 +24,7 @@ package edu.yu.einstein.genplay.gui.action.layer.SCWLayer;
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoLayersMethod;
-import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOTwoLayers;
 import edu.yu.einstein.genplay.core.operation.Operation;
@@ -44,7 +44,7 @@ import edu.yu.einstein.genplay.util.colors.Colors;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public final class SCWLATwoLayersOperation extends TrackListActionOperationWorker<ChromosomeListOfLists<?>> {
+public final class SCWLATwoLayersOperation extends TrackListActionOperationWorker<GenomicDataList<?>> {
 
 	private static final long 				serialVersionUID = 4027173438789911860L; 		// generated ID
 	private static final String 			ACTION_NAME = "Two Layers Operation";			// action name
@@ -73,7 +73,7 @@ public final class SCWLATwoLayersOperation extends TrackListActionOperationWorke
 
 
 	@Override
-	public Operation<ChromosomeListOfLists<?>> initializeOperation() {
+	public Operation<GenomicDataList<?>> initializeOperation() {
 		selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
@@ -88,8 +88,8 @@ public final class SCWLATwoLayersOperation extends TrackListActionOperationWorke
 					if (resultTrack != null) {
 						scm = Utils.chooseScoreCalculationTwoLayersMethod(getRootPane());
 						if (scm != null) {
-							operation = new SCWLOTwoLayers(	(ChromosomeListOfLists<?>)selectedLayer.getData(),
-									(ChromosomeListOfLists<?>)otherLayer.getData(),
+							operation = new SCWLOTwoLayers(	(GenomicDataList<?>)selectedLayer.getData(),
+									(GenomicDataList<?>)otherLayer.getData(),
 									scm);
 							return operation;
 						}
@@ -102,7 +102,7 @@ public final class SCWLATwoLayersOperation extends TrackListActionOperationWorke
 
 
 	@Override
-	protected void doAtTheEnd(ChromosomeListOfLists<?> actionResult) {
+	protected void doAtTheEnd(GenomicDataList<?> actionResult) {
 		if (actionResult != null) {
 			SCWLayer newLayer = new SCWLayer(resultTrack, (ScoredChromosomeWindowList)actionResult, selectedLayer.getName() + " & " + otherLayer.getName());
 			// add info to the history

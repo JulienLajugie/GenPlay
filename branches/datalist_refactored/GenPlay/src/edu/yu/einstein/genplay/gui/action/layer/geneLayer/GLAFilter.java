@@ -23,6 +23,8 @@ package edu.yu.einstein.genplay.gui.action.layer.geneLayer;
 
 import javax.swing.ActionMap;
 
+import edu.yu.einstein.genplay.core.gene.Gene;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOFilterBandStop;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOFilterCount;
@@ -31,7 +33,7 @@ import edu.yu.einstein.genplay.core.list.geneList.operation.GLOFilterThreshold;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.filterDialog.FilterDialog;
-import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
+import edu.yu.einstein.genplay.gui.track.layer.geneLayer.GeneLayer;
 
 
 /**
@@ -70,7 +72,7 @@ public class GLAFilter extends TrackListActionOperationWorker<GeneList> {
 		if (selectedLayer != null) {
 			FilterDialog filterDialog = new FilterDialog();
 			if (filterDialog.showFilterDialog(getRootPane()) == FilterDialog.APPROVE_OPTION) {
-				GeneList geneList = selectedLayer.getData();
+				GenomicDataList<Gene> geneList = selectedLayer.getData();
 				Number min = filterDialog.getMinInput();
 				Number max = filterDialog.getMaxInput();
 				boolean isSaturation = filterDialog.isSaturation();

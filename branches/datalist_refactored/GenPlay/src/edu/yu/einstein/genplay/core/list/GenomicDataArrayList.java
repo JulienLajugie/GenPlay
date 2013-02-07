@@ -43,115 +43,37 @@ import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class ChromosomeArrayListOfLists<T> implements List<List<T>>, Cloneable, Serializable, ChromosomeListOfLists<T> {
+public class GenomicDataArrayList<T> implements List<List<T>>, Cloneable, Serializable, GenomicDataList<T> {
 
 	private static final long serialVersionUID = 3989560975472825193L; 	// generated ID
 	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private ProjectChromosome projectChromosome; 						// Instance of the Chromosome Manager
 	private List<List<T>> dataList;
 
 
 	/**
-	 * Constructor of {@link ChromosomeArrayListOfLists}.
+	 * Constructor of {@link GenomicDataArrayList}.
 	 */
-	public ChromosomeArrayListOfLists() {
+	public GenomicDataArrayList() {
 		super();
-		this.projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		dataList = new ArrayList<List<T>>();
 	}
 
 
-	/**
-	 * Saves the format version number during serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(projectChromosome);
-		out.writeObject(dataList);
-	}
-
-
-	/**
-	 * Unserializes the save format version number
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	@SuppressWarnings("unchecked")
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		projectChromosome = (ProjectChromosome) in.readObject();
-		dataList = (List<List<T>>) in.readObject();
-	}
-
-
-	// Implentation of ChromosomeListOfLists<T>
 	@Override
 	public void add(Chromosome chromosome, T element) throws InvalidChromosomeException {
-		get(projectChromosome.getIndex(chromosome)).add(element);
-	}
-
-
-	@Override
-	public List<T> get(Chromosome chromosome) throws InvalidChromosomeException {
-		return get(projectChromosome.getIndex(chromosome));
-	}
-
-
-	@Override
-	public T get(int chromosomeIndex, int elementIndex) {
-		return get(chromosomeIndex).get(elementIndex);
-	}
-
-
-	@Override
-	public T get(Chromosome chromosome, int index) throws InvalidChromosomeException {
-		return get(projectChromosome.getIndex(chromosome)).get(index);
-	}
-
-
-	@Override
-	public void set(Chromosome chromosome, int index, T element) throws InvalidChromosomeException {
-		get(projectChromosome.getIndex(chromosome)).set(index, element);
-	}
-
-
-	@Override
-	public void set(Chromosome chromosome, List<T> list) throws InvalidChromosomeException {
-		set(projectChromosome.getIndex(chromosome), list);
-	}
-
-
-	@Override
-	public void set(int chromosomeIndex, int elementIndex, T element) {
-		get(chromosomeIndex).set(elementIndex, element);
-	}
-
-
-	@Override
-	public int size(int index) {
-		return get(index).size();
-	}
-
-
-	@Override
-	public int size(Chromosome chromosome) throws InvalidChromosomeException {
-		return get(projectChromosome.getIndex(chromosome)).size();
-	}
-
-
-	// Implementation of List<List<T>>
-	@Override
-	public boolean add(List<T> e) {
-		return dataList.add(e);
+		get(getProjectChromosome().getIndex(chromosome)).add(element);
 	}
 
 
 	@Override
 	public void add(int index, List<T> element) {
 		dataList.add(index, element);
+	}
+
+
+	@Override
+	public boolean add(List<T> e) {
+		return dataList.add(e);
 	}
 
 
@@ -186,8 +108,34 @@ public class ChromosomeArrayListOfLists<T> implements List<List<T>>, Cloneable, 
 
 
 	@Override
+	public List<T> get(Chromosome chromosome) throws InvalidChromosomeException {
+		return get(getProjectChromosome().getIndex(chromosome));
+	}
+
+
+	@Override
+	public T get(Chromosome chromosome, int index) throws InvalidChromosomeException {
+		return get(getProjectChromosome().getIndex(chromosome)).get(index);
+	}
+
+
+	@Override
 	public List<T> get(int index) {
 		return dataList.get(index);
+	}
+
+
+	@Override
+	public T get(int chromosomeIndex, int elementIndex) {
+		return get(chromosomeIndex).get(elementIndex);
+	}
+
+
+	/**
+	 * @return the {@link ProjectChromosome}.  It's a shortcut for ProjectManager.getInstance().getProjectChromosome().
+	 */
+	private ProjectChromosome getProjectChromosome() {
+		return ProjectManager.getInstance().getProjectChromosome();
 	}
 
 
@@ -219,21 +167,36 @@ public class ChromosomeArrayListOfLists<T> implements List<List<T>>, Cloneable, 
 	public ListIterator<List<T>> listIterator() {
 		return dataList.listIterator();
 	}
+
+
 	@Override
 	public ListIterator<List<T>> listIterator(int index) {
 		return dataList.listIterator(index);
 	}
 
 
-	@Override
-	public boolean remove(Object o) {
-		return dataList.remove(o);
+	/**
+	 * Unserializes the save format version number
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		dataList = (List<List<T>>) in.readObject();
 	}
 
 
 	@Override
 	public List<T> remove(int index) {
 		return dataList.remove(index);
+	}
+
+
+	@Override
+	public boolean remove(Object o) {
+		return dataList.remove(o);
 	}
 
 
@@ -250,6 +213,24 @@ public class ChromosomeArrayListOfLists<T> implements List<List<T>>, Cloneable, 
 
 
 	@Override
+	public void set(Chromosome chromosome, int index, T element) throws InvalidChromosomeException {
+		get(getProjectChromosome().getIndex(chromosome)).set(index, element);
+	}
+
+
+	@Override
+	public void set(Chromosome chromosome, List<T> list) throws InvalidChromosomeException {
+		set(getProjectChromosome().getIndex(chromosome), list);
+	}
+
+
+	@Override
+	public void set(int chromosomeIndex, int elementIndex, T element) {
+		get(chromosomeIndex).set(elementIndex, element);
+	}
+
+
+	@Override
 	public List<T> set(int index, List<T> element) {
 		return dataList.set(index, element);
 	}
@@ -258,6 +239,18 @@ public class ChromosomeArrayListOfLists<T> implements List<List<T>>, Cloneable, 
 	@Override
 	public int size() {
 		return dataList.size();
+	}
+
+
+	@Override
+	public int size(Chromosome chromosome) throws InvalidChromosomeException {
+		return get(getProjectChromosome().getIndex(chromosome)).size();
+	}
+
+
+	@Override
+	public int size(int index) {
+		return get(index).size();
 	}
 
 
@@ -276,5 +269,16 @@ public class ChromosomeArrayListOfLists<T> implements List<List<T>>, Cloneable, 
 	@Override
 	public <U> U[] toArray(U[] a) {
 		return dataList.toArray(a);
+	}
+
+
+	/**
+	 * Saves the format version number during serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(dataList);
 	}
 }

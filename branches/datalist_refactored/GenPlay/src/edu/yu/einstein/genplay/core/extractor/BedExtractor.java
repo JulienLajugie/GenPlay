@@ -38,8 +38,8 @@ import edu.yu.einstein.genplay.core.generator.ChromosomeWindowListGenerator;
 import edu.yu.einstein.genplay.core.generator.GeneListGenerator;
 import edu.yu.einstein.genplay.core.generator.RepeatFamilyListGenerator;
 import edu.yu.einstein.genplay.core.generator.ScoredChromosomeWindowListGenerator;
-import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
-import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.core.list.GenomicDataArrayList;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.SCWList.MaskWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
@@ -48,6 +48,7 @@ import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
+import edu.yu.einstein.genplay.core.list.geneList.GeneListFactory;
 import edu.yu.einstein.genplay.core.list.repeatFamilyList.RepeatFamilyList;
 import edu.yu.einstein.genplay.exception.DataLineException;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
@@ -65,19 +66,19 @@ implements Serializable, StrandedExtractor, RepeatFamilyListGenerator, Chromosom
 ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 
 	private static final long serialVersionUID = 7967902877674655813L; // generated ID
-	private final ChromosomeListOfLists<Integer>	startList;		// list of position start
-	private final ChromosomeListOfLists<Integer>	stopList;		// list of position stop
-	private final ChromosomeListOfLists<String> 	nameList;		// list of name
-	private final ChromosomeListOfLists<Double>		scoreList;		// list of scores
-	private final ChromosomeListOfLists<Strand> 	strandList;		// list of strand
-	private final ChromosomeListOfLists<Integer>	UTR5BoundList;	// list of translation 5' bounds
-	private final ChromosomeListOfLists<Integer>	UTR3BoundList;	// list of translation 3' bounds
-	private final ChromosomeListOfLists<int[]> 		exonStartsList;	// list of list of exon starts
-	private final ChromosomeListOfLists<int[]> 		exonStopsList;	// list of list of exon stops
-	private final ChromosomeListOfLists<double[]>	exonScoresList;	// list of list of exon scores
-	private String									searchURL;		// url of the gene database for the search
-	private Strand 									selectedStrand;	// strand to extract, null for both
-	private ReadLengthAndShiftHandler				readHandler;	// handler that computes the position of read by applying the shift
+	private final GenomicDataList<Integer>	startList;		// list of position start
+	private final GenomicDataList<Integer>	stopList;		// list of position stop
+	private final GenomicDataList<String> 	nameList;		// list of name
+	private final GenomicDataList<Double>	scoreList;		// list of scores
+	private final GenomicDataList<Strand> 	strandList;		// list of strand
+	private final GenomicDataList<Integer>	UTR5BoundList;	// list of translation 5' bounds
+	private final GenomicDataList<Integer>	UTR3BoundList;	// list of translation 3' bounds
+	private final GenomicDataList<int[]> 	exonStartsList;	// list of list of exon starts
+	private final GenomicDataList<int[]> 	exonStopsList;	// list of list of exon stops
+	private final GenomicDataList<double[]>	exonScoresList;	// list of list of exon scores
+	private String							searchURL;		// url of the gene database for the search
+	private Strand 							selectedStrand;	// strand to extract, null for both
+	private ReadLengthAndShiftHandler		readHandler;	// handler that computes the position of read by applying the shift
 
 
 	/**
@@ -88,16 +89,16 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 	public BedExtractor(File dataFile, File logFile) {
 		super(dataFile, logFile);
 		// initialize the lists
-		startList = new ChromosomeArrayListOfLists<Integer>();
-		stopList = new ChromosomeArrayListOfLists<Integer>();
-		nameList = new ChromosomeArrayListOfLists<String>();
-		scoreList = new ChromosomeArrayListOfLists<Double>();
-		strandList = new ChromosomeArrayListOfLists<Strand>();
-		UTR5BoundList = new ChromosomeArrayListOfLists<Integer>();
-		UTR3BoundList = new ChromosomeArrayListOfLists<Integer>();
-		exonStartsList = new ChromosomeArrayListOfLists<int[]>();
-		exonStopsList = new ChromosomeArrayListOfLists<int[]>();
-		exonScoresList = new ChromosomeArrayListOfLists<double[]>();
+		startList = new GenomicDataArrayList<Integer>();
+		stopList = new GenomicDataArrayList<Integer>();
+		nameList = new GenomicDataArrayList<String>();
+		scoreList = new GenomicDataArrayList<Double>();
+		strandList = new GenomicDataArrayList<Strand>();
+		UTR5BoundList = new GenomicDataArrayList<Integer>();
+		UTR3BoundList = new GenomicDataArrayList<Integer>();
+		exonStartsList = new GenomicDataArrayList<int[]>();
+		exonStopsList = new GenomicDataArrayList<int[]>();
+		exonScoresList = new GenomicDataArrayList<double[]>();
 		// initialize the sublists
 		for (int i = 0; i < projectChromosome.size(); i++) {
 			startList.add(new IntArrayAsIntegerList());
@@ -303,7 +304,7 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 				}
 			}
 		}
-		return new GeneList(nameList, strandList, startList, stopList, UTR5BoundList, UTR3BoundList, exonStartsList, exonStopsList, exonScoresList, searchURL);
+		return GeneListFactory.createGeneList(nameList, strandList, startList, stopList, UTR5BoundList, UTR3BoundList, exonStartsList, exonStopsList, exonScoresList, searchURL);
 	}
 
 
@@ -355,7 +356,7 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 
 	@Override
 	public void setReadLengthAndShiftHandler(ReadLengthAndShiftHandler handler) {
-		this.readHandler = handler;
+		readHandler = handler;
 	}
 
 }

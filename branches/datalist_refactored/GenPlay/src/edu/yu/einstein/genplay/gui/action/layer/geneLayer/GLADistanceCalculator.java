@@ -34,7 +34,7 @@ import javax.swing.ActionMap;
 import edu.yu.einstein.genplay.core.comparator.GeneListMiddlePositionComparator;
 import edu.yu.einstein.genplay.core.comparator.GeneListStopPositionComparator;
 import edu.yu.einstein.genplay.core.gene.Gene;
-import edu.yu.einstein.genplay.core.list.geneList.GeneList;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLODistanceCalculator;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
@@ -42,8 +42,8 @@ import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotData;
 import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotPane;
 import edu.yu.einstein.genplay.gui.dialog.DistanceCalculatorDialog;
 import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
-import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
+import edu.yu.einstein.genplay.gui.track.layer.geneLayer.GeneLayer;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
@@ -62,7 +62,7 @@ public class GLADistanceCalculator extends TrackListActionOperationWorker<long[]
 	private GeneLayer 					selectedLayer;					// 1st selected layer
 	private GeneLayer					otherLayer;						// 2nd selected layer
 	private DistanceCalculatorDialog 	dcd;
-	private final List<ScatterPlotData> 		scatPlotData;
+	private final List<ScatterPlotData> scatPlotData;
 	private String						graphName;
 
 	/**
@@ -95,8 +95,8 @@ public class GLADistanceCalculator extends TrackListActionOperationWorker<long[]
 			if (layerChooserDialog.showDialog(getRootPane(), "Select Layer") == LayerChooserDialog.APPROVE_OPTION) {
 				otherLayer = (GeneLayer) layerChooserDialog.getSelectedLayer();
 				if (otherLayer != null) {
-					GeneList geneList1 = new GeneList(selectedLayer.getData());
-					GeneList geneList2 = new GeneList(otherLayer.getData());
+					GenomicDataList<Gene> geneList1 = selectedLayer.getData();
+					GenomicDataList<Gene> geneList2 = otherLayer.getData();
 					graphName = "Distance between \"" + selectedLayer.toString().substring(0, 10) + "\" and \"" + otherLayer.toString().substring(0, 10) + "\"";
 					dcd = new DistanceCalculatorDialog();
 					if (dcd.showDialog(getRootPane()) == DistanceCalculatorDialog.APPROVE_OPTION) {

@@ -35,7 +35,7 @@ import javax.swing.text.NumberFormatter;
 
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackConstants;
-import edu.yu.einstein.genplay.gui.track.layer.background.BackgroundData;
+import edu.yu.einstein.genplay.gui.track.layer.backgroundLayer.BackgroundData;
 
 /**
  * Panel of the track setting dialog with the settings related to the axis

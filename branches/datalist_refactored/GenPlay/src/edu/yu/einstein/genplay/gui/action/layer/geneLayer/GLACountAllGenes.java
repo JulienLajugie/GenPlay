@@ -26,11 +26,12 @@ import java.text.NumberFormat;
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
-import edu.yu.einstein.genplay.core.list.geneList.GeneList;
+import edu.yu.einstein.genplay.core.gene.Gene;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOCountAllGenes;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
+import edu.yu.einstein.genplay.gui.track.layer.geneLayer.GeneLayer;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -70,8 +71,8 @@ public final class GLACountAllGenes extends TrackListActionOperationWorker<Long>
 		if (selectedLayer != null) {
 			boolean[] selectedChromo = Utils.chooseChromosomes(getRootPane());
 			if (selectedChromo != null) {
-				GeneList binList = selectedLayer.getData();
-				Operation<Long> operation = new GLOCountAllGenes(binList, selectedChromo);
+				GenomicDataList<Gene> geneList = selectedLayer.getData();
+				Operation<Long> operation = new GLOCountAllGenes(geneList, selectedChromo);
 				return operation;
 			}
 		}

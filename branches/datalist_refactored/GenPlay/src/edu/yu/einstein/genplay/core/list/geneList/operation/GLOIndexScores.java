@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -29,6 +29,7 @@ import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.gene.Gene;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
+import edu.yu.einstein.genplay.core.list.geneList.GeneListFactory;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 
@@ -74,8 +75,8 @@ public class GLOIndexScores implements Operation<GeneList> {
 						return null;
 					}
 					List<Gene> resultList = new ArrayList<Gene>();
-					for (int i = 0; i < currentList.size() && !stopped; i++) {
-						Gene currentGene = currentList.get(i); 
+					for (int i = 0; (i < currentList.size()) && !stopped; i++) {
+						Gene currentGene = currentList.get(i);
 						if (currentGene != null) {
 							Gene copyCurrentGene = new Gene(currentGene);
 							if (copyCurrentGene.getExonScores() != null){
@@ -83,7 +84,7 @@ public class GLOIndexScores implements Operation<GeneList> {
 									double score = (copyCurrentGene.getExonScores()[j] - min) * indexFactor;
 									score = Math.max(0, score);
 									score = Math.min(1000, score);
-									copyCurrentGene.getExonScores()[j] = score;							
+									copyCurrentGene.getExonScores()[j] = score;
 								}
 							}
 							resultList.add(copyCurrentGene);
@@ -101,7 +102,7 @@ public class GLOIndexScores implements Operation<GeneList> {
 		if (result == null) {
 			return null;
 		} else {
-			return new GeneList(result, geneList.getSearchURL());
+			return GeneListFactory.createGeneList(result, geneList.getGeneDBURL());
 		}
 	}
 
@@ -127,6 +128,6 @@ public class GLOIndexScores implements Operation<GeneList> {
 
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }

@@ -28,9 +28,8 @@ import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleChromosomeWindow;
 
 
 /**
- * Provides operation on {@link List} of SCW
+ * Provides operation on {@link List} of {@link ScoredChromosomeWindow}
  * @author Chirag Gorasia
- * @version 0.1
  */
 public class SCWLists {
 

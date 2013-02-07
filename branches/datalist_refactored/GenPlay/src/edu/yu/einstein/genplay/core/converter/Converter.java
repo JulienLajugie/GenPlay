@@ -21,7 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.converter;
 
-import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 
 /**
  * @author Nicolas Fourel
@@ -40,7 +40,7 @@ public interface Converter {
 	/**
 	 * @return the converted list
 	 */
-	public ChromosomeListOfLists<?> getList ();
+	public GenomicDataList<?> getList ();
 
 
 	/**

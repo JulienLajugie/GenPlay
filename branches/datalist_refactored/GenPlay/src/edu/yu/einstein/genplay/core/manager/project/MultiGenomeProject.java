@@ -32,7 +32,7 @@ import java.util.Map;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VariantType;
-import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.manager.ProjectFiles;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.content.MGFileContentManager;
@@ -253,7 +253,7 @@ public class MultiGenomeProject implements Serializable {
 		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		List<Chromosome> currentChromosomeList = projectChromosome.getChromosomeList();
 		List<Chromosome> newChromosomeList = new ArrayList<Chromosome>();
-		ChromosomeListOfLists<MGSOffset> offsetList = multiGenome.getReferenceGenome().getAllele().getOffsetList();
+		GenomicDataList<MGSOffset> offsetList = multiGenome.getReferenceGenome().getAllele().getOffsetList();
 
 		for (Chromosome current: currentChromosomeList) {
 			String name = current.getName();

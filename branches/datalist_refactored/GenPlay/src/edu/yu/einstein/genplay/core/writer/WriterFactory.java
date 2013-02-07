@@ -25,7 +25,7 @@ import java.io.File;
 
 import javax.swing.filechooser.FileFilter;
 
-import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
@@ -144,7 +144,7 @@ public final class WriterFactory {
 	 * @return a class implementing the Writer interface.
 	 * @throws InvalidFileTypeException
 	 */
-	public static Writer getWriter(File outputFile, ChromosomeListOfLists<?> data, String name, FileFilter ff) throws InvalidFileTypeException {
+	public static Writer getWriter(File outputFile, GenomicDataList<?> data, String name, FileFilter ff) throws InvalidFileTypeException {
 		Writer writer = null;
 		if (data instanceof BinList) {
 			BinList binList = (BinList) data;

@@ -41,10 +41,11 @@ import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.gene.Gene;
 import edu.yu.einstein.genplay.core.genomeWindow.GenomeWindow;
-import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
+import edu.yu.einstein.genplay.core.list.GenomicDataArrayList;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
+import edu.yu.einstein.genplay.core.list.geneList.GeneListFactory;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 
@@ -152,8 +153,10 @@ public class DASConnector {
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
+	 * @throws ExecutionException
+	 * @throws InterruptedException
 	 */
-	public GeneList getGeneList(DataSource dataSource, DASType dasType) throws IOException, ParserConfigurationException, SAXException {
+	public GeneList getGeneList(DataSource dataSource, DASType dasType) throws IOException, ParserConfigurationException, SAXException, InterruptedException, ExecutionException {
 		//		if ((dasType.getPreferredFormat() != null) && (dasType.getPreferredFormat().equals(".link.psl;.bps;.psl;"))) {
 		//			return getGeneListFromPSL(cm, dataSource, dasType);
 		//		}
@@ -212,8 +215,9 @@ public class DASConnector {
 				}
 			}
 		}
-		return new GeneList(resultList);
+		return GeneListFactory.createGeneList(resultList);
 	}
+
 
 	/**
 	 * Retrieves a list of genes from a specified Data Source and a specified DAS Type and a specified Data Range
@@ -283,58 +287,21 @@ public class DASConnector {
 				}
 			}
 		}
-		return new GeneList(resultList);
+		try {
+			return GeneListFactory.createGeneList(resultList);
+		} catch (InterruptedException e) {
+			return null;
+		} catch (ExecutionException e) {
+			return null;
+		}
 	}
-
-
-	//	private GeneList getGeneListFromPSL(ChromosomeManager cm, DataSource dataSource, DASType dasType) throws IOException, ParserConfigurationException, SAXException {
-	//		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
-	//		File tempFile = File.createTempFile("GenPlay", null);
-	//		FileWriter fw = new FileWriter(tempFile);
-	//		for (Chromosome currentChromo: cm) {
-	//			EntryPoint currentEntryPoint = findEntryPoint(entryPointList, currentChromo);
-	//			// if we found a chromosome retrieve the data and
-	//			// we create a genelist for this chromosome
-	//			if (currentEntryPoint != null) {
-	//				URL queryUrl = generateQuery(dataSource, currentEntryPoint, dasType);
-	//				URLConnection connection = queryUrl.openConnection();
-	//				connection.setUseCaches(true);
-	//				System.out.println(queryUrl.toString());
-	//				connection.connect();
-	//				for (List<String> currentList: connection.getHeaderFields().values()) {
-	//					for (String currString: currentList) {
-	//						System.out.println(currString);
-	//					}
-	//				}
-	//				System.out.println(connection.getHeaderFields().values());
-	//				//File f = new File(queryUrl.toString() + "/features");
-	//				//InputStream is = connection.getInputStream();
-	//				BufferedInputStream is = new BufferedInputStream(connection.getInputStream());
-	//				//FileReader fr = new FileReader(f);
-	//				//InputStream is = new FileInputStream(f);
-	//				byte[] test = new byte[1];
-	//				int readInt = is.read(test);
-	//				System.out.println(readInt);
-	//				while (readInt != -1)	{
-	//					System.out.println((char)readInt);
-	//					//fw.write(test);
-	//					readInt = is.read(test);
-	//				}
-	//				is.close();
-	//			}
-	//		}
-	//		fw.close();
-	//		System.out.println(tempFile.getAbsolutePath());
-	//		PSLExtractor pslExtractor = new PSLExtractor(tempFile, null, cm);
-	//		return pslExtractor.toGeneList();
-	//	}
 
 
 	/**
 	 * Retrieves a list of ScoredChromosomeWindow from a specified Data Source and a specified DAS Type
 	 * @param dataSource a {@link DataSource}
 	 * @param dasType a {@link DASType}
-	 * @return a {@link ChromosomeArrayListOfLists}
+	 * @return a {@link GenomicDataArrayList}
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
@@ -397,12 +364,13 @@ public class DASConnector {
 		return new SimpleScoredChromosomeWindowList(resultList);
 	}
 
+
 	/**
 	 * Retrieves a list of ScoredChromosomeWindow from a specified Data Source and a specified DAS Type and a specified Data Range
 	 * @param dataSource a {@link DataSource}
 	 * @param dasType a {@link DASType}
 	 * @param genomeWindow a {@link GenomeWindow}
-	 * @return a {@link ChromosomeArrayListOfLists}
+	 * @return a {@link GenomicDataArrayList}
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
@@ -497,6 +465,7 @@ public class DASConnector {
 		}
 	}
 
+
 	/**
 	 * Generates a query for all the data for a specified data source, entry point and das type
 	 * @param dataSource a {@link DataSource}
@@ -518,6 +487,7 @@ public class DASConnector {
 		URLStr += dasType.getID();
 		return new URL(URLStr);
 	}
+
 
 	/**
 	 * Generates a query for all the data for a specified data source, entry point, das type and data range
@@ -545,8 +515,7 @@ public class DASConnector {
 		URLStr += genomeWindow.getStop();
 		URLStr += ";type=";
 		URLStr += dasType.getID();
-		//		System.out.println("New Start: " + genomeWindow.getStart());
-		//		System.out.println("New Stop: " + genomeWindow.getStop());
+
 		return new URL(URLStr);
 	}
 
@@ -581,27 +550,4 @@ public class DASConnector {
 	public void setAlleleType(AlleleType alleleType) {
 		this.alleleType = alleleType;
 	}
-
-
-	//	public static void main(String[] args) {
-	//		try {
-	//			long startTime = System.currentTimeMillis();
-	//			DASConnector dasc = new DASConnector("http://genome.ucsc.edu/cgi-bin/das/");
-	//			//DASConnector dasc = new DASConnector("http://www.ensembl.org/das/");
-	//			List<DataSource> dsList = dasc.getDataSourceList();
-	//			DataSource dataSource = dsList.get(0);
-	//			System.out.println(dataSource.getID());
-	//			List<DASType> dasTypeList = dasc.getDASTypeList(dataSource);
-	//			DASType dasType = dasTypeList.get(39);
-	//			System.out.println(dasType.getID());
-	//			//ScoredChromosomeWindowListInterface scwList = dasc.getSCWList(ChromosomeManager.getInstance(), dataSource, dasType);
-	//			GeneList geneList = dasc.getGeneList(ChromosomeManager.getInstance(), dataSource, dasType);
-	//			GeneListAsBedWriter glabw = new GeneListAsBedWriter(ChromosomeManager.getInstance(), new File("testDAS.bed"), geneList, "test");
-	//			glabw.write();
-	//			int length = (int)((System.currentTimeMillis() - startTime) / 1000l);
-	//			System.out.println(length);
-	//		} catch (Exception e) {
-	//			e.printStackTrace();
-	//		}
-	//	}
 }

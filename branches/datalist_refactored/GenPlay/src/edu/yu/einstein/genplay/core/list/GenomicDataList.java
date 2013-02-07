@@ -37,7 +37,7 @@ import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
  * @author Julien Lajugie
  * @version 0.1
  */
-public interface ChromosomeListOfLists<T> extends Cloneable, Serializable, List<List<T>> {
+public interface GenomicDataList<T> extends Cloneable, Serializable, List<List<T>> {
 
 
 	/**

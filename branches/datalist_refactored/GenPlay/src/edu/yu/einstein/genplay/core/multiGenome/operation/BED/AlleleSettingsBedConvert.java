@@ -24,8 +24,8 @@ package edu.yu.einstein.genplay.core.multiGenome.operation.BED;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.CoordinateSystemType;
-import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
-import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.core.list.GenomicDataArrayList;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.arrayList.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
@@ -40,9 +40,9 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
  */
 public class AlleleSettingsBedConvert extends AlleleSettingsBed {
 
-	private final ChromosomeListOfLists<Integer> 	startList;	// List of start position.
-	private final ChromosomeListOfLists<Integer> 	stopList;	// List of stop position.
-	private final ChromosomeListOfLists<Double> 	scoreList;	// List of scores.
+	private final GenomicDataList<Integer> 	startList;	// List of start position.
+	private final GenomicDataList<Integer> 	stopList;	// List of stop position.
+	private final GenomicDataList<Double> 	scoreList;	// List of scores.
 
 
 	/**
@@ -52,9 +52,9 @@ public class AlleleSettingsBedConvert extends AlleleSettingsBed {
 	 */
 	protected AlleleSettingsBedConvert (AlleleType allele, CoordinateSystemType coordinateSystem) {
 		super(allele, coordinateSystem);
-		startList = new ChromosomeArrayListOfLists<Integer>();
-		stopList = new ChromosomeArrayListOfLists<Integer>();
-		scoreList = new ChromosomeArrayListOfLists<Double>();
+		startList = new GenomicDataArrayList<Integer>();
+		stopList = new GenomicDataArrayList<Integer>();
+		scoreList = new GenomicDataArrayList<Double>();
 
 		// initialize the sublists
 		int chromosomeListSize = ProjectManager.getInstance().getProjectChromosome().getChromosomeList().size();
@@ -97,7 +97,7 @@ public class AlleleSettingsBedConvert extends AlleleSettingsBed {
 	/**
 	 * @return the startList
 	 */
-	public ChromosomeListOfLists<Integer> getStartList() {
+	public GenomicDataList<Integer> getStartList() {
 		return startList;
 	}
 
@@ -105,7 +105,7 @@ public class AlleleSettingsBedConvert extends AlleleSettingsBed {
 	/**
 	 * @return the stopList
 	 */
-	public ChromosomeListOfLists<Integer> getStopList() {
+	public GenomicDataList<Integer> getStopList() {
 		return stopList;
 	}
 
@@ -113,7 +113,7 @@ public class AlleleSettingsBedConvert extends AlleleSettingsBed {
 	/**
 	 * @return the scoreList
 	 */
-	public ChromosomeListOfLists<Double> getScoreList() {
+	public GenomicDataList<Double> getScoreList() {
 		return scoreList;
 	}
 

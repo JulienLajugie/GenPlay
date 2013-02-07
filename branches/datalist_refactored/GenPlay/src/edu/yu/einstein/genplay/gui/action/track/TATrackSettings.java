@@ -32,8 +32,8 @@ import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.dialog.trackSettings.TrackSettingsDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackScore;
-import edu.yu.einstein.genplay.gui.track.layer.background.BackgroundData;
-import edu.yu.einstein.genplay.gui.track.layer.foreground.ForegroundData;
+import edu.yu.einstein.genplay.gui.track.layer.backgroundLayer.BackgroundData;
+import edu.yu.einstein.genplay.gui.track.layer.foregroundLayer.ForegroundData;
 
 
 /**

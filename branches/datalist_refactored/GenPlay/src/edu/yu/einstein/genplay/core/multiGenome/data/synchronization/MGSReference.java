@@ -28,8 +28,8 @@ import java.io.Serializable;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.comparator.MGOffsetComparator;
-import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
-import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.core.list.GenomicDataArrayList;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsOffsetList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 
@@ -108,8 +108,8 @@ public class MGSReference implements Serializable {
 	 * The last duplicate, according to the {@link MGOffsetComparator} contains the longest length.
 	 */
 	public void removeDuplicate () {
-		ChromosomeListOfLists<MGSOffset> chromosomeListOfList = allele.getOffsetList();									// get the chromosome list of offset list of the reference genome allele
-		ChromosomeListOfLists<MGSOffset> chromosomeListOfListTmp = new ChromosomeArrayListOfLists<MGSOffset>();			// create a temporary chromosome list of offset list
+		GenomicDataList<MGSOffset> chromosomeListOfList = allele.getOffsetList();									// get the chromosome list of offset list of the reference genome allele
+		GenomicDataList<MGSOffset> chromosomeListOfListTmp = new GenomicDataArrayList<MGSOffset>();			// create a temporary chromosome list of offset list
 
 		int chromosomeListSize = ProjectManager.getInstance().getProjectChromosome().getChromosomeList().size();		// get the number of chromosome
 		for (int i = 0; i < chromosomeListSize; i++) {																	// loop from 0 to the number of chromosome (loop on the chromosomes)

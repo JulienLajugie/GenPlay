@@ -26,7 +26,7 @@ import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoLayersMethod;
-import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOTwoLayers;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
@@ -50,7 +50,7 @@ import edu.yu.einstein.genplay.util.colors.Colors;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class BLATwoLayersOperation extends TrackListActionOperationWorker<ChromosomeListOfLists<?>> {
+public final class BLATwoLayersOperation extends TrackListActionOperationWorker<GenomicDataList<?>> {
 
 	private static final long 				serialVersionUID = 4027173438789911860L; 		// generated ID
 	private static final String 			ACTION_NAME = "Two Layers Operation";			// action name
@@ -79,7 +79,7 @@ public final class BLATwoLayersOperation extends TrackListActionOperationWorker<
 
 
 	@Override
-	public Operation<ChromosomeListOfLists<?>> initializeOperation() {
+	public Operation<GenomicDataList<?>> initializeOperation() {
 		selectedLayer = (BinLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
@@ -96,7 +96,7 @@ public final class BLATwoLayersOperation extends TrackListActionOperationWorker<
 						if (scm != null) {
 							if (isSCWList()) {
 								operation = new SCWLOTwoLayers(selectedLayer.getData(),
-										(ChromosomeListOfLists<?>)otherLayer.getData(),
+										(GenomicDataList<?>)otherLayer.getData(),
 										scm);
 							} else {
 								DataPrecision precision = Utils.choosePrecision(getRootPane());
@@ -118,7 +118,7 @@ public final class BLATwoLayersOperation extends TrackListActionOperationWorker<
 
 
 	@Override
-	protected void doAtTheEnd(ChromosomeListOfLists<?> actionResult) {
+	protected void doAtTheEnd(GenomicDataList<?> actionResult) {
 		if (actionResult != null) {
 			Layer<?> newLayer;
 			if (isSCWList()) {

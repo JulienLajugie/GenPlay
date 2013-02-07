@@ -88,7 +88,16 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 
 
 	/**
-	 * @param genomePosition a position on the genome in bp
+	 * @param position a position on a chromosome in base pair
+	 * @return a position on the screen
+	 */
+	public long genomeToAbsoluteScreenPosition(int position) {
+		return Math.round(position * xRatio);
+	}
+
+
+	/**
+	 * @param genomePosition a position on a chromosome in base pair
 	 * @return a horizontal position in pixel corresponding to the specified genomic position (can be out of the track bounds)
 	 */
 	public int genomeToScreenPosition(int genomePosition) {
@@ -98,7 +107,7 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 
 
 	/**
-	 * @param genomeWidth a genomic width in bp
+	 * @param genomeWidth a width between two positions on a chromosome in base pair
 	 * @return a width in pixels corresponding to the specified genomic width
 	 */
 	public int genomeToScreenWidth(int genomeWidth) {

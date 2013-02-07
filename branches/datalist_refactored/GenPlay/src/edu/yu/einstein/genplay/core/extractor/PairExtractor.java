@@ -31,15 +31,14 @@ import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.extractor.utils.DataLineValidator;
 import edu.yu.einstein.genplay.core.generator.BinListGenerator;
-import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
-import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.core.list.GenomicDataArrayList;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.arrayList.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.exception.DataLineException;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 import edu.yu.einstein.genplay.util.Utils;
-
 
 
 /**
@@ -51,8 +50,8 @@ public final class PairExtractor extends TextFileExtractor
 implements Serializable, BinListGenerator {
 
 	private static final long serialVersionUID = -2160273514926102255L; // generated ID
-	private final ChromosomeListOfLists<Integer>	positionList;		// list of position start
-	private final ChromosomeListOfLists<Double>	scoreList;			// list of scores
+	private final GenomicDataList<Integer>	positionList;		// list of position start
+	private final GenomicDataList<Double>	scoreList;			// list of scores
 
 
 	/**
@@ -62,8 +61,8 @@ implements Serializable, BinListGenerator {
 	 */
 	public PairExtractor(File dataFile, File logFile) {
 		super(dataFile, logFile);
-		positionList = new ChromosomeArrayListOfLists<Integer>();
-		scoreList = new ChromosomeArrayListOfLists<Double>();
+		positionList = new GenomicDataArrayList<Integer>();
+		scoreList = new GenomicDataArrayList<Double>();
 		// initialize the sublists
 		for (int i = 0; i < projectChromosome.size(); i++) {
 			positionList.add(new IntArrayAsIntegerList());

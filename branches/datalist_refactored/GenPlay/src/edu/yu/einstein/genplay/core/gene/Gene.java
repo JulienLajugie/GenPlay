@@ -83,8 +83,8 @@ public final class Gene implements Serializable, Cloneable, ChromosomeWindow {
 	 * @param strand Strand of the gene
 	 * @param start Transcription start position
 	 * @param stop Transcription end position
-	 * @param UTR5Bound transcription 5' bond
-	 * @param UTR3Bound transcription 3' bond
+	 * @param UTR5Bound transcription 5' bound
+	 * @param UTR3Bound transcription 3' bound
 	 * @param exonStarts Exon start positions
 	 * @param exonStops Exon end positions
 	 * @param exonScores Exon scores

@@ -51,10 +51,10 @@ import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventType;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackListener;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
-import edu.yu.einstein.genplay.gui.track.layer.background.BackgroundData;
-import edu.yu.einstein.genplay.gui.track.layer.background.BackgroundLayer;
-import edu.yu.einstein.genplay.gui.track.layer.foreground.ForegroundData;
-import edu.yu.einstein.genplay.gui.track.layer.foreground.ForegroundLayer;
+import edu.yu.einstein.genplay.gui.track.layer.backgroundLayer.BackgroundData;
+import edu.yu.einstein.genplay.gui.track.layer.backgroundLayer.BackgroundLayer;
+import edu.yu.einstein.genplay.gui.track.layer.foregroundLayer.ForegroundData;
+import edu.yu.einstein.genplay.gui.track.layer.foregroundLayer.ForegroundLayer;
 import edu.yu.einstein.genplay.gui.track.layer.variantLayer.MultiGenomeDrawer;
 
 /**

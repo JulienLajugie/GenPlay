@@ -27,7 +27,7 @@ import javax.swing.ActionMap;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
-import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.writer.Writer;
 import edu.yu.einstein.genplay.core.writer.WriterFactory;
@@ -101,7 +101,7 @@ public class LASave extends TrackListActionWorker<Void> {
 				File selectedFile = Utils.addExtension(jfc.getSelectedFile(), selectedFilter.getExtensions()[0]);
 				if (!Utils.cancelBecauseFileExist(getRootPane(), selectedFile)) {
 					boolean isValid = true;
-					ChromosomeListOfLists<?> data = (ChromosomeListOfLists<?>) selectedLayer.getData();
+					GenomicDataList<?> data = (GenomicDataList<?>) selectedLayer.getData();
 					String name = selectedLayer.getName();
 					writer = WriterFactory.getWriter(selectedFile, data, name, selectedFilter);
 					if (ProjectManager.getInstance().isMultiGenomeProject()) {

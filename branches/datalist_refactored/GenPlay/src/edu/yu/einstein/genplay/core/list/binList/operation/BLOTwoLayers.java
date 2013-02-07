@@ -29,7 +29,7 @@ import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoLayersMethod;
-import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.arrayList.ListFactory;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.operation.Operation;
@@ -43,7 +43,7 @@ import edu.yu.einstein.genplay.exception.BinListDifferentWindowSizeException;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class BLOTwoLayers implements Operation<ChromosomeListOfLists<?>> {
+public class BLOTwoLayers implements Operation<GenomicDataList<?>> {
 
 	private final BinList 					binList1;		// first binlist to add 
 	private final BinList 					binList2; 		// second binlist to add

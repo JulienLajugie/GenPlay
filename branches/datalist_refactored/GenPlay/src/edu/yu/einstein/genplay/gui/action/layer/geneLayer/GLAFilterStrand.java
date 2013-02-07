@@ -25,11 +25,13 @@ import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.core.enums.Strand;
+import edu.yu.einstein.genplay.core.gene.Gene;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOFilterStrand;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
+import edu.yu.einstein.genplay.gui.track.layer.geneLayer.GeneLayer;
 
 
 /**
@@ -67,7 +69,7 @@ public class GLAFilterStrand extends TrackListActionOperationWorker<GeneList> {
 	public Operation<GeneList> initializeOperation() {
 		selectedLayer = (GeneLayer) getValue("Layer");
 		if (selectedLayer != null) {
-			GeneList geneList = selectedLayer.getData();
+			GenomicDataList<Gene> geneList = selectedLayer.getData();
 			Strand selectedStrand = (Strand) JOptionPane.showInputDialog(getRootPane(), "Keep the genes that are on the strand:", "Select Strand", JOptionPane.QUESTION_MESSAGE, null, Strand.values(), Strand.FIVE);
 			if (selectedStrand != null) {
 				operation = new GLOFilterStrand(geneList, selectedStrand);

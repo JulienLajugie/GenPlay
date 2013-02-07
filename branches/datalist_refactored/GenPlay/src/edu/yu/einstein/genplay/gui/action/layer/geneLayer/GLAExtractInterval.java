@@ -23,12 +23,14 @@ package edu.yu.einstein.genplay.gui.action.layer.geneLayer;
 
 import javax.swing.ActionMap;
 
+import edu.yu.einstein.genplay.core.gene.Gene;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOExtractIntervals;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.ExtractGeneIntervalsDialog;
-import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
+import edu.yu.einstein.genplay.gui.track.layer.geneLayer.GeneLayer;
 
 
 /**
@@ -66,7 +68,7 @@ public final class GLAExtractInterval  extends TrackListActionOperationWorker<Ge
 	public Operation<GeneList> initializeOperation() {
 		selectedLayer = (GeneLayer) getValue("Layer");
 		if (selectedLayer != null) {
-			GeneList geneList = selectedLayer.getData();
+			GenomicDataList<Gene> geneList = selectedLayer.getData();
 			ExtractGeneIntervalsDialog dialog = new ExtractGeneIntervalsDialog();
 			if (dialog.showDialog(getRootPane()) == ExtractGeneIntervalsDialog.APPROVE_OPTION) {
 				operation = new GLOExtractIntervals(geneList, dialog.getStartDistance(), dialog.getStartFrom(), dialog.getStopDistance(), dialog.getStopFrom());

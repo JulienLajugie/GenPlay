@@ -27,7 +27,7 @@ import edu.yu.einstein.genplay.core.converter.Converter;
 import edu.yu.einstein.genplay.core.converter.ConverterFactory;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.SCWList.MaskWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
@@ -36,12 +36,12 @@ import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.ConvertDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
-import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
 import edu.yu.einstein.genplay.gui.track.layer.MaskLayer;
 import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 import edu.yu.einstein.genplay.gui.track.layer.VersionedLayer;
+import edu.yu.einstein.genplay.gui.track.layer.geneLayer.GeneLayer;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
@@ -50,7 +50,7 @@ import edu.yu.einstein.genplay.util.colors.Colors;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class LAConvert extends TrackListActionWorker<ChromosomeListOfLists<?>> {
+public class LAConvert extends TrackListActionWorker<GenomicDataList<?>> {
 
 	private static final long serialVersionUID = 4027173438789911860L; 	// generated ID
 	private static final String 	ACTION_NAME = "Convert Layer";// action name
@@ -59,7 +59,7 @@ public class LAConvert extends TrackListActionWorker<ChromosomeListOfLists<?>> {
 	private Track					resultTrack;					// The result track.
 	private Converter				converter;						// The track converter.
 
-	private ChromosomeListOfLists<?> 	data;
+	private GenomicDataList<?> 	data;
 	private LayerType 					layerType;
 	private String 						layerName;
 	private int 						binSize;
@@ -93,7 +93,7 @@ public class LAConvert extends TrackListActionWorker<ChromosomeListOfLists<?>> {
 
 
 	@Override
-	public ChromosomeListOfLists<?> processAction() {
+	public GenomicDataList<?> processAction() {
 		selectedLayer = (Layer<?>) getValue("Layer");
 		ConvertDialog dialog = new ConvertDialog(selectedLayer);
 		if (dialog.showDialog(getRootPane()) == ConvertDialog.APPROVE_OPTION) {
@@ -105,7 +105,7 @@ public class LAConvert extends TrackListActionWorker<ChromosomeListOfLists<?>> {
 			}
 			resultTrack = dialog.getOutputTrack();
 			layerName = dialog.getOutputLayerName();
-			data = (ChromosomeListOfLists<?>) selectedLayer.getData();
+			data = (GenomicDataList<?>) selectedLayer.getData();
 
 			if (data != null) {
 				converter = ConverterFactory.getConverter(data, layerType, binSize, precision, method);
@@ -127,7 +127,7 @@ public class LAConvert extends TrackListActionWorker<ChromosomeListOfLists<?>> {
 
 
 	@Override
-	protected void doAtTheEnd(ChromosomeListOfLists<?> actionResult) {
+	protected void doAtTheEnd(GenomicDataList<?> actionResult) {
 		if (actionResult != null) {
 			Layer<?> newLayer = null;
 			if (layerType == LayerType.GENE_LAYER) {

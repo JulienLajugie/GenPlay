@@ -37,14 +37,13 @@ import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.Strand;
 import edu.yu.einstein.genplay.core.generator.BinListGenerator;
-import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
-import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.core.list.GenomicDataArrayList;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.arrayList.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.exception.DataLineException;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
-
 
 
 /**
@@ -56,11 +55,11 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 
 	private static final long serialVersionUID = 8952410963820358882L;	// generated ID
 
-	private final ChromosomeListOfLists<Integer>	positionList;		// list of position
-	private ChromosomeListOfLists<Integer>	stopPositionList;	// list of stop position. Only used when a read length is specified
-	private ChromosomeListOfLists<Double>	scoreList;			// list of score. Only used when a read length is specified
-	private final ChromosomeListOfLists<Strand>	strandList;			// list of strand
-	private final int[][] 						matchTypeCount; 	// number of lines with 0,1,2 mistakes per chromosome
+	private final GenomicDataList<Integer>	positionList;		// list of position
+	private GenomicDataList<Integer>		stopPositionList;	// list of stop position. Only used when a read length is specified
+	private GenomicDataList<Double>			scoreList;			// list of score. Only used when a read length is specified
+	private final GenomicDataList<Strand>	strandList;			// list of strand
+	private final int[][] 					matchTypeCount; 	// number of lines with 0,1,2 mistakes per chromosome
 	private int 							NMCount = 0;		// Non matched line count
 	private int 							QCCount = 0;		// quality control line count
 	private int 							multiMatchCount = 0;// multi-match line count
@@ -75,8 +74,8 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 	 */
 	public ElandExtendedExtractor(File dataFile, File logFile) {
 		super(dataFile, logFile);
-		positionList = new ChromosomeArrayListOfLists<Integer>();
-		strandList = new ChromosomeArrayListOfLists<Strand>();
+		positionList = new GenomicDataArrayList<Integer>();
+		strandList = new GenomicDataArrayList<Strand>();
 		for (int i = 0; i < projectChromosome.size(); i++) {
 			positionList.add(new IntArrayAsIntegerList());
 			strandList.add(new ArrayList<Strand>());
@@ -328,8 +327,8 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 		readHandler = handler;
 		if (readHandler.getReadLength() != 0) {
 			// if a read length is specified we need to have a stop position list
-			stopPositionList = new ChromosomeArrayListOfLists<Integer>();
-			scoreList = new ChromosomeArrayListOfLists<Double>();
+			stopPositionList = new GenomicDataArrayList<Integer>();
+			scoreList = new GenomicDataArrayList<Double>();
 			for (int i = 0; i < projectChromosome.size(); i++) {
 				stopPositionList.add(new IntArrayAsIntegerList());
 				scoreList.add(new DoubleArrayAsDoubleList());

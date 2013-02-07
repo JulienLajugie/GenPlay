@@ -32,8 +32,8 @@ import java.util.concurrent.ExecutionException;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleScoredChromosomeWindow;
-import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
-import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.core.list.GenomicDataArrayList;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.SCWList.MaskWindowList;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
@@ -53,10 +53,10 @@ final class SCWLOptions implements Serializable {
 	protected static final Double DEFAULT_SCORE = 1.0;
 
 	protected final ProjectChromosome 									projectChromosome;	//ChromosomeManager
-	private final 		ChromosomeArrayListOfLists<ScoredChromosomeWindow> 	list;				//list of scored chromosome windows indexed by chromosome
-	private final 		ChromosomeListOfLists<Integer> 				startList;			//store the original start list position
-	private final 		ChromosomeListOfLists<Integer> 				stopList;			//store the original stop list position
-	private final 		ChromosomeListOfLists<Double> 				scoreList;			//store the original score list
+	private final 		GenomicDataArrayList<ScoredChromosomeWindow> 	list;				//list of scored chromosome windows indexed by chromosome
+	private final 		GenomicDataList<Integer> 				startList;			//store the original start list position
+	private final 		GenomicDataList<Integer> 				stopList;			//store the original stop list position
+	private final 		GenomicDataList<Double> 				scoreList;			//store the original score list
 
 	/**
 	 * SCWOption constructor
@@ -67,11 +67,11 @@ final class SCWLOptions implements Serializable {
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
-	protected SCWLOptions (	final ChromosomeListOfLists<Integer> startList,
-			final ChromosomeListOfLists<Integer> stopList,
-			final ChromosomeListOfLists<Double> scoreList) throws InterruptedException, ExecutionException {
+	protected SCWLOptions (	final GenomicDataList<Integer> startList,
+			final GenomicDataList<Integer> stopList,
+			final GenomicDataList<Double> scoreList) throws InterruptedException, ExecutionException {
 		this.projectChromosome = ProjectManager.getInstance().getProjectChromosome();
-		this.list = new ChromosomeArrayListOfLists<ScoredChromosomeWindow>();
+		this.list = new GenomicDataArrayList<ScoredChromosomeWindow>();
 		this.startList = startList;
 		this.stopList = stopList;
 		this.scoreList = scoreList;
@@ -218,7 +218,7 @@ final class SCWLOptions implements Serializable {
 		}
 	}
 
-	protected ChromosomeArrayListOfLists<ScoredChromosomeWindow> getList() {
+	protected GenomicDataArrayList<ScoredChromosomeWindow> getList() {
 		return list;
 	}
 

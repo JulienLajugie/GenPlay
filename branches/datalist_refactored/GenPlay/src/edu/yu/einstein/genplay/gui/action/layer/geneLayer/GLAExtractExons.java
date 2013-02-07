@@ -23,13 +23,15 @@ package edu.yu.einstein.genplay.gui.action.layer.geneLayer;
 
 import javax.swing.ActionMap;
 
+import edu.yu.einstein.genplay.core.gene.Gene;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOExtractExons;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.ExtractExonsDialog;
 import edu.yu.einstein.genplay.gui.dialog.ExtractGeneIntervalsDialog;
-import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
+import edu.yu.einstein.genplay.gui.track.layer.geneLayer.GeneLayer;
 
 
 /**
@@ -67,7 +69,7 @@ public class GLAExtractExons extends TrackListActionOperationWorker<GeneList> {
 	public Operation<GeneList> initializeOperation() throws Exception {
 		selectedLayer = (GeneLayer) getValue("Layer");
 		if (selectedLayer != null) {
-			GeneList geneList = selectedLayer.getData();
+			GenomicDataList<Gene> geneList = selectedLayer.getData();
 			ExtractExonsDialog dialog = new ExtractExonsDialog();
 			if (dialog.showDialog(getRootPane()) == ExtractGeneIntervalsDialog.APPROVE_OPTION) {
 				operation = new GLOExtractExons(geneList, dialog.getSelectedExonOption());
