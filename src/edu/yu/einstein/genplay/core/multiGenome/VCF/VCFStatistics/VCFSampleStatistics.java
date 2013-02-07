@@ -92,4 +92,22 @@ public interface VCFSampleStatistics extends VCFStatistics {
 	 */
 	public void incrementNumberOfHeterozygoteDeletions();
 
+
+	/**
+	 * increment the numberOfHemizygoteSNPs
+	 */
+	public void incrementNumberOfHemizygoteSNPs();
+
+
+	/**
+	 * increment the numberOfHemizygoteInsertions
+	 */
+	public void incrementNumberOfHemizygoteInsertions();
+
+
+	/**
+	 * increment the numberOfHemizygoteDeletions
+	 */
+	public void incrementNumberOfHemizygoteDeletions();
+
 }

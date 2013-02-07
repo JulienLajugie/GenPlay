@@ -175,7 +175,6 @@ public class MGSynchronizer implements VCFScannerReceiver, Serializable {
 			for (int i = 0; i < currentAltIndexes.length; i++) {
 				int currentAltIndex = VCFLineUtility.getAlleleIndex(currentAltIndexes[i]);
 
-
 				switch (currentAltIndex) {
 				case NO_CALL:
 					byteGenotypeArray[i] = NO_CALL;
@@ -201,7 +200,7 @@ public class MGSynchronizer implements VCFScannerReceiver, Serializable {
 				}
 			}
 
-			updateGenotypeSampleStatistics(currentStatistics.getSampleStatistics(genomeName), line.getAlternativesTypes(), byteGenotypeArray[0], byteGenotypeArray[1]);
+			updateGenotypeSampleStatistics(currentStatistics.getSampleStatistics(genomeName), line.getAlternativesTypes(), byteGenotypeArray);
 			genotypes.put(genomeName, byteGenotypeArray);
 		}
 
@@ -271,28 +270,45 @@ public class MGSynchronizer implements VCFScannerReceiver, Serializable {
 	 * @param firstAlleleNumber		number of the first allele
 	 * @param secondAlleleNumber	number of the second allele
 	 */
-	private void updateGenotypeSampleStatistics (VCFSampleStatistics statistic, VariantType[] variantTypes, int firstAlleleIndex, int secondAlleleIndex) {
-		boolean homozygote = isVariantHomozygote(firstAlleleIndex, secondAlleleIndex);
-		boolean heterozygote = isVariantHeterozygote(firstAlleleIndex, secondAlleleIndex);
+	private void updateGenotypeSampleStatistics (VCFSampleStatistics statistic, VariantType[] variantTypes, byte[] alleleIndexes) {
+		boolean hemizygote = false;
+		boolean homozygote = false;
+		boolean heterozygote = false;
+		if (alleleIndexes.length > 0) {
+			if (alleleIndexes.length == 1) {
+				hemizygote = true;
+			} else {
+				homozygote = isVariantHomozygote(alleleIndexes[0], alleleIndexes[1]);
+				heterozygote = isVariantHeterozygote(alleleIndexes[0], alleleIndexes[1]);
+			}
 
-		for (VariantType variantType: variantTypes) {
-			if (homozygote) {
-				if (firstAlleleIndex > -1) {
-					if (variantType == VariantType.SNPS) {
-						statistic.incrementNumberOfHomozygoteSNPs();
-					} else if (variantType == VariantType.INSERTION) {
-						statistic.incrementNumberOfHomozygoteInsertions();
-					} else if (variantType == VariantType.DELETION) {
-						statistic.incrementNumberOfHomozygoteDeletions();
+			for (VariantType variantType: variantTypes) {
+				if (homozygote) {
+					if (alleleIndexes[0] > -1) {
+						if (variantType == VariantType.SNPS) {
+							statistic.incrementNumberOfHomozygoteSNPs();
+						} else if (variantType == VariantType.INSERTION) {
+							statistic.incrementNumberOfHomozygoteInsertions();
+						} else if (variantType == VariantType.DELETION) {
+							statistic.incrementNumberOfHomozygoteDeletions();
+						}
 					}
-				}
-			} else if (heterozygote) {
-				if (variantType == VariantType.SNPS) {
-					statistic.incrementNumberOfHeterozygoteSNPs();
-				} else if (variantType == VariantType.INSERTION) {
-					statistic.incrementNumberOfHeterozygoteInsertions();
-				} else if (variantType == VariantType.DELETION) {
-					statistic.incrementNumberOfHeterozygoteDeletions();
+				} else if (heterozygote) {
+					if (variantType == VariantType.SNPS) {
+						statistic.incrementNumberOfHeterozygoteSNPs();
+					} else if (variantType == VariantType.INSERTION) {
+						statistic.incrementNumberOfHeterozygoteInsertions();
+					} else if (variantType == VariantType.DELETION) {
+						statistic.incrementNumberOfHeterozygoteDeletions();
+					}
+				} else if (hemizygote) {
+					if (variantType == VariantType.SNPS) {
+						statistic.incrementNumberOfHemizygoteSNPs();
+					} else if (variantType == VariantType.INSERTION) {
+						statistic.incrementNumberOfHemizygoteInsertions();
+					} else if (variantType == VariantType.DELETION) {
+						statistic.incrementNumberOfHemizygoteDeletions();
+					}
 				}
 			}
 		}

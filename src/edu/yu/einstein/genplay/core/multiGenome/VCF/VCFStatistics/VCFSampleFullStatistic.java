@@ -38,7 +38,7 @@ public class VCFSampleFullStatistic implements Serializable, VCFSampleStatistics
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 
 	// Number of lines and columns
-	private static final int LINE_NUMBER				= 18;		// Number of lines in the data object
+	private static final int LINE_NUMBER				= 21;		// Number of lines in the data object
 	private static final int COLUMN_NUMBER				= 4;		// Number of columns in the data object
 
 	// Column indexes
@@ -60,12 +60,15 @@ public class VCFSampleFullStatistic implements Serializable, VCFSampleStatistics
 	private static final int SNP_GENOTYPE_INDEX 				= 9;
 	private static final int SNP_HOMOZYGOTE_INDEX 				= 10;
 	private static final int SNP_HETEROZYGOTE_INDEX 			= 11;
-	private static final int INSERTION_GENOTYPE_INDEX 			= 12;
-	private static final int INSERTION_HOMOZYGOTE_INDEX 		= 13;
-	private static final int INSERTION_HETEROZYGOTE_INDEX 		= 14;
-	private static final int DELETION_GENOTYPE_INDEX 			= 15;
-	private static final int DELETION_HOMOZYGOTE_INDEX 			= 16;
-	private static final int DELETION_HETEROZYGOTE_INDEX 		= 17;
+	private static final int SNP_HEMIZYGOTE_INDEX 				= 12;
+	private static final int INSERTION_GENOTYPE_INDEX 			= 13;
+	private static final int INSERTION_HOMOZYGOTE_INDEX 		= 14;
+	private static final int INSERTION_HETEROZYGOTE_INDEX 		= 15;
+	private static final int INSERTION_HEMIZYGOTE_INDEX 		= 16;
+	private static final int DELETION_GENOTYPE_INDEX 			= 17;
+	private static final int DELETION_HOMOZYGOTE_INDEX 			= 18;
+	private static final int DELETION_HETEROZYGOTE_INDEX 		= 19;
+	private static final int DELETION_HEMIZYGOTE_INDEX 			= 20;
 
 	// Column names
 	private static final String SECTION_NAME				= "Sections";					// Name for the section column
@@ -81,6 +84,7 @@ public class VCFSampleFullStatistic implements Serializable, VCFSampleStatistics
 	private static final String DELETION_LABEL						= "   Deletion";
 	private static final String HOMOZYGOTE_LABEL					= "      Homozygote";
 	private static final String HETEROZYGOTE_LABEL					= "      Heterozygote";
+	private static final String HEMIZYGOTE_LABEL					= "      Hemizygote";
 	private static final String INDEL_LABEL							= "      Indel";
 	private static final String SV_LABEL							= "      SV";
 
@@ -98,6 +102,9 @@ public class VCFSampleFullStatistic implements Serializable, VCFSampleStatistics
 	private int numberOfHeterozygoteSNPs;
 	private int numberOfHeterozygoteInsertions;
 	private int numberOfHeterozygoteDeletions;
+	private int numberOfHemizygoteSNPs;
+	private int numberOfHemizygoteInsertions;
+	private int numberOfHemizygoteDeletions;
 
 
 	/**
@@ -141,6 +148,9 @@ public class VCFSampleFullStatistic implements Serializable, VCFSampleStatistics
 		numberOfHeterozygoteSNPs = 0;
 		numberOfHeterozygoteInsertions = 0;
 		numberOfHeterozygoteDeletions = 0;
+		numberOfHemizygoteSNPs = 0;
+		numberOfHemizygoteInsertions = 0;
+		numberOfHemizygoteDeletions = 0;
 	}
 
 
@@ -169,12 +179,15 @@ public class VCFSampleFullStatistic implements Serializable, VCFSampleStatistics
 			data[SNP_GENOTYPE_INDEX][SECTION_INDEX] = SNP_LABEL;
 			data[SNP_HETEROZYGOTE_INDEX][SECTION_INDEX] = HETEROZYGOTE_LABEL;
 			data[SNP_HOMOZYGOTE_INDEX][SECTION_INDEX] = HOMOZYGOTE_LABEL;
+			data[SNP_HEMIZYGOTE_INDEX][SECTION_INDEX] = HEMIZYGOTE_LABEL;
 			data[INSERTION_GENOTYPE_INDEX][SECTION_INDEX] = INSERTION_LABEL;
 			data[INSERTION_HETEROZYGOTE_INDEX][SECTION_INDEX] = HETEROZYGOTE_LABEL;
 			data[INSERTION_HOMOZYGOTE_INDEX][SECTION_INDEX] = HOMOZYGOTE_LABEL;
+			data[INSERTION_HEMIZYGOTE_INDEX][SECTION_INDEX] = HEMIZYGOTE_LABEL;
 			data[DELETION_GENOTYPE_INDEX][SECTION_INDEX] = DELETION_LABEL;
 			data[DELETION_HETEROZYGOTE_INDEX][SECTION_INDEX] = HETEROZYGOTE_LABEL;
 			data[DELETION_HOMOZYGOTE_INDEX][SECTION_INDEX] = HOMOZYGOTE_LABEL;
+			data[DELETION_HEMIZYGOTE_INDEX][SECTION_INDEX] = HEMIZYGOTE_LABEL;
 
 
 			int totalSNP = numberOfSNPs;
@@ -182,9 +195,9 @@ public class VCFSampleFullStatistic implements Serializable, VCFSampleStatistics
 			int totalDeletion = numberOfShortDeletions + numberOfLongDeletions;
 			int totalVariation = totalSNP + totalInsertion + totalDeletion;
 
-			int totalGTSNP = numberOfHeterozygoteSNPs + numberOfHomozygoteSNPs;
-			int totalGTInsertion = numberOfHeterozygoteInsertions + numberOfHomozygoteInsertions;
-			int totalGTDeletion = numberOfHeterozygoteDeletions + numberOfHomozygoteDeletions;
+			int totalGTSNP = numberOfHeterozygoteSNPs + numberOfHomozygoteSNPs + numberOfHemizygoteSNPs;
+			int totalGTInsertion = numberOfHeterozygoteInsertions + numberOfHomozygoteInsertions + numberOfHemizygoteInsertions;
+			int totalGTDeletion = numberOfHeterozygoteDeletions + numberOfHomozygoteDeletions + numberOfHemizygoteDeletions;
 			int totalGT = totalGTSNP + totalGTInsertion + totalGTDeletion;
 
 
@@ -200,12 +213,15 @@ public class VCFSampleFullStatistic implements Serializable, VCFSampleStatistics
 			data[SNP_GENOTYPE_INDEX][NUMBER_INDEX] = totalGTSNP;
 			data[SNP_HETEROZYGOTE_INDEX][NUMBER_INDEX] = numberOfHeterozygoteSNPs;
 			data[SNP_HOMOZYGOTE_INDEX][NUMBER_INDEX] = numberOfHomozygoteSNPs;
+			data[SNP_HEMIZYGOTE_INDEX][NUMBER_INDEX] = numberOfHemizygoteSNPs;
 			data[INSERTION_GENOTYPE_INDEX][NUMBER_INDEX] = totalGTInsertion;
 			data[INSERTION_HETEROZYGOTE_INDEX][NUMBER_INDEX] = numberOfHeterozygoteInsertions;
 			data[INSERTION_HOMOZYGOTE_INDEX][NUMBER_INDEX] = numberOfHomozygoteInsertions;
+			data[INSERTION_HEMIZYGOTE_INDEX][NUMBER_INDEX] = numberOfHemizygoteInsertions;
 			data[DELETION_GENOTYPE_INDEX][NUMBER_INDEX] = totalGTDeletion;
 			data[DELETION_HETEROZYGOTE_INDEX][NUMBER_INDEX] = numberOfHeterozygoteDeletions;
 			data[DELETION_HOMOZYGOTE_INDEX][NUMBER_INDEX] = numberOfHomozygoteDeletions;
+			data[DELETION_HEMIZYGOTE_INDEX][NUMBER_INDEX] = numberOfHemizygoteDeletions;
 
 
 			data[VARIATION_INDEX][PERCENTAGE_SECTION_INDEX] = "100";
@@ -220,12 +236,15 @@ public class VCFSampleFullStatistic implements Serializable, VCFSampleStatistics
 			data[SNP_GENOTYPE_INDEX][PERCENTAGE_SECTION_INDEX] = getPercentage(getDataInt(SNP_GENOTYPE_INDEX), totalGT);
 			data[SNP_HETEROZYGOTE_INDEX][PERCENTAGE_SECTION_INDEX] = getPercentage(getDataInt(SNP_HETEROZYGOTE_INDEX), totalGTSNP);
 			data[SNP_HOMOZYGOTE_INDEX][PERCENTAGE_SECTION_INDEX] = getPercentage(getDataInt(SNP_HOMOZYGOTE_INDEX), totalGTSNP);
+			data[SNP_HEMIZYGOTE_INDEX][PERCENTAGE_SECTION_INDEX] = getPercentage(getDataInt(SNP_HEMIZYGOTE_INDEX), totalGTSNP);
 			data[INSERTION_GENOTYPE_INDEX][PERCENTAGE_SECTION_INDEX] = getPercentage(getDataInt(INSERTION_GENOTYPE_INDEX), totalGT);
 			data[INSERTION_HETEROZYGOTE_INDEX][PERCENTAGE_SECTION_INDEX] = getPercentage(getDataInt(INSERTION_HETEROZYGOTE_INDEX), totalGTInsertion);
 			data[INSERTION_HOMOZYGOTE_INDEX][PERCENTAGE_SECTION_INDEX] = getPercentage(getDataInt(INSERTION_HOMOZYGOTE_INDEX), totalGTInsertion);
+			data[INSERTION_HEMIZYGOTE_INDEX][PERCENTAGE_SECTION_INDEX] = getPercentage(getDataInt(INSERTION_HEMIZYGOTE_INDEX), totalGTInsertion);
 			data[DELETION_GENOTYPE_INDEX][PERCENTAGE_SECTION_INDEX] = getPercentage(getDataInt(DELETION_GENOTYPE_INDEX), totalGT);
 			data[DELETION_HETEROZYGOTE_INDEX][PERCENTAGE_SECTION_INDEX] = getPercentage(getDataInt(DELETION_HETEROZYGOTE_INDEX), totalGTDeletion);
 			data[DELETION_HOMOZYGOTE_INDEX][PERCENTAGE_SECTION_INDEX] = getPercentage(getDataInt(DELETION_HOMOZYGOTE_INDEX), totalGTDeletion);
+			data[DELETION_HEMIZYGOTE_INDEX][PERCENTAGE_SECTION_INDEX] = getPercentage(getDataInt(DELETION_HEMIZYGOTE_INDEX), totalGTDeletion);
 
 
 			data[VARIATION_INDEX][PERCENTAGE_TOTAL_INDEX] = "100";
@@ -240,12 +259,15 @@ public class VCFSampleFullStatistic implements Serializable, VCFSampleStatistics
 			data[SNP_GENOTYPE_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(SNP_GENOTYPE_INDEX), totalGT);
 			data[SNP_HETEROZYGOTE_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(SNP_HETEROZYGOTE_INDEX), totalGT);
 			data[SNP_HOMOZYGOTE_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(SNP_HOMOZYGOTE_INDEX), totalGT);
+			data[SNP_HEMIZYGOTE_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(SNP_HEMIZYGOTE_INDEX), totalGT);
 			data[INSERTION_GENOTYPE_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(INSERTION_GENOTYPE_INDEX), totalGT);
 			data[INSERTION_HETEROZYGOTE_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(INSERTION_HETEROZYGOTE_INDEX), totalGT);
 			data[INSERTION_HOMOZYGOTE_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(INSERTION_HOMOZYGOTE_INDEX), totalGT);
+			data[INSERTION_HEMIZYGOTE_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(INSERTION_HEMIZYGOTE_INDEX), totalGT);
 			data[DELETION_GENOTYPE_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(DELETION_GENOTYPE_INDEX), totalGT);
 			data[DELETION_HETEROZYGOTE_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(DELETION_HETEROZYGOTE_INDEX), totalGT);
 			data[DELETION_HOMOZYGOTE_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(DELETION_HOMOZYGOTE_INDEX), totalGT);
+			data[DELETION_HEMIZYGOTE_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(DELETION_HEMIZYGOTE_INDEX), totalGT);
 		}
 	}
 
@@ -362,6 +384,24 @@ public class VCFSampleFullStatistic implements Serializable, VCFSampleStatistics
 	@Override
 	public void incrementNumberOfHeterozygoteDeletions() {
 		this.numberOfHeterozygoteDeletions++;
+	}
+
+
+	@Override
+	public void incrementNumberOfHemizygoteSNPs() {
+		this.numberOfHemizygoteSNPs++;
+	}
+
+
+	@Override
+	public void incrementNumberOfHemizygoteInsertions() {
+		this.numberOfHemizygoteInsertions++;
+	}
+
+
+	@Override
+	public void incrementNumberOfHemizygoteDeletions() {
+		this.numberOfHemizygoteDeletions++;
 	}
 
 

@@ -38,7 +38,7 @@ public class VCFSampleMixStatistic implements Serializable, VCFSampleStatistics 
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 
 	// Number of lines and columns
-	private static final int LINE_NUMBER				= 18;		// Number of lines in the data object
+	private static final int LINE_NUMBER				= 21;		// Number of lines in the data object
 	private static final int COLUMN_NUMBER				= 4;		// Number of columns in the data object
 
 	// Column indexes
@@ -60,12 +60,15 @@ public class VCFSampleMixStatistic implements Serializable, VCFSampleStatistics 
 	private static final int SNP_GENOTYPE_INDEX 				= 9;
 	private static final int SNP_HOMOZYGOTE_INDEX 				= 10;
 	private static final int SNP_HETEROZYGOTE_INDEX 			= 11;
-	private static final int INSERTION_GENOTYPE_INDEX 			= 12;
-	private static final int INSERTION_HOMOZYGOTE_INDEX 		= 13;
-	private static final int INSERTION_HETEROZYGOTE_INDEX 		= 14;
-	private static final int DELETION_GENOTYPE_INDEX 			= 15;
-	private static final int DELETION_HOMOZYGOTE_INDEX 			= 16;
-	private static final int DELETION_HETEROZYGOTE_INDEX 		= 17;
+	private static final int SNP_HEMIZYGOTE_INDEX 				= 12;
+	private static final int INSERTION_GENOTYPE_INDEX 			= 13;
+	private static final int INSERTION_HOMOZYGOTE_INDEX 		= 14;
+	private static final int INSERTION_HETEROZYGOTE_INDEX 		= 15;
+	private static final int INSERTION_HEMIZYGOTE_INDEX 		= 16;
+	private static final int DELETION_GENOTYPE_INDEX 			= 17;
+	private static final int DELETION_HOMOZYGOTE_INDEX 			= 18;
+	private static final int DELETION_HETEROZYGOTE_INDEX 		= 19;
+	private static final int DELETION_HEMIZYGOTE_INDEX 			= 20;
 
 	// Column names
 	private static final String SECTION_NAME				= "Sections";					// Name for the section column
@@ -81,6 +84,7 @@ public class VCFSampleMixStatistic implements Serializable, VCFSampleStatistics 
 	private static final String DELETION_LABEL						= "   Deletion";
 	private static final String HOMOZYGOTE_LABEL					= "      Homozygote";
 	private static final String HETEROZYGOTE_LABEL					= "      Heterozygote";
+	private static final String HEMIZYGOTE_LABEL					= "      Hemizygote";
 	private static final String INDEL_LABEL							= "      Indel";
 	private static final String SV_LABEL							= "      SV";
 
@@ -169,12 +173,15 @@ public class VCFSampleMixStatistic implements Serializable, VCFSampleStatistics 
 			data[SNP_GENOTYPE_INDEX][SECTION_INDEX] = SNP_LABEL;
 			data[SNP_HETEROZYGOTE_INDEX][SECTION_INDEX] = HETEROZYGOTE_LABEL;
 			data[SNP_HOMOZYGOTE_INDEX][SECTION_INDEX] = HOMOZYGOTE_LABEL;
+			data[SNP_HEMIZYGOTE_INDEX][SECTION_INDEX] = HEMIZYGOTE_LABEL;
 			data[INSERTION_GENOTYPE_INDEX][SECTION_INDEX] = INSERTION_LABEL;
 			data[INSERTION_HETEROZYGOTE_INDEX][SECTION_INDEX] = HETEROZYGOTE_LABEL;
 			data[INSERTION_HOMOZYGOTE_INDEX][SECTION_INDEX] = HOMOZYGOTE_LABEL;
+			data[INSERTION_HEMIZYGOTE_INDEX][SECTION_INDEX] = HEMIZYGOTE_LABEL;
 			data[DELETION_GENOTYPE_INDEX][SECTION_INDEX] = DELETION_LABEL;
 			data[DELETION_HETEROZYGOTE_INDEX][SECTION_INDEX] = HETEROZYGOTE_LABEL;
 			data[DELETION_HOMOZYGOTE_INDEX][SECTION_INDEX] = HOMOZYGOTE_LABEL;
+			data[DELETION_HEMIZYGOTE_INDEX][SECTION_INDEX] = HEMIZYGOTE_LABEL;
 
 			data[VARIATION_INDEX][NATIVE_INDEX] = firstStatistics.getDataInt(VARIATION_INDEX);
 			data[SNP_VARIATION_INDEX][NATIVE_INDEX] = firstStatistics.getDataInt(SNP_VARIATION_INDEX);
@@ -188,12 +195,15 @@ public class VCFSampleMixStatistic implements Serializable, VCFSampleStatistics 
 			data[SNP_GENOTYPE_INDEX][NATIVE_INDEX] = firstStatistics.getDataInt(SNP_GENOTYPE_INDEX);
 			data[SNP_HETEROZYGOTE_INDEX][NATIVE_INDEX] = firstStatistics.getDataInt(SNP_HETEROZYGOTE_INDEX);
 			data[SNP_HOMOZYGOTE_INDEX][NATIVE_INDEX] = firstStatistics.getDataInt(SNP_HOMOZYGOTE_INDEX);
+			data[SNP_HEMIZYGOTE_INDEX][NATIVE_INDEX] = firstStatistics.getDataInt(SNP_HEMIZYGOTE_INDEX);
 			data[INSERTION_GENOTYPE_INDEX][NATIVE_INDEX] = firstStatistics.getDataInt(INSERTION_GENOTYPE_INDEX);
 			data[INSERTION_HETEROZYGOTE_INDEX][NATIVE_INDEX] = firstStatistics.getDataInt(INSERTION_HETEROZYGOTE_INDEX);
 			data[INSERTION_HOMOZYGOTE_INDEX][NATIVE_INDEX] = firstStatistics.getDataInt(INSERTION_HOMOZYGOTE_INDEX);
+			data[INSERTION_HEMIZYGOTE_INDEX][NATIVE_INDEX] = firstStatistics.getDataInt(INSERTION_HEMIZYGOTE_INDEX);
 			data[DELETION_GENOTYPE_INDEX][NATIVE_INDEX] = firstStatistics.getDataInt(DELETION_GENOTYPE_INDEX);
 			data[DELETION_HETEROZYGOTE_INDEX][NATIVE_INDEX] = firstStatistics.getDataInt(DELETION_HETEROZYGOTE_INDEX);
 			data[DELETION_HOMOZYGOTE_INDEX][NATIVE_INDEX] = firstStatistics.getDataInt(DELETION_HOMOZYGOTE_INDEX);
+			data[DELETION_HEMIZYGOTE_INDEX][NATIVE_INDEX] = firstStatistics.getDataInt(DELETION_HEMIZYGOTE_INDEX);
 
 			data[VARIATION_INDEX][NEW_INDEX] = secondStatistics.getDataInt(VARIATION_INDEX);
 			data[SNP_VARIATION_INDEX][NEW_INDEX] = secondStatistics.getDataInt(SNP_VARIATION_INDEX);
@@ -207,12 +217,15 @@ public class VCFSampleMixStatistic implements Serializable, VCFSampleStatistics 
 			data[SNP_GENOTYPE_INDEX][NEW_INDEX] = secondStatistics.getDataInt(SNP_GENOTYPE_INDEX);
 			data[SNP_HETEROZYGOTE_INDEX][NEW_INDEX] = secondStatistics.getDataInt(SNP_HETEROZYGOTE_INDEX);
 			data[SNP_HOMOZYGOTE_INDEX][NEW_INDEX] = secondStatistics.getDataInt(SNP_HOMOZYGOTE_INDEX);
+			data[SNP_HEMIZYGOTE_INDEX][NEW_INDEX] = secondStatistics.getDataInt(SNP_HEMIZYGOTE_INDEX);
 			data[INSERTION_GENOTYPE_INDEX][NEW_INDEX] = secondStatistics.getDataInt(INSERTION_GENOTYPE_INDEX);
 			data[INSERTION_HETEROZYGOTE_INDEX][NEW_INDEX] = secondStatistics.getDataInt(INSERTION_HETEROZYGOTE_INDEX);
 			data[INSERTION_HOMOZYGOTE_INDEX][NEW_INDEX] = secondStatistics.getDataInt(INSERTION_HOMOZYGOTE_INDEX);
+			data[INSERTION_HEMIZYGOTE_INDEX][NEW_INDEX] = secondStatistics.getDataInt(INSERTION_HEMIZYGOTE_INDEX);
 			data[DELETION_GENOTYPE_INDEX][NEW_INDEX] = secondStatistics.getDataInt(DELETION_GENOTYPE_INDEX);
 			data[DELETION_HETEROZYGOTE_INDEX][NEW_INDEX] = secondStatistics.getDataInt(DELETION_HETEROZYGOTE_INDEX);
 			data[DELETION_HOMOZYGOTE_INDEX][NEW_INDEX] = secondStatistics.getDataInt(DELETION_HOMOZYGOTE_INDEX);
+			data[DELETION_HEMIZYGOTE_INDEX][NEW_INDEX] = secondStatistics.getDataInt(DELETION_HEMIZYGOTE_INDEX);
 
 			for (int i = 0; i < LINE_NUMBER; i++) {
 				data[i][DIFF_INDEX] = getDataInt(i, NEW_INDEX) - getDataInt(i, NATIVE_INDEX);
@@ -283,6 +296,15 @@ public class VCFSampleMixStatistic implements Serializable, VCFSampleStatistics 
 
 	@Override
 	public void incrementNumberOfHeterozygoteDeletions() {}
+
+	@Override
+	public void incrementNumberOfHemizygoteSNPs() {}
+
+	@Override
+	public void incrementNumberOfHemizygoteInsertions() {}
+
+	@Override
+	public void incrementNumberOfHemizygoteDeletions() {}
 
 
 	@Override

@@ -194,12 +194,16 @@ public class ManualVCFReader {
 	 * @return				an array of two integers containing the indexes
 	 */
 	private int[] getAlternativeIndexes (String genomeName, BGZIPReader reader, MGSynchronizer synchronizer) {
-		int[] indexes = new int[2];
+
 		int genomeIndex = reader.getIndexFromGenome(genomeName);
 		String genotype = Utils.split(reader.getCurrentLine().getField(genomeIndex), ':')[0];
-
-		indexes[0] = VCFLineUtility.getAlleleIndex(genotype.charAt(0) + "");
-		indexes[1] = VCFLineUtility.getAlleleIndex(genotype.charAt(2) + "");
+		int size = (int) Math.floor(genotype.length() / 2);
+		int[] indexes = new int[size];
+		int charIndex = 0;
+		for (int i = 0; i < size; i++) {
+			indexes[i] = VCFLineUtility.getAlleleIndex(genotype.charAt(charIndex) + "");
+			charIndex += 2;
+		}
 
 		return indexes;
 	}
