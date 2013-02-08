@@ -28,24 +28,24 @@ import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.enums.Strand;
 import edu.yu.einstein.genplay.core.gene.Gene;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneListFactory;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 
 
-
 /**
- * Extracts exons of each gene of a {@link GeneList}
+ * Extracts exons of each gene of a {@link GenomicDataList} of genes
  * @author Chirag Gorasia
  * @author Julien Lajugie
  * @version 0.1
  */
-public class GLOExtractExons implements Operation<GeneList> {
+public class GLOExtractExons implements Operation<GenomicDataList<Gene>> {
 
-	private final GeneList 	geneList;			// input list
-	private final int 		exonOption;			// exon option: first, last or all
-	private boolean			stopped = false;	// true if the operation must be stopped
+	private final GenomicDataList<Gene> geneList;			// input list
+	private final int 					exonOption;			// exon option: first, last or all
+	private boolean						stopped = false;	// true if the operation must be stopped
 	/**
 	 * extract the first exon
 	 */
@@ -65,14 +65,14 @@ public class GLOExtractExons implements Operation<GeneList> {
 	 * @param geneList input list
 	 * @param exonOption used to specify to extract only the first exon, the last exon or all the exon
 	 */
-	public GLOExtractExons(GeneList geneList, int exonOption) {
+	public GLOExtractExons(GenomicDataList<Gene> geneList, int exonOption) {
 		this.geneList = geneList;
 		this.exonOption = exonOption;
 	}
 
 
 	@Override
-	public GeneList compute() throws Exception {
+	public GenomicDataList<Gene> compute() throws Exception {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();
 		for(final List<Gene> currentList: geneList) {
@@ -111,7 +111,11 @@ public class GLOExtractExons implements Operation<GeneList> {
 		if (result == null) {
 			return null;
 		} else {
-			return GeneListFactory.createGeneList(result, geneList.getGeneDBURL());
+			String geneDBURL = null;
+			if (geneList instanceof GeneList) {
+				geneDBURL = ((GeneList) geneList).getGeneDBURL();
+			}
+			return GeneListFactory.createGeneList(result, geneDBURL);
 		}
 	}
 

@@ -25,9 +25,10 @@ import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.core.gene.Gene;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOScoreFromBinList;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOScoreFromSCWList;
 import edu.yu.einstein.genplay.core.operation.Operation;
@@ -45,7 +46,7 @@ import edu.yu.einstein.genplay.util.Utils;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class GLAScoreExons  extends TrackListActionOperationWorker<GeneList> {
+public class GLAScoreExons  extends TrackListActionOperationWorker<GenomicDataList<Gene>> {
 
 	private static final long serialVersionUID = 2102571378866219218L; 		// generated ID
 	private static final String 	ACTION_NAME = "Score Exons";			// action name
@@ -73,7 +74,7 @@ public class GLAScoreExons  extends TrackListActionOperationWorker<GeneList> {
 
 
 	@Override
-	public Operation<GeneList> initializeOperation() throws Exception {
+	public Operation<GenomicDataList<Gene>> initializeOperation() throws Exception {
 		selectedLayer = (GeneLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			LayerType[] availableLayerTypes = {LayerType.BIN_LAYER, LayerType.SCW_LAYER};
@@ -110,7 +111,7 @@ public class GLAScoreExons  extends TrackListActionOperationWorker<GeneList> {
 
 
 	@Override
-	protected void doAtTheEnd(GeneList actionResult) {
+	protected void doAtTheEnd(GenomicDataList<Gene> actionResult) {
 		if (actionResult != null) {
 			selectedLayer.setData(actionResult, operation.getDescription() + otherLayer.getName());
 		}

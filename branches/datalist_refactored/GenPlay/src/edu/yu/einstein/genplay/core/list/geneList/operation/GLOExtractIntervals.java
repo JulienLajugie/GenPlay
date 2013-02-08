@@ -28,12 +28,12 @@ import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.enums.Strand;
 import edu.yu.einstein.genplay.core.gene.Gene;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneListFactory;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-
 
 
 /**
@@ -42,14 +42,14 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
  * @author Chirag Gorasia
  * @version 0.1
  */
-public class GLOExtractIntervals implements Operation<GeneList> {
+public class GLOExtractIntervals implements Operation<GenomicDataList<Gene>> {
 
-	private final GeneList 	geneList;			// input list
-	private final int 		startDistance;		// distance from the start reference
-	private final int 		startFrom;			// start reference (see constants below)
-	private final int 		stopDistance;		// distant from the stop reference
-	private final int 		stopFrom;			// stop reference
-	private boolean			stopped = false;	// true if the operation must be stopped
+	private final GenomicDataList<Gene> geneList;			// input list
+	private final int 					startDistance;		// distance from the start reference
+	private final int 					startFrom;			// start reference (see constants below)
+	private final int 					stopDistance;		// distant from the stop reference
+	private final int 					stopFrom;			// stop reference
+	private boolean						stopped = false;	// true if the operation must be stopped
 
 
 	/**
@@ -96,7 +96,7 @@ public class GLOExtractIntervals implements Operation<GeneList> {
 	 * @param stopDistance distant from the stop reference
 	 * @param stopFrom stop reference
 	 */
-	public GLOExtractIntervals(GeneList geneList, int startDistance, int startFrom, int stopDistance, int stopFrom) {
+	public GLOExtractIntervals(GenomicDataList<Gene> geneList, int startDistance, int startFrom, int stopDistance, int stopFrom) {
 		this.geneList = geneList;
 		this.startDistance = startDistance;
 		this.startFrom = startFrom;
@@ -106,7 +106,7 @@ public class GLOExtractIntervals implements Operation<GeneList> {
 
 
 	@Override
-	public GeneList compute() throws Exception {
+	public GenomicDataList<Gene> compute() throws Exception {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();
 
@@ -255,7 +255,11 @@ public class GLOExtractIntervals implements Operation<GeneList> {
 		if (result == null) {
 			return null;
 		} else {
-			return GeneListFactory.createGeneList(result, geneList.getGeneDBURL());
+			String geneDBURL = null;
+			if (geneList instanceof GeneList) {
+				geneDBURL = ((GeneList) geneList).getGeneDBURL();
+			}
+			return GeneListFactory.createGeneList(result, geneDBURL);
 		}
 	}
 

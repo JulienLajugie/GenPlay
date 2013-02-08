@@ -30,8 +30,8 @@ import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.Strand;
 import edu.yu.einstein.genplay.core.gene.Gene;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
@@ -44,7 +44,7 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 public class GLOScoreRepartitionAroundStart implements Operation<double[][]> {
 
 	private boolean							stopped = false;		// true if the operation must be stopped
-	private final GeneList					geneList;				// input gene list
+	private final GenomicDataList<Gene>		geneList;				// input list of genes
 	private final BinList 					binList;				// input bin list
 	private final boolean[] 				selectedChromosomes;	// selected chromosomes
 	private final int 						binSize;				// size of the bins of scores
@@ -62,7 +62,7 @@ public class GLOScoreRepartitionAroundStart implements Operation<double[][]> {
 	 * @param binCount count of bins each side of the promoter
 	 * @param scoreCalculationMethod {@link ScoreCalculationMethod} to compute the score of the bins
 	 */
-	public GLOScoreRepartitionAroundStart(GeneList geneList, BinList binList, boolean[] selectedChromosomes,
+	public GLOScoreRepartitionAroundStart(GenomicDataList<Gene> geneList, BinList binList, boolean[] selectedChromosomes,
 			int binSize, int binCount, ScoreCalculationMethod scoreCalculationMethod) {
 		this.geneList = geneList;
 		this.binList = binList;

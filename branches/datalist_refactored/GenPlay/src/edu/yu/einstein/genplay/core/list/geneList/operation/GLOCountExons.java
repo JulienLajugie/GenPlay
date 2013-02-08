@@ -28,7 +28,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.gene.Gene;
-import edu.yu.einstein.genplay.core.list.geneList.GeneList;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 
@@ -41,20 +41,20 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
  */
 public class GLOCountExons implements Operation<Long> {
 
-	private final GeneList 	geneList;		// input GeneList
-	private final boolean[] chromoList;		// 1 boolean / chromosome.
+	private final GenomicDataList<Gene> geneList;		// input list of genes
+	private final boolean[] 			chromoList;		// 1 boolean / chromosome.
 	// each boolean sets to true means that the corresponding chromosome is selected
-	private boolean			stopped = false;// true if the operation must be stopped
+	private boolean						stopped = false;// true if the operation must be stopped
 
 
 	/**
 	 * Creates an instance of {@link GLOCountExons}.
-	 * Counts the exons on the selected chromosomes of the {@link GeneList}.
-	 * @param geneList input {@link GeneList}
+	 * Counts the exons on the selected chromosomes of the {@link GenomicDataList} of Genes.
+	 * @param geneList input {@link GenomicDataList} of Genes
 	 * @param chromoList list of boolean. A boolean set to true means that the
 	 * chromosome with the same index is going to be used for the calculation.
 	 */
-	public GLOCountExons(GeneList geneList, boolean[] chromoList) {
+	public GLOCountExons(GenomicDataList<Gene> geneList, boolean[] chromoList) {
 		this.geneList = geneList;
 		this.chromoList = chromoList;
 	}

@@ -27,15 +27,14 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.gene.Gene;
-import edu.yu.einstein.genplay.core.list.geneList.GeneList;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.geneList.operation.distanceCalculator.DistanceCalculator;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 
 
-
 /**
- * Computes the distance between closest genes from two {@link GeneList}
+ * Computes the distance between closest genes from two {@link GenomicDataList} of genes
  * The position to be used as a reference (ie: start / middle / stop of a gene)
  * must be specified by the user.
  * @author Chirag Gorasia
@@ -43,10 +42,10 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
  */
 public class GLODistanceCalculator implements Operation<long[][]>{
 
-	private final GeneList 	geneList1;			// input GeneList
-	private final GeneList	geneList2;			// input GeneList
-	private final int 		selectionCase;		// selection type
-	private boolean			stopped = false;	// true if the operation must be stopped
+	private final GenomicDataList<Gene> geneList1;	// input genomic data list of genes
+	private final GenomicDataList<Gene>	geneList2;	// input genomic data list of genes
+	private final int 		selectionCase;			// selection type
+	private boolean			stopped = false;		// true if the operation must be stopped
 
 	private static final int POSITIVE_START_START = 1;
 	private static final int POSITIVE_START_MIDDLE = 2;
@@ -99,11 +98,11 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 	/**
 	 * Creates an instance of {@link GLODistanceCalculator}
-	 * @param geneList1 a {@link GeneList}
-	 * @param geneList2 a second {@link GeneList}
+	 * @param geneList1 a {@link GenomicDataList} of genes
+	 * @param geneList2 a second {@link GenomicDataList} of genes
 	 * @param selectionCase selection type
 	 */
-	public GLODistanceCalculator(GeneList geneList1, GeneList geneList2, int selectionCase) {
+	public GLODistanceCalculator(GenomicDataList<Gene> geneList1, GenomicDataList<Gene> geneList2, int selectionCase) {
 		this.geneList1 = geneList1;
 		this.geneList2 = geneList2;
 		this.selectionCase = selectionCase;		
@@ -151,7 +150,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 	 * @param secondList
 	 * @return a double 2-D array containing distances
 	 */
-	private long[] handleCases(List<Gene> firstList, GeneList secondList, int chrindex) {
+	private long[] handleCases(List<Gene> firstList, GenomicDataList<Gene> secondList, int chrindex) {
 		DistanceCalculator dc;
 		int k = 0;
 		long[] distanceByChromosomes = new long[firstList.size()];

@@ -25,7 +25,6 @@ import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.gene.Gene;
 import edu.yu.einstein.genplay.core.list.GenomicDataList;
-import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOExtractIntervals;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
@@ -38,7 +37,7 @@ import edu.yu.einstein.genplay.gui.track.layer.geneLayer.GeneLayer;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class GLAExtractInterval  extends TrackListActionOperationWorker<GeneList> {
+public final class GLAExtractInterval  extends TrackListActionOperationWorker<GenomicDataList<Gene>> {
 
 	private static final long serialVersionUID = 2102571378866219218L; // generated ID
 	private static final String 	ACTION_NAME = "Extract Intervals"; // action name
@@ -65,7 +64,7 @@ public final class GLAExtractInterval  extends TrackListActionOperationWorker<Ge
 
 
 	@Override
-	public Operation<GeneList> initializeOperation() {
+	public Operation<GenomicDataList<Gene>> initializeOperation() {
 		selectedLayer = (GeneLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			GenomicDataList<Gene> geneList = selectedLayer.getData();
@@ -80,7 +79,7 @@ public final class GLAExtractInterval  extends TrackListActionOperationWorker<Ge
 
 
 	@Override
-	protected void doAtTheEnd(GeneList actionResult) {
+	protected void doAtTheEnd(GenomicDataList<Gene> actionResult) {
 		if (actionResult != null) {
 			selectedLayer.setData(actionResult, operation.getDescription());
 		}

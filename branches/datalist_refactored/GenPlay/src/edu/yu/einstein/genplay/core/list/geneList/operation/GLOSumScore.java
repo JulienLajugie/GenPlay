@@ -28,33 +28,32 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.gene.Gene;
-import edu.yu.einstein.genplay.core.list.geneList.GeneList;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 
 
-
 /**
- * Computes the sum of the scores of a {@link GeneList}
+ * Computes the sum of the scores of a {@link GenomicDataList} of Genes
  * @author Julien Lajugie
  * @author Nicolas Fourel
  * @version 0.1
  */
 public class GLOSumScore implements Operation<Double> {
 
-	private final GeneList 	geneList;		// input GeneList
-	private final boolean[] chromoList;		// 1 boolean / chromosome.
+	private final GenomicDataList<Gene> geneList;		// input genomic list of genes
+	private final boolean[] 			chromoList;		// 1 boolean / chromosome.
 	// each boolean sets to true means that the corresponding chromosome is selected
-	private boolean				stopped = false;// true if the operation must be stopped
+	private boolean						stopped = false;// true if the operation must be stopped
 
 
 	/**
-	 * Computes the sum of the scores of a specified {@link GeneList}
-	 * @param geneList input {@link GeneList}
+	 * Computes the sum of the scores of a specified {@link GenomicDataList} of Genes
+	 * @param geneList input {@link GenomicDataList} of Genes
 	 * @param chromoList list of boolean. A boolean set to true means that the
 	 * chromosome with the same index is going to be used for the calculation.
 	 */
-	public GLOSumScore(GeneList geneList, boolean[] chromoList) {
+	public GLOSumScore(GenomicDataList<Gene> geneList, boolean[] chromoList) {
 		this.geneList = geneList;
 		this.chromoList = chromoList;
 	}

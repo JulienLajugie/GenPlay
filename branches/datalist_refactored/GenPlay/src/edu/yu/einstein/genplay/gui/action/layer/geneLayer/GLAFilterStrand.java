@@ -27,7 +27,6 @@ import javax.swing.JOptionPane;
 import edu.yu.einstein.genplay.core.enums.Strand;
 import edu.yu.einstein.genplay.core.gene.Gene;
 import edu.yu.einstein.genplay.core.list.GenomicDataList;
-import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOFilterStrand;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
@@ -39,7 +38,7 @@ import edu.yu.einstein.genplay.gui.track.layer.geneLayer.GeneLayer;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class GLAFilterStrand extends TrackListActionOperationWorker<GeneList> {
+public class GLAFilterStrand extends TrackListActionOperationWorker<GenomicDataList<Gene>> {
 
 	private static final long serialVersionUID = -43642801194649520L;	// generated id
 	private static final String 	ACTION_NAME = "Filter Strand"; 		// action name
@@ -66,7 +65,7 @@ public class GLAFilterStrand extends TrackListActionOperationWorker<GeneList> {
 
 
 	@Override
-	public Operation<GeneList> initializeOperation() {
+	public Operation<GenomicDataList<Gene>> initializeOperation() {
 		selectedLayer = (GeneLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			GenomicDataList<Gene> geneList = selectedLayer.getData();
@@ -81,7 +80,7 @@ public class GLAFilterStrand extends TrackListActionOperationWorker<GeneList> {
 
 
 	@Override
-	protected void doAtTheEnd(GeneList actionResult) {
+	protected void doAtTheEnd(GenomicDataList<Gene> actionResult) {
 		if (actionResult != null) {
 			selectedLayer.setData(actionResult, operation.getDescription());
 		}

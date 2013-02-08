@@ -25,8 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.gene.Gene;
-import edu.yu.einstein.genplay.core.list.geneList.GeneList;
-import edu.yu.einstein.genplay.core.list.geneList.GeneListFactory;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 
 
@@ -35,24 +34,24 @@ import edu.yu.einstein.genplay.core.operation.Operation;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class GLOFilterPercentage implements Operation<GeneList> {
+public class GLOFilterPercentage implements Operation<GenomicDataList<Gene>> {
 
-	private final GeneList 		geneList;			// {@link GeneList} to filter
-	private final double 		lowPercentage;		// percentage of low values to filter
-	private final double 		highPercentage;		// percentage of high values to filter
-	private final boolean		isSaturation;		// true if we saturate, false if we remove the filtered values
-	private boolean				stopped = false;	// true if the operation must be stopped
-	private Operation<GeneList>	gloFilterThreshold;	// threshold filter that does the real fitering operation
+	private final GenomicDataList<Gene> geneList;			// input list to filter
+	private final double 				lowPercentage;		// percentage of low values to filter
+	private final double 				highPercentage;		// percentage of high values to filter
+	private final boolean				isSaturation;		// true if we saturate, false if we remove the filtered values
+	private boolean						stopped = false;	// true if the operation must be stopped
+	private Operation<GenomicDataList<Gene>>			gloFilterThreshold;	// threshold filter that does the real filtering operation
 
 
 	/**
 	 * Creates an instance of {@link GLOFilterPercentage}
-	 * @param geneList {@link GeneList} to filter
+	 * @param geneList input lis to filter
 	 * @param lowPercentage percentage of low values to filter
 	 * @param highPercentage percentage of high values to filter
 	 * @param isSaturation true to saturate, false to remove the filtered values
 	 */
-	public GLOFilterPercentage(GeneList geneList, double lowPercentage, double highPercentage, boolean isSaturation) {
+	public GLOFilterPercentage(GenomicDataList<Gene> geneList, double lowPercentage, double highPercentage, boolean isSaturation) {
 		this.geneList = geneList;
 		this.lowPercentage = lowPercentage;
 		this.highPercentage = highPercentage;
@@ -61,7 +60,7 @@ public class GLOFilterPercentage implements Operation<GeneList> {
 
 
 	@Override
-	public GeneList compute() throws Exception {
+	public GenomicDataList<Gene> compute() throws Exception {
 		if ((highPercentage < 0) || (highPercentage > 1) || (lowPercentage < 0) ||(lowPercentage > 1)) {
 			throw new IllegalArgumentException("The percentage value must be between 0 and 1");
 		}
@@ -72,7 +71,7 @@ public class GLOFilterPercentage implements Operation<GeneList> {
 		Arrays.fill(selectedChromo, true);
 		int totalLenght = new GLOCountNonNullGenes(geneList, selectedChromo).compute().intValue();
 		if (totalLenght == 0) {
-			return GeneListFactory.createGeneList(geneList, geneList.getGeneDBURL());
+			return geneList.deepClone();
 		}
 		double[] allScores = new double[totalLenght];
 		int i = 0;

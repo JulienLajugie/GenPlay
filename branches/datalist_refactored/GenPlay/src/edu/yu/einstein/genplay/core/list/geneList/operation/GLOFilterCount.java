@@ -25,8 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.gene.Gene;
-import edu.yu.einstein.genplay.core.list.geneList.GeneList;
-import edu.yu.einstein.genplay.core.list.geneList.GeneListFactory;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 
 
@@ -35,24 +34,24 @@ import edu.yu.einstein.genplay.core.operation.Operation;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class GLOFilterCount implements Operation<GeneList> {
+public class GLOFilterCount implements Operation<GenomicDataList<Gene>> {
 
-	private final GeneList 		geneList;			// {@link GeneList} to filter
-	private final int 			lowValuesCount;		// number of low values to filter
-	private final int 			highValuesCount;	// number of high values to filter
-	private final boolean		isSaturation;		// true if we saturate, false if we remove the filtered values
-	private boolean				stopped = false;	// true if the operation must be stopped
-	private Operation<GeneList>	gloFilterThreshold;	// threshold filter that does the real fitering operation
+	private final GenomicDataList<Gene> 	geneList;			// list of genes to filter
+	private final int 						lowValuesCount;		// number of low values to filter
+	private final int 						highValuesCount;	// number of high values to filter
+	private final boolean					isSaturation;		// true if we saturate, false if we remove the filtered values
+	private boolean							stopped = false;	// true if the operation must be stopped
+	private Operation<GenomicDataList<Gene>>gloFilterThreshold;	// threshold filter that does the real fitering operation
 
 
 	/**
 	 * Creates an instance of {@link GLOFilterCount}
-	 * @param geneList {@link GeneList} to filter
+	 * @param geneList {@link GenomicDataList} of genes to filter
 	 * @param lowValuesCount number of low values to filter
 	 * @param highValuesCount number of high values to filter
 	 * @param isSaturation true to saturate, false to remove the filtered values
 	 */
-	public GLOFilterCount(GeneList geneList, int lowValuesCount, int highValuesCount, boolean isSaturation) {
+	public GLOFilterCount(GenomicDataList<Gene> geneList, int lowValuesCount, int highValuesCount, boolean isSaturation) {
 		this.geneList = geneList;
 		this.lowValuesCount = lowValuesCount;
 		this.highValuesCount = highValuesCount;
@@ -61,7 +60,7 @@ public class GLOFilterCount implements Operation<GeneList> {
 
 
 	@Override
-	public GeneList compute() throws Exception {
+	public GenomicDataList<Gene> compute() throws Exception {
 		if ((lowValuesCount < 0) || (highValuesCount < 0)) {
 			throw new IllegalArgumentException("The number of values to filter must be positive");
 		}
@@ -70,7 +69,7 @@ public class GLOFilterCount implements Operation<GeneList> {
 
 		int totalLenght = new GLOCountNonNullGenes(geneList,selectedChromo).compute().intValue();
 		if (totalLenght == 0) {
-			return GeneListFactory.createGeneList(geneList, geneList.getGeneDBURL());
+			return geneList.deepClone();
 		}
 		double[] allScores = new double[totalLenght];
 		int i = 0;

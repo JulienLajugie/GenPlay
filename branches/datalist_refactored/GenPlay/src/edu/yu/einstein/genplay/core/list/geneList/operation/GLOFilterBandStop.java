@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.gene.Gene;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneListFactory;
 import edu.yu.einstein.genplay.core.operation.Operation;
@@ -39,21 +40,21 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class GLOFilterBandStop implements Operation<GeneList> {
+public class GLOFilterBandStop implements Operation<GenomicDataList<Gene>> {
 
-	private final GeneList 	geneList;		// input GeneList
-	private final double 	lowThreshold;	// low bound
-	private final double 	highThreshold;	// high bound
-	private boolean			stopped = false;// true if the operation must be stopped
+	private final GenomicDataList<Gene> geneList;		// input list to filter
+	private final double 				lowThreshold;	// low bound
+	private final double 				highThreshold;	// high bound
+	private boolean						stopped = false;// true if the operation must be stopped
 
 
 	/**
 	 * Creates an instance of {@link GLOFilterBandStop}
-	 * @param geneList input {@link GeneList}
+	 * @param geneList input list to filter
 	 * @param lowThreshold low threshold
 	 * @param highThreshold high threshold
 	 */
-	public GLOFilterBandStop(GeneList geneList, double lowThreshold, double highThreshold) {
+	public GLOFilterBandStop(GenomicDataList<Gene> geneList, double lowThreshold, double highThreshold) {
 		this.geneList = geneList;
 		this.lowThreshold = lowThreshold;
 		this.highThreshold = highThreshold;
@@ -61,7 +62,7 @@ public class GLOFilterBandStop implements Operation<GeneList> {
 
 
 	@Override
-	public GeneList compute() throws Exception {
+	public GenomicDataList<Gene> compute() throws Exception {
 		if (lowThreshold >= highThreshold) {
 			throw new IllegalArgumentException("The high threshold must be greater than the low one");
 		}
@@ -93,7 +94,11 @@ public class GLOFilterBandStop implements Operation<GeneList> {
 		}
 		List<List<Gene>> result = op.startPool(threadList);
 		if (result != null) {
-			return GeneListFactory.createGeneList(result, geneList.getGeneDBURL());
+			String geneDBURL = null;
+			if (geneList instanceof GeneList) {
+				geneDBURL = ((GeneList) geneList).getGeneDBURL();
+			}
+			return GeneListFactory.createGeneList(result, geneDBURL);
 		} else {
 			return null;
 		}

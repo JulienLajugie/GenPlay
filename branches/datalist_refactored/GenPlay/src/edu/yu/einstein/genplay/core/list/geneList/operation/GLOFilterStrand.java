@@ -28,6 +28,7 @@ import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.enums.Strand;
 import edu.yu.einstein.genplay.core.gene.Gene;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneListFactory;
 import edu.yu.einstein.genplay.core.operation.Operation;
@@ -35,14 +36,14 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 
 
 /**
- * Creates a new GeneList containing only the genes on the selected strand
+ * Creates a new {@link GenomicDataList} of genes containing only the genes on the selected strand
  * @author Julien Lajugie
  * @version 0.1
  */
-public class GLOFilterStrand implements Operation<GeneList> {
-	private final GeneList 	geneList;			// input list
-	private final Strand	strandToKeep;		// strand with the genes we want to keep
-	private boolean			stopped = false;	// true if the operation must be stopped
+public class GLOFilterStrand implements Operation<GenomicDataList<Gene>> {
+	private final GenomicDataList<Gene> geneList;			// input list
+	private final Strand				strandToKeep;		// strand with the genes we want to keep
+	private boolean						stopped = false;	// true if the operation must be stopped
 
 
 	/**
@@ -50,14 +51,14 @@ public class GLOFilterStrand implements Operation<GeneList> {
 	 * @param geneList input list
 	 * @param strandToKeep strand with the genes we want to keep
 	 */
-	public GLOFilterStrand(GeneList geneList, Strand strandToKeep) {
+	public GLOFilterStrand(GenomicDataList<Gene> geneList, Strand strandToKeep) {
 		this.geneList = geneList;
 		this.strandToKeep = strandToKeep;
 	}
 
 
 	@Override
-	public GeneList compute() throws Exception {
+	public GenomicDataList<Gene> compute() throws Exception {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();
 
@@ -87,7 +88,11 @@ public class GLOFilterStrand implements Operation<GeneList> {
 		if (result == null) {
 			return null;
 		} else {
-			return GeneListFactory.createGeneList(result, geneList.getGeneDBURL());
+			String geneDBURL = null;
+			if (geneList instanceof GeneList) {
+				geneDBURL = ((GeneList) geneList).getGeneDBURL();
+			}
+			return GeneListFactory.createGeneList(result, geneDBURL);
 		}
 	}
 

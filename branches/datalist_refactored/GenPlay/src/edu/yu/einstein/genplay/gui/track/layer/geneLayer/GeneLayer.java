@@ -23,6 +23,7 @@ package edu.yu.einstein.genplay.gui.track.layer.geneLayer;
 
 import java.awt.Cursor;
 import java.awt.Desktop;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.InputEvent;
@@ -68,6 +69,7 @@ public class GeneLayer extends AbstractVersionedLayer<GenomicDataList<Gene>> imp
 	private static final double 			SCORE_SATURATION = 0.01d;		// saturation of the score of the exon for the display
 	private static final short				GENE_HEIGHT = 6;				// size of a gene in pixel
 	private static final short				UTR_HEIGHT = 3;					// height of a UTR region of a gene in pixel
+	private GenomicListOfGenesScaler		dataScaler;						// object that scales the list of genes for display	
 	private int 							firstLineToDisplay;				// number of the first line to be displayed
 	private int 							geneLinesCount;					// number of line of genes
 	private int 							mouseStartDragY = -1;			// position of the mouse when start dragging
@@ -84,6 +86,8 @@ public class GeneLayer extends AbstractVersionedLayer<GenomicDataList<Gene>> imp
 	 */
 	public GeneLayer(Track track, GeneList data, String name) {
 		super(track, data, name);
+		FontMetrics fontMetrics = track.getGraphicsPanel().getGraphics().getFontMetrics();
+		dataScaler = new GenomicListOfGenesScaler(data, fontMetrics);
 		firstLineToDisplay = 0;
 		geneLinesCount = 0;
 		mouseStartDragY = -1;
@@ -106,10 +110,8 @@ public class GeneLayer extends AbstractVersionedLayer<GenomicDataList<Gene>> imp
 			double min = getTrack().getScore().getMinimumScore();
 			// we print the gene names if the x ratio > MIN_X_RATIO_PRINT_NAME
 			boolean isGeneNamePrinted = projectWindow.getXRatio() > GenomicListOfGenesScaler.MIN_X_RATIO_PRINT_NAME;
-			// set the data font metrics
-			getData().setFontMetrics(g.getFontMetrics());
 			// Retrieve the genes to print
-			List<List<Gene>> genesToPrint = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
+			List<List<Gene>> genesToPrint = dataScaler.getDataScaledForTrackDisplay();
 			if ((genesToPrint != null) && (genesToPrint.size() > 0)){
 				// Compute the maximum number of line displayable
 				int displayedLineCount = 0;
@@ -244,15 +246,18 @@ public class GeneLayer extends AbstractVersionedLayer<GenomicDataList<Gene>> imp
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (isVisible()) {
-			// if a gene is double clicked
-			if ((e.getClickCount() == 2) && (geneUnderMouse != null)) {
-				// if the desktop is supported
-				if ((getData().getGeneDBURL() != null) && (Desktop.isDesktopSupported())) {
-					try {
-						// we open a browser showing information on the gene
-						Desktop.getDesktop().browse(new URI(getData().getGeneDBURL() + geneUnderMouse.getName()));
-					} catch (Exception e1) {
-						ExceptionManager.handleException(getTrack().getRootPane(), e1, "Error while opening the web browser");
+			if (getData() instanceof GeneList) {
+				GeneList geneList = (GeneList) getData();
+				// if a gene is double clicked
+				if ((e.getClickCount() == 2) && (geneUnderMouse != null)) {
+					// if the desktop is supported
+					if ((geneList.getGeneDBURL() != null) && (Desktop.isDesktopSupported())) {
+						try {
+							// we open a browser showing information on the gene
+							Desktop.getDesktop().browse(new URI(geneList.getGeneDBURL() + geneUnderMouse.getName()));
+						} catch (Exception e1) {
+							ExceptionManager.handleException(getTrack().getRootPane(), e1, "Error while opening the web browser");
+						}
 					}
 				}
 			}
@@ -314,7 +319,7 @@ public class GeneLayer extends AbstractVersionedLayer<GenomicDataList<Gene>> imp
 				// check if the name of genes is printed
 				boolean isGeneNamePrinted = projectWindow.getXRatio() > GenomicListOfGenesScaler.MIN_X_RATIO_PRINT_NAME;
 				// retrieve the list of the printed genes
-				List<List<Gene>> printedGenes = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
+				List<List<Gene>> printedGenes = dataScaler.getDataScaledForTrackDisplay();
 				// do nothing if there is no genes
 				if (printedGenes == null) {
 					return;
@@ -452,6 +457,8 @@ public class GeneLayer extends AbstractVersionedLayer<GenomicDataList<Gene>> imp
 	@Override
 	public void setData(GenomicDataList<Gene> data) {
 		super.setData(data);
+		FontMetrics fontMetrics = getTrack().getGraphicsPanel().getGraphics().getFontMetrics();
+		dataScaler = new GenomicListOfGenesScaler(data, fontMetrics);
 		// tells the track score object to auto-rescale the score axis
 		if ((getTrack() != null) && (getTrack().getScore() != null)) {
 			getTrack().getScore().autorescaleScoreAxis();
@@ -462,6 +469,8 @@ public class GeneLayer extends AbstractVersionedLayer<GenomicDataList<Gene>> imp
 	@Override
 	public void setData(GenomicDataList<Gene> data, String description) {
 		super.setData(data, description);
+		FontMetrics fontMetrics = getTrack().getGraphicsPanel().getGraphics().getFontMetrics();
+		dataScaler = new GenomicListOfGenesScaler(data, fontMetrics);
 		// tells the track score object to auto-rescale the score axis
 		if ((getTrack() != null) && (getTrack().getScore() != null)) {
 			getTrack().getScore().autorescaleScoreAxis();

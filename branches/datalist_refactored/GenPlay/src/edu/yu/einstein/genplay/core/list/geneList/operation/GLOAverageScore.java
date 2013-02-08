@@ -23,31 +23,31 @@ package edu.yu.einstein.genplay.core.list.geneList.operation;
 
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.list.geneList.GeneList;
+import edu.yu.einstein.genplay.core.gene.Gene;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 
 
-
 /**
- * Computes the average value of the scores of a {@link GeneList}
+ * Computes the average value of the scores of a {@link GenomicDataList} of genes
  * @author Julien Lajugie
  * @author Nicolas Fourel
  * @version 0.1
  */
 public class GLOAverageScore implements Operation<Double> {
 
-	private final GeneList 	geneList;		// input GeneList
-	private final boolean[] chromoList;		// 1 boolean / chromosome.
+	private final GenomicDataList<Gene> geneList;		// input genomic list of genes
+	private final boolean[] 			chromoList;		// 1 boolean / chromosome.
 	// each boolean sets to true means that the corresponding chromosome is selected
 
 
 	/**
-	 *  Computes the average value of the scores of a specified {@link GeneList}
-	 * @param geneList input {@link GeneList}
+	 *  Computes the average value of the scores of a specified {@link GenomicDataList} of genes
+	 * @param geneList input 
 	 * @param chromoList list of boolean. A boolean set to true means that the
 	 * chromosome with the same index is going to be used for the calculation.
 	 */
-	public GLOAverageScore(GeneList geneList, boolean[] chromoList) {
+	public GLOAverageScore(GenomicDataList<Gene> geneList, boolean[] chromoList) {
 		this.geneList = geneList;
 		this.chromoList = chromoList;
 	}

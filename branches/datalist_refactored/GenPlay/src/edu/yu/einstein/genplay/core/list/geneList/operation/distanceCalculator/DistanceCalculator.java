@@ -24,11 +24,11 @@ package edu.yu.einstein.genplay.core.list.geneList.operation.distanceCalculator;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.gene.Gene;
-import edu.yu.einstein.genplay.core.list.geneList.GeneList;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 
 
 /**
- * Computes the distance between closest genes from two {@link GeneList}
+ * Computes the distance between closest genes from two {@link GenomicDataList} of genes
  * The position to be used as a reference (ie: start / middle / stop of a gene)
  * must be specified by the user.
  * @author Chirag Gorasia
@@ -39,7 +39,7 @@ public class DistanceCalculator {
 	private final int track1Position;
 	private final int track2Position;
 	private final int refValue;
-	private final GeneList geneList;
+	private final GenomicDataList<Gene> geneList;
 	private final int chromosomeindex;
 		
 	
@@ -52,7 +52,7 @@ public class DistanceCalculator {
 	 * @param track2Position
 	 * @param refValue
 	 */
-	public DistanceCalculator(GeneList geneList, int chromosomeindex, int strandDirection, int track1Position, int track2Position, int refValue) {
+	public DistanceCalculator(GenomicDataList<Gene> geneList, int chromosomeindex, int strandDirection, int track1Position, int track2Position, int refValue) {
 		this.geneList = geneList;
 		this.chromosomeindex = chromosomeindex;
 		this.strandDirection = strandDirection;
@@ -72,7 +72,7 @@ public class DistanceCalculator {
 	 * @param track2Position
 	 * @param refValue
 	 */
-	public DistanceCalculator(GeneList geneList, int chromosomeindex, int strandDirection, int relAbs, int track1Position, int track2Position, int refValue) {
+	public DistanceCalculator(GenomicDataList<Gene> geneList, int chromosomeindex, int strandDirection, int relAbs, int track1Position, int track2Position, int refValue) {
 		this.geneList = geneList;
 		this.chromosomeindex = chromosomeindex;
 		this.strandDirection = strandDirection;

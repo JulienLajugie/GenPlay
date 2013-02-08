@@ -27,7 +27,8 @@ import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.yu.einstein.genplay.core.list.geneList.GeneList;
+import edu.yu.einstein.genplay.core.gene.Gene;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.util.Utils;
 
@@ -39,11 +40,11 @@ import edu.yu.einstein.genplay.util.Utils;
  * @version 0.1
  */
 
-public class GLOGeneRenamer implements Operation<GeneList> {
+public class GLOGeneRenamer implements Operation<GenomicDataList<Gene>> {
 
-	private final GeneList 	geneList;			// input geneList
-	private final File 		fileName;			// fileName in which the gene needs to be renamed
-	private boolean		stopped = false;	// true if the operation must be stopped
+	private final GenomicDataList<Gene>	geneList;			// input geneList
+	private final File 					fileName;			// fileName in which the gene needs to be renamed
+	private boolean						stopped = false;	// true if the operation must be stopped
 
 
 	/**
@@ -51,18 +52,18 @@ public class GLOGeneRenamer implements Operation<GeneList> {
 	 * @param geneList list of genes
 	 * @param fileName file name contain
 	 */
-	public GLOGeneRenamer(GeneList geneList, File fileName) {
+	public GLOGeneRenamer(GenomicDataList<Gene> geneList, File fileName) {
 		this.geneList = geneList;
 		this.fileName = fileName;
 	}
 
 
 	@Override
-	public GeneList compute() throws Exception {
+	public GenomicDataList<Gene> compute() throws Exception {
 		BufferedReader bufReader = null;
 		try {
 			bufReader = new BufferedReader(new FileReader(fileName));
-			GeneList renamedList = geneList.deepClone();
+			GenomicDataList<Gene> renamedList = geneList.deepClone();
 			Map<String, String> nameMap = new HashMap<String, String>();
 			String lineRead;
 			while (((lineRead = bufReader.readLine()) != null) && !stopped) {

@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.gene.Gene;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneListFactory;
 import edu.yu.einstein.genplay.core.operation.Operation;
@@ -34,29 +35,29 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 
 
 /**
- * Sets a specified value to the scores of each exons of {@link GeneList}
+ * Sets a specified value to the scores of each exons of genomic list of genes
  * @author Julien Lajugie
  * @version 0.1
  */
-public class GLOUniqueScore implements Operation<GeneList> {
-	private final GeneList 						geneList;	// input GeneList
-	private final double 	constant;		// constant to add
-	private boolean stopped = false;	// true if the writer needs to be stopped
+public class GLOUniqueScore implements Operation<GenomicDataList<Gene>> {
+	private final GenomicDataList<Gene> geneList;			// input GeneList
+	private final double 				constant;			// constant to add
+	private boolean 					stopped = false;	// true if the writer needs to be stopped
 
 
 	/**
 	 * Creates an instance of {@link GLOUniqueScore}
-	 * @param geneList input GeneList
+	 * @param geneList input list of genes
 	 * @param constant constant to add
 	 */
-	public GLOUniqueScore(GeneList geneList, double constant) {
+	public GLOUniqueScore(GenomicDataList<Gene> geneList, double constant) {
 		this.geneList = geneList;
 		this.constant = constant;
 	}
 
 
 	@Override
-	public GeneList compute() throws Exception {
+	public GenomicDataList<Gene> compute() throws Exception {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();
 		for(int i = 0; i < geneList.size(); i++) {
@@ -91,7 +92,11 @@ public class GLOUniqueScore implements Operation<GeneList> {
 		if (result == null) {
 			return null;
 		} else {
-			return GeneListFactory.createGeneList(result, geneList.getGeneDBURL());
+			String geneDBURL = null;
+			if (geneList instanceof GeneList) {
+				geneDBURL = ((GeneList) geneList).getGeneDBURL();
+			}
+			return GeneListFactory.createGeneList(result, geneDBURL);
 		}
 	}
 

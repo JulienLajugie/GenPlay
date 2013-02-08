@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.gene.Gene;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneListFactory;
 import edu.yu.einstein.genplay.core.operation.Operation;
@@ -38,12 +39,12 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class GLOFilterThreshold implements Operation<GeneList> {
-	private final GeneList 	geneList;			// input list
-	private final double 	lowThreshold;		// filters the genes with an overall RPKM under this threshold
-	private final double 	highThreshold;		// filters the genes with an overall RPKM above this threshold
-	private final boolean	isSaturation;		// true if we saturate, false if we remove the filtered values
-	private boolean			stopped = false;	// true if the operation must be stopped
+public class GLOFilterThreshold implements Operation<GenomicDataList<Gene>> {
+	private final GenomicDataList<Gene> geneList;			// input list
+	private final double 				lowThreshold;		// filters the genes with an overall RPKM under this threshold
+	private final double 				highThreshold;		// filters the genes with an overall RPKM above this threshold
+	private final boolean				isSaturation;		// true if we saturate, false if we remove the filtered values
+	private boolean						stopped = false;	// true if the operation must be stopped
 
 
 	/**
@@ -53,7 +54,7 @@ public class GLOFilterThreshold implements Operation<GeneList> {
 	 * @param highThreshold filters the genes with an overall RPKM above this threshold
 	 * @param isSaturation true to saturate, false to remove the filtered values
 	 */
-	public GLOFilterThreshold(GeneList geneList, double	lowThreshold, double highThreshold, boolean isSaturation) {
+	public GLOFilterThreshold(GenomicDataList<Gene> geneList, double	lowThreshold, double highThreshold, boolean isSaturation) {
 		this.geneList = geneList;
 		this.lowThreshold = lowThreshold;
 		this.highThreshold = highThreshold;
@@ -62,7 +63,7 @@ public class GLOFilterThreshold implements Operation<GeneList> {
 
 
 	@Override
-	public GeneList compute() throws Exception {
+	public GenomicDataList<Gene> compute() throws Exception {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();
 
@@ -117,7 +118,11 @@ public class GLOFilterThreshold implements Operation<GeneList> {
 		if (result == null) {
 			return null;
 		} else {
-			return GeneListFactory.createGeneList(result, geneList.getGeneDBURL());
+			String geneDBURL = null;
+			if (geneList instanceof GeneList) {
+				geneDBURL = ((GeneList) geneList).getGeneDBURL();
+			}
+			return GeneListFactory.createGeneList(result, geneDBURL);
 		}
 	}
 

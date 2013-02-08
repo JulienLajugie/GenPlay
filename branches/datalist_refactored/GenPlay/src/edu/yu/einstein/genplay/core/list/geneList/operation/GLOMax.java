@@ -28,32 +28,32 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.gene.Gene;
-import edu.yu.einstein.genplay.core.list.geneList.GeneList;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 
 
 
 /**
- * Searches the maximum value of the selected chromosomes of a specified {@link GeneList}
+ * Searches the maximum value of the selected chromosomes of a specified genomic list of genes
  * @author Julien Lajugie
  * @version 0.1
  */
 public class GLOMax implements Operation<Double> {
 
-	private final GeneList 	geneList;		// input GeneList
-	private final boolean[] chromoList;		// 1 boolean / chromosome. 
+	private final GenomicDataList<Gene> geneList;		// input list of genes
+	private final boolean[] 			chromoList;		// 1 boolean / chromosome. 
 	// each boolean sets to true means that the corresponding chromosome is selected
-	private boolean				stopped = false;// true if the operation must be stopped
+	private boolean						stopped = false;// true if the operation must be stopped
 	
 
 	/**
-	 * Searches the maximum value of the selected chromosomes of a specified {@link GeneList}
-	 * @param geneList input {@link GeneList}
+	 * Searches the maximum value of the selected chromosomes of a specified {@link GenomicDataList} of genes
+	 * @param geneList input list of genes
 	 * @param chromoList list of boolean. A boolean set to true means that the 
 	 * chromosome with the same index is going to be used for the calculation. 
 	 */
-	public GLOMax(GeneList geneList, boolean[] chromoList) {
+	public GLOMax(GenomicDataList<Gene> geneList, boolean[] chromoList) {
 		this.geneList = geneList;
 		this.chromoList = chromoList;
 	}

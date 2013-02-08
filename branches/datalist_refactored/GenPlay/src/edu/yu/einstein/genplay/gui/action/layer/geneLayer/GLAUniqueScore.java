@@ -23,7 +23,8 @@ package edu.yu.einstein.genplay.gui.action.layer.geneLayer;
 
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.list.geneList.GeneList;
+import edu.yu.einstein.genplay.core.gene.Gene;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOUniqueScore;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
@@ -36,7 +37,7 @@ import edu.yu.einstein.genplay.gui.track.layer.geneLayer.GeneLayer;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class GLAUniqueScore  extends TrackListActionOperationWorker<GeneList> {
+public class GLAUniqueScore  extends TrackListActionOperationWorker<GenomicDataList<Gene>> {
 
 	private static final long serialVersionUID = 2102571378866219218L; 		// generated ID
 	private static final String 	ACTION_NAME = "Unique Score (Constant)";// action name
@@ -63,12 +64,12 @@ public class GLAUniqueScore  extends TrackListActionOperationWorker<GeneList> {
 
 
 	@Override
-	public Operation<GeneList> initializeOperation() throws Exception {
+	public Operation<GenomicDataList<Gene>> initializeOperation() throws Exception {
 		selectedLayer = (GeneLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			Number constant = NumberOptionPane.getValue(getRootPane(), "Unique Score", "Enter a score for all exons", Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
 			if ((constant != null) && (constant.doubleValue() != 0)) {
-				GeneList geneList = selectedLayer.getData();
+				GenomicDataList<Gene> geneList = selectedLayer.getData();
 				operation = new GLOUniqueScore(geneList, constant.doubleValue());
 				return operation;
 			}
@@ -78,7 +79,7 @@ public class GLAUniqueScore  extends TrackListActionOperationWorker<GeneList> {
 
 
 	@Override
-	protected void doAtTheEnd(GeneList actionResult) {
+	protected void doAtTheEnd(GenomicDataList<Gene> actionResult) {
 		if (actionResult != null) {
 			selectedLayer.setData(actionResult, operation.getDescription());
 		}

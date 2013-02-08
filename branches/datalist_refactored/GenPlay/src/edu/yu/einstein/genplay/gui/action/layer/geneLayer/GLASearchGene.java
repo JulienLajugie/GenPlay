@@ -27,6 +27,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.ActionMap;
 import javax.swing.KeyStroke;
 
+import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneSearcher;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.SearchGeneDialog;
@@ -74,8 +75,10 @@ public final class GLASearchGene extends TrackListActionWorker<Void> {
 	protected Void processAction() throws Exception {
 		GeneLayer selectedLayer = (GeneLayer) getValue("Layer");
 		if (selectedLayer != null) {
-			GeneSearcher geneSearcher = selectedLayer.getData().getGeneSearcher();
-			SearchGeneDialog.showSearchGeneDialog(getRootPane(), geneSearcher);
+			if (selectedLayer.getData() instanceof GeneList) {
+				GeneSearcher geneSearcher = ((GeneList) selectedLayer.getData()).getGeneSearcher();
+				SearchGeneDialog.showSearchGeneDialog(getRootPane(), geneSearcher);
+			}
 		}
 		return null;
 	}

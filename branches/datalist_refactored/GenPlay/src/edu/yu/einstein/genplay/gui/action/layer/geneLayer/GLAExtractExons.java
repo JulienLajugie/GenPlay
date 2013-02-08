@@ -25,7 +25,6 @@ import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.gene.Gene;
 import edu.yu.einstein.genplay.core.list.GenomicDataList;
-import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOExtractExons;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
@@ -39,7 +38,7 @@ import edu.yu.einstein.genplay.gui.track.layer.geneLayer.GeneLayer;
  * @author Chirag Gorasia
  * @version 0.1
  */
-public class GLAExtractExons extends TrackListActionOperationWorker<GeneList> {
+public class GLAExtractExons extends TrackListActionOperationWorker<GenomicDataList<Gene>> {
 
 	private static final long serialVersionUID = 4450568171298987897L;
 	private static final String 	ACTION_NAME = "Extract Exons"; 		// action name
@@ -66,7 +65,7 @@ public class GLAExtractExons extends TrackListActionOperationWorker<GeneList> {
 
 
 	@Override
-	public Operation<GeneList> initializeOperation() throws Exception {
+	public Operation<GenomicDataList<Gene>> initializeOperation() throws Exception {
 		selectedLayer = (GeneLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			GenomicDataList<Gene> geneList = selectedLayer.getData();
@@ -81,7 +80,7 @@ public class GLAExtractExons extends TrackListActionOperationWorker<GeneList> {
 
 
 	@Override
-	protected void doAtTheEnd(GeneList actionResult) {
+	protected void doAtTheEnd(GenomicDataList<Gene> actionResult) {
 		if (actionResult != null) {
 			selectedLayer.setData(actionResult, operation.getDescription());
 		}

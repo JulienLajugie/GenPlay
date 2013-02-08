@@ -50,6 +50,12 @@ public interface GenomicDataList<T> extends Cloneable, Serializable, List<List<T
 
 
 	/**
+	 * @return a deep copy of this object.
+	 */
+	public GenomicDataList<T> deepClone();
+	
+	
+	/**
 	 * @param chromosome a {@link Chromosome}
 	 * @return the list associated to the specified {@link Chromosome}
 	 * @throws InvalidChromosomeException
@@ -82,7 +88,6 @@ public interface GenomicDataList<T> extends Cloneable, Serializable, List<List<T
 	 * @throws InvalidChromosomeException if the specified {@link Chromosome} is not a chromosome of the {@link ProjectChromosome}
 	 */
 	public void set(Chromosome chromosome, int index, T element) throws InvalidChromosomeException;
-
 
 
 	/**

@@ -21,8 +21,11 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.list;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,7 +37,6 @@ import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
-
 
 
 /**
@@ -104,6 +106,27 @@ public class GenomicDataArrayList<T> implements List<List<T>>, Cloneable, Serial
 	@Override
 	public boolean containsAll(Collection<?> c) {
 		return dataList.containsAll(c);
+	}
+
+
+	/**
+	 * Performs a deep clone of the current {@link GenomicDataArrayList}.
+	 * @return a new {@link GenomicDataArrayList} that is a deep copy of this instance
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public GenomicDataList<T> deepClone() {
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(baos);
+			oos.writeObject(this);
+			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+			ObjectInputStream ois = new ObjectInputStream(bais);
+			return ((GenomicDataList<T>) ois.readObject());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 

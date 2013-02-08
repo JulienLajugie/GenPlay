@@ -28,7 +28,6 @@ import javax.swing.JFileChooser;
 
 import edu.yu.einstein.genplay.core.gene.Gene;
 import edu.yu.einstein.genplay.core.list.GenomicDataList;
-import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOGeneRenamer;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
@@ -41,8 +40,7 @@ import edu.yu.einstein.genplay.gui.track.layer.geneLayer.GeneLayer;
  * @author Chirag Gorasia
  * @version 0.1
  */
-
-public class GLAGeneRenamer extends TrackListActionOperationWorker<GeneList>{
+public class GLAGeneRenamer extends TrackListActionOperationWorker<GenomicDataList<Gene>>{
 
 	private static final long serialVersionUID = -2210215854202609520L;
 	private static final String 	ACTION_NAME = "Rename Genes"; // action name
@@ -68,7 +66,7 @@ public class GLAGeneRenamer extends TrackListActionOperationWorker<GeneList>{
 
 
 	@Override
-	public Operation<GeneList> initializeOperation() throws Exception {
+	public Operation<GenomicDataList<Gene>> initializeOperation() throws Exception {
 		selectedLayer = (GeneLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			GenomicDataList<Gene> geneList = selectedLayer.getData();
@@ -87,7 +85,7 @@ public class GLAGeneRenamer extends TrackListActionOperationWorker<GeneList>{
 
 
 	@Override
-	protected void doAtTheEnd(GeneList actionResult) {
+	protected void doAtTheEnd(GenomicDataList<Gene> actionResult) {
 		if (actionResult != null) {
 			selectedLayer.setData(actionResult, operation.getDescription());
 		}

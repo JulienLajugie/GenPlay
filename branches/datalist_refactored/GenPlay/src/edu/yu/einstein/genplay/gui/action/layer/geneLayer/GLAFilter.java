@@ -25,7 +25,6 @@ import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.gene.Gene;
 import edu.yu.einstein.genplay.core.list.GenomicDataList;
-import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOFilterBandStop;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOFilterCount;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOFilterPercentage;
@@ -41,12 +40,12 @@ import edu.yu.einstein.genplay.gui.track.layer.geneLayer.GeneLayer;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class GLAFilter extends TrackListActionOperationWorker<GeneList> {
+public class GLAFilter extends TrackListActionOperationWorker<GenomicDataList<Gene>> {
 
-	private static final long serialVersionUID = -5807756062510954560L;	// generated id
-	private static final String 	ACTION_NAME = "Filter";		 		// action name
+	private static final long serialVersionUID = -5807756062510954560L;			// generated id
+	private static final String 	ACTION_NAME = "Filter";		 				// action name
 	private static final String 	DESCRIPTION = "Filter the selected layer";	// tooltip
-	private GeneLayer 				selectedLayer;						// selected layer
+	private GeneLayer 				selectedLayer;								// selected layer
 
 
 	/**
@@ -67,7 +66,7 @@ public class GLAFilter extends TrackListActionOperationWorker<GeneList> {
 
 
 	@Override
-	public Operation<GeneList> initializeOperation() {
+	public Operation<GenomicDataList<Gene>> initializeOperation() {
 		selectedLayer = (GeneLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			FilterDialog filterDialog = new FilterDialog();
@@ -95,7 +94,7 @@ public class GLAFilter extends TrackListActionOperationWorker<GeneList> {
 
 
 	@Override
-	protected void doAtTheEnd(GeneList actionResult) {
+	protected void doAtTheEnd(GenomicDataList<Gene> actionResult) {
 		if (actionResult != null) {
 			selectedLayer.setData(actionResult, operation.getDescription());
 		}

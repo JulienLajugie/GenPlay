@@ -28,35 +28,35 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.gene.Gene;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneListFactory;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 
 
-
 /**
- * Indexes the score values of a {@link GeneList}
+ * Indexes the score values of a {@link GenomicDataList} of genes
  * @author Julien Lajugie
  * @version 0.1
  */
-public class GLOIndexScores implements Operation<GeneList> {
+public class GLOIndexScores implements Operation<GenomicDataList<Gene>> {
 
-	private final GeneList 	geneList;		// input GeneList
-	private boolean				stopped = false;// true if the operation must be stopped
+	private final GenomicDataList<Gene> 	geneList;		// input list of genes
+	private boolean							stopped = false;// true if the operation must be stopped
 
 
 	/**
-	 * Indexes the score values of a {@link GeneList}
-	 * @param geneList input {@link GeneList}
+	 * Indexes the score values of a {@link GenomicDataList} of genes
+	 * @param geneList input list of genes
 	 */
-	public GLOIndexScores(GeneList geneList) {
+	public GLOIndexScores(GenomicDataList<Gene> geneList) {
 		this.geneList = geneList;
 	}
 
 
 	@Override
-	public GeneList compute() throws InterruptedException, ExecutionException {
+	public GenomicDataList<Gene> compute() throws InterruptedException, ExecutionException {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();
 		// compute the distance between the min and the max
@@ -102,7 +102,11 @@ public class GLOIndexScores implements Operation<GeneList> {
 		if (result == null) {
 			return null;
 		} else {
-			return GeneListFactory.createGeneList(result, geneList.getGeneDBURL());
+			String geneDBURL = null;
+			if (geneList instanceof GeneList) {
+				geneDBURL = ((GeneList) geneList).getGeneDBURL();
+			}
+			return GeneListFactory.createGeneList(result, geneDBURL);
 		}
 	}
 

@@ -28,6 +28,7 @@ import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.gene.Gene;
+import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneListFactory;
@@ -35,18 +36,17 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 
 
-
 /**
- * Attributes a score to the exons of a GeneList from the scores of a BinList
+ * Attributes a score to the exons of a genomic list of genes from the scores of a BinList
  * @author Julien Lajugie
  * @version 0.1
  */
-public class GLOScoreFromBinList implements Operation<GeneList> {
-	private final GeneList 					geneList;	// input GeneList
-	private final BinList 					binList;	// BinList with the scores
-	private final ScoreCalculationMethod 	method;		// method to use to compute the score
-	private final int offset;							// offset to apply on both side of a window
-	private boolean stopped = false;	// true if the writer needs to be stopped
+public class GLOScoreFromBinList implements Operation<GenomicDataList<Gene>> {
+	private final GenomicDataList<Gene>		geneList;		// input GeneList
+	private final BinList 					binList;		// BinList with the scores
+	private final ScoreCalculationMethod 	method;			// method to use to compute the score
+	private final int 						offset;			// offset to apply on both side of a window
+	private boolean 						stopped = false;// true if the writer needs to be stopped
 
 
 	/**
@@ -56,7 +56,7 @@ public class GLOScoreFromBinList implements Operation<GeneList> {
 	 * @param method method to use to compute the score
 	 * @param offset the scoring will be applied X bp before and after the windows
 	 */
-	public GLOScoreFromBinList(GeneList geneList, BinList binList, ScoreCalculationMethod method, int offset) {
+	public GLOScoreFromBinList(GenomicDataList<Gene> geneList, BinList binList, ScoreCalculationMethod method, int offset) {
 		this.geneList = geneList;
 		this.binList = binList;
 		this.method = method;
@@ -65,7 +65,7 @@ public class GLOScoreFromBinList implements Operation<GeneList> {
 
 
 	@Override
-	public GeneList compute() throws Exception {
+	public GenomicDataList<Gene> compute() throws Exception {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();
 		for(int i = 0; i < geneList.size(); i++) {
@@ -119,7 +119,11 @@ public class GLOScoreFromBinList implements Operation<GeneList> {
 		if (result == null) {
 			return null;
 		} else {
-			return GeneListFactory.createGeneList(result, geneList.getGeneDBURL());
+			String geneDBURL = null;
+			if (geneList instanceof GeneList) {
+				geneDBURL = ((GeneList) geneList).getGeneDBURL();
+			}
+			return GeneListFactory.createGeneList(result, geneDBURL);
 		}
 	}
 
