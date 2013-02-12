@@ -109,7 +109,7 @@ public final class GdpGeneExtractor extends TextFileExtractor implements Seriali
 				int chromosomeStatus;
 				Chromosome chromosome = null;
 				try {
-					chromosome = projectChromosome.get(splitedLine[0]) ;
+					chromosome = projectChromosome.get(splitedLine[1]) ;
 					chromosomeStatus = checkChromosomeStatus(chromosome);
 				} catch (InvalidChromosomeException e) {
 					chromosomeStatus = NEED_TO_BE_SKIPPED;

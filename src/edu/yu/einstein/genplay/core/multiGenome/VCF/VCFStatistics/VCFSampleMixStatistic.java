@@ -94,7 +94,7 @@ public class VCFSampleMixStatistic implements Serializable, VCFSampleStatistics 
 	private VCFSampleStatistics secondStatistics;
 
 	private Object[][] data;
-
+	private String[][] dataDisplay;
 
 
 	/**
@@ -110,6 +110,7 @@ public class VCFSampleMixStatistic implements Serializable, VCFSampleStatistics 
 		out.writeObject(secondStatistics);
 
 		out.writeObject(data);
+		out.writeObject(dataDisplay);
 	}
 
 
@@ -127,6 +128,7 @@ public class VCFSampleMixStatistic implements Serializable, VCFSampleStatistics 
 		secondStatistics = (VCFSampleStatistics) in.readObject();
 
 		data = (Object[][]) in.readObject();
+		dataDisplay = (String[][]) in.readObject();
 	}
 
 
@@ -145,6 +147,7 @@ public class VCFSampleMixStatistic implements Serializable, VCFSampleStatistics 
 		}
 
 		data = null;
+		dataDisplay = null;
 	}
 
 
@@ -231,6 +234,7 @@ public class VCFSampleMixStatistic implements Serializable, VCFSampleStatistics 
 				data[i][DIFF_INDEX] = getDataInt(i, NEW_INDEX) - getDataInt(i, NATIVE_INDEX);
 			}
 		}
+		formatData();
 	}
 
 
@@ -258,9 +262,35 @@ public class VCFSampleMixStatistic implements Serializable, VCFSampleStatistics 
 	}
 
 
+	/**
+	 * Format the data for display purposes to the dataDisplay attribute.
+	 */
+	private void formatData () {
+		if (data != null) {
+			dataDisplay = new String[LINE_NUMBER][COLUMN_NUMBER];
+
+			for (int row = 0; row < LINE_NUMBER; row++) {
+				for (int col = 0; col < COLUMN_NUMBER; col++) {
+					if (col == SECTION_INDEX) {
+						dataDisplay[row][col] = data[row][col].toString();
+					} else {
+						dataDisplay[row][col] = VCFFileFullStatistic.getNumberFormat(data[row][col]);
+					}
+				}
+			}
+		}
+	}
+
+
 	@Override
 	public Object[][] getData() {
 		return data;
+	}
+
+
+	@Override
+	public String[][] getDisplayData() {
+		return dataDisplay;
 	}
 
 

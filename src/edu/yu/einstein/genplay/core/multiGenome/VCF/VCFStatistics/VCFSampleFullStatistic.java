@@ -89,6 +89,7 @@ public class VCFSampleFullStatistic implements Serializable, VCFSampleStatistics
 	private static final String SV_LABEL							= "      SV";
 
 	private Object[][] data;
+	private String[][] dataDisplay;
 
 	private int numberOfSNPs;
 	private int numberOfShortInsertions;
@@ -116,6 +117,7 @@ public class VCFSampleFullStatistic implements Serializable, VCFSampleStatistics
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 
 		out.writeObject(data);
+		out.writeObject(dataDisplay);
 	}
 
 
@@ -129,6 +131,7 @@ public class VCFSampleFullStatistic implements Serializable, VCFSampleStatistics
 		in.readInt();
 
 		data = (Object[][]) in.readObject();
+		dataDisplay = (String[][]) in.readObject();
 	}
 
 
@@ -151,6 +154,9 @@ public class VCFSampleFullStatistic implements Serializable, VCFSampleStatistics
 		numberOfHemizygoteSNPs = 0;
 		numberOfHemizygoteInsertions = 0;
 		numberOfHemizygoteDeletions = 0;
+
+		data = null;
+		dataDisplay = null;
 	}
 
 
@@ -269,6 +275,7 @@ public class VCFSampleFullStatistic implements Serializable, VCFSampleStatistics
 			data[DELETION_HOMOZYGOTE_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(DELETION_HOMOZYGOTE_INDEX), totalGT);
 			data[DELETION_HEMIZYGOTE_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(DELETION_HEMIZYGOTE_INDEX), totalGT);
 		}
+		formatData();
 	}
 
 
@@ -315,9 +322,35 @@ public class VCFSampleFullStatistic implements Serializable, VCFSampleStatistics
 	}
 
 
+	/**
+	 * Format the data for display purposes to the dataDisplay attribute.
+	 */
+	private void formatData () {
+		if (data != null) {
+			dataDisplay = new String[LINE_NUMBER][COLUMN_NUMBER];
+
+			for (int row = 0; row < LINE_NUMBER; row++) {
+				for (int col = 0; col < COLUMN_NUMBER; col++) {
+					if (col == SECTION_INDEX) {
+						dataDisplay[row][col] = data[row][col].toString();
+					} else {
+						dataDisplay[row][col] = VCFFileFullStatistic.getNumberFormat(data[row][col]);
+					}
+				}
+			}
+		}
+	}
+
+
 	@Override
 	public Object[][] getData() {
 		return data;
+	}
+
+
+	@Override
+	public String[][] getDisplayData() {
+		return dataDisplay;
 	}
 
 

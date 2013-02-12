@@ -69,14 +69,14 @@ public class VCFFileMixStatistic implements Serializable, VCFFileStatistics {
 	private static final String DIFF_NAME 					= "B - A";						// Name for the difference number column
 
 	// Line names
-	private static final String LINE_NAME					= "Line";			// Name for the line section
-	private static final String SNP_NAME 					= "SNP";			// Name for the SNP section
-	private static final String INSERTION_NAME 				= "Insertion";		// Name for the Insertion section
-	private static final String INSERTION_INDEL_NAME 		= "   Indel";		// Name for the Insertion indels sub-section
-	private static final String INSERTION_SV_NAME 			= "   SV";			// Name for the Insertion SV sub-section
-	private static final String DELETION_NAME 				= "Deletion";		// Name for the Deletion section
-	private static final String DELETION_INDEL_NAME 		= "   Indel";		// Name for the Deletion indels sub-section
-	private static final String DELETION_SV_NAME 			= "   SV";			// Name for the Deletion SV sub-section
+	private static final String LINE_NAME					= "Line";					// Name for the line section
+	private static final String SNP_NAME 					= "SNP";					// Name for the SNP section
+	private static final String INSERTION_NAME 				= "Insertion";				// Name for the Insertion section
+	private static final String INSERTION_INDEL_NAME 		= "   Short (indels)";		// Name for the Insertion indels sub-section
+	private static final String INSERTION_SV_NAME 			= "   Long (SV)";			// Name for the Insertion SV sub-section
+	private static final String DELETION_NAME 				= "Deletion";				// Name for the Deletion section
+	private static final String DELETION_INDEL_NAME 		= "   Short (indels)";		// Name for the Deletion indels sub-section
+	private static final String DELETION_SV_NAME 			= "   Long (SV)";			// Name for the Deletion SV sub-section
 
 
 	private boolean isValid;
@@ -84,6 +84,7 @@ public class VCFFileMixStatistic implements Serializable, VCFFileStatistics {
 	private VCFFileStatistics secondStatistics;
 
 	private Object[][] data;
+	private String[][] dataDisplay;
 	private Map<String, VCFSampleStatistics> genomeStatistics;
 
 
@@ -100,6 +101,7 @@ public class VCFFileMixStatistic implements Serializable, VCFFileStatistics {
 		out.writeObject(secondStatistics);
 
 		out.writeObject(data);
+		out.writeObject(dataDisplay);
 		out.writeObject(genomeStatistics);
 	}
 
@@ -119,6 +121,7 @@ public class VCFFileMixStatistic implements Serializable, VCFFileStatistics {
 		secondStatistics = (VCFFileStatistics) in.readObject();
 
 		data = (Object[][]) in.readObject();
+		dataDisplay = (String[][]) in.readObject();
 		genomeStatistics = (Map<String, VCFSampleStatistics>) in.readObject();
 	}
 
@@ -156,6 +159,7 @@ public class VCFFileMixStatistic implements Serializable, VCFFileStatistics {
 		}
 
 		data = null;
+		dataDisplay = null;
 	}
 
 
@@ -202,6 +206,7 @@ public class VCFFileMixStatistic implements Serializable, VCFFileStatistics {
 				data[i][DIFF_INDEX] = getDataInt(i, NEW_INDEX) - getDataInt(i, NATIVE_INDEX);
 			}
 		}
+		formatData();
 		for (VCFSampleStatistics sampleStatistics: genomeStatistics.values()) {
 			sampleStatistics.processStatistics();
 		}
@@ -228,9 +233,35 @@ public class VCFFileMixStatistic implements Serializable, VCFFileStatistics {
 	}
 
 
+	/**
+	 * Format the data for display purposes to the dataDisplay attribute.
+	 */
+	private void formatData () {
+		if (data != null) {
+			dataDisplay = new String[LINE_NUMBER][COLUMN_NUMBER];
+
+			for (int row = 0; row < LINE_NUMBER; row++) {
+				for (int col = 0; col < COLUMN_NUMBER; col++) {
+					if (col == SECTION_INDEX) {
+						dataDisplay[row][col] = data[row][col].toString();
+					} else {
+						dataDisplay[row][col] = VCFFileFullStatistic.getNumberFormat(data[row][col]);
+					}
+				}
+			}
+		}
+	}
+
+
 	@Override
 	public Object[][] getData() {
 		return data;
+	}
+
+
+	@Override
+	public String[][] getDisplayData() {
+		return dataDisplay;
 	}
 
 

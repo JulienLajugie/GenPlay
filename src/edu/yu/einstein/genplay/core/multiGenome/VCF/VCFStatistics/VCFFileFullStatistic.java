@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -70,14 +71,15 @@ public class VCFFileFullStatistic implements Serializable, VCFFileStatistics {
 	private static final String LINE_NAME					= "Line";			// Name for the line section
 	private static final String SNP_NAME 					= "SNP";			// Name for the SNP section
 	private static final String INSERTION_NAME 				= "Insertion";		// Name for the Insertion section
-	private static final String INSERTION_INDEL_NAME 		= "   Indel";		// Name for the Insertion indels sub-section
-	private static final String INSERTION_SV_NAME 			= "   SV";			// Name for the Insertion SV sub-section
+	private static final String INSERTION_INDEL_NAME 		= "   Short (indels)";		// Name for the Insertion indels sub-section
+	private static final String INSERTION_SV_NAME 			= "   Long (SV)";			// Name for the Insertion SV sub-section
 	private static final String DELETION_NAME 				= "Deletion";		// Name for the Deletion section
-	private static final String DELETION_INDEL_NAME 		= "   Indel";		// Name for the Deletion indels sub-section
-	private static final String DELETION_SV_NAME 			= "   SV";			// Name for the Deletion SV sub-section
+	private static final String DELETION_INDEL_NAME 		= "   Short (indels)";		// Name for the Deletion indels sub-section
+	private static final String DELETION_SV_NAME 			= "   Long (SV)";			// Name for the Deletion SV sub-section
 
 
 	private Object[][] data;
+	private String[][] dataDisplay;
 	private Map<String, VCFSampleStatistics> genomeStatistics;
 
 	private int numberOfSNPs;
@@ -98,6 +100,7 @@ public class VCFFileFullStatistic implements Serializable, VCFFileStatistics {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 
 		out.writeObject(data);
+		out.writeObject(dataDisplay);
 		out.writeObject(genomeStatistics);
 	}
 
@@ -113,6 +116,7 @@ public class VCFFileFullStatistic implements Serializable, VCFFileStatistics {
 		in.readInt();
 
 		data = (Object[][]) in.readObject();
+		dataDisplay = (String[][]) in.readObject();
 		genomeStatistics = (Map<String, VCFSampleStatistics>) in.readObject();
 	}
 
@@ -132,6 +136,7 @@ public class VCFFileFullStatistic implements Serializable, VCFFileStatistics {
 		numberOfLines = 0;
 
 		data = null;
+		dataDisplay = null;
 	}
 
 
@@ -184,6 +189,7 @@ public class VCFFileFullStatistic implements Serializable, VCFFileStatistics {
 			data[DELETION_INDEL_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(DELETION_INDEL_INDEX), totalVariation);
 			data[DELETION_SV_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(DELETION_SV_INDEX), totalVariation);
 		}
+		formatData();
 		for (VCFSampleStatistics sampleStatistics: genomeStatistics.values()) {
 			sampleStatistics.processStatistics();
 		}
@@ -228,9 +234,50 @@ public class VCFFileFullStatistic implements Serializable, VCFFileStatistics {
 	}
 
 
+	/**
+	 * Format the data for display purposes to the dataDisplay attribute.
+	 */
+	private void formatData () {
+		if (data != null) {
+			dataDisplay = new String[LINE_NUMBER][COLUMN_NUMBER];
+
+			for (int row = 0; row < LINE_NUMBER; row++) {
+				for (int col = 0; col < COLUMN_NUMBER; col++) {
+					if (col == SECTION_INDEX) {
+						dataDisplay[row][col] = data[row][col].toString();
+					} else {
+						dataDisplay[row][col] = getNumberFormat(data[row][col]);
+					}
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * @param number an int
+	 * @return the local formatted value of the given int
+	 */
+	protected static String getNumberFormat (Object o) {
+		Integer number = null;
+		try {
+			number = Integer.parseInt(o.toString());
+		} catch (Exception e) {
+			return o.toString();
+		}
+		return NumberFormat.getIntegerInstance().format(number);
+	}
+
+
 	@Override
 	public Object[][] getData() {
 		return data;
+	}
+
+
+	@Override
+	public String[][] getDisplayData() {
+		return dataDisplay;
 	}
 
 

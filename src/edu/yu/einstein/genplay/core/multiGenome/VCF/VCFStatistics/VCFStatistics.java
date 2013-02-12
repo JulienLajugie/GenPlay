@@ -47,6 +47,12 @@ public interface VCFStatistics {
 
 
 	/**
+	 * @return the data for display purpose (numbers are local formatted)
+	 */
+	public String[][] getDisplayData();
+
+
+	/**
 	 * @param indexLine index of a line
 	 * @return			the integer located in the column containing the number, -1 otherwise
 	 */

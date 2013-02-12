@@ -88,7 +88,7 @@ import edu.yu.einstein.genplay.util.Images;
 public final class MainFrame extends JFrame implements GenomeWindowListener, ActionListener {
 
 	private static final long serialVersionUID = -4637394760647080396L; // generated ID
-	private static final int VERSION_NUMBER = 829; 						// GenPlay version
+	private static final int VERSION_NUMBER = 831; 						// GenPlay version
 
 	/** Title of the application */
 	public static final String 		APPLICATION_TITLE = "GenPlay, Einstein Genome Analyzer (v" + VERSION_NUMBER + ")";

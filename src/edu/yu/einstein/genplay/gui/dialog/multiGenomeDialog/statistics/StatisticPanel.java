@@ -101,7 +101,7 @@ public class StatisticPanel extends JPanel {
 		gbc.gridy++;
 		gbc.insets = PropertiesDialog.PANEL_INSET;
 		gbc.weightx = 1;
-		add(Utils.getTablePanel(statistic.getColumnNamesForData(), statistic.getData()), gbc);
+		add(Utils.getTablePanel(statistic.getColumnNamesForData(), statistic.getDisplayData()), gbc);
 
 		// Add the copy buttons
 		JPanel buttonPanel = new JPanel();
@@ -140,7 +140,7 @@ public class StatisticPanel extends JPanel {
 			if (cpt == genomeNumber) {
 				gbc.weighty = 1;
 			}
-			add(Utils.getTablePanel(genomeStatistics.get(genomeName).getColumnNamesForData(), genomeStatistics.get(genomeName).getData()), gbc);
+			add(Utils.getTablePanel(genomeStatistics.get(genomeName).getColumnNamesForData(), genomeStatistics.get(genomeName).getDisplayData()), gbc);
 
 			// Add the copy button
 			gbc.gridy++;
