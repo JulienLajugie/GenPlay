@@ -43,7 +43,6 @@ import org.xml.sax.SAXParseException;
 
 import edu.yu.einstein.genplay.core.DAS.DASServerList;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
-import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 
 
 /**
@@ -176,7 +175,7 @@ final class DASOptionPanel extends OptionPanel {
 				try {
 					dasServerList = new DASServerList(file.toURI().toURL());
 				} catch (SAXParseException e) {
-					ExceptionManager.getInstance().handleException(MainFrame.getInstance().getRootPane(), e, "DAS Server File Corrupted...loading default file");
+					ExceptionManager.getInstance().caughtException(Thread.currentThread(), e, "DAS Server File Corrupted...loading default file");
 					dasServerList = new DASServerList(new URL(projectConfiguration.getDefaultDasServerListFile()));
 				}
 			} else {
@@ -247,9 +246,9 @@ final class DASOptionPanel extends OptionPanel {
 			c.anchor = GridBagConstraints.LINE_START;
 			add(content, c);
 		} catch (MalformedURLException e) {
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 		} catch (Exception e) {
-			ExceptionManager.getInstance().handleException(getRootPane(), e, "Error loading DAS Server file");
+			ExceptionManager.getInstance().caughtException(Thread.currentThread(), e, "Error loading DAS Server file");
 		}
 	}
 }

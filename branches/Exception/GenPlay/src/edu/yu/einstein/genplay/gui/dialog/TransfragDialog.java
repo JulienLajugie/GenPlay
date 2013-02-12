@@ -209,7 +209,7 @@ public class TransfragDialog extends JDialog {
 		}
 		catch(NumberFormatException e) {
 			System.err.println("Please enter a valid gap");
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 		}
 		return 0;
 	}

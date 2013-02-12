@@ -103,7 +103,7 @@ public class Poisson implements Serializable {
 					result = -1.0;
 					System.out.println("getPoissonValue error; lambda: " + lambda + "; k: " + k);
 
-					ExceptionManager.getInstance().handleException(e);
+					ExceptionManager.getInstance().caughtException(e);
 				}
 			}
 		}
@@ -126,7 +126,7 @@ public class Poisson implements Serializable {
 			poissonStorage.get(k);
 			poissonStorage.get(k).put(lambda , value);
 		} catch (Exception e) {
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 		}
 	}
 

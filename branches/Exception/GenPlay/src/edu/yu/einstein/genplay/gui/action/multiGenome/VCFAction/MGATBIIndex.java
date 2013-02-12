@@ -80,7 +80,7 @@ public class MGATBIIndex extends TrackListActionWorker<Boolean> {
 		try {
 			return operation.compute();
 		} catch (Exception e) {
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 		}
 
 		return false;

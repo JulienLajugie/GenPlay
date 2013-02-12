@@ -105,7 +105,7 @@ public class MGAVCFExport extends TrackListActionWorker<Boolean> {
 					exportEngine.compute();
 					return true;
 				} catch (Exception e) {
-					ExceptionManager.getInstance().handleException(e);
+					ExceptionManager.getInstance().caughtException(e);
 				}
 			}
 

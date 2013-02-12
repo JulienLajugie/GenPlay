@@ -386,11 +386,11 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 			UIManager.setLookAndFeel(ProjectManager.getInstance().getProjectConfiguration().getLookAndFeel());
 			SwingUtilities.updateComponentTreeUI(this);
 		} catch (Exception e) {
-			ExceptionManager.getInstance().handleException(getRootPane(), e, "Error while loading the look and feel specified in the config file");
+			ExceptionManager.getInstance().caughtException(Thread.currentThread(), e, "Error while loading the look and feel specified in the config file");
 			try {
 				UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
 			} catch (Exception e1) {
-				ExceptionManager.getInstance().handleException(getRootPane(), e1, "Error while loading the default look and feel");
+				ExceptionManager.getInstance().caughtException(Thread.currentThread(), e1, "Error while loading the default look and feel");
 			}
 		}
 	}

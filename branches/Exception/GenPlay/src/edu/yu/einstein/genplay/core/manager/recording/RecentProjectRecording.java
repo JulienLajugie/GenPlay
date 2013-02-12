@@ -69,7 +69,7 @@ public class RecentProjectRecording {
 			fos.flush();
 			fos.close();
 		} catch (IOException e) {
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 		}
 	}
 
@@ -118,7 +118,7 @@ public class RecentProjectRecording {
 			retrieveProjectsPath();
 			retrieveProjectsInformation();
 		} catch (Exception e) {
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 		}
 	}
 
@@ -147,7 +147,7 @@ public class RecentProjectRecording {
 				gz.close();
 				fis.close();
 			} catch (Exception e) {
-				ExceptionManager.getInstance().handleException(e);
+				ExceptionManager.getInstance().caughtException(e);
 			}
 		} else {
 			for (int i = 0; i < PROJECT_NUMBER; i++) {

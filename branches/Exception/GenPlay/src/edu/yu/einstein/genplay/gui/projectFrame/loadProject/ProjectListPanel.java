@@ -210,7 +210,7 @@ class ProjectListPanel extends JPanel {
 				try {
 					projectInformation = RecordingManager.getInstance().getRecentProjectRecording().getProjectInformation(file);
 				} catch (Exception e) {
-					ExceptionManager.getInstance().handleException(e);
+					ExceptionManager.getInstance().caughtException(e);
 				}
 			}
 		}

@@ -309,7 +309,7 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener, Ac
 		try {
 			vcfFile = new VCFFile(file);
 		} catch (IOException e) {
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 		}
 		vcfFileList.add(vcfFile);
 		return vcfFile;

@@ -179,7 +179,7 @@ public class DataSelectionPanel extends JPanel {
 					jcbDasType.addItem(currentDataType);
 				}
 			} catch (Exception e) {
-				ExceptionManager.getInstance().handleException(getRootPane(), e, "Error when retrieving the data types from " + selectedDataSource);
+				ExceptionManager.getInstance().caughtException(Thread.currentThread(), e, "Error when retrieving the data types from " + selectedDataSource);
 			}
 		}
 	}
@@ -199,7 +199,7 @@ public class DataSelectionPanel extends JPanel {
 					jcbDataSource.addItem(currentSource);
 				}
 			} catch (Exception e) {
-				ExceptionManager.getInstance().handleException(getRootPane(), e, "Error when retrieving the data sources from " + selectedServer);
+				ExceptionManager.getInstance().caughtException(Thread.currentThread(), e, "Error when retrieving the data sources from " + selectedServer);
 			}
 		}
 	}

@@ -112,7 +112,7 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 			try {
 				reader.close();
 			} catch (IOException e1) {
-				ExceptionManager.getInstance().handleException(e);
+				ExceptionManager.getInstance().caughtException(e);
 			}
 			return null;
 		}
@@ -265,7 +265,7 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 				writer.newLine();
 				writer.close();
 			} catch (IOException e) {
-				ExceptionManager.getInstance().handleException(e);
+				ExceptionManager.getInstance().caughtException(e);
 			}
 		}
 	}

@@ -81,7 +81,7 @@ public final class PAAbout extends AbstractAction {
 				Desktop.getDesktop().browse(uri);
 			}
 		} catch (Exception e) {
-			ExceptionManager.getInstance().handleException(parent, e, "The about file can't be loaded");
+			ExceptionManager.getInstance().notifyUser(parent, e, "The about file can't be loaded");
 		}
 	}
 }

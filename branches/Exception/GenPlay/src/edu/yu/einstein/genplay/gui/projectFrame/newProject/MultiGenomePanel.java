@@ -183,16 +183,16 @@ class MultiGenomePanel extends JPanel {
 				closeXML(xml);
 			} catch (ParserConfigurationException e1) {
 				closeXML(xml);
-				ExceptionManager.getInstance().handleException(e1);
+				ExceptionManager.getInstance().caughtException(e1);
 			} catch (SAXException e1) {
 				closeXML(xml);
-				ExceptionManager.getInstance().handleException(e1);
+				ExceptionManager.getInstance().caughtException(e1);
 			} catch (FileNotFoundException e) {
 				closeXML(xml);
-				ExceptionManager.getInstance().handleException(e);
+				ExceptionManager.getInstance().caughtException(e);
 			} catch (IOException e) {
 				closeXML(xml);
-				ExceptionManager.getInstance().handleException(e);
+				ExceptionManager.getInstance().caughtException(e);
 			}
 			closeXML(xml);
 			// Manager initialization
@@ -214,7 +214,7 @@ class MultiGenomePanel extends JPanel {
 			try {
 				xml.close();
 			} catch (IOException e) {
-				ExceptionManager.getInstance().handleException(e);
+				ExceptionManager.getInstance().caughtException(e);
 			}
 		}
 	}

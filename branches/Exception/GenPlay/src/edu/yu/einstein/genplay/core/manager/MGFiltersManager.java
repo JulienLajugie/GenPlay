@@ -170,7 +170,7 @@ public class MGFiltersManager implements VCFScannerReceiver {
 					scanner.setGenomes(genomeNames);
 					scanner.compute();
 				} catch (IOException e1) {
-					ExceptionManager.getInstance().handleException(e1);
+					ExceptionManager.getInstance().caughtException(e1);
 				}
 			}
 		}

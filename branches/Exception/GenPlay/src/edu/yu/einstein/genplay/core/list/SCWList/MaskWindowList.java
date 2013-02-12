@@ -99,7 +99,7 @@ public final class MaskWindowList extends DisplayableListOfLists<ScoredChromosom
 		try {
 			generateStatistics();
 		} catch (Exception e) {
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 		}
 	}
 
@@ -402,7 +402,7 @@ public final class MaskWindowList extends DisplayableListOfLists<ScoredChromosom
 			ObjectInputStream ois = new ObjectInputStream(bais);
 			return ((MaskWindowList)ois.readObject());
 		} catch (Exception e) {
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 			return null;
 		}
 	}
@@ -417,7 +417,7 @@ public final class MaskWindowList extends DisplayableListOfLists<ScoredChromosom
 		try {
 			currentChromosomeList = get(fittedChromosome);
 		} catch (InvalidChromosomeException e) {
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 			fittedChromosome = null;
 			return;
 		}

@@ -109,7 +109,7 @@ public class MGAGlobalVCFExport extends TrackListActionWorker<Boolean> {
 				try {
 					vcfLatch.await();
 				} catch (InterruptedException e) {
-					ExceptionManager.getInstance().handleException(e);
+					ExceptionManager.getInstance().caughtException(e);
 				}
 
 				// Compress the VCF
@@ -124,7 +124,7 @@ public class MGAGlobalVCFExport extends TrackListActionWorker<Boolean> {
 					try {
 						compressLatch.await();
 					} catch (InterruptedException e) {
-						ExceptionManager.getInstance().handleException(e);
+						ExceptionManager.getInstance().caughtException(e);
 					}
 
 					// Index the BGZIP
@@ -138,7 +138,7 @@ public class MGAGlobalVCFExport extends TrackListActionWorker<Boolean> {
 						try {
 							indexLatch.await();
 						} catch (InterruptedException e) {
-							ExceptionManager.getInstance().handleException(e);
+							ExceptionManager.getInstance().caughtException(e);
 						}
 					}
 				}

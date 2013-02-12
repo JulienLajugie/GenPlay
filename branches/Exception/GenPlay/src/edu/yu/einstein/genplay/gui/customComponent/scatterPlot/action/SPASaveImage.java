@@ -80,7 +80,7 @@ public class SPASaveImage extends ScatterPlotAction {
 				try {
 					ImageIO.write(image, "png", file);
 				}catch(Exception ex) {
-					ExceptionManager.getInstance().handleException(getScatterPlotPane(), ex, "Error while saving the scatter plot as an image");
+					ExceptionManager.getInstance().caughtException(Thread.currentThread(), ex, "Error while saving the scatter plot as an image");
 				}
 			}
 		}

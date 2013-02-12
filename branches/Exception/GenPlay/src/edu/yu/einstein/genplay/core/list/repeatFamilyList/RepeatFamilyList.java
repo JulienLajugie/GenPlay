@@ -162,7 +162,7 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 		try {
 			currentChromosomeList = get(fittedChromosome);
 		} catch (InvalidChromosomeException e) {
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 			fittedDataList = null;
 			return;
 		}

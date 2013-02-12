@@ -98,7 +98,7 @@ public class Assembly implements Serializable {
 			this.date = sdf.parse(date);
 			sdf.applyPattern("yyyy MM");
 		} catch (ParseException e) {
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 		}
 		sdf.applyPattern("yyyy MM ");
 		indexName = sdf.format(this.date);

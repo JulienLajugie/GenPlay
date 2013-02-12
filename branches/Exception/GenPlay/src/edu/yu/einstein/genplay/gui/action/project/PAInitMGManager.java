@@ -93,9 +93,9 @@ public class PAInitMGManager extends TrackListActionWorker<Void> {
 				projectRecording.initMultiGenomeManager();
 				hasBeenInitialized = true;
 			} catch (IOException e) {
-				ExceptionManager.getInstance().handleException(e);
+				ExceptionManager.getInstance().caughtException(e);
 			} catch (ClassNotFoundException e) {
-				ExceptionManager.getInstance().handleException(e);
+				ExceptionManager.getInstance().caughtException(e);
 			}
 		} else {
 			hasBeenInitialized = true;

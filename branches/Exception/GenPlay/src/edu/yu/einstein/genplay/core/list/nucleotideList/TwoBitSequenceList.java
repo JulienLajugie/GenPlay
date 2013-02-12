@@ -225,7 +225,7 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 		try {
 			currentList = get(fittedChromosome);
 		} catch (InvalidChromosomeException e) {
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 			fittedDataList = null;
 			return null;
 		}

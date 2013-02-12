@@ -64,7 +64,7 @@ final class StatusLabel extends JLabel {
 					updateText();
 					sleep(1000);
 				} catch (InterruptedException e) {
-					ExceptionManager.getInstance().handleException(e);
+					ExceptionManager.getInstance().caughtException(e);
 				}
 			}
 		}

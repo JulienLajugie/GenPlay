@@ -137,7 +137,7 @@ public class ChromosomeWindowList extends DisplayableListOfLists<SimpleChromosom
 		try {
 			currentChromosomeList = get(fittedChromosome);
 		} catch (InvalidChromosomeException e) {
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 			fittedDataList = null;
 			return;
 		}

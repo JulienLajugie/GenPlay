@@ -518,7 +518,7 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 		try {
 			currentList = get(fittedChromosome);
 		} catch (InvalidChromosomeException e) {
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 			fittedDataList = null;
 			return;
 		}
@@ -632,7 +632,7 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 			ObjectInputStream ois = new ObjectInputStream(bais);
 			return ((GeneList)ois.readObject());
 		} catch (Exception e) {
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 			return null;
 		}
 	}

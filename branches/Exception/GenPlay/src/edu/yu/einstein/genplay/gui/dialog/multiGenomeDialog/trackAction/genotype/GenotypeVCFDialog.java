@@ -171,7 +171,7 @@ public class GenotypeVCFDialog extends MultiGenomeTrackActionDialog {
 							List<String> names = vcfToGenotype.getHeader().getGenomeRawNames();
 							genomePanel.initialize(settings.getGenomeNames(), names);
 						} catch (IOException e1) {
-							ExceptionManager.getInstance().handleException(e1);
+							ExceptionManager.getInstance().caughtException(e1);
 						}
 					}
 				}

@@ -66,7 +66,7 @@ public class VCFGenomeScanner extends VCFScanner {
 		try {
 			reader.goNextLine();
 		} catch (IOException e) {
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 		}
 		return reader.getCurrentLine();
 	}

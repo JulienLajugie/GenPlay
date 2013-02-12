@@ -578,7 +578,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 					((CompressibleList) currentList).uncompress();
 					uncompressed = true;
 				} catch (CompressionException e) {
-					ExceptionManager.getInstance().handleException(e);
+					ExceptionManager.getInstance().caughtException(e);
 				}
 			}
 		}
@@ -599,7 +599,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 			try {
 				((CompressibleList) currentList).compress();
 			} catch (CompressionException e) {
-				ExceptionManager.getInstance().handleException(e);
+				ExceptionManager.getInstance().caughtException(e);
 			}
 		}
 	}
@@ -694,7 +694,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 			ObjectInputStream ois = new ObjectInputStream(bais);
 			return ((BinList)ois.readObject());
 		} catch (Exception e) {
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 			return null;
 		}
 	}
@@ -769,7 +769,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 			}
 		} catch (Exception e) {
 			fittedDataList = null;
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 		}
 	}
 

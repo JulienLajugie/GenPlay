@@ -206,9 +206,9 @@ final class IslandDialogInput extends IslandDialogFieldset{
 				try {
 					toPValue();
 				} catch (InvalidLambdaPoissonParameterException e) {
-					ExceptionManager.getInstance().handleException(e);
+					ExceptionManager.getInstance().caughtException(e);
 				} catch (InvalidFactorialParameterException e) {
-					ExceptionManager.getInstance().handleException(e);
+					ExceptionManager.getInstance().caughtException(e);
 				}
 			}
 		});
@@ -391,7 +391,7 @@ final class IslandDialogInput extends IslandDialogFieldset{
 			try {
 				this.jftfWindowMinValueValue.commitEdit();
 			} catch (ParseException e) {
-				ExceptionManager.getInstance().handleException(e);
+				ExceptionManager.getInstance().caughtException(e);
 			}
 			read = Double.parseDouble(this.jftfWindowMinValueValue.getValue().toString());
 			pvalue = this.getIsland().findPValue(read);

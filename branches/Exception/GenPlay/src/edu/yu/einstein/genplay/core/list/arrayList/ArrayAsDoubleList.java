@@ -72,7 +72,7 @@ public abstract class ArrayAsDoubleList<T> extends AbstractList<Double> implemen
 				out.writeObject(data);
 				compress();
 			} catch (CompressionException e) {
-				ExceptionManager.getInstance().handleException(e);
+				ExceptionManager.getInstance().caughtException(e);
 			}
 		} else {
 			out.writeObject(data);

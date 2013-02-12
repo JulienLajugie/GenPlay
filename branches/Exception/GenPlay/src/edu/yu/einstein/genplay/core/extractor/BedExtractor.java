@@ -239,7 +239,7 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 				}
 			} catch (InvalidChromosomeException e) {
 				//throw new InvalidDataLineException(extractedLine);
-				ExceptionManager.getInstance().handleException(e);
+				ExceptionManager.getInstance().caughtException(e);
 				throw new DataLineException(DataLineException.INVALID_FORMAT_NUMBER);
 			}
 		}

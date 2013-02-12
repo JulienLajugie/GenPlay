@@ -24,6 +24,11 @@ package edu.yu.einstein.genplay.exception.report;
 import java.awt.Component;
 
 /**
+ * The {@link ReportExceptionBuilder} generates the exception report.
+ * For now, the content contains information about:
+ * - the thread (optional)
+ * - the throwable
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
@@ -58,7 +63,6 @@ public class ReportExceptionBuilder {
 	 * @param message error message to display.
 	 */
 	protected void initializeReport (Component component, Throwable throwable, String message) {
-		report = getComponentReport(component) + "\n";
 		report += getMessageReport(message) + "\n";
 		report += getThrowableReport(throwable);
 	}
@@ -110,20 +114,6 @@ public class ReportExceptionBuilder {
 				report += "\n";
 			}
 		}
-
-		return report;
-	}
-
-
-	/**
-	 * @param component a component
-	 * @return the component report
-	 */
-	private String getComponentReport (Component component) {
-		String report = "";
-
-		report += ReportBuilder.getTitle("Component");
-		report += ReportBuilder.getInformation("Class", component.getClass());
 
 		return report;
 	}

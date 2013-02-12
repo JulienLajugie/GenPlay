@@ -82,7 +82,7 @@ public class URRManager<T extends Serializable> implements Serializable {
 			ObjectInputStream ois = new ObjectInputStream(bais);
 			return (URRManager<?>) ois.readObject();
 		} catch (Exception e) {
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 			return null;
 		}
 	}

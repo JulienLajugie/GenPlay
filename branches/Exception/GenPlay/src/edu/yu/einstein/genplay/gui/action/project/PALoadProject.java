@@ -141,7 +141,7 @@ public class PALoadProject extends TrackListActionWorker<Track[]> {
 			try {
 				latch.await();
 			} catch (InterruptedException e) {
-				ExceptionManager.getInstance().handleException(e);
+				ExceptionManager.getInstance().caughtException(e);
 			}
 
 			// Check if everything has been initialized

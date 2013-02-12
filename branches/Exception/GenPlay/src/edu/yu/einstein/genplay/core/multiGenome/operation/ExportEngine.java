@@ -55,7 +55,7 @@ public abstract class ExportEngine extends BasicEngine {
 					file.createNewFile();
 				} catch (IOException e) {
 					errors = addErrorMessage(errors, "The file could not created, the path may not be valid: " + path + ".");
-					ExceptionManager.getInstance().handleException(e);
+					ExceptionManager.getInstance().caughtException(e);
 				}
 				if (!file.isFile()) {
 					errors = addErrorMessage(errors, "The path of the new VCF file is not a valid file: " + path + ".");

@@ -174,7 +174,7 @@ public final class MGARefresh extends TrackListAction {
 				try {
 					filterLatch.await();
 				} catch (InterruptedException e) {
-					ExceptionManager.getInstance().handleException(e);
+					ExceptionManager.getInstance().caughtException(e);
 				}
 			}
 
@@ -188,7 +188,7 @@ public final class MGARefresh extends TrackListAction {
 			try {
 				trackLatch.await();
 			} catch (InterruptedException e) {
-				ExceptionManager.getInstance().handleException(e);
+				ExceptionManager.getInstance().caughtException(e);
 			}
 
 			// Many data has been loaded, removed, garbage collecting free some memory

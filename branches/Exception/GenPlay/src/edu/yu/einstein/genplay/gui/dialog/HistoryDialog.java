@@ -155,7 +155,7 @@ public final class HistoryDialog extends JDialog {
 					history.save(selectedFile);
 				} catch (IOException e) {
 					JOptionPane.showMessageDialog(getRootPane(), "Error while saving the history", "Error", JOptionPane.ERROR_MESSAGE);
-					ExceptionManager.getInstance().handleException(e);
+					ExceptionManager.getInstance().caughtException(e);
 				}
 			}
 		}

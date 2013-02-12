@@ -223,7 +223,7 @@ public abstract class Variant implements Serializable {
 		try {
 			results = file.getReader().query(chromosome.getName(), referencePosition - 1, referencePosition);
 		} catch (IOException e) {
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 		}
 
 

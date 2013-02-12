@@ -83,19 +83,19 @@ public class ProjectRecording {
 		try {
 			ois.close();
 		} catch (IOException e) {
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 		}
 
 		try {
 			gz.close();
 		} catch (IOException e) {
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 		}
 
 		try {
 			fis.close();
 		} catch (IOException e) {
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 		}
 
 		ois = null;
@@ -131,9 +131,9 @@ public class ProjectRecording {
 				trackListReadyToLoad = false;
 				closeStreams();
 			} catch (IOException e) {
-				ExceptionManager.getInstance().handleException(e);
+				ExceptionManager.getInstance().caughtException(e);
 			} catch (ClassNotFoundException e) {
-				ExceptionManager.getInstance().handleException(e);
+				ExceptionManager.getInstance().caughtException(e);
 			}
 			return trackList;
 		}
@@ -269,7 +269,7 @@ public class ProjectRecording {
 			// ProjectManager.getInstance().getProjectConfiguration().writeConfigurationFile();
 			// // deactivate the configuration file saving
 		} catch (IOException e) {
-			ExceptionManager.getInstance().handleException(MainFrame.getInstance().getRootPane(), e, "An error occurred while saving the project");
+			ExceptionManager.getInstance().caughtException(Thread.currentThread(), e, "An error occurred while saving the project");
 			return false;
 		}
 		return true;

@@ -154,7 +154,7 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 					}
 				} catch (IOException er) {
 					JOptionPane.showMessageDialog(getRootPane(), "Error while saving the configuration", "Error", JOptionPane.ERROR_MESSAGE);
-					ExceptionManager.getInstance().handleException(er);
+					ExceptionManager.getInstance().caughtException(er);
 				}
 			}
 		});

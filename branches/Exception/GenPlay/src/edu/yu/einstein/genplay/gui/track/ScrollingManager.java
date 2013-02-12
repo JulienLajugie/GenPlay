@@ -158,7 +158,7 @@ public class ScrollingManager {
 							sleep(10);
 						}
 					} catch (InterruptedException e) {
-						ExceptionManager.getInstance().handleException(e);
+						ExceptionManager.getInstance().caughtException(e);
 					}
 				}
 			}

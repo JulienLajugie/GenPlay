@@ -115,7 +115,7 @@ public final class PAInitManagers extends AbstractAction {
 				}
 			} catch (Exception e) {
 				error = "Could not open the project file.";
-				ExceptionManager.getInstance().handleException(e);
+				ExceptionManager.getInstance().caughtException(e);
 			}
 
 
@@ -126,7 +126,7 @@ public final class PAInitManagers extends AbstractAction {
 					projectRecording.initProjectInformation();
 				} catch (Exception e) {
 					error = "Could not read the project information.";
-					ExceptionManager.getInstance().handleException(e);
+					ExceptionManager.getInstance().caughtException(e);
 				}
 
 				if (!isValidProjectType()) {
@@ -186,7 +186,7 @@ public final class PAInitManagers extends AbstractAction {
 								projectRecording.initProjectManager();
 							} catch (Exception e) {
 								error = "Could not read the managers.";
-								ExceptionManager.getInstance().handleException(e);
+								ExceptionManager.getInstance().caughtException(e);
 							}
 						}
 					}
@@ -197,7 +197,7 @@ public final class PAInitManagers extends AbstractAction {
 					inputStream.close();
 				} catch (IOException e) {
 					inputStream = null;
-					ExceptionManager.getInstance().handleException(e);
+					ExceptionManager.getInstance().caughtException(e);
 				}
 			}
 		}

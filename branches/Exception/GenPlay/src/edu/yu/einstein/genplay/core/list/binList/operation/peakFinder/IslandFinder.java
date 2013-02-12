@@ -341,16 +341,16 @@ public class IslandFinder implements Serializable, Stoppable {
 				try {
 					result = this.readScoreStorage.get(value);	// we get it
 				} catch (Exception e) {
-					ExceptionManager.getInstance().handleException(e);
+					ExceptionManager.getInstance().caughtException(e);
 				}
 			} else {	// else we have to calculated it
 				try {
 					result = -1*Poisson.logPoisson(lambda, (int)value);
 					this.readScoreStorage.put(value, result);
 				} catch (InvalidLambdaPoissonParameterException e) {
-					ExceptionManager.getInstance().handleException(e);
+					ExceptionManager.getInstance().caughtException(e);
 				} catch (InvalidFactorialParameterException e) {
-					ExceptionManager.getInstance().handleException(e);
+					ExceptionManager.getInstance().caughtException(e);
 				}
 			}
 		}

@@ -100,7 +100,7 @@ public class MGAVCFStatistics extends TrackListActionWorker<VCFFileStatistics> {
 					try {
 						operation.compute();
 					} catch (Exception e) {
-						ExceptionManager.getInstance().handleException(e);
+						ExceptionManager.getInstance().caughtException(e);
 					}
 
 					// Return the result

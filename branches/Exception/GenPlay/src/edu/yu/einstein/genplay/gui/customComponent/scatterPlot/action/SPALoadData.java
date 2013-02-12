@@ -130,7 +130,7 @@ public class SPALoadData extends ScatterPlotAction {
 			try {
 				reader.close();
 			} catch (IOException e1) {
-				ExceptionManager.getInstance().handleException(e);
+				ExceptionManager.getInstance().caughtException(e);
 			}
 			JOptionPane.showMessageDialog(getRootPane(), "The specified file is not valid", "Invalid File", JOptionPane.ERROR_MESSAGE);
 		}

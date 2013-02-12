@@ -21,10 +21,13 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.exception.report;
 
-import java.awt.Component;
-
 
 /**
+ * The {@link ReportBuilder} can generate a report about any {@link Throwable}.
+ * A report can be separated in different sub-parts but there are two main parts:
+ * - the header: context information about GenPlay, Java, System...
+ * - the content: information about the error.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
@@ -33,10 +36,10 @@ public class ReportBuilder {
 	protected final static String DEFAULT_VALUE = "unknown";
 	private static int REPORT_COUNT = 0;
 
-	private final ReportHeaderBuilder headerBuilder;
-	private final ReportExceptionBuilder exceptionBuilder;
+	private final ReportHeaderBuilder headerBuilder;			// The header report builder.
+	private final ReportExceptionBuilder exceptionBuilder;		// The exeception report builder.
 
-	private String report;
+	private String report;										// The report
 
 
 	/**
@@ -51,17 +54,14 @@ public class ReportBuilder {
 	/**
 	 * Initializes the report
 	 * @param thread a thread
-	 * @param component a component
 	 * @param throwable an exception
 	 * @param message error message to display
 	 */
-	public void initializeReport (Thread thread, Component component, Throwable throwable, String message) {
+	public void initializeReport (Thread thread, Throwable throwable, String message) {
 		REPORT_COUNT++;
 		headerBuilder.initializeReport();
 		if (thread != null) {
 			exceptionBuilder.initializeReport(thread, throwable);
-		} else if (component != null) {
-			exceptionBuilder.initializeReport(component, throwable, message);
 		} else if (throwable != null) {
 			exceptionBuilder.initializeReport(throwable);
 		}

@@ -170,19 +170,19 @@ public class BGZIPReader implements VCFGenomeIndexer {
 		try {
 			reader.close();
 		} catch (IOException e) {
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 		}
 
 		try {
 			isr.close();
 		} catch (IOException e) {
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 		}
 
 		try {
 			bcis.close();
 		} catch (IOException e) {
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 		}
 	}
 

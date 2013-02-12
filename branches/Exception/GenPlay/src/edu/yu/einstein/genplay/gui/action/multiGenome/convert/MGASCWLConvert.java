@@ -110,7 +110,7 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 						exportEngine.compute();
 						return true;
 					} catch (Exception e) {
-						ExceptionManager.getInstance().handleException(e);
+						ExceptionManager.getInstance().caughtException(e);
 					}
 
 					return true;
@@ -134,14 +134,14 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 				ScoredChromosomeWindowList list = ((MGOBedConvertSingleFile) exportEngine).getFirstList();
 				setTrack(dialog.getFirstAlleleTrack(), list);
 			} catch (Exception e) {
-				ExceptionManager.getInstance().handleException(e);
+				ExceptionManager.getInstance().caughtException(e);
 			}
 
 			try {
 				ScoredChromosomeWindowList list = ((MGOBedConvertSingleFile) exportEngine).getSecondList();
 				setTrack(dialog.getSecondAlleleTrack(), list);
 			} catch (Exception e) {
-				ExceptionManager.getInstance().handleException(e);
+				ExceptionManager.getInstance().caughtException(e);
 			}
 		}
 	}

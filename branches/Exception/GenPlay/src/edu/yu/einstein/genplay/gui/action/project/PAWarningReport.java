@@ -27,7 +27,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.gui.dialog.exceptionDialog.ExceptionReportDialog;
+import edu.yu.einstein.genplay.gui.dialog.exceptionDialog.WarningReportDialog;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 
 
@@ -70,6 +70,6 @@ public final class PAWarningReport extends AbstractAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		ExceptionReportDialog.getInstance().showDialog(mainFrame);
+		WarningReportDialog.getInstance().showDialog(mainFrame);
 	}
 }

@@ -62,7 +62,7 @@ public final class MemoryPanel extends JProgressBar {
 				try {
 					sleep(3000);
 				} catch (InterruptedException e) {
-					ExceptionManager.getInstance().handleException(e);
+					ExceptionManager.getInstance().caughtException(e);
 				}
 			}
 		}

@@ -211,7 +211,7 @@ public final class History implements Serializable {
 			ObjectInputStream ois = new ObjectInputStream(bais);
 			return ((History) ois.readObject());
 		} catch (Exception e) {
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 			return null;
 		}
 	}

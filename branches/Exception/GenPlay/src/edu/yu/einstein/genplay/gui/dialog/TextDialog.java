@@ -75,7 +75,7 @@ public final class TextDialog extends JDialog implements ActionListener {
 						try {
 							Desktop.getDesktop().browse(evt.getURL().toURI());
 						} catch (Exception e) {
-							ExceptionManager.getInstance().handleException(e);
+							ExceptionManager.getInstance().caughtException(e);
 						}
 					}
 				}

@@ -140,7 +140,7 @@ public abstract class Extractor implements Serializable, InvalidDataEventsGenera
 				writer.newLine();
 				writer.close();
 			} catch (IOException e) {
-				ExceptionManager.getInstance().handleException(e);
+				ExceptionManager.getInstance().caughtException(e);
 			}
 		}
 	}
@@ -159,7 +159,7 @@ public abstract class Extractor implements Serializable, InvalidDataEventsGenera
 				writer.newLine();
 				writer.close();
 			} catch (IOException e) {
-				ExceptionManager.getInstance().handleException(e);
+				ExceptionManager.getInstance().caughtException(e);
 			}
 		}
 	}
@@ -177,7 +177,7 @@ public abstract class Extractor implements Serializable, InvalidDataEventsGenera
 				writer.newLine();
 				writer.close();
 			} catch (IOException e) {
-				ExceptionManager.getInstance().handleException(e);
+				ExceptionManager.getInstance().caughtException(e);
 			}
 		}
 	}

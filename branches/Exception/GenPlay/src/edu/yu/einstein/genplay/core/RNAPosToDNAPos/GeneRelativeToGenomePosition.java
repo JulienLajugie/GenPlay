@@ -732,7 +732,7 @@ public class GeneRelativeToGenomePosition {
 			}
 
 		}catch (IOException e) {
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 		}
 	}
 }

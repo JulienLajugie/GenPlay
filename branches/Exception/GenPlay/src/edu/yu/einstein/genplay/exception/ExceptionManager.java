@@ -32,10 +32,15 @@ import edu.yu.einstein.genplay.exception.exceptions.BinListDifferentWindowSizeEx
 import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
 import edu.yu.einstein.genplay.exception.exceptions.valueOutOfRangeException.ValueOutOfRangeException;
 import edu.yu.einstein.genplay.exception.report.ReportBuilder;
+import edu.yu.einstein.genplay.gui.dialog.exceptionDialog.ExceptionReportDialog;
 
 
 /**
- * Provides a common strategy to handle the exceptions
+ * Provides a common strategy to handle the exceptions for all GenPlay.
+ * It handles the report creation and can send it within an email.
+ * 
+ * It can also be used to notify the user of a simple information that doesn't require the regular handling.
+ * 
  * @author Julien Lajugie
  * @author Nicolas Fourel
  * @version 0.1
@@ -51,6 +56,8 @@ public final class ExceptionManager implements UncaughtExceptionHandler {
 	private int printStackTrace = YES;
 	/** Print the report into the console */
 	private int printReport = YES;
+	/** Show the report dialog */
+	private int showReport = YES;
 
 	private static	ExceptionManager	instance = null;		// unique instance of the singleton
 
@@ -84,19 +91,7 @@ public final class ExceptionManager implements UncaughtExceptionHandler {
 
 	@Override
 	public void uncaughtException(Thread thread, Throwable throwable) {
-		handleThrowable(thread, null, throwable, null);
-	}
-
-
-	/**
-	 * Handles the exception
-	 * @param component a component
-	 * @param throwable an exception
-	 * @param message error message to display
-	 */
-	public void handleException(Component component, Throwable throwable, String message) {
-		handleThrowable(null, component, throwable, message);
-		showAppropriateMessage(component, throwable, message);
+		handleThrowable(thread, throwable, null);
 	}
 
 
@@ -104,8 +99,27 @@ public final class ExceptionManager implements UncaughtExceptionHandler {
 	 * Handles the exception
 	 * @param throwable an exception
 	 */
-	public void handleException(Throwable throwable) {
-		handleThrowable(null, null, throwable, null);
+	public void caughtException(Throwable throwable) {
+		caughtException(null, throwable);
+	}
+
+
+	/**
+	 * @param thread a thread
+	 * @param throwable an exception
+	 */
+	public void caughtException (Thread thread, Throwable throwable) {
+		caughtException(thread, throwable, null);
+	}
+
+
+	/**
+	 * @param thread a thread
+	 * @param throwable an exception
+	 * @param message error message
+	 */
+	public void caughtException (Thread thread, Throwable throwable, String message) {
+		handleThrowable(thread, throwable, message);
 	}
 
 
@@ -116,9 +130,9 @@ public final class ExceptionManager implements UncaughtExceptionHandler {
 	 * @param throwable an exception
 	 * @param message error message to display
 	 */
-	private void handleThrowable (Thread thread, Component component, Throwable throwable, String message) {
+	private void handleThrowable (Thread thread, Throwable throwable, String message) {
 		this.throwable = throwable;
-		report.initializeReport(thread, component, throwable, message);
+		report.initializeReport(thread, throwable, message);
 		processError();
 	}
 
@@ -134,6 +148,11 @@ public final class ExceptionManager implements UncaughtExceptionHandler {
 		if (printStackTrace()) {
 			throwable.printStackTrace();
 		}
+
+		if (showReport()) {
+			ExceptionReportDialog dialog = new ExceptionReportDialog(report.getReport());
+			dialog.showDialog(null);
+		}
 	}
 
 
@@ -143,7 +162,7 @@ public final class ExceptionManager implements UncaughtExceptionHandler {
 	 * @param e exception
 	 * @param message default message to print
 	 */
-	private void showAppropriateMessage(Component component, Throwable e, String message) {
+	public void notifyUser(Component component, Throwable e, String message) {
 		boolean exceptionHandled = false;
 		boolean hasCause = true;
 		Throwable exception = e;
@@ -251,4 +270,19 @@ public final class ExceptionManager implements UncaughtExceptionHandler {
 		this.printReport = boolToIn(printReport);
 	}
 
+
+	/**
+	 * @return the printReport
+	 */
+	public boolean showReport() {
+		return intToBool(showReport);
+	}
+
+
+	/**
+	 * @param showReport the printStackTrace to set
+	 */
+	public void enableShowReport(boolean showReport) {
+		this.showReport = boolToIn(showReport);
+	}
 }

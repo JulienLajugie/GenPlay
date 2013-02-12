@@ -100,14 +100,14 @@ public final class MGAVCFToTBI extends TrackListAction {
 			try {
 				compression();
 			} catch (Exception e) {
-				ExceptionManager.getInstance().handleException(e);
+				ExceptionManager.getInstance().caughtException(e);
 			}
 
 			// Index the VCF
 			try {
 				indexation();
 			} catch (Exception e) {
-				ExceptionManager.getInstance().handleException(e);
+				ExceptionManager.getInstance().caughtException(e);
 			}
 
 			// Many data has been loaded, removed, garbage collecting free some memory
@@ -127,7 +127,7 @@ public final class MGAVCFToTBI extends TrackListAction {
 		try {
 			success = operation.compute();
 		} catch (Exception e) {
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 		}
 
 		if (!success) {
@@ -150,7 +150,7 @@ public final class MGAVCFToTBI extends TrackListAction {
 			try {
 				success = operation.compute();
 			} catch (Exception e) {
-				ExceptionManager.getInstance().handleException(e);
+				ExceptionManager.getInstance().caughtException(e);
 			}
 
 			if (!success) {

@@ -24,9 +24,17 @@ package edu.yu.einstein.genplay.exception.report;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 
 /**
+ * The {@link ReportHeaderBuilder} generates the header report.
+ * For now, the header contains information about:
+ * - GenPlay
+ * - Java
+ * - Memory usage
+ * - System
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
+@SuppressWarnings("javadoc")
 class ReportHeaderBuilder {
 
 	private String report;

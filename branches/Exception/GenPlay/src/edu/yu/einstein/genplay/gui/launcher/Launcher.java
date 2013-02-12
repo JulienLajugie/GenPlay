@@ -112,7 +112,7 @@ public class Launcher {
 
 		// Set the exception manager options
 		ExceptionManager.getInstance().enablePrintReport(true);
-		ExceptionManager.getInstance().enablePrintStackTrace(false);
+		ExceptionManager.getInstance().enablePrintStackTrace(true);
 	}
 
 
@@ -126,7 +126,7 @@ public class Launcher {
 		try {
 			loadFile(is);
 		} catch (Exception e) {
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 		}
 	}
 
@@ -139,7 +139,7 @@ public class Launcher {
 		try {
 			loadFile(file);
 		} catch (Exception e) {
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 			System.out.println("Invalid Project File: The specifed file is not a valid project file");
 			System.out.println(file.getPath());
 		}
@@ -278,7 +278,7 @@ public class Launcher {
 			try {
 				latch.await();
 			} catch (InterruptedException e) {
-				ExceptionManager.getInstance().handleException(e);
+				ExceptionManager.getInstance().caughtException(e);
 			}
 
 			PALoadProject load = new PALoadProject();

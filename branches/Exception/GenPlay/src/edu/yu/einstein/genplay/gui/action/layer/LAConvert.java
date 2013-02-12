@@ -117,7 +117,7 @@ public class LAConvert extends TrackListActionWorker<ChromosomeListOfLists<?>> {
 					converter.convert();
 					return converter.getList();
 				} catch (Exception e) {
-					ExceptionManager.getInstance().handleException(e);
+					ExceptionManager.getInstance().caughtException(e);
 				}
 			} else {
 				System.err.println("No converter found");

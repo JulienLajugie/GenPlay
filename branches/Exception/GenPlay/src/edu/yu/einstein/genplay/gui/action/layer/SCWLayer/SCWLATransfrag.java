@@ -126,7 +126,7 @@ public class SCWLATransfrag extends TrackListAction {
 							}.actionPerformed(null);
 						}
 					} catch (Exception err) {
-						ExceptionManager.getInstance().handleException(getRootPane(), err, "Error generating Transfrag");
+						ExceptionManager.getInstance().caughtException(Thread.currentThread(), err, "Error generating Transfrag");
 					}
 				}
 			}

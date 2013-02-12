@@ -66,7 +66,7 @@ public class VCFChromosomeScanner extends VCFScanner {
 		try {
 			result = vcfFile.getReader().query(chromosome.getName(), 0, chromosome.getLength());
 		} catch (IOException e) {
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 		}
 		return getCurrentLine();
 	}

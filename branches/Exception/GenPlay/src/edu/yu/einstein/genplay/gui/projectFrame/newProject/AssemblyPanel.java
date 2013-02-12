@@ -248,7 +248,7 @@ class AssemblyPanel extends JPanel implements ActionListener {
 			RetrieveAssemblies genomeHandler = new RetrieveAssemblies();
 			cladeList = genomeHandler.getCladeList();
 		} catch (Exception e) {
-			ExceptionManager.getInstance().handleException(e);
+			ExceptionManager.getInstance().caughtException(e);
 		}
 		List<String> cladeNames = new ArrayList<String>(cladeList.keySet());
 		Collections.sort(cladeNames);
