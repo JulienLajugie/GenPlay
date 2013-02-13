@@ -43,7 +43,8 @@ public class ReportExceptionBuilder {
 	 */
 	protected void initializeReport (Thread thread, Throwable throwable) {
 		report = getThreadReport(thread) + "\n";
-		report += getThrowableReport(throwable);
+		report += getThrowableReport(throwable, 0);
+		report += getLowerLayerThrowableReports(throwable);
 	}
 
 
@@ -52,7 +53,8 @@ public class ReportExceptionBuilder {
 	 * @param throwable a throwable
 	 */
 	protected void initializeReport (Throwable throwable) {
-		report = getThrowableReport(throwable);
+		report = getThrowableReport(throwable, 0);
+		report += getLowerLayerThrowableReports(throwable);
 	}
 
 
@@ -64,7 +66,8 @@ public class ReportExceptionBuilder {
 	 */
 	protected void initializeReport (Component component, Throwable throwable, String message) {
 		report += getMessageReport(message) + "\n";
-		report += getThrowableReport(throwable);
+		report += getThrowableReport(throwable, 0);
+		report += getLowerLayerThrowableReports(throwable);
 	}
 
 
@@ -97,24 +100,49 @@ public class ReportExceptionBuilder {
 	 * @param throwable a trhowable (exception)
 	 * @return the throwable report
 	 */
-	private String getThrowableReport (Throwable throwable) {
-		String report = "";
+	private String getThrowableReport (Throwable throwable, int count) {
+		if (throwable != null) {
+			String report = "";
 
-		report += ReportBuilder.getTitle("Throwable");
-		report += ReportBuilder.getInformation("Class", throwable.getClass());
-		report += ReportBuilder.getInformation("Cause", throwable.getCause());
-		report += ReportBuilder.getInformation("Message", throwable.getMessage());
-		report += ReportBuilder.getInformation("Localized message", throwable.getLocalizedMessage());
-		report += ReportBuilder.getInformation("Stack trace", null);
+			report += ReportBuilder.getTitle("Throwable (" + count + ")");
+			report += ReportBuilder.getInformation("Class", throwable.getClass());
+			report += ReportBuilder.getInformation("Cause", throwable.getCause());
+			report += ReportBuilder.getInformation("Message", throwable.getMessage());
+			report += ReportBuilder.getInformation("Localized message", throwable.getLocalizedMessage());
+			report += ReportBuilder.getInformation("Stack trace", null);
 
-		StackTraceElement[] trace = throwable.getStackTrace();
-		for (int i = 0; i < trace.length; i++) {
-			report += (i + 1) + ": " + trace[i];
-			if (i < (trace.length - 1)) {
-				report += "\n";
+			StackTraceElement[] trace = throwable.getStackTrace();
+			for (int i = 0; i < trace.length; i++) {
+				report += (i + 1) + ": " + trace[i];
+				if (i < (trace.length - 1)) {
+					report += "\n";
+				}
 			}
-		}
 
+			return report;
+		}
+		return null;
+	}
+
+
+	/**
+	 * @param throwable a trhowable (exception)
+	 * @return the throwable report
+	 */
+	private String getLowerLayerThrowableReports (Throwable throwable) {
+		String report = null;
+		int count = 0;
+		Throwable cause = throwable.getCause();
+		while (cause != null) {
+			count++;
+			String currenReport = getThrowableReport(cause, count);
+			if (report == null) {
+				report = currenReport;
+			} else {
+				report += "\n" + currenReport;
+			}
+			cause = cause.getCause();
+		}
 		return report;
 	}
 

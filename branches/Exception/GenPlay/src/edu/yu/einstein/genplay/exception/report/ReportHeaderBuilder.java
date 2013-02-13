@@ -21,6 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.exception.report;
 
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 
 /**
@@ -67,6 +68,15 @@ class ReportHeaderBuilder {
 		report += ReportBuilder.getTitle("GenPlay");
 
 		report += ReportBuilder.getInformation("Version", MainFrame.VERSION_NUMBER);
+
+		String look = null;
+		try {
+			look = ProjectManager.getInstance().getProjectConfiguration().getLookAndFeel();
+		} catch (Exception e) {}
+
+		if (look != null) {
+			report += ReportBuilder.getInformation("Look & Feel", look);
+		}
 
 		return report;
 	}
