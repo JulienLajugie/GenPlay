@@ -14,43 +14,37 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *     
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.exception.valueOutOfRangeException;
-
-import java.text.NumberFormat;
-
-import edu.yu.einstein.genplay.core.list.arrayList.ByteArrayAsDoubleList;
-
-
+package edu.yu.einstein.genplay.exception.exceptions;
 
 /**
- * {@link RuntimeException} thrown when a value is out of the range of a 8Bit data type
- * @author Julien Lajugie
+ * Exception thrown when a Poisson distribution is asked to be made from 
+ * an invalid parameter. 
+ * @author Alexander Golec
  * @version 0.1
  */
-public class Invalid8BitValue extends ValueOutOfRangeException {
+public final class PoissonInvalidParameterException extends Exception {
+	
+	private static final long serialVersionUID = -6091702295893962445L;	// generated ID
 
-	private static final long serialVersionUID = -7111260909692592549L; // generated ID
-
-
+	
 	/**
-	 * Creates an instance of {@link Invalid8BitValue}
-	 * @param data the data that is out of range
+	 * Creates an instance of {@link PoissonInvalidParameterException}
 	 */
-	public Invalid8BitValue(Double data) {
-		super("Invalid Data (score = " + NumberFormat.getInstance().format(data) + "). A 8Bit value must be between " + ByteArrayAsDoubleList.MIN_VALUE + " and " + ByteArrayAsDoubleList.MAX_VALUE);
+	public PoissonInvalidParameterException() {
+		super("Invalid parameter passed to Poisson distribution. ");
 	}
 
-
+	
 	/**
-	 * Creates an instance of {@link Invalid8BitValue}
-	 * @param data the data that is out of range
+	 * Creates an instance of {@link PoissonInvalidParameterException}
+	 * @param message message of the exception
 	 */
-	public Invalid8BitValue(Integer data) {
-		super("Invalid Data (score = " + NumberFormat.getInstance().format(data) + "). A 8Bit value must be between " + ByteArrayAsDoubleList.MIN_VALUE + " and " + ByteArrayAsDoubleList.MAX_VALUE);
+	public PoissonInvalidParameterException(String message) {
+		super(message);
 	}
 }

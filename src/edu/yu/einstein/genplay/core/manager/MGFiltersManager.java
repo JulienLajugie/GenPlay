@@ -35,6 +35,7 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFScanner.VCFScanner;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFScanner.VCFScannerReceiver;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFFilter;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 
 
@@ -169,7 +170,7 @@ public class MGFiltersManager implements VCFScannerReceiver {
 					scanner.setGenomes(genomeNames);
 					scanner.compute();
 				} catch (IOException e1) {
-					e1.printStackTrace();
+					ExceptionManager.getInstance().caughtException(e1);
 				}
 			}
 		}

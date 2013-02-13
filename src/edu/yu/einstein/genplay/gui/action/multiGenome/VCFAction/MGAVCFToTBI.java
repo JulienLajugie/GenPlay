@@ -33,6 +33,7 @@ import javax.swing.KeyStroke;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.operation.convert.MGOBGZIPCompression;
 import edu.yu.einstein.genplay.core.multiGenome.operation.convert.MGOTBIIndex;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.util.Utils;
 
@@ -99,14 +100,14 @@ public final class MGAVCFToTBI extends TrackListAction {
 			try {
 				compression();
 			} catch (Exception e) {
-				e.printStackTrace();
+				ExceptionManager.getInstance().caughtException(e);
 			}
 
 			// Index the VCF
 			try {
 				indexation();
 			} catch (Exception e) {
-				e.printStackTrace();
+				ExceptionManager.getInstance().caughtException(e);
 			}
 
 			// Many data has been loaded, removed, garbage collecting free some memory
@@ -126,7 +127,7 @@ public final class MGAVCFToTBI extends TrackListAction {
 		try {
 			success = operation.compute();
 		} catch (Exception e) {
-			e.printStackTrace();
+			ExceptionManager.getInstance().caughtException(e);
 		}
 
 		if (!success) {
@@ -149,7 +150,7 @@ public final class MGAVCFToTBI extends TrackListAction {
 			try {
 				success = operation.compute();
 			} catch (Exception e) {
-				e.printStackTrace();
+				ExceptionManager.getInstance().caughtException(e);
 			}
 
 			if (!success) {

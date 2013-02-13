@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -31,7 +31,8 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.exception.InvalidFileTypeException;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
 
 /**
  * This class manages the basic information about the last saved projects.
@@ -68,7 +69,7 @@ public class RecentProjectRecording {
 			fos.flush();
 			fos.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			ExceptionManager.getInstance().caughtException(e);
 		}
 	}
 
@@ -84,7 +85,7 @@ public class RecentProjectRecording {
 		// we look if the current path already exists in the current list
 		int currentExistingProjectPath = -1;												// set by default at -1
 		for (int i = 0; i < PROJECT_NUMBER; i++) {											// scan all path to test them
-			if (projectPaths[i] != null && projectPaths[i].equals(currentProjectPath)) {	// if the path has been found
+			if ((projectPaths[i] != null) && projectPaths[i].equals(currentProjectPath)) {	// if the path has been found
 				currentExistingProjectPath = i;												// we store its index
 			}
 		}
@@ -117,7 +118,7 @@ public class RecentProjectRecording {
 			retrieveProjectsPath();
 			retrieveProjectsInformation();
 		} catch (Exception e) {
-			e.printStackTrace();
+			ExceptionManager.getInstance().caughtException(e);
 		}
 	}
 
@@ -146,7 +147,7 @@ public class RecentProjectRecording {
 				gz.close();
 				fis.close();
 			} catch (Exception e) {
-				e.printStackTrace();
+				ExceptionManager.getInstance().caughtException(e);
 			}
 		} else {
 			for (int i = 0; i < PROJECT_NUMBER; i++) {
@@ -199,7 +200,7 @@ public class RecentProjectRecording {
 			fis.close();
 			return projectInformation;
 		} catch (IOException e) {
-			// a IOException is likely to be caused by a invalid file type 
+			// a IOException is likely to be caused by a invalid file type
 			throw new InvalidFileTypeException();
 		}
 	}

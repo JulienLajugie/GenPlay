@@ -34,8 +34,8 @@ import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
-import edu.yu.einstein.genplay.exception.DataLineException;
-import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
+import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 import edu.yu.einstein.genplay.util.Utils;
 
 

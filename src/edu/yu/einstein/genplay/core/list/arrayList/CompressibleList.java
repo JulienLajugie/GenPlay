@@ -23,7 +23,7 @@ package edu.yu.einstein.genplay.core.list.arrayList;
 
 import java.util.List;
 
-import edu.yu.einstein.genplay.exception.CompressionException;
+import edu.yu.einstein.genplay.exception.exceptions.CompressionException;
 
 
 

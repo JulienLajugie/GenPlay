@@ -113,7 +113,7 @@ public class TAAddLayerFromDAS extends TrackListAction {
 				}
 			}
 		} catch (Exception e) {
-			ExceptionManager.handleException(getRootPane(), e, "Error While Loading the Server List");
+			ExceptionManager.getInstance().caughtException(Thread.currentThread(), e, "Error While Loading the Server List");
 		}
 	}
 }

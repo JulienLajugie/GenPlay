@@ -29,6 +29,7 @@ import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.action.multiGenome.VCFAction.MGABGZIPCompression;
 import edu.yu.einstein.genplay.gui.action.multiGenome.VCFAction.MGATBIIndex;
@@ -108,7 +109,7 @@ public class MGAGlobalVCFExport extends TrackListActionWorker<Boolean> {
 				try {
 					vcfLatch.await();
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					ExceptionManager.getInstance().caughtException(e);
 				}
 
 				// Compress the VCF
@@ -123,7 +124,7 @@ public class MGAGlobalVCFExport extends TrackListActionWorker<Boolean> {
 					try {
 						compressLatch.await();
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						ExceptionManager.getInstance().caughtException(e);
 					}
 
 					// Index the BGZIP
@@ -137,7 +138,7 @@ public class MGAGlobalVCFExport extends TrackListActionWorker<Boolean> {
 						try {
 							indexLatch.await();
 						} catch (InterruptedException e) {
-							e.printStackTrace();
+							ExceptionManager.getInstance().caughtException(e);
 						}
 					}
 				}

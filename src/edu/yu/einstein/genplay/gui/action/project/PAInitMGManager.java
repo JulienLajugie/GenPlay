@@ -29,6 +29,7 @@ import javax.swing.ActionMap;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.recording.ProjectRecording;
 import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 
 /**
@@ -92,9 +93,9 @@ public class PAInitMGManager extends TrackListActionWorker<Void> {
 				projectRecording.initMultiGenomeManager();
 				hasBeenInitialized = true;
 			} catch (IOException e) {
-				e.printStackTrace();
+				ExceptionManager.getInstance().caughtException(e);
 			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
+				ExceptionManager.getInstance().caughtException(e);
 			}
 		} else {
 			hasBeenInitialized = true;

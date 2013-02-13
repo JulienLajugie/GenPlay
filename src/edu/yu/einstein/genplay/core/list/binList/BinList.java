@@ -46,7 +46,8 @@ import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.exception.CompressionException;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
+import edu.yu.einstein.genplay.exception.exceptions.CompressionException;
 
 
 
@@ -577,7 +578,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 					((CompressibleList) currentList).uncompress();
 					uncompressed = true;
 				} catch (CompressionException e) {
-					e.printStackTrace();
+					ExceptionManager.getInstance().caughtException(e);
 				}
 			}
 		}
@@ -598,7 +599,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 			try {
 				((CompressibleList) currentList).compress();
 			} catch (CompressionException e) {
-				e.printStackTrace();
+				ExceptionManager.getInstance().caughtException(e);
 			}
 		}
 	}
@@ -693,7 +694,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 			ObjectInputStream ois = new ObjectInputStream(bais);
 			return ((BinList)ois.readObject());
 		} catch (Exception e) {
-			e.printStackTrace();
+			ExceptionManager.getInstance().caughtException(e);
 			return null;
 		}
 	}
@@ -768,7 +769,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 			}
 		} catch (Exception e) {
 			fittedDataList = null;
-			e.printStackTrace();
+			ExceptionManager.getInstance().caughtException(e);
 		}
 	}
 

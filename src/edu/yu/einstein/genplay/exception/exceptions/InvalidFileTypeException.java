@@ -14,34 +14,26 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *     
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.exception.valueOutOfRangeException;
-
-import java.text.NumberFormat;
-
-import edu.yu.einstein.genplay.core.list.arrayList.ShortArrayAsDoubleList;
-
-
+package edu.yu.einstein.genplay.exception.exceptions;
 
 /**
- * {@link RuntimeException} thrown when a value is out of the range of a 16Bit data type
+ * Exception thrown when a file can't be extracted
  * @author Julien Lajugie
  * @version 0.1
  */
-public class Invalid16BitValue	extends ValueOutOfRangeException {
+public final class InvalidFileTypeException extends Exception {
 
-	private static final long serialVersionUID = 5100775209357414910L; // generated ID
-
-
+	private static final long serialVersionUID = -2653999804996484400L; // generated ID
+	
 	/**
-	 * Creates an instance of {@link Invalid16BitValue}
-	 * @param data the data that is out of range
+	 * Creates an instance of {@link InvalidFileTypeException}
 	 */
-	public Invalid16BitValue(Double data) {
-		super("Invalid Data (score = " + NumberFormat.getInstance().format(data) + "). A 16Bit value must be between " + ShortArrayAsDoubleList.MIN_VALUE + " and " + ShortArrayAsDoubleList.MAX_VALUE);
+	public InvalidFileTypeException() {
+		super("Invalid file type, the data can't be extracted");
 	}
 }

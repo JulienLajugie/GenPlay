@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -37,6 +37,7 @@ import javax.swing.JRadioButton;
 
 import edu.yu.einstein.genplay.core.manager.recording.ProjectInformation;
 import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 
 /**
@@ -54,7 +55,7 @@ class ProjectListPanel extends JPanel {
 	private 				ButtonGroup 			group;					// The button group
 	private 				JRadioButton 			radioOther;				// The radio button for the field uses to load an existing projects
 	private 				ProjectChooserPanel 	projectChooserPanel;	// The chooser file to choose an other project
-	private					LoadProjectPanel		loadProjectPanel;		// The load project object
+	private final					LoadProjectPanel		loadProjectPanel;		// The load project object
 	private 				JPanel 					fakeChooser;			// A panel for graphism synchronization
 
 
@@ -202,14 +203,14 @@ class ProjectListPanel extends JPanel {
 			File file = new File(filePath);
 			if (file.exists()) {
 				for (ProjectInformation currentProjectInformation: projects) {
-					if (currentProjectInformation != null && currentProjectInformation.getFile().getPath().equals(filePath)) {
+					if ((currentProjectInformation != null) && currentProjectInformation.getFile().getPath().equals(filePath)) {
 						projectInformation = currentProjectInformation;
 					}
 				}
 				try {
 					projectInformation = RecordingManager.getInstance().getRecentProjectRecording().getProjectInformation(file);
 				} catch (Exception e) {
-					e.printStackTrace();
+					ExceptionManager.getInstance().caughtException(e);
 				}
 			}
 		}
@@ -220,7 +221,7 @@ class ProjectListPanel extends JPanel {
 	/**
 	 * This method creates the "other" radio button.
 	 * It must be treated separately from others radio button.
-	 * Listeners and label are different. 
+	 * Listeners and label are different.
 	 */
 	private void buildButtonOther () {
 		//Button other
@@ -253,11 +254,11 @@ class ProjectListPanel extends JPanel {
 
 	/**
 	 * This method adds radio button to the panel.
-	 * Radio button is added below the previous one. 
+	 * Radio button is added below the previous one.
 	 * @param radio	the radio button to add
 	 */
 	private void addRadioToPanel (JRadioButton radio) {
 		gbc.gridy++;
 		add(radio, gbc);
-	}	
+	}
 }

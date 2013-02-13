@@ -32,6 +32,7 @@ import javax.swing.filechooser.FileFilter;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.fileFilter.GenPlayProjectFilter;
@@ -140,7 +141,7 @@ public class PALoadProject extends TrackListActionWorker<Track[]> {
 			try {
 				latch.await();
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				ExceptionManager.getInstance().caughtException(e);
 			}
 
 			// Check if everything has been initialized

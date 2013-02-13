@@ -30,9 +30,9 @@ import javax.swing.SwingWorker;
 
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.exception.DataLineException;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
-import edu.yu.einstein.genplay.gui.dialog.exceptionDialog.ExceptionReportDialog;
+import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
+import edu.yu.einstein.genplay.gui.dialog.exceptionDialog.WarningReportDialog;
 import edu.yu.einstein.genplay.gui.event.operationProgressEvent.OperationProgressEvent;
 import edu.yu.einstein.genplay.gui.event.operationProgressEvent.OperationProgressListener;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
@@ -78,7 +78,7 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 					getStatusBar().actionStop("Operation Aborted");
 				} else {
 					getStatusBar().actionStop("Error");
-					ExceptionManager.handleException(getTrackListPanel().getRootPane(), e, "An unexpected error occurred during the operation");
+					ExceptionManager.getInstance().caughtException(Thread.currentThread(), e, "An unexpected error occurred during the operation");
 				}
 			} finally {
 				OperationPool.getInstance().removeOperationProgressListener(TrackListActionWorker.this);
@@ -145,8 +145,8 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 
 
 	protected void handleError (DataLineException e) {
-		ExceptionReportDialog.getInstance().addMessage(e.getMessage());
-		ExceptionReportDialog.getInstance().showDialog(getRootPane());
+		WarningReportDialog.getInstance().addMessage(e.getMessage());
+		WarningReportDialog.getInstance().showDialog(getRootPane());
 	}
 
 

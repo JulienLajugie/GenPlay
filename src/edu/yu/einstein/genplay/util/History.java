@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -34,6 +34,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 /**
@@ -48,8 +49,8 @@ public final class History implements Serializable {
 	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private List<String> history; 	// history
 	private List<String> redo; 		// redo history
-	
-	
+
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -60,8 +61,8 @@ public final class History implements Serializable {
 		out.writeObject(history);
 		out.writeObject(redo);
 	}
-	
-	
+
+
 	/**
 	 * Method used of unserialization
 	 * @param in
@@ -72,10 +73,10 @@ public final class History implements Serializable {
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		history = (List<String>) in.readObject();
-		redo = (List<String>) in.readObject();		
+		redo = (List<String>) in.readObject();
 	}
-	
-	
+
+
 	/**
 	 * Public constructor. Initializes the history.
 	 */
@@ -84,7 +85,7 @@ public final class History implements Serializable {
 		history = new ArrayList<String>();
 		redo = new ArrayList<String>();
 	}
-	
+
 
 	/**
 	 * @return The history as a String[].
@@ -94,7 +95,7 @@ public final class History implements Serializable {
 		return history.toArray(a);
 	}
 
-	
+
 	/**
 	 * @return The number of element in the history.
 	 */
@@ -102,7 +103,7 @@ public final class History implements Serializable {
 		return history.size();
 	}
 
-	
+
 	/**
 	 * Adds an element to the history.
 	 * @param s String describing the last action performed.
@@ -112,7 +113,7 @@ public final class History implements Serializable {
 		redo.clear();
 	}
 
-	
+
 	/**
 	 * Adds an element to the history with the specified color
 	 * @param s string to add
@@ -125,7 +126,7 @@ public final class History implements Serializable {
 		add(s);
 	}
 
-	
+
 	/**
 	 * Undoes the last entry in the history.
 	 */
@@ -136,7 +137,7 @@ public final class History implements Serializable {
 		history.remove(lastIndex);
 	}
 
-	
+
 	/**
 	 * Redoes the last undone action.
 	 */
@@ -149,7 +150,7 @@ public final class History implements Serializable {
 		}
 	}
 
-	
+
 	/**
 	 * Resets the history.
 	 */
@@ -157,7 +158,7 @@ public final class History implements Serializable {
 		add("RESET", Colors.RED);
 	}
 
-	
+
 	/**
 	 * @return A string containing all the history. Each action is separated by a new line.
 	 */
@@ -174,7 +175,7 @@ public final class History implements Serializable {
 		return returnString;
 	}
 
-	
+
 	/**
 	 * Sets the last entry in the history as an error.
 	 */
@@ -184,7 +185,7 @@ public final class History implements Serializable {
 		}
 	}
 
-	
+
 	/**
 	 * Save the history in a file.
 	 * @param file
@@ -196,7 +197,7 @@ public final class History implements Serializable {
 		writer.close();
 	}
 
-	
+
 	/**
 	 * Performs a deep clone of the current {@link History}.
 	 * @return a new History
@@ -210,7 +211,7 @@ public final class History implements Serializable {
 			ObjectInputStream ois = new ObjectInputStream(bais);
 			return ((History) ois.readObject());
 		} catch (Exception e) {
-			e.printStackTrace();
+			ExceptionManager.getInstance().caughtException(e);
 			return null;
 		}
 	}

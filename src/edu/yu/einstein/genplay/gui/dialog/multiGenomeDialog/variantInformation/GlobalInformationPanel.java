@@ -233,7 +233,7 @@ public class GlobalInformationPanel extends JPanel {
 						String link = "http://www.ncbi.nlm.nih.gov/snp/?term=" + id + "&SITE=NcbiHome&submit=Go";
 						Desktop.getDesktop().browse(new URI(link));
 					} catch (Exception e1) {
-						ExceptionManager.handleException(getRootPane(), e1, "Error while opening the web browser");
+						ExceptionManager.getInstance().caughtException(Thread.currentThread(), e1, "Error while opening the web browser");
 					}
 				}
 			}

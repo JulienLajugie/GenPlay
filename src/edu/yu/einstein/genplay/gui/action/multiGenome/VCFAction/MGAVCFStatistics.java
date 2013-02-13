@@ -30,6 +30,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics.VCFFileMixStatistic;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics.VCFFileStatistics;
 import edu.yu.einstein.genplay.core.multiGenome.operation.VCF.MGOVCFStatisticsSingleFile;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.statistics.MGStatisticsDialog;
@@ -98,7 +99,7 @@ public class MGAVCFStatistics extends TrackListActionWorker<VCFFileStatistics> {
 					try {
 						operation.compute();
 					} catch (Exception e) {
-						e.printStackTrace();
+						ExceptionManager.getInstance().caughtException(e);
 					}
 
 					// Return the result

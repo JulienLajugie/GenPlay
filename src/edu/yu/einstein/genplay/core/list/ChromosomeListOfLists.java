@@ -26,7 +26,7 @@ import java.util.List;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
-import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 
 
 

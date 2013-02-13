@@ -88,7 +88,8 @@ import edu.yu.einstein.genplay.util.Images;
 public final class MainFrame extends JFrame implements GenomeWindowListener, ActionListener {
 
 	private static final long serialVersionUID = -4637394760647080396L; // generated ID
-	private static final int VERSION_NUMBER = 831; 						// GenPlay version
+	/** GenPlay version number */
+	public static final int VERSION_NUMBER = 831; 						// GenPlay version
 
 	/** Title of the application */
 	public static final String 		APPLICATION_TITLE = "GenPlay, Einstein Genome Analyzer (v" + VERSION_NUMBER + ")";
@@ -384,12 +385,11 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 			UIManager.setLookAndFeel(ProjectManager.getInstance().getProjectConfiguration().getLookAndFeel());
 			SwingUtilities.updateComponentTreeUI(this);
 		} catch (Exception e) {
-			ExceptionManager.handleException(getRootPane(), e, "Error while loading the look and feel specified in the config file");
+			ExceptionManager.getInstance().caughtException(Thread.currentThread(), e, "Error while loading the look and feel specified in the config file");
 			try {
 				UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
 			} catch (Exception e1) {
-				ExceptionManager.handleException(getRootPane(), e1, "Error while loading the default look and feel");
-				e1.printStackTrace();
+				ExceptionManager.getInstance().caughtException(Thread.currentThread(), e1, "Error while loading the default look and feel");
 			}
 		}
 	}
@@ -484,4 +484,5 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		trackListPanel.unlockTrackHandles();
 		controlPanel.unlock();
 	}
+
 }

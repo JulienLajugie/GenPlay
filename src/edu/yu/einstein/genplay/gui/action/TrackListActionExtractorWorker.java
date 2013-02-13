@@ -30,8 +30,8 @@ import edu.yu.einstein.genplay.core.extractor.Extractor;
 import edu.yu.einstein.genplay.core.extractor.ExtractorFactory;
 import edu.yu.einstein.genplay.core.generator.Generator;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.exception.DataLineException;
-import edu.yu.einstein.genplay.exception.InvalidFileTypeException;
+import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
 import edu.yu.einstein.genplay.gui.event.invalidDataEvent.InvalidDataListener;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 

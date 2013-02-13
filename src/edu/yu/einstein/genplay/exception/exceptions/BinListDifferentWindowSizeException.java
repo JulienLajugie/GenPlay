@@ -19,23 +19,22 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.exception;
-
+package edu.yu.einstein.genplay.exception.exceptions;
 
 /**
- * The InvalidChromosomeException class is thrown when a Chromosome is not valid. 
  * @author Julien Lajugie
  * @version 0.1
+ * The DifferentWindowException is thrown when an operation is attempted on two BinList with different window sizes.
  */
-public final class InvalidChromosomeException extends RuntimeException {
-
-	private static final long serialVersionUID = -2244843030262784715L;	// Generated ID
-	
-	
+public class BinListDifferentWindowSizeException extends Exception {
 	/**
-	 * Creates an instance of {@link InvalidChromosomeException}
+	 * Generated ID 
 	 */
-	public InvalidChromosomeException() {
-		super("Invalid chromosome");
+	private static final long serialVersionUID = -9080423756562654857L;
+	/**
+	 * Constructor.
+	 */
+	public BinListDifferentWindowSizeException() {
+		super(new String("The window size of the two lists are different"));
 	}
 }

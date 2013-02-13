@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -50,10 +50,10 @@ import edu.yu.einstein.genplay.exception.ExceptionManager;
  * @author Julien Lajugie
  */
 public class DataSelectionPanel extends JPanel {
-	
+
 	private static final long serialVersionUID = 9076119842012637763L; // generated ID
-	private final static String SERVER_LIST_PATH = 
-		"edu/yu/einstein/genplay/resource/DASServerList.xml";	// config file path
+	private final static String SERVER_LIST_PATH =
+			"edu/yu/einstein/genplay/resource/DASServerList.xml";	// config file path
 	private final JLabel 		jlServer;						// label server
 	private final JComboBox 	jcbServer;						// combo box server
 	private final JLabel 		jlDataSource;					// label data source
@@ -63,8 +63,8 @@ public class DataSelectionPanel extends JPanel {
 	private DASConnector 		selectedDasConnector = null;	// the DASConnector of the selected server
 	private DASType 			selectedDasType = null;			// the selected DASType
 	private DataSource 			selectedDataSource = null;		// the selected DataSource
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link DataSelectionPanel}
 	 * @throws ParserConfigurationException
@@ -73,14 +73,14 @@ public class DataSelectionPanel extends JPanel {
 	 */
 	public DataSelectionPanel() throws ParserConfigurationException, SAXException, IOException {
 		super();
-		
+
 		ClassLoader cl = this.getClass().getClassLoader();
 		URL serverListURL = cl.getResource(SERVER_LIST_PATH);
 		DASServerList dasServerList = new DASServerList(serverListURL);
 
 		jlServer = new JLabel("Server:");
 		jcbServer = new JComboBox(dasServerList.toArray());
-		jcbServer.addItemListener(new ItemListener() {			
+		jcbServer.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				selectedServerChanged();
@@ -89,26 +89,26 @@ public class DataSelectionPanel extends JPanel {
 
 		jlDataSource = new JLabel("Data Source:");
 		jcbDataSource = new JComboBox();
-		jcbDataSource.addItemListener(new ItemListener() {			
+		jcbDataSource.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
-				selectedDataSourceChanged();				
+				selectedDataSourceChanged();
 			}
 		});
 
 		jlDataType = new JLabel("Data Type:");
 		jcbDasType = new JComboBox();
-		jcbDasType.addItemListener(new ItemListener() {			
+		jcbDasType.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				selectedDasTypeChanged();
 			}
 		});
-		
+
 		// we add the components
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
-				
+
 		c.gridx = 0;
 		c.gridy = 0;
 		c.weightx = 1;
@@ -152,20 +152,20 @@ public class DataSelectionPanel extends JPanel {
 		c.anchor = GridBagConstraints.LINE_START;
 		c.fill = GridBagConstraints.BOTH;
 		add(jcbDasType, c);
-		
+
 		setBorder(BorderFactory.createTitledBorder("Select Data"));
 		selectedServerChanged();
 	}
-	
-	
+
+
 	/**
 	 * Method called when the selected DASType changes
 	 */
 	private void selectedDasTypeChanged() {
-		selectedDasType = (DASType) jcbDasType.getSelectedItem();		
+		selectedDasType = (DASType) jcbDasType.getSelectedItem();
 	}
-	
-	
+
+
 	/**
 	 * Method called when the selected DataSource changes
 	 */
@@ -179,7 +179,7 @@ public class DataSelectionPanel extends JPanel {
 					jcbDasType.addItem(currentDataType);
 				}
 			} catch (Exception e) {
-				ExceptionManager.handleException(getRootPane(), e, "Error when retrieving the data types from " + selectedDataSource);
+				ExceptionManager.getInstance().caughtException(Thread.currentThread(), e, "Error when retrieving the data types from " + selectedDataSource);
 			}
 		}
 	}
@@ -199,12 +199,12 @@ public class DataSelectionPanel extends JPanel {
 					jcbDataSource.addItem(currentSource);
 				}
 			} catch (Exception e) {
-				ExceptionManager.handleException(getRootPane(), e, "Error when retrieving the data sources from " + selectedServer);
+				ExceptionManager.getInstance().caughtException(Thread.currentThread(), e, "Error when retrieving the data sources from " + selectedServer);
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * @return the selected {@link DASConnector}
 	 */

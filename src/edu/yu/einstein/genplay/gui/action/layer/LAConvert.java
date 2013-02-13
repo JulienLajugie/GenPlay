@@ -32,6 +32,7 @@ import edu.yu.einstein.genplay.core.list.SCWList.MaskWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.ConvertDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -116,7 +117,7 @@ public class LAConvert extends TrackListActionWorker<ChromosomeListOfLists<?>> {
 					converter.convert();
 					return converter.getList();
 				} catch (Exception e) {
-					e.printStackTrace();
+					ExceptionManager.getInstance().caughtException(e);
 				}
 			} else {
 				System.err.println("No converter found");

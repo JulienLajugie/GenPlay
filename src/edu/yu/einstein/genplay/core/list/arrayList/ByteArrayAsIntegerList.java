@@ -28,7 +28,7 @@ import java.io.Serializable;
 import java.util.AbstractList;
 import java.util.List;
 
-import edu.yu.einstein.genplay.exception.valueOutOfRangeException.Invalid8BitValue;
+import edu.yu.einstein.genplay.exception.exceptions.valueOutOfRangeException.Invalid8BitValue;
 
 
 /**

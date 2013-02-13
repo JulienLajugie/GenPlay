@@ -35,6 +35,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 
 /**
  * A generic class to provides tool to handle the Undo / Redo / Reset actions
@@ -81,7 +82,7 @@ public class URRManager<T extends Serializable> implements Serializable {
 			ObjectInputStream ois = new ObjectInputStream(bais);
 			return (URRManager<?>) ois.readObject();
 		} catch (Exception e) {
-			e.printStackTrace();
+			ExceptionManager.getInstance().caughtException(e);
 			return null;
 		}
 	}

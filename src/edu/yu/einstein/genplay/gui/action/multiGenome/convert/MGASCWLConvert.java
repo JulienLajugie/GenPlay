@@ -31,7 +31,8 @@ import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.operation.ExportEngine;
 import edu.yu.einstein.genplay.core.multiGenome.operation.BED.MGOBedConvertSingleFile;
-import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSettings;
@@ -109,7 +110,7 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 						exportEngine.compute();
 						return true;
 					} catch (Exception e) {
-						e.printStackTrace();
+						ExceptionManager.getInstance().caughtException(e);
 					}
 
 					return true;
@@ -133,14 +134,14 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 				ScoredChromosomeWindowList list = ((MGOBedConvertSingleFile) exportEngine).getFirstList();
 				setTrack(dialog.getFirstAlleleTrack(), list);
 			} catch (Exception e) {
-				e.printStackTrace();
+				ExceptionManager.getInstance().caughtException(e);
 			}
 
 			try {
 				ScoredChromosomeWindowList list = ((MGOBedConvertSingleFile) exportEngine).getSecondList();
 				setTrack(dialog.getSecondAlleleTrack(), list);
 			} catch (Exception e) {
-				e.printStackTrace();
+				ExceptionManager.getInstance().caughtException(e);
 			}
 		}
 	}

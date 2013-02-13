@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -24,20 +24,21 @@ package edu.yu.einstein.genplay.gui.dialog.exceptionDialog;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import edu.yu.einstein.genplay.core.mail.GenPlayMail;
 import edu.yu.einstein.genplay.util.Images;
-import edu.yu.einstein.genplay.util.Utils;
 
 /**
  * @author Nicolas Fourel
@@ -48,44 +49,30 @@ public class ExceptionReportDialog extends JDialog {
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 9215524746622426426L;
 
-	private static final int DIALOG_WIDTH 	= 400;	// Dialog width
-	private static final int CONTENT_HEIGHT = 600;	// Text area height
+	private static final int DIALOG_WIDTH 	= 350;	// Dialog width
+	private static final int REPORT_HEIGHT = 200;	// Text area height
 
-	private static ExceptionReportDialog instance = null;		// unique instance of the singleton
-	private	List<String> 	messages = new ArrayList<String>();	// List of messages
-	private JTextArea 		textArea;							// Text area where messages are displayed
-
-
-	/**
-	 * @return an instance of a {@link ExceptionReportDialog}. 
-	 * Makes sure that there is only one unique instance as specified in the singleton pattern
-	 */
-	public static ExceptionReportDialog getInstance() {
-		if (instance == null) {
-			synchronized(ExceptionReportDialog.class) {
-				if (instance == null) {
-					instance = new ExceptionReportDialog();
-				}
-			}
-		}
-		return instance;
-	}
+	private final String 			report;
 
 
 	/**
 	 * Constructor of {@link ExceptionReportDialog}
+	 * @param report the report to show
 	 */
-	private ExceptionReportDialog () {
+	public ExceptionReportDialog (String report) {
+		this.report = report;
+
 		// Dialog layout
 		BorderLayout layout = new BorderLayout();
 		setLayout(layout);
 
 		// Adds component to the dialog
+		add(getMessagePane(), BorderLayout.NORTH);
 		add(getErrorScrollPane(), BorderLayout.CENTER);
 		add(getButtonPanel(), BorderLayout.SOUTH);
 
 		// Dialog settings
-		setTitle("Warnings report");
+		setTitle("Exception report");
 		setIconImage(Images.getApplicationImage());
 		//setAlwaysOnTop(true);
 		setResizable(true);
@@ -96,96 +83,36 @@ public class ExceptionReportDialog extends JDialog {
 
 	/**
 	 * Shows the component.
-	 * @param parent the parent component of the dialog, can be null; see showDialog for details 
+	 * @param parent the parent component of the dialog, can be null; see showDialog for details
 	 */
 	public void showDialog(Component parent) {
-		// Update the text area before showing the dialog
-		updateTextArea();
-
-		if (!isVisible()) {
-			// Sets dialog display options
-			setLocationRelativeTo(parent);
-			setVisible(true);
-		}
+		// Sets dialog display options
+		setLocationRelativeTo(parent);
+		setVisible(true);
 	}
 
 
-	/**
-	 * Add a message to the list of message.
-	 * The first line will contain the message number, the other lines will be tab indented.
-	 * @param message message to add
-	 */
-	public void addMessage (String message) {
-		messages.add(formatText(message));
-	}
+	private JPanel getMessagePane () {
+		JLabel label1 = new JLabel("An unexepected error occured.");
+		JLabel label2 = new JLabel("Please see the report below for further information.");
 
+		JPanel panel = new JPanel();
+		GridBagLayout layout = new GridBagLayout();
+		panel.setLayout(layout);
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.weightx = 1;
+		gbc.insets = new Insets(5, 5, 5, 0);
 
-	/**
-	 * Resets the text area, it deletes all the previous messages.
-	 */
-	private void resetTextArea () {
-		messages = new ArrayList<String>();
-		updateTextArea();
-	}
+		panel.add(label1, gbc);
 
+		gbc.gridy++;
+		gbc.insets = new Insets(5, 5, 10, 0);
+		panel.add(label2, gbc);
 
-	/**
-	 * Updates the text of the text area adding and formatting all the messages.
-	 */
-	private void updateTextArea () {
-		String text = "";
-		for (String message: messages) {
-			text += message;
-		}
-		textArea.setText(text);
-	}
-
-
-	/**
-	 * Formats a message when adding.
-	 * A message can contain \n character in order to give multiple message at once.
-	 * The first line will contain the message number, the other lines will be tab indented.
-	 * @param message 	the message
-	 * @return			the formatted message
-	 */
-	private String formatText (String message) {
-		int messageNumber = messages.size() + 1;
-
-		String text = "";
-		String prefix = messageNumber + ": ";
-		String indent = getIndent(prefix);
-
-		//String[] array = message.split("\n");
-		String[] array = Utils.split(message, '\n');
-		for (int i = 0; i < array.length; i++) {
-			switch (i) {
-			case 0:
-				text += prefix;
-				break;
-			default:
-				text += indent;
-				break;
-			}
-			text += array[i] + "\n";
-		}
-
-		return text;
-	}
-
-
-	/**
-	 * Creates an indent depending on the prefix of the first line of the message.
-	 * An indent is only a white space adjusted according to the first line.
-	 * @param prefix the prefix of the first line of the message
-	 * @return the indent
-	 */
-	private String getIndent (String prefix) {
-		int prefixLength = prefix.length();
-		String indent = "";
-		for (int i = 0; i < (prefixLength + 10); i++) {
-			indent += " ";
-		}
-		return indent;
+		return panel;
 	}
 
 
@@ -195,15 +122,16 @@ public class ExceptionReportDialog extends JDialog {
 	 */
 	private JScrollPane getErrorScrollPane () {
 		// Creates the text area
-		textArea = new JTextArea();
-		Dimension textDimension = new Dimension(DIALOG_WIDTH, CONTENT_HEIGHT);
+		JTextArea textArea = new JTextArea();
+		Dimension textDimension = new Dimension(DIALOG_WIDTH, REPORT_HEIGHT);
 		textArea.setMinimumSize(textDimension);
 		textArea.setMargin(new Insets(0, 0, 0, 0));
 		textArea.setEditable(false);
+		textArea.setText(report);
 
 		// Creates the scroll pane
 		JScrollPane contentPane = new JScrollPane(textArea);
-		Dimension scrollDimension = new Dimension(DIALOG_WIDTH, CONTENT_HEIGHT);
+		Dimension scrollDimension = new Dimension(DIALOG_WIDTH, REPORT_HEIGHT);
 		contentPane.setPreferredSize(scrollDimension);
 		contentPane.setMinimumSize(scrollDimension);
 
@@ -214,35 +142,35 @@ public class ExceptionReportDialog extends JDialog {
 
 	/**
 	 * Creates the button panel. Two buttons are present:
-	 * - Clear: in order to delete the text from the text area
-	 * - Hide: in order to close the dialog
+	 * - Ok: Close the dialog
+	 * - Send Report: Send report by email
 	 * @return the button panel
 	 */
 	private JPanel getButtonPanel () {
 		// Creates the Clear button
-		JButton clearButton = new JButton("Clear");
-		clearButton.setToolTipText("Clear all messages from the text area");
-		clearButton.addActionListener(new ActionListener() {
+		JButton okButton = new JButton("Ok");
+		okButton.setToolTipText("Close the dialog");
+		okButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				resetTextArea();
+				closeDialog();
 			}
 		});
 
 		// Creates the Hide button
-		JButton hideButton = new JButton("Hide");
-		hideButton.setToolTipText("Close the dialog");
-		hideButton.addActionListener(new ActionListener() {
+		JButton sendButton = new JButton("Send Report");
+		sendButton.setToolTipText("Send report by email");
+		sendButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				closeDialog();
+				send();
 			}
 		});
 
 		// Creates the panel
 		JPanel panel = new JPanel();
-		panel.add(clearButton);
-		panel.add(hideButton);
+		panel.add(okButton);
+		panel.add(sendButton);
 
 		// Returns the panel
 		return panel;
@@ -253,7 +181,16 @@ public class ExceptionReportDialog extends JDialog {
 	 * Close the dialog.
 	 */
 	private void closeDialog () {
-		setVisible(false);
+		//setVisible(false);
+		dispose();
+	}
+
+
+	/**
+	 * Send the report
+	 */
+	private void send () {
+		GenPlayMail.send("[GenPlay] Error report", report);
 	}
 
 }

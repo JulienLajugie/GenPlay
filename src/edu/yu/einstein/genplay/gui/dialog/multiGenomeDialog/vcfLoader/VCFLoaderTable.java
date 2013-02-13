@@ -38,6 +38,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.customComponent.customComboBox.CustomComboBox;
 import edu.yu.einstein.genplay.gui.customComponent.customComboBox.CustomFileComboBoxMG;
@@ -308,7 +309,7 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener, Ac
 		try {
 			vcfFile = new VCFFile(file);
 		} catch (IOException e) {
-			e.printStackTrace();
+			ExceptionManager.getInstance().caughtException(e);
 		}
 		vcfFileList.add(vcfFile);
 		return vcfFile;

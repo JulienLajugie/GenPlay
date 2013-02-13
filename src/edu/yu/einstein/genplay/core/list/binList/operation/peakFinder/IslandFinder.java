@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -38,8 +38,9 @@ import edu.yu.einstein.genplay.core.list.binList.operation.BLOSumScore;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.core.stat.MathFunctions;
 import edu.yu.einstein.genplay.core.stat.Poisson;
-import edu.yu.einstein.genplay.exception.InvalidFactorialParameterException;
-import edu.yu.einstein.genplay.exception.InvalidLambdaPoissonParameterException;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidFactorialParameterException;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidLambdaPoissonParameterException;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
 /**
@@ -56,9 +57,9 @@ public class IslandFinder implements Serializable, Stoppable {
 	private int							islandMinLength;
 	private double 						windowMinValue;		// limit window value to get an eligible windows
 	private double						islandMinScore;		// island score limit to select island
-	private double						lambda;				// average number of reads in a window
+	private final double						lambda;				// average number of reads in a window
 	private IslandResultType 			resultType;			// type of the result (constant, score, average)
-	private HashMap <Double, Double>	readScoreStorage;	// store the score for a read, the read is use as index and the score as value
+	private final HashMap <Double, Double>	readScoreStorage;	// store the score for a read, the read is use as index and the score as value
 	private boolean 					stopped = false;	// true when the action must be stopped
 
 
@@ -66,8 +67,8 @@ public class IslandFinder implements Serializable, Stoppable {
 	 * IslandFinder constructor
 	 * 
 	 * @param binList			the related binList
-	 * @throws ExecutionException 
-	 * @throws InterruptedException 
+	 * @throws ExecutionException
+	 * @throws InterruptedException
 	 */
 	public IslandFinder (BinList binList) throws InterruptedException, ExecutionException {
 		this.binList = binList;
@@ -84,8 +85,8 @@ public class IslandFinder implements Serializable, Stoppable {
 	 * @param windowLimitValue	limit reads number to get an eligible windows
 	 * @param islandLimitScore  minimum score for an island to eligible
 	 * @param resultType 		{@link IslandResultType} of the result of the IslandFinder operation
-	 * @throws ExecutionException 
-	 * @throws InterruptedException 
+	 * @throws ExecutionException
+	 * @throws InterruptedException
 	 */
 	public IslandFinder (BinList binList, int gap, int minIslandLength, double windowLimitValue, double islandLimitScore, IslandResultType resultType) throws InterruptedException, ExecutionException {
 		this.binList = binList;
@@ -158,9 +159,9 @@ public class IslandFinder implements Serializable, Stoppable {
 	/**
 	 * searchIslandPosition method
 	 * This method determines the positions of all islands.
-	 * Two list are create, the first for the start position and the second for the stop position. 
+	 * Two list are create, the first for the start position and the second for the stop position.
 	 * 
-	 * @param currentList	current list of the bin list 
+	 * @param currentList	current list of the bin list
 	 * @return				array list with start position on index 0 and stop position on index 1
 	 */
 	private List<List<Integer>> searchIslandPosition (List<Double> currentList) {
@@ -171,7 +172,7 @@ public class IslandFinder implements Serializable, Stoppable {
 			int j = 0;
 			int islandStartPos;
 			int islandStopPos;
-			while (j < currentList.size() && !stopped) {	// while we are below the current list size,
+			while ((j < currentList.size()) && !stopped) {	// while we are below the current list size,
 				if (currentList.get(j) >= windowMinValue) {	// the current window score must be higher than readCountLimit
 					islandStartPos = j;
 					int gapFound = 0;	// there are no gap found
@@ -219,10 +220,10 @@ public class IslandFinder implements Serializable, Stoppable {
 		List<Double> scoreIsland = new ArrayList<Double> ();
 		int currentPos = 0;
 		double sumScore;
-		while (currentPos < islandsStart.size() && !stopped) {
+		while ((currentPos < islandsStart.size()) && !stopped) {
 			sumScore = 0.0;
 			int i = islandsStart.get(currentPos);
-			while (i <= islandsStop.get(currentPos) && !stopped) {	// Loop for the sum
+			while ((i <= islandsStop.get(currentPos)) && !stopped) {	// Loop for the sum
 				if (currentList.get(i) >= this.windowMinValue) {	// the window reads must be highter than the readCountLimit
 					sumScore += windowScore(currentList.get(i));
 				}
@@ -251,10 +252,10 @@ public class IslandFinder implements Serializable, Stoppable {
 		List<Double> scoreIsland = new ArrayList<Double> ();
 		int currentPos = 0;
 		double summitScore;
-		while (currentPos < islandsStart.size() && !stopped) {
+		while ((currentPos < islandsStart.size()) && !stopped) {
 			summitScore = Double.NEGATIVE_INFINITY; // the summit is the smallest double value
 			int i = islandsStart.get(currentPos);
-			while (i <= islandsStop.get(currentPos) && !stopped) {	// Loop for the sum
+			while ((i <= islandsStop.get(currentPos)) && !stopped) {	// Loop for the sum
 				summitScore = Math.max(summitScore, currentList.get(i));
 				i++;
 			}
@@ -287,9 +288,9 @@ public class IslandFinder implements Serializable, Stoppable {
 		List<Double> resultList = ListFactory.createList(precision, currentList.size());
 		int currentPos = 0;	// position on the island start and stop arrays
 		double value = 0.0;
-		for (int i = 0; i < currentList.size() && !stopped; i++) {	// for all window positions
+		for (int i = 0; (i < currentList.size()) && !stopped; i++) {	// for all window positions
 			if (currentPos < islandsStart.size()){	// we must be below the island array size (start and stop are the same size)
-				if (i >= islandsStart.get(currentPos) && i <= islandsStop.get(currentPos)) {	// if the actual window is on an island
+				if ((i >= islandsStart.get(currentPos)) && (i <= islandsStop.get(currentPos))) {	// if the actual window is on an island
 					if (scoreIsland.get(currentPos) >= this.islandMinScore) {	// the island score must be higher than the cut-off
 						switch (this.resultType) {	// if the result type is
 						case FILTERED:
@@ -340,16 +341,16 @@ public class IslandFinder implements Serializable, Stoppable {
 				try {
 					result = this.readScoreStorage.get(value);	// we get it
 				} catch (Exception e) {
-					e.printStackTrace();
+					ExceptionManager.getInstance().caughtException(e);
 				}
 			} else {	// else we have to calculated it
 				try {
 					result = -1*Poisson.logPoisson(lambda, (int)value);
 					this.readScoreStorage.put(value, result);
 				} catch (InvalidLambdaPoissonParameterException e) {
-					e.printStackTrace();
+					ExceptionManager.getInstance().caughtException(e);
 				} catch (InvalidFactorialParameterException e) {
-					e.printStackTrace();
+					ExceptionManager.getInstance().caughtException(e);
 				}
 			}
 		}
@@ -369,8 +370,8 @@ public class IslandFinder implements Serializable, Stoppable {
 	 * Then, the relation can be wrote like this:	N/C
 	 * 
 	 * @return	value of lambda
-	 * @throws ExecutionException 
-	 * @throws InterruptedException 
+	 * @throws ExecutionException
+	 * @throws InterruptedException
 	 */
 	private double lambdaCalcul () throws InterruptedException, ExecutionException {
 		double result = 0.1;
@@ -386,8 +387,8 @@ public class IslandFinder implements Serializable, Stoppable {
 	 * 
 	 * @param read	read count limit
 	 * @return		the p-value
-	 * @throws InvalidFactorialParameterException 
-	 * @throws InvalidLambdaPoissonParameterException 
+	 * @throws InvalidFactorialParameterException
+	 * @throws InvalidLambdaPoissonParameterException
 	 */
 	public double findPValue (double read) throws InvalidLambdaPoissonParameterException, InvalidFactorialParameterException {
 		double value = 0.0;
@@ -408,7 +409,7 @@ public class IslandFinder implements Serializable, Stoppable {
 		return (1 - value);
 	}
 
-	
+
 	/**
 	 * @param gap size of the gap in bp to set
 	 */
@@ -416,7 +417,7 @@ public class IslandFinder implements Serializable, Stoppable {
 		this.gap = gap;
 	}
 
-	
+
 	/**
 	 * @param minIslandLength minimum size of an island
 	 */
@@ -424,7 +425,7 @@ public class IslandFinder implements Serializable, Stoppable {
 		this.islandMinLength = minIslandLength;
 	}
 
-	
+
 	/**
 	 * @param readCountLimit limit window value to get an eligible window to set
 	 */

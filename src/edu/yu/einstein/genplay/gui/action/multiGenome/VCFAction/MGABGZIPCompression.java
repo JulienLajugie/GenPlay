@@ -29,6 +29,7 @@ import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.core.multiGenome.operation.convert.MGOBGZIPCompression;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 
 
@@ -79,7 +80,7 @@ public class MGABGZIPCompression extends TrackListActionWorker<Boolean> {
 		try {
 			return operation.compute();
 		} catch (Exception e) {
-			e.printStackTrace();
+			ExceptionManager.getInstance().caughtException(e);
 		}
 
 		return false;

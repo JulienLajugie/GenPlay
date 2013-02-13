@@ -41,7 +41,8 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.core.repeatFamily.RepeatFamily;
-import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 
 
 /**
@@ -161,7 +162,7 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 		try {
 			currentChromosomeList = get(fittedChromosome);
 		} catch (InvalidChromosomeException e) {
-			e.printStackTrace();
+			ExceptionManager.getInstance().caughtException(e);
 			fittedDataList = null;
 			return;
 		}

@@ -37,6 +37,7 @@ import javax.swing.JScrollPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.util.Images;
 
 
@@ -74,7 +75,7 @@ public final class TextDialog extends JDialog implements ActionListener {
 						try {
 							Desktop.getDesktop().browse(evt.getURL().toURI());
 						} catch (Exception e) {
-							e.printStackTrace();
+							ExceptionManager.getInstance().caughtException(e);
 						}
 					}
 				}

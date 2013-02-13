@@ -243,7 +243,7 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 						// we open a browser showing information on the gene
 						Desktop.getDesktop().browse(new URI(getData().getSearchURL() + geneUnderMouse.getName()));
 					} catch (Exception e1) {
-						ExceptionManager.handleException(getTrack().getRootPane(), e1, "Error while opening the web browser");
+						ExceptionManager.getInstance().caughtException(Thread.currentThread(), e1, "Error while opening the web browser");
 					}
 				}
 			}

@@ -27,7 +27,7 @@ import java.io.Serializable;
 import java.text.NumberFormat;
 import java.text.ParseException;
 
-import edu.yu.einstein.genplay.exception.ChromosomeWindowException;
+import edu.yu.einstein.genplay.exception.exceptions.ChromosomeWindowException;
 
 
 /**

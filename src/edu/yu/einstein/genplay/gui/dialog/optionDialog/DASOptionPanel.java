@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -43,7 +43,6 @@ import org.xml.sax.SAXParseException;
 
 import edu.yu.einstein.genplay.core.DAS.DASServerList;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
-import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 
 
 /**
@@ -63,9 +62,9 @@ final class DASOptionPanel extends OptionPanel {
 	static boolean tableChangedFlag = false;
 	private final String[] headerNames = { "Server Name", "URL" };
 	static Object[][] tableData;
-	private File file;
+	private final File file;
 
-	
+
 	/**
 	 * Inner class to do the JTable operations
 	 */
@@ -73,30 +72,30 @@ final class DASOptionPanel extends OptionPanel {
 
 		private static final long serialVersionUID = -8041866821280601850L; // generated ID
 
-		
+
 		@Override
 		public String getColumnName(int col) {
 			return headerNames[col];
 		}
-		
+
 
 		@Override
 		public Object getValueAt(int rowIndex, int columnIndex) {
 			return tableData[rowIndex][columnIndex];
 		}
-		
+
 
 		@Override
 		public int getRowCount() {
 			return tableData.length;
 		}
-		
+
 
 		@Override
 		public int getColumnCount() {
 			return 2;
 		}
-		
+
 
 		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -106,20 +105,20 @@ final class DASOptionPanel extends OptionPanel {
 				return true;
 			}
 		}
-		
+
 
 		@Override
 		public Class<?> getColumnClass(int c) {
 			return getValueAt(0, c).getClass();
 		}
-		
+
 
 		@Override
 		public void setValueAt(Object value, int row, int col) {
 			tableData[row][col] = value;
 			fireTableCellUpdated(row, col);
 		}
-		
+
 
 		@Override
 		public void addRow(Object[] row) {
@@ -130,7 +129,7 @@ final class DASOptionPanel extends OptionPanel {
 				temp[i][1] = tableData[i][1];
 			}
 			tableData = new Object[tableData.length + 1][2];
-			for (int i = 0; i < tableData.length - 1; i++) {
+			for (int i = 0; i < (tableData.length - 1); i++) {
 				tableData[i][0] = temp[i][0];
 				tableData[i][1] = temp[i][1];
 			}
@@ -140,7 +139,7 @@ final class DASOptionPanel extends OptionPanel {
 			fireTableRowsUpdated(tableData.length + 1, tableData.length + 1);
 			tableChangedFlag = true;
 		}
-		
+
 
 		@Override
 		public void removeRow(int row) {
@@ -163,7 +162,7 @@ final class DASOptionPanel extends OptionPanel {
 		}
 	};
 
-	
+
 	/**
 	 * Creates an instance of {@link DASOptionPanel}
 	 */
@@ -176,7 +175,7 @@ final class DASOptionPanel extends OptionPanel {
 				try {
 					dasServerList = new DASServerList(file.toURI().toURL());
 				} catch (SAXParseException e) {
-					ExceptionManager.handleException(MainFrame.getInstance().getRootPane(), e, "DAS Server File Corrupted...loading default file");
+					ExceptionManager.getInstance().caughtException(Thread.currentThread(), e, "DAS Server File Corrupted...loading default file");
 					dasServerList = new DASServerList(new URL(projectConfiguration.getDefaultDasServerListFile()));
 				}
 			} else {
@@ -196,7 +195,7 @@ final class DASOptionPanel extends OptionPanel {
 			column = jtserverurl.getColumnModel().getColumn(0);
 			column.setPreferredWidth(TABLE_WIDTH / 3);
 			column = jtserverurl.getColumnModel().getColumn(1);
-			column.setPreferredWidth(2 * TABLE_WIDTH / 3);
+			column.setPreferredWidth((2 * TABLE_WIDTH) / 3);
 			JScrollPane scrollPane = new JScrollPane(jtserverurl);
 			jtserverurl.setFillsViewportHeight(true);
 			jbadd = new JButton("Add");
@@ -247,9 +246,9 @@ final class DASOptionPanel extends OptionPanel {
 			c.anchor = GridBagConstraints.LINE_START;
 			add(content, c);
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			ExceptionManager.getInstance().caughtException(e);
 		} catch (Exception e) {
-			ExceptionManager.handleException(getRootPane(), e, "Error loading DAS Server file");
+			ExceptionManager.getInstance().caughtException(Thread.currentThread(), e, "Error loading DAS Server file");
 		}
 	}
 }

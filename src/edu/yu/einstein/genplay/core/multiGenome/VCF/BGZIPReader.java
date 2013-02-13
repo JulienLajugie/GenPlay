@@ -33,6 +33,7 @@ import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.VCFGenomeIndexer;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.util.Utils;
 
 /**
@@ -169,19 +170,19 @@ public class BGZIPReader implements VCFGenomeIndexer {
 		try {
 			reader.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			ExceptionManager.getInstance().caughtException(e);
 		}
 
 		try {
 			isr.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			ExceptionManager.getInstance().caughtException(e);
 		}
 
 		try {
 			bcis.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			ExceptionManager.getInstance().caughtException(e);
 		}
 	}
 

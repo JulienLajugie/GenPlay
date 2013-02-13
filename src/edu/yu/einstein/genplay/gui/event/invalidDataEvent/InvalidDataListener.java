@@ -21,7 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.event.invalidDataEvent;
 
-import edu.yu.einstein.genplay.exception.DataLineException;
+import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
 
 
 /**

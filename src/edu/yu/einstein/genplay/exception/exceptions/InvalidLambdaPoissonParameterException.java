@@ -19,32 +19,32 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.exception;
+package edu.yu.einstein.genplay.exception.exceptions;
 
 /**
- * Exception thrown when a Poisson distribution is asked to be made from 
- * an invalid parameter. 
- * @author Alexander Golec
+ * Exception thrown when the lambda parameter for Poisson calculation is inferior or equal to zero
+ * @author Nicolas Fourel
  * @version 0.1
  */
-public final class PoissonInvalidParameterException extends Exception {
+
+public final class InvalidLambdaPoissonParameterException extends Exception {
 	
-	private static final long serialVersionUID = -6091702295893962445L;	// generated ID
+	private static final long serialVersionUID = 6501319100070818381L;	// generated ID
 
 	
 	/**
-	 * Creates an instance of {@link PoissonInvalidParameterException}
+	 * Creates an instance of {@link InvalidLambdaPoissonParameterException}
 	 */
-	public PoissonInvalidParameterException() {
-		super("Invalid parameter passed to Poisson distribution. ");
+	public InvalidLambdaPoissonParameterException() {
+		super("Lambda parameter cannot be negative or equal to 0 to calculate Poisson value.");
 	}
 
 	
 	/**
-	 * Creates an instance of {@link PoissonInvalidParameterException}
+	 * Creates an instance of {@link InvalidLambdaPoissonParameterException}
 	 * @param message message of the exception
 	 */
-	public PoissonInvalidParameterException(String message) {
+	public InvalidLambdaPoissonParameterException(String message) {
 		super(message);
 	}
 }

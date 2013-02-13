@@ -35,6 +35,7 @@ import edu.yu.einstein.genplay.core.genome.Genome;
 import edu.yu.einstein.genplay.core.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.action.multiGenome.synchronization.MGASynchronizing;
 import edu.yu.einstein.genplay.gui.action.project.PAInitMGManager;
 import edu.yu.einstein.genplay.gui.action.project.PAInitManagers;
@@ -64,6 +65,9 @@ public class Launcher {
 	 * screen will be skipped and the project file will be directly loaded
 	 */
 	public static void main(final String[] args) {
+		// Initialize the exception manager
+		initializeExceptionManagement();
+
 		//SwingUtilities.invokeLater(new Runnable() {
 		/*
 		 * Fix for the exception that starts like:
@@ -100,6 +104,19 @@ public class Launcher {
 
 
 	/**
+	 * Initialize the exception manager
+	 */
+	private static void initializeExceptionManagement () {
+		// Set the uncaught exception handler for GenPlay
+		Thread.setDefaultUncaughtExceptionHandler(ExceptionManager.getInstance());
+
+		// Set the exception manager options
+		ExceptionManager.getInstance().enablePrintReport(true);
+		ExceptionManager.getInstance().enablePrintStackTrace(true);
+	}
+
+
+	/**
 	 * This method starts a demo project.  The project file needs to be in the resource folder and
 	 * the path to this file must be specified in the DEMO_PROJECT_PATH constant
 	 */
@@ -109,7 +126,7 @@ public class Launcher {
 		try {
 			loadFile(is);
 		} catch (Exception e) {
-			e.printStackTrace();
+			ExceptionManager.getInstance().caughtException(e);
 		}
 	}
 
@@ -122,7 +139,7 @@ public class Launcher {
 		try {
 			loadFile(file);
 		} catch (Exception e) {
-			e.printStackTrace();
+			ExceptionManager.getInstance().caughtException(e);
 			System.out.println("Invalid Project File: The specifed file is not a valid project file");
 			System.out.println(file.getPath());
 		}
@@ -261,7 +278,7 @@ public class Launcher {
 			try {
 				latch.await();
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				ExceptionManager.getInstance().caughtException(e);
 			}
 
 			PALoadProject load = new PALoadProject();

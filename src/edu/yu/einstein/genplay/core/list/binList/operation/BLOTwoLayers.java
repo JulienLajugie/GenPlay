@@ -34,7 +34,7 @@ import edu.yu.einstein.genplay.core.list.arrayList.ListFactory;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.exception.BinListDifferentWindowSizeException;
+import edu.yu.einstein.genplay.exception.exceptions.BinListDifferentWindowSizeException;
 
 
 

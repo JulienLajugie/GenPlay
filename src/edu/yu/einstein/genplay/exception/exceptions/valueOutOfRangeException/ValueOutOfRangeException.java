@@ -19,32 +19,24 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.exception;
+package edu.yu.einstein.genplay.exception.exceptions.valueOutOfRangeException;
+
 
 /**
- * Exception thrown when the factorial parameter is inferior or equal to zero
- * @author Nicolas Fourel
+ * {@link RuntimeException} thrown when a value is out of the range of a specific data type
+ * @author Julien Lajugie
  * @version 0.1
  */
+public class ValueOutOfRangeException extends RuntimeException {
 
-public final class InvalidFactorialParameterException extends Exception {
-	
-	private static final long serialVersionUID = 6501319100070818381L;	// generated ID
+	private static final long serialVersionUID = 7840275107495242440L; // generated ID
 
 	
 	/**
-	 * Creates an instance of {@link InvalidFactorialParameterException}
+	 * Creates an instance of {@link ValueOutOfRangeException}
+	 * @param message error message
 	 */
-	public InvalidFactorialParameterException() {
-		super("Factorial parameter cannot be negative.");
-	}
-	
-	
-	/**
-	 * Creates an instance of {@link InvalidFactorialParameterException} 
-	 * @param message the message of the exception
-	 */
-	public InvalidFactorialParameterException(String message) {
+	public ValueOutOfRangeException(String message) {
 		super(message);
 	}
 }

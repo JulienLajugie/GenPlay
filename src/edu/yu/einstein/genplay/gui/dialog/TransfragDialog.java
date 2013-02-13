@@ -39,6 +39,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.NumberFormatter;
 
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.util.Images;
 
 
@@ -208,7 +209,7 @@ public class TransfragDialog extends JDialog {
 		}
 		catch(NumberFormatException e) {
 			System.err.println("Please enter a valid gap");
-			e.printStackTrace();
+			ExceptionManager.getInstance().caughtException(e);
 		}
 		return 0;
 	}

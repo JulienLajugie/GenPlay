@@ -19,32 +19,32 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.exception;
+package edu.yu.einstein.genplay.exception.exceptions;
 
-import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleChromosomeWindow;
 
 /**
- * The ChromosomeWindowException class represents an exception associated to a {@link SimpleChromosomeWindow}. 
+ * Exception thrown when there is a problem during data compression
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class ChromosomeWindowException extends Exception {
+public class CompressionException extends RuntimeException {
 
-	private static final long serialVersionUID = -4357641195693048950L;	// Generated ID
+	private static final long serialVersionUID = -7441678640263974386L; // generated ID
+
 	
 	/**
-	 * Creates an instance of {@link ChromosomeWindowException}.
+	 * Creates an instance of {@link CompressionException}
 	 */
-	public ChromosomeWindowException() {
-		super("Invalid window");
+	public CompressionException() {
+		super();
 	}
-	
-	
+
+
 	/**
-	 * Creates an instance of {@link ChromosomeWindowException}.
-	 * @param msg message of the error
+	 * Creates an instance of {@link CompressionException}
+	 * @param message error message
 	 */
-	public ChromosomeWindowException(String msg) {
-		super (msg);
-	}	
+	public CompressionException(String message) {
+		super(message);
+	}
 }
