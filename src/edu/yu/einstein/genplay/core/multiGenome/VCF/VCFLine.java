@@ -106,6 +106,20 @@ public class VCFLine implements Serializable {
 
 
 	/**
+	 * @return true if all elelements are present and not empty, false otherwise
+	 */
+	public boolean isIntegrityValid () {
+		boolean valid = true;
+		for (String element: elements) {
+			if ((element == null) || element.isEmpty()) {
+				valid = false;
+			}
+		}
+		return valid;
+	}
+
+
+	/**
 	 * Constructor of {@link VCFLine}
 	 * @param line		the line from the VCF
 	 * @param genomeIndexer the genome indexer
@@ -672,6 +686,21 @@ public class VCFLine implements Serializable {
 	public String[] getElements() {
 		return elements;
 	}
+
+	/**
+	 * @return the elements merged with a tab
+	 */
+	public String getMergedElements() {
+		String result = "";
+		for (int i = 0; i < elements.length; i++) {
+			result += elements[i];
+			if (i < (elements.length - 1)) {
+				result += "\t";
+			}
+		}
+		return result;
+	}
+
 
 	/**
 	 * @return the genomeIndexer

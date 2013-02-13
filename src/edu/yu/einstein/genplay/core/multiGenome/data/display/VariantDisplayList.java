@@ -255,9 +255,9 @@ public class VariantDisplayList implements Serializable {
 					} else {
 						if (currentDisplay == SHOW_FILTER) {
 							newDisplay = HIDE_FILTER;
-						} else if (currentDisplay == HIDE_REFERENCE) {
+						}/* else if (currentDisplay == HIDE_REFERENCE) {
 							newDisplay = HIDE_ALL;
-						}
+						}*/
 					}
 					display[allele][pos] = newDisplay;
 				}

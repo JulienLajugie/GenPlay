@@ -30,6 +30,8 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.core.multiGenome.utils.VCFLineUtility;
+import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
+import edu.yu.einstein.genplay.gui.dialog.exceptionDialog.WarningReportDialog;
 
 /**
  * A {@link VCFScanner} provides an easy way to go through the lines of a {@link VCFFile}.
@@ -78,24 +80,36 @@ public abstract class VCFScanner {
 		// Get the first line of data
 		VCFLine line = getFirstLine();
 
+		int lineNumber = 0;
+
 		// Scan the file line by line
 		while ((line != null) && !line.isLastLine()) {
-			// Initialize the line for treatments
-			line.processForAnalyse();
+			lineNumber++;
+			if (line.isIntegrityValid()) {
+				// Initialize the line for treatments
+				line.processForAnalyse();
 
-			// Filters
-			boolean pass = true;
-			List<Integer> alternativeIndexes = getScopeDefinedVariationIndexes(line);		// Get alternative indexes from all required genomes
-			if (!genomesValidation(alternativeIndexes)) {									// Genome validation filter
-				pass = false;
-			}
-			if (!variationsValidation(line, alternativeIndexes)) {							// Variation validation filter
-				pass = false;
-			}
+				// Filters
+				boolean pass = true;
+				List<Integer> alternativeIndexes = getScopeDefinedVariationIndexes(line);		// Get alternative indexes from all required genomes
+				if (!genomesValidation(alternativeIndexes)) {									// Genome validation filter
+					pass = false;
+				}
+				if (!variationsValidation(line, alternativeIndexes)) {							// Variation validation filter
+					pass = false;
+				}
 
-			// Send the line for process if meets requirements
-			if (pass) {
-				receiver.processLine(line);
+				// Send the line for process if meets requirements
+				if (pass) {
+					receiver.processLine(line);
+				}
+			} else {
+				DataLineException exception = new DataLineException("The line seems to be missing elements.", DataLineException.SKIP_PROCESS);
+				exception.setFile(vcfFile.getFile());
+				exception.setLine(line.getMergedElements());
+				exception.setLineNumber(lineNumber);
+				WarningReportDialog.getInstance().addMessage(exception.getMessage());
+				WarningReportDialog.getInstance().showDialog(null);
 			}
 
 			// Move to the next line
