@@ -486,7 +486,7 @@ public class ConvertDialog extends JDialog {
 	public int showDialog(Component parent) {
 		// Sets dialog display options
 		setLocationRelativeTo(parent);
-		setModal(true);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 		setVisible(true);
 
 		return approved;

@@ -24,6 +24,7 @@ package edu.yu.einstein.genplay.gui.customComponent.scatterPlot;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -82,7 +83,7 @@ public class ScatterPlotPane extends JPanel {
 		ScatterPlotPane scatterPlotPane = new ScatterPlotPane(parent, xAxisName, yAxisName, chartData);
 		JDialog scatterPlotDialog = new JDialog();
 		scatterPlotDialog.setContentPane(scatterPlotPane);
-		scatterPlotDialog.setModal(true);
+		scatterPlotDialog.setModalityType(ModalityType.APPLICATION_MODAL);
 		scatterPlotDialog.setTitle("Scatter Plot");
 		scatterPlotDialog.setIconImage(Images.getApplicationImage());
 		scatterPlotDialog.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));

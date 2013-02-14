@@ -115,9 +115,10 @@ public class ReferenceVariant extends MultiNucleotideVariant {
 			String chain = "-";
 			String ref = line.getREF();
 			int length = getLength();
-			if (length == 0) {
+			if (length == 1) {
 				chain = ref;
-			} else if (length < 0) {
+				//} else if (length < 0) {
+			} else {
 				chain = ref.substring(1);
 			}
 			return chain;

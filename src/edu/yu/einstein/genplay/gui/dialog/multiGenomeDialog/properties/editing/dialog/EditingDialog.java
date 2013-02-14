@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -76,8 +76,7 @@ public class EditingDialog<K> extends JDialog {
 		// Dialog settings
 		setTitle("Multi-Genome Project Properties - Editing Dialog");
 		setIconImage(Images.getApplicationImage());
-		setAlwaysOnTop(true);
-		setModal(true);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 		setResizable(false);
 		setVisible(false);
 		pack();
@@ -92,7 +91,7 @@ public class EditingDialog<K> extends JDialog {
 	public int showDialog(Component parent) {
 		// Sets dialog display options
 		setLocationRelativeTo(parent);
-		setModal(true);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 		setVisible(true);
 
 		return approved;
@@ -125,7 +124,7 @@ public class EditingDialog<K> extends JDialog {
 	private JPanel getValidationPanel () {
 		// Creates the ok button
 		JButton jbOk = new JButton("Ok");
-		jbOk.addActionListener(new ActionListener() {			
+		jbOk.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (approveSelection()) {
@@ -137,11 +136,11 @@ public class EditingDialog<K> extends JDialog {
 
 		// Creates the cancel button
 		JButton jbCancel = new JButton("Cancel");
-		jbCancel.addActionListener(new ActionListener() {			
+		jbCancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				approved = CANCEL_OPTION;
-				setVisible(false);				
+				setVisible(false);
 			}
 		});
 
@@ -186,7 +185,7 @@ public class EditingDialog<K> extends JDialog {
 		for (int i = 0; i < errorsArray.length; i++) {
 			if (!errorsArray[i].isEmpty()) {
 				message += i + 1 + ": " + errorsArray[i];
-				if (i < errorsArray.length - 1) {
+				if (i < (errorsArray.length - 1)) {
 					message += "\n";
 				}
 			}

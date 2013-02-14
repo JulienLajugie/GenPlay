@@ -121,7 +121,7 @@ public class LayerSettingsDialog extends JDialog {
 		//JDialog information
 		setSize(DIALOG_SIZE);
 		setResizable(false);
-		setModal(true);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 
 		// table
 		layerSettingsTable = new JTable(model);

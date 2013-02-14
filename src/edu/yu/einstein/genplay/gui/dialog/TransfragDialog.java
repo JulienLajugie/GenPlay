@@ -193,7 +193,7 @@ public class TransfragDialog extends JDialog {
 		pack();
 		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		getRootPane().setDefaultButton(jbOk);
-		setModal(true);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 		resultTypeChanged();
 	}
 
@@ -246,7 +246,7 @@ public class TransfragDialog extends JDialog {
 	 * @return GENERATE_OPTION if Generate is clicked. CANCEL_OPTION otherwise.
 	 */
 	public int showTransfragDialog(Component parent) {
-		setModal(true);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 		setLocationRelativeTo(parent);
 		setVisible(true);
 		return approved;

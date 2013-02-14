@@ -446,7 +446,7 @@ public class AxisOptionDialog extends JDialog {
 	public int showDialog(Component parent, String title) {
 		setTitle(title);
 		setIconImage(Images.getApplicationImage());
-		setModal(true);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 		setLocationRelativeTo(parent);
 		setVisible(true);
 		return approved;

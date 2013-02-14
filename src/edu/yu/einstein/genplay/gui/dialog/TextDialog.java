@@ -113,7 +113,7 @@ public final class TextDialog extends JDialog implements ActionListener {
 		pack();
 		setSize(DIALOG_DIMENSION);
 		setResizable(false);
-		setModal(true);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 		setLocationRelativeTo(getRootPane());
 	}
 

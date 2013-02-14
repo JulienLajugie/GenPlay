@@ -65,7 +65,7 @@ public final class GenomeWidthChooser extends JDialog {
 	 */
 	private GenomeWidthChooser(Component parent) {
 		super();
-		setModal(true);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 		validated = false;
 		initComponent();
 		setTitle(type + " value :");

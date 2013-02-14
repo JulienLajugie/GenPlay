@@ -281,7 +281,7 @@ public class NewCurveLayerDialog extends JDialog {
 		setIconImage(Images.getApplicationImage());
 		pack();
 		setResizable(false);
-		setModal(true);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 		setLocationRelativeTo(getRootPane());
 		setDefaultCloseOperation(HIDE_ON_CLOSE);
 		getRootPane().setDefaultButton(jbOk);

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -84,9 +84,9 @@ public class VCFLoaderDialog extends JDialog {
 
 	private 				int				approved 			= CANCEL_OPTION;								// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
 
-	private 				Font 			font 				= new Font(FONT_NAME, Font.ITALIC, FONT_SIZE);	// Font used in the dialog (How to use)
-	private 				FontMetrics 	fm					= getFontMetrics(font); 						// FontMetrics to get the size of a string
-	private 				VCFLoaderTable 	table;																// the table
+	private final 				Font 			font 				= new Font(FONT_NAME, Font.ITALIC, FONT_SIZE);	// Font used in the dialog (How to use)
+	private final 				FontMetrics 	fm					= getFontMetrics(font); 						// FontMetrics to get the size of a string
+	private final 				VCFLoaderTable 	table;																// the table
 
 
 	/**
@@ -122,14 +122,14 @@ public class VCFLoaderDialog extends JDialog {
 
 	/**
 	 * Shows the component.
-	 * @param parent the parent component of the dialog, can be null; see showDialog for details 
+	 * @param parent the parent component of the dialog, can be null; see showDialog for details
 	 * @return APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
 	 */
 	public int showDialog(Component parent) {
 		if (table.getData().size() == 0) {
 			table.addEmptyRow();
 		}
-		setModal(true);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 		setLocationRelativeTo(parent);
 		setVisible(true);
 		return approved;
@@ -317,7 +317,7 @@ public class VCFLoaderDialog extends JDialog {
 	 */
 	private ImageIcon getIcon (Image image) {
 		return new ImageIcon(Images.getSquareImage(image, fm.getHeight()));
-		
+
 	}
 
 
@@ -336,7 +336,7 @@ public class VCFLoaderDialog extends JDialog {
 	 * @return the minimum height of the dialog
 	 */
 	private int getMinimumHeight () {
-		int height = VALIDATION_HEIGHT + fm.getHeight() * 4 + 100;
+		int height = VALIDATION_HEIGHT + (fm.getHeight() * 4) + 100;
 		return height;
 	}
 
@@ -348,7 +348,7 @@ public class VCFLoaderDialog extends JDialog {
 	public boolean areValidSettings () {
 		List<VCFData> data = getData();
 		String errors = "";
-		if (data == null || data.size() == 0) {
+		if ((data == null) || (data.size() == 0)) {
 			errors = "No settings found";
 		} else {
 			for (int i = 0; i < data.size(); i++) {
@@ -384,8 +384,8 @@ public class VCFLoaderDialog extends JDialog {
 	public void setData(List<VCFData> data) {
 		table.setData(data);
 	}
-	
-	
+
+
 	/**
 	 * @param file
 	 * @return the existing VCF file (if exists) or a new VCF File

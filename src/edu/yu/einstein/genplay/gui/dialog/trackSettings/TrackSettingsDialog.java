@@ -63,7 +63,7 @@ public class TrackSettingsDialog extends JDialog implements ActionListener  {
 	 */
 	public TrackSettingsDialog() {
 		super();
-		setModal(true);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 
 		basicOptionsPanel = new BasicOptionsPanel();
 		axisOptionsPanel = new AxisOptionsPanel();

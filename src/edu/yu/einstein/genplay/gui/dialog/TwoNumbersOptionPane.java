@@ -78,7 +78,7 @@ public final class TwoNumbersOptionPane extends JDialog {
 	 */
 	private TwoNumbersOptionPane(Component parent, String aTitle, String aLabel1, String aLabel2, double defaultValue1, double defaultValue2, double min, double max) {
 		super();
-		setModal(true);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 		title = aTitle;
 		label1 = aLabel1;
 		label2 = aLabel2;

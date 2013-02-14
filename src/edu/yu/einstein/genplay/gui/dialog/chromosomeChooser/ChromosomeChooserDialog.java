@@ -167,7 +167,7 @@ public class ChromosomeChooserDialog extends JDialog {
 		setTitle("Choose Chromosomes");
 		setIconImage(Images.getApplicationImage());
 		setResizable(false);
-		setModal(true);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 
 		//Table
 		tableModel = new ChromosomeChooserTableModel();

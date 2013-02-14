@@ -225,7 +225,7 @@ public final class ExtractGeneIntervalsDialog extends JDialog implements ActionL
 	 * @return APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
 	 */
 	public int showDialog(Component parent) {
-		setModal(true);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 		setLocationRelativeTo(parent);
 		setVisible(true);
 		return approved;

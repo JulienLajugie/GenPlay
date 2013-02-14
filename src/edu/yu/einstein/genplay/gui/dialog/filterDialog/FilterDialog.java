@@ -194,7 +194,7 @@ public final class FilterDialog extends JDialog implements TreeSelectionListener
 		setIconImage(Images.getApplicationImage());
 		setSize(FILTER_DIALOG_DIMENSION);
 		setResizable(false);
-		setModal(true);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 		setLocationRelativeTo(getRootPane());
 		setDefaultCloseOperation(HIDE_ON_CLOSE);
 		getRootPane().setDefaultButton(jbOk);

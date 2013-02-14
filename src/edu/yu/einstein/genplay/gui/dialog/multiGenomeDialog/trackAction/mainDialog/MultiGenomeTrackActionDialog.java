@@ -110,7 +110,7 @@ public abstract class MultiGenomeTrackActionDialog extends JDialog {
 	public int showDialog(Component parent) {
 		pack();
 		setLocationRelativeTo(parent);
-		setModal(true);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 		setVisible(true);
 		return approved;
 	}

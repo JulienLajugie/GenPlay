@@ -72,7 +72,7 @@ public final class NumberOptionPane extends JDialog {
 	 */
 	private NumberOptionPane(Component parent, String aTitle, String aLabel, double defaultValue, double min, double max) {
 		super();
-		setModal(true);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 		title = aTitle;
 		label = aLabel;
 		validValue = defaultValue;

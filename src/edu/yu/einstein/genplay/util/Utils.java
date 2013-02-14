@@ -1072,4 +1072,16 @@ public final class Utils {
 		return result;
 	}
 
+
+	/**
+	 * @return the java version number, -1 if not found
+	 */
+	public static int getJavaVersion () {
+		String version = System.getProperty("java.specification.version", "");
+		int versionNumber = -1;
+		if (version.length() > 2) {
+			versionNumber = Integer.parseInt(version.substring(version.charAt(2)));
+		}
+		return versionNumber;
+	}
 }

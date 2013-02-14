@@ -42,8 +42,6 @@ import javax.swing.event.ListDataListener;
 import edu.yu.einstein.genplay.core.manager.project.ProjectConfiguration;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
-import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEvent;
@@ -55,7 +53,6 @@ import edu.yu.einstein.genplay.gui.track.layer.background.BackgroundData;
 import edu.yu.einstein.genplay.gui.track.layer.background.BackgroundLayer;
 import edu.yu.einstein.genplay.gui.track.layer.foreground.ForegroundData;
 import edu.yu.einstein.genplay.gui.track.layer.foreground.ForegroundLayer;
-import edu.yu.einstein.genplay.gui.track.layer.variantLayer.MultiGenomeDrawer;
 
 /**
  * Track component showing the data in GenPlay.
@@ -79,7 +76,7 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 
 
 	/**
-	 * Creates an instance of {@link Layer}
+	 * Creates an instance of {@link Track}
 	 * @param trackNumber number of the track
 	 */
 	public Track(int trackNumber) {
@@ -540,41 +537,5 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 			out.writeObject(activeLayer);
 		}
 		out.writeObject(score);
-	}
-
-
-	/**
-	 * @return the multi genome drawer
-	 */
-	public MultiGenomeDrawer getMultiGenomeDrawer() {
-		// TODO MG: CREATE MULTI GENOME BOUND TO THE NEW LAYER SYSTEM
-		return null;
-	}
-
-
-	/**
-	 * Updates the multi genome information
-	 * @param variantList
-	 * @param filtersList
-	 */
-	public void updateMultiGenomeInformation(List<VariantData> variantList,	List<MGFilter> filtersList) {
-		// TODO MG: CREATE MULTI GENOME BOUND TO THE NEW LAYER SYSTEM
-	}
-
-
-	/**
-	 * @return the variants list
-	 */
-	public Object getStripesList() {
-		// TODO MG: CREATE MULTI GENOME BOUND TO THE NEW LAYER SYSTEM
-		return null;
-	}
-
-
-	/**
-	 * Initializes the multi genome information
-	 */
-	public void multiGenomeInitializing() {
-		// TODO MG: CREATE MULTI GENOME BOUND TO THE NEW LAYER SYSTEM
 	}
 }

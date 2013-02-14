@@ -66,7 +66,7 @@ public final class TrackChooser extends JDialog {
 		options = tracks;
 		validated = false;
 		textLabel = text;
-		setModal(true);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 		setTitle(title);
 		setIconImage(Images.getApplicationImage());
 		initComponent();

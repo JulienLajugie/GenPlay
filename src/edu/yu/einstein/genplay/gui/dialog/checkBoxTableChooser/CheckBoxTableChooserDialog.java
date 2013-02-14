@@ -157,7 +157,7 @@ public class CheckBoxTableChooserDialog<T> extends JDialog {
 		//JDialog information
 		setBackground(ITEM_CHOOSER_COLOR);
 		setResizable(false);
-		setModal(true);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 		setIconImage(Images.getApplicationImage());
 		//Table
 		tableModel = new CheckBoxTableModel<T>();

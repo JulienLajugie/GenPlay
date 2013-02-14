@@ -143,7 +143,7 @@ public class ExtractExonsDialog extends JDialog implements ActionListener{
 	 * @return APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
 	 */
 	public int showDialog(Component parent) {
-		setModal(true);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 		setLocationRelativeTo(parent);
 		setVisible(true);
 		return approved;

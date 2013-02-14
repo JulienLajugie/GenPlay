@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -71,17 +71,17 @@ public class InvalidFileDialog extends JDialog {
 	public static final 	int 			CANCEL_OPTION 			= 1;
 
 	private 				int				approved 				= CANCEL_OPTION;								// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
-	private 				int				inset					= 10;				// unique inset used
+	private final 				int				inset					= 10;				// unique inset used
 	private					int				dialogWidth;								// width of the dialog
 	private					int				dialogHeight;								// height of the dialog
-	private					int				titlePanelHeight		= 40;				// height of the title panel
+	private final					int				titlePanelHeight		= 40;				// height of the title panel
 	private					int				filePanelHeight;							// height of the file selection panel
-	private					int				validationPanelHeight	= 40;				// height of the validation panel
-	private					int				lineHeight				= 20;				// height of a line in the file selection panel
+	private final					int				validationPanelHeight	= 40;				// height of the validation panel
+	private final					int				lineHeight				= 20;				// height of a line in the file selection panel
 
 	private JPanel 					filePanel;											// the file selection panel
 	private JPanel 					validationPanel;									// the validation panel
-	private String[] 				files;												// the input files
+	private final String[] 				files;												// the input files
 	private CustomFileComboBox[] 	correctedFiles;										// the array of combo box containing the corrected files
 
 
@@ -103,7 +103,7 @@ public class InvalidFileDialog extends JDialog {
 		setTitle("Invalid File(s) Correction");
 		setIconImage(Images.getApplicationImage());
 		setResizable(false);
-		setModal(true);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 		setLayout(new BorderLayout());
 		add(getTitlePanel(), BorderLayout.NORTH);
 		add(getFilesPanel(), BorderLayout.CENTER);
@@ -113,11 +113,11 @@ public class InvalidFileDialog extends JDialog {
 
 	/**
 	 * Shows the component.
-	 * @param parent the parent component of the dialog, can be null; see showDialog for details 
+	 * @param parent the parent component of the dialog, can be null; see showDialog for details
 	 * @return APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
 	 */
 	public int showDialog(Component parent) {
-		setModal(true);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 		setLocationRelativeTo(parent);
 		setVisible(true);
 		return approved;
@@ -170,7 +170,7 @@ public class InvalidFileDialog extends JDialog {
 		gbc.weighty = 1;
 
 		correctedFiles = new CustomFileComboBox[files.length];
-		Dimension comboDimension = new Dimension(dialogWidth - 2 * inset, lineHeight);
+		Dimension comboDimension = new Dimension(dialogWidth - (2 * inset), lineHeight);
 
 		VCFGZFilter[] filter = {new VCFGZFilter()};
 
@@ -228,7 +228,7 @@ public class InvalidFileDialog extends JDialog {
 		cancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				int n = JOptionPane.showConfirmDialog(null, "If you cancel, the project will not be load. Do you really want to cancel?", "Invalid File(s) Correction", JOptionPane.YES_NO_OPTION); 
+				int n = JOptionPane.showConfirmDialog(null, "If you cancel, the project will not be load. Do you really want to cancel?", "Invalid File(s) Correction", JOptionPane.YES_NO_OPTION);
 				if (n == JOptionPane.YES_OPTION) {
 					approved = CANCEL_OPTION;
 					closeDialog();
@@ -253,7 +253,7 @@ public class InvalidFileDialog extends JDialog {
 		String[] correctedPaths = new String[files.length];
 
 		for (int i = 0; i < correctedFiles.length; i++) {
-			if (correctedFiles != null && !correctedFiles[i].getSelectedItem().equals(CustomComboBox.ADD_TEXT)) {
+			if ((correctedFiles != null) && !correctedFiles[i].getSelectedItem().equals(CustomComboBox.ADD_TEXT)) {
 				correctedPaths[i] = ((File) correctedFiles[i].getSelectedItem()).getPath();
 			} else {
 				correctedPaths[i] = null;
@@ -268,9 +268,9 @@ public class InvalidFileDialog extends JDialog {
 	 * Updates the parameters used to calculate the dimensions
 	 */
 	private void updateDimensions () {
-		dialogWidth = (int) (getMaxLength() * 1.3 + inset * 2);
+		dialogWidth = (int) ((getMaxLength() * 1.3) + (inset * 2));
 		int numberOfLines = files.length * 2;
-		filePanelHeight = (lineHeight + 2 * inset) * numberOfLines;
+		filePanelHeight = (lineHeight + (2 * inset)) * numberOfLines;
 		dialogHeight = titlePanelHeight + filePanelHeight + validationPanelHeight;
 	}
 

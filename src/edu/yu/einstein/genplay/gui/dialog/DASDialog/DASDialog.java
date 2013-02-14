@@ -198,7 +198,7 @@ public class DASDialog extends JDialog {
 		getRootPane().setDefaultButton(jbOk);
 		pack();
 		setResizable(false);
-		setModal(true);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 	}
 
 
@@ -293,7 +293,7 @@ public class DASDialog extends JDialog {
 	 * @return GENERATE_OPTION if Generate is clicked. CANCEL_OPTION otherwise.
 	 */
 	public int showDASDialog(Component parent) {
-		setModal(true);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 		setLocationRelativeTo(parent);
 		setVisible(true);
 		return approved;

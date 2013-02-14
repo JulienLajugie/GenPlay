@@ -343,7 +343,7 @@ public class CorrelationReportDialog extends JDialog {
 		pack();
 		setResizable(false);
 		setLocationRelativeTo(parent);
-		setModal(true);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 		getRootPane().setDefaultButton(jbOk);
 		setTitle("Correlation Report");
 		setIconImage(Images.getApplicationImage());

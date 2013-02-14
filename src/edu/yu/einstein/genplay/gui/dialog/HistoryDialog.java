@@ -73,7 +73,7 @@ public final class HistoryDialog extends JDialog {
 		super();
 		setTitle(trackName);
 		setIconImage(Images.getApplicationImage());
-		setModal(true);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 		this.trackName = trackName;
 		this.history = history;
 

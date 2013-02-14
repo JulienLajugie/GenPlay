@@ -22,6 +22,7 @@
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.selection;
 
 import java.awt.BorderLayout;
+import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -152,6 +153,7 @@ public class LayerSelectionPanel extends EditingPanel<Layer<?>[]> implements Act
 				List<Layer<?>> layers = Utils.getLayers(allLayers, filter);
 
 				LayerChooserDialog dialog = new LayerChooserDialog();
+				dialog.setModalityType(ModalityType.APPLICATION_MODAL);
 				dialog.setMultiselectable(true);
 				dialog.setLayers(layers);
 				dialog.setSelectedLayers(getLayers());

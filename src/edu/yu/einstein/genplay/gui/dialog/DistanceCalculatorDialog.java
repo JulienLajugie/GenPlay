@@ -443,7 +443,7 @@ public class DistanceCalculatorDialog extends JDialog {
 
 		pack();
 		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-		setModal(true);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 		setTitle("Distance Calculator Paramters");
 		setIconImage(Images.getApplicationImage());
 		setLocation(GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint().x - (WINDOW_WIDTH/2), GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint().y - (WINDOW_HEIGHT/2));
@@ -594,7 +594,7 @@ public class DistanceCalculatorDialog extends JDialog {
 	 * @return APPROVE_OPTION if OK is clicked. CANCEL_OPTION otherwise.
 	 */
 	public int showDialog(Component parent) {
-		setModal(true);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 		setLocationRelativeTo(parent);
 		setVisible(true);
 		return approved;

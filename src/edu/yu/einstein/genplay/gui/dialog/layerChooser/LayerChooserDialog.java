@@ -153,7 +153,7 @@ public class LayerChooserDialog extends JDialog {
 		//JDialog information
 		setSize(DIALOG_SIZE);
 		setResizable(false);
-		setModal(true);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 
 		// table
 		layerTable = new JTable();

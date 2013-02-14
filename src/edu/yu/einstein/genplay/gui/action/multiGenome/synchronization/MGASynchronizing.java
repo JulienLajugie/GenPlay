@@ -136,8 +136,6 @@ public class MGASynchronizing extends TrackListActionWorker<Track[]> {
 	protected void doAtTheEnd(Track[] actionResult) {
 		multiGenomeProject.updateChromosomeList();
 
-		initializesTrackListForMultiGenomeProject();
-
 		MainFrame.getInstance().getControlPanel().reinitChromosomePanel();
 		MainFrame.getInstance().getControlPanel().resetGenomeNames(multiGenomeProject.getGenomeNames());
 
@@ -189,18 +187,4 @@ public class MGASynchronizing extends TrackListActionWorker<Track[]> {
 		}
 		return genomes;
 	}
-
-
-	/**
-	 * Initializes attributes used for multi genome project.
-	 */
-	private void initializesTrackListForMultiGenomeProject () {
-		Track[] tracks = MainFrame.getInstance().getTrackListPanel().getModel().getTracks();
-		for (Track track: tracks) {
-			if (track.getStripesList() == null) {
-				track.multiGenomeInitializing();
-			}
-		}
-	}
-
 }
