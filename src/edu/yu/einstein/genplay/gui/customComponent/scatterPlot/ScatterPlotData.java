@@ -62,18 +62,18 @@ public class ScatterPlotData {
 
 
 	/**
-	 * @return the data of the scatter plot
-	 */
-	public double[][] getData() {
-		return data;
-	}
-	
-	
-	/**
 	 * @return the color of the graph
 	 */
 	public final Color getColor() {
 		return color;
+	}
+	
+	
+	/**
+	 * @return the data of the scatter plot
+	 */
+	public double[][] getData() {
+		return data;
 	}
 	
 	
@@ -86,6 +86,14 @@ public class ScatterPlotData {
 	
 	
 	/**
+	 * @param color the color of the graph to set
+	 */
+	public final void setColor(Color color) {
+		this.color = color;
+	}
+	
+	
+	/**
 	 * @param data the data to set
 	 */
 	public void setData(double[][] data) {
@@ -93,10 +101,8 @@ public class ScatterPlotData {
 	}
 	
 	
-	/**
-	 * @param color the color of the graph to set
-	 */
-	public final void setColor(Color color) {
-		this.color = color;
+	@Override
+	public String toString() {
+		return name;
 	}
 }

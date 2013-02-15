@@ -26,7 +26,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.text.NumberFormat;
-import java.util.Arrays;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -37,7 +36,6 @@ import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotData;
 import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotPane;
 import edu.yu.einstein.genplay.util.Utils;
-
 
 
 /**
@@ -66,17 +64,14 @@ public class SPASaveData extends ScatterPlotAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		int selectedIndex = -1;
+		ScatterPlotData selectedData = null; 
 		if (getScatterPlotPane().getData().size() == 1) {
-			selectedIndex = 0;
+			selectedData = getScatterPlotPane().getData().get(0);
 		} else {
-			String[] graphNames = getScatterPlotPane().getGraphNames();
-			String selectedValue = (String) JOptionPane.showInputDialog(getScatterPlotPane(), "Select a graph", "Choose Color", JOptionPane.PLAIN_MESSAGE, null, graphNames, graphNames[0]);
-			if (selectedValue != null) {
-				selectedIndex = Arrays.binarySearch(graphNames, selectedValue);
-			}
+			ScatterPlotData[] graphNames = getScatterPlotPane().getData().toArray(new ScatterPlotData[0]);
+			selectedData = (ScatterPlotData) JOptionPane.showInputDialog(getScatterPlotPane(), "Select a graph", "Choose Color", JOptionPane.PLAIN_MESSAGE, null, graphNames, graphNames[0]);
 		}
-		if (selectedIndex >= 0) {
+		if (selectedData != null) {
 			String defaultDirectoryPath = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
 			JFileChooser jfc = new JFileChooser(defaultDirectoryPath);
 			jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -87,7 +82,7 @@ public class SPASaveData extends ScatterPlotAction {
 				File file = jfc.getSelectedFile();
 				if (!Utils.cancelBecauseFileExist(getScatterPlotPane(), file)) {
 					file = Utils.addExtension(file, "csv");
-					writeData(file, getScatterPlotPane().getData().get(selectedIndex));
+					writeData(file, selectedData);
 				}
 			}
 		}

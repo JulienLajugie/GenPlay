@@ -119,7 +119,8 @@ public final class SCWLARepartition extends TrackListActionOperationWorker<doubl
 							selectedLayers = layerChooserDialog.getSelectedLayers().toArray(new SCWLayer[0]);
 						}
 					} else {
-						selectedLayers = (SCWLayer[]) scwLayers;
+						selectedLayers = new SCWLayer[1];
+						selectedLayers[0] =	(SCWLayer) scwLayers[0];
 					}
 					if ((selectedLayers != null)) {
 						ScoredChromosomeWindowList[] scwListArray = new SimpleScoredChromosomeWindowList[selectedLayers.length];

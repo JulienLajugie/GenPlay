@@ -369,18 +369,6 @@ public class ScatterPlotPane extends JPanel {
 
 
 	/**
-	 * @return an array of String containing the name of the {@link ScatterPlotData}
-	 */
-	public String[] getGraphNames() {
-		String[] names = new String[data.size()];
-		for (int i = 0; i < data.size(); i++) {
-			names[i] = data.get(i).getName();
-		}
-		return names;
-	}
-
-
-	/**
 	 * Method to translate the coordinates of the data point to the point on screen
 	 * @param x x component of a data point
 	 * @param y y component of a data point
