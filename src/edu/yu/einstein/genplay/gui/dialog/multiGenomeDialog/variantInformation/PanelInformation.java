@@ -34,6 +34,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import edu.yu.einstein.genplay.util.Utils;
+
 /**
  * @author Nicolas Fourel
  * @version 0.1
@@ -56,6 +58,7 @@ public class PanelInformation extends JPanel {
 		JPanel headerPanel = getHeaderPane(title);
 		JPanel contentPanel = getContentPanel(keys, values, description);
 		JScrollPane scrollPane = new JScrollPane(contentPanel);
+		scrollPane.getVerticalScrollBar().setUnitIncrement(Utils.SCROLL_INCREMENT_UNIT);
 
 		Dimension dimension = new Dimension(VariantInformationDialog.WIDTH, SCROLL_HEIGHT);
 		scrollPane.setSize(dimension);

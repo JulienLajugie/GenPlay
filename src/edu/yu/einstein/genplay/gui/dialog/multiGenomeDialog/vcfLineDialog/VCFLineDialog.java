@@ -46,6 +46,7 @@ import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.util.Images;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -83,6 +84,7 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 
 		// Initialize the scroll pane
 		pane = new JScrollPane(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+		pane.getVerticalScrollBar().setUnitIncrement(Utils.SCROLL_INCREMENT_UNIT);
 
 		BorderLayout border = new BorderLayout();
 		setLayout(border);

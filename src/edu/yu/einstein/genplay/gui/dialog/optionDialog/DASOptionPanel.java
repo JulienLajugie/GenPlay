@@ -43,6 +43,7 @@ import org.xml.sax.SAXParseException;
 
 import edu.yu.einstein.genplay.core.DAS.DASServerList;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -197,6 +198,7 @@ final class DASOptionPanel extends OptionPanel {
 			column = jtserverurl.getColumnModel().getColumn(1);
 			column.setPreferredWidth((2 * TABLE_WIDTH) / 3);
 			JScrollPane scrollPane = new JScrollPane(jtserverurl);
+			scrollPane.getVerticalScrollBar().setUnitIncrement(Utils.SCROLL_INCREMENT_UNIT);
 			jtserverurl.setFillsViewportHeight(true);
 			jbadd = new JButton("Add");
 			jbadd.addActionListener(new ActionListener() {

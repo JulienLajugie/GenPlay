@@ -32,6 +32,7 @@ import java.util.Map;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileFilter;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
@@ -70,13 +71,18 @@ import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
 
 
-
 /**
  * Collection of static methods used in this project
  * @author Julien Lajugie
+ * @author Nicolas Fourel
  * @version 0.1
  */
 public final class Utils {
+
+	/**
+	 * The increment unit for all {@link JScrollPane}
+	 */
+	public final static int SCROLL_INCREMENT_UNIT = 20;
 
 
 	/**

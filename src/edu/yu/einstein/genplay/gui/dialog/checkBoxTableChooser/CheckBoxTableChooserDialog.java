@@ -40,6 +40,7 @@ import javax.swing.table.TableColumn;
 
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 import edu.yu.einstein.genplay.util.Images;
+import edu.yu.einstein.genplay.util.Utils;
 
 /**
  * This class displays a dialog windows containing a table with two columns:
@@ -166,6 +167,7 @@ public class CheckBoxTableChooserDialog<T> extends JDialog {
 		itemTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		itemTable.setBackground(ITEM_CHOOSER_COLOR);
 		JScrollPane scrollPane = new JScrollPane(itemTable);
+		scrollPane.getVerticalScrollBar().setUnitIncrement(Utils.SCROLL_INCREMENT_UNIT);
 		scrollPane.setBackground(ITEM_CHOOSER_COLOR);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		itemTable.setModel(tableModel);

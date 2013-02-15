@@ -121,6 +121,7 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 		tree = treeContent.getTree();
 		tree.addTreeSelectionListener(this);
 		JScrollPane treeScroll = new JScrollPane(tree, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		treeScroll.getVerticalScrollBar().setUnitIncrement(edu.yu.einstein.genplay.util.Utils.SCROLL_INCREMENT_UNIT);
 		Dimension scrollDimension = new Dimension(200, DIALOG_HEIGHT);
 		treeScroll.setPreferredSize(scrollDimension);
 		treeScroll.setMinimumSize(scrollDimension);
@@ -208,6 +209,7 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 	protected void setScrollableCenterPanel (JPanel panel) {
 		// Set the panel to the right dimension
 		JScrollPane scrollPane = new JScrollPane(panel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.getVerticalScrollBar().setUnitIncrement(edu.yu.einstein.genplay.util.Utils.SCROLL_INCREMENT_UNIT);
 		scrollPane.setPreferredSize(contentDimension);
 
 		// Removes all content of the contentPane

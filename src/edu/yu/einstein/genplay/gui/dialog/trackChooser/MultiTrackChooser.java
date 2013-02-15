@@ -50,6 +50,7 @@ import javax.swing.event.ListSelectionListener;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackComparator;
 import edu.yu.einstein.genplay.util.Images;
+import edu.yu.einstein.genplay.util.Utils;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
@@ -191,6 +192,7 @@ public class MultiTrackChooser extends JDialog {
 		c.insets = new Insets(0, 10, 0, 0);
 		c.fill = GridBagConstraints.BOTH;
 		JScrollPane scrollAvailableTracks = new JScrollPane(jliAvailableTracks);
+		scrollAvailableTracks.getVerticalScrollBar().setUnitIncrement(Utils.SCROLL_INCREMENT_UNIT);
 		scrollAvailableTracks.setPreferredSize(new Dimension(LIST_WIDTH, getPreferredSize().height));
 		add(scrollAvailableTracks, c);
 
@@ -220,6 +222,7 @@ public class MultiTrackChooser extends JDialog {
 		c.weighty = 1;
 		c.fill = GridBagConstraints.BOTH;
 		JScrollPane scrollSelectedTracks = new JScrollPane(jliSelectedTracks);
+		scrollSelectedTracks.getVerticalScrollBar().setUnitIncrement(Utils.SCROLL_INCREMENT_UNIT);
 		scrollSelectedTracks.setPreferredSize(new Dimension(LIST_WIDTH, getPreferredSize().height));
 		add(scrollSelectedTracks, c);
 

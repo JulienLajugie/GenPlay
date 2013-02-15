@@ -51,6 +51,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.track.layer.ColoredLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.util.Images;
+import edu.yu.einstein.genplay.util.Utils;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
@@ -283,6 +284,7 @@ public class CorrelationReportDialog extends JDialog {
 		jt = new CorrelationJTable(tableData, columnNames);
 		// create the JScrollPane
 		jsp = new JScrollPane(jt);
+		jsp.getVerticalScrollBar().setUnitIncrement(Utils.SCROLL_INCREMENT_UNIT);
 		// create the OK button
 		jbOk = new JButton("OK");
 		jbOk.addActionListener(new ActionListener() {

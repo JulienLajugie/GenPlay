@@ -46,6 +46,7 @@ import edu.yu.einstein.genplay.gui.customComponent.tableComponents.ColorRenderer
 import edu.yu.einstein.genplay.gui.customComponent.tableComponents.ComboBoxEditor;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 import edu.yu.einstein.genplay.util.Images;
+import edu.yu.einstein.genplay.util.Utils;
 
 /**
  * Dialog for the settings of the layers of a track
@@ -129,6 +130,7 @@ public class LayerSettingsDialog extends JDialog {
 		// other table properties
 		layerSettingsTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		JScrollPane scrollPane = new JScrollPane(layerSettingsTable);
+		scrollPane.getVerticalScrollBar().setUnitIncrement(Utils.SCROLL_INCREMENT_UNIT);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		layerSettingsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		// allows the table to save data when a cell loses focus

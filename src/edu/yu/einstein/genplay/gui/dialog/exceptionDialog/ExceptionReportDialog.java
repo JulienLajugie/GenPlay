@@ -39,6 +39,7 @@ import javax.swing.JTextArea;
 
 import edu.yu.einstein.genplay.core.mail.GenPlayMail;
 import edu.yu.einstein.genplay.util.Images;
+import edu.yu.einstein.genplay.util.Utils;
 
 /**
  * @author Nicolas Fourel
@@ -132,6 +133,7 @@ public class ExceptionReportDialog extends JDialog {
 		// Creates the scroll pane
 		JScrollPane contentPane = new JScrollPane(textArea);
 		Dimension scrollDimension = new Dimension(DIALOG_WIDTH, REPORT_HEIGHT);
+		contentPane.getVerticalScrollBar().setUnitIncrement(Utils.SCROLL_INCREMENT_UNIT);
 		contentPane.setPreferredSize(scrollDimension);
 		contentPane.setMinimumSize(scrollDimension);
 

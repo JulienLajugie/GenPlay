@@ -42,6 +42,7 @@ import javax.swing.table.TableColumn;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 import edu.yu.einstein.genplay.util.Images;
+import edu.yu.einstein.genplay.util.Utils;
 
 /**
  * This class displays a list of chromosome in order to make a selection.
@@ -176,6 +177,7 @@ public class ChromosomeChooserDialog extends JDialog {
 		chromosomeTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		chromosomeTable.setBackground(CHROMOSOME_CHOOSER_COLOR);
 		JScrollPane scrollPane = new JScrollPane(chromosomeTable);
+		scrollPane.getVerticalScrollBar().setUnitIncrement(Utils.SCROLL_INCREMENT_UNIT);
 		scrollPane.setBackground(CHROMOSOME_CHOOSER_COLOR);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		chromosomeTable.setModel(tableModel);

@@ -42,6 +42,7 @@ import javax.swing.tree.TreeSelectionModel;
 
 import edu.yu.einstein.genplay.core.enums.FilterType;
 import edu.yu.einstein.genplay.util.Images;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 
@@ -117,6 +118,7 @@ public final class FilterDialog extends JDialog implements TreeSelectionListener
 		jt.addTreeSelectionListener(this);
 		// create the scroll pane containing the JTree
 		jspTreeView = new JScrollPane(jt);
+		jspTreeView.getVerticalScrollBar().setUnitIncrement(Utils.SCROLL_INCREMENT_UNIT);
 		// create the right panel
 		jpFilter = new JPanel();
 		// add the scroll panes to a split pane.

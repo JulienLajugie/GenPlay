@@ -40,6 +40,7 @@ import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.dialog.chromosomeChooser.ChromosomeChooserDialog;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 
@@ -76,6 +77,7 @@ class ChromoSelectionPanel extends JPanel implements ActionListener {
 			}
 		}
 		jcpSelectedChromo = new JScrollPane(jlSelectedChromo);
+		jcpSelectedChromo.getVerticalScrollBar().setUnitIncrement(Utils.SCROLL_INCREMENT_UNIT);
 		jbModifySelection = new JButton("Modify Selection");
 		jbModifySelection.addActionListener(this);
 		setLayout(new GridBagLayout());

@@ -33,6 +33,7 @@ import javax.swing.ScrollPaneConstants;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics.VCFFileStatistics;
 import edu.yu.einstein.genplay.util.Images;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -52,6 +53,7 @@ public class MGStatisticsDialog extends JDialog {
 	public MGStatisticsDialog (VCFFileStatistics statistics) {
 		statisticPanel = new StatisticPanel(statistics);
 		JScrollPane scrollPane = new JScrollPane(statisticPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.getVerticalScrollBar().setUnitIncrement(Utils.SCROLL_INCREMENT_UNIT);
 		scrollPane.setBorder(BorderFactory.createEmptyBorder());
 
 		// Layout settings

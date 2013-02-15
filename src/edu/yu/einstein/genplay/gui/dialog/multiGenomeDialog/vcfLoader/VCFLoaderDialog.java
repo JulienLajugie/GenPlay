@@ -50,6 +50,7 @@ import javax.swing.JScrollPane;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.util.Images;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -104,6 +105,7 @@ public class VCFLoaderDialog extends JDialog {
 
 		// Center
 		JScrollPane scrollPane = new JScrollPane(table);
+		scrollPane.getVerticalScrollBar().setUnitIncrement(Utils.SCROLL_INCREMENT_UNIT);
 		table.setFillsViewportHeight(true);
 
 		// South

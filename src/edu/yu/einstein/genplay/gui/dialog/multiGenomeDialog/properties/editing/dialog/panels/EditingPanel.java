@@ -34,6 +34,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import edu.yu.einstein.genplay.util.Utils;
+
 /**
  * @author Nicolas Fourel
  * @version 0.1
@@ -54,7 +56,7 @@ abstract public class EditingPanel<K> extends JPanel {
 	protected 	K element;										// This object represents the parameter for updating other panel. Each panel may need to transfer ONE object to others. It can be a file, a genome, a list of genomes, filters...
 
 	private final 	JLabel 					titleLabel;					// The label for the title
-	private final		JScrollPane 			scrollPane;					// The scroll pane that contains the content pane
+	private final	JScrollPane 			scrollPane;					// The scroll pane that contains the content pane
 	private final 	List<EditingPanel<?>> 	editingPanelListeners;		// Editing panels listening the current panel (can be null)
 
 
@@ -75,6 +77,7 @@ abstract public class EditingPanel<K> extends JPanel {
 
 		// Initializes the scroll pane
 		scrollPane = new JScrollPane(contentPanel);
+		scrollPane.getVerticalScrollBar().setUnitIncrement(Utils.SCROLL_INCREMENT_UNIT);
 
 		initializeContentPanelSize(MINIMUM_WIDTH, CONTENT_HEIGHT);
 

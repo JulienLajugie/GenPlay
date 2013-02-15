@@ -39,6 +39,7 @@ import javax.swing.event.HyperlinkListener;
 
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.util.Images;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -83,6 +84,7 @@ public final class TextDialog extends JDialog implements ActionListener {
 		});
 
 		jspText = new JScrollPane(jepText);
+		jspText.getVerticalScrollBar().setUnitIncrement(Utils.SCROLL_INCREMENT_UNIT);
 
 		jbOk = new JButton("Ok");
 		jbOk.addActionListener(this);

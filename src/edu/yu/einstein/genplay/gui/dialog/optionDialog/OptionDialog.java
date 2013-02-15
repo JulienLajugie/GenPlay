@@ -53,6 +53,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.util.Images;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -127,6 +128,7 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 		jt.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		jt.addTreeSelectionListener(this);
 		jspTreeView = new JScrollPane(jt);
+		jspTreeView.getVerticalScrollBar().setUnitIncrement(Utils.SCROLL_INCREMENT_UNIT);
 		jpOption = new JPanel();
 
 		// Add the scroll panes to a split pane.

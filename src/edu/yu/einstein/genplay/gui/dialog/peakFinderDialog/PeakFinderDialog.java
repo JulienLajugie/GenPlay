@@ -48,6 +48,7 @@ import edu.yu.einstein.genplay.core.list.binList.operation.BLOFindPeaksStDev;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.dialog.peakFinderDialog.islandPanel.IslandFinderPanel;
 import edu.yu.einstein.genplay.util.Images;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 
@@ -109,6 +110,7 @@ public class PeakFinderDialog extends JDialog implements TreeSelectionListener {
 		jt.addTreeSelectionListener(this);
 		// create the scroll pane containing the JTree
 		jspTreeView = new JScrollPane(jt);
+		jspTreeView.getVerticalScrollBar().setUnitIncrement(Utils.SCROLL_INCREMENT_UNIT);
 		// create the right panel
 		jpPeakFinder = new JPanel();
 		// add the scroll panes to a split pane.

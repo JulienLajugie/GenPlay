@@ -204,6 +204,7 @@ public class WarningReportDialog extends JDialog {
 		// Creates the scroll pane
 		JScrollPane contentPane = new JScrollPane(textArea);
 		Dimension scrollDimension = new Dimension(DIALOG_WIDTH, CONTENT_HEIGHT);
+		contentPane.getVerticalScrollBar().setUnitIncrement(Utils.SCROLL_INCREMENT_UNIT);
 		contentPane.setPreferredSize(scrollDimension);
 		contentPane.setMinimumSize(scrollDimension);
 

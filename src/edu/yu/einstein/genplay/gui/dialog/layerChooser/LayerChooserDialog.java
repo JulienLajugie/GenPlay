@@ -46,6 +46,7 @@ import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
 import edu.yu.einstein.genplay.util.Images;
+import edu.yu.einstein.genplay.util.Utils;
 
 /**
  * Dialog that prompt the user to choose layers.
@@ -163,6 +164,7 @@ public class LayerChooserDialog extends JDialog {
 		// other table properties
 		layerTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		JScrollPane scrollPane = new JScrollPane(layerTable);
+		scrollPane.getVerticalScrollBar().setUnitIncrement(Utils.SCROLL_INCREMENT_UNIT);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		initializeColumnProperties();
 		// table renderer and editors if the multiselectable property is set to false so we have radio buttons instead of check boxes

@@ -80,6 +80,7 @@ public final class HistoryDialog extends JDialog {
 		jlHistory = new JList(history.get());
 		//jlHistory.get()
 		jspHistory = new JScrollPane(jlHistory);
+		jspHistory.getVerticalScrollBar().setUnitIncrement(Utils.SCROLL_INCREMENT_UNIT);
 		jbClose = new JButton("Close");
 		jbSave = new JButton("Save");
 
