@@ -67,51 +67,66 @@ class AxisOptionsPanel extends JPanel {
 		jcbHorizontalLines = new JCheckBox();
 		jlHorizontalLineCount = new JLabel("Horizontal line count");
 		jftfHorizontalLineCount = new JFormattedTextField(createLineCountFormatter(TrackConstants.MAXIMUM_HORIZONTAL_LINE_COUNT));
-		jftfHorizontalLineCount.setColumns(8);
 
 		// vertical lines
 		jlVerticalLines = new JLabel("Show vertical lines");
 		jcbVerticalLines = new JCheckBox();
 		jlVerticalLineCount = new JLabel("Vertical line count");
 		jftfVerticalLineCount = new JFormattedTextField(createLineCountFormatter(TrackConstants.MAXIMUM_VERTICAL_LINE_COUNT));
-		jftfVerticalLineCount.setColumns(8);
+
+		// Format components
+		TrackSettingsPanel.formatLabel(jlHorizontalLines);
+		TrackSettingsPanel.formatLabel(jlHorizontalLineCount);
+		TrackSettingsPanel.formatLabel(jlVerticalLines);
+		TrackSettingsPanel.formatLabel(jlVerticalLineCount);
+		TrackSettingsPanel.formatNumberField(jftfHorizontalLineCount);
+		TrackSettingsPanel.formatNumberField(jftfVerticalLineCount);
+
 
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 
-		c.fill = GridBagConstraints.HORIZONTAL;
+		c.anchor = GridBagConstraints.LINE_START;
+		c.fill = GridBagConstraints.NONE;
 		c.gridx = 0;
 		c.gridy = 0;
-		c.weightx = 0.5;
+		c.weightx = 0.1;
 		c.weighty = 0.5;
 		add(jlHorizontalLines, c);
 
 		c.gridx = 1;
 		c.gridy = 0;
+		c.weightx = 0.9;
 		add(jcbHorizontalLines, c);
 
 		c.gridx = 0;
 		c.gridy = 1;
+		c.weightx = 0.1;
 		add(jlHorizontalLineCount, c);
 
 		c.gridx = 1;
 		c.gridy = 1;
+		c.weightx = 0.9;
 		add(jftfHorizontalLineCount, c);
 
 		c.gridx = 0;
 		c.gridy = 2;
+		c.weightx = 0.1;
 		add(jlVerticalLines, c);
 
 		c.gridx = 1;
 		c.gridy = 2;
+		c.weightx = 0.9;
 		add(jcbVerticalLines, c);
 
 		c.gridx = 0;
 		c.gridy = 3;
+		c.weightx = 0.1;
 		add(jlVerticalLineCount, c);
 
 		c.gridx = 1;
 		c.gridy = 3;
+		c.weightx = 0.9;
 		add(jftfVerticalLineCount, c);
 	}
 

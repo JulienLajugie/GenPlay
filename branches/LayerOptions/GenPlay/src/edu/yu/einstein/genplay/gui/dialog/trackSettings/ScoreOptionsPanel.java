@@ -79,11 +79,9 @@ class ScoreOptionsPanel extends JPanel implements ActionListener, ChangeListener
 
 		jlScoreMin = new JLabel("Minimum Score");
 		jftfScoreMin = new JFormattedTextField(createScoreFormatter());
-		jftfScoreMin.setColumns(8);
 
 		jlScoreMax = new JLabel("Maximum Score");
 		jftfScoreMax = new JFormattedTextField(createScoreFormatter());
-		jftfScoreMax.setColumns(8);
 
 		jlScoreAuto = new JLabel("Auto-Rescaled");
 		jcbScoreAuto = new JCheckBox();
@@ -92,6 +90,7 @@ class ScoreOptionsPanel extends JPanel implements ActionListener, ChangeListener
 		jlScorePosition = new JLabel("Score Position:");
 		jrbTopPosition = new JRadioButton("Top");
 		jrbBottomPosition = new JRadioButton("Bottom");
+
 		// create the group for the radio buttons
 		scorePositionGroup = new ButtonGroup();
 		scorePositionGroup.add(jrbTopPosition);
@@ -101,56 +100,76 @@ class ScoreOptionsPanel extends JPanel implements ActionListener, ChangeListener
 		jbScoreColor = new JButton("Color");
 		jbScoreColor.addActionListener(this);
 
+		// Format components
+		TrackSettingsPanel.formatLabel(jlScoreMin);
+		TrackSettingsPanel.formatLabel(jlScoreMax);
+		TrackSettingsPanel.formatLabel(jlScoreAuto);
+		TrackSettingsPanel.formatLabel(jlScorePosition);
+		TrackSettingsPanel.formatLabel(jlScoreColor);
+		TrackSettingsPanel.formatNumberField(jftfScoreMin);
+		TrackSettingsPanel.formatNumberField(jftfScoreMax);
+
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 
-		c.fill = GridBagConstraints.HORIZONTAL;
+		c.anchor = GridBagConstraints.LINE_START;
+		c.fill = GridBagConstraints.NONE;
 		c.gridx = 0;
 		c.gridy = 0;
-		c.weightx = 0.5;
+		c.weightx = 0.1;
 		c.weighty = 0.5;
 		add(jlScoreMin, c);
 
 		c.gridx = 1;
 		c.gridy = 0;
+		c.weightx = 0.9;
 		add(jftfScoreMin, c);
 
 		c.gridx = 0;
 		c.gridy = 1;
+		c.weightx = 0.1;
 		add(jlScoreMax, c);
 
 		c.gridx = 1;
 		c.gridy = 1;
+		c.weightx = 0.9;
 		add(jftfScoreMax, c);
 
 		c.gridx = 0;
 		c.gridy = 2;
+		c.weightx = 0.1;
 		add(jlScoreAuto, c);
 
 		c.gridx = 1;
 		c.gridy = 2;
+		c.weightx = 0.9;
 		add(jcbScoreAuto, c);
 
 		c.gridx = 0;
 		c.gridy = 3;
+		c.weightx = 0.1;
 		c.gridwidth = 2;
 		add(jlScorePosition, c);
 
 		c.gridx = 0;
 		c.gridy = 4;
+		c.weightx = 0.1;
 		c.gridwidth = 1;
 		add(jrbTopPosition, c);
 
 		c.gridx = 1;
 		c.gridy = 4;
+		c.weightx = 0.9;
 		add(jrbBottomPosition, c);
 
 		c.gridx = 0;
 		c.gridy = 5;
+		c.weightx = 0.1;
 		add(jlScoreColor, c);
 
 		c.gridx = 1;
 		c.gridy = 5;
+		c.weightx = 0.9;
 		add(jbScoreColor, c);
 	}
 

@@ -58,32 +58,41 @@ class BasicOptionsPanel extends JPanel {
 		setBorder(BorderFactory.createTitledBorder("Basic Options"));
 
 		jlName = new JLabel("Name");
-		jtfName = new JTextField(12);
+		jtfName = new JTextField();
 
 		jlHeight = new JLabel("Height");
 		jftfHeight = new JFormattedTextField(createHeightFormatter());
-		jftfHeight.setColumns(8);
+
+		// Format components
+		TrackSettingsPanel.formatLabel(jlName);
+		TrackSettingsPanel.formatLabel(jlHeight);
+		TrackSettingsPanel.formatTextField(jtfName);
+		TrackSettingsPanel.formatNumberField(jftfHeight);
 
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 
-		c.fill = GridBagConstraints.HORIZONTAL;
+		c.anchor = GridBagConstraints.LINE_START;
+		c.fill = GridBagConstraints.NONE;
 		c.gridx = 0;
 		c.gridy = 0;
-		c.weightx = 0.5;
+		c.weightx = 0.1;
 		c.weighty = 0.5;
 		add(jlName, c);
 
 		c.gridx = 1;
 		c.gridy = 0;
+		c.weightx = 0.9;
 		add(jtfName, c);
 
 		c.gridx = 0;
 		c.gridy = 1;
+		c.weightx = 0.1;
 		add(jlHeight, c);
 
 		c.gridx = 1;
 		c.gridy = 1;
+		c.weightx = 0.9;
 		add(jftfHeight, c);
 	}
 

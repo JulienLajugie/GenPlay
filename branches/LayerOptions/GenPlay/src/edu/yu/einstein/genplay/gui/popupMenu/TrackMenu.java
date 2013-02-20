@@ -26,7 +26,6 @@ import java.util.List;
 
 import javax.swing.ActionMap;
 import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
@@ -37,7 +36,6 @@ import edu.yu.einstein.genplay.gui.action.track.TACopy;
 import edu.yu.einstein.genplay.gui.action.track.TACut;
 import edu.yu.einstein.genplay.gui.action.track.TADelete;
 import edu.yu.einstein.genplay.gui.action.track.TAInsert;
-import edu.yu.einstein.genplay.gui.action.track.TALayerSettings;
 import edu.yu.einstein.genplay.gui.action.track.TAPaste;
 import edu.yu.einstein.genplay.gui.action.track.TASaveAsImage;
 import edu.yu.einstein.genplay.gui.action.track.TATrackSettings;
@@ -77,7 +75,6 @@ public class TrackMenu extends JPopupMenu implements PopupMenuListener {
 	};
 
 	private Track 				selectedTrack; 			// selected track
-	private final JMenuItem		layerSettingsMenu;		// layer setting menu
 	private final List<JMenu> 	layerMenus; 			// list containing all the layer menus available for the selected track
 	private final Separator		layerMenusSeparator;	// separator that separate the layer menus from the other elements of the track menu
 
@@ -95,8 +92,6 @@ public class TrackMenu extends JPopupMenu implements PopupMenuListener {
 				add(actionMap.get(currentKey));
 			}
 		}
-		layerSettingsMenu = new JMenuItem(actionMap.get(TALayerSettings.ACTION_KEY));
-		add(layerSettingsMenu);
 		addPopupMenuListener(this);
 	}
 
@@ -142,7 +137,6 @@ public class TrackMenu extends JPopupMenu implements PopupMenuListener {
 	 */
 	@Override
 	public void popupMenuWillBecomeVisible(PopupMenuEvent evt) {
-		layerSettingsMenu.setEnabled((selectedTrack != null) && (selectedTrack.getLayers() != null) && !selectedTrack.getLayers().isEmpty());
 		if (selectedTrack != null) {
 			Layer<?>[] trackLayers = selectedTrack.getLayers().getLayers();
 			if (trackLayers != null) {
