@@ -52,7 +52,7 @@ import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAMovingAverage;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAMultiplyConstant;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLANormalize;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLANormalizeStandardScore;
-import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLARepartition;
+import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAScoreDistribution;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAStandardDeviation;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLASubtractConstant;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLASumScore;
@@ -137,7 +137,7 @@ public class BinLayerMenu extends AbstractLayerMenu {
 				null,
 				new BLADensity(),
 				new BLAIntervalsScoring(),
-				new BLARepartition(),
+				new BLAScoreDistribution(),
 				new BLAConcatenate(),
 				null,
 				new LAConvert(),

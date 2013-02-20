@@ -28,7 +28,7 @@ import java.util.List;
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.core.list.binList.operation.BLORepartition;
+import edu.yu.einstein.genplay.core.list.binList.operation.BLOScoreDistribution;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotData;
@@ -43,29 +43,29 @@ import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
- * Generates an array containing the repartition of the score values of the selected {@link BinLayer}
+ * Generates an array containing the distribution of the score values of the selected {@link BinLayer}
  * @author Chirag Gorasia
  * @version 0.1
  */
-public final class BLARepartition extends TrackListActionOperationWorker<double [][][]> {
+public final class BLAScoreDistribution extends TrackListActionOperationWorker<double [][][]> {
 
-	private static final long serialVersionUID = -7166030548181210580L; // generated ID
-	private static final String 	ACTION_NAME = "Show Repartition";	// action name
+	private static final long serialVersionUID = -7166030548181210580L; 			// generated ID
+	private static final String 	ACTION_NAME = "Score Distribution Histogram";	// action name
 	private static final String 	DESCRIPTION =
-			"Generate a plot showing the repartition of the scores of the selected layers";	// tooltip
+			"Generate a plot showing the distribution of the scores of the selected layers";	// tooltip
 	private Layer<?>[] 				selectedLayers;
 	private List<ScatterPlotData> 	scatPlotData;
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = BLARepartition.class.getName();
+	public static final String ACTION_KEY = BLAScoreDistribution.class.getName();
 
 
 	/**
-	 * Creates an instance of {@link BLARepartition}
+	 * Creates an instance of {@link BLAScoreDistribution}
 	 */
-	public BLARepartition() {
+	public BLAScoreDistribution() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -79,7 +79,7 @@ public final class BLARepartition extends TrackListActionOperationWorker<double 
 		if (selectedLayer != null) {
 			Number scoreBin = NumberOptionPane.getValue(getRootPane(), "Size", "Enter the size of the bin of score:", 0 + Double.MIN_NORMAL, 1000, 1);
 			if (scoreBin != null) {
-				// we ask the user to choose the layers for the repartition only if there is more than one layer
+				// we ask the user to choose the layers for the distribution only if there is more than one layer
 				LayerType[] availableLayerTypes = {LayerType.BIN_LAYER};
 				Layer<?>[] binLayers = Utils.getLayers(getTrackListPanel().getModel().getTracks(), availableLayerTypes);
 				if (binLayers.length > 1) {
@@ -99,7 +99,7 @@ public final class BLARepartition extends TrackListActionOperationWorker<double 
 						binListArray[i] = ((BinLayer)selectedLayers[i]).getData();
 					}
 					if (binListArray.length > 0) {
-						Operation<double[][][]> operation = new BLORepartition(binListArray, scoreBin.doubleValue());
+						Operation<double[][][]> operation = new BLOScoreDistribution(binListArray, scoreBin.doubleValue());
 						return operation;
 					}
 				}

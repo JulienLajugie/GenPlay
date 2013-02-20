@@ -36,7 +36,7 @@ import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLAFilter;
 import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLAFilterStrand;
 import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLAGeneRenamer;
 import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLAScoreExons;
-import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLAScoreRepartitionAroundStart;
+import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLAScoreDistributionAroundStart;
 import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLASearchGene;
 import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLASumScore;
 import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLAUniqueScore;
@@ -81,7 +81,7 @@ public class GeneLayerMenu extends AbstractLayerMenu {
 				null,
 				new GLAGeneRenamer(),
 				new GLADistanceCalculator(),
-				new GLAScoreRepartitionAroundStart(),
+				new GLAScoreDistributionAroundStart(),
 				null,
 				new LAConvert(),
 				new LASave()

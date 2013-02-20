@@ -30,7 +30,7 @@ import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLORepartition;
+import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOScoreDistribution;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotData;
@@ -45,16 +45,16 @@ import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
- * Generates an array containing the repartition of the score values of the selected {@link SCWLayer}
+ * Generates an array containing the distribution of the score values of the selected {@link SCWLayer}
  * @author Chirag Gorasia
  * @version 0.1
  */
-public final class SCWLARepartition extends TrackListActionOperationWorker<double [][][]>{
+public final class SCWLAScoreDistribution extends TrackListActionOperationWorker<double [][][]>{
 
 	private static final long serialVersionUID = -6665806475919318742L;
-	private static final String 	ACTION_NAME = "Show Repartition";	// action name
+	private static final String 	ACTION_NAME = "Score Distribution Histogram";			// action name
 	private static final String 	DESCRIPTION =
-			"Generate a plot showing the repartition of the scores of the selected layer";	// tooltip
+			"Generate a plot showing the distribution of the scores of the selected layer";	// tooltip
 	private SCWLayer[] 				selectedLayers;
 	private List<ScatterPlotData> 	scatPlotData;
 	private int 					graphIndicator;
@@ -62,13 +62,13 @@ public final class SCWLARepartition extends TrackListActionOperationWorker<doubl
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = SCWLARepartition.class.getName();
+	public static final String ACTION_KEY = SCWLAScoreDistribution.class.getName();
 
 
 	/**
-	 * Creates an instance of {@link SCWLARepartition}
+	 * Creates an instance of {@link SCWLAScoreDistribution}
 	 */
-	public SCWLARepartition() {
+	public SCWLAScoreDistribution() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -101,13 +101,13 @@ public final class SCWLARepartition extends TrackListActionOperationWorker<doubl
 			if (selectedValue != null) {
 				if (selectedValue.toString().equals(graphTypes[0])) {
 					// graph of score vs window count
-					setGraphIndicator(SCWLORepartition.WINDOW_COUNT_GRAPH);
+					setGraphIndicator(SCWLOScoreDistribution.WINDOW_COUNT_GRAPH);
 				} else {
-					setGraphIndicator(SCWLORepartition.BASE_COUNT_GRAPH);
+					setGraphIndicator(SCWLOScoreDistribution.BASE_COUNT_GRAPH);
 				}
 				Number scoreBin = NumberOptionPane.getValue(getRootPane(), "Size", "Enter the size of the bin of score:", 0 + Double.MIN_NORMAL, 1000, 1);
 				if (scoreBin != null) {
-					// we ask the user to choose the layers for the repartition only if there is more than one layer
+					// we ask the user to choose the layers for the distribution only if there is more than one layer
 					LayerType[] availableLayerTypes = {LayerType.SCW_LAYER};
 					Layer<?>[] scwLayers = Utils.getLayers(getTrackListPanel().getModel().getTracks(), availableLayerTypes);
 					if (scwLayers.length > 1) {
@@ -128,7 +128,7 @@ public final class SCWLARepartition extends TrackListActionOperationWorker<doubl
 							scwListArray[i] = selectedLayers[i].getData();
 						}
 						if (scwListArray.length > 0) {
-							Operation<double[][][]> operation = new SCWLORepartition(scwListArray, scoreBin.doubleValue(), getGraphIndicator());
+							Operation<double[][][]> operation = new SCWLOScoreDistribution(scwListArray, scoreBin.doubleValue(), getGraphIndicator());
 							return operation;
 						}
 					}
@@ -147,7 +147,7 @@ public final class SCWLARepartition extends TrackListActionOperationWorker<doubl
 				Color layerColor = ((ColoredLayer) selectedLayers[k]).getColor(); // retrieve the color of the layer
 				scatPlotData.add(new ScatterPlotData(actionResult[k], selectedLayers[k].toString(), layerColor));
 			}
-			if (getGraphIndicator() == SCWLORepartition.WINDOW_COUNT_GRAPH) {
+			if (getGraphIndicator() == SCWLOScoreDistribution.WINDOW_COUNT_GRAPH) {
 				ScatterPlotPane.showDialog(getRootPane(), "Score", "Window Count", scatPlotData);
 			} else {
 				ScatterPlotPane.showDialog(getRootPane(), "Score", "bp Count", scatPlotData);

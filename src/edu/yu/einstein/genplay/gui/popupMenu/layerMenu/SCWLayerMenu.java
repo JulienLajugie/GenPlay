@@ -40,7 +40,7 @@ import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAMin;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAMultiplyConstant;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLANormalize;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLANormalizeStandardScore;
-import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLARepartition;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAScoreDistribution;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAStandardDeviation;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLASubtractConstant;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLASumScore;
@@ -99,7 +99,7 @@ public class SCWLayerMenu extends AbstractLayerMenu {
 				new SCWLAFilter(),
 				new SCWLATransfrag(),
 				null,
-				new SCWLARepartition(),
+				new SCWLAScoreDistribution(),
 				null,
 				new LAConvert(),
 				new LASave()

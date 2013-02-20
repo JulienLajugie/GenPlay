@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -38,10 +38,10 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 
 
 /**
- * Shows the repartition of the scores around the start position of each gene.
+ * Shows the distribution of the scores around the start position of each gene.
  * @author Julien Lajugie
  */
-public class GLOScoreRepartitionAroundStart implements Operation<double[][]> {
+public class GLOScoreDistributionAroundStart implements Operation<double[][]> {
 
 	private boolean							stopped = false;		// true if the operation must be stopped
 	private final GeneList					geneList;				// input gene list
@@ -53,16 +53,16 @@ public class GLOScoreRepartitionAroundStart implements Operation<double[][]> {
 
 
 	/**
-	 * Creates an instance of {@link GLOScoreRepartitionAroundStart}. 
-	 * Shows the repartition of the scores around the start position of each gene.
+	 * Creates an instance of {@link GLOScoreDistributionAroundStart}.
+	 * Shows the distribution of the scores around the start position of each gene.
 	 * @param geneList input gene list
 	 * @param binList list containing the scores
-	 * @param selectedChromosomes chromosome on which we show the repartition
+	 * @param selectedChromosomes chromosome on which we show the distribution
 	 * @param binSize size of the bins of score
 	 * @param binCount count of bins each side of the promoter
 	 * @param scoreCalculationMethod {@link ScoreCalculationMethod} to compute the score of the bins
 	 */
-	public GLOScoreRepartitionAroundStart(GeneList geneList, BinList binList, boolean[] selectedChromosomes,
+	public GLOScoreDistributionAroundStart(GeneList geneList, BinList binList, boolean[] selectedChromosomes,
 			int binSize, int binCount, ScoreCalculationMethod scoreCalculationMethod) {
 		this.geneList = geneList;
 		this.binList = binList;
@@ -75,7 +75,7 @@ public class GLOScoreRepartitionAroundStart implements Operation<double[][]> {
 
 	@Override
 	public double[][] compute() throws Exception {
-		final int totalBinCount = binCount * 2 + 1;
+		final int totalBinCount = (binCount * 2) + 1;
 		double result[][] = new double[totalBinCount][2];
 		for (int i = -binCount; i <= binCount; i++) {
 			result[i + binCount][0] = i * binSize;
@@ -91,11 +91,11 @@ public class GLOScoreRepartitionAroundStart implements Operation<double[][]> {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<double[]>> threadList = new ArrayList<Callable<double[]>>();
 
-		for (int i = 0; i < geneList.size() && !stopped; i++) {
-			final Chromosome currentChromo = ProjectManager.getInstance().getProjectChromosome().get(i); 
+		for (int i = 0; (i < geneList.size()) && !stopped; i++) {
+			final Chromosome currentChromo = ProjectManager.getInstance().getProjectChromosome().get(i);
 			if (((selectedChromosomes == null) || ((i < selectedChromosomes.length) && (selectedChromosomes[i]))) && (geneList.get(i) != null) && (binList.get(i) != null)) {
 				final List<Gene> currentGeneList = geneList.get(i);
-				Callable<double[]> currentThread = new Callable<double[]>() {	
+				Callable<double[]> currentThread = new Callable<double[]>() {
 					@Override
 					public double[] call() throws Exception {
 						double[] chromoResult = new double[totalBinCount];
@@ -154,12 +154,12 @@ public class GLOScoreRepartitionAroundStart implements Operation<double[][]> {
 					}
 				};
 				threadList.add(currentThread);
-			} 
+			}
 		}
 
 		List<double[]> threadResult = op.startPool(threadList);
 		if (threadResult == null) {
-			return null;		
+			return null;
 		}
 		int[] count = new int[totalBinCount];
 		for (double [] currentResult: threadResult) {
@@ -206,9 +206,9 @@ public class GLOScoreRepartitionAroundStart implements Operation<double[][]> {
 	 * @return the average score of the bins between a start and a stop position on a specified chromosome
 	 */
 	protected double retrieveScore(Chromosome currentChromo, int start, int stop, BinList binList) {
-		//TODO handle the first and last windows when only a small part of the start and stop 
+		//TODO handle the first and last windows when only a small part of the start and stop
 		//are in the window
-		
+
 		int startIndex = (int) Math.floor(start / (double) binList.getBinSize());
 		int stopIndex = (int) Math.ceil(stop / (double) binList.getBinSize());
 		int count = 0;
@@ -223,7 +223,7 @@ public class GLOScoreRepartitionAroundStart implements Operation<double[][]> {
 			}
 		}
 		if (count == 0) {
-			 return 0;
+			return 0;
 		} else {
 			return totalScore / count;
 		}
@@ -232,13 +232,13 @@ public class GLOScoreRepartitionAroundStart implements Operation<double[][]> {
 
 	@Override
 	public String getDescription() {
-		return "Operation: Show Repartition Around Gene Start";
+		return "Operation: Show Score Distribution Around Gene Start";
 	}
 
 
 	@Override
 	public String getProcessingDescription() {
-		return "Computing Score Repartition";
+		return "Computing Score Distribution";
 	}
 
 
@@ -250,6 +250,6 @@ public class GLOScoreRepartitionAroundStart implements Operation<double[][]> {
 
 	@Override
 	public void stop() {
-		this.stopped = true;		
+		stopped = true;
 	}
 }

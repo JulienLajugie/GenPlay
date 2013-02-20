@@ -30,7 +30,7 @@ import javax.swing.JOptionPane;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
-import edu.yu.einstein.genplay.core.list.geneList.operation.GLOScoreRepartitionAroundStart;
+import edu.yu.einstein.genplay.core.list.geneList.operation.GLOScoreDistributionAroundStart;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotData;
@@ -46,29 +46,29 @@ import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 /**
- * Generates a chart showing the score repartition around the start
+ * Generates a chart showing the score distribution around the start
  * @author Julien Lajugie
  * @version 0.1
  */
-public class GLAScoreRepartitionAroundStart extends TrackListActionOperationWorker<double[][]> {
+public class GLAScoreDistributionAroundStart extends TrackListActionOperationWorker<double[][]> {
 
-	private static final long serialVersionUID = -3916743291195449577L; 			// generated id
-	private static final String 	ACTION_NAME = "Score Repartition Around Start";	// action name
+	private static final long serialVersionUID = -3916743291195449577L; 				// generated id
+	private static final String 	ACTION_NAME = "Score Distribution Around Start";	// action name
 	private static final String 	DESCRIPTION = "Generates a chart showing the " +
-			"score repartition around the start"; 											// tooltip
-	private GeneLayer				selectedLayer;									// selected layer
+			"score distribution around the start"; 										// tooltip
+	private GeneLayer				selectedLayer;										// selected layer
 
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = GLAScoreRepartitionAroundStart.class.getName();
+	public static final String ACTION_KEY = GLAScoreDistributionAroundStart.class.getName();
 
 
 	/**
-	 * Creates an instance of {@link GLAScoreRepartitionAroundStart}
+	 * Creates an instance of {@link GLAScoreDistributionAroundStart}
 	 */
-	public GLAScoreRepartitionAroundStart() {
+	public GLAScoreDistributionAroundStart() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -102,7 +102,7 @@ public class GLAScoreRepartitionAroundStart extends TrackListActionOperationWork
 								if (binCount != null) {
 									ScoreCalculationMethod scm = Utils.chooseScoreCalculation(getRootPane());
 									if (scm != null) {
-										operation = new GLOScoreRepartitionAroundStart(geneList, binList, selectedChromo, binSize.intValue(), binCount.intValue(), scm);
+										operation = new GLOScoreDistributionAroundStart(geneList, binList, selectedChromo, binSize.intValue(), binCount.intValue(), scm);
 										return operation;
 									}
 								}
@@ -120,7 +120,7 @@ public class GLAScoreRepartitionAroundStart extends TrackListActionOperationWork
 	protected void doAtTheEnd(double[][] actionResult) {
 		if (actionResult != null) {
 			List<ScatterPlotData> scatPlotData = new ArrayList<ScatterPlotData>();
-			scatPlotData.add(new ScatterPlotData(actionResult, "Repartition around promoters of " + selectedLayer.toString(), Colors.RED));
+			scatPlotData.add(new ScatterPlotData(actionResult, "Score Distribution around promoters of " + selectedLayer.toString(), Colors.RED));
 			ScatterPlotPane.showDialog(getRootPane(), "Distance", "Score", scatPlotData);
 		}
 	}
