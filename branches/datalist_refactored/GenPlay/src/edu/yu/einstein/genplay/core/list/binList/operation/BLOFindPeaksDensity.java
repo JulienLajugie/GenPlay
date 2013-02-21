@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
-import edu.yu.einstein.genplay.core.list.arrayList.ListFactory;
+import edu.yu.einstein.genplay.core.list.arrayList.DoubleListFactory;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
@@ -80,7 +80,7 @@ public class BLOFindPeaksDensity implements Operation<BinList[]> {
 				public List<Double> call() throws Exception {
 					List<Double> resultList = null;
 					if ((currentList != null) && (currentList.size() != 0)) {
-						resultList = ListFactory.createList(binList.getPrecision(), currentList.size());
+						resultList = DoubleListFactory.createDoubleList(binList.getPrecision(), currentList.size());
 						for (int j = 0; j < currentList.size() && !stopped; j++) {
 							if (currentList.get(j) != 0) {
 								int indexStart = j - halfWidth;

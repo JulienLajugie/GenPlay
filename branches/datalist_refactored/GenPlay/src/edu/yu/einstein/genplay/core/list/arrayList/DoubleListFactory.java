@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -31,15 +31,15 @@ import edu.yu.einstein.genplay.core.enums.DataPrecision;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class ListFactory {
+public class DoubleListFactory {
 
 	/**
 	 * @param precision precision of the data
 	 * @param size size of the list
-	 * @return a subtype of List<Double>
+	 * @return a subtype of List of Double
 	 * @throws IllegalArgumentException thrown if the precision is not valid
 	 */
-	public static List<Double> createList(DataPrecision precision, int size) throws IllegalArgumentException {
+	public static List<Double> createDoubleList(DataPrecision precision, int size) throws IllegalArgumentException {
 		switch (precision) {
 		case PRECISION_1BIT:
 			return new BooleanArrayAsDoubleList(size);
@@ -51,8 +51,8 @@ public class ListFactory {
 			return new FloatArrayAsDoubleList(size);
 		case PRECISION_64BIT:
 			return new DoubleArrayAsDoubleList(size);
-		default: 
+		default:
 			throw new IllegalArgumentException("invalid precision");
-		}				
+		}
 	}
 }

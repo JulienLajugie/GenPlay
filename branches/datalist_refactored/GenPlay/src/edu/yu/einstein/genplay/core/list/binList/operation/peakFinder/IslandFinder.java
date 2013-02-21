@@ -31,7 +31,7 @@ import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.IslandResultType;
-import edu.yu.einstein.genplay.core.list.arrayList.ListFactory;
+import edu.yu.einstein.genplay.core.list.arrayList.DoubleListFactory;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLOCountNonNullBins;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLOSumScore;
@@ -284,7 +284,7 @@ public class IslandFinder implements Serializable, Stoppable {
 			List<Integer> islandsStart,
 			List<Integer> islandsStop,
 			List<Double> islandSummits) {
-		List<Double> resultList = ListFactory.createList(precision, currentList.size());
+		List<Double> resultList = DoubleListFactory.createDoubleList(precision, currentList.size());
 		int currentPos = 0;	// position on the island start and stop arrays
 		double value = 0.0;
 		for (int i = 0; i < currentList.size() && !stopped; i++) {	// for all window positions

@@ -41,7 +41,7 @@ import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.list.DisplayableListOfLists;
 import edu.yu.einstein.genplay.core.list.GenomicDataList;
 import edu.yu.einstein.genplay.core.list.arrayList.CompressibleList;
-import edu.yu.einstein.genplay.core.list.arrayList.ListFactory;
+import edu.yu.einstein.genplay.core.list.arrayList.DoubleListFactory;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
@@ -139,7 +139,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 					List<Double> resultList = null;
 					if ((positions.get(currentChromosome) != null) && (positions.size(currentChromosome) != 0)) {
 						int currentSize = (currentChromosome.getLength() / binSize) + 1;
-						resultList = ListFactory.createList(precision, currentSize);
+						resultList = DoubleListFactory.createDoubleList(precision, currentSize);
 						for (int i = 0; i < positions.size(currentChromosome); i++) {
 							if (positions.get(currentChromosome, i) <= currentChromosome.getLength()) {
 								int windowTmp = positions.get(currentChromosome, i) / binSize;
@@ -195,7 +195,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 					List<Double> resultList = null;
 					if ((positions.get(currentChromosome) != null) && (positions.size(currentChromosome) != 0)) {
 						int currentSize = (currentChromosome.getLength() / binSize) + 1;
-						resultList = ListFactory.createList(precision, currentSize);
+						resultList = DoubleListFactory.createDoubleList(precision, currentSize);
 						for (int i = 0; i < positions.size(currentChromosome); i++) {
 							if (positions.get(currentChromosome, i) <= currentChromosome.getLength()) {
 								int currentWindow = positions.get(currentChromosome, i) / binSize;
@@ -278,7 +278,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 						if (method == ScoreCalculationMethod.AVERAGE) {
 							counts = new int[currentSize];
 						}
-						resultList = ListFactory.createList(getPrecision(), currentSize);
+						resultList = DoubleListFactory.createDoubleList(getPrecision(), currentSize);
 						// for each input windows
 						for  (int i = 0; i < binList.size(currentChromosome); i++) {
 							int start = i * binList.getBinSize();
@@ -342,7 +342,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 					List<Double> resultList = null;
 					if ((currentPositions != null) && (currentPositions.size() != 0)) {
 						int currentSize = (currentChromosome.getLength() / getBinSize()) + 1;
-						resultList = ListFactory.createList(getPrecision(), currentSize);
+						resultList = DoubleListFactory.createDoubleList(getPrecision(), currentSize);
 						// if the method is average we create an array to store the count of scores
 						int[] counts = null;
 						if (method == ScoreCalculationMethod.AVERAGE) {
@@ -410,7 +410,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 						if (method == ScoreCalculationMethod.AVERAGE) {
 							counts = new int[currentSize];
 						}
-						resultList = ListFactory.createList(precision, currentSize);
+						resultList = DoubleListFactory.createDoubleList(precision, currentSize);
 						// for each input windows
 						for  (int i = 0; i < starts.size(currentChromosome); i++) {
 							SimpleScoredChromosomeWindow scw = new SimpleScoredChromosomeWindow(starts.get(currentChromosome, i), stops.get(currentChromosome, i), scores.get(currentChromosome, i));
@@ -472,7 +472,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 						if (method == ScoreCalculationMethod.AVERAGE) {
 							counts = new int[currentSize];
 						}
-						resultList = ListFactory.createList(precision, currentSize);
+						resultList = DoubleListFactory.createDoubleList(precision, currentSize);
 						// for each input windows
 						for  (int i = 0; i < currentList.size(); i++) {
 							ScoredChromosomeWindow scw = currentList.get(i);
@@ -535,7 +535,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 						if (method == ScoreCalculationMethod.AVERAGE) {
 							counts = new int[currentSize];
 						}
-						resultList = ListFactory.createList(precision, currentSize);
+						resultList = DoubleListFactory.createDoubleList(precision, currentSize);
 						// for each input windows
 						for  (int i = 0; i < starts.size(currentChromosome); i++) {
 							SimpleScoredChromosomeWindow scw = new SimpleScoredChromosomeWindow(starts.get(currentChromosome, i), stops.get(currentChromosome, i), 0.0);

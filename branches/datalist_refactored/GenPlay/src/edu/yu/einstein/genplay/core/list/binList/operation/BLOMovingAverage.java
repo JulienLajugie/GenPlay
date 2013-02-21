@@ -28,7 +28,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
-import edu.yu.einstein.genplay.core.list.arrayList.ListFactory;
+import edu.yu.einstein.genplay.core.list.arrayList.DoubleListFactory;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
@@ -76,7 +76,7 @@ public class BLOMovingAverage implements Operation<BinList> {
 				public List<Double> call() throws Exception {
 					List<Double> listToAdd = null;
 					if ((currentList != null) && (currentList.size() != 0)) {
-						listToAdd = ListFactory.createList(precision, currentList.size());
+						listToAdd = DoubleListFactory.createDoubleList(precision, currentList.size());
 						for(int j = 0; (j < currentList.size()) && !stopped; j++) {
 							if ((currentList.get(j) != 0) || (fillNullValues)) {
 								double count = 0;

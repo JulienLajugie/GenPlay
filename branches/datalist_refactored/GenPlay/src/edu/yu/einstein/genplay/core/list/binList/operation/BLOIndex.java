@@ -28,7 +28,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
-import edu.yu.einstein.genplay.core.list.arrayList.ListFactory;
+import edu.yu.einstein.genplay.core.list.arrayList.DoubleListFactory;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
@@ -84,7 +84,7 @@ public class BLOIndex implements Operation<BinList> {
 					public List<Double> call() throws Exception {
 						List<Double> resultList = null;
 						if ((currentList != null) && (currentList.size() != 0)) {
-							resultList = ListFactory.createList(precision, currentList.size());
+							resultList = DoubleListFactory.createDoubleList(precision, currentList.size());
 							// We index the intensities
 							for (int j = 0; j < currentList.size() && !stopped; j++) {
 								if (currentList.get(j) == 0) {

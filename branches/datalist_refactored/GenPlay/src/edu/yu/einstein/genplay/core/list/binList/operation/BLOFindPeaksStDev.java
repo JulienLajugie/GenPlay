@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.list.arrayList.ListFactory;
+import edu.yu.einstein.genplay.core.list.arrayList.DoubleListFactory;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
@@ -76,7 +76,7 @@ public class BLOFindPeaksStDev implements Operation<BinList[]> {
 				public List<Double> call() throws Exception {
 					List<Double> resultList = null;
 					if ((currentList != null) && (currentList.size() != 0)) {
-						resultList = ListFactory.createList(binList.getPrecision(), currentList.size());
+						resultList = DoubleListFactory.createDoubleList(binList.getPrecision(), currentList.size());
 						// compute the stdev for the chromosome
 						double sd = DoubleLists.standardDeviation(currentList, 0, currentList.size() - 1);
 						if (sd != 0) {

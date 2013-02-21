@@ -30,7 +30,7 @@ import java.util.concurrent.ExecutionException;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoLayersMethod;
 import edu.yu.einstein.genplay.core.list.GenomicDataList;
-import edu.yu.einstein.genplay.core.list.arrayList.ListFactory;
+import edu.yu.einstein.genplay.core.list.arrayList.DoubleListFactory;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
@@ -99,7 +99,7 @@ public class BLOTwoLayers implements Operation<GenomicDataList<?>> {
 					List<Double> resultList = null;
 
 					if (!firstLayerIsEmpty && !secondLayerIsEmpty) {
-						resultList = ListFactory.createList(precision, currentList1.size());
+						resultList = DoubleListFactory.createDoubleList(precision, currentList1.size());
 						for (int j = 0; j < currentList1.size() && !stopped; j++) {
 							if (j < currentList2.size()) {
 								// we add the bins of the two binlists
@@ -117,7 +117,7 @@ public class BLOTwoLayers implements Operation<GenomicDataList<?>> {
 						}
 						
 						if (currentList != null) {
-							resultList = ListFactory.createList(precision, currentList.size());
+							resultList = DoubleListFactory.createDoubleList(precision, currentList.size());
 							if (scm == ScoreCalculationTwoLayersMethod.ADDITION || scm == ScoreCalculationTwoLayersMethod.MAXIMUM) {
 								for (int j = 0; j < currentList.size() && !stopped; j++) {
 									resultList.set(j, currentList.get(j));
