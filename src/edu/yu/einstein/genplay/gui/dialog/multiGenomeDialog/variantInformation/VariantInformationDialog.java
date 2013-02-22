@@ -141,6 +141,7 @@ public class VariantInformationDialog extends JDialog {
 		add(navigationPanel, gbc);
 	}
 
+
 	/**
 	 * Method for showing the dialog box.
 	 * @param iterator the multi list iterator

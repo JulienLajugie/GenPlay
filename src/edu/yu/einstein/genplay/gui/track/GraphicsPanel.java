@@ -232,11 +232,10 @@ public class GraphicsPanel extends JPanel implements Serializable, ComponentList
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		g.setFont(TrackConstants.FONT);
-		//g.setClip(0, 0, getWidth(), getHeight());
 		if (drawers != null) {
 			// tell the drawers to draw
 			for (Drawer currentDrawer: drawers) {
+				g.setFont(TrackConstants.FONT_DEFAULT);
 				currentDrawer.draw(g, getWidth(), getHeight());
 			}
 		}
@@ -256,7 +255,7 @@ public class GraphicsPanel extends JPanel implements Serializable, ComponentList
 	 * Sets the cursor of the track.
 	 * The cursor is different from its default value when the track is being scrolled left or right
 	 */
-	private void updateCursor() {
+	public void updateCursor() {
 		ScrollingManager scrollingManager = ScrollingManager.getInstance();
 		if (scrollingManager.isScrollingLeft()) {
 			setCursor(TrackConstants.SCROLL_LEFT_CURSOR);

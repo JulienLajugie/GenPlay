@@ -41,7 +41,6 @@ import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 import edu.yu.einstein.genplay.gui.track.Drawer;
 import edu.yu.einstein.genplay.gui.track.GraphicsPanel;
-import edu.yu.einstein.genplay.gui.track.TrackConstants;
 import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
@@ -104,7 +103,6 @@ public class Ruler extends JPanel implements GenomeWindowListener {
 	public BufferedImage getImage() {
 		BufferedImage image = new BufferedImage(rulerGraphics.getWidth(), rulerGraphics.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		Graphics g = image.getGraphics();
-		g.setFont(TrackConstants.FONT);
 		rulerGraphics.paintComponent(g);
 		return image;
 	}

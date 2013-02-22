@@ -96,9 +96,27 @@ public class TrackConstants {
 
 
 	/**
-	 * Size of the font
+	 * Font for the legend
 	 */
-	public static final Font FONT = new Font("ARIAL", Font.PLAIN, 10);
+	public static final Font FONT_LEGEND = new Font("Verdana", Font.PLAIN, 9);
+
+
+	/**
+	 * Font for the active layer of the legend
+	 */
+	public static final Font FONT_LEGEND_ACTIVE_LAYER = new Font("Verdana", Font.BOLD, 10);
+
+
+	/**
+	 * Font for the numbers on the ruler
+	 */
+	public static final Font FONT_RULER = new Font("Verdana", Font.PLAIN, 9);
+
+
+	/**
+	 * Default track font
+	 */
+	public static final Font FONT_DEFAULT = new Font("Arial", Font.PLAIN, 10);
 
 
 	/**

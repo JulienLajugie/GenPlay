@@ -81,7 +81,7 @@ public class NucleotideLayer extends AbstractLayer<DisplayableListOfLists<Nucleo
 		// compute the length in pixels of the widest base to display
 		String[] bases = {"N", "A", "C", "G", "T"};
 		for (String currBase: bases) {
-			maxWidth = Math.max(maxWidth, getTrack().getFontMetrics(TrackConstants.FONT).stringWidth(currBase));
+			maxWidth = Math.max(maxWidth, getTrack().getFontMetrics(TrackConstants.FONT_DEFAULT).stringWidth(currBase));
 		}
 		return maxWidth;
 	}

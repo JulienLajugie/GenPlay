@@ -1086,7 +1086,7 @@ public final class Utils {
 		String version = System.getProperty("java.specification.version", "");
 		int versionNumber = -1;
 		if (version.length() > 2) {
-			versionNumber = Integer.parseInt(version.substring(version.charAt(2)));
+			versionNumber = Integer.parseInt("" + version.charAt(2));
 		}
 		return versionNumber;
 	}
