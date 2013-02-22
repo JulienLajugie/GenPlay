@@ -296,4 +296,17 @@ public class VariantDisplayMultiListScanner {
 		return -1;
 	}
 
+
+	/**
+	 * @param variant a {@link Variant}
+	 * @return the current genome name
+	 */
+	public String getCurrentGenomeName (Variant variant) {
+		VariantDisplayList currentDisplayList = getCurrentVariantDisplayList(variant);
+		if (currentDisplayList != null) {
+			return currentDisplayList.getGenomeName();
+		}
+		return null;
+	}
+
 }

@@ -45,6 +45,7 @@ import edu.yu.einstein.genplay.gui.track.TrackConstants;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.VersionedLayer;
 import edu.yu.einstein.genplay.gui.track.layer.variantLayer.MultiGenomeDrawer;
+import edu.yu.einstein.genplay.gui.track.layer.variantLayer.VariantLayer;
 
 
 /**
@@ -152,17 +153,21 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 
 	/**
 	 * @param multiGenomeDrawer
-	 * @return the number of the track according to a {@link MultiGenomeDrawer}
+	 * @return the track according to a {@link MultiGenomeDrawer}
 	 */
-	public int getTrackNumberFromMGGenomeDrawer(MultiGenomeDrawer multiGenomeDrawer) {
-		// TODO Layer modif
-		/*Track[] trackList = getModel().getTracks();
-		for (int i = 0; i < trackList.length; i++) {
-			if (trackList[i].getMultiGenomeDrawer().equals(multiGenomeDrawer)) {
-				return i + 1;
+	public Track getTrackFromGenomeDrawer(MultiGenomeDrawer multiGenomeDrawer) {
+		Track[] trackList = getModel().getTracks();
+		for (Track currentTrack: trackList) {
+			Layer<?>[] layers = currentTrack.getLayers().getLayers();
+			for (Layer<?> currentLayer: layers) {
+				if (currentLayer instanceof VariantLayer) {
+					if (((VariantLayer) currentLayer).getGenomeDrawer().equals(multiGenomeDrawer)) {
+						return currentTrack;
+					}
+				}
 			}
-		}*/
-		return -1;
+		}
+		return null;
 	}
 
 
@@ -191,8 +196,6 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 	 */
 	public void legendChanged() {
 		for (Track currentTrack: getModel().getTracks()) {
-			// TODO Layer modif
-			//currentTrack.legendChanged();
 			currentTrack.repaint();
 		}
 	}
