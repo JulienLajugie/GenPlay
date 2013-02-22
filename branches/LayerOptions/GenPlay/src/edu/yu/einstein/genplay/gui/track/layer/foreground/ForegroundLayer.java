@@ -21,7 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.track.layer.foreground;
 
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -44,6 +43,7 @@ public class ForegroundLayer extends AbstractLayer<ForegroundData> implements La
 
 	private static final long serialVersionUID = -6813481315069255351L; // generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
+	private LegendDrawer legendDrawer;
 
 
 	/**
@@ -52,6 +52,7 @@ public class ForegroundLayer extends AbstractLayer<ForegroundData> implements La
 	 */
 	public ForegroundLayer(Track track) {
 		super(track, new ForegroundData());
+		legendDrawer = new LegendDrawer(this);
 	}
 
 
@@ -60,7 +61,10 @@ public class ForegroundLayer extends AbstractLayer<ForegroundData> implements La
 		if (isVisible()) {
 			drawMiddleVerticalLine(g, width, height);
 			drawScore(g, width, height);
-			drawName(g, width, height);
+			if (legendDrawer == null) {
+				legendDrawer = new LegendDrawer(this);
+			}
+			legendDrawer.draw(g, width, height);
 		}
 	}
 
@@ -77,47 +81,6 @@ public class ForegroundLayer extends AbstractLayer<ForegroundData> implements La
 		int x = (int)Math.round(width / (double)2);
 		g.setColor(Colors.TRACK_MIDDLE_LINE);
 		g.drawLine(x, y1, x, y2);
-	}
-
-
-	/**
-	 * Draws the name of the track
-	 * @param g {@link Graphics} on which the layer will be drawn
-	 * @param width width of the graphics to draw
-	 * @param height height of the graphics to draw
-	 */
-	private void drawName(Graphics g, int width, int height) {
-		if ((getTrack().getName() != null) && (!getTrack().getName().trim().isEmpty())) {
-			int widthOffset = 2; 												// space between the border of the rectangle and the text.
-			int heightOffset = 2; 												// space between the border of the rectangle and the top of the track.
-			String trackName = getTrack().getName();
-			FontMetrics fm = g.getFontMetrics();
-			int textWidth = fm.stringWidth(trackName);							// text width on the screen
-
-			//			String name = trackName;
-			//			if (displayTextWidth > 0 && textWidth > displayTextWidth) {			// if the display width of the full text is larger than the one given, the text has to be shorted.
-			//				String newText = "";
-			//				int charIndex = 0;
-			//				while (fm.stringWidth(newText + "...") <= displayTextWidth) {	// we add char one by one to the new text until reaching the length limit
-			//					newText += name.charAt(charIndex);
-			//					charIndex++;
-			//				}
-			//				name = newText + "...";											// the track name is the modified name + "..."
-			//				textWidth = displayTextWidth;									// the length of the text has changed too
-			//			}
-
-
-			textWidth = textWidth + (widthOffset * 2);							// width of the rectangle drawing
-			int x = width - textWidth;											// starts the rectangle drawing (at the right border of the frame)
-			int textHeight = fm.getHeight();									// height of the text
-
-			// Draws
-			g.setColor(Colors.TRACK_BACKGROUND);
-			g.fillRect(x, 1, textWidth, textHeight + heightOffset);
-			g.setColor(Colors.TRACK_NAME);
-			g.drawRect(x, 1, textWidth - 1, textHeight + heightOffset);
-			g.drawString(trackName, x + widthOffset, textHeight);
-		}
 	}
 
 

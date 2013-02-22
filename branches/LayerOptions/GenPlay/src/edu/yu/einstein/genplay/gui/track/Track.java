@@ -175,7 +175,7 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 	/**
 	 * @return the panel where the layers are drawn
 	 */
-	public JPanel getGraphicsPanel() {
+	public GraphicsPanel getGraphicsPanel() {
 		return graphicsPanel;
 	}
 
@@ -253,9 +253,6 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 
 		// set the track score
 		score = new TrackScore(this);
-
-		// set the font of the project
-		setFont(TrackConstants.FONT);
 
 		// set the border of the track
 		setBorder(TrackConstants.REGULAR_BORDER);

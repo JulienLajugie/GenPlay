@@ -33,6 +33,7 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.track.Drawer;
+import edu.yu.einstein.genplay.gui.track.TrackConstants;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 /**
@@ -51,6 +52,7 @@ public class RulerDrawer implements Drawer {
 
 	@Override
 	public void draw(Graphics g, int width, int height) {
+		g.setFont(TrackConstants.FONT_RULER);
 		drawRelativeUnits(g, width, height);
 		drawAbsoluteUnits(g, width, height);
 	}

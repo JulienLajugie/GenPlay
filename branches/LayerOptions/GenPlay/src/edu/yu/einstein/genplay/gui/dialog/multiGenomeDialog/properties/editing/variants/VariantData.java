@@ -163,30 +163,6 @@ public class VariantData implements Serializable {
 
 
 	/**
-	 * @return the list of variant list for display
-	 */
-	/*public List<MGDVariantList> getListOfVariantList (AlleleType alleleType) {
-		List<MGDVariantList> listOfVariantList = new ArrayList<MGDVariantList>();
-
-		MGDGenome genomeForDisplay = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenomeForDisplay().getGenomeInformation(genome);
-		MGDAllele alleleForDisplay = null;
-		if (alleleType == AlleleType.ALLELE01) {
-			alleleForDisplay = genomeForDisplay.getAlleleA();
-		} else if (alleleType == AlleleType.ALLELE02) {
-			alleleForDisplay = genomeForDisplay.getAlleleB();
-		}
-
-		Chromosome chromosome = ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome();
-		for (VariantType variantType: variationTypeList) {
-			MGDVariantList variantListForDisplay = alleleForDisplay.getVariantList(chromosome, variantType);
-			listOfVariantList.add(variantListForDisplay);
-		}
-
-		return listOfVariantList;
-	}*/
-
-
-	/**
 	 * @return the variantList
 	 */
 	public List<VariantType> getVariationTypeList() {

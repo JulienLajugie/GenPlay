@@ -158,6 +158,7 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 		// TODO Layer modif
 		/*Track[] trackList = getModel().getTracks();
 		for (int i = 0; i < trackList.length; i++) {
+			trackList[i].getLayers().getLayers()
 			if (trackList[i].getMultiGenomeDrawer().equals(multiGenomeDrawer)) {
 				return i + 1;
 			}
