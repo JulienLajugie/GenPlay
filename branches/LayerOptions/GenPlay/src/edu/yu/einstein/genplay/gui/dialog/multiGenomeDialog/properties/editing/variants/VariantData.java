@@ -329,9 +329,9 @@ public class VariantData implements Serializable {
 			VariantType type = variationTypeList.get(i);
 			// Add the variant type shortcut
 			if (type == VariantType.INSERTION) {
-				description += "Ins";
+				description += "I";
 			} else if (type == VariantType.DELETION) {
-				description += "Del";
+				description += "D";
 			} else if (type == VariantType.SNPS) {
 				description += "SNPs";
 			}
