@@ -102,12 +102,14 @@ public class VariantLayer extends AbstractLayer<VariantData> implements MouseLis
 		return genomeDrawer;
 	}
 
+
 	/**
 	 * @return the filters
 	 */
 	public List<MGFilter> getFilters() {
 		return filters;
 	}
+
 
 	@Override
 	public void mouseClicked(MouseEvent e) {

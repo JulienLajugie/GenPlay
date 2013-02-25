@@ -78,7 +78,10 @@ public abstract class FilterUtility {
 
 				System.err.println("StringUtility.isValid() no operator found");
 			} else {
-				return passTest(filter, results[0]);
+				if (results[0] != null){
+					return passTest(filter, results[0]);
+				}
+				// If results[0] equal null, the ID field has probably not been found.
 			}
 
 			return false;
