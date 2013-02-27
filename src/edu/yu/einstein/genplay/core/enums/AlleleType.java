@@ -32,12 +32,12 @@ public enum AlleleType {
 	/**
 	 * For a paternal allele
 	 */
-	ALLELE01 ("Paternal"),
+	ALLELE01 ("Maternal"),
 
 	/**
 	 * For a maternal allele
 	 */
-	ALLELE02 ("Maternal"),
+	ALLELE02 ("Paternal"),
 
 	/**
 	 * To mention both allele, paternal and maternal

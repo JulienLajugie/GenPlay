@@ -54,7 +54,7 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 	private static final String 	DESCRIPTION =
 			"Converts the stripes on a variable window track."; 										// tooltip
 	private static final int 				MNEMONIC = KeyEvent.VK_M; 									// mnemonic key
-	private static		 String 			ACTION_NAME = "Convert in variable window track";			// action name
+	private static		 String 			ACTION_NAME = "Convert into variable window track";			// action name
 
 
 	/**

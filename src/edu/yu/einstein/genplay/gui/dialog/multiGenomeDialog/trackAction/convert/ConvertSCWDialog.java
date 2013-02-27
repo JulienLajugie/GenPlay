@@ -55,7 +55,7 @@ public class ConvertSCWDialog extends MultiGenomeTrackActionDialog {
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -1321930230220361216L;
 
-	private final static String DIALOG_TITLE = "Convert as variable window track";
+	private final static String DIALOG_TITLE = "Convert into variable window track";
 
 	private String genomeName;
 	private JComboBox jcbAlleleTrack01;
