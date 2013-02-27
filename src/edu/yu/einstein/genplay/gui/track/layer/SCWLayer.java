@@ -110,12 +110,12 @@ public class SCWLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList>
 			List<ScoredChromosomeWindow> listToPrint = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
 			if (listToPrint != null) {
 				for (ScoredChromosomeWindow currentWindow: listToPrint) {
-					int x = projectWindow.genomeToScreenPosition(currentWindow.getStart());
-					int widthWindow = projectWindow.genomeToScreenPosition(currentWindow.getStop()) - x;
-
-					if (widthWindow < 1) {
-						widthWindow = 1;
-					}
+					// we want to make sure that x is > 0
+					int x = Math.max(0, projectWindow.genomeToScreenPosition(currentWindow.getStart()));
+					// we want to make sure that window width is not larger than the screen width
+					int widthWindow = Math.min(width, projectWindow.genomeToScreenPosition(currentWindow.getStop()) - x);
+					// we want to make sure that the window width is > 0
+					widthWindow = Math.max(1, widthWindow);
 
 					int y = getTrack().getScore().scoreToScreenPosition(currentWindow.getScore());
 					int rectHeight = y - screenY0;
@@ -197,9 +197,8 @@ public class SCWLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList>
 				for (ScoredChromosomeWindow currentWindow: listToPrint) {
 					int x = projectWindow.genomeToScreenPosition(currentWindow.getStart());
 					int widthWindow = projectWindow.genomeToScreenPosition(currentWindow.getStop()) - x;
-					if (widthWindow < 1) {
-						widthWindow = 1;
-					}
+					// we want to make sure that the window width is > 0
+					widthWindow = Math.max(1, widthWindow);
 					double scoreMin = getTrack().getScore().getMinimumScore();
 					double scoreMax = getTrack().getScore().getMaximumScore();
 					g.setColor(Colors.scoreToColor(currentWindow.getScore(), scoreMin, scoreMax));
@@ -223,8 +222,10 @@ public class SCWLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList>
 			List<ScoredChromosomeWindow> listToPrint = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
 			if (listToPrint != null) {
 				for (ScoredChromosomeWindow currentWindow: listToPrint) {
-					int x1 = projectWindow.genomeToScreenPosition(currentWindow.getStart());
-					int x2 = projectWindow.genomeToScreenPosition(currentWindow.getStop());
+					// we want to make sure that x is > 0
+					int x1 = Math.max(0, projectWindow.genomeToScreenPosition(currentWindow.getStart()));
+					// we want to make sure that window width is not larger than the screen width
+					int x2 = Math.min(width, projectWindow.genomeToScreenPosition(currentWindow.getStop()));
 					if ((x2 - x1) < 1) {
 						x2 = x1 + 1;
 					}

@@ -185,10 +185,13 @@ final class SCWLOptions implements Serializable {
 	 * @return	the related score of the chromosome and the index, the default score value otherwise
 	 */
 	private Double getScore (Chromosome chromosome, int index) {
+		double score = DEFAULT_SCORE;
 		if (scoreList != null) {
-			return scoreList.get(chromosome, index);
+			if ((scoreList.get(chromosome) != null) && (index < scoreList.get(chromosome).size())) {
+				score = scoreList.get(chromosome, index);
+			}
 		}
-		return DEFAULT_SCORE;
+		return score;
 	}
 
 

@@ -58,7 +58,7 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 	private static final long serialVersionUID = 7106474719716124894L; // generated ID
 	private final ChromosomeListOfLists<Integer>	startList;		// list of position start
 	private final ChromosomeListOfLists<Integer>	stopList;		// list of position stop
-	private final ChromosomeListOfLists<Double>	scoreList;		// list of scores
+	private final ChromosomeListOfLists<Double>		scoreList;		// list of scores
 
 
 	/**
