@@ -55,8 +55,10 @@ public class GenPlayMail {
 	 * Send an anonymous email with the name of Nicolas Fourel as GenPlay Mailbox admin to the GenPlay Mailbox.
 	 * @param subject the subject of the email
 	 * @param content the content of the email
+	 * @return true if the sending operation was successful, false otherwise
 	 */
-	public static void send (String subject, String content) {
+	public static boolean send (String subject, String content) {
+		boolean hasBeenSent = false;
 		boolean canSend = true;
 
 		// Test if the internet connection is working
@@ -79,10 +81,13 @@ public class GenPlayMail {
 				Session session = Session.getDefaultInstance(properties, authenticator);
 				Message message = getMessage(session, subject, content);
 				Transport.send(message);
+				hasBeenSent = true;
 			} catch (Exception e) {
 				ExceptionManager.getInstance().caughtException(e);
 			}
 		}
+
+		return hasBeenSent;
 	}
 
 

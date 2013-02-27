@@ -33,6 +33,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -192,7 +193,11 @@ public class ExceptionReportDialog extends JDialog {
 	 * Send the report
 	 */
 	private void send () {
-		GenPlayMail.send("[GenPlay] Error report", report);
+		if (GenPlayMail.send("[GenPlay] Error report", report)) {
+			JOptionPane.showMessageDialog(this, "The report has been sent.", "Message", JOptionPane.INFORMATION_MESSAGE);
+		} else {
+			JOptionPane.showMessageDialog(this, "The report could not been sent.", "Message Error", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 }
