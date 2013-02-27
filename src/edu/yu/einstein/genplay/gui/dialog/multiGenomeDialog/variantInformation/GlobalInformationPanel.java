@@ -292,15 +292,15 @@ public class GlobalInformationPanel extends JPanel {
 		keyLabel.setSize(keyDimension);
 		valueLabel.setSize(valueDimension);
 		valueLabel.setMaximumSize(valueDimension);
-		String toolTip;
+		String toolTip = valueLabel.getText();
 		if ((variantInformation != null) && (header != null) && key.equals("ALT: ") && (valueLabel.getText().charAt(0) == '<')) {
-			toolTip = valueLabel.getText() + " (";
 			String id = valueLabel.getText().substring(1, valueLabel.getText().length() - 1);
 			VCFHeaderType headerType = header.getAltHeaderFromID(id);
-			toolTip += headerType.getDescription();
-			toolTip += ")";
-		} else {
-			toolTip = valueLabel.getText();
+			if (headerType != null) {
+				toolTip += " (" + headerType.getDescription() + ")";
+			} else {
+				System.err.println("The header for the ID field: '" + id + "' does not seem to be valid.");
+			}
 		}
 		valueLabel.setToolTipText(toolTip);
 		gbc.gridwidth = 1;

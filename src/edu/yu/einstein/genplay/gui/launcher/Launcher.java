@@ -111,7 +111,7 @@ public class Launcher {
 		Thread.setDefaultUncaughtExceptionHandler(ExceptionManager.getInstance());
 
 		// Set the exception manager options
-		ExceptionManager.getInstance().enablePrintReport(true);
+		ExceptionManager.getInstance().enablePrintReport(false);
 		ExceptionManager.getInstance().enablePrintStackTrace(true);
 	}
 

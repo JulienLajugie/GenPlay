@@ -245,6 +245,8 @@ public class LayerChooserDialog extends JDialog {
 		setLayout(border);
 		add(scrollPane, BorderLayout.CENTER);
 		add(buttonPanel, BorderLayout.SOUTH);
+
+		getRootPane().setDefaultButton(jbConfirm);
 	}
 
 

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -117,10 +117,10 @@ public class OperatorEditingPanel extends EditingPanel<FormatFilterOperatorType>
 			multipleSelection = null;
 		}
 
-		if (header != null && multipleSelection != null) {
-			if (multipleSelection && header.getColumnCategory() == VCFColumnName.FORMAT) {
+		if ((header != null) && (multipleSelection != null)) {
+			if (multipleSelection && (header.getColumnCategory() == VCFColumnName.FORMAT)) {
 				VCFHeaderAdvancedType advancedHeader = (VCFHeaderAdvancedType) header;
-				if (advancedHeader.getType() == Integer.class || advancedHeader.getType() == Float.class) {
+				if ((advancedHeader.getType() == Integer.class) || (advancedHeader.getType() == Float.class)) {
 					radiosNumberConfiguration();
 				} else {
 					radiosStringConfiguration();
@@ -202,8 +202,8 @@ public class OperatorEditingPanel extends EditingPanel<FormatFilterOperatorType>
 	@Override
 	public String getErrors() {
 		String errors = "";
-		if (header.getColumnCategory() == VCFColumnName.FORMAT) {
-			if (multipleSelection != null && multipleSelection) {
+		if ((header != null) && (header.getColumnCategory() == VCFColumnName.FORMAT)) {
+			if ((multipleSelection != null) && multipleSelection) {
 				if (getSelectedOperator() == null) {
 					errors += "Operator selection\n";
 				}

@@ -42,8 +42,8 @@ public class ReportExceptionBuilder {
 	 * @param throwable a throwable
 	 */
 	protected void initializeReport (Thread thread, Throwable throwable) {
-		report = getThreadReport(thread) + "\n";
-		report += getThrowableReport(throwable, 0);
+		//report = getThreadReport(thread) + "\n";
+		report = getThrowableReport(throwable, 0);
 		report += getLowerLayerThrowableReports(throwable);
 	}
 
@@ -75,6 +75,7 @@ public class ReportExceptionBuilder {
 	 * @param thread a thread
 	 * @return the thread report
 	 */
+	@SuppressWarnings("unused") // Not necessary, keep it just in case we need it later.
 	private String getThreadReport (Thread thread) {
 		String report = "";
 

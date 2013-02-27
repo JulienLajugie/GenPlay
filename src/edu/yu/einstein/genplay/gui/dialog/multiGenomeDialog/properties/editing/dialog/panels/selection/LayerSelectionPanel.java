@@ -132,7 +132,11 @@ public class LayerSelectionPanel extends EditingPanel<Layer<?>[]> implements Act
 
 	@Override
 	public void reset() {
-		jlElements = new JList();
+		if (jlElements == null) {
+			jlElements = new JList();
+		} else {
+			jlElements.setListData(new Object[0]);
+		}
 		jbLayers = new JButton(SELECT_TEXT);
 		jbLayers.addActionListener(this);
 	}
