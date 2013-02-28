@@ -151,12 +151,18 @@ public final class HandlePanel extends JPanel implements MouseListener, MouseMot
 	public void mouseClicked(MouseEvent arg0) {
 		if (isEnabled()) {
 			if (arg0.getButton() == MouseEvent.BUTTON1) {
-				if ((getHeight() - arg0.getY()) <= MOVE_RESIZE_ZONE_HEIGHT) {
-					if (arg0.getClickCount() == 2) {
+				boolean onEdge = (getHeight() - arg0.getY()) <= MOVE_RESIZE_ZONE_HEIGHT;
+				if (arg0.getClickCount() == 2) {
+					if (onEdge) {
 						notifyTrackListeners(TrackEventType.SIZE_SET_TO_DEFAULT);
+					} else {
+						setSelected(true);
+						notifyTrackListeners(TrackEventType.DOUBLE_CLICKED);
 					}
 				} else {
-					setSelected(!isSelected());
+					if (!onEdge) {
+						setSelected(!isSelected());
+					}
 				}
 			} else if (arg0.getButton() == MouseEvent.BUTTON3) {
 				setSelected(true);

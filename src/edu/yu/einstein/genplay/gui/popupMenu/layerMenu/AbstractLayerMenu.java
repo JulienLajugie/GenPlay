@@ -25,6 +25,7 @@ import java.awt.Color;
 
 import javax.swing.Action;
 import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 
 import edu.yu.einstein.genplay.gui.popupMenu.TrackMenu;
@@ -48,6 +49,8 @@ public abstract class AbstractLayerMenu extends JMenu {
 	 */
 	public AbstractLayerMenu(Layer<?> layer) {
 		super(layer.getName());
+		boolean enable = layer.isVisible();
+
 		// if the layer is a coloredlayer the menu color will be the same as the layer
 		if (layer instanceof ColoredLayer) {
 			Color menuColor = ((ColoredLayer) layer).getColor();
@@ -56,6 +59,7 @@ public abstract class AbstractLayerMenu extends JMenu {
 		// if the layer is a versioned layer we add the versionlayer sub-menu
 		if (layer instanceof VersionedLayer) {
 			JMenu versionedMenu = new VersionedLayerMenu((VersionedLayer<?>) layer);
+			versionedMenu.setEnabled(enable);
 			add(versionedMenu);
 			add(new JSeparator());
 		}
@@ -65,7 +69,9 @@ public abstract class AbstractLayerMenu extends JMenu {
 				addSeparator();
 			} else {
 				currentAction.putValue("Layer", layer);
-				add(currentAction);
+				JMenuItem jmi = new JMenuItem(currentAction);
+				jmi.setEnabled(enable);
+				add(jmi);
 			}
 		}
 	}

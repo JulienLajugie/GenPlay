@@ -70,15 +70,25 @@ public class VariantLayer extends AbstractLayer<VariantData> implements MouseLis
 	 * @param data the {@link VariantData}
 	 * @param filters the list of {@link MGFilter}
 	 */
-	public void setData (VariantData data, List<MGFilter> filters) {
+	private void setData (VariantData data, List<MGFilter> filters) {
 		this.filters = filters;
 		super.setData(data);
 		if (data != null) {
 			setName(data.getDescription());
 		}
-		List<VariantData> variantDataList = new ArrayList<VariantData>();
-		variantDataList.add(getData());
-		genomeDrawer.updateMultiGenomeInformation(variantDataList, filters);
+		updateMultiGenomeInformation();
+	}
+
+
+	/**
+	 * Updates the multi genome information
+	 */
+	private void updateMultiGenomeInformation () {
+		if (isVisible()) {
+			List<VariantData> variantDataList = new ArrayList<VariantData>();
+			variantDataList.add(getData());
+			genomeDrawer.updateMultiGenomeInformation(variantDataList, filters);
+		}
 	}
 
 
@@ -108,6 +118,13 @@ public class VariantLayer extends AbstractLayer<VariantData> implements MouseLis
 	 */
 	public List<MGFilter> getFilters() {
 		return filters;
+	}
+
+
+	@Override
+	public void setVisible(boolean isVisible) {
+		super.setVisible(isVisible);
+		updateMultiGenomeInformation();
 	}
 
 

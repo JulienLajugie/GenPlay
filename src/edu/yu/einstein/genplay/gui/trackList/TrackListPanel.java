@@ -36,6 +36,7 @@ import javax.swing.event.ListDataListener;
 import edu.yu.einstein.genplay.core.manager.project.ProjectConfiguration;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
+import edu.yu.einstein.genplay.gui.action.track.TATrackSettings;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEvent;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventType;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackListener;
@@ -298,6 +299,9 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 			selectedTrack = (Track) evt.getSource();
 		} else if (evt.getEventType() == TrackEventType.UNSELECTED) {
 			selectedTrack = null;
+		} else if (evt.getEventType() == TrackEventType.DOUBLE_CLICKED) {
+			TATrackSettings trackSettings = new TATrackSettings();
+			trackSettings.actionPerformed(null);
 		}
 	}
 

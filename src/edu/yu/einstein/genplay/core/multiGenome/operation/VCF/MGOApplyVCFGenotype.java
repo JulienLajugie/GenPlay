@@ -157,13 +157,21 @@ public class MGOApplyVCFGenotype extends UpdateEngine {
 	 * @return true if the genotype codes for an alternative
 	 */
 	private boolean hasAlternative (String gt) {
-		char allele01 = gt.charAt(0);
+		boolean hasAlternative = false;
+		for (int i = 0; i < gt.length(); i++) {
+			char allele = gt.charAt(i);
+			if ((allele > 48) && (allele < 58)) { // From after 0 and until 9
+				hasAlternative = true;
+			}
+		}
+		return hasAlternative;
+		/*char allele01 = gt.charAt(0);
 		char allele02 = gt.charAt(2);
 
 		if (((allele01 == '.') || (allele01 == '0')) && ((allele02 == '.') || (allele02 == '0'))) {
 			return false;
 		}
-		return true;
+		return true;*/
 	}
 
 
@@ -172,8 +180,10 @@ public class MGOApplyVCFGenotype extends UpdateEngine {
 	 * @return true if phased, false otherwise
 	 */
 	private boolean isGenotypePhased (String gt) {
-		if (gt.charAt(1) == '|') {
-			return true;
+		if (gt.length() > 1) {
+			if (gt.charAt(1) == '|') {
+				return true;
+			}
 		}
 		return false;
 	}

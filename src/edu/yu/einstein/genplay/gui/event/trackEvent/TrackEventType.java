@@ -35,12 +35,12 @@ public enum TrackEventType {
 	 * Event generated when a track is selected
 	 */
 	SELECTED ("track selected"),
-	
+
 	/**
 	 * Event generated when a track is unselected
 	 */
 	UNSELECTED ("track unselected"),
-	
+
 	/**
 	 * Event generated when the track size is set to default size
 	 */
@@ -64,7 +64,12 @@ public enum TrackEventType {
 	/**
 	 * Event generated when a track is resized
 	 */
-	RESIZED ("track resized");
+	RESIZED ("track resized"),
+
+	/**
+	 * Event generated when a track is double left clicked
+	 */
+	DOUBLE_CLICKED ("track double clicked");
 
 
 	private final String eventDescription;
