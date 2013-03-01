@@ -467,11 +467,10 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 			// sort the list
 			Collections.sort(scoreList);
 
-			int minIndex = (int)(SCORE_SATURATION * scoreList.size());
-			int maxIndex = scoreList.size() - (int)(SCORE_SATURATION * scoreList.size());
-
-			min = scoreList.get(minIndex - 1);
-			max = scoreList.get(maxIndex - 1);
+			int minIndex = (int)(SCORE_SATURATION * (scoreList.size() - 1));
+			int maxIndex = (scoreList.size() - 1) - (int)((SCORE_SATURATION * scoreList.size()) - 1);
+			min = scoreList.get(minIndex);
+			max = scoreList.get(maxIndex);
 		}
 	}
 }

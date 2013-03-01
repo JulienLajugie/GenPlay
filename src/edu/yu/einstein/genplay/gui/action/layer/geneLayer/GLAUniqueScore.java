@@ -67,7 +67,7 @@ public class GLAUniqueScore  extends TrackListActionOperationWorker<GeneList> {
 		selectedLayer = (GeneLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			Number constant = NumberOptionPane.getValue(getRootPane(), "Unique Score", "Enter a score for all exons", Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
-			if ((constant != null) && (constant.doubleValue() != 0)) {
+			if (constant != null) {
 				GeneList geneList = selectedLayer.getData();
 				operation = new GLOUniqueScore(geneList, constant.doubleValue());
 				return operation;

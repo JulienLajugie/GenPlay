@@ -96,7 +96,7 @@ public class GLOScoreFromSCWList implements Operation<GeneList> {
 											scores[k] = Math.max(scores[k], currentExonSCW.get(l).getScore());
 											break;
 										case SUM:
-											scores[k] = scores[k] + currentExonSCW.get(l).getScore();
+											scores[k] += currentExonSCW.get(l).getScore() * currentExonSCW.get(l).getSize();
 											break;
 										}
 									}
