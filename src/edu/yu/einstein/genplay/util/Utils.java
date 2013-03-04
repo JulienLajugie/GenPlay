@@ -745,9 +745,9 @@ public final class Utils {
 	 * @param <T> type of the window list (ie: {@link SimpleScoredChromosomeWindow},
 	 * {@link SimpleChromosomeWindow} ...) must be or extends {@link SimpleChromosomeWindow}
 	 * @param element		the element to test
-	 * @param windowStart	the start position on the main frame
-	 * @param windowStop	the stop position on the main frame
-	 * @return true if the element is in the main frame, false otherwise
+	 * @param windowStart	a start position
+	 * @param windowStop	a stop position
+	 * @return true if the element is in the specified window, false otherwise
 	 */
 	public final static <T extends ChromosomeWindow> boolean isInWindow (T element, int windowStart, int windowStop) {
 		if (element.getStop() < windowStart) {
