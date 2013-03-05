@@ -110,7 +110,7 @@ public class GLOExtractExons implements Operation<GeneList> {
 		if (result == null) {
 			return null;
 		} else {
-			return new GeneList(result, geneList.getSearchURL());
+			return new GeneList(result, geneList.getSearchURL(), geneList.getGeneScoreType());
 		}
 	}
 

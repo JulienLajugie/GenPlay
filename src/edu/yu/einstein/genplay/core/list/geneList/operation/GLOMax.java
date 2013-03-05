@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -42,16 +42,16 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 public class GLOMax implements Operation<Double> {
 
 	private final GeneList 	geneList;		// input GeneList
-	private final boolean[] chromoList;		// 1 boolean / chromosome. 
+	private final boolean[] chromoList;		// 1 boolean / chromosome.
 	// each boolean sets to true means that the corresponding chromosome is selected
-	private boolean				stopped = false;// true if the operation must be stopped
-	
+	private boolean			stopped = false;// true if the operation must be stopped
+
 
 	/**
 	 * Searches the maximum value of the selected chromosomes of a specified {@link GeneList}
 	 * @param geneList input {@link GeneList}
-	 * @param chromoList list of boolean. A boolean set to true means that the 
-	 * chromosome with the same index is going to be used for the calculation. 
+	 * @param chromoList list of boolean. A boolean set to true means that the
+	 * chromosome with the same index is going to be used for the calculation.
 	 */
 	public GLOMax(GeneList geneList, boolean[] chromoList) {
 		this.geneList = geneList;
@@ -67,17 +67,17 @@ public class GLOMax implements Operation<Double> {
 			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (geneList.get(i) != null)) {
 				final List<Gene> currentList = geneList.get(i);
 
-				Callable<Double> currentThread = new Callable<Double>() {	
+				Callable<Double> currentThread = new Callable<Double>() {
 					@Override
 					public Double call() throws Exception {
 						// we set the max to the smallest double value
 						double max = Double.NEGATIVE_INFINITY;
-						for (int i = 0; i < currentList.size() && !stopped; i++) {
-							Gene currentGene = currentList.get(i); 
+						for (int i = 0; (i < currentList.size()) && !stopped; i++) {
+							Gene currentGene = currentList.get(i);
 							if ((currentGene != null) && (currentGene.getExonScores() != null)) {
 								for (Double currentScore: currentGene.getExonScores()) {
 									if (currentScore != 0) {
-										max = Math.max(max, currentScore);					
+										max = Math.max(max, currentScore);
 									}
 								}
 							}
@@ -89,8 +89,8 @@ public class GLOMax implements Operation<Double> {
 				};
 
 				threadList.add(currentThread);
-			}			
-		}		
+			}
+		}
 
 		List<Double> result = op.startPool(threadList);
 		if (result == null) {
@@ -122,9 +122,9 @@ public class GLOMax implements Operation<Double> {
 		return "Searching Maximum";
 	}
 
-	
+
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }

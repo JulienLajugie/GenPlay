@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -39,11 +39,11 @@ public class GLOFilterCount implements Operation<GeneList> {
 	private final GeneList 		geneList;			// {@link GeneList} to filter
 	private final int 			lowValuesCount;		// number of low values to filter
 	private final int 			highValuesCount;	// number of high values to filter
-	private final boolean		isSaturation;		// true if we saturate, false if we remove the filtered values 
+	private final boolean		isSaturation;		// true if we saturate, false if we remove the filtered values
 	private boolean				stopped = false;	// true if the operation must be stopped
 	private Operation<GeneList>	gloFilterThreshold;	// threshold filter that does the real fitering operation
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link GLOFilterCount}
 	 * @param geneList {@link GeneList} to filter
@@ -57,8 +57,8 @@ public class GLOFilterCount implements Operation<GeneList> {
 		this.highValuesCount = highValuesCount;
 		this.isSaturation = isSaturation;
 	}
-	
-	
+
+
 	@Override
 	public GeneList compute() throws Exception {
 		if ((lowValuesCount < 0) || (highValuesCount < 0)) {
@@ -66,16 +66,16 @@ public class GLOFilterCount implements Operation<GeneList> {
 		}
 		boolean[] selectedChromo = new boolean[geneList.size()];
 		Arrays.fill(selectedChromo, true);
-		
+
 		int totalLenght = new GLOCountNonNullGenes(geneList,selectedChromo).compute().intValue();
 		if (totalLenght == 0) {
-			return new GeneList(geneList, geneList.getSearchURL());
+			return new GeneList(geneList, geneList.getSearchURL(), geneList.getGeneScoreType());
 		}
 		double[] allScores = new double[totalLenght];
 		int i = 0;
 		for (List<Gene> currentList: geneList) {
 			if (currentList != null) {
-				for (int j = 0; j < currentList.size() && !stopped; j++) {
+				for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 					Double currentScore = currentList.get(j).getGeneRPKM();
 					if ((currentScore != null) && (currentScore != 0)) {
 						allScores[i] = currentScore;
@@ -87,8 +87,8 @@ public class GLOFilterCount implements Operation<GeneList> {
 		Arrays.sort(allScores);
 		double minValue = lowValuesCount == 0 ? Double.NEGATIVE_INFINITY : allScores[lowValuesCount - 1];
 		double maxValue = highValuesCount == 0 ? Double.POSITIVE_INFINITY : allScores[allScores.length - highValuesCount];
-		gloFilterThreshold = new GLOFilterThreshold(geneList, minValue, maxValue, isSaturation); 
-		return gloFilterThreshold.compute(); 
+		gloFilterThreshold = new GLOFilterThreshold(geneList, minValue, maxValue, isSaturation);
+		return gloFilterThreshold.compute();
 	}
 
 
@@ -115,10 +115,10 @@ public class GLOFilterCount implements Operation<GeneList> {
 		return 1;
 	}
 
-	
+
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 		if (gloFilterThreshold != null) {
 			gloFilterThreshold.stop();
 		}

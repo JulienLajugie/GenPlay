@@ -26,8 +26,8 @@ import java.io.IOException;
 
 import javax.swing.JOptionPane;
 
-import edu.yu.einstein.genplay.core.extractor.Extractor;
-import edu.yu.einstein.genplay.core.extractor.ExtractorFactory;
+import edu.yu.einstein.genplay.core.IO.extractor.Extractor;
+import edu.yu.einstein.genplay.core.IO.extractor.ExtractorFactory;
 import edu.yu.einstein.genplay.core.generator.Generator;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.exception.exceptions.DataLineException;

@@ -27,9 +27,9 @@ import java.util.List;
 import javax.swing.ActionMap;
 import javax.swing.JFileChooser;
 
+import edu.yu.einstein.genplay.core.IO.writer.binListWriter.ConcatenateBinListWriter;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.writer.binListWriter.ConcatenateBinListWriter;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;

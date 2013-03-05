@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -42,19 +42,19 @@ public class GLOFilterStrand implements Operation<GeneList> {
 	private final GeneList 	geneList;			// input list
 	private final Strand	strandToKeep;		// strand with the genes we want to keep
 	private boolean			stopped = false;	// true if the operation must be stopped
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link GLOFilterStrand}
-	 * @param geneList input list 
+	 * @param geneList input list
 	 * @param strandToKeep strand with the genes we want to keep
 	 */
 	public GLOFilterStrand(GeneList geneList, Strand strandToKeep) {
 		this.geneList = geneList;
 		this.strandToKeep = strandToKeep;
 	}
-	
-	
+
+
 	@Override
 	public GeneList compute() throws Exception {
 		final OperationPool op = OperationPool.getInstance();
@@ -64,12 +64,12 @@ public class GLOFilterStrand implements Operation<GeneList> {
 			final List<Gene> currentList = geneList.get(i);
 			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {
 				@Override
-				public List<Gene> call() throws Exception {					
+				public List<Gene> call() throws Exception {
 					if (currentList == null) {
 						return null;
 					}
 					List<Gene> resultList = new ArrayList<Gene>();
-					for (int j = 0; j < currentList.size() && !stopped; j++) {
+					for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 						Gene currentGene = currentList.get(j);
 						if (currentGene.getStrand().equals(strandToKeep)) {
 							resultList.add(currentGene);
@@ -86,10 +86,10 @@ public class GLOFilterStrand implements Operation<GeneList> {
 		if (result == null) {
 			return null;
 		} else {
-			return new GeneList(result, geneList.getSearchURL());
+			return new GeneList(result, geneList.getSearchURL(), geneList.getGeneScoreType());
 		}
 	}
-	
+
 
 	@Override
 	public String getDescription() {
@@ -111,6 +111,6 @@ public class GLOFilterStrand implements Operation<GeneList> {
 
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }

@@ -38,9 +38,9 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
  * @version 0.1
  */
 public class GLOUniqueScore implements Operation<GeneList> {
-	private final GeneList 						geneList;	// input GeneList
-	private final double 	constant;		// constant to add
-	private boolean stopped = false;	// true if the writer needs to be stopped
+	private final GeneList 	geneList;			// input GeneList
+	private final double 	constant;			// constant to add
+	private boolean 		stopped = false;	// true if the writer needs to be stopped
 
 
 	/**
@@ -90,7 +90,7 @@ public class GLOUniqueScore implements Operation<GeneList> {
 		if (result == null) {
 			return null;
 		} else {
-			return new GeneList(result, geneList.getSearchURL());
+			return new GeneList(result, geneList.getSearchURL(), geneList.getGeneScoreType());
 		}
 	}
 

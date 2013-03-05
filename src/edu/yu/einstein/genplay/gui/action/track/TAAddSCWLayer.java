@@ -26,10 +26,10 @@ import java.io.File;
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
+import edu.yu.einstein.genplay.core.IO.extractor.ReadLengthAndShiftHandler;
+import edu.yu.einstein.genplay.core.IO.extractor.StrandedExtractor;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.Strand;
-import edu.yu.einstein.genplay.core.extractor.ReadLengthAndShiftHandler;
-import edu.yu.einstein.genplay.core.extractor.StrandedExtractor;
 import edu.yu.einstein.genplay.core.generator.ScoredChromosomeWindowListGenerator;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;

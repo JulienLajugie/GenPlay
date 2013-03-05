@@ -27,11 +27,11 @@ import java.text.NumberFormat;
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
+import edu.yu.einstein.genplay.core.IO.extractor.ReadLengthAndShiftHandler;
+import edu.yu.einstein.genplay.core.IO.extractor.StrandedExtractor;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.Strand;
-import edu.yu.einstein.genplay.core.extractor.ReadLengthAndShiftHandler;
-import edu.yu.einstein.genplay.core.extractor.StrandedExtractor;
 import edu.yu.einstein.genplay.core.generator.BinListGenerator;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;

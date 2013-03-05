@@ -42,6 +42,7 @@ import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleScoredChromosomeWindo
 import edu.yu.einstein.genplay.core.comparator.ChromosomeComparator;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.FilterType;
+import edu.yu.einstein.genplay.core.enums.GeneScoreType;
 import edu.yu.einstein.genplay.core.enums.IslandResultType;
 import edu.yu.einstein.genplay.core.enums.LogBase;
 import edu.yu.einstein.genplay.core.enums.SaturationType;
@@ -236,6 +237,23 @@ public final class Utils {
 
 
 	/**
+	 * A dialog box used to choose a {@link GeneScoreType}
+	 * @param parentComponent the parent Component for the dialog
+	 * @return a {@link GeneScoreType}
+	 */
+	public final static GeneScoreType chooseGeneScoreCalculation(Component parentComponent) {
+		return (GeneScoreType) JOptionPane.showInputDialog(
+				parentComponent,
+				"Choose a method for the calculation of the score of the genes",
+				"Score Calculation",
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				GeneScoreType.values(),
+				GeneScoreType.RPKM);
+	}
+
+
+	/**
 	 * A dialog box used to choose a {@link IslandResultType}
 	 * @param parentComponent the parent Component for the dialog
 	 * @return a {@link FilterType} value
@@ -356,6 +374,148 @@ public final class Utils {
 
 
 	/**
+	 * Checks if the variant contains the given position.
+	 * If the position is located before the window, -1 is returned.
+	 * If the position is located after the window, 1 is returned.
+	 * if the position is included in the window, 0 is returned.
+	 * @param variant the variant
+	 * @param position the position to check
+	 * @return 0 is the position is in the variant, -1 if lower, 1 if higher.
+	 */
+	public final static int containsVariantPosition (Variant variant, int position) {
+		if (position < variant.getStart()) {
+			return -1;
+		} else if (position > variant.getStop()) {
+			return 1;
+		}
+		return 0;
+	}
+
+
+	/**
+	 * Returns the index of the window where the value is found OR the index right after if not found.
+	 * The scan is based on the start and stop position of the windows (containsPosition method of {@link SimpleChromosomeWindow} is used).
+	 * Recursive function.
+	 * 
+	 * @param <T> 			type of the element of the input list
+	 * @param list			list to scan
+	 * @param value			value to find
+	 * @param indexStart	index of the list to start the scan
+	 * @param indexStop		index of the list to stop the scan
+	 * @return				the index where the value of the window is found or the index right after if the exact value is not found
+	 */
+	private static <T extends ChromosomeWindow> int findChromosomePosition(List<T> list, int value, int indexStart, int indexStop) {
+		if (indexStart == indexStop) {
+			return indexStart;
+		} else {
+			int middle = (indexStop - indexStart) / 2;
+			int compare = list.get(indexStart + middle).containsPosition(value);
+
+			if (compare == 0) {
+				return indexStart + middle;
+			} else if (compare < 0) {
+				return findChromosomePosition(list, value, indexStart, indexStart + middle);
+			} else {
+				return findChromosomePosition(list, value, indexStart + middle + 1, indexStop);
+			}
+		}
+	}
+
+
+	/**
+	 * Returns the index of the window where the value is found OR the index right after if not found.
+	 * The scan is based on the start position of the windows.
+	 * Recursive function.
+	 * 
+	 * @param <T> 			type of the element of the input list
+	 * @param list			list to scan
+	 * @param value			value to find
+	 * @param indexStart	index of the list to start the scan
+	 * @param indexStop		index of the list to stop the scan
+	 * @return 				the index where the start value of the window is found or the index right after if the exact value is not found
+	 */
+	public final static <T extends ChromosomeWindow> int findStart(List<T> list, int value, int indexStart, int indexStop) {
+		int middle = (indexStop - indexStart) / 2;
+		if (indexStart == indexStop) {
+			return indexStart;
+		} else if (value == list.get(indexStart + middle).getStart()) {
+			return indexStart + middle;
+		} else if (value > list.get(indexStart + middle).getStart()) {
+			return findStart(list, value, indexStart + middle + 1, indexStop);
+		} else {
+			return findStart(list, value, indexStart, indexStart + middle);
+		}
+	}
+
+
+	/**
+	 * Returns the index of the window where the value is found OR the index right after if not found.
+	 * The scan is based on the stop position of the windows.
+	 * Recursive function.
+	 * 
+	 * @param <T> 			type of the element of the input list
+	 * @param list			list to scan
+	 * @param value			value to find
+	 * @param indexStart	index of the list to start the scan
+	 * @param indexStop		index of the list to stop the scan
+	 * @return 				the index where the stop value of the window is found or the index right before if the exact value is not found
+	 */
+	public final static <T extends ChromosomeWindow> int findStop(List<T> list, int value, int indexStart, int indexStop) {
+		int middle = (indexStop - indexStart) / 2;
+		if (indexStart == indexStop) {
+			return indexStart;
+		} else if (value == list.get(indexStart + middle).getStop()) {
+			return indexStart + middle;
+		} else if (value > list.get(indexStart + middle).getStop()) {
+			return findStop(list, value, indexStart + middle + 1, indexStop);
+		} else {
+			return findStop(list, value, indexStart, indexStart + middle);
+		}
+	}
+
+
+	/**
+	 * Returns the index of the variant where the value is found OR the index right after if not found.
+	 * The scan is based on the start and stop position of the variant.
+	 * Recursive function.
+	 * 
+	 * @param list			list to scan
+	 * @param value			value to find
+	 * @param indexStart	index of the list to start the scan
+	 * @param indexStop		index of the list to stop the scan
+	 * @return				the index where the value of the variant is found or the index right after if the exact value is not found
+	 */
+	private static int findVariantPosition(List<Variant> list, int value, int indexStart, int indexStop) {
+		if (indexStart == indexStop) {
+			return indexStart;
+		} else {
+			int middle = (indexStop - indexStart) / 2;
+			int compare = containsVariantPosition(list.get(indexStart + middle), value);
+
+			if (compare == 0) {
+				return indexStart + middle;
+			} else if (compare < 0) {
+				return findVariantPosition(list, value, indexStart, indexStart + middle);
+			} else {
+				return findVariantPosition(list, value, indexStart + middle + 1, indexStop);
+			}
+		}
+	}
+
+
+	/**
+	 * Tries to force the garbage collector to run
+	 */
+	public final static void garbageCollect() {
+		System.gc();/*System.gc();System.gc();System.gc();
+		System.gc();System.gc();System.gc();System.gc();
+		System.gc();System.gc();System.gc();System.gc();
+		System.gc();System.gc();System.gc();System.gc();
+		System.gc();System.gc();System.gc();System.gc();*/
+	}
+
+
+	/**
 	 * @param file a {@link File}
 	 * @return the extension of the file (without the dot), null if none.
 	 */
@@ -385,6 +545,119 @@ public final class Utils {
 		} else {
 			return fileName;
 		}
+	}
+
+
+	/**
+	 * This method return the index of the first int found in a string, starting from the specified index position
+	 * @param s			the string
+	 * @param index		the index to start
+	 * @return			the index of the first int found in the string after the specified start, -1 if not found
+	 */
+	public final static int getFirstIntegerOffset (String s, int index) {
+		for (int i = 0; i < s.length(); i++) {
+			int c = s.charAt(i);
+			if ((c >= 48) && (c <= 57)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+
+	/**
+	 * This method looks for the full integer part in a string from a start index.
+	 * @param s		the string
+	 * @param index	index of the first integer
+	 * @return		the full integer starting at the index
+	 */
+	public final static Integer getFullIntegerPart (String s, int index) {
+		Integer result = null;									// Initialize the result to null
+		int nextIndex = index + 1;								// Next index is initialized with index + 1
+		while (nextIndex <= s.length()) {						// while the next index is shorter or equal to the string length
+			String text = s.substring(index, nextIndex);		// gets the sub string from the string (index to next index)
+			try {
+				result = Integer.parseInt(text);				// tries to get the integer part
+			} catch (Exception e) {								// if there is no integer part
+				return result;									// we return result (that contains the previous integer part or null)
+			}
+			nextIndex++;										// if it worked, we keep looking in the string increasing the next index
+		}
+		return result;											// return the result of the scan
+	}
+
+
+	/**
+	 * @return the java version number, -1 if not found
+	 */
+	public static int getJavaVersion () {
+		String version = System.getProperty("java.specification.version", "");
+		int versionNumber = -1;
+		if (version.length() > 2) {
+			versionNumber = Integer.parseInt("" + version.charAt(2));
+		}
+		return versionNumber;
+	}
+
+
+	/**
+	 * @param layers a list of {@link Layer}
+	 * @param filter an array of {@link LayerType} as filters
+	 * @return a list of {@link Layer} containing only the {@link LayerType} defined in the filters.
+	 */
+	public static List<Layer<?>> getLayers (List<Layer<?>> layers, LayerType[] filter) {
+		List<Layer<?>> result = new ArrayList<Layer<?>>();
+		for (Layer<?> layer: layers) {
+			boolean found = false;
+			int index = 0;
+			while (!found & (index < filter.length)) {
+				if (layer.getType() == filter[index]) {
+					found = true;
+				}
+				index++;
+			}
+			if (found) {
+				result.add(layer);
+			}
+		}
+		return result;
+	}
+
+
+	/**
+	 * @param tracks a list of {@link Track}
+	 * @param layerTypes a list of {@link LayerType}
+	 * @return all the layer from the list of tracks that are in the specified list of the {@link LayerType}. All layers if the layer type list is null
+	 */
+	public final static Layer<?>[] getLayers(Track[] tracks, LayerType[] layerTypes) {
+		List<Layer<?>> layerList = new ArrayList<Layer<?>>();
+		for (Track currentTrack: tracks) {
+			for (Layer<?> currentLayer: currentTrack.getLayers()) {
+				if ((layerTypes == null) || currentLayer.getType().isContainedIn(layerTypes)) {
+					layerList.add(currentLayer);
+				}
+			}
+		}
+		Layer<?>[] returnLayers = new Layer<?>[layerList.size()];
+		return layerList.toArray(returnLayers);
+	}
+
+
+	/**
+	 * @param objects	the array of objects
+	 * @param metrics	the metrics
+	 * @return the length of the longest object (as a string), 0 otherwise
+	 */
+	public final static int getMaximumLength (Object[] objects, FontMetrics metrics) {
+		int result = 0;
+
+		if ((objects != null) && (objects.length > 0)) {
+			for (Object object: objects) {
+				result = Math.max(result, metrics.stringWidth(object.toString()));
+			}
+		}
+
+		return result;
 	}
 
 
@@ -451,22 +724,30 @@ public final class Utils {
 	}
 
 
+
 	/**
-	 * @param tracks a list of {@link Track}
-	 * @param layerTypes a list of {@link LayerType}
-	 * @return all the layer from the list of tracks that are in the specified list of the {@link LayerType}. All layers if the layer type list is null
+	 * Sorts a list of chromosome and returned it
+	 * @param list	a list of chromosome indexed by their name
+	 * @return		a list of chromosome sorted according to the names
 	 */
-	public final static Layer<?>[] getLayers(Track[] tracks, LayerType[] layerTypes) {
-		List<Layer<?>> layerList = new ArrayList<Layer<?>>();
-		for (Track currentTrack: tracks) {
-			for (Layer<?> currentLayer: currentTrack.getLayers()) {
-				if ((layerTypes == null) || currentLayer.getType().isContainedIn(layerTypes)) {
-					layerList.add(currentLayer);
-				}
-			}
+	public final static List<Chromosome> getSortedChromosomeList(List<Chromosome> list) {
+
+		Map<String, Chromosome> chromosomeMap = new HashMap<String, Chromosome>();
+		List<Chromosome> chromosomeList = new ArrayList<Chromosome>();
+		List<String> chromosomeNames = new ArrayList<String>();
+
+		for (Chromosome chromosome: list) {
+			chromosomeNames.add(chromosome.getName().toLowerCase());
+			chromosomeMap.put(chromosome.getName().toLowerCase(), chromosome);
 		}
-		Layer<?>[] returnLayers = new Layer<?>[layerList.size()];
-		return layerList.toArray(returnLayers);
+
+		Collections.sort(chromosomeNames, new ChromosomeComparator());
+
+		for (String chromosomeName: chromosomeNames) {
+			chromosomeList.add(chromosomeMap.get(chromosomeName));
+		}
+
+		return chromosomeList;
 	}
 
 
@@ -494,6 +775,47 @@ public final class Utils {
 	public final static ExtendedFileFilter[] getWritableSCWFileFilter() {
 		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter()};
 		return filters;
+	}
+
+
+	/**
+	 * @param element		the element to test
+	 * @param positionStart	the start position on the main frame
+	 * @param positionStop	the stop position on the main frame
+	 * @return true if the element is in the main frame, false otherwise
+	 */
+	public final static boolean isInVariant (Variant element, int positionStart, int positionStop) {
+		if (element.getStop() < positionStart) {
+			return false;
+		}
+
+		if (element.getStart() > positionStop) {
+			return false;
+		}
+
+		return true;
+	}
+
+
+	/**
+	 * 
+	 * @param <T> type of the window list (ie: {@link SimpleScoredChromosomeWindow},
+	 * {@link SimpleChromosomeWindow} ...) must be or extends {@link SimpleChromosomeWindow}
+	 * @param element		the element to test
+	 * @param windowStart	a start position
+	 * @param windowStop	a stop position
+	 * @return true if the element is in the specified window, false otherwise
+	 */
+	public final static <T extends ChromosomeWindow> boolean isInWindow (T element, int windowStart, int windowStop) {
+		if (element.getStop() < windowStart) {
+			return false;
+		}
+
+		if (element.getStart() > windowStop) {
+			return false;
+		}
+
+		return true;
 	}
 
 
@@ -599,105 +921,24 @@ public final class Utils {
 
 
 	/**
-	 * Returns a sublist of the input list. The first variant contains or
-	 * starts after the specified start position.
-	 * The last variant contains or stops before the specified stop position.
-	 * @param list input list
-	 * @param positionStart
-	 * @param positionStop
-	 * @return a sublist of the input list
+	 * This methods reverse an array of int
+	 * @param b the int array
+	 * @return	the reversed array
 	 */
-	public final static ArrayList<Variant> searchVariantInterval(List<Variant> list, int positionStart, int positionStop) {
-		if ((list == null) || (list.size() == 0)) {
-			return null;
+	public final static int[] reverse(int[] b) {
+		int left  = 0;          // index of leftmost element
+		int right = b.length-1; // index of rightmost element
+
+		while (left < right) {
+			// exchange the left and right elements
+			int temp = b[left];
+			b[left]  = b[right];
+			b[right] = temp;
+			// move the bounds toward the center
+			left++;
+			right--;
 		}
-
-		ArrayList<Variant> resultList = new ArrayList<Variant>();
-
-		// Gets the start and stop indexes of the list
-		int indexStart = findVariantPosition(list, positionStart, 0, list.size() - 1);
-		int indexStop = findVariantPosition(list, positionStop, 0, list.size() - 1);
-
-		// Extract the windows from the start (included) to the stop (excluded)
-		for (int i = indexStart; i < indexStop; i++) {
-			resultList.add(list.get(i));
-		}
-
-		// The stop position may have been returned even if the window is not included between the start and stop position
-		// It is necessary to test it before adding it
-		Variant element = list.get(indexStop);
-		if (isInVariant(element, positionStart, positionStop)) {
-			resultList.add(element);
-		}
-
-		return resultList;
-	}
-
-
-	/**
-	 * Returns the index of the variant where the value is found OR the index right after if not found.
-	 * The scan is based on the start and stop position of the variant.
-	 * Recursive function.
-	 * 
-	 * @param list			list to scan
-	 * @param value			value to find
-	 * @param indexStart	index of the list to start the scan
-	 * @param indexStop		index of the list to stop the scan
-	 * @return				the index where the value of the variant is found or the index right after if the exact value is not found
-	 */
-	private static int findVariantPosition(List<Variant> list, int value, int indexStart, int indexStop) {
-		if (indexStart == indexStop) {
-			return indexStart;
-		} else {
-			int middle = (indexStop - indexStart) / 2;
-			int compare = containsVariantPosition(list.get(indexStart + middle), value);
-
-			if (compare == 0) {
-				return indexStart + middle;
-			} else if (compare < 0) {
-				return findVariantPosition(list, value, indexStart, indexStart + middle);
-			} else {
-				return findVariantPosition(list, value, indexStart + middle + 1, indexStop);
-			}
-		}
-	}
-
-
-	/**
-	 * Checks if the variant contains the given position.
-	 * If the position is located before the window, -1 is returned.
-	 * If the position is located after the window, 1 is returned.
-	 * if the position is included in the window, 0 is returned.
-	 * @param variant the variant
-	 * @param position the position to check
-	 * @return 0 is the position is in the variant, -1 if lower, 1 if higher.
-	 */
-	public final static int containsVariantPosition (Variant variant, int position) {
-		if (position < variant.getStart()) {
-			return -1;
-		} else if (position > variant.getStop()) {
-			return 1;
-		}
-		return 0;
-	}
-
-
-	/**
-	 * @param element		the element to test
-	 * @param positionStart	the start position on the main frame
-	 * @param positionStop	the stop position on the main frame
-	 * @return true if the element is in the main frame, false otherwise
-	 */
-	public final static boolean isInVariant (Variant element, int positionStart, int positionStop) {
-		if (element.getStop() < positionStart) {
-			return false;
-		}
-
-		if (element.getStart() > positionStop) {
-			return false;
-		}
-
-		return true;
+		return b;
 	}
 
 
@@ -739,135 +980,41 @@ public final class Utils {
 	}
 
 
-
 	/**
-	 * 
-	 * @param <T> type of the window list (ie: {@link SimpleScoredChromosomeWindow},
-	 * {@link SimpleChromosomeWindow} ...) must be or extends {@link SimpleChromosomeWindow}
-	 * @param element		the element to test
-	 * @param windowStart	a start position
-	 * @param windowStop	a stop position
-	 * @return true if the element is in the specified window, false otherwise
+	 * Returns a sublist of the input list. The first variant contains or
+	 * starts after the specified start position.
+	 * The last variant contains or stops before the specified stop position.
+	 * @param list input list
+	 * @param positionStart
+	 * @param positionStop
+	 * @return a sublist of the input list
 	 */
-	public final static <T extends ChromosomeWindow> boolean isInWindow (T element, int windowStart, int windowStop) {
-		if (element.getStop() < windowStart) {
-			return false;
+	public final static ArrayList<Variant> searchVariantInterval(List<Variant> list, int positionStart, int positionStop) {
+		if ((list == null) || (list.size() == 0)) {
+			return null;
 		}
 
-		if (element.getStart() > windowStop) {
-			return false;
+		ArrayList<Variant> resultList = new ArrayList<Variant>();
+
+		// Gets the start and stop indexes of the list
+		int indexStart = findVariantPosition(list, positionStart, 0, list.size() - 1);
+		int indexStop = findVariantPosition(list, positionStop, 0, list.size() - 1);
+
+		// Extract the windows from the start (included) to the stop (excluded)
+		for (int i = indexStart; i < indexStop; i++) {
+			resultList.add(list.get(i));
 		}
 
-		return true;
+		// The stop position may have been returned even if the window is not included between the start and stop position
+		// It is necessary to test it before adding it
+		Variant element = list.get(indexStop);
+		if (isInVariant(element, positionStart, positionStop)) {
+			resultList.add(element);
+		}
+
+		return resultList;
 	}
 
-
-	/**
-	 * Returns the index of the window where the value is found OR the index right after if not found.
-	 * The scan is based on the start and stop position of the windows (containsPosition method of {@link SimpleChromosomeWindow} is used).
-	 * Recursive function.
-	 * 
-	 * @param <T> 			type of the element of the input list
-	 * @param list			list to scan
-	 * @param value			value to find
-	 * @param indexStart	index of the list to start the scan
-	 * @param indexStop		index of the list to stop the scan
-	 * @return				the index where the value of the window is found or the index right after if the exact value is not found
-	 */
-	private static <T extends ChromosomeWindow> int findChromosomePosition(List<T> list, int value, int indexStart, int indexStop) {
-		if (indexStart == indexStop) {
-			return indexStart;
-		} else {
-			int middle = (indexStop - indexStart) / 2;
-			int compare = list.get(indexStart + middle).containsPosition(value);
-
-			if (compare == 0) {
-				return indexStart + middle;
-			} else if (compare < 0) {
-				return findChromosomePosition(list, value, indexStart, indexStart + middle);
-			} else {
-				return findChromosomePosition(list, value, indexStart + middle + 1, indexStop);
-			}
-		}
-	}
-
-
-	/**
-	 * Returns the index of the window where the value is found OR the index right after if not found.
-	 * The scan is based on the start position of the windows.
-	 * Recursive function.
-	 * 
-	 * @param <T> 			type of the element of the input list
-	 * @param list			list to scan
-	 * @param value			value to find
-	 * @param indexStart	index of the list to start the scan
-	 * @param indexStop		index of the list to stop the scan
-	 * @return 				the index where the start value of the window is found or the index right after if the exact value is not found
-	 */
-	public final static <T extends ChromosomeWindow> int findStart(List<T> list, int value, int indexStart, int indexStop) {
-		int middle = (indexStop - indexStart) / 2;
-		if (indexStart == indexStop) {
-			return indexStart;
-		} else if (value == list.get(indexStart + middle).getStart()) {
-			return indexStart + middle;
-		} else if (value > list.get(indexStart + middle).getStart()) {
-			return findStart(list, value, indexStart + middle + 1, indexStop);
-		} else {
-			return findStart(list, value, indexStart, indexStart + middle);
-		}
-	}
-
-
-	/**
-	 * Returns the index of the window where the value is found OR the index right after if not found.
-	 * The scan is based on the stop position of the windows.
-	 * Recursive function.
-	 * 
-	 * @param <T> 			type of the element of the input list
-	 * @param list			list to scan
-	 * @param value			value to find
-	 * @param indexStart	index of the list to start the scan
-	 * @param indexStop		index of the list to stop the scan
-	 * @return 				the index where the stop value of the window is found or the index right before if the exact value is not found
-	 */
-	public final static <T extends ChromosomeWindow> int findStop(List<T> list, int value, int indexStart, int indexStop) {
-		int middle = (indexStop - indexStart) / 2;
-		if (indexStart == indexStop) {
-			return indexStart;
-		} else if (value == list.get(indexStart + middle).getStop()) {
-			return indexStart + middle;
-		} else if (value > list.get(indexStart + middle).getStop()) {
-			return findStop(list, value, indexStart + middle + 1, indexStop);
-		} else {
-			return findStop(list, value, indexStart, indexStart + middle);
-		}
-	}
-
-
-	/**
-	 * Sorts a list of chromosome and returned it
-	 * @param list	a list of chromosome indexed by their name
-	 * @return		a list of chromosome sorted according to the names
-	 */
-	public final static List<Chromosome> getSortedChromosomeList(List<Chromosome> list) {
-
-		Map<String, Chromosome> chromosomeMap = new HashMap<String, Chromosome>();
-		List<Chromosome> chromosomeList = new ArrayList<Chromosome>();
-		List<String> chromosomeNames = new ArrayList<String>();
-
-		for (Chromosome chromosome: list) {
-			chromosomeNames.add(chromosome.getName().toLowerCase());
-			chromosomeMap.put(chromosome.getName().toLowerCase(), chromosome);
-		}
-
-		Collections.sort(chromosomeNames, new ChromosomeComparator());
-
-		for (String chromosomeName: chromosomeNames) {
-			chromosomeList.add(chromosomeMap.get(chromosomeName));
-		}
-
-		return chromosomeList;
-	}
 
 
 	/**
@@ -881,40 +1028,6 @@ public final class Utils {
 		}
 		output += "----------";
 		System.out.println(output);
-	}
-
-
-	/**
-	 * This methods reverse an array of int
-	 * @param b the int array
-	 * @return	the reversed array
-	 */
-	public final static int[] reverse(int[] b) {
-		int left  = 0;          // index of leftmost element
-		int right = b.length-1; // index of rightmost element
-
-		while (left < right) {
-			// exchange the left and right elements
-			int temp = b[left];
-			b[left]  = b[right];
-			b[right] = temp;
-			// move the bounds toward the center
-			left++;
-			right--;
-		}
-		return b;
-	}
-
-
-	/**
-	 * Tries to force the garbage collector to run
-	 */
-	public final static void garbageCollect() {
-		System.gc();/*System.gc();System.gc();System.gc();
-		System.gc();System.gc();System.gc();System.gc();
-		System.gc();System.gc();System.gc();System.gc();
-		System.gc();System.gc();System.gc();System.gc();
-		System.gc();System.gc();System.gc();System.gc();*/
 	}
 
 
@@ -948,56 +1061,6 @@ public final class Utils {
 
 		return result;
 	}
-
-
-	/**
-	 * Split a string using the tabulation character.
-	 * @param s	the string to split
-	 * @return	an array containing the split string
-	 */
-	public final static String[] splitWithTab (String s) {
-		return split(s, '	');
-	}
-
-
-	/**
-	 * This method looks for the full integer part in a string from a start index.
-	 * @param s		the string
-	 * @param index	index of the first integer
-	 * @return		the full integer starting at the index
-	 */
-	public final static Integer getFullIntegerPart (String s, int index) {
-		Integer result = null;									// Initialize the result to null
-		int nextIndex = index + 1;								// Next index is initialized with index + 1
-		while (nextIndex <= s.length()) {						// while the next index is shorter or equal to the string length
-			String text = s.substring(index, nextIndex);		// gets the sub string from the string (index to next index)
-			try {
-				result = Integer.parseInt(text);				// tries to get the integer part
-			} catch (Exception e) {								// if there is no integer part
-				return result;									// we return result (that contains the previous integer part or null)
-			}
-			nextIndex++;										// if it worked, we keep looking in the string increasing the next index
-		}
-		return result;											// return the result of the scan
-	}
-
-
-	/**
-	 * This method return the index of the first int found in a string, starting from the specified index position
-	 * @param s			the string
-	 * @param index		the index to start
-	 * @return			the index of the first int found in the string after the specified start, -1 if not found
-	 */
-	public final static int getFirstIntegerOffset (String s, int index) {
-		for (int i = 0; i < s.length(); i++) {
-			int c = s.charAt(i);
-			if ((c >= 48) && (c <= 57)) {
-				return i;
-			}
-		}
-		return -1;
-	}
-
 
 
 	/**
@@ -1038,56 +1101,11 @@ public final class Utils {
 
 
 	/**
-	 * @param objects	the array of objects
-	 * @param metrics	the metrics
-	 * @return the length of the longest object (as a string), 0 otherwise
+	 * Split a string using the tabulation character.
+	 * @param s	the string to split
+	 * @return	an array containing the split string
 	 */
-	public final static int getMaximumLength (Object[] objects, FontMetrics metrics) {
-		int result = 0;
-
-		if ((objects != null) && (objects.length > 0)) {
-			for (Object object: objects) {
-				result = Math.max(result, metrics.stringWidth(object.toString()));
-			}
-		}
-
-		return result;
-	}
-
-
-	/**
-	 * @param layers a list of {@link Layer}
-	 * @param filter an array of {@link LayerType} as filters
-	 * @return a list of {@link Layer} containing only the {@link LayerType} defined in the filters.
-	 */
-	public static List<Layer<?>> getLayers (List<Layer<?>> layers, LayerType[] filter) {
-		List<Layer<?>> result = new ArrayList<Layer<?>>();
-		for (Layer<?> layer: layers) {
-			boolean found = false;
-			int index = 0;
-			while (!found & (index < filter.length)) {
-				if (layer.getType() == filter[index]) {
-					found = true;
-				}
-				index++;
-			}
-			if (found) {
-				result.add(layer);
-			}
-		}
-		return result;
-	}
-
-
-	/**
-	 * @return the java version number, -1 if not found
-	 */
-	public static int getJavaVersion () {
-		String version = System.getProperty("java.specification.version", "");
-		int versionNumber = -1;
-		if (version.length() > 2) {
-			versionNumber = Integer.parseInt("" + version.charAt(2));
-		}
-		return versionNumber;
+	public final static String[] splitWithTab (String s) {
+		return split(s, '	');
 	}
 }

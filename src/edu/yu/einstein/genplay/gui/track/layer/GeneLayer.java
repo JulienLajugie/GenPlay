@@ -32,7 +32,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.net.URI;
-import java.text.NumberFormat;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -355,28 +355,36 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 				} else {
 					// if there is a gene under the mouse we also check
 					// if there is an exon with a score under the mouse cursor
-					Double scoreUnderMouse = null;
+					Double scoreExonUnderMouse = null;
 					if ((geneUnderMouse.getExonScores() != null) && (geneUnderMouse.getExonScores().length > 0)) {
-						for (int k = 0; (k < geneUnderMouse.getExonStarts().length) && (scoreUnderMouse == null); k++) {
+						for (int k = 0; (k < geneUnderMouse.getExonStarts().length) && (scoreExonUnderMouse == null); k++) {
 							if ((mousePosition.x >= projectWindow.genomeToScreenPosition(geneUnderMouse.getExonStarts()[k])) &&
 									(mousePosition.x <= projectWindow.genomeToScreenPosition(geneUnderMouse.getExonStops()[k]))) {
 								if (geneUnderMouse.getExonScores().length == 1) {
-									scoreUnderMouse = geneUnderMouse.getExonScores()[0];
+									scoreExonUnderMouse = geneUnderMouse.getExonScores()[0];
 								} else {
-									scoreUnderMouse = geneUnderMouse.getExonScores()[k];
+									scoreExonUnderMouse = geneUnderMouse.getExonScores()[k];
 								}
 							}
 						}
 					}
 					// set the cursor and the tooltip text if there is a gene under the mouse cursor
 					getTrack().getGraphicsPanel().setCursor(new Cursor(Cursor.HAND_CURSOR));
-					if (scoreUnderMouse == null) {
-						// if there is a gene but no exon score
-						getTrack().getGraphicsPanel().setToolTipText(geneUnderMouse.getName());
-					} else {
-						// if there is a gene and an exon score
-						getTrack().getGraphicsPanel().setToolTipText(geneUnderMouse.getName() + ": " +  NumberFormat.getInstance().format(scoreUnderMouse));
+					String toolTipText = "<html><b>" + geneUnderMouse.getName() + "</b><br>";
+					if (getData() instanceof GeneList) {
+						GeneList geneList = getData();
+						if (geneList.getGeneScoreType() != null) {
+							toolTipText += "Score Type: <i>" + geneList.getGeneScoreType() + "</i><br>";
+						}
 					}
+					if (geneUnderMouse.getScore() != 0) {
+						toolTipText += "Gene Score = <i>" + DecimalFormat.getInstance().format(geneUnderMouse.getScore()) + "</i><br>";
+					}
+					if (scoreExonUnderMouse != null) {
+						toolTipText += "Exon Score = <i>" + DecimalFormat.getInstance().format(scoreExonUnderMouse) + "</i><br>";
+					}
+					toolTipText += "</html>";
+					getTrack().getGraphicsPanel().setToolTipText(toolTipText);
 				}
 				// we repaint the track only if the gene under the mouse changed
 				if (((oldGeneUnderMouse == null) && (geneUnderMouse != null))

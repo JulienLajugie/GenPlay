@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -45,7 +45,7 @@ public enum GraphType {
 	DENSE	("dense");
 
 
-	private final String name; // String representing the type of graph 
+	private final String name; // String representing the type of graph
 
 
 	/**
@@ -57,8 +57,30 @@ public enum GraphType {
 	}
 
 
+	/**
+	 * @return the name of the graph type
+	 */
+	public String getName() {
+		return name;
+	}
+
+
 	@Override
 	public String toString() {
 		return name;
+	}
+
+
+	/**
+	 * @param name
+	 * @return the {@link GraphType} element having the specified name.  Null if none
+	 */
+	public static GraphType lookup(String name) {
+		for (GraphType currentGraphType: GraphType.values()) {
+			if (currentGraphType.getName().equals(name)) {
+				return currentGraphType;
+			}
+		}
+		return null;
 	}
 }

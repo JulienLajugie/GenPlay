@@ -41,6 +41,7 @@ import edu.yu.einstein.genplay.core.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosomeWindow.ChromosomeWindowStartComparator;
 import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleChromosomeWindow;
+import edu.yu.einstein.genplay.core.enums.GeneScoreType;
 import edu.yu.einstein.genplay.core.enums.Strand;
 import edu.yu.einstein.genplay.core.gene.Gene;
 import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
@@ -70,169 +71,13 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 	private FontMetrics			fontMetrics = null;						// dimension of the font used to print the name of the genes
 	private String				searchURL = null;						// URL of the gene database
 	private GeneSearcher		geneSearcher = null;					// object used to search genes
-
-
-	/**
-	 * Saves the format version number during serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(projectChromosome);
-		out.writeObject(fontMetrics);
-		out.writeObject(searchURL);
-	}
-
-
-	/**
-	 * Unserializes the save format version number
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		projectChromosome = (ProjectChromosome) in.readObject();
-		fontMetrics = (FontMetrics) in.readObject();
-		searchURL = (String) in.readObject();
-		geneSearcher = null;
-	}
+	private GeneScoreType		geneScoreType = null;					// type of the scores of the exons and genes of the gene list (RPKM, max, sum)
 
 
 	/**
 	 * The name of the genes are printed if the horizontal ratio is above this value
 	 */
 	public  static final double	MIN_X_RATIO_PRINT_NAME = 0.0005d;
-
-
-	/**
-	 * Creates an instance of {@link GeneList} containing the specified data.
-	 * @param data
-	 */
-	public GeneList(Collection<? extends List<Gene>> data) {
-		addAll(data);
-		// add the eventual missing chromosomes
-		if (size() < projectChromosome.size()) {
-			for (int i = size(); i < projectChromosome.size(); i++){
-				add(null);
-			}
-		}
-
-		// sort the data
-		for (List<Gene> currentList: this) {
-			if (currentList != null) {
-				Collections.sort(currentList);
-			}
-		}
-	}
-
-
-	/**
-	 * Creates an instance of {@link GeneList} containing the specified data.
-	 * @param data data of the list
-	 * @param searchURL URL of the gene data base
-	 */
-	public GeneList(Collection<? extends List<Gene>> data, String searchURL) {
-		addAll(data);
-		// add the eventual missing chromosomes
-		if (size() < projectChromosome.size()) {
-			for (int i = size(); i < projectChromosome.size(); i++){
-				add(null);
-			}
-		}
-		// sort the data
-		for (List<Gene> currentList: this) {
-			if (currentList != null) {
-				Collections.sort(currentList);
-			}
-		}
-		this.searchURL = searchURL;
-	}
-
-
-	/**
-	 * Creates an instance of {@link GeneList}
-	 * @param nameList a list of gene names
-	 * @param strandList a list of {@link Strand}
-	 * @param startList a list of start positions
-	 * @param stopList a list of stop positions
-	 * @param exonStartsList a list of exon start arrays
-	 * @param exonStopsList a list of exon stop arrays
-	 * @param exonScoresList a list of exon score arrays
-	 * @param searchURL url of the gene database
-	 * @throws InvalidChromosomeException
-	 * @throws ExecutionException
-	 * @throws InterruptedException
-	 */
-	public GeneList(final ChromosomeListOfLists<String> nameList, final ChromosomeListOfLists<Strand> strandList,
-			final ChromosomeListOfLists<Integer> startList, final ChromosomeListOfLists<Integer> stopList, final ChromosomeListOfLists<int[]> exonStartsList,
-			final ChromosomeListOfLists<int[]> exonStopsList, final ChromosomeListOfLists<double[]> exonScoresList, String searchURL)
-					throws InvalidChromosomeException, InterruptedException, ExecutionException {
-		super();
-		initialize(nameList, strandList, startList, stopList, exonStartsList, exonStopsList, exonScoresList, searchURL);
-	}
-
-
-	/**
-	 * Creates an instance of {@link GeneList}
-	 * @param scwList a {@link ScoredChromosomeWindowList}
-	 * @throws InvalidChromosomeException
-	 * @throws ExecutionException
-	 * @throws InterruptedException
-	 */
-	public GeneList(ScoredChromosomeWindowList scwList) throws InvalidChromosomeException, InterruptedException, ExecutionException {
-		super();
-
-		final ChromosomeListOfLists<String> nameList;
-		final ChromosomeListOfLists<Strand> strandList;
-		final ChromosomeListOfLists<Integer> startList;
-		final ChromosomeListOfLists<Integer> stopList;
-		final ChromosomeListOfLists<int[]> exonStartsList;
-		final ChromosomeListOfLists<int[]> exonStopsList;
-		final ChromosomeListOfLists<double[]> exonScoresList;
-		String searchURL = "";
-
-		startList = new ChromosomeArrayListOfLists<Integer>();
-		stopList = new ChromosomeArrayListOfLists<Integer>();
-		nameList = new ChromosomeArrayListOfLists<String>();
-		strandList = new ChromosomeArrayListOfLists<Strand>();
-		exonStartsList = new ChromosomeArrayListOfLists<int[]>();
-		exonStopsList = new ChromosomeArrayListOfLists<int[]>();
-		exonScoresList = new ChromosomeArrayListOfLists<double[]>();
-		// initialize the sublists
-		for (int i = 0; i < projectChromosome.size(); i++) {
-			startList.add(new IntArrayAsIntegerList());
-			stopList.add(new IntArrayAsIntegerList());
-			nameList.add(new ArrayList<String>());
-			strandList.add(new ArrayList<Strand>());
-			exonStartsList.add(new ArrayList<int[]>());
-			exonStopsList.add(new ArrayList<int[]>());
-			exonScoresList.add(new ArrayList<double[]>());
-
-			List<ScoredChromosomeWindow> currentList = scwList.get(i);
-			String prefixName = projectChromosome.get(i).getName() + ".";
-			for (int j = 0; j < currentList.size(); j++) {
-				ScoredChromosomeWindow window = currentList.get(j);
-				startList.get(i).add(window.getStart());
-				stopList.get(i).add(window.getStop());
-				nameList.get(i).add(prefixName + (j + 1));
-				strandList.get(i).add(Strand.FIVE);
-
-				int[] exonStarts = new int[1];
-				int[] exonStops = new int[1];
-				double[] exonScores = new double[1];
-				exonStarts[0] = window.getStart();
-				exonStops[0] = window.getStop();
-				exonScores[0] = window.getScore();
-				exonStartsList.get(i).add(exonStarts);
-				exonStopsList.get(i).add(exonStops);
-				exonScoresList.get(i).add(exonScores);
-			}
-		}
-
-		initialize(nameList, strandList, startList, stopList, exonStartsList, exonStopsList, exonScoresList, searchURL);
-	}
 
 
 	/**
@@ -252,7 +97,6 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 		final ChromosomeListOfLists<int[]> exonStartsList;
 		final ChromosomeListOfLists<int[]> exonStopsList;
 		final ChromosomeListOfLists<double[]> exonScoresList;
-		String searchURL = "";
 
 		startList = new ChromosomeArrayListOfLists<Integer>();
 		stopList = new ChromosomeArrayListOfLists<Integer>();
@@ -348,7 +192,7 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 		op.startPool(threadList);
 
 
-		initialize(nameList, strandList, startList, stopList, exonStartsList, exonStopsList, exonScoresList, searchURL);
+		initialize(nameList, strandList, startList, stopList, exonStartsList, exonStopsList, exonScoresList, null, null);
 	}
 
 
@@ -362,69 +206,17 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 	 * @param exonStopsList a list of exon stop arrays
 	 * @param exonScoresList a list of exon score arrays
 	 * @param searchURL url of the gene database
+	 * @param geneScoreType type of the scores of the exons and genes of the gene list (RPKM, max, sum)
 	 * @throws InvalidChromosomeException
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	private void initialize (final ChromosomeListOfLists<String> nameList, final ChromosomeListOfLists<Strand> strandList,
+	public GeneList(final ChromosomeListOfLists<String> nameList, final ChromosomeListOfLists<Strand> strandList,
 			final ChromosomeListOfLists<Integer> startList, final ChromosomeListOfLists<Integer> stopList, final ChromosomeListOfLists<int[]> exonStartsList,
-			final ChromosomeListOfLists<int[]> exonStopsList, final ChromosomeListOfLists<double[]> exonScoresList, String searchURL)
+			final ChromosomeListOfLists<int[]> exonStopsList, final ChromosomeListOfLists<double[]> exonScoresList, String searchURL, GeneScoreType geneScoreType)
 					throws InvalidChromosomeException, InterruptedException, ExecutionException {
-		if (searchURL != null) {
-			this.searchURL = searchURL;
-		}
-		// retrieve the instance of the OperationPool
-		final OperationPool op = OperationPool.getInstance();
-		// list for the threads
-		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();
-		for(final Chromosome currentChromosome : projectChromosome) {
-			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {
-				@Override
-				public List<Gene> call() throws Exception {
-					List<Gene> resultList = new ArrayList<Gene>();
-					for(int j = 0; j < nameList.size(currentChromosome); j++) {
-						String name = nameList.get(currentChromosome, j);
-						Strand strand = strandList.get(currentChromosome, j);
-						int txStart = startList.get(currentChromosome, j);
-						int txStop = stopList.get(currentChromosome, j);
-						int[] exonStarts = null;
-						if (exonStartsList.size(currentChromosome) > 0) {
-							exonStarts = exonStartsList.get(currentChromosome, j);
-						}
-						int[] exonStops = null;
-						if (exonStopsList.size(currentChromosome) > 0) {
-							exonStops = exonStopsList.get(currentChromosome, j);
-						}
-						double[] exonScores = null;
-						if ((exonScoresList != null) && (exonScoresList.size(currentChromosome) > 0)) {
-							exonScores = exonScoresList.get(currentChromosome, j);
-						}
-						// we don't add a gene if it is located after the end of a chromosome
-						if (txStop < currentChromosome.getLength()) {
-							resultList.add(new Gene(name, currentChromosome, strand, txStart, txStop, exonStarts, exonStops, exonScores));
-						}
-					}
-					// tell the operation pool that a chromosome is done
-					op.notifyDone();
-					return resultList;
-				}
-			};
-
-			threadList.add(currentThread);
-		}
-		List<List<Gene>> result = null;
-		// starts the pool
-		result = op.startPool(threadList);
-		// add the chromosome results
-		if (result != null) {
-			for (List<Gene> currentList: result) {
-				add(currentList);
-			}
-		}
-		// sort the gene list
-		for (List<Gene> chromosomeGeneList : this) {
-			Collections.sort(chromosomeGeneList);
-		}
+		super();
+		initialize(nameList, strandList, startList, stopList, exonStartsList, exonStopsList, exonScoresList, searchURL, geneScoreType);
 	}
 
 
@@ -440,6 +232,7 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 	 * @param exonStopsList a list of exon stop arrays
 	 * @param exonScoresList a list of exon score arrays
 	 * @param searchURL url of the gene database
+	 * @param geneScoreType type of the scores of the exons and genes of the gene list (RPKM, max, sum)
 	 * @throws InvalidChromosomeException
 	 * @throws ExecutionException
 	 * @throws InterruptedException
@@ -447,11 +240,11 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 	public GeneList(final ChromosomeListOfLists<String> nameList, final ChromosomeListOfLists<Strand> strandList, final ChromosomeListOfLists<Integer> startList,
 			final ChromosomeListOfLists<Integer> stopList, final ChromosomeListOfLists<Integer> UTR5BoundList, final ChromosomeListOfLists<Integer> UTR3BoundList,
 			final ChromosomeListOfLists<int[]> exonStartsList, final ChromosomeListOfLists<int[]> exonStopsList, final ChromosomeListOfLists<double[]> exonScoresList,
-			String searchURL) throws InvalidChromosomeException, InterruptedException, ExecutionException {
+			String searchURL,
+			GeneScoreType geneScoreType) throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		super();
-		if (searchURL != null) {
-			this.searchURL = searchURL;
-		}
+		this.searchURL = searchURL;
+		this.geneScoreType = geneScoreType;
 		// retrieve the instance of the OperationPool
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
@@ -505,6 +298,132 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 		// sort the gene list
 		for (List<Gene> chromosomeGeneList : this) {
 			Collections.sort(chromosomeGeneList);
+		}
+	}
+
+
+	/**
+	 * Creates an instance of {@link GeneList} containing the specified data.
+	 * @param data
+	 */
+	public GeneList(Collection<? extends List<Gene>> data) {
+		addAll(data);
+		// add the eventual missing chromosomes
+		if (size() < projectChromosome.size()) {
+			for (int i = size(); i < projectChromosome.size(); i++){
+				add(null);
+			}
+		}
+
+		// sort the data
+		for (List<Gene> currentList: this) {
+			if (currentList != null) {
+				Collections.sort(currentList);
+			}
+		}
+	}
+
+
+	/**
+	 * Creates an instance of {@link GeneList} containing the specified data.
+	 * @param data data of the list
+	 * @param searchURL URL of the gene data base
+	 * @param geneScoreType
+	 */
+	public GeneList(Collection<? extends List<Gene>> data, String searchURL, GeneScoreType geneScoreType) {
+		addAll(data);
+		// add the eventual missing chromosomes
+		if (size() < projectChromosome.size()) {
+			for (int i = size(); i < projectChromosome.size(); i++){
+				add(null);
+			}
+		}
+		// sort the data
+		for (List<Gene> currentList: this) {
+			if (currentList != null) {
+				Collections.sort(currentList);
+			}
+		}
+		this.searchURL = searchURL;
+		this.geneScoreType = geneScoreType;
+	}
+
+
+	/**
+	 * Creates an instance of {@link GeneList}
+	 * @param scwList a {@link ScoredChromosomeWindowList}
+	 * @throws InvalidChromosomeException
+	 * @throws ExecutionException
+	 * @throws InterruptedException
+	 */
+	public GeneList(ScoredChromosomeWindowList scwList) throws InvalidChromosomeException, InterruptedException, ExecutionException {
+		super();
+
+		final ChromosomeListOfLists<String> nameList;
+		final ChromosomeListOfLists<Strand> strandList;
+		final ChromosomeListOfLists<Integer> startList;
+		final ChromosomeListOfLists<Integer> stopList;
+		final ChromosomeListOfLists<int[]> exonStartsList;
+		final ChromosomeListOfLists<int[]> exonStopsList;
+		final ChromosomeListOfLists<double[]> exonScoresList;
+
+		startList = new ChromosomeArrayListOfLists<Integer>();
+		stopList = new ChromosomeArrayListOfLists<Integer>();
+		nameList = new ChromosomeArrayListOfLists<String>();
+		strandList = new ChromosomeArrayListOfLists<Strand>();
+		exonStartsList = new ChromosomeArrayListOfLists<int[]>();
+		exonStopsList = new ChromosomeArrayListOfLists<int[]>();
+		exonScoresList = new ChromosomeArrayListOfLists<double[]>();
+		// initialize the sublists
+		for (int i = 0; i < projectChromosome.size(); i++) {
+			startList.add(new IntArrayAsIntegerList());
+			stopList.add(new IntArrayAsIntegerList());
+			nameList.add(new ArrayList<String>());
+			strandList.add(new ArrayList<Strand>());
+			exonStartsList.add(new ArrayList<int[]>());
+			exonStopsList.add(new ArrayList<int[]>());
+			exonScoresList.add(new ArrayList<double[]>());
+
+			List<ScoredChromosomeWindow> currentList = scwList.get(i);
+			String prefixName = projectChromosome.get(i).getName() + ".";
+			for (int j = 0; j < currentList.size(); j++) {
+				ScoredChromosomeWindow window = currentList.get(j);
+				startList.get(i).add(window.getStart());
+				stopList.get(i).add(window.getStop());
+				nameList.get(i).add(prefixName + (j + 1));
+				strandList.get(i).add(Strand.FIVE);
+
+				int[] exonStarts = new int[1];
+				int[] exonStops = new int[1];
+				double[] exonScores = new double[1];
+				exonStarts[0] = window.getStart();
+				exonStops[0] = window.getStop();
+				exonScores[0] = window.getScore();
+				exonStartsList.get(i).add(exonStarts);
+				exonStopsList.get(i).add(exonStops);
+				exonScoresList.get(i).add(exonScores);
+			}
+		}
+
+		initialize(nameList, strandList, startList, stopList, exonStartsList, exonStopsList, exonScoresList, null, null);
+	}
+
+
+	/**
+	 * Performs a deep clone of the current GeneList
+	 * @return a new GeneList
+	 */
+	public GeneList deepClone() {
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(baos);
+			oos.writeObject(this);
+			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+			ObjectInputStream ois = new ObjectInputStream(bais);
+			return ((GeneList)ois.readObject());
+		} catch (Exception e) {
+			ExceptionManager.getInstance().caughtException(e);
+			return null;
 		}
 	}
 
@@ -620,46 +539,10 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 
 
 	/**
-	 * Performs a deep clone of the current GeneList
-	 * @return a new GeneList
+	 * @return the type of gene and exon scores (base coverage, maximum coverage, RPKM)
 	 */
-	public GeneList deepClone() {
-		try {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ObjectOutputStream oos = new ObjectOutputStream(baos);
-			oos.writeObject(this);
-			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-			ObjectInputStream ois = new ObjectInputStream(bais);
-			return ((GeneList)ois.readObject());
-		} catch (Exception e) {
-			ExceptionManager.getInstance().caughtException(e);
-			return null;
-		}
-	}
-
-	/**
-	 * Sets the {@link FontMetrics}. Used for the generation of fitted data
-	 * @param fontMetrics
-	 */
-	public void setFontMetrics(FontMetrics fontMetrics) {
-		this.fontMetrics = fontMetrics;
-	}
-
-
-	/**
-	 * @return the URL of the gene database
-	 */
-	public String getSearchURL() {
-		return searchURL;
-	}
-
-
-	/**
-	 * Sets the URL of the gene database
-	 * @param searchURL
-	 */
-	public void setSearchURL(String searchURL) {
-		this.searchURL = searchURL;
+	public GeneScoreType getGeneScoreType() {
+		return geneScoreType;
 	}
 
 
@@ -672,6 +555,14 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 			geneSearcher = new GeneSearcher(this);
 		}
 		return geneSearcher;
+	}
+
+
+	/**
+	 * @return the URL of the gene database
+	 */
+	public String getSearchURL() {
+		return searchURL;
 	}
 
 
@@ -712,6 +603,136 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 		}
 
 		return list;
+	}
+
+	/**
+	 * Creates an instance of {@link GeneList}
+	 * @param nameList a list of gene names
+	 * @param strandList a list of {@link Strand}
+	 * @param startList a list of start positions
+	 * @param stopList a list of stop positions
+	 * @param exonStartsList a list of exon start arrays
+	 * @param exonStopsList a list of exon stop arrays
+	 * @param exonScoresList a list of exon score arrays
+	 * @param searchURL url of the gene database
+	 * @param geneScoreType type of the scores of the exons and genes of the gene list (RPKM, max, sum)
+	 * @throws InvalidChromosomeException
+	 * @throws ExecutionException
+	 * @throws InterruptedException
+	 */
+	private void initialize (final ChromosomeListOfLists<String> nameList, final ChromosomeListOfLists<Strand> strandList,
+			final ChromosomeListOfLists<Integer> startList, final ChromosomeListOfLists<Integer> stopList, final ChromosomeListOfLists<int[]> exonStartsList,
+			final ChromosomeListOfLists<int[]> exonStopsList, final ChromosomeListOfLists<double[]> exonScoresList, String searchURL, GeneScoreType geneScoreType)
+					throws InvalidChromosomeException, InterruptedException, ExecutionException {
+		this.searchURL = searchURL;
+		this.geneScoreType = geneScoreType;
+		// retrieve the instance of the OperationPool
+		final OperationPool op = OperationPool.getInstance();
+		// list for the threads
+		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();
+		for(final Chromosome currentChromosome : projectChromosome) {
+			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {
+				@Override
+				public List<Gene> call() throws Exception {
+					List<Gene> resultList = new ArrayList<Gene>();
+					for(int j = 0; j < nameList.size(currentChromosome); j++) {
+						String name = nameList.get(currentChromosome, j);
+						Strand strand = strandList.get(currentChromosome, j);
+						int txStart = startList.get(currentChromosome, j);
+						int txStop = stopList.get(currentChromosome, j);
+						int[] exonStarts = null;
+						if (exonStartsList.size(currentChromosome) > 0) {
+							exonStarts = exonStartsList.get(currentChromosome, j);
+						}
+						int[] exonStops = null;
+						if (exonStopsList.size(currentChromosome) > 0) {
+							exonStops = exonStopsList.get(currentChromosome, j);
+						}
+						double[] exonScores = null;
+						if ((exonScoresList != null) && (exonScoresList.size(currentChromosome) > 0)) {
+							exonScores = exonScoresList.get(currentChromosome, j);
+						}
+						// we don't add a gene if it is located after the end of a chromosome
+						if (txStop < currentChromosome.getLength()) {
+							resultList.add(new Gene(name, currentChromosome, strand, txStart, txStop, exonStarts, exonStops, exonScores));
+						}
+					}
+					// tell the operation pool that a chromosome is done
+					op.notifyDone();
+					return resultList;
+				}
+			};
+
+			threadList.add(currentThread);
+		}
+		List<List<Gene>> result = null;
+		// starts the pool
+		result = op.startPool(threadList);
+		// add the chromosome results
+		if (result != null) {
+			for (List<Gene> currentList: result) {
+				add(currentList);
+			}
+		}
+		// sort the gene list
+		for (List<Gene> chromosomeGeneList : this) {
+			Collections.sort(chromosomeGeneList);
+		}
+	}
+
+
+	/**
+	 * Unserializes the save format version number
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		projectChromosome = (ProjectChromosome) in.readObject();
+		fontMetrics = (FontMetrics) in.readObject();
+		searchURL = (String) in.readObject();
+		geneSearcher = null;
+	}
+
+
+	/**
+	 * Sets the {@link FontMetrics}. Used for the generation of fitted data
+	 * @param fontMetrics
+	 */
+	public void setFontMetrics(FontMetrics fontMetrics) {
+		this.fontMetrics = fontMetrics;
+	}
+
+
+	/**
+	 * Sets the type of the exon and gene scores (base coverage, maximum coverage, RPKM)
+	 * @param geneScoreType
+	 */
+	public void setGeneScoreType(GeneScoreType geneScoreType) {
+		this.geneScoreType = geneScoreType;
+	}
+
+
+	/**
+	 * Sets the URL of the gene database
+	 * @param searchURL
+	 */
+	public void setSearchURL(String searchURL) {
+		this.searchURL = searchURL;
+	}
+
+
+	/**
+	 * Saves the format version number during serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(projectChromosome);
+		out.writeObject(fontMetrics);
+		out.writeObject(searchURL);
 	}
 
 }

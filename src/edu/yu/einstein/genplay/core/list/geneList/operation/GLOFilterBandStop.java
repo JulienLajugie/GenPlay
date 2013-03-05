@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -41,11 +41,11 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 public class GLOFilterBandStop implements Operation<GeneList> {
 
 	private final GeneList 	geneList;		// input GeneList
-	private final double 	lowThreshold;	// low bound 
+	private final double 	lowThreshold;	// low bound
 	private final double 	highThreshold;	// high bound
 	private boolean			stopped = false;// true if the operation must be stopped
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link GLOFilterBandStop}
 	 * @param geneList input {@link GeneList}
@@ -63,23 +63,23 @@ public class GLOFilterBandStop implements Operation<GeneList> {
 	public GeneList compute() throws Exception {
 		if (lowThreshold >= highThreshold) {
 			throw new IllegalArgumentException("The high threshold must be greater than the low one");
-		}	
+		}
 
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();
 		for (final List<Gene> currentList: geneList) {
 
-			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {			
+			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {
 				@Override
 				public List<Gene> call() throws Exception {
 					List<Gene> resultList = new ArrayList<Gene>();
 					if ((currentList != null) && (currentList.size() != 0)) {
-						for (int j = 0; j < currentList.size() && !stopped; j++) {
-							Double currentValue = currentList.get(j).getGeneRPKM(); 
-							if ((currentValue == null) || (currentValue < lowThreshold) && (currentValue > highThreshold)) {
+						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
+							Double currentValue = currentList.get(j).getGeneRPKM();
+							if ((currentValue == null) || ((currentValue < lowThreshold) && (currentValue > highThreshold))) {
 								Gene geneToAdd = new Gene(currentList.get(j));
 								resultList.add(geneToAdd);
-							}					
+							}
 						}
 					}
 					// tell the operation pool that a chromosome is done
@@ -92,7 +92,7 @@ public class GLOFilterBandStop implements Operation<GeneList> {
 		}
 		List<List<Gene>> result = op.startPool(threadList);
 		if (result != null) {
-			GeneList resultList = new GeneList(result, geneList.getSearchURL());
+			GeneList resultList = new GeneList(result, geneList.getSearchURL(), geneList.getGeneScoreType());
 			return resultList;
 		} else {
 			return null;
@@ -117,9 +117,9 @@ public class GLOFilterBandStop implements Operation<GeneList> {
 		return 1;
 	}
 
-	
+
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }

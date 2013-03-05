@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -39,10 +39,10 @@ public class GLOFilterPercentage implements Operation<GeneList> {
 	private final GeneList 		geneList;			// {@link GeneList} to filter
 	private final double 		lowPercentage;		// percentage of low values to filter
 	private final double 		highPercentage;		// percentage of high values to filter
-	private final boolean		isSaturation;		// true if we saturate, false if we remove the filtered values 
+	private final boolean		isSaturation;		// true if we saturate, false if we remove the filtered values
 	private boolean				stopped = false;	// true if the operation must be stopped
 	private Operation<GeneList>	gloFilterThreshold;	// threshold filter that does the real fitering operation
-	
+
 
 	/**
 	 * Creates an instance of {@link GLOFilterPercentage}
@@ -57,27 +57,27 @@ public class GLOFilterPercentage implements Operation<GeneList> {
 		this.highPercentage = highPercentage;
 		this.isSaturation = isSaturation;
 	}
-	
-	
+
+
 	@Override
 	public GeneList compute() throws Exception {
 		if ((highPercentage < 0) || (highPercentage > 1) || (lowPercentage < 0) ||(lowPercentage > 1)) {
 			throw new IllegalArgumentException("The percentage value must be between 0 and 1");
 		}
-		if (lowPercentage + highPercentage > 1) {
+		if ((lowPercentage + highPercentage) > 1) {
 			throw new IllegalArgumentException("The sum of the low and high percentages value must be between 0 and 1");
 		}
 		boolean[] selectedChromo = new boolean[geneList.size()];
 		Arrays.fill(selectedChromo, true);
 		int totalLenght = new GLOCountNonNullGenes(geneList, selectedChromo).compute().intValue();
 		if (totalLenght == 0) {
-			return new GeneList(geneList, geneList.getSearchURL());
+			return new GeneList(geneList, geneList.getSearchURL(), geneList.getGeneScoreType());
 		}
 		double[] allScores = new double[totalLenght];
 		int i = 0;
 		for (List<Gene> currentList: geneList) {
 			if (currentList != null) {
-				for (int j = 0; j < currentList.size() && !stopped; j++) {
+				for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 					Double currentScore = currentList.get(j).getGeneRPKM();
 					if ((currentScore != null) && (currentScore != 0)) {
 						allScores[i] = currentScore;
@@ -92,11 +92,11 @@ public class GLOFilterPercentage implements Operation<GeneList> {
 
 		double minValue = lowValuesCount == 0 ? Double.NEGATIVE_INFINITY : allScores[lowValuesCount - 1];
 		double maxValue = highValuesCount == 0 ? Double.POSITIVE_INFINITY : allScores[allScores.length - highValuesCount];
-		gloFilterThreshold = new GLOFilterThreshold(geneList, minValue, maxValue, isSaturation); 
+		gloFilterThreshold = new GLOFilterThreshold(geneList, minValue, maxValue, isSaturation);
 		return gloFilterThreshold.compute();
 	}
 
-	
+
 	@Override
 	public String getDescription() {
 		String optionStr;
@@ -107,23 +107,23 @@ public class GLOFilterPercentage implements Operation<GeneList> {
 		}
 		return "Operation: Filter, " + (lowPercentage * 100) + "% smallest values, " + (highPercentage * 100) + "% greatest values" + optionStr;
 	}
-	
+
 
 	@Override
 	public String getProcessingDescription() {
 		return "Filtering";
 	}
 
-	
+
 	@Override
 	public int getStepCount() {
 		return 1;
 	}
 
-	
+
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 		if (gloFilterThreshold != null) {
 			gloFilterThreshold.stop();
 		}

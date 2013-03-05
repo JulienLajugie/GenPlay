@@ -24,7 +24,7 @@ package edu.yu.einstein.genplay.gui.action.layer.geneLayer;
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
-import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.core.enums.GeneScoreType;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
@@ -32,7 +32,6 @@ import edu.yu.einstein.genplay.core.list.geneList.operation.GLOScoreFromBinList;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOScoreFromSCWList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
 import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
 import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
@@ -90,18 +89,14 @@ public class GLAScoreExons  extends TrackListActionOperationWorker<GeneList> {
 				}
 			}
 			if (otherLayer != null) {
-				ScoreCalculationMethod method = Utils.chooseScoreCalculation(getRootPane());
-				if (method != null) {
-					Number constant = NumberOptionPane.getValue(getRootPane(), "Enter a value (optional)", "Enter a value (bp) to add to both side of each exon:", 0, 1000, 0);
-					if (constant != null) {
-						int offset = constant.intValue();
-						if (otherLayer.getData() instanceof BinList) {
-							operation = new GLOScoreFromBinList(selectedLayer.getData(), (BinList) otherLayer.getData(), method, offset);
-						} else if (otherLayer.getData() instanceof ScoredChromosomeWindowList) {
-							operation = new GLOScoreFromSCWList(selectedLayer.getData(), (ScoredChromosomeWindowList) otherLayer.getData(), method, offset);
-						}
-						return operation;
+				GeneScoreType geneScore = Utils.chooseGeneScoreCalculation(getRootPane());
+				if (geneScore != null) {
+					if (otherLayer.getData() instanceof BinList) {
+						operation = new GLOScoreFromBinList(selectedLayer.getData(), (BinList) otherLayer.getData(), geneScore);
+					} else if (otherLayer.getData() instanceof ScoredChromosomeWindowList) {
+						operation = new GLOScoreFromSCWList(selectedLayer.getData(), (ScoredChromosomeWindowList) otherLayer.getData(), geneScore);
 					}
+					return operation;
 				}
 			}
 		}

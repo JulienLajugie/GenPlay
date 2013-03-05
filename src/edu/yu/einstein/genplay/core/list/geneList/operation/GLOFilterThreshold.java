@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -41,13 +41,13 @@ public class GLOFilterThreshold implements Operation<GeneList> {
 	private final GeneList 	geneList;			// input list
 	private final double 	lowThreshold;		// filters the genes with an overall RPKM under this threshold
 	private final double 	highThreshold;		// filters the genes with an overall RPKM above this threshold
-	private final boolean	isSaturation;		// true if we saturate, false if we remove the filtered values 
+	private final boolean	isSaturation;		// true if we saturate, false if we remove the filtered values
 	private boolean			stopped = false;	// true if the operation must be stopped
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link GLOFilterThreshold}
-	 * @param geneList input list 
+	 * @param geneList input list
 	 * @param lowThreshold filters the genes with an overall RPKM under this threshold
 	 * @param highThreshold filters the genes with an overall RPKM above this threshold
 	 * @param isSaturation true to saturate, false to remove the filtered values
@@ -58,8 +58,8 @@ public class GLOFilterThreshold implements Operation<GeneList> {
 		this.highThreshold = highThreshold;
 		this.isSaturation = isSaturation;
 	}
-	
-	
+
+
 	@Override
 	public GeneList compute() throws Exception {
 		final OperationPool op = OperationPool.getInstance();
@@ -69,12 +69,12 @@ public class GLOFilterThreshold implements Operation<GeneList> {
 			final List<Gene> currentList = geneList.get(i);
 			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {
 				@Override
-				public List<Gene> call() throws Exception {					
+				public List<Gene> call() throws Exception {
 					if (currentList == null) {
 						return null;
 					}
 					List<Gene> resultList = new ArrayList<Gene>();
-					for (int j = 0; j < currentList.size() && !stopped; j++) {
+					for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 						Gene currentGene = currentList.get(j);
 						if ((currentGene.getGeneRPKM() != null)) {
 							Gene geneToAdd = null;
@@ -116,10 +116,10 @@ public class GLOFilterThreshold implements Operation<GeneList> {
 		if (result == null) {
 			return null;
 		} else {
-			return new GeneList(result, geneList.getSearchURL());
+			return new GeneList(result, geneList.getSearchURL(), geneList.getGeneScoreType());
 		}
 	}
-	
+
 
 	@Override
 	public String getDescription() {
@@ -147,6 +147,6 @@ public class GLOFilterThreshold implements Operation<GeneList> {
 
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }

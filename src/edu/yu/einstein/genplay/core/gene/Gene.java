@@ -25,6 +25,7 @@ import java.io.Serializable;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.chromosomeWindow.ChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.Strand;
 
@@ -35,7 +36,7 @@ import edu.yu.einstein.genplay.core.enums.Strand;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class Gene implements Serializable, Cloneable, ChromosomeWindow {
+public final class Gene implements Serializable, Cloneable, ScoredChromosomeWindow {
 
 	private static final long serialVersionUID = -9086602517817950291L; // generated ID
 	private String 		name; 			// name of the gene
@@ -43,6 +44,7 @@ public final class Gene implements Serializable, Cloneable, ChromosomeWindow {
 	private Strand		strand;			// strand of the gene
 	private int 		start;	 		// start position of the gene
 	private int 		stop;	 		// end position of the gene
+	private double		score;			// score of the gene
 	private int			UTR5Bound;		// 5' UTR boundary
 	private int			UTR3Bound;		// 3' UTR bondary
 	private int[] 		exonStarts; 	// exon start positions
@@ -272,6 +274,12 @@ public final class Gene implements Serializable, Cloneable, ChromosomeWindow {
 
 
 	@Override
+	public double getScore() {
+		return score;
+	}
+
+
+	@Override
 	public int getSize() {
 		return new SimpleChromosomeWindow(start, stop).getSize();
 	}
@@ -356,6 +364,12 @@ public final class Gene implements Serializable, Cloneable, ChromosomeWindow {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+
+	@Override
+	public void setScore(double score) {
+		this.score = score;
 	}
 
 
