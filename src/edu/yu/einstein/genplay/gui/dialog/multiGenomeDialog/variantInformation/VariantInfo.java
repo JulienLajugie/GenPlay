@@ -75,11 +75,13 @@ public class VariantInfo {
 				header = (VCFHeader) line.getGenomeIndexer();
 			}
 			for (String key: keys) {
-				String desc;
+				String desc = "-";
 				if (header != null) {
-					desc = header.getInfoHeaderFromID(key).getDescription();
-				} else {
-					desc = "-";
+					try {
+						desc = header.getInfoHeaderFromID(key).getDescription();
+					} catch (Exception e) {
+						desc = "not defined in the header.";
+					}
 				}
 				description.add(desc);
 			}
