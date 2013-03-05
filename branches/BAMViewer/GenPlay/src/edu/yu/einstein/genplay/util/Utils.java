@@ -51,6 +51,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 import edu.yu.einstein.genplay.gui.dialog.chromosomeChooser.ChromosomeChooserDialog;
+import edu.yu.einstein.genplay.gui.fileFilter.BAMFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.BedFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.BedGraphFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.BedGraphWith0Filter;
@@ -447,6 +448,15 @@ public final class Utils {
 	 */
 	public final static ExtendedFileFilter[] getReadableStripeFileFilters() {
 		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new GTFFilter(), new WiggleFilter(), new PSLFilter()};
+		return filters;
+	}
+
+
+	/**
+	 * @return the {@link ExtendedFileFilter} associated to the BAM files
+	 */
+	public final static FileFilter[] getReadableSAMFileFilters() {
+		ExtendedFileFilter[] filters = {new BAMFilter()};
 		return filters;
 	}
 

@@ -411,7 +411,7 @@ public class MGChromosomeContent implements Iterable<MGLineContent>, Serializabl
 	 */
 	public void printChunkWithReferencePosition (int start, int stop) {
 		System.out.println("MGChromosomeContent.printChunkWithReferencePosition()");
-		int index = positions.getIndex(start);
+		int index = positions.getStrictIndex(start);
 		if (index == -1) {
 			System.out.println("No index has been found for the reference position: " + start);
 		} else {

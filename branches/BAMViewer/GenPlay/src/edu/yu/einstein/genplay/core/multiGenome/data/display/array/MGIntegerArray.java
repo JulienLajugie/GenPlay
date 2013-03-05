@@ -200,9 +200,9 @@ public class MGIntegerArray implements Serializable {
 	/**
 	 * Recursive function. Returns the index where the value is found or -1 if the exact value is not found.
 	 * @param value	value
-	 * @return the index where the start value of the window is found or -1 if the value is not found
+	 * @return the index where the start value of the window is found or -1 if the value is not found.
 	 */
-	public int getIndex (int value) {
+	public int getStrictIndex (int value) {
 		int index = getIndex(value, 0, size - 1);
 		if (data[index] == value) {
 			return index;
@@ -212,12 +212,22 @@ public class MGIntegerArray implements Serializable {
 
 
 	/**
+	 * Recursive function. Returns the index where the value is found or the index right after if the exact value is not found.
+	 * @param value	value
+	 * @return the index where the start value of the window is found or the index right after if the exact value is not found.
+	 */
+	public int getIndex (int value) {
+		return getIndex(value, 0, size - 1);
+	}
+
+
+	/**
 	 * Recursive function. Returns the index where the value is found
 	 * or the index right after if the exact value is not found.
 	 * @param value			value
 	 * @param indexStart	start index (in the data array)
 	 * @param indexStop		stop index (in the data array)
-	 * @return the index where the start value of the window is found or the index right after if the exact value is not found
+	 * @return the index where the start value is found or the index right after if the exact value is not found.
 	 */
 	private int getIndex (int value, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;

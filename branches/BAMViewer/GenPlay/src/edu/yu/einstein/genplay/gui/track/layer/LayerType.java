@@ -70,7 +70,12 @@ public enum LayerType {
 	/**
 	 * Variant layer displaying the multigenome information
 	 */
-	VARIANT_LAYER ("Variant Layer");
+	VARIANT_LAYER ("Variant Layer"),
+
+	/**
+	 * BAM layer displaying BAM file content
+	 */
+	BAM_LAYER ("BAM Layer");
 
 
 	private final String name; // name

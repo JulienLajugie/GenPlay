@@ -100,6 +100,9 @@ public class TAAddLayer extends TrackListAction {
 				case GENE_LAYER:
 					new TAAddGeneLayer().actionPerformed(evt);
 					break;
+				case BAM_LAYER:
+					new TAAddBAMLayer().actionPerformed(evt);
+					break;
 				case REPEAT_FAMILY_LAYER:
 					new TAAddRepeatLayer().actionPerformed(evt);
 					break;
@@ -126,10 +129,10 @@ public class TAAddLayer extends TrackListAction {
 	 */
 	private LayerType[] getLayerTypes () {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			LayerType[] layerTypes = {LayerType.BIN_LAYER, LayerType.SCW_LAYER, LayerType.GENE_LAYER, LayerType.REPEAT_FAMILY_LAYER, LayerType.NUCLEOTIDE_LAYER, LayerType.VARIANT_LAYER, LayerType.MASK_LAYER};
+			LayerType[] layerTypes = {LayerType.BIN_LAYER, LayerType.SCW_LAYER, LayerType.GENE_LAYER, LayerType.BAM_LAYER, LayerType.REPEAT_FAMILY_LAYER, LayerType.NUCLEOTIDE_LAYER, LayerType.VARIANT_LAYER, LayerType.MASK_LAYER};
 			return layerTypes;
 		}
-		LayerType[] layerTypes = {LayerType.BIN_LAYER, LayerType.SCW_LAYER, LayerType.GENE_LAYER, LayerType.REPEAT_FAMILY_LAYER, LayerType.NUCLEOTIDE_LAYER, LayerType.MASK_LAYER};
+		LayerType[] layerTypes = {LayerType.BIN_LAYER, LayerType.SCW_LAYER, LayerType.GENE_LAYER, LayerType.BAM_LAYER, LayerType.REPEAT_FAMILY_LAYER, LayerType.NUCLEOTIDE_LAYER, LayerType.MASK_LAYER};
 		return layerTypes;
 	}
 }
