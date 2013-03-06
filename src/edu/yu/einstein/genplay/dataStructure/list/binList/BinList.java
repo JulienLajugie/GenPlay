@@ -39,8 +39,8 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.dataStructure.list.DisplayableListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.CompressibleList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.ListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
@@ -48,6 +48,7 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.CompressionException;
+import edu.yu.einstein.genplay.util.ChromosomeWindowLists;
 
 
 
@@ -123,7 +124,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public BinList(final int binSize, final DataPrecision precision, final ChromosomeListOfLists<Integer> positions) throws IllegalArgumentException, InterruptedException, ExecutionException {
+	public BinList(final int binSize, final DataPrecision precision, final GenomicDataList<Integer> positions) throws IllegalArgumentException, InterruptedException, ExecutionException {
 		super();
 		this.binSize = binSize;
 		this.precision = precision;
@@ -179,7 +180,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public BinList(final int binSize, final DataPrecision precision, final ChromosomeListOfLists<Integer> positions, final ChromosomeListOfLists<Double> scores) throws IllegalArgumentException, InterruptedException, ExecutionException {
+	public BinList(final int binSize, final DataPrecision precision, final GenomicDataList<Integer> positions, final GenomicDataList<Double> scores) throws IllegalArgumentException, InterruptedException, ExecutionException {
 		super();
 		this.binSize = binSize;
 		this.precision = precision;
@@ -324,7 +325,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public BinList(final int binSize, final DataPrecision precision, final ScoreCalculationMethod method, final ChromosomeListOfLists<Integer> positions, final ChromosomeListOfLists<Double> scores) throws IllegalArgumentException, InterruptedException, ExecutionException {
+	public BinList(final int binSize, final DataPrecision precision, final ScoreCalculationMethod method, final GenomicDataList<Integer> positions, final GenomicDataList<Double> scores) throws IllegalArgumentException, InterruptedException, ExecutionException {
 		super();
 		this.binSize = binSize;
 		this.precision = precision;
@@ -388,7 +389,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public BinList(final int binSize, final DataPrecision precision, final ScoreCalculationMethod method, final ChromosomeListOfLists<Integer> starts, final ChromosomeListOfLists<Integer> stops, final ChromosomeListOfLists<Double> scores) throws IllegalArgumentException, InterruptedException, ExecutionException {
+	public BinList(final int binSize, final DataPrecision precision, final ScoreCalculationMethod method, final GenomicDataList<Integer> starts, final GenomicDataList<Integer> stops, final GenomicDataList<Double> scores) throws IllegalArgumentException, InterruptedException, ExecutionException {
 		super();
 		this.binSize = binSize;
 		this.precision = precision;
@@ -449,7 +450,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public BinList(final int binSize, final DataPrecision precision, final ScoreCalculationMethod method, final ChromosomeListOfLists<ScoredChromosomeWindow> list)  throws IllegalArgumentException, InterruptedException, ExecutionException {
+	public BinList(final int binSize, final DataPrecision precision, final ScoreCalculationMethod method, final GenomicDataList<ScoredChromosomeWindow> list)  throws IllegalArgumentException, InterruptedException, ExecutionException {
 		super();
 		this.binSize = binSize;
 		this.precision = precision;
@@ -512,8 +513,8 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	public BinList(final int binSize, final DataPrecision precision, final ScoreCalculationMethod method, final GeneList geneList) throws IllegalArgumentException, InterruptedException, ExecutionException {
 		super();
 
-		final ChromosomeListOfLists<Integer> starts = geneList.getStartList();
-		final ChromosomeListOfLists<Integer> stops = geneList.getStopList();
+		final GenomicDataList<Integer> starts = ChromosomeWindowLists.getStartList(geneList);
+		final GenomicDataList<Integer> stops = ChromosomeWindowLists.getStopList(geneList);
 
 		this.binSize = binSize;
 		this.precision = precision;
@@ -568,6 +569,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * Tells the accelerator BinList that the chromosome changed
 	 * And copies the values of the current chromosome in the accelerator array
 	 */
+	@Override
 	protected void chromosomeChanged() {
 		List<Double> currentList = get(fittedChromosome);;
 		boolean uncompressed = false;

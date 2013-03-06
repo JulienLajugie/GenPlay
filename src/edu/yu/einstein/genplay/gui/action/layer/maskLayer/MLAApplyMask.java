@@ -27,7 +27,7 @@ import javax.swing.ActionMap;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOTwoLayers;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationTwoLayersMethod;
-import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
@@ -46,7 +46,7 @@ import edu.yu.einstein.genplay.util.colors.Colors;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public final class MLAApplyMask extends TrackListActionOperationWorker<ChromosomeListOfLists<?>> {
+public final class MLAApplyMask extends TrackListActionOperationWorker<GenomicDataList<?>> {
 
 	private static final long 				serialVersionUID = 4027173438789911860L; 		// generated ID
 	private static final String 			ACTION_NAME = "Apply Mask";						// action name
@@ -75,7 +75,7 @@ public final class MLAApplyMask extends TrackListActionOperationWorker<Chromosom
 
 
 	@Override
-	public Operation<ChromosomeListOfLists<?>> initializeOperation() {
+	public Operation<GenomicDataList<?>> initializeOperation() {
 		selectedLayer = (MaskLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
@@ -86,8 +86,8 @@ public final class MLAApplyMask extends TrackListActionOperationWorker<Chromosom
 			if (layerChooserDialog.showDialog(getRootPane(), "Select Layer to Mask") == LayerChooserDialog.APPROVE_OPTION) {
 				maskedLayer = layerChooserDialog.getSelectedLayer();
 				if (maskedLayer != null) {
-					ChromosomeListOfLists<?> data = (ChromosomeListOfLists<?>) maskedLayer.getData();
-					ChromosomeListOfLists<?> mask = selectedLayer.getData();
+					GenomicDataList<?> data = (GenomicDataList<?>) maskedLayer.getData();
+					GenomicDataList<?> mask = selectedLayer.getData();
 					resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackListPanel().getModel().getTracks());
 					if (resultTrack != null) {
 						scm = ScoreCalculationTwoLayersMethod.MULTIPLICATION;
@@ -102,7 +102,7 @@ public final class MLAApplyMask extends TrackListActionOperationWorker<Chromosom
 
 
 	@Override
-	protected void doAtTheEnd(ChromosomeListOfLists<?> actionResult) {
+	protected void doAtTheEnd(GenomicDataList<?> actionResult) {
 		if (actionResult != null) {
 			SCWLayer newLayer = new SCWLayer(resultTrack, (ScoredChromosomeWindowList) actionResult, maskedLayer.getName() + " masked");
 			// add info to the history

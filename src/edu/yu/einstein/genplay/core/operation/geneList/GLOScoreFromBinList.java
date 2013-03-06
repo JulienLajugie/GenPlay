@@ -35,6 +35,7 @@ import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneListFactory;
 
 
 
@@ -154,7 +155,7 @@ public class GLOScoreFromBinList implements Operation<GeneList> {
 		if (result == null) {
 			return null;
 		} else {
-			return new GeneList(result, geneList.getSearchURL(), geneScoreType);
+			return GeneListFactory.createGeneArrayList(result, geneList.getGeneDBURL(), geneScoreType);
 		}
 	}
 

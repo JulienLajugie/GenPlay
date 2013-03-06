@@ -27,7 +27,7 @@ import java.util.List;
 
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationTwoLayersMethod;
-import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
@@ -48,7 +48,7 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 public class SCWLTwoLayersEngine implements Serializable, Stoppable {
 
 	private static final long serialVersionUID = 2965349494486829320L;
-	private final 	List<ChromosomeListOfLists<?>> 		list;				//list containing originals lists
+	private final 	List<GenomicDataList<?>> 		list;				//list containing originals lists
 	private final 	List<ScoredChromosomeWindow> 		newScwList;			//new list
 	private final	ScoreCalculationTwoLayersMethod		scm;				//operation to apply
 	private 		Chromosome 							chromosome;
@@ -67,7 +67,7 @@ public class SCWLTwoLayersEngine implements Serializable, Stoppable {
 	 * @param scm		operation
 	 */
 	public SCWLTwoLayersEngine (ScoreCalculationTwoLayersMethod scm) {
-		this.list = new ArrayList<ChromosomeListOfLists<?>>();
+		this.list = new ArrayList<GenomicDataList<?>>();
 		this.newScwList = new ArrayList<ScoredChromosomeWindow>();
 		this.scm = scm;
 	}
@@ -80,7 +80,7 @@ public class SCWLTwoLayersEngine implements Serializable, Stoppable {
 	 * @param list2 		second list
 	 * @param chromosome 	chromosome
 	 */
-	public void init (ChromosomeListOfLists<?> list1, ChromosomeListOfLists<?> list2, Chromosome chromosome) {
+	public void init (GenomicDataList<?> list1, GenomicDataList<?> list2, Chromosome chromosome) {
 		//index 0 refers to the first layer
 		//index 1 refers to the second layer
 		this.list.add(list1);

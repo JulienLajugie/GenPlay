@@ -44,7 +44,7 @@ import javax.swing.SpinnerNumberModel;
 import edu.yu.einstein.genplay.core.converter.ConverterFactory;
 import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -91,8 +91,8 @@ public class ConvertDialog extends JDialog {
 	 */
 	public ConvertDialog (Layer<?> inputLayer) {
 		this.inputLayer = inputLayer;
-		if ((ChromosomeListOfLists<?>) inputLayer.getData() != null) {
-			layerTypes = ConverterFactory.getLayerTypes((ChromosomeListOfLists<?>) inputLayer.getData());
+		if ((GenomicDataList<?>) inputLayer.getData() != null) {
+			layerTypes = ConverterFactory.getLayerTypes((GenomicDataList<?>) inputLayer.getData());
 		} else {
 			layerTypes = null;
 		}

@@ -32,10 +32,11 @@ import edu.yu.einstein.genplay.core.generator.GeneListGenerator;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
-import edu.yu.einstein.genplay.dataStructure.list.ChromosomeArrayListOfLists;
-import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.GenomicDataArrayList;
+import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneListFactory;
 import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 import edu.yu.einstein.genplay.util.Utils;
@@ -51,15 +52,15 @@ public final class GdpGeneExtractor extends TextFileExtractor implements Seriali
 
 	private static final long serialVersionUID = 7967902877674655813L; // generated ID
 
-	private final ChromosomeListOfLists<Integer>	startList;		// list of position start
-	private final ChromosomeListOfLists<Integer>	stopList;		// list of position stop
-	private final ChromosomeListOfLists<String> 	nameList;		// list of name
-	private final ChromosomeListOfLists<Strand> 	strandList;		// list of strand
-	private final ChromosomeListOfLists<int[]> 		exonStartsList;	// list of list of exon starts
-	private final ChromosomeListOfLists<int[]> 		exonStopsList;	// list of list of exon stops
-	private final ChromosomeListOfLists<double[]>	exonScoresList;	// list of list of exon scores
-	private String									geneDBURL;		// url of the gene database for the search
-	private GeneScoreType							geneScoreType;	// type of gene and exon score (RPKM, max, sum)
+	private final GenomicDataList<Integer>	startList;		// list of position start
+	private final GenomicDataList<Integer>	stopList;		// list of position stop
+	private final GenomicDataList<String> 	nameList;		// list of name
+	private final GenomicDataList<Strand> 	strandList;		// list of strand
+	private final GenomicDataList<int[]> 	exonStartsList;	// list of list of exon starts
+	private final GenomicDataList<int[]> 	exonStopsList;	// list of list of exon stops
+	private final GenomicDataList<double[]>	exonScoresList;	// list of list of exon scores
+	private String							geneDBURL;		// url of the gene database for the search
+	private GeneScoreType					geneScoreType;	// type of gene and exon score (RPKM, max, sum)
 
 	/**
 	 * Creates an instance of a {@link GdpGeneExtractor}
@@ -69,13 +70,13 @@ public final class GdpGeneExtractor extends TextFileExtractor implements Seriali
 	public GdpGeneExtractor(File dataFile, File logFile) {
 		super(dataFile, logFile);
 		// initialize the lists
-		startList = new ChromosomeArrayListOfLists<Integer>();
-		stopList = new ChromosomeArrayListOfLists<Integer>();
-		nameList = new ChromosomeArrayListOfLists<String>();
-		strandList = new ChromosomeArrayListOfLists<Strand>();
-		exonStartsList = new ChromosomeArrayListOfLists<int[]>();
-		exonStopsList = new ChromosomeArrayListOfLists<int[]>();
-		exonScoresList = new ChromosomeArrayListOfLists<double[]>();
+		startList = new GenomicDataArrayList<Integer>();
+		stopList = new GenomicDataArrayList<Integer>();
+		nameList = new GenomicDataArrayList<String>();
+		strandList = new GenomicDataArrayList<Strand>();
+		exonStartsList = new GenomicDataArrayList<int[]>();
+		exonStopsList = new GenomicDataArrayList<int[]>();
+		exonScoresList = new GenomicDataArrayList<double[]>();
 		// initialize the sublists
 		for (int i = 0; i < projectChromosome.size(); i++) {
 			startList.add(new IntArrayAsIntegerList());
@@ -195,7 +196,7 @@ public final class GdpGeneExtractor extends TextFileExtractor implements Seriali
 
 	@Override
 	public GeneList toGeneList() throws InvalidChromosomeException, InterruptedException, ExecutionException {
-		return new GeneList(nameList, strandList, startList, stopList, exonStartsList, exonStopsList, exonScoresList, geneDBURL, geneScoreType);
+		return GeneListFactory.createGeneArrayList(nameList, strandList, startList, stopList, null, null, null, exonStartsList, exonStopsList, exonScoresList, geneDBURL, geneScoreType);
 	}
 
 }

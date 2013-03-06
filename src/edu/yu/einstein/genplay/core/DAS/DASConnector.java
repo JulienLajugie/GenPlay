@@ -42,10 +42,11 @@ import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
-import edu.yu.einstein.genplay.dataStructure.list.ChromosomeArrayListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.GenomicDataArrayList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneListFactory;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
@@ -152,8 +153,10 @@ public class DASConnector {
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
+	 * @throws ExecutionException
+	 * @throws InterruptedException
 	 */
-	public GeneList getGeneList(DataSource dataSource, DASType dasType) throws IOException, ParserConfigurationException, SAXException {
+	public GeneList getGeneList(DataSource dataSource, DASType dasType) throws IOException, ParserConfigurationException, SAXException, InterruptedException, ExecutionException {
 		//		if ((dasType.getPreferredFormat() != null) && (dasType.getPreferredFormat().equals(".link.psl;.bps;.psl;"))) {
 		//			return getGeneListFromPSL(cm, dataSource, dasType);
 		//		}
@@ -212,7 +215,7 @@ public class DASConnector {
 				}
 			}
 		}
-		return new GeneList(resultList);
+		return GeneListFactory.createGeneArrayList(resultList);
 	}
 
 	/**
@@ -224,8 +227,10 @@ public class DASConnector {
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
+	 * @throws ExecutionException
+	 * @throws InterruptedException
 	 */
-	public GeneList getGeneList(DataSource dataSource, DASType dasType, SimpleGenomeWindow genomeWindow) throws IOException, ParserConfigurationException, SAXException
+	public GeneList getGeneList(DataSource dataSource, DASType dasType, SimpleGenomeWindow genomeWindow) throws IOException, ParserConfigurationException, SAXException, InterruptedException, ExecutionException
 	{
 		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
 		//System.out.println("1st Entry Point " + entryPointList.get(0));
@@ -283,7 +288,7 @@ public class DASConnector {
 				}
 			}
 		}
-		return new GeneList(resultList);
+		return GeneListFactory.createGeneArrayList(resultList);
 	}
 
 
@@ -334,7 +339,7 @@ public class DASConnector {
 	 * Retrieves a list of ScoredChromosomeWindow from a specified Data Source and a specified DAS Type
 	 * @param dataSource a {@link DataSource}
 	 * @param dasType a {@link DASType}
-	 * @return a {@link ChromosomeArrayListOfLists}
+	 * @return a {@link GenomicDataArrayList}
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
@@ -402,7 +407,7 @@ public class DASConnector {
 	 * @param dataSource a {@link DataSource}
 	 * @param dasType a {@link DASType}
 	 * @param genomeWindow a {@link SimpleGenomeWindow}
-	 * @return a {@link ChromosomeArrayListOfLists}
+	 * @return a {@link GenomicDataArrayList}
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 * @throws SAXException

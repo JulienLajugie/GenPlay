@@ -39,7 +39,7 @@ import edu.yu.einstein.genplay.core.multiGenome.operation.synchronization.MGSync
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.VariantType;
-import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.gui.action.multiGenome.synchronization.MGASynchronizing;
 
 
@@ -253,7 +253,7 @@ public class MultiGenomeProject implements Serializable {
 		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		List<Chromosome> currentChromosomeList = projectChromosome.getChromosomeList();
 		List<Chromosome> newChromosomeList = new ArrayList<Chromosome>();
-		ChromosomeListOfLists<MGSOffset> offsetList = multiGenome.getReferenceGenome().getAllele().getOffsetList();
+		GenomicDataList<MGSOffset> offsetList = multiGenome.getReferenceGenome().getAllele().getOffsetList();
 
 		for (Chromosome current: currentChromosomeList) {
 			String name = current.getName();

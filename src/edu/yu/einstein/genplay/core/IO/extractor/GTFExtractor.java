@@ -42,8 +42,8 @@ import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
-import edu.yu.einstein.genplay.dataStructure.list.ChromosomeArrayListOfLists;
-import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.GenomicDataArrayList;
+import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.MaskWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleScoredChromosomeWindowList;
@@ -51,6 +51,7 @@ import edu.yu.einstein.genplay.dataStructure.list.arrayList.DoubleArrayAsDoubleL
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.repeatFamilyList.RepeatFamilyList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
@@ -68,13 +69,13 @@ public class GTFExtractor extends TextFileExtractor implements Serializable, Str
 ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 
 	private static final long serialVersionUID = 6374158568964537008L; // generated ID
-	private final ChromosomeListOfLists<Integer>	startList;		// list of position start
-	private final ChromosomeListOfLists<Integer>	stopList;		// list of position stop
-	private final ChromosomeListOfLists<String> 	nameList;		// list of name
-	private final ChromosomeListOfLists<Strand> 	strandList;		// list of strand
-	private final ChromosomeArrayListOfLists<Double>scoreList;		// list of scores
-	private Strand 									selectedStrand;	// strand to extract, null for both
-	private ReadLengthAndShiftHandler				readHandler;	// handler that computes the position of read by applying the shift
+	private final GenomicDataList<Integer>		startList;		// list of position start
+	private final GenomicDataList<Integer>		stopList;		// list of position stop
+	private final GenomicDataList<String> 		nameList;		// list of name
+	private final GenomicDataList<Strand> 		strandList;		// list of strand
+	private final GenomicDataArrayList<Double>	scoreList;		// list of scores
+	private Strand 								selectedStrand;	// strand to extract, null for both
+	private ReadLengthAndShiftHandler			readHandler;	// handler that computes the position of read by applying the shift
 
 
 	/**
@@ -85,11 +86,11 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 	public GTFExtractor(File dataFile, File logFile) {
 		super(dataFile, logFile);
 		// initialize the lists
-		startList = new ChromosomeArrayListOfLists<Integer>();
-		stopList = new ChromosomeArrayListOfLists<Integer>();
-		nameList = new ChromosomeArrayListOfLists<String>();
-		strandList = new ChromosomeArrayListOfLists<Strand>();
-		scoreList = new ChromosomeArrayListOfLists<Double>();
+		startList = new GenomicDataArrayList<Integer>();
+		stopList = new GenomicDataArrayList<Integer>();
+		nameList = new GenomicDataArrayList<String>();
+		strandList = new GenomicDataArrayList<Strand>();
+		scoreList = new GenomicDataArrayList<Double>();
 		// initialize the sublists
 		for (int i = 0; i < projectChromosome.size(); i++) {
 			startList.add(new IntArrayAsIntegerList());
@@ -343,7 +344,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 				}
 			}
 		}
-		return new GeneList(geneList);
+		return GeneListFactory.createGeneArrayList(geneList);
 	}
 
 
@@ -376,7 +377,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 		int start = exonStartsArray[0];
 		// the stop position is the stop of the last exon
 		int stop = exonStopsArray[exonStopsArray.length - 1];
-		Gene gene = new SimpleGene(name, chromo, strand, start, stop, exonStartsArray, exonStopsArray, exonScoresArray);
+		Gene gene = new SimpleGene(name, chromo, strand, start, stop, 0, exonStartsArray, exonStopsArray, exonScoresArray);
 		// if there is no score we set the gene exon score field to null
 		if (!areExonsScored) {
 			gene.setExonScores(null);

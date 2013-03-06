@@ -88,6 +88,15 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 
 
 	/**
+	 * @param position a position on a chromosome in base pair
+	 * @return a position on the screen
+	 */
+	public long genomeToAbsoluteScreenPosition(int position) {
+		return Math.round(position * xRatio);
+	}
+
+
+	/**
 	 * @param genomePosition a position on the genome in bp
 	 * @return a horizontal position in pixel corresponding to the specified genomic position (can be out of the track bounds)
 	 */

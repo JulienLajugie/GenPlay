@@ -31,6 +31,7 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneListFactory;
 
 
 
@@ -93,7 +94,7 @@ public class GLOFilterBandStop implements Operation<GeneList> {
 		}
 		List<List<Gene>> result = op.startPool(threadList);
 		if (result != null) {
-			GeneList resultList = new GeneList(result, geneList.getSearchURL(), geneList.getGeneScoreType());
+			GeneList resultList = GeneListFactory.createGeneArrayList(result, geneList.getGeneDBURL(), geneList.getGeneScoreType());
 			return resultList;
 		} else {
 			return null;

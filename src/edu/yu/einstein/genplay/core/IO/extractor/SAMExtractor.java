@@ -32,8 +32,8 @@ import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWi
 import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
-import edu.yu.einstein.genplay.dataStructure.list.ChromosomeArrayListOfLists;
-import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.GenomicDataArrayList;
+import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
@@ -50,9 +50,9 @@ import edu.yu.einstein.genplay.util.Utils;
 public class SAMExtractor extends TextFileExtractor implements Serializable, StrandedExtractor, BinListGenerator {
 
 	private static final long serialVersionUID = -1917159784796564734L; // generated ID
-	private final ChromosomeListOfLists<Integer>	startList;		// list of position start
-	private final ChromosomeListOfLists<Integer>	stopList;		// list of position stop
-	private final ChromosomeListOfLists<Double>		scoreList;		// list of scores
+	private final GenomicDataList<Integer>	startList;		// list of position start
+	private final GenomicDataList<Integer>	stopList;		// list of position stop
+	private final GenomicDataList<Double>		scoreList;		// list of scores
 	private Strand 									selectedStrand;	// strand to extract, null for both
 	private ReadLengthAndShiftHandler				readHandler;	// handler that computes the position of read by applying the shift
 
@@ -64,9 +64,9 @@ public class SAMExtractor extends TextFileExtractor implements Serializable, Str
 	 */
 	public SAMExtractor(File dataFile, File logFile) {
 		super(dataFile, logFile);
-		startList = new ChromosomeArrayListOfLists<Integer>();
-		stopList = new ChromosomeArrayListOfLists<Integer>();
-		scoreList = new ChromosomeArrayListOfLists<Double>();
+		startList = new GenomicDataArrayList<Integer>();
+		stopList = new GenomicDataArrayList<Integer>();
+		scoreList = new GenomicDataArrayList<Double>();
 		for (int i = 0; i < projectChromosome.size(); i++) {
 			startList.add(new IntArrayAsIntegerList());
 			stopList.add(new IntArrayAsIntegerList());

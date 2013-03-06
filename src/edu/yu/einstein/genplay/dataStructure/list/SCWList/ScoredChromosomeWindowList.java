@@ -24,7 +24,7 @@ package edu.yu.einstein.genplay.dataStructure.list.SCWList;
 import java.util.List;
 
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
-import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
@@ -32,7 +32,7 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
  * @author Nicolas Fourel
  * @version 0.1
  */
-public interface ScoredChromosomeWindowList extends List<List<ScoredChromosomeWindow>>, ChromosomeListOfLists<ScoredChromosomeWindow> {
+public interface ScoredChromosomeWindowList extends List<List<ScoredChromosomeWindow>>, GenomicDataList<ScoredChromosomeWindow> {
 
 	/**
 	 * Performs a deep clone of the current object

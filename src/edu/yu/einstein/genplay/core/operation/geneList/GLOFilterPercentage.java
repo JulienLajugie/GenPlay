@@ -27,6 +27,7 @@ import java.util.List;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneListFactory;
 
 
 /**
@@ -71,7 +72,7 @@ public class GLOFilterPercentage implements Operation<GeneList> {
 		Arrays.fill(selectedChromo, true);
 		int totalLenght = new GLOCountNonNullGenes(geneList, selectedChromo).compute().intValue();
 		if (totalLenght == 0) {
-			return new GeneList(geneList, geneList.getSearchURL(), geneList.getGeneScoreType());
+			return GeneListFactory.createGeneArrayList(geneList, geneList.getGeneDBURL(), geneList.getGeneScoreType());
 		}
 		double[] allScores = new double[totalLenght];
 		int i = 0;

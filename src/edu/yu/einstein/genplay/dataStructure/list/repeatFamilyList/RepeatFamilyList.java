@@ -39,7 +39,7 @@ import edu.yu.einstein.genplay.core.repeatFamily.RepeatFamily;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.DisplayableListOfLists;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
@@ -87,9 +87,9 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public RepeatFamilyList(final ChromosomeListOfLists<Integer> startList,
-			final ChromosomeListOfLists<Integer> stopList,
-			final ChromosomeListOfLists<String> familyNameList) throws InvalidChromosomeException, InterruptedException, ExecutionException {
+	public RepeatFamilyList(final GenomicDataList<Integer> startList,
+			final GenomicDataList<Integer> stopList,
+			final GenomicDataList<String> familyNameList) throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		super();
 		// retrieve the instance of the OperationPool
 		final OperationPool op = OperationPool.getInstance();

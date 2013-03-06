@@ -25,7 +25,7 @@ import edu.yu.einstein.genplay.core.multiGenome.data.synchronization.MGSAllele;
 import edu.yu.einstein.genplay.core.multiGenome.data.synchronization.MGSOffset;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
-import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.IntArrayAsOffsetList;
 
 
@@ -54,13 +54,13 @@ public class ShiftCompute {
 		int outputPosition = -1;
 
 		if (FormattedMultiGenomeName.isMetaGenome(outputGenomeName)) {
-			ChromosomeListOfLists<MGSOffset> chromosomeOffsetList = getOffsetList(inputGenomeName, inputAlleleType);
+			GenomicDataList<MGSOffset> chromosomeOffsetList = getOffsetList(inputGenomeName, inputAlleleType);
 			if (chromosomeOffsetList != null) {
 				IntArrayAsOffsetList offsetList = (IntArrayAsOffsetList) chromosomeOffsetList.get(chromosome);
 				outputPosition = offsetList.getMetaGenomePosition(inputGenomePosition);
 			}
 		} else if (FormattedMultiGenomeName.isMetaGenome(inputGenomeName)) {
-			ChromosomeListOfLists<MGSOffset> chromosomeOffsetList = getOffsetList(outputGenomeName, inputAlleleType);
+			GenomicDataList<MGSOffset> chromosomeOffsetList = getOffsetList(outputGenomeName, inputAlleleType);
 			if (chromosomeOffsetList != null) {
 				IntArrayAsOffsetList offsetList = (IntArrayAsOffsetList) chromosomeOffsetList.get(chromosome);
 				outputPosition = offsetList.getGenomePosition(inputGenomePosition);
@@ -74,7 +74,7 @@ public class ShiftCompute {
 	}
 
 
-	private static ChromosomeListOfLists<MGSOffset> getOffsetList (String genome, AlleleType alleleType) {
+	private static GenomicDataList<MGSOffset> getOffsetList (String genome, AlleleType alleleType) {
 		MGSAllele alleleInformation = null;
 
 		if (FormattedMultiGenomeName.isReferenceGenome(genome)) {
@@ -87,7 +87,7 @@ public class ShiftCompute {
 			}
 		}
 
-		ChromosomeListOfLists<MGSOffset> offsetList = alleleInformation.getOffsetList();
+		GenomicDataList<MGSOffset> offsetList = alleleInformation.getOffsetList();
 
 		return offsetList;
 	}

@@ -24,7 +24,7 @@ package edu.yu.einstein.genplay.dataStructure.list.geneList;
 import java.io.Serializable;
 
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
-import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 
 
 
@@ -36,7 +36,7 @@ import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
 public final class GeneSearcher implements Serializable {
 
 	private static final long serialVersionUID = 2905806587397044885L;			// generated ID
-	private final ChromosomeListOfLists<Gene> 	geneList;						// GeneList where to search the genes
+	private final GenomicDataList<Gene> 	geneList;						// GeneList where to search the genes
 	private String 								lastSearchedGeneName = null;	// name of the last searched gene
 	private Gene 								lastGeneFound = null;			// last found gene
 	private int 								lastFoundChromoIndex;			// index of the chromosome of the last found gene
@@ -49,7 +49,7 @@ public final class GeneSearcher implements Serializable {
 	 * Creates an instance of {@link GeneSearcher}
 	 * @param geneList {@link GeneList} where to search the genes
 	 */
-	public GeneSearcher(ChromosomeListOfLists<Gene> geneList) {
+	public GeneSearcher(GenomicDataList<Gene> geneList) {
 		super();
 		this.geneList = geneList;
 	}

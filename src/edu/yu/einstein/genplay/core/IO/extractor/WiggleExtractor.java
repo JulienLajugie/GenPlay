@@ -32,8 +32,8 @@ import edu.yu.einstein.genplay.core.generator.ScoredChromosomeWindowListGenerato
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.dataStructure.list.ChromosomeArrayListOfLists;
-import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.GenomicDataArrayList;
+import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.MaskWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleScoredChromosomeWindowList;
@@ -55,9 +55,9 @@ implements Serializable, ScoredChromosomeWindowListGenerator, BinListGenerator{
 
 	private static final long serialVersionUID = 3397954112622122744L; // generated ID
 
-	private final ChromosomeListOfLists<Integer>	startList;		// list of position start
-	private final ChromosomeListOfLists<Integer>	stopList;		// list of position stop
-	private final ChromosomeListOfLists<Double>	scoreList;		// list of scores
+	private final GenomicDataList<Integer>	startList;		// list of position start
+	private final GenomicDataList<Integer>	stopList;		// list of position stop
+	private final GenomicDataList<Double>	scoreList;		// list of scores
 
 	private Chromosome 		currentChromo;					// last chromosome specified
 	private int 			currentSpan;					// last span specified
@@ -76,9 +76,9 @@ implements Serializable, ScoredChromosomeWindowListGenerator, BinListGenerator{
 	 */
 	public WiggleExtractor(File dataFile, File logFile) {
 		super(dataFile, logFile);
-		startList = new ChromosomeArrayListOfLists<Integer>();
-		stopList = new ChromosomeArrayListOfLists<Integer>();
-		scoreList = new ChromosomeArrayListOfLists<Double>();
+		startList = new GenomicDataArrayList<Integer>();
+		stopList = new GenomicDataArrayList<Integer>();
+		scoreList = new GenomicDataArrayList<Double>();
 		for (int i = 0; i < projectChromosome.size(); i++) {
 			startList.add(new IntArrayAsIntegerList());
 			stopList.add(new IntArrayAsIntegerList());

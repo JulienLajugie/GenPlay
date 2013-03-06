@@ -37,6 +37,7 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.geneList.GLODistanceCalculator;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneListFactory;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotData;
 import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotPane;
@@ -95,8 +96,8 @@ public class GLADistanceCalculator extends TrackListActionOperationWorker<long[]
 			if (layerChooserDialog.showDialog(getRootPane(), "Select Layer") == LayerChooserDialog.APPROVE_OPTION) {
 				otherLayer = (GeneLayer) layerChooserDialog.getSelectedLayer();
 				if (otherLayer != null) {
-					GeneList geneList1 = new GeneList(selectedLayer.getData());
-					GeneList geneList2 = new GeneList(otherLayer.getData());
+					GeneList geneList1 = GeneListFactory.createGeneArrayList(selectedLayer.getData());
+					GeneList geneList2 = GeneListFactory.createGeneArrayList(otherLayer.getData());
 					graphName = "Distance between \"" + selectedLayer.toString().substring(0, 10) + "\" and \"" + otherLayer.toString().substring(0, 10) + "\"";
 					dcd = new DistanceCalculatorDialog();
 					if (dcd.showDialog(getRootPane()) == DistanceCalculatorDialog.APPROVE_OPTION) {

@@ -70,7 +70,7 @@ public final class GeneListAsGdpGeneWriter extends GeneListWriter implements Sto
 			// print the "track" header of the file
 			TrackLineHeader trackLineHeader = new TrackLineHeader(); // header "track" line
 			trackLineHeader.setName(name);
-			trackLineHeader.setGeneDBURL(data.getSearchURL());
+			trackLineHeader.setGeneDBURL(data.getGeneDBURL());
 			trackLineHeader.setGeneScoreType(data.getGeneScoreType());
 			String trackLine = trackLineHeader.generateTrackLine();
 			if (trackLineHeader != null) {

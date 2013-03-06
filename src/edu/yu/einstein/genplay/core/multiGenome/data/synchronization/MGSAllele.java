@@ -31,8 +31,8 @@ import java.util.List;
 import edu.yu.einstein.genplay.core.comparator.MGOffsetComparator;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.list.ChromosomeArrayListOfLists;
-import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.GenomicDataArrayList;
+import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.IntArrayAsOffsetList;
 
 /**
@@ -44,7 +44,7 @@ public class MGSAllele implements Serializable {
 	/** Default serial version ID */
 	private static final long serialVersionUID = -3160689645132714945L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
-	private ChromosomeListOfLists<MGSOffset> offsetList;					// List of offset organized by chromosome
+	private GenomicDataList<MGSOffset> offsetList;					// List of offset organized by chromosome
 
 
 	/**
@@ -67,7 +67,7 @@ public class MGSAllele implements Serializable {
 	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		offsetList = (ChromosomeListOfLists<MGSOffset>) in.readObject();
+		offsetList = (GenomicDataList<MGSOffset>) in.readObject();
 	}
 
 
@@ -75,7 +75,7 @@ public class MGSAllele implements Serializable {
 	 * Constructor of {@link MGSAllele}
 	 */
 	public MGSAllele () {
-		offsetList = new ChromosomeArrayListOfLists<MGSOffset>();
+		offsetList = new GenomicDataArrayList<MGSOffset>();
 		int chromosomeListSize = ProjectManager.getInstance().getProjectChromosome().getChromosomeList().size();
 		for (int i = 0; i < chromosomeListSize; i++) {
 			offsetList.add(new IntArrayAsOffsetList());
@@ -86,7 +86,7 @@ public class MGSAllele implements Serializable {
 	/**
 	 * @param offsetList the offsetList to set
 	 */
-	public void setOffsetList(ChromosomeListOfLists<MGSOffset> offsetList) {
+	public void setOffsetList(GenomicDataList<MGSOffset> offsetList) {
 		this.offsetList = offsetList;
 	}
 
@@ -94,7 +94,7 @@ public class MGSAllele implements Serializable {
 	/**
 	 * @return the offsetList
 	 */
-	public ChromosomeListOfLists<MGSOffset> getOffsetList() {
+	public GenomicDataList<MGSOffset> getOffsetList() {
 		return offsetList;
 	}
 

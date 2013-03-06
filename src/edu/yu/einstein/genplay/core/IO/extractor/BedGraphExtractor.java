@@ -31,8 +31,8 @@ import edu.yu.einstein.genplay.core.generator.ScoredChromosomeWindowListGenerato
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.dataStructure.list.ChromosomeArrayListOfLists;
-import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.GenomicDataArrayList;
+import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.MaskWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleScoredChromosomeWindowList;
@@ -54,9 +54,9 @@ public final class BedGraphExtractor extends TextFileExtractor
 implements Serializable, ScoredChromosomeWindowListGenerator, BinListGenerator {
 
 	private static final long serialVersionUID = 7106474719716124894L; // generated ID
-	private final ChromosomeListOfLists<Integer>	startList;		// list of position start
-	private final ChromosomeListOfLists<Integer>	stopList;		// list of position stop
-	private final ChromosomeListOfLists<Double>		scoreList;		// list of scores
+	private final GenomicDataList<Integer>	startList;		// list of position start
+	private final GenomicDataList<Integer>	stopList;		// list of position stop
+	private final GenomicDataList<Double>		scoreList;		// list of scores
 
 
 	/**
@@ -67,9 +67,9 @@ implements Serializable, ScoredChromosomeWindowListGenerator, BinListGenerator {
 	public BedGraphExtractor(File dataFile, File logFile) {
 		super(dataFile, logFile);
 		// initialize the lists
-		startList = new ChromosomeArrayListOfLists<Integer>();
-		stopList = new ChromosomeArrayListOfLists<Integer>();
-		scoreList = new ChromosomeArrayListOfLists<Double>();
+		startList = new GenomicDataArrayList<Integer>();
+		stopList = new GenomicDataArrayList<Integer>();
+		scoreList = new GenomicDataArrayList<Double>();
 		// initialize the sublists
 		for (int i = 0; i < projectChromosome.size(); i++) {
 			startList.add(new IntArrayAsIntegerList());

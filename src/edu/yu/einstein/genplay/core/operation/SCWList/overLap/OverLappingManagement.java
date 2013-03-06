@@ -30,7 +30,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
@@ -62,9 +62,9 @@ public class OverLappingManagement implements Serializable {
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
-	public OverLappingManagement (	ChromosomeListOfLists<Integer> startList,
-			ChromosomeListOfLists<Integer> stopList,
-			ChromosomeListOfLists<Double> scoreList) throws InterruptedException, ExecutionException {
+	public OverLappingManagement (	GenomicDataList<Integer> startList,
+			GenomicDataList<Integer> stopList,
+			GenomicDataList<Double> scoreList) throws InterruptedException, ExecutionException {
 		this.projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		this.sortSCW = new SCWLOptions(startList, stopList, scoreList);
 		this.sortSCW.sortAll();

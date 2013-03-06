@@ -23,6 +23,7 @@ package edu.yu.einstein.genplay.gui.track.layer;
 
 import java.awt.Cursor;
 import java.awt.Desktop;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.InputEvent;
@@ -31,8 +32,11 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.URI;
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -42,6 +46,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
+import edu.yu.einstein.genplay.gui.dataScalerForTrackDisplay.GenomicListOfGenesScaler;
 import edu.yu.einstein.genplay.gui.track.ScrollingManager;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.colors.Colors;
@@ -53,12 +58,12 @@ import edu.yu.einstein.genplay.util.colors.Colors;
  */
 public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer<GeneList>, VersionedLayer<GeneList>, ScoredLayer, MouseListener, MouseMotionListener, MouseWheelListener {
 
-	private static final long serialVersionUID = 3779631846077486596L; // generated ID
-	private static final double				MIN_X_RATIO_PRINT_NAME =
-			GeneList.MIN_X_RATIO_PRINT_NAME;								// the name of the genes are printed if the ratio is higher than this value
-	private static final double 			SCORE_SATURATION = 0.01d;		// saturation of the score of the exon for the display
+	private static final long serialVersionUID = 3779631846077486596L; 		// generated ID
+	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;				// Saved format version
+	private static final double 			SCORE_SATURATION = 0.02d;		// saturation of the score of the exon for the display
 	private static final short				GENE_HEIGHT = 6;				// size of a gene in pixel
 	private static final short				UTR_HEIGHT = 3;					// height of a UTR region of a gene in pixel
+	private GenomicListOfGenesScaler		dataScaler;						// object that scales the list of genes for display
 	private int 							firstLineToDisplay;				// number of the first line to be displayed
 	private int 							geneLinesCount;					// number of line of genes
 	private int 							mouseStartDragY = -1;			// position of the mouse when start dragging
@@ -96,11 +101,11 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 			double max = getTrack().getScore().getMaximumScore();
 			double min = getTrack().getScore().getMinimumScore();
 			// we print the gene names if the x ratio > MIN_X_RATIO_PRINT_NAME
-			boolean isGeneNamePrinted = projectWindow.getXRatio() > MIN_X_RATIO_PRINT_NAME;
-			// set the data font metrics
-			getData().setFontMetrics(g.getFontMetrics());
+			boolean isGeneNamePrinted = projectWindow.getXRatio() > GenomicListOfGenesScaler.MIN_X_RATIO_PRINT_NAME;
+			// check that the data scaler is valid
+			validateDataScaler();
 			// Retrieve the genes to print
-			List<List<Gene>> genesToPrint = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
+			List<List<Gene>> genesToPrint = dataScaler.getDataScaledForTrackDisplay();
 			if ((genesToPrint != null) && (genesToPrint.size() > 0)){
 				// Compute the maximum number of line displayable
 				int displayedLineCount = 0;
@@ -238,10 +243,10 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 			// if a gene is double clicked
 			if ((e.getClickCount() == 2) && (geneUnderMouse != null)) {
 				// if the desktop is supported
-				if ((getData().getSearchURL() != null) && (Desktop.isDesktopSupported())) {
+				if ((getData().getGeneDBURL() != null) && (Desktop.isDesktopSupported())) {
 					try {
 						// we open a browser showing information on the gene
-						Desktop.getDesktop().browse(new URI(getData().getSearchURL() + geneUnderMouse.getName()));
+						Desktop.getDesktop().browse(new URI(getData().getGeneDBURL() + geneUnderMouse.getName()));
 					} catch (Exception e1) {
 						ExceptionManager.getInstance().caughtException(Thread.currentThread(), e1, "Error while opening the web browser");
 					}
@@ -260,7 +265,7 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 			// we retrieve the project window
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
 			// we print the gene names if the x ratio > MIN_X_RATIO_PRINT_NAME
-			boolean isGeneNamePrinted = projectWindow.getXRatio() > MIN_X_RATIO_PRINT_NAME;
+			boolean isGeneNamePrinted = projectWindow.getXRatio() > GenomicListOfGenesScaler.MIN_X_RATIO_PRINT_NAME;
 			if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
 				int distance = 0;
 				if (isGeneNamePrinted) {
@@ -303,9 +308,11 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 				// retrieve the position of the mouse
 				Point mousePosition = e.getPoint();
 				// check if the name of genes is printed
-				boolean isGeneNamePrinted = projectWindow.getXRatio() > MIN_X_RATIO_PRINT_NAME;
+				boolean isGeneNamePrinted = projectWindow.getXRatio() > GenomicListOfGenesScaler.MIN_X_RATIO_PRINT_NAME;
+				// check that the data scaler is valid
+				validateDataScaler();
 				// retrieve the list of the printed genes
-				List<List<Gene>> printedGenes = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
+				List<List<Gene>> printedGenes = dataScaler.getDataScaledForTrackDisplay();
 				// do nothing if there is no genes
 				if (printedGenes == null) {
 					return;
@@ -371,17 +378,15 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 					// set the cursor and the tooltip text if there is a gene under the mouse cursor
 					getTrack().getGraphicsPanel().setCursor(new Cursor(Cursor.HAND_CURSOR));
 					String toolTipText = "<html><b>" + geneUnderMouse.getName() + "</b><br>";
-					if (getData() instanceof GeneList) {
-						GeneList geneList = getData();
-						if (geneList.getGeneScoreType() != null) {
-							toolTipText += "Score Type: <i>" + geneList.getGeneScoreType() + "</i><br>";
-						}
+					GeneList geneList = getData();
+					if (geneList.getGeneScoreType() != null) {
+						toolTipText += "Score Type: <i>" + geneList.getGeneScoreType() + "</i><br>";
 					}
-					if (geneUnderMouse.getScore() != 0) {
-						toolTipText += "Gene Score = <i>" + DecimalFormat.getInstance().format(geneUnderMouse.getScore()) + "</i><br>";
+					if (geneUnderMouse.getScore() != Double.NaN) {
+						toolTipText += "Gene Score = <i>" + NumberFormat.getInstance().format(geneUnderMouse.getScore()) + "</i><br>";
 					}
 					if (scoreExonUnderMouse != null) {
-						toolTipText += "Exon Score = <i>" + DecimalFormat.getInstance().format(scoreExonUnderMouse) + "</i><br>";
+						toolTipText += "Exon Score = <i>" + NumberFormat.getInstance().format(scoreExonUnderMouse) + "</i><br>";
 					}
 					toolTipText += "</html>";
 					getTrack().getGraphicsPanel().setToolTipText(toolTipText);
@@ -428,6 +433,23 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 				}
 			}
 		}
+	}
+
+
+	/**
+	 * Method used for deserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		min = in.readDouble();
+		max = in.readDouble();
+		firstLineToDisplay = 0;
+		geneLinesCount = 0;
+		mouseStartDragY = -1;
+		geneUnderMouse = null;
 	}
 
 
@@ -480,5 +502,29 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 			min = scoreList.get(minIndex);
 			max = scoreList.get(maxIndex);
 		}
+	}
+
+
+	/**
+	 * Checks that the data scaler is valid. Regenerates the data scaler if it's not valid
+	 */
+	private void validateDataScaler() {
+		// if the data scaler is null or is not set to scale the current data we regenerate it
+		if ((dataScaler == null) || (getData() != dataScaler.getDataToScale())) {
+			FontMetrics fontMetrics = getTrack().getGraphicsPanel().getGraphics().getFontMetrics();
+			dataScaler = new GenomicListOfGenesScaler(getData(), fontMetrics);
+		}
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeDouble(min);
+		out.writeDouble(max);
 	}
 }

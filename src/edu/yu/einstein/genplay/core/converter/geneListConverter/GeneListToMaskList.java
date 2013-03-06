@@ -24,7 +24,7 @@ package edu.yu.einstein.genplay.core.converter.geneListConverter;
 import edu.yu.einstein.genplay.core.converter.Converter;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOCleanList;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.MaskWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
@@ -40,7 +40,7 @@ public class GeneListToMaskList implements Converter {
 
 	private final GeneList 						list; 			// The input list.
 	private final ScoreCalculationMethod 		method; 		// method for the calculation of the scores of the result binlist
-	private ChromosomeListOfLists<?> 			result;			// The output list.
+	private GenomicDataList<?> 			result;			// The output list.
 
 
 	/**
@@ -75,7 +75,7 @@ public class GeneListToMaskList implements Converter {
 
 
 	@Override
-	public ChromosomeListOfLists<?> getList() {
+	public GenomicDataList<?> getList() {
 		return result;
 	}
 }

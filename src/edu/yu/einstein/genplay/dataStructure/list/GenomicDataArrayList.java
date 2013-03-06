@@ -43,7 +43,7 @@ import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class ChromosomeArrayListOfLists<T> implements List<List<T>>, Cloneable, Serializable, ChromosomeListOfLists<T> {
+public class GenomicDataArrayList<T> implements List<List<T>>, Cloneable, Serializable, GenomicDataList<T> {
 
 	private static final long serialVersionUID = 3989560975472825193L; 	// generated ID
 	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
@@ -52,9 +52,9 @@ public class ChromosomeArrayListOfLists<T> implements List<List<T>>, Cloneable, 
 
 
 	/**
-	 * Constructor of {@link ChromosomeArrayListOfLists}.
+	 * Constructor of {@link GenomicDataArrayList}.
 	 */
-	public ChromosomeArrayListOfLists() {
+	public GenomicDataArrayList() {
 		super();
 		this.projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		dataList = new ArrayList<List<T>>();

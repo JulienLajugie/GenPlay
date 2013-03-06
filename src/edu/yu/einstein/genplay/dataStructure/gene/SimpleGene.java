@@ -21,6 +21,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.dataStructure.gene;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
@@ -36,6 +40,8 @@ import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 public final class SimpleGene implements Gene {
 
 	private static final long serialVersionUID = -9086602517817950291L; // generated ID
+	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// Saved format version
+
 	private String 		name; 			// name of the gene
 	private Chromosome	chromosome;		// chromosome
 	private Strand		strand;			// strand of the gene
@@ -53,7 +59,7 @@ public final class SimpleGene implements Gene {
 	 * Creates an instance of {@link SimpleGene}
 	 */
 	public SimpleGene() {
-		this(null, null, null, 0, 0, 0, 0, null, null, null);
+		this(null, null, null, 0, 0, Double.NaN, 0, 0, null, null, null);
 	}
 
 
@@ -62,7 +68,7 @@ public final class SimpleGene implements Gene {
 	 * @param gene a {@link SimpleGene}
 	 */
 	public SimpleGene(Gene gene) {
-		this(gene.getName(), gene.getChromosome(), gene.getStrand(), gene.getStart(), gene.getStop(), gene.getUTR5Bound(), gene.getUTR3Bound(), null, null, null);
+		this(gene.getName(), gene.getChromosome(), gene.getStrand(), gene.getStart(), gene.getStop(), gene.getScore(), gene.getUTR5Bound(), gene.getUTR3Bound(), null, null, null);
 		if (gene.getExonStarts() != null) {
 			exonStarts = gene.getExonStarts().clone();
 		}
@@ -80,21 +86,23 @@ public final class SimpleGene implements Gene {
 	 * @param name Name of gene
 	 * @param chromosome chromosome
 	 * @param strand Strand of the gene
-	 * @param start Transcription start position
-	 * @param stop Transcription end position
+	 * @param start gene start position
+	 * @param stop gene end position
+	 * @param score score of the gene
 	 * @param UTR5Bound transcription 5' bond
 	 * @param UTR3Bound transcription 3' bond
-	 * @param exonStarts Exon start positions
-	 * @param exonStops Exon end positions
-	 * @param exonScores Exon scores
+	 * @param exonStarts exon start positions
+	 * @param exonStops exon end positions
+	 * @param exonScores exon scores
 	 */
-	public SimpleGene(String name, Chromosome chromosome, Strand strand, int start, int stop, int UTR5Bound,int UTR3Bound, int[] exonStarts, int[] exonStops, double[] exonScores) {
+	public SimpleGene(String name, Chromosome chromosome, Strand strand, int start, int stop, double score, int UTR5Bound,int UTR3Bound, int[] exonStarts, int[] exonStops, double[] exonScores) {
 		super();
 		this.name = name;
 		this.chromosome = chromosome;
 		this.strand = strand;
 		this.start = start;
 		this.stop = stop;
+		this.score = score;
 		this.UTR5Bound = UTR5Bound;
 		this.UTR3Bound = UTR3Bound;
 		this.exonStarts = exonStarts;
@@ -107,15 +115,16 @@ public final class SimpleGene implements Gene {
 	 * Creates an instance of Gene.
 	 * @param name Name of gene.
 	 * @param chromosome chromosome
-	 * @param strand Strand of the gene.
-	 * @param start Transcription start position.
-	 * @param stop Transcription end position.
-	 * @param exonStarts Exon start positions.
-	 * @param exonStops Exon end positions.
-	 * @param exonScores Exon scores
+	 * @param strand strand of the gene.
+	 * @param start transcription start position.
+	 * @param stop transcription end position.
+	 * @param score score of the gene
+	 * @param exonStarts exon start positions.
+	 * @param exonStops exon end positions.
+	 * @param exonScores exon scores
 	 */
-	public SimpleGene(String name, Chromosome chromosome, Strand strand, int start, int stop, int[] exonStarts, int[] exonStops, double[] exonScores) {
-		this(name, chromosome, strand, start, stop, start, stop, exonStarts, exonStops, exonScores);
+	public SimpleGene(String name, Chromosome chromosome, Strand strand, int start, int stop, double score, int[] exonStarts, int[] exonStops, double[] exonScores) {
+		this(name, chromosome, strand, start, stop, score, start, stop, exonStarts, exonStops, exonScores);
 	}
 
 
@@ -337,6 +346,28 @@ public final class SimpleGene implements Gene {
 
 
 	/**
+	 * Method used for deserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		name = (String) in.readObject();
+		chromosome = (Chromosome) in.readObject();
+		strand = (Strand) in.readObject();
+		start = in.readInt();
+		stop = in.readInt();
+		score = in.readDouble();
+		UTR5Bound = in.readInt();
+		UTR3Bound = in.readInt();
+		exonStarts = (int[]) in.readObject();
+		exonStops = (int[]) in.readObject();
+		exonScores = (double[]) in.readObject();
+	}
+
+
+	/**
 	 * @param chromosome the chromosome to set
 	 */
 	@Override
@@ -435,5 +466,26 @@ public final class SimpleGene implements Gene {
 	@Override
 	public String toString() {
 		return chromosome.toString() + "\t" + start + "\t" + stop +"\t" + name + "\t" + strand;
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(name);
+		out.writeObject(chromosome);
+		out.writeObject(strand);
+		out.writeInt(start);
+		out.writeInt(stop);
+		out.writeDouble(score);
+		out.writeInt(UTR5Bound);
+		out.writeInt(UTR3Bound);
+		out.writeObject(exonStarts);
+		out.writeObject(exonStops);
+		out.writeObject(exonScores);
 	}
 }

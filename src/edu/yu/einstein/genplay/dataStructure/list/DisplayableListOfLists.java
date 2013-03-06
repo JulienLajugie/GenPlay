@@ -39,7 +39,7 @@ import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
  * @param <T> type of the data
  * @param <U> type returned by the method that fits the data for the screen resolution
  */
-public abstract class DisplayableListOfLists<T, U> extends ChromosomeArrayListOfLists<T> implements Serializable, Cloneable, ChromosomeListOfLists<T>, DisplayableDataList<U> {
+public abstract class DisplayableListOfLists<T, U> extends GenomicDataArrayList<T> implements Serializable, Cloneable, GenomicDataList<T>, DisplayableDataList<U> {
 
 	private static final long serialVersionUID = -2238871286451859789L;	// generated ID
 	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version

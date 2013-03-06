@@ -37,6 +37,7 @@ import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneListFactory;
 import edu.yu.einstein.genplay.util.DoubleLists;
 
 
@@ -135,7 +136,7 @@ public class BLOTransfragGeneList implements Operation<GeneList> {
 								exonStart[0] = regionStart;
 								exonStop[0] = regionStop;
 								exonScore[0] = regionScore;
-								newGene = new SimpleGene(chromosomeName + "." + Integer.toString(geneCounter++), new Chromosome(chromosomeName, chromosomeLength), Strand.get('+'), regionStart, regionStop, exonStart, exonStop, exonScore);
+								newGene = new SimpleGene(chromosomeName + "." + Integer.toString(geneCounter++), new Chromosome(chromosomeName, chromosomeLength), Strand.get('+'), regionStart, regionStop, Double.NaN, exonStart, exonStop, exonScore);
 								resultGeneList.add(newGene);
 							}
 						}
@@ -149,7 +150,7 @@ public class BLOTransfragGeneList implements Operation<GeneList> {
 		}
 		List<List<Gene>> result = op.startPool(threadList);
 		if (result != null) {
-			GeneList resultList = new GeneList(result);
+			GeneList resultList = GeneListFactory.createGeneArrayList(result);
 			return resultList;
 		} else {
 			return null;

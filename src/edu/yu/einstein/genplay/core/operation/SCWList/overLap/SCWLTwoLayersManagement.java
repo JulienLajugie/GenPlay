@@ -29,7 +29,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationTwoLayersMethod;
-import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
@@ -48,7 +48,7 @@ public class SCWLTwoLayersManagement implements Serializable, Stoppable {
 
 	private static final long serialVersionUID = -4066526880193456101L;
 	protected 	final 	ProjectChromosome 				projectChromosome;	//ChromosomeManager
-	private 	final 	List<ChromosomeListOfLists<?>> 			scwList;		//list containing originals lists
+	private 	final 	List<GenomicDataList<?>> 			scwList;		//list containing originals lists
 	private 	final 	List<SCWLTwoLayersEngine>			twoLayersEngineList;
 
 	/**
@@ -58,11 +58,11 @@ public class SCWLTwoLayersManagement implements Serializable, Stoppable {
 	 * @param list2	second layer
 	 * @param scm		operation
 	 */
-	public SCWLTwoLayersManagement (	ChromosomeListOfLists<?> list1,
-			ChromosomeListOfLists<?> list2,
+	public SCWLTwoLayersManagement (	GenomicDataList<?> list1,
+			GenomicDataList<?> list2,
 			ScoreCalculationTwoLayersMethod scm) {
 		this.projectChromosome = ProjectManager.getInstance().getProjectChromosome();
-		this.scwList = new ArrayList<ChromosomeListOfLists<?>>();
+		this.scwList = new ArrayList<GenomicDataList<?>>();
 		this.scwList.add(list1);
 		this.scwList.add(list2);
 		this.twoLayersEngineList = new ArrayList<SCWLTwoLayersEngine>();

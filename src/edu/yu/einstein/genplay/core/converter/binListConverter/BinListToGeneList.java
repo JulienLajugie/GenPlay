@@ -21,8 +21,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.converter.binListConverter;
 
+import javax.naming.OperationNotSupportedException;
+
 import edu.yu.einstein.genplay.core.converter.Converter;
-import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
@@ -36,8 +38,9 @@ import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
  */
 public class BinListToGeneList implements Converter {
 
-	private final BinList 				list; 		// The input list.
-	private ChromosomeListOfLists<?> 	result;			// The output list.
+	@SuppressWarnings("unused")
+	private final BinList 		list; 		// The input list.
+	private GenomicDataList<?> 	result;		// The output list.
 
 
 	/**
@@ -63,12 +66,14 @@ public class BinListToGeneList implements Converter {
 
 	@Override
 	public void convert() throws Exception {
-		result = new GeneList(list);
+		// TODO creates this method
+		throw new OperationNotSupportedException("convert binlist into genelist not implemented yet");
+		//result = GeneListFactory.createGeneArrayList(list);
 	}
 
 
 	@Override
-	public ChromosomeListOfLists<?> getList() {
+	public GenomicDataList<?> getList() {
 		return result;
 	}
 }

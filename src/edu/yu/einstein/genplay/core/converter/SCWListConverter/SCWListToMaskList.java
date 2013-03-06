@@ -22,7 +22,7 @@
 package edu.yu.einstein.genplay.core.converter.SCWListConverter;
 
 import edu.yu.einstein.genplay.core.converter.Converter;
-import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.MaskWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 
@@ -36,7 +36,7 @@ import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindow
 public class SCWListToMaskList implements Converter {
 
 	private final ScoredChromosomeWindowList 	list; 		// input list
-	private ChromosomeListOfLists<?> 			result;			// The output list.
+	private GenomicDataList<?> 			result;			// The output list.
 
 
 	/**
@@ -67,7 +67,7 @@ public class SCWListToMaskList implements Converter {
 
 
 	@Override
-	public ChromosomeListOfLists<?> getList() {
+	public GenomicDataList<?> getList() {
 		return result;
 	}
 }

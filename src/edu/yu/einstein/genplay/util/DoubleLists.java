@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -30,15 +30,15 @@ import java.util.List;
  * @version 0.1
  */
 public class DoubleLists {
-	
-	
+
+
 	/**
 	 * @param list {@link List} of Double
 	 * @return the average value of the list
 	 */
 	public static double average(List<Double> list) {
 		double sum = 0;
-		int n = 0; 
+		int n = 0;
 		for (Double currentValue : list) {
 			if (currentValue != 0) {
 				sum += currentValue;
@@ -51,8 +51,8 @@ public class DoubleLists {
 			return sum / n;
 		}
 	}
-	
-	
+
+
 	/**
 	 * @param list {@link List} of Double
 	 * @param indexStart index where to start in the list
@@ -65,7 +65,7 @@ public class DoubleLists {
 		} else if (indexStart == indexStop) {
 			return list.get(indexStart);
 		}
-		
+
 		double sum = 0;
 		int n = 0;
 		int i = indexStart;
@@ -82,8 +82,8 @@ public class DoubleLists {
 			return sum / n;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Returns the maximum of the list in parameter. Doesn't take the 0 value elements into account.
 	 * @param list
@@ -98,8 +98,8 @@ public class DoubleLists {
 		}
 		return max;
 	}
-	
-	
+
+
 	/**
 	 * Returns the maximum of the list in parameter. Doesn't take the 0 value elements into account.
 	 * @param list
@@ -113,7 +113,7 @@ public class DoubleLists {
 		} else if (indexStart == indexStop) {
 			return list.get(indexStart);
 		}
-		
+
 		double max = Double.NEGATIVE_INFINITY;
 		int i = indexStart;
 		while ((i <= indexStop) && (i < list.size())) {
@@ -125,8 +125,8 @@ public class DoubleLists {
 		}
 		return max;
 	}
-	
-	
+
+
 	/**
 	 * Returns the minimum of the list in parameter. Doesn't take the 0 value elements into account.
 	 * @param list
@@ -141,8 +141,8 @@ public class DoubleLists {
 		}
 		return min;
 	}
-	
-	
+
+
 	/**
 	 * @param list {@link List} of Double
 	 * @param indexStart index where to start in the list
@@ -155,22 +155,22 @@ public class DoubleLists {
 		} else if (indexStart == indexStop) {
 			return list.get(indexStart);
 		}
-		
+
 		double mean = average(list, indexStart, indexStop);
-		double sum = 0;	
+		double sum = 0;
 		int n = 0;
-		int i = indexStart;		
-		while ((i <= indexStop) && (i < list.size())) {			
+		int i = indexStart;
+		while ((i <= indexStop) && (i < list.size())) {
 			if (list.get(i) != 0) {
 				sum += Math.pow(list.get(i) - mean, 2);
 				n++;
 			}
 			i++;
-		}		
+		}
 		if (n == 0) {
 			return 0;
 		} else {
-			return sum / n;			
+			return sum / n;
 		}
 	}
 
@@ -186,8 +186,8 @@ public class DoubleLists {
 		}
 		return result;
 	}
-	
-	
+
+
 	/**
 	 * Sum all the value of the specified list between the start index and the stop index
 	 * @param list
@@ -201,14 +201,14 @@ public class DoubleLists {
 		} else if (indexStart == indexStop) {
 			return list.get(indexStart);
 		}
-		
-		double sum = 0;	
-		int i = indexStart;		
-		while ((i <= indexStop) && (i < list.size())) {			
+
+		double sum = 0;
+		int i = indexStart;
+		while ((i <= indexStop) && (i < list.size())) {
 			sum += list.get(i);
 			i++;
-		}		
-		return sum;			
+		}
+		return sum;
 	}
-	
+
 }

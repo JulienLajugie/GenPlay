@@ -36,8 +36,8 @@ import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWi
 import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
-import edu.yu.einstein.genplay.dataStructure.list.ChromosomeArrayListOfLists;
-import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.GenomicDataArrayList;
+import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.MaskWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleScoredChromosomeWindowList;
@@ -61,11 +61,11 @@ implements Serializable, StrandedExtractor, RepeatFamilyListGenerator,
 ScoredChromosomeWindowListGenerator, BinListGenerator {
 
 	private static final long serialVersionUID = -2798372250708609794L; // generated ID
-	private final ChromosomeListOfLists<Integer>	startList;		// list of position start
-	private final ChromosomeListOfLists<Integer>	stopList;		// list of position stop
-	private final ChromosomeListOfLists<String> 	nameList;		// list of name
-	private final ChromosomeListOfLists<Double>	scoreList;		// list of scores
-	private final ChromosomeListOfLists<Strand> 	strandList;		// list of strand
+	private final GenomicDataList<Integer>	startList;		// list of position start
+	private final GenomicDataList<Integer>	stopList;		// list of position stop
+	private final GenomicDataList<String> 	nameList;		// list of name
+	private final GenomicDataList<Double>	scoreList;		// list of scores
+	private final GenomicDataList<Strand> 	strandList;		// list of strand
 	private Strand 							selectedStrand;	// strand to extract, null for both
 	private ReadLengthAndShiftHandler		readHandler;	// handler that computes the position of read by applying the shift
 
@@ -78,11 +78,11 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 	public GFFExtractor(File dataFile, File logFile) {
 		super(dataFile, logFile);
 		// initialize the lists
-		startList = new ChromosomeArrayListOfLists<Integer>();
-		stopList = new ChromosomeArrayListOfLists<Integer>();
-		nameList = new ChromosomeArrayListOfLists<String>();
-		scoreList = new ChromosomeArrayListOfLists<Double>();
-		strandList = new ChromosomeArrayListOfLists<Strand>();
+		startList = new GenomicDataArrayList<Integer>();
+		stopList = new GenomicDataArrayList<Integer>();
+		nameList = new GenomicDataArrayList<String>();
+		scoreList = new GenomicDataArrayList<Double>();
+		strandList = new GenomicDataArrayList<Strand>();
 		// initialize the sublists
 		for (int i = 0; i < projectChromosome.size(); i++) {
 			startList.add(new IntArrayAsIntegerList());
