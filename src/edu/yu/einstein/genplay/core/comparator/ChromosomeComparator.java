@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -25,91 +25,101 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+
 
 /**
  * This class compares chromosome regarding their names.
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class ChromosomeComparator implements Comparator<String> {
+public class ChromosomeComparator implements Comparator<Chromosome> {
 
 	private Map<Character, Integer> charScore;	// Array to set the importance of every special character
 
 
 	@Override
-	public int compare(String o1, String o2) {
+	public int compare(Chromosome chromosome1, Chromosome chromosome2) {
+		return compareChromosomeName(chromosome1.getName(), chromosome2.getName());
+	}
+
+
+	private int compareChromosomeName(String chromosomeName1, String chromosomeName2) {
+		chromosomeName1 = chromosomeName1.toLowerCase();
+		chromosomeName2 = chromosomeName2.toLowerCase();
+
 		initCharScore();
 
-		if (startsWithCHR(o1) && startsWithCHR(o2)) {			// if both strings start with "chr" pattern
-			Integer i1 = getInteger(o1, 3);						// gets the integer after the "chr" for the first string
-			Integer i2 = getInteger(o2, 3);						// gets the integer after the "chr" for the second string
+		if (startsWithCHR(chromosomeName1) && startsWithCHR(chromosomeName2)) {			// if both strings start with "chr" pattern
+			Integer i1 = getInteger(chromosomeName1, 3);						// gets the integer after the "chr" for the first string
+			Integer i2 = getInteger(chromosomeName2, 3);						// gets the integer after the "chr" for the second string
 
-			if (i1 != null && i2 != null) {						// if both have an integer
+			if ((i1 != null) && (i2 != null)) {						// if both have an integer
 				return i1.compareTo(i2);						// regular integer comparison
 
-			} else if (i1 != null && i2 == null) {				// if first string has an integer but second string
+			} else if ((i1 != null) && (i2 == null)) {				// if first string has an integer but second string
 				return -1;										// the first string is before
 
-			} else if (i1 == null && i2 != null) {				// if first string has not an integer but second string
+			} else if ((i1 == null) && (i2 != null)) {				// if first string has not an integer but second string
 				return 1;										// the second string is before
 
 			} else {											// if both have no integer
-				Integer score1 = getSpecialCharCode(o1);		// get the special character code (X,Y,M) after the "chr" of the first string
-				Integer score2 = getSpecialCharCode(o2);		// get the special character code (X,Y,M) after the "chr" of the second string
+				Integer score1 = getSpecialCharCode(chromosomeName1);		// get the special character code (X,Y,M) after the "chr" of the first string
+				Integer score2 = getSpecialCharCode(chromosomeName2);		// get the special character code (X,Y,M) after the "chr" of the second string
 
-				if (score1 != null && score2 != null) {			// if they both have a special character
+				if ((score1 != null) && (score2 != null)) {			// if they both have a special character
 					return score1.compareTo(score2);			// regular integer comparison (special characters are related to an integer according to their importance)
 
-				} else if (score1 != null && score2 == null) {	// if first string has a special character but second string 
+				} else if ((score1 != null) && (score2 == null)) {	// if first string has a special character but second string
 					return -1;									// the first string is before
 
-				} else if (score1 == null && score2 != null) {	// if second string has not a special character but second string
+				} else if ((score1 == null) && (score2 != null)) {	// if second string has not a special character but second string
 					return 1;									// the second string is before
 				} else {
-					Integer index1 = getUnderScoreCharIndex(o1);	// gets the index of the underscore for the first string
-					Integer index2 = getUnderScoreCharIndex(o2);	// gets the index of the underscore for the second string
+					Integer index1 = getUnderScoreCharIndex(chromosomeName1);	// gets the index of the underscore for the first string
+					Integer index2 = getUnderScoreCharIndex(chromosomeName2);	// gets the index of the underscore for the second string
 
-					if (index1 != null && index2 != null) {			// if both strings contain an underscore
-						Integer i3 = getInteger(o1, 3, index1);		// gets the integer after the "chr" and before the "_" for the first string
-						Integer i4 = getInteger(o2, 3, index2);		// gets the integer after the "chr" and before the "_" for the second string
+					if ((index1 != null) && (index2 != null)) {			// if both strings contain an underscore
+						Integer i3 = getInteger(chromosomeName1, 3, index1);		// gets the integer after the "chr" and before the "_" for the first string
+						Integer i4 = getInteger(chromosomeName2, 3, index2);		// gets the integer after the "chr" and before the "_" for the second string
 
-						if (i3 != null && i4 != null) {				// if both have an integer
+						if ((i3 != null) && (i4 != null)) {				// if both have an integer
 							int result = i3.compareTo(i4);
 
 							if (result == 0) {
-								String newO1 = o1.substring(index1 + 1, o1.length());
-								String newO2 = o2.substring(index2 + 1, o2.length());
-								return compare(newO1, newO2);
+								String newO1 = chromosomeName1.substring(index1 + 1, chromosomeName1.length());
+								String newO2 = chromosomeName2.substring(index2 + 1, chromosomeName2.length());
+								return compareChromosomeName(newO1, newO2);
 							}
 
 							return result;							// regular integer comparison
 
-						} else if (i3 != null && i4 == null) {		// if first string has an integer but second string
+						} else if ((i3 != null) && (i4 == null)) {		// if first string has an integer but second string
 							return -1;								// the first string is before
 
-						} else if (i3 == null && i4 != null) {		// if first string has not an integer but second string
+						} else if ((i3 == null) && (i4 != null)) {		// if first string has not an integer but second string
 							return 1;								// the second string is before
 						}
 
-					} else if (index1 != null && index2 == null) {		// if first string has an integer but second string
+					} else if ((index1 != null) && (index2 == null)) {		// if first string has an integer but second string
 						return -1;										// the first string is before
 
-					} else if (index1 == null && index2 != null) {		// if first string has not an integer but second string
+					} else if ((index1 == null) && (index2 != null)) {		// if first string has not an integer but second string
 						return 1;
 					}
 				}
 			}
-		} else if (startsWithCHR(o1) && !startsWithCHR(o2)) {	// if first string starts with "chr" but second string
+		} else if (startsWithCHR(chromosomeName1) && !startsWithCHR(chromosomeName2)) {	// if first string starts with "chr" but second string
 			return -1;											// the first string is before
 
-		} else if (!startsWithCHR(o1) && startsWithCHR(o2)) {	// if first string does not start with "chr" but second string
+		} else if (!startsWithCHR(chromosomeName1) && startsWithCHR(chromosomeName2)) {	// if first string does not start with "chr" but second string
 			return 1;											// the second string is before
 		}
 		// if both do not start with "chr" pattern
 		//return o1.compareToIgnoreCase(o2);						// regular string comparison
 
 		StringComparator stringComparator = new StringComparator();
-		return stringComparator.compare(o1, o2);
+		return stringComparator.compare(chromosomeName1, chromosomeName2);
 		//return compareWords(o1, o2);
 	}
 

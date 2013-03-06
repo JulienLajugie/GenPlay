@@ -48,7 +48,6 @@ import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.dialog.chromosomeChooser.ChromosomeChooserDialog;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 import edu.yu.einstein.genplay.util.Images;
-import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -291,7 +290,8 @@ class AssemblyPanel extends JPanel implements ActionListener {
 		jcAssembly.setSelectedIndex(0);
 		selectedAssembly = (Assembly) jcAssembly.getSelectedItem();
 		//fullChromosomeList = new ArrayList<Chromosome>(selectedAssembly.getChromosomeList().values());
-		fullChromosomeList = Utils.getSortedChromosomeList(selectedAssembly.getChromosomeList());
+		fullChromosomeList = selectedAssembly.getChromosomeList();
+		Collections.sort(fullChromosomeList);
 		selectedChromosomes = fullChromosomeList;
 	}
 
@@ -317,7 +317,8 @@ class AssemblyPanel extends JPanel implements ActionListener {
 			if (jcAssembly.getSelectedItem() != null) {
 				if ((selectedAssembly == null) || !selectedAssembly.equals(((JComboBox)arg0.getSource()).getSelectedItem())) {
 					selectedAssembly = (Assembly) ((JComboBox)arg0.getSource()).getSelectedItem();
-					fullChromosomeList = Utils.getSortedChromosomeList(selectedAssembly.getChromosomeList());
+					fullChromosomeList = selectedAssembly.getChromosomeList();
+					Collections.sort(fullChromosomeList);
 					selectedChromosomes = fullChromosomeList;
 				}
 			}

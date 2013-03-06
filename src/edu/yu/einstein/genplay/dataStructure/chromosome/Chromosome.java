@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -26,13 +26,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import edu.yu.einstein.genplay.core.comparator.ChromosomeComparator;
+
 
 /**
  * The Chromosome class represents a chromosome with a name and a length.
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class Chromosome implements Cloneable, Serializable {
+public final class Chromosome implements Cloneable, Serializable, Comparable<Chromosome> {
 
 	private static final long serialVersionUID = -8339402742378578413L; // generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
@@ -129,7 +131,7 @@ public final class Chromosome implements Cloneable, Serializable {
 		if (length != other.length) {
 			return false;
 		}
-		if (name == null) { 
+		if (name == null) {
 			if (other.name != null) {
 				return false;
 			}
@@ -139,20 +141,20 @@ public final class Chromosome implements Cloneable, Serializable {
 		return true;
 	}
 
-	
+
 	/**
-	 * The hashCode is computed only on the name 
+	 * The hashCode is computed only on the name
 	 * because it's the only immutable field
 	 */
 	@Override
 	public int hashCode(){
-		return name.hashCode();		
+		return name.hashCode();
 	}
 
 
 	/**
 	 * Returns true if the name of the current chromosome is equal to the specified string.
-	 * Removes "chr" and "chromosome" before comparing if the string in parameter or if the 
+	 * Removes "chr" and "chromosome" before comparing if the string in parameter or if the
 	 * chromosome name starts this way (ex: "chr1" becomes "1")
 	 * @param otherChromoName
 	 * @return true if equal, false otherwise
@@ -174,8 +176,8 @@ public final class Chromosome implements Cloneable, Serializable {
 		}
 		return chromoName.equalsIgnoreCase(otherChromoName);
 	}
-	
-	
+
+
 	/**
 	 * Prints the chromosome information
 	 */
@@ -184,5 +186,12 @@ public final class Chromosome implements Cloneable, Serializable {
 		info += "Name: " + name + "; ";
 		info += "Length: " + length;
 		System.out.println(info);
+	}
+
+
+	@Override
+	public int compareTo(Chromosome otherChromosome) {
+		ChromosomeComparator comp = new ChromosomeComparator();
+		return comp.compare(this, otherChromosome);
 	}
 }
