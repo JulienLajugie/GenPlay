@@ -30,7 +30,6 @@ import java.util.concurrent.ExecutionException;
 import edu.yu.einstein.genplay.core.IO.utils.DataLineValidator;
 import edu.yu.einstein.genplay.core.IO.utils.TrackLineHeader;
 import edu.yu.einstein.genplay.core.generator.BinListGenerator;
-import edu.yu.einstein.genplay.core.generator.ChromosomeWindowListGenerator;
 import edu.yu.einstein.genplay.core.generator.GeneListGenerator;
 import edu.yu.einstein.genplay.core.generator.RepeatFamilyListGenerator;
 import edu.yu.einstein.genplay.core.generator.ScoredChromosomeWindowListGenerator;
@@ -48,7 +47,6 @@ import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleScoredChromosome
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
-import edu.yu.einstein.genplay.dataStructure.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.repeatFamilyList.RepeatFamilyList;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
@@ -64,7 +62,7 @@ import edu.yu.einstein.genplay.util.Utils;
  * @version 0.1
  */
 public class BedExtractor extends TextFileExtractor
-implements Serializable, StrandedExtractor, RepeatFamilyListGenerator, ChromosomeWindowListGenerator,
+implements Serializable, StrandedExtractor, RepeatFamilyListGenerator,
 ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 
 	private static final long serialVersionUID = 7967902877674655813L; // generated ID
@@ -272,11 +270,6 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 	@Override
 	public ScoredChromosomeWindowList toMaskChromosomeWindowList() throws InvalidChromosomeException, InterruptedException,	ExecutionException {
 		return new MaskWindowList(startList, stopList);
-	}
-
-	@Override
-	public ChromosomeWindowList toChromosomeWindowList() throws InvalidChromosomeException, InterruptedException, ExecutionException {
-		return new ChromosomeWindowList(startList, stopList);
 	}
 
 

@@ -27,7 +27,6 @@ import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.IO.utils.DataLineValidator;
 import edu.yu.einstein.genplay.core.generator.BinListGenerator;
-import edu.yu.einstein.genplay.core.generator.ChromosomeWindowListGenerator;
 import edu.yu.einstein.genplay.core.generator.ScoredChromosomeWindowListGenerator;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
@@ -40,7 +39,6 @@ import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleScoredChromosome
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
-import edu.yu.einstein.genplay.dataStructure.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 import edu.yu.einstein.genplay.util.Utils;
@@ -53,7 +51,7 @@ import edu.yu.einstein.genplay.util.Utils;
  * @version 0.1
  */
 public final class BedGraphExtractor extends TextFileExtractor
-implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowListGenerator, BinListGenerator {
+implements Serializable, ScoredChromosomeWindowListGenerator, BinListGenerator {
 
 	private static final long serialVersionUID = 7106474719716124894L; // generated ID
 	private final ChromosomeListOfLists<Integer>	startList;		// list of position start
@@ -162,11 +160,6 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 	@Override
 	public ScoredChromosomeWindowList toMaskChromosomeWindowList() throws InvalidChromosomeException, InterruptedException,	ExecutionException {
 		return new MaskWindowList(startList, stopList);
-	}
-
-	@Override
-	public ChromosomeWindowList toChromosomeWindowList() throws InvalidChromosomeException, InterruptedException, ExecutionException {
-		return new ChromosomeWindowList(startList, stopList);
 	}
 
 
