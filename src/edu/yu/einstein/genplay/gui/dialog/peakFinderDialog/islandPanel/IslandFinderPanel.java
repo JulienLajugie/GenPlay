@@ -28,10 +28,10 @@ import java.awt.Insets;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.core.enums.IslandResultType;
-import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.core.list.binList.operation.BLOFindIslands;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.core.operation.binList.BLOFindIslands;
+import edu.yu.einstein.genplay.dataStructure.enums.IslandResultType;
+import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
 import edu.yu.einstein.genplay.gui.dialog.peakFinderDialog.PeakFinderPanel;
 
 

@@ -24,10 +24,10 @@ package edu.yu.einstein.genplay.core.IO.writer.binListWriter;
 import java.io.File;
 
 import edu.yu.einstein.genplay.core.IO.writer.Writer;
-import edu.yu.einstein.genplay.core.enums.AlleleType;
-import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
+import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
 
 
 

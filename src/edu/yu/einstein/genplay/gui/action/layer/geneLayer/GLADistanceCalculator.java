@@ -31,12 +31,12 @@ import java.util.TreeMap;
 
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.comparator.GeneListMiddlePositionComparator;
-import edu.yu.einstein.genplay.core.comparator.GeneListStopPositionComparator;
-import edu.yu.einstein.genplay.core.gene.Gene;
-import edu.yu.einstein.genplay.core.list.geneList.GeneList;
-import edu.yu.einstein.genplay.core.list.geneList.operation.GLODistanceCalculator;
+import edu.yu.einstein.genplay.core.comparator.ChromosomeWindowMiddleComparator;
+import edu.yu.einstein.genplay.core.comparator.ChromosomeWindowStopComparator;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.core.operation.geneList.GLODistanceCalculator;
+import edu.yu.einstein.genplay.dataStructure.gene.Gene;
+import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotData;
 import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotPane;
@@ -101,14 +101,14 @@ public class GLADistanceCalculator extends TrackListActionOperationWorker<long[]
 					dcd = new DistanceCalculatorDialog();
 					if (dcd.showDialog(getRootPane()) == DistanceCalculatorDialog.APPROVE_OPTION) {
 						if ((dcd.getSelectionFlag() == 3) || (dcd.getSelectionFlag() == 6) || (dcd.getSelectionFlag() == 9) || (dcd.getSelectionFlag() == 12) || (dcd.getSelectionFlag() == 15) || (dcd.getSelectionFlag() == 18)) {
-							GeneListStopPositionComparator comp = new GeneListStopPositionComparator();
+							ChromosomeWindowStopComparator comp = new ChromosomeWindowStopComparator();
 							for (List<Gene> currentList: geneList2) {
 								if (currentList != null) {
 									Collections.sort(currentList,comp);
 								}
 							}
 						} else if ((dcd.getSelectionFlag() == 2) || (dcd.getSelectionFlag() == 5) || (dcd.getSelectionFlag() == 8) || (dcd.getSelectionFlag() == 11) || (dcd.getSelectionFlag() == 13) || (dcd.getSelectionFlag() == 15)) {
-							GeneListMiddlePositionComparator comp = new GeneListMiddlePositionComparator();
+							ChromosomeWindowMiddleComparator comp = new ChromosomeWindowMiddleComparator();
 							for (List<Gene> currentList: geneList2) {
 								if (currentList != null) {
 									Collections.sort(currentList,comp);

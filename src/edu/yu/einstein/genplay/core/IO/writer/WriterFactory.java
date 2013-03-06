@@ -39,10 +39,10 @@ import edu.yu.einstein.genplay.core.IO.writer.binListWriter.SerializedBinListWri
 import edu.yu.einstein.genplay.core.IO.writer.geneListWriter.GeneListAsBedWriter;
 import edu.yu.einstein.genplay.core.IO.writer.geneListWriter.GeneListAsGdpGeneWriter;
 import edu.yu.einstein.genplay.core.IO.writer.geneListWriter.GeneListWriter;
-import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
-import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.core.list.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
 import edu.yu.einstein.genplay.gui.fileFilter.BedFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.BedGraphFilter;

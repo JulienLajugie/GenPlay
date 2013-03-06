@@ -23,7 +23,7 @@ package edu.yu.einstein.genplay.exception.exceptions.valueOutOfRangeException;
 
 import java.text.NumberFormat;
 
-import edu.yu.einstein.genplay.core.list.arrayList.ByteArrayAsDoubleList;
+import edu.yu.einstein.genplay.dataStructure.list.arrayList.ByteArrayAsDoubleList;
 
 
 

@@ -28,12 +28,12 @@ import java.util.List;
 import java.util.Map;
 
 import edu.yu.einstein.genplay.core.comparator.ListComparator;
-import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.core.multiGenome.operation.VCF.MGOApplyVCFGenotype;
 import edu.yu.einstein.genplay.core.multiGenome.operation.fileScanner.FileScannerInterface;
+import edu.yu.einstein.genplay.dataStructure.enums.VariantType;
 
 /**
  * The update engine is made to create a new VCF file based on a file to update, using data from a current VCF track.

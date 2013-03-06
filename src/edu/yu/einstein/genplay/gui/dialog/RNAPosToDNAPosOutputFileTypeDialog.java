@@ -35,7 +35,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.WindowConstants;
 
-import edu.yu.einstein.genplay.core.enums.RNAToDNAResultType;
+import edu.yu.einstein.genplay.dataStructure.enums.RNAToDNAResultType;
 import edu.yu.einstein.genplay.util.Images;
 
 

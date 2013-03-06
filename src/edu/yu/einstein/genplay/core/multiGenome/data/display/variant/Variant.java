@@ -27,13 +27,13 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.chromosome.Chromosome;
-import edu.yu.einstein.genplay.core.enums.AlleleType;
-import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.content.MGChromosomeContent;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
+import edu.yu.einstein.genplay.dataStructure.enums.VariantType;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 
 /**

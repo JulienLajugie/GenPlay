@@ -34,10 +34,10 @@ import java.io.Serializable;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import edu.yu.einstein.genplay.core.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.core.manager.project.ProjectZoom;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 /**

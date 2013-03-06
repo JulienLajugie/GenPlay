@@ -25,8 +25,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 
-import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.VariantDisplayList;
+import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 
 /**
  * A {@link VariantDisplay} is exclusively for display purposes,

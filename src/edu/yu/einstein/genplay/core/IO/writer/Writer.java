@@ -21,7 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.IO.writer;
 
-import edu.yu.einstein.genplay.core.enums.AlleleType;
+import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 
 
 /**

@@ -37,7 +37,7 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.text.NumberFormatter;
 
-import edu.yu.einstein.genplay.core.list.binList.operation.peakFinder.IslandFinder;
+import edu.yu.einstein.genplay.core.operation.binList.peakFinder.IslandFinder;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidFactorialParameterException;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidLambdaPoissonParameterException;

@@ -25,7 +25,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.chromosomeWindow.ChromosomeWindow;
+import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 
 /**
  * The RepeatFamily class provides a representation of a family of repeats.

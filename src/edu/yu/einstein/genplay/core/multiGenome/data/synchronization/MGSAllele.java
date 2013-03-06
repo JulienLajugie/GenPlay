@@ -28,12 +28,12 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.comparator.MGOffsetComparator;
-import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
-import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
-import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsOffsetList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.list.ChromosomeArrayListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.arrayList.IntArrayAsOffsetList;
 
 /**
  * @author Nicolas Fourel

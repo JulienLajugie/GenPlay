@@ -21,9 +21,9 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.track;
 
-import edu.yu.einstein.genplay.core.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 
 /**

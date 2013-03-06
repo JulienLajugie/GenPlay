@@ -25,6 +25,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
+
 /**
  * This class compares chromosome regarding their names.
  * @author Nicolas Fourel

@@ -23,9 +23,9 @@ package edu.yu.einstein.genplay.gui.action.layer.SCWLayer;
 
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLODivideConstant;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.core.operation.SCWList.SCWLODivideConstant;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
 import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;

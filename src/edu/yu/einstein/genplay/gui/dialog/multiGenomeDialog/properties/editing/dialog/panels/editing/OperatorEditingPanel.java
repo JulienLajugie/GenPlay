@@ -28,10 +28,10 @@ import java.util.List;
 import javax.swing.ButtonGroup;
 import javax.swing.JRadioButton;
 
-import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.filter.utils.FormatFilterOperatorType;
+import edu.yu.einstein.genplay.dataStructure.enums.VCFColumnName;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.EditingPanel;
 
 /**

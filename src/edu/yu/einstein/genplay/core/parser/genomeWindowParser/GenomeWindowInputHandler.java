@@ -23,10 +23,10 @@ package edu.yu.einstein.genplay.core.parser.genomeWindowParser;
 
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.chromosome.Chromosome;
-import edu.yu.einstein.genplay.core.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
 
 /**
  * The {@link GenomeWindowInputHandler} handles the parsing of a text input.

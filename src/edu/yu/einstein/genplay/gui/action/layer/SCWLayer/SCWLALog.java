@@ -23,10 +23,10 @@ package edu.yu.einstein.genplay.gui.action.layer.SCWLayer;
 
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.enums.LogBase;
-import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOLog;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOLog;
+import edu.yu.einstein.genplay.dataStructure.enums.LogBase;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 import edu.yu.einstein.genplay.util.Utils;

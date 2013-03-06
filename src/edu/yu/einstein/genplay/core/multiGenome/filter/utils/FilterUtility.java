@@ -23,7 +23,6 @@ package edu.yu.einstein.genplay.core.multiGenome.filter.utils;
 
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.AltFilter;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.FilterFilter;
@@ -37,6 +36,7 @@ import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.StringIDFilter;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.StringIDFilterInterface;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.VCFLineUtility;
+import edu.yu.einstein.genplay.dataStructure.enums.VCFColumnName;
 import edu.yu.einstein.genplay.util.Utils;
 
 /**

@@ -21,8 +21,8 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.filter.utils;
 
-import edu.yu.einstein.genplay.core.enums.InequalityOperators;
-import edu.yu.einstein.genplay.core.enums.VCFColumnName;
+import edu.yu.einstein.genplay.dataStructure.enums.InequalityOperators;
+import edu.yu.einstein.genplay.dataStructure.enums.VCFColumnName;
 
 /**
  * @author Nicolas Fourel

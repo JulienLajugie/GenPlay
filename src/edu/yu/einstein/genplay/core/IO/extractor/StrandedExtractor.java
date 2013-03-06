@@ -21,7 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.IO.extractor;
 
-import edu.yu.einstein.genplay.core.enums.Strand;
+import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 
 
 /**

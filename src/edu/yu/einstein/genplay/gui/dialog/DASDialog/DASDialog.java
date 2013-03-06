@@ -40,9 +40,9 @@ import org.xml.sax.SAXException;
 import edu.yu.einstein.genplay.core.DAS.DASConnector;
 import edu.yu.einstein.genplay.core.DAS.DASType;
 import edu.yu.einstein.genplay.core.DAS.DataSource;
-import edu.yu.einstein.genplay.core.enums.AlleleType;
-import edu.yu.einstein.genplay.core.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.gui.dialog.genomeSelectionPanel.GenomeSelectionPanel;
 import edu.yu.einstein.genplay.util.Images;
 

@@ -21,7 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.filter.VCFID;
 
-import edu.yu.einstein.genplay.core.enums.InequalityOperators;
+import edu.yu.einstein.genplay.dataStructure.enums.InequalityOperators;
 
 /**
  * @author Nicolas Fourel

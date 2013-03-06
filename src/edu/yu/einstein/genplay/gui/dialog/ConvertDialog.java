@@ -42,10 +42,10 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
 import edu.yu.einstein.genplay.core.converter.ConverterFactory;
-import edu.yu.einstein.genplay.core.enums.DataPrecision;
-import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
-import edu.yu.einstein.genplay.core.list.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;

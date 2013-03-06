@@ -24,8 +24,8 @@ package edu.yu.einstein.genplay.util.colors;
 import java.awt.Color;
 import java.util.Random;
 
-import edu.yu.einstein.genplay.core.enums.Nucleotide;
-import edu.yu.einstein.genplay.core.enums.Strand;
+import edu.yu.einstein.genplay.dataStructure.enums.Nucleotide;
+import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 
 /**

@@ -23,11 +23,11 @@ package edu.yu.einstein.genplay.core.multiGenome.filter.VCFID;
 
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.filter.FilterInterface;
 import edu.yu.einstein.genplay.core.multiGenome.filter.utils.FormatFilterOperatorType;
+import edu.yu.einstein.genplay.dataStructure.enums.VCFColumnName;
 
 /**
  * @author Nicolas Fourel

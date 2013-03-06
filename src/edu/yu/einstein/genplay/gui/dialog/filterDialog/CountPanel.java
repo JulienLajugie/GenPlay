@@ -23,7 +23,7 @@ package edu.yu.einstein.genplay.gui.dialog.filterDialog;
 
 import java.text.NumberFormat;
 
-import edu.yu.einstein.genplay.core.enums.FilterType;
+import edu.yu.einstein.genplay.dataStructure.enums.FilterType;
 
 
 

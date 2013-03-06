@@ -23,7 +23,7 @@ package edu.yu.einstein.genplay.gui.event.genomeWindowEvent;
 
 import java.util.EventListener;
 
-import edu.yu.einstein.genplay.core.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
 
 
 /**

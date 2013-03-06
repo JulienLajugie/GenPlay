@@ -33,11 +33,11 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.core.chromosome.Chromosome;
-import edu.yu.einstein.genplay.core.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.gui.action.project.PAMoveFarLeft;
 import edu.yu.einstein.genplay.gui.action.project.PAMoveFarRight;
 import edu.yu.einstein.genplay.gui.action.project.PAMoveLeft;

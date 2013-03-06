@@ -27,9 +27,9 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import edu.yu.einstein.genplay.core.enums.AlleleType;
-import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
+import edu.yu.einstein.genplay.dataStructure.enums.VariantType;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.EditingDialog;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.EditingPanel;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.editing.GenomeEditingPanel;

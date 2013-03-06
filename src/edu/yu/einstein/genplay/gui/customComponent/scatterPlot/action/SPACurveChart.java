@@ -23,7 +23,7 @@ package edu.yu.einstein.genplay.gui.customComponent.scatterPlot.action;
 
 import java.awt.event.ActionEvent;
 
-import edu.yu.einstein.genplay.core.enums.GraphType;
+import edu.yu.einstein.genplay.dataStructure.enums.GraphType;
 import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotPane;
 
 

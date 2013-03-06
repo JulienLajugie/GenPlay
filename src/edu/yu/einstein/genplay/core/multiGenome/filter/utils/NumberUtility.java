@@ -21,10 +21,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.filter.utils;
 
-import edu.yu.einstein.genplay.core.enums.InequalityOperators;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.IDFilterInterface;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.NumberIDFilter;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.NumberIDFilterInterface;
+import edu.yu.einstein.genplay.dataStructure.enums.InequalityOperators;
 
 /**
  * @author Nicolas Fourel

@@ -27,7 +27,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.JLabel;
 
-import edu.yu.einstein.genplay.core.list.binList.operation.peakFinder.IslandFinder;
+import edu.yu.einstein.genplay.core.operation.binList.peakFinder.IslandFinder;
 
 
 /**

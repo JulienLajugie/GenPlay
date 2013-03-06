@@ -30,10 +30,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 
 /**
  * A {@link MGFileContentManager} represents the content of all {@link VCFFile} organized byt {@link Chromosome} and {@link MGChromosomeContent}.

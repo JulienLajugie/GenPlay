@@ -21,9 +21,9 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.IO.extractor;
 
-import edu.yu.einstein.genplay.core.chromosome.Chromosome;
-import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleChromosomeWindow;
-import edu.yu.einstein.genplay.core.enums.Strand;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
+import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 
 
 /**

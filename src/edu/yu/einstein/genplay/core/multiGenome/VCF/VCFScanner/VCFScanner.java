@@ -25,11 +25,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.core.multiGenome.utils.VCFLineUtility;
+import edu.yu.einstein.genplay.dataStructure.enums.VariantType;
 import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
 import edu.yu.einstein.genplay.gui.dialog.exceptionDialog.WarningReportDialog;
 

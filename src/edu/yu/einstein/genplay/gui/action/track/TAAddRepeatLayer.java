@@ -26,8 +26,8 @@ import java.io.File;
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.generator.RepeatFamilyListGenerator;
-import edu.yu.einstein.genplay.core.list.repeatFamilyList.RepeatFamilyList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.dataStructure.list.repeatFamilyList.RepeatFamilyList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection.GenomeSelectionDialog;
 import edu.yu.einstein.genplay.gui.track.Track;

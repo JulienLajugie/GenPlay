@@ -39,11 +39,11 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.core.chromosome.Chromosome;
-import edu.yu.einstein.genplay.core.genome.Assembly;
-import edu.yu.einstein.genplay.core.genome.Clade;
-import edu.yu.einstein.genplay.core.genome.Genome;
-import edu.yu.einstein.genplay.core.genome.RetrieveAssemblies;
+import edu.yu.einstein.genplay.core.IO.genomeListLoader.AssemblyListLoader;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.genome.Assembly;
+import edu.yu.einstein.genplay.dataStructure.genome.Clade;
+import edu.yu.einstein.genplay.dataStructure.genome.Genome;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.dialog.chromosomeChooser.ChromosomeChooserDialog;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
@@ -245,7 +245,7 @@ class AssemblyPanel extends JPanel implements ActionListener {
 		//Get assemblies from xml files
 		cladeList = new HashMap<String, Clade>();
 		try {
-			RetrieveAssemblies genomeHandler = new RetrieveAssemblies();
+			AssemblyListLoader genomeHandler = new AssemblyListLoader();
 			cladeList = genomeHandler.getCladeList();
 		} catch (Exception e) {
 			ExceptionManager.getInstance().caughtException(e);

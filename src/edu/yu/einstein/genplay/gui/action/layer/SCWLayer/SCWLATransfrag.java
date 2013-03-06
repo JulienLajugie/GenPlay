@@ -25,12 +25,12 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOTransfrag;
-import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOTransfragGeneList;
-import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOTransfrag;
+import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOTransfragGeneList;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;

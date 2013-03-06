@@ -31,15 +31,15 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.core.chromosome.Chromosome;
-import edu.yu.einstein.genplay.core.enums.VariantType;
-import edu.yu.einstein.genplay.core.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.VariantDisplayMultiListScanner;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.MixVariant;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.enums.VariantType;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLineDialog.VCFLineDialog;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;

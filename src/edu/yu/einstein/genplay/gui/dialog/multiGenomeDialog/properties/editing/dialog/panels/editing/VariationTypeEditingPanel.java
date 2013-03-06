@@ -37,9 +37,9 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
+import edu.yu.einstein.genplay.dataStructure.enums.VariantType;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.EditingPanel;
 import edu.yu.einstein.genplay.util.colors.Colors;
 import edu.yu.einstein.genplay.util.colors.GenPlayColorChooser;

@@ -23,12 +23,12 @@ package edu.yu.einstein.genplay.gui.action.layer.SCWLayer;
 
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOFilterBandStop;
-import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOFilterCount;
-import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOFilterPercentage;
-import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOFilterThreshold;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOFilterBandStop;
+import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOFilterCount;
+import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOFilterPercentage;
+import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOFilterThreshold;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.filterDialog.FilterDialog;
 import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;

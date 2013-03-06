@@ -29,7 +29,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-import edu.yu.einstein.genplay.core.enums.Strand;
+import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 
 
 /**

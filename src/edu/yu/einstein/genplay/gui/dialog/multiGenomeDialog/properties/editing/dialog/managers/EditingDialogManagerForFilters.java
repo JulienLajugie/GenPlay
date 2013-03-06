@@ -24,13 +24,13 @@ package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFFilter;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.IDFilterInterface;
 import edu.yu.einstein.genplay.core.multiGenome.filter.utils.FormatFilterOperatorType;
+import edu.yu.einstein.genplay.dataStructure.enums.VCFColumnName;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.EditingDialog;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.EditingPanel;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.FilterEditingPanel;

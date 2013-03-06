@@ -36,17 +36,17 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
 
-import edu.yu.einstein.genplay.core.chromosome.Chromosome;
-import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.core.enums.AlleleType;
-import edu.yu.einstein.genplay.core.gene.Gene;
-import edu.yu.einstein.genplay.core.genomeWindow.GenomeWindow;
-import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
-import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
+import edu.yu.einstein.genplay.dataStructure.gene.Gene;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.list.ChromosomeArrayListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
 

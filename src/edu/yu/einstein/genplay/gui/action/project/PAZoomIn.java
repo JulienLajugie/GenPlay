@@ -28,7 +28,7 @@ import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.KeyStroke;
 
-import edu.yu.einstein.genplay.core.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 
 

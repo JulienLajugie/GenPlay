@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.zip.GZIPOutputStream;
 
-import edu.yu.einstein.genplay.core.list.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
 
 
 

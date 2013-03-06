@@ -23,8 +23,8 @@ package edu.yu.einstein.genplay.util;
 
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleChromosomeWindow;
+import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
 /**

@@ -22,12 +22,12 @@
 package edu.yu.einstein.genplay.core.converter.maskListConverter;
 
 import edu.yu.einstein.genplay.core.converter.Converter;
-import edu.yu.einstein.genplay.core.enums.DataPrecision;
-import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
-import edu.yu.einstein.genplay.core.list.SCWList.MaskWindowList;
-import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.core.list.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.MaskWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
 
 
 /**

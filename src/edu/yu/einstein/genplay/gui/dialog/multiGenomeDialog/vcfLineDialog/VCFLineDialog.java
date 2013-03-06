@@ -42,8 +42,8 @@ import javax.swing.JTable;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.table.TableColumnModel;
 
-import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
+import edu.yu.einstein.genplay.dataStructure.enums.VCFColumnName;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.Utils;

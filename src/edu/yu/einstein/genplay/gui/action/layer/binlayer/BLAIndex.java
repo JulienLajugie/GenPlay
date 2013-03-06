@@ -24,10 +24,10 @@ package edu.yu.einstein.genplay.gui.action.layer.binlayer;
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
-import edu.yu.einstein.genplay.core.enums.DataPrecision;
-import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.core.list.binList.operation.BLOIndex;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.core.operation.binList.BLOIndex;
+import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
+import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;

@@ -27,13 +27,13 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.filter.utils.FilterUtility;
 import edu.yu.einstein.genplay.core.multiGenome.filter.utils.FlagUtility;
 import edu.yu.einstein.genplay.core.multiGenome.filter.utils.FormatFilterOperatorType;
+import edu.yu.einstein.genplay.dataStructure.enums.VCFColumnName;
 
 /**
  * @author Nicolas Fourel

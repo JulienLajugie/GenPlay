@@ -38,7 +38,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.table.TableColumn;
 
-import edu.yu.einstein.genplay.core.enums.GraphType;
+import edu.yu.einstein.genplay.dataStructure.enums.GraphType;
 import edu.yu.einstein.genplay.gui.customComponent.tableComponents.BooleanRadioButtonEditor;
 import edu.yu.einstein.genplay.gui.customComponent.tableComponents.BooleanRadioButtonRenderer;
 import edu.yu.einstein.genplay.gui.customComponent.tableComponents.ColorEditor;

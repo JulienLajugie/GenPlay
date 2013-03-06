@@ -33,12 +33,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.chromosome.Chromosome;
-import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.event.invalidDataEvent.InvalidDataEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.invalidDataEvent.InvalidDataListener;

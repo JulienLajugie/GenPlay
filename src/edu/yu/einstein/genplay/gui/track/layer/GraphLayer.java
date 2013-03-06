@@ -21,7 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.track.layer;
 
-import edu.yu.einstein.genplay.core.enums.GraphType;
+import edu.yu.einstein.genplay.dataStructure.enums.GraphType;
 
 
 /**

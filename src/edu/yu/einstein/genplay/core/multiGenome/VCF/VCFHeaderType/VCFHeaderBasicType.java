@@ -27,7 +27,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.enums.VCFColumnName;
+import edu.yu.einstein.genplay.dataStructure.enums.VCFColumnName;
 
 /**
  * This class manages headers that don't always have defined ID such as:

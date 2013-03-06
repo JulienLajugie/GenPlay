@@ -27,7 +27,7 @@ import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.border.Border;
 
-import edu.yu.einstein.genplay.core.enums.GraphType;
+import edu.yu.einstein.genplay.dataStructure.enums.GraphType;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.util.colors.Colors;
 

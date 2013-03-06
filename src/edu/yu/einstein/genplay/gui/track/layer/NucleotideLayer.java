@@ -35,11 +35,11 @@ import java.io.ObjectInputStream;
 
 import javax.swing.JOptionPane;
 
-import edu.yu.einstein.genplay.core.enums.Nucleotide;
-import edu.yu.einstein.genplay.core.list.DisplayableListOfLists;
-import edu.yu.einstein.genplay.core.list.nucleotideList.TwoBitSequenceList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
+import edu.yu.einstein.genplay.dataStructure.enums.Nucleotide;
+import edu.yu.einstein.genplay.dataStructure.list.DisplayableListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.nucleotideList.TwoBitSequenceList;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.ScrollingManager;
 import edu.yu.einstein.genplay.gui.track.Track;

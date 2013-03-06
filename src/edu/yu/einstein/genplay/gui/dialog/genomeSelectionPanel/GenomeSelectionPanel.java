@@ -32,9 +32,9 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
+import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 
 
 /**

@@ -24,10 +24,10 @@ package edu.yu.einstein.genplay.gui.action.layer.geneLayer;
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
-import edu.yu.einstein.genplay.core.enums.Strand;
-import edu.yu.einstein.genplay.core.list.geneList.GeneList;
-import edu.yu.einstein.genplay.core.list.geneList.operation.GLOFilterStrand;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.core.operation.geneList.GLOFilterStrand;
+import edu.yu.einstein.genplay.dataStructure.enums.Strand;
+import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
 

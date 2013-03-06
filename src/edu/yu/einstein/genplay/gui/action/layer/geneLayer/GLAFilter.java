@@ -23,12 +23,12 @@ package edu.yu.einstein.genplay.gui.action.layer.geneLayer;
 
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.list.geneList.GeneList;
-import edu.yu.einstein.genplay.core.list.geneList.operation.GLOFilterBandStop;
-import edu.yu.einstein.genplay.core.list.geneList.operation.GLOFilterCount;
-import edu.yu.einstein.genplay.core.list.geneList.operation.GLOFilterPercentage;
-import edu.yu.einstein.genplay.core.list.geneList.operation.GLOFilterThreshold;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.core.operation.geneList.GLOFilterBandStop;
+import edu.yu.einstein.genplay.core.operation.geneList.GLOFilterCount;
+import edu.yu.einstein.genplay.core.operation.geneList.GLOFilterPercentage;
+import edu.yu.einstein.genplay.core.operation.geneList.GLOFilterThreshold;
+import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.filterDialog.FilterDialog;
 import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;

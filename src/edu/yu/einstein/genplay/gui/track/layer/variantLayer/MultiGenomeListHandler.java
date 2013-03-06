@@ -28,15 +28,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.comparator.VariantComparator;
-import edu.yu.einstein.genplay.core.genomeWindow.GenomeWindow;
-import edu.yu.einstein.genplay.core.list.CacheTrack;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.VariantDisplayList;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.VariantDisplayMultiListScanner;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.MixVariant;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.VariantDisplay;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.list.CacheTrack;
 
 
 /**

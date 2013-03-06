@@ -26,10 +26,10 @@ import java.io.File;
 import javax.swing.ActionMap;
 import javax.swing.JFileChooser;
 
-import edu.yu.einstein.genplay.core.list.geneList.GeneList;
-import edu.yu.einstein.genplay.core.list.geneList.operation.GLOGeneRenamer;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.core.operation.geneList.GLOGeneRenamer;
+import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
 

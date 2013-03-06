@@ -40,7 +40,7 @@ import java.util.List;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.core.enums.GraphType;
+import edu.yu.einstein.genplay.dataStructure.enums.GraphType;
 import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.colors.Colors;
 

@@ -21,12 +21,12 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.utils;
 
-import edu.yu.einstein.genplay.core.enums.VCFColumnName;
-import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.operation.synchronization.MGSynchronizer;
+import edu.yu.einstein.genplay.dataStructure.enums.VCFColumnName;
+import edu.yu.einstein.genplay.dataStructure.enums.VariantType;
 import edu.yu.einstein.genplay.util.Utils;
 
 /**

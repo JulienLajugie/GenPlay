@@ -40,7 +40,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeSelectionModel;
 
-import edu.yu.einstein.genplay.core.enums.FilterType;
+import edu.yu.einstein.genplay.dataStructure.enums.FilterType;
 import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.Utils;
 

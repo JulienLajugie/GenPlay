@@ -26,9 +26,9 @@ import java.text.NumberFormat;
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
-import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.core.list.binList.operation.BLOStandardDeviation;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.core.operation.binList.BLOStandardDeviation;
+import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
 import edu.yu.einstein.genplay.util.Utils;

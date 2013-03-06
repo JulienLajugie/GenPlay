@@ -30,7 +30,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-import edu.yu.einstein.genplay.core.enums.VariantType;
+import edu.yu.einstein.genplay.dataStructure.enums.VariantType;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
 import edu.yu.einstein.genplay.gui.track.Drawer;
 import edu.yu.einstein.genplay.gui.track.GraphicsPanel;

@@ -26,9 +26,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import edu.yu.einstein.genplay.core.enums.AlleleType;
-import edu.yu.einstein.genplay.core.enums.CoordinateSystemType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
+import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
+import edu.yu.einstein.genplay.dataStructure.enums.CoordinateSystemType;
 
 
 /**

@@ -26,9 +26,9 @@ import java.text.NumberFormat;
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
-import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOWindowCount;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOWindowCount;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 import edu.yu.einstein.genplay.util.Utils;

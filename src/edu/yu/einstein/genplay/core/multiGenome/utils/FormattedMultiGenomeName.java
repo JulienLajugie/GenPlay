@@ -21,10 +21,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.utils;
 
-import edu.yu.einstein.genplay.core.enums.AlleleType;
-import edu.yu.einstein.genplay.core.enums.CoordinateSystemType;
-import edu.yu.einstein.genplay.core.genome.Assembly;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
+import edu.yu.einstein.genplay.dataStructure.enums.CoordinateSystemType;
+import edu.yu.einstein.genplay.dataStructure.genome.Assembly;
 
 
 /**

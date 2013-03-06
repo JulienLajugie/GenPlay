@@ -25,9 +25,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.content.MGChromosomeContent;
+import edu.yu.einstein.genplay.dataStructure.enums.VariantType;
 
 /**
  * @author Nicolas Fourel

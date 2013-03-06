@@ -25,12 +25,12 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.text.NumberFormat;
 
-import edu.yu.einstein.genplay.core.chromosome.Chromosome;
-import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.track.Drawer;
 import edu.yu.einstein.genplay.gui.track.TrackConstants;

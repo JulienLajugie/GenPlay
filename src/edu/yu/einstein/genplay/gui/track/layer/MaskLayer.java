@@ -25,10 +25,10 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.colors.LayerColors;
 

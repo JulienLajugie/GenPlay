@@ -27,7 +27,7 @@ import java.awt.Rectangle;
 import java.io.Serializable;
 import java.text.NumberFormat;
 
-import edu.yu.einstein.genplay.core.enums.LogBase;
+import edu.yu.einstein.genplay.dataStructure.enums.LogBase;
 import edu.yu.einstein.genplay.util.Utils;
 
 

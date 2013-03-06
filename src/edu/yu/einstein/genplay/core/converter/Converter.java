@@ -21,7 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.converter;
 
-import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
 
 /**
  * @author Nicolas Fourel

@@ -34,7 +34,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderBasicType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.AltFilter;
@@ -42,6 +41,7 @@ import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.FilterFilter;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.IDFilterInterface;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.StringIDFilter;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.StringIDFilterInterface;
+import edu.yu.einstein.genplay.dataStructure.enums.VCFColumnName;
 
 /**
  * @author Nicolas Fourel

@@ -27,7 +27,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.enums.VCFColumnName;
+import edu.yu.einstein.genplay.dataStructure.enums.VCFColumnName;
 
 /**
  * This class manages the FORMAT VCF field type information.

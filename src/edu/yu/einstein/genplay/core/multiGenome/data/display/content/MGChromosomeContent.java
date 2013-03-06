@@ -31,13 +31,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.array.MGByteArray;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.array.MGFloatArray;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.array.MGIntegerArray;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.VariantDisplay;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 
 /**
  * A {@link MGChromosomeContent} represents the content of a {@link Chromosome} for a specific {@link VCFFile}.

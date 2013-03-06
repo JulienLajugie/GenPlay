@@ -34,7 +34,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.core.enums.AlleleType;
+import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.gui.dialog.genomeSelectionPanel.GenomeSelectionPanel;
 import edu.yu.einstein.genplay.util.Images;
 

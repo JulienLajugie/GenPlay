@@ -26,12 +26,12 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
-import edu.yu.einstein.genplay.core.enums.GraphType;
-import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.core.list.binList.operation.BLOMaxScoreToDisplay;
-import edu.yu.einstein.genplay.core.list.binList.operation.BLOMinScoreToDisplay;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
+import edu.yu.einstein.genplay.core.operation.binList.BLOMaxScoreToDisplay;
+import edu.yu.einstein.genplay.core.operation.binList.BLOMinScoreToDisplay;
+import edu.yu.einstein.genplay.dataStructure.enums.GraphType;
+import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackConstants;
 import edu.yu.einstein.genplay.util.colors.Colors;

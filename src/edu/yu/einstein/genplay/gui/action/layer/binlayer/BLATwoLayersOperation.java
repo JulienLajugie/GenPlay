@@ -24,14 +24,14 @@ package edu.yu.einstein.genplay.gui.action.layer.binlayer;
 
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.enums.DataPrecision;
-import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoLayersMethod;
-import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
-import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOTwoLayers;
-import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.core.list.binList.operation.BLOTwoLayers;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOTwoLayers;
+import edu.yu.einstein.genplay.core.operation.binList.BLOTwoLayers;
+import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationTwoLayersMethod;
+import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
 import edu.yu.einstein.genplay.gui.dialog.trackChooser.TrackChooser;

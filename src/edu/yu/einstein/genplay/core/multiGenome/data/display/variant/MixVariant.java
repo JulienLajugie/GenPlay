@@ -21,7 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.data.display.variant;
 
-import edu.yu.einstein.genplay.core.enums.VariantType;
+import edu.yu.einstein.genplay.dataStructure.enums.VariantType;
 
 /**
  * @author Nicolas Fourel

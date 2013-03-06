@@ -28,11 +28,11 @@ import java.util.Map;
 
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.core.chromosome.Chromosome;
-import edu.yu.einstein.genplay.core.genome.Assembly;
-import edu.yu.einstein.genplay.core.genome.Clade;
-import edu.yu.einstein.genplay.core.genome.Genome;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.genome.Assembly;
+import edu.yu.einstein.genplay.dataStructure.genome.Clade;
+import edu.yu.einstein.genplay.dataStructure.genome.Genome;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 
 

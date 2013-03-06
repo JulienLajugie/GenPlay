@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import edu.yu.einstein.genplay.core.enums.VCFColumnName;
+import edu.yu.einstein.genplay.dataStructure.enums.VCFColumnName;
 
 /**
  * This class manages the ALT VCF field type information.

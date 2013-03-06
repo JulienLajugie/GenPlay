@@ -20,13 +20,13 @@
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.utils;
-import edu.yu.einstein.genplay.core.chromosome.Chromosome;
-import edu.yu.einstein.genplay.core.enums.AlleleType;
-import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
-import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsOffsetList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.data.synchronization.MGSAllele;
 import edu.yu.einstein.genplay.core.multiGenome.data.synchronization.MGSOffset;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
+import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.arrayList.IntArrayAsOffsetList;
 
 
 /**

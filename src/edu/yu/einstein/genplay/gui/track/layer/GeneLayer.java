@@ -37,10 +37,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.gene.Gene;
-import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
+import edu.yu.einstein.genplay.dataStructure.gene.Gene;
+import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.track.ScrollingManager;
 import edu.yu.einstein.genplay.gui.track.Track;

@@ -32,8 +32,8 @@ import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.core.enums.AlleleType;
-import edu.yu.einstein.genplay.core.enums.VariantType;
+import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
+import edu.yu.einstein.genplay.dataStructure.enums.VariantType;
 
 
 /**

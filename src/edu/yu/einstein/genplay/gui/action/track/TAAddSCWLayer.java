@@ -28,12 +28,12 @@ import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.core.IO.extractor.ReadLengthAndShiftHandler;
 import edu.yu.einstein.genplay.core.IO.extractor.StrandedExtractor;
-import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.core.enums.Strand;
 import edu.yu.einstein.genplay.core.generator.ScoredChromosomeWindowListGenerator;
-import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.enums.Strand;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.newCurveLayerDialog.NewCurveLayerDialog;
 import edu.yu.einstein.genplay.gui.track.Track;

@@ -25,11 +25,11 @@ import java.awt.Color;
 
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.enums.DataPrecision;
-import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.core.list.binList.operation.BLOIntervalsScoring;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.core.operation.binList.BLOIntervalsScoring;
+import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
 import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;

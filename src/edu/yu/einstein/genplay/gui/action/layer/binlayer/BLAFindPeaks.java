@@ -26,11 +26,11 @@ import java.util.concurrent.ExecutionException;
 
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.core.list.binList.operation.BLOFindIslands;
-import edu.yu.einstein.genplay.core.list.binList.operation.BLOFindPeaksDensity;
-import edu.yu.einstein.genplay.core.list.binList.operation.BLOFindPeaksStDev;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.core.operation.binList.BLOFindIslands;
+import edu.yu.einstein.genplay.core.operation.binList.BLOFindPeaksDensity;
+import edu.yu.einstein.genplay.core.operation.binList.BLOFindPeaksStDev;
+import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.peakFinderDialog.PeakFinderDialog;
 import edu.yu.einstein.genplay.gui.dialog.trackChooser.TrackChooser;

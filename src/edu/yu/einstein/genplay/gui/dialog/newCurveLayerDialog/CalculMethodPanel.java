@@ -27,7 +27,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
 
 
 

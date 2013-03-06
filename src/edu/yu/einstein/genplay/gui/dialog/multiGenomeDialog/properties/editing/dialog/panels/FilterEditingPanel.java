@@ -33,7 +33,6 @@ import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderBasicType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderElementRecord;
@@ -42,6 +41,7 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.filter.FilterInterface;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.GenotypeIDFilter;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.IDFilterInterface;
+import edu.yu.einstein.genplay.dataStructure.enums.VCFColumnName;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.editors.idEditors.IDEditor;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.editors.idEditors.IDFlagEditor;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.editors.idEditors.IDGTEditor;

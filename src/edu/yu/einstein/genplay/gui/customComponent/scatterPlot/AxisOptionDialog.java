@@ -44,7 +44,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.NumberFormatter;
 
-import edu.yu.einstein.genplay.core.enums.LogBase;
+import edu.yu.einstein.genplay.dataStructure.enums.LogBase;
 import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.colors.Colors;
 

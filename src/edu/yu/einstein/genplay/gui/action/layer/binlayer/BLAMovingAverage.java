@@ -24,9 +24,9 @@ package edu.yu.einstein.genplay.gui.action.layer.binlayer;
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
-import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.core.list.binList.operation.BLOMovingAverage;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.core.operation.binList.BLOMovingAverage;
+import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.GenomeWidthChooser;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;

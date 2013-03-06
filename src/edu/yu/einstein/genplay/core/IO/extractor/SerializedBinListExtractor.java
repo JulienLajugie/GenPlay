@@ -31,10 +31,10 @@ import java.io.Serializable;
 import java.util.concurrent.ExecutionException;
 import java.util.zip.GZIPInputStream;
 
-import edu.yu.einstein.genplay.core.enums.DataPrecision;
-import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.generator.BinListGenerator;
-import edu.yu.einstein.genplay.core.list.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
 
 
 

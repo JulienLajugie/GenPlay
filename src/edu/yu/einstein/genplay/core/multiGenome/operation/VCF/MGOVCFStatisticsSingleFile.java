@@ -27,8 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import edu.yu.einstein.genplay.core.enums.AlleleType;
-import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics.VCFFileFullStatistic;
@@ -38,6 +36,8 @@ import edu.yu.einstein.genplay.core.multiGenome.operation.BasicEngine;
 import edu.yu.einstein.genplay.core.multiGenome.operation.fileScanner.FileScannerInterface;
 import edu.yu.einstein.genplay.core.multiGenome.operation.fileScanner.SingleFileScanner;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
+import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
+import edu.yu.einstein.genplay.dataStructure.enums.VariantType;
 
 
 /**

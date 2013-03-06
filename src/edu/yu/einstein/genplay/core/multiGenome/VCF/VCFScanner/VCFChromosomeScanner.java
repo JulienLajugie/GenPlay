@@ -24,10 +24,10 @@ package edu.yu.einstein.genplay.core.multiGenome.VCF.VCFScanner;
 import java.io.IOException;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 
 /**

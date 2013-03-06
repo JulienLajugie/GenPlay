@@ -34,10 +34,10 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.text.NumberFormatter;
 
-import edu.yu.einstein.genplay.core.enums.PeakFinderType;
-import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.core.list.binList.operation.BLOFindPeaksStDev;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.core.operation.binList.BLOFindPeaksStDev;
+import edu.yu.einstein.genplay.dataStructure.enums.PeakFinderType;
+import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
 
 
 

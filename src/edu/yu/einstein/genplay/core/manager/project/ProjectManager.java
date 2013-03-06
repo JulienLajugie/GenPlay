@@ -27,9 +27,9 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.chromosome.Chromosome;
-import edu.yu.einstein.genplay.core.genome.Assembly;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.genome.Assembly;
 
 
 /**

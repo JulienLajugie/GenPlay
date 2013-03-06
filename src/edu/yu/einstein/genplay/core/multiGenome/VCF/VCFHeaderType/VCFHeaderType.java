@@ -23,7 +23,7 @@ package edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType;
 
 import java.io.Serializable;
 
-import edu.yu.einstein.genplay.core.enums.VCFColumnName;
+import edu.yu.einstein.genplay.dataStructure.enums.VCFColumnName;
 
 
 /**

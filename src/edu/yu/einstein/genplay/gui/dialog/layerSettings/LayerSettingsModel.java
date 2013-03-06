@@ -26,7 +26,7 @@ import java.awt.Color;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
-import edu.yu.einstein.genplay.core.enums.GraphType;
+import edu.yu.einstein.genplay.dataStructure.enums.GraphType;
 import edu.yu.einstein.genplay.gui.track.layer.ColoredLayer;
 import edu.yu.einstein.genplay.gui.track.layer.GraphLayer;
 

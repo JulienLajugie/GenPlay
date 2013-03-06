@@ -30,9 +30,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import edu.yu.einstein.genplay.core.chromosome.Chromosome;
-import edu.yu.einstein.genplay.core.enums.VariantType;
-import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.manager.ProjectFiles;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.content.MGFileContentManager;
@@ -40,6 +37,9 @@ import edu.yu.einstein.genplay.core.multiGenome.data.synchronization.MGSMultiGen
 import edu.yu.einstein.genplay.core.multiGenome.data.synchronization.MGSOffset;
 import edu.yu.einstein.genplay.core.multiGenome.operation.synchronization.MGSynchronizer;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.enums.VariantType;
+import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.gui.action.multiGenome.synchronization.MGASynchronizing;
 
 

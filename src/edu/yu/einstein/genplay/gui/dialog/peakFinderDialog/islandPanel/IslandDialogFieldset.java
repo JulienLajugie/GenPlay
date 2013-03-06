@@ -26,7 +26,7 @@ import java.awt.Dimension;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.core.list.binList.operation.peakFinder.IslandFinder;
+import edu.yu.einstein.genplay.core.operation.binList.peakFinder.IslandFinder;
 
 
 /**

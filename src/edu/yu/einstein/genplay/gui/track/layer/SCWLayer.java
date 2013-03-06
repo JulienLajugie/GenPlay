@@ -27,13 +27,13 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.core.enums.GraphType;
-import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOMaxScoreToDisplay;
-import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOMinScoreToDisplay;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
+import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOMaxScoreToDisplay;
+import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOMinScoreToDisplay;
+import edu.yu.einstein.genplay.dataStructure.enums.GraphType;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackConstants;
 import edu.yu.einstein.genplay.util.colors.Colors;

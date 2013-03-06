@@ -40,10 +40,10 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import edu.yu.einstein.genplay.core.gene.Gene;
-import edu.yu.einstein.genplay.core.genomeWindow.GenomeWindow;
-import edu.yu.einstein.genplay.core.list.geneList.GeneSearcher;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.dataStructure.gene.Gene;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneSearcher;
 import edu.yu.einstein.genplay.util.Images;
 
 

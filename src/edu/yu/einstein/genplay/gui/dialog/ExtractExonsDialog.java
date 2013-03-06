@@ -33,7 +33,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.WindowConstants;
 
-import edu.yu.einstein.genplay.core.list.geneList.operation.GLOExtractExons;
+import edu.yu.einstein.genplay.core.operation.geneList.GLOExtractExons;
 import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLAExtractExons;
 import edu.yu.einstein.genplay.util.Images;
 

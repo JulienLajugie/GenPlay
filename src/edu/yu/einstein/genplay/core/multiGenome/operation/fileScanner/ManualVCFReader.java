@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.BGZIPReader;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
@@ -34,6 +33,7 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.core.multiGenome.operation.synchronization.MGSynchronizer;
 import edu.yu.einstein.genplay.core.multiGenome.utils.VCFLineUtility;
+import edu.yu.einstein.genplay.dataStructure.enums.VariantType;
 import edu.yu.einstein.genplay.util.Utils;
 
 /**

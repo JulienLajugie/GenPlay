@@ -21,8 +21,8 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.IO.utils;
 
-import edu.yu.einstein.genplay.core.chromosome.Chromosome;
-import edu.yu.einstein.genplay.core.enums.Strand;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 
 /**
  * This class contains methods that verifies the content of a line in order to determine if the line is correct or not.

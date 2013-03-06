@@ -21,7 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.operation;
 
-import edu.yu.einstein.genplay.core.list.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
 

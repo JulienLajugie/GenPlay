@@ -28,7 +28,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.array.MGVariantArray;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.DeletionVariant;
@@ -37,6 +36,7 @@ import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.SNPVariant;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 
 /**
  * The {@link MGChromosomeVariants} contains the lists of {@link Variant}.

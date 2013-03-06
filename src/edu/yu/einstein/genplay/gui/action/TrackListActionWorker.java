@@ -28,8 +28,8 @@ import javax.swing.AbstractAction;
 import javax.swing.JRootPane;
 import javax.swing.SwingWorker;
 
-import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
+import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
 import edu.yu.einstein.genplay.gui.dialog.exceptionDialog.WarningReportDialog;

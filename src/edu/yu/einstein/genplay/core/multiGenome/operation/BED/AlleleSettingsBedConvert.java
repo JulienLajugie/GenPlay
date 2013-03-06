@@ -21,15 +21,15 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.operation.BED;
 
-import edu.yu.einstein.genplay.core.chromosome.Chromosome;
-import edu.yu.einstein.genplay.core.enums.AlleleType;
-import edu.yu.einstein.genplay.core.enums.CoordinateSystemType;
-import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
-import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
-import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.core.list.arrayList.DoubleArrayAsDoubleList;
-import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
+import edu.yu.einstein.genplay.dataStructure.enums.CoordinateSystemType;
+import edu.yu.einstein.genplay.dataStructure.list.ChromosomeArrayListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.arrayList.DoubleArrayAsDoubleList;
+import edu.yu.einstein.genplay.dataStructure.list.arrayList.IntArrayAsIntegerList;
 
 
 /**

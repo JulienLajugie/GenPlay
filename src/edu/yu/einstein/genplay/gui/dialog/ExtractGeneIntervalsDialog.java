@@ -36,7 +36,7 @@ import javax.swing.JLabel;
 import javax.swing.WindowConstants;
 import javax.swing.text.NumberFormatter;
 
-import edu.yu.einstein.genplay.core.list.geneList.operation.GLOExtractIntervals;
+import edu.yu.einstein.genplay.core.operation.geneList.GLOExtractIntervals;
 import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLAExtractInterval;
 import edu.yu.einstein.genplay.util.Images;
 

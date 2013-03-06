@@ -25,12 +25,12 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.core.list.binList.operation.BLOTransfrag;
-import edu.yu.einstein.genplay.core.list.binList.operation.BLOTransfragGeneList;
-import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.core.operation.binList.BLOTransfrag;
+import edu.yu.einstein.genplay.core.operation.binList.BLOTransfragGeneList;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;

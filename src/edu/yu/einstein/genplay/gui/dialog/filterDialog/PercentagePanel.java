@@ -25,7 +25,7 @@ import java.text.NumberFormat;
 
 import javax.swing.JOptionPane;
 
-import edu.yu.einstein.genplay.core.enums.FilterType;
+import edu.yu.einstein.genplay.dataStructure.enums.FilterType;
 
 
 

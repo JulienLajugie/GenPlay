@@ -25,7 +25,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.core.enums.DataPrecision;
+import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
 
 
 

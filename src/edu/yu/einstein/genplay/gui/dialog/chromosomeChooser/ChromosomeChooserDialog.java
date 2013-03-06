@@ -39,7 +39,7 @@ import javax.swing.JTable;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.table.TableColumn;
 
-import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.Utils;

@@ -26,10 +26,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.chromosome.Chromosome;
-import edu.yu.einstein.genplay.core.enums.AlleleType;
-import edu.yu.einstein.genplay.core.enums.CoordinateSystemType;
-import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
@@ -38,6 +34,10 @@ import edu.yu.einstein.genplay.core.multiGenome.operation.ExportEngine;
 import edu.yu.einstein.genplay.core.multiGenome.operation.fileScanner.FileScannerInterface;
 import edu.yu.einstein.genplay.core.multiGenome.operation.fileScanner.SingleFileScanner;
 import edu.yu.einstein.genplay.core.multiGenome.utils.VCFLineUtility;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
+import edu.yu.einstein.genplay.dataStructure.enums.CoordinateSystemType;
+import edu.yu.einstein.genplay.dataStructure.enums.VCFColumnName;
 import edu.yu.einstein.genplay.util.Utils;
 
 

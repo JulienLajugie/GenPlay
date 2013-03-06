@@ -28,7 +28,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.enums.AlleleType;
+import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 
 
 /**

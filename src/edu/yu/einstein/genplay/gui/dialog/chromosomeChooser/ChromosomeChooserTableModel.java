@@ -26,7 +26,7 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 
 
 /**

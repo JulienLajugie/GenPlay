@@ -28,9 +28,9 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.enums.CoordinateSystemType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
+import edu.yu.einstein.genplay.dataStructure.enums.CoordinateSystemType;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.variantLayer.VariantLayer;

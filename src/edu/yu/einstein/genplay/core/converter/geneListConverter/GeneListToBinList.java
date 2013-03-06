@@ -22,11 +22,11 @@
 package edu.yu.einstein.genplay.core.converter.geneListConverter;
 
 import edu.yu.einstein.genplay.core.converter.Converter;
-import edu.yu.einstein.genplay.core.enums.DataPrecision;
-import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
-import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.core.list.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
 
 
 /**

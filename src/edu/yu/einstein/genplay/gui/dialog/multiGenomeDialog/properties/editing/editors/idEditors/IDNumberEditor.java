@@ -36,14 +36,14 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
-import edu.yu.einstein.genplay.core.enums.InequalityOperators;
-import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderBasicType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.IDFilterInterface;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.NumberIDFilter;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.NumberIDFilterInterface;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.QualFilter;
+import edu.yu.einstein.genplay.dataStructure.enums.InequalityOperators;
+import edu.yu.einstein.genplay.dataStructure.enums.VCFColumnName;
 
 /**
  * @author Nicolas Fourel
