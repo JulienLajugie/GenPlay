@@ -26,7 +26,7 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 
 
 
@@ -110,7 +110,7 @@ public abstract class DisplayableListOfLists<T, U> extends ChromosomeArrayListOf
 	
 	
 	@Override
-	public final U getFittedData(GenomeWindow window, double xRatio) {
+	public final U getFittedData(SimpleGenomeWindow window, double xRatio) {
 		if ((fittedChromosome == null) || (!fittedChromosome.equals(window.getChromosome()))) {
 			fittedChromosome = window.getChromosome();
 			if ((fittedXRatio == null) || (fittedXRatio != xRatio)) {

@@ -31,7 +31,6 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.MaskWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.dataStructure.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
@@ -114,7 +113,7 @@ public class SCWLOCleanList implements Operation<ScoredChromosomeWindowList> {
 
 
 	/**
-	 * @param list the {@link ChromosomeWindowList} for the current chromosome
+	 * @param list the {@link ScoredChromosomeWindowList} for the current chromosome
 	 * @param indexStart index of the first window of the cluster to merge
 	 * @param indexStop index of the last window of the cluster to merge
 	 * @return a single window that is the merging of the specified ones

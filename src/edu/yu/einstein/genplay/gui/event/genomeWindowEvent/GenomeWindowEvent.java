@@ -25,11 +25,11 @@ import java.util.EventObject;
 
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 
 
 /**
- * The {@link GenomeWindow} event emitted by a {@link GenomeWindowEventsGenerator} object.
+ * The {@link SimpleGenomeWindow} event emitted by a {@link GenomeWindowEventsGenerator} object.
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -37,17 +37,17 @@ public final class GenomeWindowEvent extends EventObject {
 
 	private static final long serialVersionUID = -5909384700520572038L;	// generated ID
 	private final GenomeWindowEventsGenerator 	source;		// GenomeWindowEventsGenerator that emitted the event
-	private final GenomeWindow 					oldWindow;	// old GenomeWindow
-	private final GenomeWindow 					newWindow;	// new GenomeWindow
+	private final SimpleGenomeWindow 					oldWindow;	// old GenomeWindow
+	private final SimpleGenomeWindow 					newWindow;	// new GenomeWindow
 
 
 	/**
 	 * Creates an instance of {@link GenomeWindowEvent}
 	 * @param source {@link GenomeWindowEventsGenerator} that emitted this event
-	 * @param oldWindow value of the {@link GenomeWindow} before changes
-	 * @param newWindow value of the {@link GenomeWindow} after changes
+	 * @param oldWindow value of the {@link SimpleGenomeWindow} before changes
+	 * @param newWindow value of the {@link SimpleGenomeWindow} after changes
 	 */
-	public GenomeWindowEvent(GenomeWindowEventsGenerator source, GenomeWindow oldWindow, GenomeWindow newWindow) {
+	public GenomeWindowEvent(GenomeWindowEventsGenerator source, SimpleGenomeWindow oldWindow, SimpleGenomeWindow newWindow) {
 		super(source);
 		this.source = source;
 		this.oldWindow = oldWindow;
@@ -67,7 +67,7 @@ public final class GenomeWindowEvent extends EventObject {
 	/**
 	 * @return the oldWindow
 	 */
-	public final GenomeWindow getOldWindow() {
+	public final SimpleGenomeWindow getOldWindow() {
 		return oldWindow;
 	}
 
@@ -75,13 +75,13 @@ public final class GenomeWindowEvent extends EventObject {
 	/**
 	 * @return the newWindow
 	 */
-	public final GenomeWindow getNewWindow() {
+	public final SimpleGenomeWindow getNewWindow() {
 		return newWindow;
 	}
 
 
 	/**
-	 * @return true if the size of the {@link GenomeWindow} changed
+	 * @return true if the size of the {@link SimpleGenomeWindow} changed
 	 */
 	public boolean zoomChanged() {
 		return oldWindow.getSize() != newWindow.getSize();
@@ -89,7 +89,7 @@ public final class GenomeWindowEvent extends EventObject {
 
 
 	/**
-	 * @return true if the {@link Chromosome} of the {@link GenomeWindow} changed
+	 * @return true if the {@link Chromosome} of the {@link SimpleGenomeWindow} changed
 	 */
 	public boolean chromosomeChanged() {
 		if ((oldWindow == null) && (newWindow != null)) {
@@ -100,7 +100,7 @@ public final class GenomeWindowEvent extends EventObject {
 
 
 	/**
-	 * @return true if the {@link SimpleChromosomeWindow} of the {@link GenomeWindow} changed
+	 * @return true if the {@link SimpleChromosomeWindow} of the {@link SimpleGenomeWindow} changed
 	 */
 	public boolean chromosomeWindowChanged() {
 		return !((SimpleChromosomeWindow)oldWindow).equals(newWindow);

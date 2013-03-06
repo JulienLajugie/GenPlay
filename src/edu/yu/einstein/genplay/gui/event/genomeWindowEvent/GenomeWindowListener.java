@@ -23,14 +23,14 @@ package edu.yu.einstein.genplay.gui.event.genomeWindowEvent;
 
 import java.util.EventListener;
 
-import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 
 
 /**
  * The listener interface for receiving {@link GenomeWindowEvent}.
  * The class that is interested in processing a {@link GenomeWindowEvent} implements this interface.
  * The listener object created from that class is then registered with a component using the component's addGenomeWindowListener method. 
- * A {@link GenomeWindowEvent} is generated when a {@link GenomeWindow} is modified.  
+ * A {@link GenomeWindowEvent} is generated when a {@link SimpleGenomeWindow} is modified.  
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -38,7 +38,7 @@ public interface GenomeWindowListener extends EventListener {
 
 	
 	/**
-	 * Invoked when the {@link GenomeWindow} is modified 
+	 * Invoked when the {@link SimpleGenomeWindow} is modified 
 	 * @param evt {@link GenomeWindowEvent}
 	 */
 	public abstract void genomeWindowChanged(GenomeWindowEvent evt);

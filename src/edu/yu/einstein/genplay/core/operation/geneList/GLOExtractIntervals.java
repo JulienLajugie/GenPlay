@@ -31,6 +31,7 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
+import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
 
 
@@ -123,7 +124,7 @@ public class GLOExtractIntervals implements Operation<GeneList> {
 					List<Gene> resultList = new ArrayList<Gene>();
 					for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 						Gene currentGene = currentList.get(j);
-						Gene geneToAdd = new Gene(currentList.get(j));
+						Gene geneToAdd = new SimpleGene(currentList.get(j));
 						// search the new start
 						int newStart = 0;
 						switch (startFrom) {

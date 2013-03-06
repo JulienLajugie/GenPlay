@@ -21,7 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.dataStructure.list;
 
-import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 
 /**
  * Interface to implement to generate a list of data adapted to the track resolution
@@ -31,9 +31,9 @@ import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
 public interface DisplayableDataList<T> {
 
 	/**
-	 * @param genomeWindow {@link GenomeWindow} to display
+	 * @param genomeWindow {@link SimpleGenomeWindow} to display
 	 * @param xRatio xRatio on the screen (ie ratio between the number of pixel and the number of base to display)
 	 * @return a data list adapted to the track resolution
 	 */
-	public T getFittedData(GenomeWindow genomeWindow, double xRatio);
+	public T getFittedData(SimpleGenomeWindow genomeWindow, double xRatio);
 }

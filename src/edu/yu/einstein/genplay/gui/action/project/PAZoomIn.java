@@ -28,13 +28,13 @@ import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.KeyStroke;
 
-import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 
 
 
 /**
- * Zooms the {@link GenomeWindow} displayed in the application in
+ * Zooms the {@link SimpleGenomeWindow} displayed in the application in
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -56,7 +56,7 @@ public final class PAZoomIn extends AbstractAction {
 
 
 	/**
-	 * Zooms the {@link GenomeWindow} displayed in the application in
+	 * Zooms the {@link SimpleGenomeWindow} displayed in the application in
 	 */
 	public PAZoomIn() {
 		super();
@@ -66,7 +66,7 @@ public final class PAZoomIn extends AbstractAction {
 
 
 	/**
-	 * Zooms the {@link GenomeWindow} displayed in the application in
+	 * Zooms the {@link SimpleGenomeWindow} displayed in the application in
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {

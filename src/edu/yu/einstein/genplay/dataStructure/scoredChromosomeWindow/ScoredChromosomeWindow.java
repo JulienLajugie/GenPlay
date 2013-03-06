@@ -1,5 +1,5 @@
 /*******************************************************************************
- *     GenPlay, Einstein Genome Analyzer
+ *     GenPlay, Einstein Genome AnalyzerSerializable, Cloneable, ScoredChromosomeWindow
  *     Copyright (C) 2009, 2011 Albert Einstein College of Medicine
  *
  *     This program is free software: you can redistribute it and/or modify

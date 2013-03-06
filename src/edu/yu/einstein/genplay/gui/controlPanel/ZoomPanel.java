@@ -42,7 +42,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.core.manager.project.ProjectZoom;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 import edu.yu.einstein.genplay.gui.action.project.PAMoveFarLeft;
 import edu.yu.einstein.genplay.gui.action.project.PAMoveFarRight;
 import edu.yu.einstein.genplay.gui.action.project.PAMoveLeft;
@@ -70,7 +70,7 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 
 	/**
 	 * Creates an instance of {@link ZoomPanel}
-	 * @param genomeWindow a {@link GenomeWindow}
+	 * @param genomeWindow a {@link SimpleGenomeWindow}
 	 */
 	ZoomPanel() {
 		projectZoom = ProjectManager.getInstance().getProjectZoom();
@@ -170,7 +170,7 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 			Chromosome chromosome = projectWindow.getGenomeWindow().getChromosome();
 			int start = (int)(projectWindow.getGenomeWindow().getMiddlePosition() - halfZoom);
 			int stop = start + newZoom;
-			GenomeWindow newGenomeWindow = new GenomeWindow(chromosome, start, stop);
+			SimpleGenomeWindow newGenomeWindow = new SimpleGenomeWindow(chromosome, start, stop);
 			projectWindow.setGenomeWindow(newGenomeWindow);
 		}
 	}

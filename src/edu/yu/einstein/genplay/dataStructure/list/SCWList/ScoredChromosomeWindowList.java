@@ -23,7 +23,7 @@ package edu.yu.einstein.genplay.dataStructure.list.SCWList;
 
 import java.util.List;
 
-import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
@@ -91,9 +91,9 @@ public interface ScoredChromosomeWindowList extends List<List<ScoredChromosomeWi
 
 
 	/**
-	 * @param genomeWindow {@link GenomeWindow} to display
+	 * @param genomeWindow {@link SimpleGenomeWindow} to display
 	 * @param xFactor xRatio on the screen (ie ratio between the number of pixel and the number of base to display)
 	 * @return a data list adapted to the screen resolution
 	 */
-	public List<ScoredChromosomeWindow> getFittedData(GenomeWindow genomeWindow, double xFactor);
+	public List<ScoredChromosomeWindow> getFittedData(SimpleGenomeWindow genomeWindow, double xFactor);
 }

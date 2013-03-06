@@ -28,13 +28,13 @@ import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.KeyStroke;
 
-import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 
 
 
 /**
- * Increments the start and the stop positions of the {@link GenomeWindow} displayed in the application.
+ * Increments the start and the stop positions of the {@link SimpleGenomeWindow} displayed in the application.
  * The move is 1/10 of the width of the tracks panel.
  * 
  * @author Julien Lajugie
@@ -68,7 +68,7 @@ public final class PAMoveRight extends AbstractAction {
 
 
 	/**
-	 * Increments the start and the stop positions of the {@link GenomeWindow} displayed in the application
+	 * Increments the start and the stop positions of the {@link SimpleGenomeWindow} displayed in the application
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {

@@ -30,6 +30,7 @@ import java.util.concurrent.ExecutionException;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
+import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
 
 
@@ -77,7 +78,7 @@ public class GLOIndexScores implements Operation<GeneList> {
 					for (int i = 0; (i < currentList.size()) && !stopped; i++) {
 						Gene currentGene = currentList.get(i);
 						if (currentGene != null) {
-							Gene copyCurrentGene = new Gene(currentGene);
+							Gene copyCurrentGene = new SimpleGene(currentGene);
 							if (copyCurrentGene.getExonScores() != null){
 								for(int j = 0; j < copyCurrentGene.getExonScores().length; j++) {
 									double score = (copyCurrentGene.getExonScores()[j] - min) * indexFactor;

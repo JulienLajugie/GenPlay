@@ -46,7 +46,7 @@ import javax.swing.JScrollBar;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 import edu.yu.einstein.genplay.gui.action.multiGenome.properties.MGAProperties;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
@@ -225,7 +225,7 @@ public class TopPanel extends JPanel implements AdjustmentListener, MouseWheelLi
 		Chromosome chromosome = projectWindow.getGenomeWindow().getChromosome();
 		int start = (jsbPosition.getValue() - halfSize);
 		int stop = start + projectWindow.getGenomeWindow().getSize();
-		GenomeWindow newGenomeWindow = new GenomeWindow(chromosome, start, stop);
+		SimpleGenomeWindow newGenomeWindow = new SimpleGenomeWindow(chromosome, start, stop);
 		projectWindow.setGenomeWindow(newGenomeWindow);
 	}
 
@@ -241,7 +241,7 @@ public class TopPanel extends JPanel implements AdjustmentListener, MouseWheelLi
 		Chromosome chromosome = projectWindow.getGenomeWindow().getChromosome();
 		int start = (int)(newPosition - halfSize);
 		int stop = start + projectWindow.getGenomeWindow().getSize();
-		GenomeWindow newGenomeWindow = new GenomeWindow(chromosome, start, stop);
+		SimpleGenomeWindow newGenomeWindow = new SimpleGenomeWindow(chromosome, start, stop);
 		projectWindow.setGenomeWindow(newGenomeWindow);
 	}
 

@@ -37,7 +37,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 import edu.yu.einstein.genplay.gui.action.project.PAMoveFarLeft;
 import edu.yu.einstein.genplay.gui.action.project.PAMoveFarRight;
 import edu.yu.einstein.genplay.gui.action.project.PAMoveLeft;
@@ -65,7 +65,7 @@ final class ChromosomePanel extends JPanel implements MouseWheelListener, ItemLi
 
 	/**
 	 * Creates an instance of {@link ChromosomePanel}
-	 * @param genomeWindow a {@link GenomeWindow}
+	 * @param genomeWindow a {@link SimpleGenomeWindow}
 	 */
 	ChromosomePanel() {
 		projectChromosome = ProjectManager.getInstance().getProjectChromosome();
@@ -136,7 +136,7 @@ final class ChromosomePanel extends JPanel implements MouseWheelListener, ItemLi
 	public void itemStateChanged(ItemEvent arg0) {
 		Chromosome newChromosome = (Chromosome)jcbChromosome.getSelectedItem();
 		if ((newChromosome != null) && !newChromosome.equals(projectWindow.getGenomeWindow().getChromosome())) {
-			GenomeWindow newGenomeWindow = new GenomeWindow(newChromosome, 0, newChromosome.getLength());
+			SimpleGenomeWindow newGenomeWindow = new SimpleGenomeWindow(newChromosome, 0, newChromosome.getLength());
 			projectWindow.setGenomeWindow(newGenomeWindow);
 		}
 	}

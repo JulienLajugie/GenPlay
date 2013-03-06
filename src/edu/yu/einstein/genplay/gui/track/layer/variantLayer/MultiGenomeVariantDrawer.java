@@ -40,7 +40,7 @@ import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.VariantDisplay;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.enums.VariantType;
-import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
 import edu.yu.einstein.genplay.util.colors.Colors;
@@ -151,7 +151,7 @@ class MultiGenomeVariantDrawer implements Serializable {
 	 * @param g				Graphics object
 	 * @param variantList	list of variants
 	 */
-	protected void drawGenome (Graphics g, GenomeWindow genomeWindow, List<VariantDisplay> variants) {
+	protected void drawGenome (Graphics g, SimpleGenomeWindow genomeWindow, List<VariantDisplay> variants) {
 		if ((variants != null) && (variants.size() > 0)) {
 			Color mixColor = new Color(Colors.BLUE.getRed(), Colors.BLUE.getGreen(), Colors.BLUE.getBlue());			// color for mixed variant
 			for (int i = 0; i < variants.size(); i++) {
@@ -184,7 +184,7 @@ class MultiGenomeVariantDrawer implements Serializable {
 	 * @param variant	the variant
 	 * @param color		the color of the stripe
 	 */
-	private void drawVariant (Graphics g, VariantDisplay variantDisplay, Color color, GenomeWindow genomeWindow) {
+	private void drawVariant (Graphics g, VariantDisplay variantDisplay, Color color, SimpleGenomeWindow genomeWindow) {
 		Variant variant = variantDisplay.getVariant();
 
 		// Get start and stop position

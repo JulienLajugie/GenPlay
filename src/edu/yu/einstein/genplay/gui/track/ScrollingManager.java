@@ -23,7 +23,7 @@ package edu.yu.einstein.genplay.gui.track;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
-import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 
 /**
@@ -138,7 +138,7 @@ public class ScrollingManager {
 				Thread thisThread = Thread.currentThread();
 				ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
 				while (scrollingThread == thisThread) {
-					GenomeWindow newWindow = new GenomeWindow();
+					SimpleGenomeWindow newWindow = new SimpleGenomeWindow();
 					newWindow.setChromosome(projectWindow.getGenomeWindow().getChromosome());
 					newWindow.setStart(projectWindow.getGenomeWindow().getStart() + scrollingIntensity);
 					newWindow.setStop(projectWindow.getGenomeWindow().getStop() + scrollingIntensity);

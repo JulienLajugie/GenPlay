@@ -46,6 +46,7 @@ import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWi
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
+import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.dataStructure.list.DisplayableListOfLists;
@@ -275,7 +276,7 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 						}
 						// we don't add a gene if it is located after the end of a chromosome
 						if (stop < currentChromosome.getLength()) {
-							resultList.add(new Gene(name, currentChromosome, strand, start, stop, UTR5Bound, UTR3Bound, exonStarts, exonStops, exonScores));
+							resultList.add(new SimpleGene(name, currentChromosome, strand, start, stop, UTR5Bound, UTR3Bound, exonStarts, exonStops, exonScores));
 						}
 					}
 					// tell the operation pool that a chromosome is done
@@ -654,7 +655,7 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 						}
 						// we don't add a gene if it is located after the end of a chromosome
 						if (txStop < currentChromosome.getLength()) {
-							resultList.add(new Gene(name, currentChromosome, strand, txStart, txStop, exonStarts, exonStops, exonScores));
+							resultList.add(new SimpleGene(name, currentChromosome, strand, txStart, txStop, exonStarts, exonStops, exonScores));
 						}
 					}
 					// tell the operation pool that a chromosome is done

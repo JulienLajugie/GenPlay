@@ -35,7 +35,7 @@ import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.MixVariant;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.VariantDisplay;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.CacheTrack;
 
 
@@ -136,7 +136,7 @@ public class MultiGenomeListHandler implements Serializable {
 	 * @param allele the allele index
 	 * @return the variant list that fits the screen
 	 */
-	public final List<VariantDisplay> getFittedData(GenomeWindow window, double xRatio, int allele) {
+	public final List<VariantDisplay> getFittedData(SimpleGenomeWindow window, double xRatio, int allele) {
 		boolean hasToFit = false;
 		if ((fittedChromosome == null) || (!fittedChromosome.equals(window.getChromosome()))) {
 			fittedChromosome = window.getChromosome();

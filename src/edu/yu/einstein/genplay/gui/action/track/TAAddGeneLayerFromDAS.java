@@ -24,7 +24,7 @@ package edu.yu.einstein.genplay.gui.action.track;
 import edu.yu.einstein.genplay.core.DAS.DASConnector;
 import edu.yu.einstein.genplay.core.DAS.DASType;
 import edu.yu.einstein.genplay.core.DAS.DataSource;
-import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.DASDialog.DASDialog;
@@ -46,8 +46,8 @@ public class TAAddGeneLayerFromDAS extends TrackListActionWorker<GeneList> {
 	private final DASConnector 	dasConnector;		// DAS connector
 	private final DASType 		dasType;			// DAS type
 	private final int 			dataRange;			// enum representing the type of range (genome wide / current range / user defined)
-	private final GenomeWindow 	genomeWindow;		// genome window defined by the user
-	private final GenomeWindow 	currentWindow;		// current genome window
+	private final SimpleGenomeWindow 	genomeWindow;		// genome window defined by the user
+	private final SimpleGenomeWindow 	currentWindow;		// current genome window
 	private final Track			selectedTrack;		// selected track
 
 
@@ -62,7 +62,7 @@ public class TAAddGeneLayerFromDAS extends TrackListActionWorker<GeneList> {
 	 * @param selectedTrack selected track
 	 */
 	public TAAddGeneLayerFromDAS(DataSource dataSource, DASConnector dasConnector, DASType dasType, int dataRange,
-			GenomeWindow genomeWindow, GenomeWindow currentWindow, Track selectedTrack) {
+			SimpleGenomeWindow genomeWindow, SimpleGenomeWindow currentWindow, Track selectedTrack) {
 		this.dataSource = dataSource;
 		this.dasConnector = dasConnector;
 		this.dasType = dasType;

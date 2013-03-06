@@ -41,7 +41,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
-import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleScoredChromosomeWindowList;
@@ -219,13 +219,13 @@ public class DASConnector {
 	 * Retrieves a list of genes from a specified Data Source and a specified DAS Type and a specified Data Range
 	 * @param dataSource a {@link DataSource}
 	 * @param dasType a {@link DASType}
-	 * @param genomeWindow a {@link GenomeWindow}
+	 * @param genomeWindow a {@link SimpleGenomeWindow}
 	 * @return a {@link GeneList}
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
 	 */
-	public GeneList getGeneList(DataSource dataSource, DASType dasType, GenomeWindow genomeWindow) throws IOException, ParserConfigurationException, SAXException
+	public GeneList getGeneList(DataSource dataSource, DASType dasType, SimpleGenomeWindow genomeWindow) throws IOException, ParserConfigurationException, SAXException
 	{
 		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
 		//System.out.println("1st Entry Point " + entryPointList.get(0));
@@ -401,7 +401,7 @@ public class DASConnector {
 	 * Retrieves a list of ScoredChromosomeWindow from a specified Data Source and a specified DAS Type and a specified Data Range
 	 * @param dataSource a {@link DataSource}
 	 * @param dasType a {@link DASType}
-	 * @param genomeWindow a {@link GenomeWindow}
+	 * @param genomeWindow a {@link SimpleGenomeWindow}
 	 * @return a {@link ChromosomeArrayListOfLists}
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -410,7 +410,7 @@ public class DASConnector {
 	 * @throws InterruptedException
 	 */
 
-	public ScoredChromosomeWindowList getSCWList(DataSource dataSource, DASType dasType, GenomeWindow genomeWindow) throws IOException, ParserConfigurationException, SAXException, InterruptedException, ExecutionException {
+	public ScoredChromosomeWindowList getSCWList(DataSource dataSource, DASType dasType, SimpleGenomeWindow genomeWindow) throws IOException, ParserConfigurationException, SAXException, InterruptedException, ExecutionException {
 		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
 		ArrayList<List<ScoredChromosomeWindow>> resultList = new ArrayList<List<ScoredChromosomeWindow>>();
 		Chromosome currentChromo = genomeWindow.getChromosome();
@@ -524,11 +524,11 @@ public class DASConnector {
 	 * @param dataSource a {@link DataSource}
 	 * @param entryPoint an {@link EntryPoint}
 	 * @param dasType a {@link DASType}
-	 * @param genomeWindow a {@link GenomeWindow}
+	 * @param genomeWindow a {@link SimpleGenomeWindow}
 	 * @return a {@link URL} containing the query
 	 * @throws MalformedURLException
 	 */
-	private URL generateQuery(DataSource dataSource, EntryPoint entryPoint, DASType dasType, GenomeWindow genomeWindow) throws MalformedURLException {
+	private URL generateQuery(DataSource dataSource, EntryPoint entryPoint, DASType dasType, SimpleGenomeWindow genomeWindow) throws MalformedURLException {
 		String URLStr = new String(serverAddress);
 		URLStr += dataSource.getID();
 		URLStr += "/features?segment=";

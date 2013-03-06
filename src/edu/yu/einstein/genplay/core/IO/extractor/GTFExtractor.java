@@ -42,6 +42,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
+import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.MaskWindowList;
@@ -384,7 +385,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 		int start = exonStartsArray[0];
 		// the stop position is the stop of the last exon
 		int stop = exonStopsArray[exonStopsArray.length - 1];
-		Gene gene = new Gene(name, chromo, strand, start, stop, exonStartsArray, exonStopsArray, exonScoresArray);
+		Gene gene = new SimpleGene(name, chromo, strand, start, stop, exonStartsArray, exonStopsArray, exonScoresArray);
 		// if there is no score we set the gene exon score field to null
 		if (!areExonsScored) {
 			gene.setExonScores(null);
@@ -401,7 +402,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 
 	@Override
 	public void setReadLengthAndShiftHandler(ReadLengthAndShiftHandler handler) {
-		this.readHandler = handler;
+		readHandler = handler;
 	}
 
 }

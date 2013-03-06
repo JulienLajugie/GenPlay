@@ -35,6 +35,7 @@ import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
+import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 
 
 /**
@@ -111,7 +112,7 @@ public class GeneHandler extends DefaultHandler {
 		if (qName.equalsIgnoreCase("FEATURE")) {
 			// case where it's the first gene of the document
 			if (previousGroupID == null) {
-				currentGene = new Gene();
+				currentGene = new SimpleGene();
 				previousGroupID = groupID;
 			} else if (!groupID.equalsIgnoreCase(previousGroupID)) {	// if we have a new group we add the previous gene to the list
 				// set the gene start
@@ -123,7 +124,7 @@ public class GeneHandler extends DefaultHandler {
 				currentGene.setChromosome(chromosome);
 				geneList.add(currentGene);
 				previousGroupID = groupID;
-				currentGene = new Gene();
+				currentGene = new SimpleGene();
 			}
 			currentGene.addExon(getMultiGenomePosition(start), getMultiGenomePosition(end), score);
 		}

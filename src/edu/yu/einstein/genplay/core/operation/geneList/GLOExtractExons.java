@@ -30,6 +30,7 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
+import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
 
 
@@ -120,7 +121,7 @@ public class GLOExtractExons implements Operation<GeneList> {
 	 * @return a gene representing the first exon of the specified gene
 	 */
 	private Gene extractFirstExon(Gene inputGene) {
-		Gene outputGene = new Gene(inputGene);
+		Gene outputGene = new SimpleGene(inputGene);
 		if (outputGene.getStrand() == Strand.FIVE) {
 			// new start
 			outputGene.setStart(outputGene.getExonStarts()[0]);
@@ -173,7 +174,7 @@ public class GLOExtractExons implements Operation<GeneList> {
 	 * @return a gene representing the last exon of the specified gene
 	 */
 	private Gene extractLastExon(Gene inputGene) {
-		Gene outputGene = new Gene(inputGene);
+		Gene outputGene = new SimpleGene(inputGene);
 		if (outputGene.getStrand() == Strand.FIVE) {
 			// new start
 			outputGene.setStart(outputGene.getExonStarts()[outputGene.getExonStarts().length - 1]);
@@ -229,7 +230,7 @@ public class GLOExtractExons implements Operation<GeneList> {
 		List<Gene> outputGeneList = new ArrayList<Gene>();
 		if (inputGene.getStrand() == Strand.FIVE) {
 			for (int i = 0; i < inputGene.getExonStarts().length; i++) {
-				Gene outputGene = new Gene(inputGene);
+				Gene outputGene = new SimpleGene(inputGene);
 				// new start
 				outputGene.setStart(outputGene.getExonStarts()[i]);
 				// new stop
@@ -259,7 +260,7 @@ public class GLOExtractExons implements Operation<GeneList> {
 			}
 		} else {
 			for (int i = inputGene.getExonStarts().length - 1; i >= 0; i--) {
-				Gene outputGene = new Gene(inputGene);
+				Gene outputGene = new SimpleGene(inputGene);
 				// new start
 				outputGene.setStart(outputGene.getExonStarts()[i]);
 				// new stop

@@ -24,7 +24,7 @@ package edu.yu.einstein.genplay.core.comparator;
 import java.util.Comparator;
 
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 
 /**
  * Comparator between 2 {@link ChromosomeWindow}.
@@ -33,9 +33,9 @@ import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
 public class ChromosomeWindowStartComparator implements Comparator<ChromosomeWindow>{
 
 	/**
-	 * @return -1 if the start position of the first specified {@link GenomeWindow} is smaller than the start position of the second one <br>
+	 * @return -1 if the start position of the first specified {@link SimpleGenomeWindow} is smaller than the start position of the second one <br>
 	 * 0 if the start positions are equals <br>
-	 * 1 the start position of the first specified {@link GenomeWindow} is greater than the start position of the second one
+	 * 1 the start position of the first specified {@link SimpleGenomeWindow} is greater than the start position of the second one
 	 */
 	@Override
 	public int compare(ChromosomeWindow chromosomeWindow1, ChromosomeWindow chromosomeWindow2) {

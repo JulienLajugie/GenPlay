@@ -23,11 +23,11 @@ package edu.yu.einstein.genplay.dataStructure.chromosomeWindow;
 
 
 /**
+ * A window on a chromosome or a scaffold with a start and stop position (in bp)
  * @author Nicolas Fourel
  * @version 0.1
  */
 public interface ChromosomeWindow extends Comparable<ChromosomeWindow> {
-
 
 
 	/**

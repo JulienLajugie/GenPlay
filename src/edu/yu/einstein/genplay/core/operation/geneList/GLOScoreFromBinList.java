@@ -32,6 +32,7 @@ import edu.yu.einstein.genplay.core.operation.binList.BLOSumScore;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
+import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
 
@@ -136,7 +137,7 @@ public class GLOScoreFromBinList implements Operation<GeneList> {
 								score /= length * scoreCount;
 								break;
 							}
-							Gene geneToAdd = new Gene(currentGeneList.get(j));
+							Gene geneToAdd = new SimpleGene(currentGeneList.get(j));
 							geneToAdd.setScore(score);
 							geneToAdd.setExonScores(scores);
 							resultList.add(geneToAdd);

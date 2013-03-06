@@ -34,7 +34,7 @@ import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.genome.Assembly;
 import edu.yu.einstein.genplay.dataStructure.genome.Clade;
 import edu.yu.einstein.genplay.dataStructure.genome.Genome;
-import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.action.multiGenome.synchronization.MGASynchronizing;
 import edu.yu.einstein.genplay.gui.action.project.PAInitMGManager;
@@ -229,7 +229,7 @@ public class Launcher {
 
 		// Initializes the genome window manager
 		Chromosome currentChromosome = ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome();
-		GenomeWindow genomeWindow = new GenomeWindow(currentChromosome, 0, currentChromosome.getLength());
+		SimpleGenomeWindow genomeWindow = new SimpleGenomeWindow(currentChromosome, 0, currentChromosome.getLength());
 		ProjectManager.getInstance().getProjectWindow().setGenomeWindow(genomeWindow);
 
 		// Set the project as a multi genome project before any call of the MainFrame (some graphical elements check it out in order to be displayed)

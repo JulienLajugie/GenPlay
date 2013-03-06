@@ -44,7 +44,7 @@ import edu.yu.einstein.genplay.core.parser.genomeWindowParser.GenomeWindowInputH
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.enums.CoordinateSystemType;
-import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
@@ -67,7 +67,7 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 
 	/**
 	 * Creates an instance of {@link GenomeWindowPanel}
-	 * @param genomeWindow a {@link GenomeWindow}
+	 * @param genomeWindow a {@link SimpleGenomeWindow}
 	 */
 	GenomeWindowPanel() {
 		this.projectWindow = ProjectManager.getInstance().getProjectWindow();
@@ -143,10 +143,10 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 
 
 	/**
-	 * Called when the current {@link GenomeWindow} changes
+	 * Called when the current {@link SimpleGenomeWindow} changes
 	 */
 	void updateGenomeWindow() {
-		GenomeWindow newGenomeWindow = getGenomeWindow();
+		SimpleGenomeWindow newGenomeWindow = getGenomeWindow();
 		if (newGenomeWindow == null) {
 			JOptionPane.showMessageDialog(getRootPane(), "Invalid position", "Error", JOptionPane.WARNING_MESSAGE, null);
 		} else if (!newGenomeWindow.equals(projectWindow.getGenomeWindow())) {
@@ -164,9 +164,9 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 	/**
 	 * @return the newly defined genome window
 	 */
-	private GenomeWindow getGenomeWindow () {
+	private SimpleGenomeWindow getGenomeWindow () {
 		GenomeWindowInputHandler handler = new GenomeWindowInputHandler(jtfGenomeWindow.getText());
-		GenomeWindow newGenomeWindow = handler.getGenomeWindow();
+		SimpleGenomeWindow newGenomeWindow = handler.getGenomeWindow();
 		if (newGenomeWindow != null) {
 			String outputGenome = CoordinateSystemType.METAGENOME.toString();
 			String genomeName = FormattedMultiGenomeName.getFullNameWithoutAllele(MGDisplaySettings.SELECTED_GENOME);
@@ -206,7 +206,7 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 	 * Actual method when the genome window has changed.
 	 * @param genomeWindow the new genome window
 	 */
-	private void updateGenomeWindowField(GenomeWindow genomeWindow) {
+	private void updateGenomeWindowField(SimpleGenomeWindow genomeWindow) {
 		String text = genomeWindow.toString();
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			Chromosome currentChromosome = projectWindow.getGenomeWindow().getChromosome();

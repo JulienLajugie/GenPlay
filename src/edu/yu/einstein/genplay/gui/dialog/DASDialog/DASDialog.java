@@ -42,7 +42,7 @@ import edu.yu.einstein.genplay.core.DAS.DASType;
 import edu.yu.einstein.genplay.core.DAS.DataSource;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
-import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 import edu.yu.einstein.genplay.gui.dialog.genomeSelectionPanel.GenomeSelectionPanel;
 import edu.yu.einstein.genplay.util.Images;
 
@@ -245,7 +245,7 @@ public class DASDialog extends JDialog {
 	/**
 	 * @return the selected Chromosome
 	 */
-	public final GenomeWindow getUserSpecifiedGenomeWindow() {
+	public final SimpleGenomeWindow getUserSpecifiedGenomeWindow() {
 		return dataRangePanel.getUserSpecifiedGenomeWindow();
 	}
 

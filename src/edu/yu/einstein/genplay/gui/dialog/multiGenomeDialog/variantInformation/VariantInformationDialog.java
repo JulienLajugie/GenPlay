@@ -39,7 +39,7 @@ import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.VariantType;
-import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLineDialog.VCFLineDialog;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -216,12 +216,12 @@ public class VariantInformationDialog extends JDialog {
 	 */
 	private void relocateScreenPosition() {
 		int variantStart = currentVariant.getStart();
-		GenomeWindow currentGenomeWindow = ProjectManager.getInstance().getProjectWindow().getGenomeWindow();
+		SimpleGenomeWindow currentGenomeWindow = ProjectManager.getInstance().getProjectWindow().getGenomeWindow();
 		int width = currentGenomeWindow.getSize();
 		int startWindow = variantStart - (width / 2);
 		int stopWindow = startWindow + width;
 		Chromosome chromosome = currentGenomeWindow.getChromosome();
-		GenomeWindow genomeWindow = new GenomeWindow(chromosome, startWindow, stopWindow);
+		SimpleGenomeWindow genomeWindow = new SimpleGenomeWindow(chromosome, startWindow, stopWindow);
 		ProjectManager.getInstance().getProjectWindow().setGenomeWindow(genomeWindow);
 	}
 

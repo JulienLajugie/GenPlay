@@ -29,6 +29,7 @@ import java.util.concurrent.Callable;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
+import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
 
 
@@ -82,7 +83,7 @@ public class GLOFilterThreshold implements Operation<GeneList> {
 								// if the score is greater than the high threshold
 								if (isSaturation) {
 									// set the value to high threshold (saturation)
-									geneToAdd = new Gene(currentGene);
+									geneToAdd = new SimpleGene(currentGene);
 									for (int k = 0; k < currentGene.getExonScores().length; k++) {
 										geneToAdd.getExonScores()[k] = highThreshold;
 									}
@@ -91,14 +92,14 @@ public class GLOFilterThreshold implements Operation<GeneList> {
 								// if the score is smaller than the low threshold
 								if (isSaturation) {
 									// set the value to low threshold (saturation)
-									geneToAdd = new Gene(currentGene);
+									geneToAdd = new SimpleGene(currentGene);
 									for (int k = 0; k < currentGene.getExonScores().length; k++) {
 										geneToAdd.getExonScores()[k] = lowThreshold;
 									}
 								}
 							} else {
 								// if the score is between the two threshold
-								geneToAdd = new Gene(currentGene);
+								geneToAdd = new SimpleGene(currentGene);
 							}
 							if (geneToAdd != null) {
 								resultList.add(geneToAdd);

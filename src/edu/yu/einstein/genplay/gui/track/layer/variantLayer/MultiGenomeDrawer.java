@@ -41,7 +41,7 @@ import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
-import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.filters.FiltersData;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
@@ -357,7 +357,7 @@ public class MultiGenomeDrawer implements Serializable {
 		if ((variantDataList != null) && (variantDataList.size() > 0)) {
 			variantDrawer.initializeStripesOpacity();
 			if (!locked) { // if there are stripes
-				GenomeWindow genomeWindow = ProjectManager.getInstance().getProjectWindow().getGenomeWindow();
+				SimpleGenomeWindow genomeWindow = ProjectManager.getInstance().getProjectWindow().getGenomeWindow();
 				double xRatio = ProjectManager.getInstance().getProjectWindow().getXRatio();
 				int halfHeight = height / 2; 																	// calculates the half of the height track
 				Graphics allele01Graphic = g.create(0, 0, width, halfHeight); 									// create a graphics for the first allele that correspond to the upper half of the track

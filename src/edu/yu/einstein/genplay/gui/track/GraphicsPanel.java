@@ -37,7 +37,7 @@ import javax.swing.SwingUtilities;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.core.manager.project.ProjectZoom;
-import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 /**
@@ -115,7 +115,7 @@ public class GraphicsPanel extends JPanel implements Serializable, ComponentList
 			int screenWidth = e.getX() - (getWidth() / 2);
 			// compute the corresponding genomic distance
 			int genomeWidth = projectWindow.screenToGenomeWidth(screenWidth);
-			GenomeWindow newWindow = new GenomeWindow();
+			SimpleGenomeWindow newWindow = new SimpleGenomeWindow();
 			newWindow.setChromosome(projectWindow.getGenomeWindow().getChromosome());
 			newWindow.setStart(projectWindow.getGenomeWindow().getStart()+ genomeWidth);
 			newWindow.setStop(projectWindow.getGenomeWindow().getStop() + genomeWidth);
@@ -144,7 +144,7 @@ public class GraphicsPanel extends JPanel implements Serializable, ComponentList
 			// compute the corresponding genomic distance
 			double genomeWidth = projectWindow.screenToGenomeWidth(screenWidth);
 			if ((genomeWidth >= 1) || (genomeWidth <= -1)) {
-				GenomeWindow newWindow = new GenomeWindow();
+				SimpleGenomeWindow newWindow = new SimpleGenomeWindow();
 				newWindow.setChromosome(projectWindow.getGenomeWindow().getChromosome());
 				newWindow.setStart(projectWindow.getGenomeWindow().getStart()+ (int) genomeWidth);
 				newWindow.setStop(projectWindow.getGenomeWindow().getStop() + (int) genomeWidth);
@@ -201,7 +201,7 @@ public class GraphicsPanel extends JPanel implements Serializable, ComponentList
 
 
 	/**
-	 * Update the {@link GenomeWindow} when the mouse wheel is used
+	 * Update the {@link SimpleGenomeWindow} when the mouse wheel is used
 	 */
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
@@ -220,7 +220,7 @@ public class GraphicsPanel extends JPanel implements Serializable, ComponentList
 				}
 				newZoom = Math.min(projectWindow.getGenomeWindow().getChromosome().getLength() * 2, newZoom);
 			}
-			GenomeWindow newWindow = new GenomeWindow();
+			SimpleGenomeWindow newWindow = new SimpleGenomeWindow();
 			newWindow.setChromosome(projectWindow.getGenomeWindow().getChromosome());
 			newWindow.setStart((int)(projectWindow.getGenomeWindow().getMiddlePosition() - (newZoom / 2)));
 			newWindow.setStop(newWindow.getStart() + newZoom);

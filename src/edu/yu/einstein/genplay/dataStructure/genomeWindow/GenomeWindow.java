@@ -21,128 +21,29 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.dataStructure.genomeWindow;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
-import edu.yu.einstein.genplay.exception.exceptions.ChromosomeWindowException;
-import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
-import edu.yu.einstein.genplay.util.Utils;
-
+import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 
 
 /**
- * The GenomeWindow class represents a window on the genome.
+ * A window on the genome with a chromosome and a start and stop position (in bp) on this chromosome
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class GenomeWindow extends SimpleChromosomeWindow implements Serializable, Cloneable {
-
-	private static final long serialVersionUID = 8873056842762282328L; 	// generated ID
-	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private Chromosome chromosome;	// Chromosome of the window
-
-
-	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(chromosome);
-	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		chromosome = (Chromosome) in.readObject();
-	}
-
-
-	/**
-	 * Default constructor.
-	 */
-	public GenomeWindow() {
-		super();
-	}
-
-
-	/**
-	 * Creates an instance of {@link GenomeWindow}.
-	 * @param chromosome a chromosome
-	 * @param start a window start
-	 * @param stop a window stop
-	 */
-	public GenomeWindow(Chromosome chromosome, int start, int stop) {
-		super(start, stop);
-		this.chromosome = chromosome;
-	}
-
-
-	/**
-	 * Creates an instance of {@link GenomeWindow} from a String.
-	 * @param genomeWindowStr String following the format "chr:start-stop" (ex: "chr1:100-120")
-	 * @param projectChromosome a {@link ProjectChromosome}
-	 * @throws ChromosomeWindowException
-	 * @throws InvalidChromosomeException
-	 */
-	public GenomeWindow(String genomeWindowStr, ProjectChromosome projectChromosome) throws ChromosomeWindowException, InvalidChromosomeException {
-		super(Utils.split(genomeWindowStr, ':')[1].trim());
-		chromosome = projectChromosome.get(Utils.split(genomeWindowStr, ':')[0].trim());
-	}
+public interface GenomeWindow extends Serializable, Cloneable, ChromosomeWindow {
 
 
 	/**
 	 * @return the chromosome
 	 */
-	public final Chromosome getChromosome() {
-		return chromosome;
-	}
+	public abstract Chromosome getChromosome();
+
 
 
 	/**
 	 * @param chromosome the chromosome to set
 	 */
-	public final void setChromosome(Chromosome chromosome) {
-		this.chromosome = chromosome;
-	}
-
-
-	@Override
-	public String toString() {
-		return chromosome.toString() + ":" + super.toString();
-	}
-
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!super.equals(obj)) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		GenomeWindow other = (GenomeWindow) obj;
-		if (chromosome == null) {
-			if (other.chromosome != null) {
-				return false;
-			}
-		} else if (!chromosome.equals(other.chromosome)) {
-			return false;
-		}
-		return true;
-	}
+	public abstract void setChromosome(Chromosome chromosome);
 }

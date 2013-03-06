@@ -29,6 +29,7 @@ import java.util.concurrent.Callable;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
+import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
 
 
@@ -74,7 +75,7 @@ public class GLOUniqueScore implements Operation<GeneList> {
 							for (int k = 0; (k < currentGene.getExonStarts().length) && !stopped; k++) {
 								scores[k] = constant;
 							}
-							Gene geneToAdd = new Gene(currentGeneList.get(j));
+							Gene geneToAdd = new SimpleGene(currentGeneList.get(j));
 							geneToAdd.setExonScores(scores);
 							resultList.add(geneToAdd);
 						}

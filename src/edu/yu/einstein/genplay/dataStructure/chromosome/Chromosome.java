@@ -36,10 +36,10 @@ import edu.yu.einstein.genplay.core.comparator.ChromosomeComparator;
  */
 public final class Chromosome implements Cloneable, Serializable, Comparable<Chromosome> {
 
-	private static final long serialVersionUID = -8339402742378578413L; // generated ID
-	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private String name;	// Name of the chromosome
-	private int length;	// Length of the chromosome
+	private static final long 	serialVersionUID = -8339402742378578413L; 	// generated ID
+	private static final int  	SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
+	private String 				name;										// Name of the chromosome
+	private int 				length;										// Length of the chromosome
 
 
 	/**
@@ -92,14 +92,6 @@ public final class Chromosome implements Cloneable, Serializable, Comparable<Chr
 	public int getLength() {
 		return length;
 	}
-
-
-	/**
-	 * @param name the name of a chromosome to set
-	 */
-	/*public void setName(String name) {
-		this.name = name;
-	}*/
 
 
 	/**

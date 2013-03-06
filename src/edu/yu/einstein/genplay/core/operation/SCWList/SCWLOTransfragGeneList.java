@@ -34,6 +34,7 @@ import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
+import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
@@ -126,7 +127,7 @@ public class SCWLOTransfragGeneList implements Operation<GeneList> {
 								exonStart[0] = regionStart;
 								exonStop[0] = regionStop;
 								exonScore[0] = regionScore;
-								newGene = new Gene(chromosomeName + "." + Integer.toString(geneCounter++), new Chromosome(chromosomeName, chromosomeLength), Strand.get('+'), regionStart, regionStop, exonStart, exonStop, exonScore);
+								newGene = new SimpleGene(chromosomeName + "." + Integer.toString(geneCounter++), new Chromosome(chromosomeName, chromosomeLength), Strand.get('+'), regionStart, regionStop, exonStart, exonStop, exonScore);
 								resultGeneList.add(newGene);
 							}
 							j++;
@@ -169,6 +170,6 @@ public class SCWLOTransfragGeneList implements Operation<GeneList> {
 
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }

@@ -31,6 +31,7 @@ import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOSumScore;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
+import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
@@ -137,7 +138,7 @@ public class GLOScoreFromSCWList implements Operation<GeneList> {
 								score /= length * scoreCount;
 								break;
 							}
-							Gene geneToAdd = new Gene(currentGeneList.get(j));
+							Gene geneToAdd = new SimpleGene(currentGeneList.get(j));
 							geneToAdd.setScore(score);
 							geneToAdd.setExonScores(scores);
 							resultList.add(geneToAdd);

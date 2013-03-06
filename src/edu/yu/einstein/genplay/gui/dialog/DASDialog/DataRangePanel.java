@@ -42,7 +42,7 @@ import javax.swing.text.NumberFormatter;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 
 
 /**
@@ -234,12 +234,12 @@ public class DataRangePanel extends JPanel {
 	/**
 	 * @return the genome window specified by the user
 	 */
-	public GenomeWindow getUserSpecifiedGenomeWindow() {
+	public SimpleGenomeWindow getUserSpecifiedGenomeWindow() {
 		if(jtfUserStart.isEnabled() && jtfUserStop.isEnabled()) {
 			userSpecifiedStart = ((Number)jtfUserStart.getValue()).intValue();
 			userSpecifiedStop = ((Number)jtfUserStop.getValue()).intValue();
 			userSpecifiedChromo = (Chromosome) jcbChromosomeNumber.getSelectedItem();
-			return new GenomeWindow(userSpecifiedChromo, userSpecifiedStart, userSpecifiedStop);
+			return new SimpleGenomeWindow(userSpecifiedChromo, userSpecifiedStart, userSpecifiedStop);
 		} else {
 			return null;
 		}

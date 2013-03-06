@@ -29,7 +29,7 @@ import java.util.List;
 import edu.yu.einstein.genplay.core.comparator.ChromosomeWindowStartComparator;
 import edu.yu.einstein.genplay.core.comparator.ChromosomeWindowStopComparator;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
-import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.dataStructure.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.dataStructure.list.DisplayableDataList;
@@ -55,7 +55,7 @@ public final class GeneListTmp extends ChromosomeArrayListOfLists<Gene> implemen
 
 
 	@Override
-	public List<List<Gene>> getFittedData(GenomeWindow genomeWindow, double xRatio) {
+	public List<List<Gene>> getFittedData(SimpleGenomeWindow genomeWindow, double xRatio) {
 		if (fittedDataList == null) {
 			return null;
 		}

@@ -26,7 +26,7 @@ import java.util.List;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 
 /**
  * The {@link GenomeWindowInputHandler} handles the parsing of a text input.
@@ -53,20 +53,20 @@ public class GenomeWindowInputHandler {
 	/**
 	 * @return the genome window, null if wrong input
 	 */
-	public GenomeWindow getGenomeWindow () {
-		GenomeWindow genomeWindow = null;			// The genome window to return
+	public SimpleGenomeWindow getGenomeWindow () {
+		SimpleGenomeWindow genomeWindow = null;			// The genome window to return
 		Integer start = getStart();					// The start position.
 		Integer stop = getStop();					// The stop position.
 		Chromosome chromosome = getChromosome();	// The chromosome.
 
 		if ((start != null) && (stop != null)) {								// If both position have been given.
-			genomeWindow = new GenomeWindow(chromosome, start, stop);			// The genome window is easily created.
+			genomeWindow = new SimpleGenomeWindow(chromosome, start, stop);			// The genome window is easily created.
 		} else if ((start != null) && (stop == null)) {							// If only one position has been given (and it can only be the start position in this parser).
-			GenomeWindow currentGenomeWindow = ProjectManager.getInstance().getProjectWindow().getGenomeWindow();	// Get the current genome window.
+			SimpleGenomeWindow currentGenomeWindow = ProjectManager.getInstance().getProjectWindow().getGenomeWindow();	// Get the current genome window.
 			int width = currentGenomeWindow.getSize() / 2;						// Get half of the window size.
 			int newStart = start - width;										// The new start will be half size less than the given position.
 			int newStop = start + width;										// The new stop will be half size more than the given position.
-			genomeWindow = new GenomeWindow(chromosome, newStart, newStop);		// The new genome window can be created
+			genomeWindow = new SimpleGenomeWindow(chromosome, newStart, newStop);		// The new genome window can be created
 		}
 
 		return genomeWindow;		// Returns the new result.
