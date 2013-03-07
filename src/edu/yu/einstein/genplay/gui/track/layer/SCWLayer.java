@@ -33,6 +33,7 @@ import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOMaxScoreToDisplay;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOMinScoreToDisplay;
 import edu.yu.einstein.genplay.dataStructure.enums.GraphType;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackConstants;
@@ -107,7 +108,7 @@ public class SCWLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList>
 				reverseCurveColor = Colors.GREY;
 			}
 			reverseCurveColor = new Color(reverseCurveColor.getRed(), reverseCurveColor.getGreen(), reverseCurveColor.getBlue(), getColor().getAlpha());
-			List<ScoredChromosomeWindow> listToPrint = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
+			List<ScoredChromosomeWindow> listToPrint = ((SimpleScoredChromosomeWindowList) getData()).getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
 			if (listToPrint != null) {
 				for (ScoredChromosomeWindow currentWindow: listToPrint) {
 					// we want to make sure that x is > 0
@@ -142,7 +143,7 @@ public class SCWLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList>
 		if (getData() != null) {
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
 			g.setColor(getColor());
-			List<ScoredChromosomeWindow> listToPrint = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
+			List<ScoredChromosomeWindow> listToPrint = ((SimpleScoredChromosomeWindowList) getData()).getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
 			if ((listToPrint != null) && (listToPrint.size() > 0)) {
 				int x1 = -1;
 				int x2 = -1;
@@ -192,7 +193,7 @@ public class SCWLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList>
 	private void drawDenseGraph(Graphics g, int width, int height) {
 		if (getData() != null) {
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-			List<ScoredChromosomeWindow> listToPrint = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
+			List<ScoredChromosomeWindow> listToPrint = ((SimpleScoredChromosomeWindowList) getData()).getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
 			if (listToPrint != null) {
 				for (ScoredChromosomeWindow currentWindow: listToPrint) {
 					int x = projectWindow.genomeToScreenPosition(currentWindow.getStart());
@@ -219,7 +220,7 @@ public class SCWLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList>
 		if (getData() != null) {
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
 			g.setColor(getColor());
-			List<ScoredChromosomeWindow> listToPrint = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
+			List<ScoredChromosomeWindow> listToPrint = ((SimpleScoredChromosomeWindowList) getData()).getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
 			if (listToPrint != null) {
 				for (ScoredChromosomeWindow currentWindow: listToPrint) {
 					// we want to make sure that x is > 0
@@ -247,7 +248,7 @@ public class SCWLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList>
 	public Double getCurrentScoreToDisplay() {
 		if (getData() != null) {
 			double middlePosition = ProjectManager.getInstance().getProjectWindow().getGenomeWindow().getMiddlePosition();
-			return getData().getScore((int) middlePosition);
+			return ((SimpleScoredChromosomeWindowList) getData()).getScore((int) middlePosition);
 		} else {
 			return 0d;
 		}

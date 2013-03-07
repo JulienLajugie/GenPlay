@@ -26,25 +26,24 @@ import java.util.Comparator;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 
+
 /**
- * Comparator between  the middle position of 2 {@link ChromosomeWindow}.
+ * Comparator between 2 {@link ChromosomeWindow}.
+ * Compare first the start position and if equals compare the stop positions
  * @author Julien Lajugie
  */
-public class ChromosomeWindowMiddleComparator implements Comparator<ChromosomeWindow> {
+public class ChromosomeWindowComparator implements Comparator<ChromosomeWindow> {
 
 	/**
-	 * @return -1 if the middle position of the first specified {@link SimpleGenomeWindow} is smaller than the middle position of the second one <br>
-	 * 0 if the middle positions are equals <br>
-	 * 1 the middle position of the first specified {@link SimpleGenomeWindow} is greater than the middle position of the second one
+	 * @return -1 if the start position of the first specified {@link SimpleGenomeWindow} is smaller than the start position of the second one
+	 * or if the start positions are equal and the the stop position of the first specified {@link SimpleGenomeWindow} is smaller than the stop position of the second one <br>
+	 * 0 if the start positions are equals and the stop positions are equal as well <br>
+	 * 1 the start position of the first specified {@link SimpleGenomeWindow} is greater than the start position of the second one
+	 * or if the start positions are equal and 1 the stop position of the first specified {@link SimpleGenomeWindow} is greater than the stop position of the second one
 	 */
 	@Override
 	public int compare(ChromosomeWindow chromosomeWindow1, ChromosomeWindow chromosomeWindow2) {
-		if (chromosomeWindow1.getMiddlePosition() < chromosomeWindow2.getMiddlePosition()) {
-			return -1;
-		} else if (chromosomeWindow1.getMiddlePosition() == chromosomeWindow2.getMiddlePosition()) {
-			return 0;
-		} else {
-			return 1;
-		}
+		int startPosCompareRes = new ChromosomeWindowStartComparator().compare(chromosomeWindow1, chromosomeWindow2);
+		return (startPosCompareRes != 0) ? startPosCompareRes : new ChromosomeWindowStopComparator().compare(chromosomeWindow1, chromosomeWindow2);
 	}
 }

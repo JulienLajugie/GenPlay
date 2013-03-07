@@ -39,6 +39,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.SCWList.overLap.OverLappingManagement;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.dataStructure.list.DisplayableListOfLists;
 import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
@@ -504,7 +505,7 @@ public final class MaskWindowList extends DisplayableListOfLists<ScoredChromosom
 	 * @return the greatest value of the BinList
 	 */
 	@Override
-	public Double getMax() {
+	public Double getMaximum() {
 		return 1.0;
 	}
 
@@ -513,7 +514,7 @@ public final class MaskWindowList extends DisplayableListOfLists<ScoredChromosom
 	 * @return the smallest value of the BinList
 	 */
 	@Override
-	public Double getMin() {
+	public Double getMinimum() {
 		return 1.0;
 	}
 
@@ -531,7 +532,6 @@ public final class MaskWindowList extends DisplayableListOfLists<ScoredChromosom
 	 * @param position a position on the fitted chromosome
 	 * @return the score of the window on the fitted chromosome containing the specified position
 	 */
-	@Override
 	public double getScore(int position) {
 		return 1;
 	}
@@ -550,15 +550,21 @@ public final class MaskWindowList extends DisplayableListOfLists<ScoredChromosom
 	 * @return the standard deviation of the BinList
 	 */
 	@Override
-	public Double getStDev() {
+	public Double getStandardDeviation() {
 		return 0.0;
 	}
 
 
-	/**
-	 * @param scoreSum the scoreSum to set
-	 */
 	@Override
-	public final void setScoreSum(Double scoreSum) {}
+	public double getScore(Chromosome chromosome, int position) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
+
+	@Override
+	public SCWListType getScoredChromosomeWindowListType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

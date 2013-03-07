@@ -33,7 +33,6 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
 import edu.yu.einstein.genplay.util.Utils;
 
 
-
 /**
  * Computes the average value of the scores of the {@link ScoredChromosomeWindowList}
  * @author Julien Lajugie
@@ -41,9 +40,9 @@ import edu.yu.einstein.genplay.util.Utils;
  */
 public class SCWLOStandardDeviation implements Operation<Double> {
 
-	private final boolean[] chromoList; // list of the selected chromosomes
-	private final ScoredChromosomeWindowList scwList; // input list
-	private boolean				stopped = false;// true if the operation must be stopped
+	private final boolean[] 					chromoList; 		// list of the selected chromosomes
+	private final ScoredChromosomeWindowList 	scwList; 			// input list
+	private boolean								stopped = false;	// true if the operation must be stopped
 
 
 	/**
@@ -62,8 +61,8 @@ public class SCWLOStandardDeviation implements Operation<Double> {
 	public Double compute() throws Exception {
 		// if the operation has to be calculated on all chromosome
 		// and if it has already been calculated we don't do the calculation again
-		if ((Utils.allChromosomeSelected(chromoList)) && (scwList.getStDev() != null)) {
-			return scwList.getStDev();
+		if ((Utils.allChromosomeSelected(chromoList)) && (scwList.getStandardDeviation() != null)) {
+			return scwList.getStandardDeviation();
 		}
 
 		// computes the sum of the length of the non-null windows
@@ -136,6 +135,6 @@ public class SCWLOStandardDeviation implements Operation<Double> {
 
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }

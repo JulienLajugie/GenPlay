@@ -62,8 +62,8 @@ public class SCWLOMin implements Operation<Double> {
 	public Double compute() throws Exception {
 		// if the operation has to be calculated on all chromosome
 		// and if it has already been calculated we don't do the calculation again
-		if ((Utils.allChromosomeSelected(chromoList)) && (scwList.getMin() != null)) {
-			return scwList.getMin();
+		if ((Utils.allChromosomeSelected(chromoList)) && (scwList.getMinimum() != null)) {
+			return scwList.getMinimum();
 		}
 
 		final OperationPool op = OperationPool.getInstance();

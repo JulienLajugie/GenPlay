@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
@@ -60,7 +61,7 @@ public class SCWLOCountNonNullLength implements Operation<Long>{
 
 
 	@Override
-	public Long compute() throws Exception {
+	public Long compute() throws InterruptedException, ExecutionException {
 		// if the operation has to be calculated on all chromosome
 		// and if it has already been calculated we don't do the calculation again
 		if ((Utils.allChromosomeSelected(chromoList)) && (scwList.getNonNullLength() != null)) {
@@ -125,6 +126,6 @@ public class SCWLOCountNonNullLength implements Operation<Long>{
 
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }

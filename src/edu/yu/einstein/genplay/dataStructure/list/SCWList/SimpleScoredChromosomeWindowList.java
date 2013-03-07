@@ -39,6 +39,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.SCWList.overLap.OverLappingManagement;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.dataStructure.list.DisplayableListOfLists;
 import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
@@ -622,7 +623,7 @@ public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLis
 	 * @return the greatest value of the BinList
 	 */
 	@Override
-	public Double getMax() {
+	public Double getMaximum() {
 		return max;
 	}
 
@@ -631,7 +632,7 @@ public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLis
 	 * @return the smallest value of the BinList
 	 */
 	@Override
-	public Double getMin() {
+	public Double getMinimum() {
 		return min;
 	}
 
@@ -649,7 +650,6 @@ public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLis
 	 * @param position a position on the fitted chromosome
 	 * @return the score of the window on the fitted chromosome containing the specified position
 	 */
-	@Override
 	public double getScore(int position) {
 		// if the fitted chromosome as no windows we return 0
 		if ((get(fittedChromosome) == null) || (get(fittedChromosome).size() == 0)) {
@@ -685,7 +685,7 @@ public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLis
 	 * @return the standard deviation of the BinList
 	 */
 	@Override
-	public Double getStDev() {
+	public Double getStandardDeviation() {
 		return stDev;
 	}
 
@@ -693,9 +693,22 @@ public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLis
 	/**
 	 * @param scoreSum the scoreSum to set
 	 */
-	@Override
 	public final void setScoreSum(Double scoreSum) {
 		this.scoreSum = scoreSum;
+	}
+
+
+	@Override
+	public SCWListType getScoredChromosomeWindowListType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public double getScore(Chromosome chromosome, int position) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

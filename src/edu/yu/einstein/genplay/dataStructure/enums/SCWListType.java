@@ -19,32 +19,50 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.comparator;
+package edu.yu.einstein.genplay.dataStructure.enums;
 
-import java.util.Comparator;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 
-import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 
 /**
- * Comparator between  the middle position of 2 {@link ChromosomeWindow}.
+ * Enumeration of the different types of {@link ScoredChromosomeWindowList}
  * @author Julien Lajugie
  */
-public class ChromosomeWindowMiddleComparator implements Comparator<ChromosomeWindow> {
+public enum SCWListType {
+
+	/** A generic, multi-purpose {@link ScoredChromosomeWindowList} */
+	GENERIC ("Generic List"),
+
+	/** A mask {@link ScoredChromosomeWindowList} with every windows having a score of one */
+	MASK ("Mask List"),
+
+	/**  A bin {@link ScoredChromosomeWindowList} having windows of a fixed lengths */
+	BIN ("Bin List");
+
+
+	/**  description of the enumeration element */
+	private final String description;
+
 
 	/**
-	 * @return -1 if the middle position of the first specified {@link SimpleGenomeWindow} is smaller than the middle position of the second one <br>
-	 * 0 if the middle positions are equals <br>
-	 * 1 the middle position of the first specified {@link SimpleGenomeWindow} is greater than the middle position of the second one
+	 * Creates an instance of {@link SCWListType}.
+	 * @param description description of the {@link SCWListType} element
 	 */
+	private SCWListType(String description) {
+		this.description = description;
+	}
+
+
 	@Override
-	public int compare(ChromosomeWindow chromosomeWindow1, ChromosomeWindow chromosomeWindow2) {
-		if (chromosomeWindow1.getMiddlePosition() < chromosomeWindow2.getMiddlePosition()) {
-			return -1;
-		} else if (chromosomeWindow1.getMiddlePosition() == chromosomeWindow2.getMiddlePosition()) {
-			return 0;
-		} else {
-			return 1;
-		}
+	public String toString() {
+		return description;
+	}
+
+
+	/**
+	 * @return the description of the {@link SCWListType} element
+	 */
+	public String getDescription() {
+		return description;
 	}
 }

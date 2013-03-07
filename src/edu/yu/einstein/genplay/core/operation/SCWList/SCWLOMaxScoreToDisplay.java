@@ -47,7 +47,7 @@ public class SCWLOMaxScoreToDisplay implements Operation<Double> {
 
 	@Override
 	public Double compute() {
-		final double realMax = scwList.getMax();
+		final double realMax = scwList.getMaximum();
 		// if the max is negative we return 0
 		if (realMax <= 0) {
 			return 0d;
@@ -61,7 +61,7 @@ public class SCWLOMaxScoreToDisplay implements Operation<Double> {
 			return realMax;
 		}
 		// otherwise we try to find the closest 10^x value above (average + stdev)
-		double proposedMax = scwList.getAverage() + scwList.getStDev();
+		double proposedMax = scwList.getAverage() + scwList.getStandardDeviation();
 		if (proposedMax <= 0) {
 			return 0d;
 		}

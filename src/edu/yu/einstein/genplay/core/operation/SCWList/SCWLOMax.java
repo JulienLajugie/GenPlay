@@ -37,7 +37,6 @@ import edu.yu.einstein.genplay.util.Utils;
 /**
  * Searches the maximum value of the selected chromosomes of a specified {@link ScoredChromosomeWindowList}
  * @author Julien Lajugie
- * @version 0.1
  */
 public class SCWLOMax implements Operation<Double> {
 
@@ -62,8 +61,8 @@ public class SCWLOMax implements Operation<Double> {
 	public Double compute() throws Exception {
 		// if the operation has to be calculated on all chromosome
 		// and if it has already been calculated we don't do the calculation again
-		if ((Utils.allChromosomeSelected(chromoList)) && (scwList.getMax() != null)) {
-			return scwList.getMax();
+		if ((Utils.allChromosomeSelected(chromoList)) && (scwList.getMaximum() != null)) {
+			return scwList.getMaximum();
 		}
 
 		final OperationPool op = OperationPool.getInstance();
@@ -124,6 +123,6 @@ public class SCWLOMax implements Operation<Double> {
 
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }

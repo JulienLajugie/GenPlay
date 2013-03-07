@@ -23,16 +23,18 @@ package edu.yu.einstein.genplay.dataStructure.list.SCWList;
 
 import java.util.List;
 
-import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
 /**
+ * A {@link GenomicDataList} of {@link ScoredChromosomeWindow}
  * @author Nicolas Fourel
- * @version 0.1
  */
 public interface ScoredChromosomeWindowList extends List<List<ScoredChromosomeWindow>>, GenomicDataList<ScoredChromosomeWindow> {
+
 
 	/**
 	 * Performs a deep clone of the current object
@@ -42,58 +44,51 @@ public interface ScoredChromosomeWindowList extends List<List<ScoredChromosomeWi
 
 
 	/**
-	 * @return the average of the BinList
+	 * @return the average score of the windows of the list
 	 */
 	public Double getAverage();
 
 
 	/**
-	 * @return the greatest value of the BinList
+	 * @return the greatest score of the windows of the list list
 	 */
-	public Double getMax();
+	public Double getMaximum();
 
 
 	/**
-	 * @return the smallest value of the BinList
+	 * @return the smallest score of the windows of the list list
 	 */
-	public Double getMin();
+	public Double getMinimum();
 
 
 	/**
-	 * @return the count of none-null bins in the BinList
+	 * @return the sum of the lengths (in bp) of none-null windows of the list
 	 */
 	public Long getNonNullLength();
 
 
 	/**
-	 * @param position a position on the fitted chromosome
-	 * @return the score of the window on the fitted chromosome containing the specified position
-	 */
-	public double getScore(int position);
-
-
-	/**
-	 * @return the sum of the scores
+	 * @return the sum of the scores of the windows of the list
 	 */
 	public Double getScoreSum();
 
 
 	/**
-	 * @param scoreSum the scoreSum to set
+	 * @param chromosome a {@link Chromosome}
+	 * @param position a position on the chromosome
+	 * @return the score at the specified position
 	 */
-	public void setScoreSum(Double scoreSum);
+	public double getScore(Chromosome chromosome, int position);
 
 
 	/**
-	 * @return the standard deviation of the BinList
+	 * @return the standard deviation of the scores of the list
 	 */
-	public Double getStDev();
+	public Double getStandardDeviation();
 
 
 	/**
-	 * @param genomeWindow {@link SimpleGenomeWindow} to display
-	 * @param xFactor xRatio on the screen (ie ratio between the number of pixel and the number of base to display)
-	 * @return a data list adapted to the screen resolution
+	 * @return the type of the {@link ScoredChromosomeWindowList}
 	 */
-	public List<ScoredChromosomeWindow> getFittedData(SimpleGenomeWindow genomeWindow, double xFactor);
+	public SCWListType getScoredChromosomeWindowListType();
 }

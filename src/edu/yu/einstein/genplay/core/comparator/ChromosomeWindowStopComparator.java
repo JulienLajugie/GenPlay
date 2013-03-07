@@ -27,14 +27,14 @@ import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 
 /**
- * Comparator between 2 {@link ChromosomeWindow}.
+ * Comparator between the stop position of 2 {@link ChromosomeWindow}.
  * @author Julien Lajugie
  */
 public class ChromosomeWindowStopComparator implements Comparator<ChromosomeWindow>{
 
 	/**
 	 * @return -1 if the stop position of the first specified {@link SimpleGenomeWindow} is smaller than the stop position of the second one <br>
-	 * 0 if the stop positions are equals <br>
+	 * 0 if the stop positions are equal <br>
 	 * 1 the stop position of the first specified {@link SimpleGenomeWindow} is greater than the stop position of the second one
 	 */
 	@Override

@@ -27,6 +27,7 @@ import java.util.List;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.MaskWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -61,7 +62,7 @@ public class MaskLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList
 			if (getData() != null) {
 				ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
 				g.setColor(color);
-				List<ScoredChromosomeWindow> chromoStripeList = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
+				List<ScoredChromosomeWindow> chromoStripeList = ((MaskWindowList) getData()).getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
 				if (chromoStripeList != null) {
 					for (ScoredChromosomeWindow currentStripe: chromoStripeList) {
 						int x = projectWindow.genomeToScreenPosition(currentStripe.getStart());

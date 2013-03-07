@@ -43,7 +43,7 @@ import edu.yu.einstein.genplay.dataStructure.list.GenomicDataArrayList;
 
 /**
  * A list of {@link Gene}.
- * Implementation of the {@link GeneList} interface using a {@link GenomicDataArrayList}
+ * Implementation of the {@link GeneList} interface using an {@link ArrayList} based data structure
  * @author Julien Lajugie
  * @version 0.1
  */

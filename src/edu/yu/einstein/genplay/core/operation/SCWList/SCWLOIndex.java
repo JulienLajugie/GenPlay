@@ -70,8 +70,8 @@ public class SCWLOIndex implements Operation<ScoredChromosomeWindowList> {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
 
-		final double oldMin = scwList.getMin();
-		final double oldMax = scwList.getMax();
+		final double oldMin = scwList.getMinimum();
+		final double oldMax = scwList.getMaximum();
 		// We calculate the difference between the highest and the lowest value
 		final double oldDistance = oldMax - oldMin;
 		if (oldDistance != 0) {
