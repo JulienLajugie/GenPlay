@@ -22,6 +22,7 @@
 package edu.yu.einstein.genplay.dataStructure.list.SCWList;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
@@ -35,7 +36,14 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
  */
 public interface ScoredChromosomeWindowList extends List<List<ScoredChromosomeWindow>>, GenomicDataList<ScoredChromosomeWindow> {
 
+	/**
+	 * Computes the statistics for the list
+	 * @throws InterruptedException 
+	 * @throws ExecutionException 
+	 */
+	public void computeStatistics() throws InterruptedException, ExecutionException;
 
+	
 	/**
 	 * Performs a deep clone of the current object
 	 * @return a new ScoredChromosomeWindowList
@@ -91,4 +99,10 @@ public interface ScoredChromosomeWindowList extends List<List<ScoredChromosomeWi
 	 * @return the type of the {@link ScoredChromosomeWindowList}
 	 */
 	public SCWListType getScoredChromosomeWindowListType();
+	
+	
+	/**
+	 * Sort the list for each chromosome ordering items by window start positions
+	 */
+	public void sort();
 }

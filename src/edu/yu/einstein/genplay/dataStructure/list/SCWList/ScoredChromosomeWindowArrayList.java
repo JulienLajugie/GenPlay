@@ -27,13 +27,17 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import edu.yu.einstein.genplay.core.comparator.ChromosomeWindowStartComparator;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOComputeStats;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOCountNonNullLength;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.list.GenomicDataArrayList;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneArrayList;
@@ -101,7 +105,8 @@ public class ScoredChromosomeWindowArrayList extends GenomicDataArrayList<Scored
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	private void computeStatistics() throws InterruptedException, ExecutionException {
+	@Override
+	public void computeStatistics() throws InterruptedException, ExecutionException {
 		if (scwListType == SCWListType.MASK) {
 			maximum = 1d;
 			minimum = 1d;
@@ -167,6 +172,25 @@ public class ScoredChromosomeWindowArrayList extends GenomicDataArrayList<Scored
 
 
 	@Override
+	public double getScore(Chromosome chromosome, int position) {
+		List<ScoredChromosomeWindow> currentList = get(chromosome);
+		int indexWindow = Collections.binarySearch(currentList, new SimpleChromosomeWindow(position, position), new ChromosomeWindowStartComparator());
+		if (indexWindow < 0) {
+			// retrieve the window right before the insert point
+			indexWindow = -indexWindow - 2;
+			if (indexWindow < 0) { 
+				return 0;
+			}
+		}
+		// check if the window contains the stop position
+		if (currentList.get(indexWindow).getStop() >= position) {
+			return currentList.get(indexWindow).getScore();
+		}
+		return 0;
+	}
+
+
+	@Override
 	public SCWListType getScoredChromosomeWindowListType() {
 		return scwListType;
 	}
@@ -199,6 +223,14 @@ public class ScoredChromosomeWindowArrayList extends GenomicDataArrayList<Scored
 			ExceptionManager.getInstance().caughtException(e);
 		}
 	}
+	
+	
+	@Override
+	public void sort() {
+		for(List<ScoredChromosomeWindow> currentList: this) {
+			Collections.sort(currentList);
+		}
+	}
 
 
 	/**
@@ -209,16 +241,5 @@ public class ScoredChromosomeWindowArrayList extends GenomicDataArrayList<Scored
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeObject(scwListType);
-	}
-
-
-	@Override
-	public double getScore(Chromosome chromosome, int position) {
-		/*List<ScoredChromosomeWindow> currentList = get(chromosome);
-		int indexWindow = Collections.binarySearch(currentList, position, new ChromosomeWindowStartComparator());
-		if (scwListType == SCWListType.MASK) {
-			//ret
-		}*/
-		return 0;
 	}
 }

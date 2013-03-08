@@ -24,27 +24,23 @@ package edu.yu.einstein.genplay.gui.dataScalerForTrackDisplay;
 import java.awt.FontMetrics;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.comparator.ChromosomeWindowStartComparator;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
-import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
+import edu.yu.einstein.genplay.util.ChromosomeWindowLists;
 
 
 /**
- * This class scales a {@link GenomicDataList} of {@link Gene} to be displayed on a track.
+ * This class scales a {@link GeneList} to be displayed on a track.
  * @author Julien Lajugie
  */
-public class GenomicListOfGenesScaler implements DataScalerForTrackDisplay<GeneList, List<List<Gene>>> {
+public class GeneListScaler implements DataScalerForTrackDisplay<GeneList, List<List<Gene>>> {
 
 	/** Generated serial ID */
 	private static final long serialVersionUID = -5772668685617515734L;
@@ -63,11 +59,11 @@ public class GenomicListOfGenesScaler implements DataScalerForTrackDisplay<GeneL
 
 
 	/**
-	 * Creates an instance of {@link GenomicListOfGenesScaler}
+	 * Creates an instance of {@link GeneListScaler}
 	 * @param geneList gene list to scale
 	 * @param fontMetrics font metrics of the track
 	 */
-	public GenomicListOfGenesScaler(GeneList geneList, FontMetrics fontMetrics) {
+	public GeneListScaler(GeneList geneList, FontMetrics fontMetrics) {
 		scaledChromosome = null;
 		scaledXRatio = -1;
 		scaledGeneList = null;
@@ -78,41 +74,23 @@ public class GenomicListOfGenesScaler implements DataScalerForTrackDisplay<GeneL
 
 	@Override
 	public List<List<Gene>> getDataScaledForTrackDisplay() {
-		GenomeWindow projectGenomeWindow = ProjectManager.getInstance().getProjectWindow().getGenomeWindow();
+		GenomeWindow projectWindow = ProjectManager.getInstance().getProjectWindow().getGenomeWindow();
 		double projectXRatio = ProjectManager.getInstance().getProjectWindow().getXRatio();
 		// if the chromosome or the xRatio of the project window changed we need to rescale the data
-		if (!projectGenomeWindow.getChromosome().equals(scaledChromosome) || (projectXRatio != scaledXRatio)) {
-			scaledChromosome = projectGenomeWindow.getChromosome();
+		if (!projectWindow.getChromosome().equals(scaledChromosome) || (projectXRatio != scaledXRatio)) {
+			scaledChromosome = projectWindow.getChromosome();
 			scaledXRatio = projectXRatio;
 			scaleChromosome();
 		}
-		ChromosomeWindow startGenomeWindow = new SimpleChromosomeWindow(projectGenomeWindow.getStart(), projectGenomeWindow.getStart());
-		ChromosomeWindow stopGenomeWindow = new SimpleChromosomeWindow(projectGenomeWindow.getStop(), projectGenomeWindow.getStop());
 		if (scaledGeneList == null) {
 			return null;
 		}
 		List<List<Gene>> resultList = new ArrayList<List<Gene>>();
 		// search genes for each line
 		for (List<Gene> currentLine : scaledGeneList) {
-			// search the start
-			int indexStart = Collections.binarySearch(currentLine, startGenomeWindow, new ChromosomeWindowStartComparator());
-			if (indexStart < 0) {
-				indexStart = -indexStart - 1;
-			}
-			indexStart = Math.max(0, indexStart - 1);
-			// search the stop
-			int indexStop = Collections.binarySearch(currentLine, stopGenomeWindow, new ChromosomeWindowStartComparator());
-			if (indexStop < 0) {
-				indexStop = -indexStop - 1;
-			}
-			indexStop = Math.min(currentLine.size(), indexStop);
-			if (currentLine.get(indexStart) != null) {
-				// add all the genes found for the current line between index start and index stop to the result list
-				resultList.add(new ArrayList<Gene>());
-				for (int i = indexStart; i < indexStop; i++) {
-					resultList.get(resultList.size() - 1).add(currentLine.get(i));
-				}
-			}
+			// retrieve the sublist of genes that are located between the start and stop displayed positions
+			List<Gene> lineToAdd = ChromosomeWindowLists.sublist(currentLine, projectWindow.getStart(), projectWindow.getStop());
+			resultList.add(lineToAdd);
 		}
 		return resultList;
 	}

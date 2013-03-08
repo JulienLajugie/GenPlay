@@ -27,8 +27,7 @@ import java.io.Serializable;
 import java.text.NumberFormat;
 import java.text.ParseException;
 
-import edu.yu.einstein.genplay.core.comparator.ChromosomeWindowStartComparator;
-import edu.yu.einstein.genplay.core.comparator.ChromosomeWindowStopComparator;
+import edu.yu.einstein.genplay.core.comparator.ChromosomeWindowComparator;
 import edu.yu.einstein.genplay.exception.exceptions.ChromosomeWindowException;
 
 
@@ -234,11 +233,6 @@ public class SimpleChromosomeWindow implements ChromosomeWindow, Serializable, C
 	 */
 	@Override
 	public int compareTo(ChromosomeWindow otherChromosomeWindow) {
-		int startComparison = new ChromosomeWindowStartComparator().compare(this, otherChromosomeWindow);
-		// if the start positions are equals we compare the stop positions
-		if (startComparison == 0) {
-			return new ChromosomeWindowStopComparator().compare(this, otherChromosomeWindow);
-		}
-		return startComparison;
+		return new ChromosomeWindowComparator().compare(this, otherChromosomeWindow);
 	}
 }

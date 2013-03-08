@@ -711,4 +711,19 @@ public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLis
 		return 0;
 	}
 
+
+	@Override
+	public void computeStatistics() throws InterruptedException,
+			ExecutionException {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void sort() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

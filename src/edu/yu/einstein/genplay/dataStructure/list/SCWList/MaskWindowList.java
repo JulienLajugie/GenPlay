@@ -567,4 +567,19 @@ public final class MaskWindowList extends DisplayableListOfLists<ScoredChromosom
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+
+	@Override
+	public void computeStatistics() throws InterruptedException,
+			ExecutionException {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void sort() {
+		// TODO Auto-generated method stub
+		
+	}
 }
