@@ -28,7 +28,6 @@ import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindow
 /**
  * Calculates the maximum score to display on a ScoredChromosomeWindowList track
  * @author Julien Lajugie
- * @version 0.1
  */
 public class SCWLOMaxScoreToDisplay implements Operation<Double> {
 

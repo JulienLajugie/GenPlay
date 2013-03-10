@@ -31,6 +31,12 @@ public interface ChromosomeWindow extends Comparable<ChromosomeWindow> {
 
 
 	/**
+	 * @return a deep copy of the object
+	 */
+	public ChromosomeWindow deepClone();
+	
+	
+	/**
 	 * @return the size of the window in base pair (ie: stop - start)
 	 */
 	public int getSize();

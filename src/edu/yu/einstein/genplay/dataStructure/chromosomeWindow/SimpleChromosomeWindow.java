@@ -45,34 +45,19 @@ public class SimpleChromosomeWindow implements ChromosomeWindow, Serializable, C
 
 
 	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeInt(start);
-		out.writeInt(stop);
-	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		start = in.readInt();
-		stop = in.readInt();
-	}
-
-
-	/**
 	 * Default constructor of {@link SimpleChromosomeWindow}
 	 */
 	public SimpleChromosomeWindow() {}
+
+
+	/**
+	 * Creates an instance of {@link SimpleChromosomeWindow} having the same value than the specified {@link SimpleChromosomeWindow}
+	 * @param chromosomeWindow
+	 */
+	public SimpleChromosomeWindow(ChromosomeWindow chromosomeWindow) {
+		start = chromosomeWindow.getStart();
+		stop = chromosomeWindow.getStop();
+	}
 
 
 	/**
@@ -83,16 +68,6 @@ public class SimpleChromosomeWindow implements ChromosomeWindow, Serializable, C
 	public SimpleChromosomeWindow(int start, int stop) {
 		this.start = start;
 		this.stop = stop;
-	}
-
-
-	/**
-	 * Creates an instance of {@link SimpleChromosomeWindow} having the same value than the specified {@link SimpleChromosomeWindow}
-	 * @param chromosomeWindow
-	 */
-	public SimpleChromosomeWindow(ChromosomeWindow chromosomeWindow) {
-		start = chromosomeWindow.getStart();
-		stop = chromosomeWindow.getStop();
 	}
 
 
@@ -121,46 +96,40 @@ public class SimpleChromosomeWindow implements ChromosomeWindow, Serializable, C
 
 
 	/**
-	 * @param start the start to set
+	 * A ChromosomeWindow is greater to another one if its position start is greater
+	 * or if its position start is equal but its position stop is greater.
+	 * A {@link ChromosomeWindow} is equal to another one if both its start and stop positions are equals.
+	 * A ChromosomeWindow is smaller to another one if its position start is smaller
+	 * or if its position start is equal but its position stop is smaller.
 	 */
 	@Override
-	public void setStart(int start) {
-		this.start = start;
+	public int compareTo(ChromosomeWindow otherChromosomeWindow) {
+		return new ChromosomeWindowComparator().compare(this, otherChromosomeWindow);
 	}
 
 
 	/**
-	 * @return the start
+	 * Checks if the window contains the given position.
+	 * If the position is located before the window, -1 is returned.
+	 * If the position is located after the window, 1 is returned.
+	 * if the position is included in the window, 0 is returned.
+	 * @param position the position to check
+	 * @return 0 is the position is in the window, -1 if lower, 1 if higher.
 	 */
 	@Override
-	public int getStart() {
-		return start;
-	}
-
-
-	/**
-	 * @param stop the stop to set
-	 */
-	@Override
-	public void setStop(int stop) {
-		this.stop = stop;
-	}
-
-
-	/**
-	 * @return the stop
-	 */
-	@Override
-	public int getStop() {
-		return stop;
+	public int containsPosition (int position) {
+		if (position < start) {
+			return -1;
+		} else if (position > stop) {
+			return 1;
+		}
+		return 0;
 	}
 
 
 	@Override
-	public String toString() {
-		String startStr = NumberFormat.getInstance().format(start);
-		String stopStr = NumberFormat.getInstance().format(stop);
-		return startStr + "-" + stopStr;
+	public ChromosomeWindow deepClone() {
+		return new SimpleChromosomeWindow(this);
 	}
 
 
@@ -187,16 +156,6 @@ public class SimpleChromosomeWindow implements ChromosomeWindow, Serializable, C
 
 
 	/**
-	 * @return the size of the window in base pair (ie: stop - start)
-	 */
-	@Override
-	public int getSize() {
-		return stop - start;
-	}
-
-
-
-	/**
 	 * @return the position of the middle of the window
 	 */
 	@Override
@@ -206,33 +165,80 @@ public class SimpleChromosomeWindow implements ChromosomeWindow, Serializable, C
 
 
 	/**
-	 * Checks if the window contains the given position.
-	 * If the position is located before the window, -1 is returned.
-	 * If the position is located after the window, 1 is returned.
-	 * if the position is included in the window, 0 is returned.
-	 * @param position the position to check
-	 * @return 0 is the position is in the window, -1 if lower, 1 if higher.
+	 * @return the size of the window in base pair (ie: stop - start)
 	 */
 	@Override
-	public int containsPosition (int position) {
-		if (position < start) {
-			return -1;
-		} else if (position > stop) {
-			return 1;
-		}
-		return 0;
+	public int getSize() {
+		return stop - start;
 	}
 
 
 	/**
-	 * A ChromosomeWindow is greater to another one if its position start is greater
-	 * or if its position start is equal but its position stop is greater.
-	 * A {@link ChromosomeWindow} is equal to another one if both its start and stop positions are equals.
-	 * A ChromosomeWindow is smaller to another one if its position start is smaller
-	 * or if its position start is equal but its position stop is smaller.
+	 * @return the start
 	 */
 	@Override
-	public int compareTo(ChromosomeWindow otherChromosomeWindow) {
-		return new ChromosomeWindowComparator().compare(this, otherChromosomeWindow);
+	public int getStart() {
+		return start;
+	}
+
+
+	/**
+	 * @return the stop
+	 */
+	@Override
+	public int getStop() {
+		return stop;
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		start = in.readInt();
+		stop = in.readInt();
+	}
+
+
+
+	/**
+	 * @param start the start to set
+	 */
+	@Override
+	public void setStart(int start) {
+		this.start = start;
+	}
+
+
+	/**
+	 * @param stop the stop to set
+	 */
+	@Override
+	public void setStop(int stop) {
+		this.stop = stop;
+	}
+
+
+	@Override
+	public String toString() {
+		String startStr = NumberFormat.getInstance().format(start);
+		String stopStr = NumberFormat.getInstance().format(stop);
+		return startStr + "-" + stopStr;
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeInt(start);
+		out.writeInt(stop);
 	}
 }

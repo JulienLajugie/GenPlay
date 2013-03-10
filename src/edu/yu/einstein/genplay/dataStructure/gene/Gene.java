@@ -28,7 +28,6 @@ import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
-
 /**
  * The Gene class provides a representation of a gene.
  * @author Julien Lajugie
@@ -53,7 +52,14 @@ public interface Gene extends Serializable, Cloneable, ScoredChromosomeWindow {
 	 */
 	public void addExon(int exonStart, int exonStop, double exonScore);
 
-
+	
+	/**
+	 * @return a deep copy of the object
+	 */
+	@Override
+	public Gene deepClone();
+	
+	
 	/**
 	 * @param aName Name of a chromosome
 	 * @return True if <i>aName</i> equals the name of the chromosome. False otherwise.

@@ -205,6 +205,12 @@ public final class SimpleGene implements Gene {
 	}
 
 
+	@Override
+	public Gene deepClone() {
+		return new SimpleGene(this);
+	}
+
+
 	/**
 	 * @param aName Name of a chromosome
 	 * @return True if <i>aName</i> equals the name of the chromosome. False otherwise.

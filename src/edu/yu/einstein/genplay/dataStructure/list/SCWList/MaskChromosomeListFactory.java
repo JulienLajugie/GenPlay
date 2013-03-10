@@ -30,6 +30,7 @@ import java.util.concurrent.ExecutionException;
 import edu.yu.einstein.genplay.core.IO.reader.SCWReader;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOMergeWindows;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
@@ -64,7 +65,7 @@ public class MaskChromosomeListFactory {
 			scwList.add(scwReader.getCurrentChromosome(), currentMCW);
 		}
 		scwList.sort();
-		// TODO merge overlapping windows
+		scwList = new SCWLOMergeWindows(scwList).compute();
 		scwList.computeStatistics();
 		return scwList;
 	}
@@ -90,7 +91,7 @@ public class MaskChromosomeListFactory {
 				scwList.set(i, data.get(i));
 			}
 			scwList.sort();
-			// TODO merge overlapping windows
+			scwList = new SCWLOMergeWindows(scwList).compute();
 			scwList.computeStatistics();
 			return scwList;
 		} else {
@@ -138,7 +139,7 @@ public class MaskChromosomeListFactory {
 			}
 		}
 		scwList.sort();
-		// TODO merge overlapping windows
+		scwList = new SCWLOMergeWindows(scwList).compute();
 		scwList.computeStatistics();
 		return scwList;
 	}
@@ -194,7 +195,7 @@ public class MaskChromosomeListFactory {
 		}
 		// generate the statistics
 		scwList.sort();
-		// TODO merge overlapping windows
+		scwList = new SCWLOMergeWindows(scwList).compute();
 		scwList.computeStatistics();
 		return scwList;
 	}

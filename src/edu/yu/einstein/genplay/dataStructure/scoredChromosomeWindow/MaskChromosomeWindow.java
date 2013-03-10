@@ -43,35 +43,20 @@ public final class MaskChromosomeWindow implements ScoredChromosomeWindow, Chrom
 
 
 	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeInt(start);
-		out.writeInt(stop);
-	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		start = in.readInt();
-		stop = in.readInt();
-	}
-
-
-	/**
 	 * Default constructor
 	 */
 	public MaskChromosomeWindow() {
 		this(0, 0);
+	}
+
+
+	/**
+	 * Creates an instance of a {@link MaskChromosomeWindow}
+	 * @param chromosomeWindow a chromosome window
+	 */
+	public MaskChromosomeWindow(ChromosomeWindow chromosomeWindow) {
+		start = chromosomeWindow.getStart();
+		stop = chromosomeWindow.getStop();
 	}
 
 
@@ -88,89 +73,11 @@ public final class MaskChromosomeWindow implements ScoredChromosomeWindow, Chrom
 
 	/**
 	 * Creates an instance of a {@link MaskChromosomeWindow}
-	 * @param chromosomeWindow a chromosome window
-	 */
-	public MaskChromosomeWindow(ChromosomeWindow chromosomeWindow) {
-		start = chromosomeWindow.getStart();
-		stop = chromosomeWindow.getStop();
-	}
-
-
-	/**
-	 * Creates an instance of a {@link MaskChromosomeWindow}
 	 * @param scw a {@link ScoredChromosomeWindow}
 	 */
 	public MaskChromosomeWindow(ScoredChromosomeWindow scw) {
 		start = scw.getStart();
 		stop = scw.getStop();
-	}
-
-
-	@Override
-	public String toString() {
-		String startStr = NumberFormat.getInstance().format(start);
-		String stopStr = NumberFormat.getInstance().format(stop);
-		return startStr + "-" + stopStr + " : 1";
-	}
-
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		MaskChromosomeWindow other = (MaskChromosomeWindow) obj;
-		if (start != other.start) {
-			return false;
-		}
-		if (stop != other.stop) {
-			return false;
-		}
-		return true;
-	}
-
-
-	/**
-	 * @return the size of the window in base pair (ie: stop - start)
-	 */
-	@Override
-	public int getSize() {
-		return stop - start;
-	}
-
-
-
-	/**
-	 * @return the position of the middle of the window
-	 */
-	@Override
-	public double getMiddlePosition() {
-		return (start + stop) / (double)2;
-	}
-
-
-	/**
-	 * Checks if the window contains the given position.
-	 * If the position is located before the window, -1 is returned.
-	 * If the position is located after the window, 1 is returned.
-	 * if the position is included in the window, 0 is returned.
-	 * @param position the position to check
-	 * @return 0 is the position is in the window, -1 if lower, 1 if higher.
-	 */
-	@Override
-	public int containsPosition (int position) {
-		if (position < start) {
-			return -1;
-		} else if (position > stop) {
-			return 1;
-		}
-		return 0;
 	}
 
 
@@ -197,11 +104,77 @@ public final class MaskChromosomeWindow implements ScoredChromosomeWindow, Chrom
 
 
 	/**
-	 * @param start the start to set
+	 * Checks if the window contains the given position.
+	 * If the position is located before the window, -1 is returned.
+	 * If the position is located after the window, 1 is returned.
+	 * if the position is included in the window, 0 is returned.
+	 * @param position the position to check
+	 * @return 0 is the position is in the window, -1 if lower, 1 if higher.
 	 */
 	@Override
-	public void setStart(int start) {
-		this.start = start;
+	public int containsPosition (int position) {
+		if (position < start) {
+			return -1;
+		} else if (position > stop) {
+			return 1;
+		}
+		return 0;
+	}
+
+
+	@Override
+	public ScoredChromosomeWindow deepClone() {
+		return new MaskChromosomeWindow(this);
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		MaskChromosomeWindow other = (MaskChromosomeWindow) obj;
+		if (start != other.start) {
+			return false;
+		}
+		if (stop != other.stop) {
+			return false;
+		}
+		return true;
+	}
+
+
+	/**
+	 * @return the position of the middle of the window
+	 */
+	@Override
+	public double getMiddlePosition() {
+		return (start + stop) / (double)2;
+	}
+
+
+
+	/**
+	 * @return the score
+	 */
+	@Override
+	public double getScore() {
+		return 1;
+	}
+
+
+	/**
+	 * @return the size of the window in base pair (ie: stop - start)
+	 */
+	@Override
+	public int getSize() {
+		return stop - start;
 	}
 
 
@@ -215,20 +188,24 @@ public final class MaskChromosomeWindow implements ScoredChromosomeWindow, Chrom
 
 
 	/**
-	 * @param stop the stop to set
-	 */
-	@Override
-	public void setStop(int stop) {
-		this.stop = stop;
-	}
-
-
-	/**
 	 * @return the stop
 	 */
 	@Override
 	public int getStop() {
 		return stop;
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		start = in.readInt();
+		stop = in.readInt();
 	}
 
 
@@ -240,11 +217,39 @@ public final class MaskChromosomeWindow implements ScoredChromosomeWindow, Chrom
 
 
 	/**
-	 * @return the score
+	 * @param start the start to set
 	 */
 	@Override
-	public double getScore() {
-		return 1;
+	public void setStart(int start) {
+		this.start = start;
 	}
 
+
+	/**
+	 * @param stop the stop to set
+	 */
+	@Override
+	public void setStop(int stop) {
+		this.stop = stop;
+	}
+
+
+	@Override
+	public String toString() {
+		String startStr = NumberFormat.getInstance().format(start);
+		String stopStr = NumberFormat.getInstance().format(stop);
+		return startStr + "-" + stopStr + " : 1";
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeInt(start);
+		out.writeInt(stop);
+	}
 }

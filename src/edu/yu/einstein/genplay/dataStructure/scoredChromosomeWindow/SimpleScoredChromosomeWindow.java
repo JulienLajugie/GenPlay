@@ -41,7 +41,7 @@ public final class SimpleScoredChromosomeWindow implements ScoredChromosomeWindo
 
 	private int  	start;		// Position start of the window
 	private int 	stop;		// Position stop of the window
-	private double score;	// score of the window
+	private double 	score;		// score of the window
 
 
 	/**
@@ -246,4 +246,9 @@ public final class SimpleScoredChromosomeWindow implements ScoredChromosomeWindo
 		return score;
 	}
 
+
+	@Override
+	public ScoredChromosomeWindow deepClone() {
+		return new SimpleScoredChromosomeWindow(this);
+	}
 }
