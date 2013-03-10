@@ -57,6 +57,14 @@ public class ScoredChromosomeWindowArrayList extends GenomicDataArrayList<Scored
 
 	/** Saved format version */
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;
+	
+	/**
+	 * @return the number of steps needed to create the list.  
+	 */
+	public static int getCreationStepCount() {
+		return 2;
+	}
+	
 
 	/** Type of the list */
 	private SCWListType scwListType;

@@ -23,12 +23,14 @@ package edu.yu.einstein.genplay.core.converter.binListConverter;
 
 import edu.yu.einstein.genplay.core.converter.Converter;
 import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
-import edu.yu.einstein.genplay.dataStructure.list.SCWList.MaskWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.MaskChromosomeListFactory;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.MaskChromosomeWindow;
 
 
 /**
- * Creates a {@link MaskWindowList} from the data of the input {@link BinList}
+ * Creates a {@link ScoredChromosomeWindowList} of {@link MaskChromosomeWindow} from the data of the input {@link BinList}
  * @author Julien Lajugie
  * @author Nicolas Fourel
  * @version 0.1
@@ -40,7 +42,7 @@ public class BinListToMaskList implements Converter {
 
 
 	/**
-	 * Creates a {@link MaskWindowList} from the data of the input {@link BinList}
+	 * Creates a {@link ScoredChromosomeWindowList} of {@link MaskChromosomeWindow} from the data of the input {@link BinList}
 	 * @param binList the BinList
 	 */
 	public BinListToMaskList(BinList binList) {
@@ -62,7 +64,7 @@ public class BinListToMaskList implements Converter {
 
 	@Override
 	public void convert() throws Exception {
-		result = new MaskWindowList(list);
+		result = MaskChromosomeListFactory.createMaskSCWArrayList(list);
 	}
 
 

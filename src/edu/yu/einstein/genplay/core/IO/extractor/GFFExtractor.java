@@ -38,7 +38,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.list.GenomicDataArrayList;
 import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
-import edu.yu.einstein.genplay.dataStructure.list.SCWList.MaskWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.MaskChromosomeListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.DoubleArrayAsDoubleList;
@@ -187,7 +187,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 
 	@Override
 	public ScoredChromosomeWindowList toMaskChromosomeWindowList() throws InvalidChromosomeException, InterruptedException,	ExecutionException {
-		return new MaskWindowList(startList, stopList);
+		return MaskChromosomeListFactory.createMaskSCWArrayList(startList, stopList);
 	}
 
 	@Override

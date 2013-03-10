@@ -23,12 +23,12 @@ package edu.yu.einstein.genplay.core.converter.maskListConverter;
 
 import edu.yu.einstein.genplay.core.converter.Converter;
 import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
-import edu.yu.einstein.genplay.dataStructure.list.SCWList.MaskWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.MaskChromosomeWindow;
 
 
 /**
- * Creates a {@link ScoredChromosomeWindowList} from the data of the input {@link MaskWindowList}
+ * Creates a {@link ScoredChromosomeWindowList} from the data of the input {@link ScoredChromosomeWindowList} of {@link MaskChromosomeWindow}
  * @author Julien Lajugie
  * @author Nicolas Fourel
  * @version 0.1
@@ -39,7 +39,7 @@ public class MaskListToSCWList implements Converter {
 
 
 	/**
-	 * Creates a {@link ScoredChromosomeWindowList} from the data of the input {@link MaskWindowList}
+	 * Creates a {@link ScoredChromosomeWindowList} from the data of the input {@link ScoredChromosomeWindowList} of {@link MaskChromosomeWindow}
 	 * @param maskList input list
 	 */
 	public MaskListToSCWList(ScoredChromosomeWindowList maskList) {

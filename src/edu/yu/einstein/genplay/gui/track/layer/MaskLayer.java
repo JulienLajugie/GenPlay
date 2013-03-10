@@ -23,13 +23,16 @@ package edu.yu.einstein.genplay.gui.track.layer;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
-import edu.yu.einstein.genplay.dataStructure.list.SCWList.MaskWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.gui.dataScalerForTrackDisplay.MaskSCWLScaler;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.colors.LayerColors;
 
@@ -41,7 +44,9 @@ import edu.yu.einstein.genplay.util.colors.LayerColors;
 public class MaskLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList> implements Layer<ScoredChromosomeWindowList>, VersionedLayer<ScoredChromosomeWindowList>, ColoredLayer {
 
 	private static final long serialVersionUID = 3779631846077486596L; // generated ID
-	private Color color;		// color of the layer
+	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// Saved format version
+	private transient MaskSCWLScaler	dataScaler;	// object that scales the list of masks for display
+	private Color 						color;		// color of the layer
 
 
 	/**
@@ -62,7 +67,10 @@ public class MaskLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList
 			if (getData() != null) {
 				ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
 				g.setColor(color);
-				List<ScoredChromosomeWindow> chromoStripeList = ((MaskWindowList) getData()).getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
+				// check that the data scaler is valid
+				validateDataScaler();
+				// Retrieve the genes to print
+				List<ScoredChromosomeWindow> chromoStripeList = dataScaler.getDataScaledForTrackDisplay();
 				if (chromoStripeList != null) {
 					for (ScoredChromosomeWindow currentStripe: chromoStripeList) {
 						int x = projectWindow.genomeToScreenPosition(currentStripe.getStart());
@@ -93,5 +101,39 @@ public class MaskLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList
 	@Override
 	public void setColor(Color color) {
 		this.color = color;
+	}
+	
+	
+	/**
+	 * Checks that the data scaler is valid. Regenerates the data scaler if it's not valid
+	 */
+	private void validateDataScaler() {
+		// if the data scaler is null or is not set to scale the current data we regenerate it
+		if ((dataScaler == null) || (getData() != dataScaler.getDataToScale())) {
+			dataScaler = new MaskSCWLScaler(getData());
+		}
+	}
+	
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(color);
+	}
+	
+	
+	/**
+	 * Method used for deserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		color = (Color) in.readObject();
 	}
 }

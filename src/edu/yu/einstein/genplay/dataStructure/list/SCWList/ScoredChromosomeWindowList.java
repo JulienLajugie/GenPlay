@@ -36,6 +36,7 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
  */
 public interface ScoredChromosomeWindowList extends List<List<ScoredChromosomeWindow>>, GenomicDataList<ScoredChromosomeWindow> {
 
+	
 	/**
 	 * Computes the statistics for the list
 	 * @throws InterruptedException 
@@ -56,7 +57,7 @@ public interface ScoredChromosomeWindowList extends List<List<ScoredChromosomeWi
 	 */
 	public Double getAverage();
 
-
+	
 	/**
 	 * @return the greatest score of the windows of the list list
 	 */

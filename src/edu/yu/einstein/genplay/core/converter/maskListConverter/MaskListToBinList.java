@@ -25,13 +25,13 @@ import edu.yu.einstein.genplay.core.converter.Converter;
 import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
-import edu.yu.einstein.genplay.dataStructure.list.SCWList.MaskWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.MaskChromosomeWindow;
 
 
 /**
- * Creates a {@link BinList} from the data of the input {@link MaskWindowList}
+ * Creates a {@link BinList} from the data of the input {@link ScoredChromosomeWindowList} of {@link MaskChromosomeWindow}
  * @author Julien Lajugie
  * @author Nicolas Fourel
  * @version 0.1
@@ -46,7 +46,7 @@ public class MaskListToBinList implements Converter {
 
 
 	/**
-	 * Creates a {@link BinList} from the data of the input {@link MaskWindowList}
+	 * Creates a {@link BinList} from the data of the input {@link ScoredChromosomeWindowList} of {@link MaskChromosomeWindow}
 	 * @param maskList input list
 	 * @param binSize size of the bins
 	 * @param precision precision of the data (eg: 1/8/16/32/64-BIT)

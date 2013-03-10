@@ -28,7 +28,7 @@ import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.list.SCWList.MaskWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.MaskChromosomeListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
@@ -38,7 +38,7 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
 
 
 /**
- * Converts a {@link ScoredChromosomeWindowList} to a {@link MaskWindowList}
+ * Converts any type {@link ScoredChromosomeWindowList} into {@link ScoredChromosomeWindowList} of {@link MaskChromosomeWindow}
  * @author Nicolas Fourel
  * @version 0.1
  */
@@ -108,7 +108,7 @@ public class BLOConvertToMask implements Operation<ScoredChromosomeWindowList> {
 		}
 		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			ScoredChromosomeWindowList resultList = new MaskWindowList(result);
+			ScoredChromosomeWindowList resultList = MaskChromosomeListFactory.createMaskSCWArrayList(result);
 			return resultList;
 		} else {
 			return null;

@@ -22,16 +22,15 @@
 package edu.yu.einstein.genplay.core.converter.geneListConverter;
 
 import edu.yu.einstein.genplay.core.converter.Converter;
-import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOCleanList;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
-import edu.yu.einstein.genplay.dataStructure.list.SCWList.MaskWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.MaskChromosomeListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.MaskChromosomeWindow;
 
 
 /**
- * Creates a {@link MaskWindowList} from the data of the input {@link GeneList}
+ * Creates a {@link ScoredChromosomeWindowList} of {@link MaskChromosomeWindow} from the data of the input {@link GeneList}
  * @author Julien Lajugie
  * @author Nicolas Fourel
  * @version 0.1
@@ -39,18 +38,15 @@ import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
 public class GeneListToMaskList implements Converter {
 
 	private final GeneList 						list; 			// The input list.
-	private final ScoreCalculationMethod 		method; 		// method for the calculation of the scores of the result binlist
-	private GenomicDataList<?> 			result;			// The output list.
+	private GenomicDataList<?> 					result;			// The output list.
 
 
 	/**
-	 * Creates a {@link MaskWindowList} from the data of the input {@link GeneList}
+	 * Creates a {@link ScoredChromosomeWindowList} of {@link MaskChromosomeWindow} from the data of the input {@link GeneList}
 	 * @param geneList the BinList
-	 * @param method method to generate the BinList (eg: AVERAGE, SUM or MAXIMUM)
 	 */
-	public GeneListToMaskList(GeneList geneList, ScoreCalculationMethod method) {
+	public GeneListToMaskList(GeneList geneList) {
 		list = geneList;
-		this.method = method;
 	}
 
 
@@ -68,9 +64,7 @@ public class GeneListToMaskList implements Converter {
 
 	@Override
 	public void convert() throws Exception {
-		result = new MaskWindowList(list, method);
-		SCWLOCleanList operation = new SCWLOCleanList((ScoredChromosomeWindowList) result);
-		result = operation.compute();
+		result = MaskChromosomeListFactory.createMaskSCWArrayList(list);
 	}
 
 

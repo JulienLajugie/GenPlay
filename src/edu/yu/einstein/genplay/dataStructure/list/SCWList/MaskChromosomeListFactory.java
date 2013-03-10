@@ -33,6 +33,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOMergeWindows;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
@@ -79,7 +80,8 @@ public class MaskChromosomeListFactory {
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
-	public static ScoredChromosomeWindowList createMaskSCWArrayList(List<? extends List<ScoredChromosomeWindow>> data) throws InterruptedException, ExecutionException {
+	@SuppressWarnings("unchecked")
+	public static <T extends ChromosomeWindow> ScoredChromosomeWindowList createMaskSCWArrayList(List<List<T>> data) throws InterruptedException, ExecutionException {
 		boolean isMaskInputList = true;
 		for (int i = 0; (i < data.size()) && isMaskInputList; i++) {
 			isMaskInputList = ((data.get(i) == null) || data.get(i).isEmpty() || (data.get(i).get(0) == null) || (data.get(i).get(0) instanceof MaskChromosomeWindow));
@@ -88,7 +90,7 @@ public class MaskChromosomeListFactory {
 			ScoredChromosomeWindowList scwList = new ScoredChromosomeWindowArrayList(SCWListType.MASK);
 			// if the data list elements are mask chromosome window we just add them 
 			for (int i = 0; (i < data.size()) && (i < scwList.size()); i++) {
-				scwList.set(i, data.get(i));
+				scwList.set(i, (List<ScoredChromosomeWindow>) data.get(i));
 			}
 			scwList.sort();
 			scwList = new SCWLOMergeWindows(scwList).compute();
@@ -99,8 +101,8 @@ public class MaskChromosomeListFactory {
 			return convertIntoMaskSCWArrayList(data);
 		}
 	}
-
-
+	
+	
 	/**
 	 * Converts a list of list of {@link ScoredChromosomeWindow} into a {@link ScoredChromosomeWindowList} of {@link MaskChromosomeWindow}
 	 * @param data a list of list of {@link ScoredChromosomeWindow}
@@ -108,18 +110,17 @@ public class MaskChromosomeListFactory {
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
-	private static ScoredChromosomeWindowList convertIntoMaskSCWArrayList(List<? extends List<ScoredChromosomeWindow>> data) throws InterruptedException, ExecutionException {
-		ScoredChromosomeWindowList scwList = new ScoredChromosomeWindowArrayList(SCWListType.MASK);
+	private static <T extends ChromosomeWindow> ScoredChromosomeWindowList convertIntoMaskSCWArrayList(List<List<T>> data) throws InterruptedException, ExecutionException {
 		// retrieve the instance of the OperationPool
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
-		for (final List<ScoredChromosomeWindow> currentList: data) {
+		for (final List<? extends ChromosomeWindow> currentList: data) {
 			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
 				@Override
 				public List<ScoredChromosomeWindow> call() throws Exception {
 					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
-					for (ScoredChromosomeWindow currentWindow: currentList) {
+					for (ChromosomeWindow currentWindow: currentList) {
 						resultList.add(new MaskChromosomeWindow(currentWindow));
 					}
 					// tell the operation pool that a chromosome is done
@@ -132,21 +133,12 @@ public class MaskChromosomeListFactory {
 		List<List<ScoredChromosomeWindow>> result = null;
 		// starts the pool
 		result = op.startPool(threadList);
-		// add the chromosome results
-		if (result != null) {
-			for (List<ScoredChromosomeWindow> currentList: result) {
-				scwList.add(currentList);
-			}
-		}
-		scwList.sort();
-		scwList = new SCWLOMergeWindows(scwList).compute();
-		scwList.computeStatistics();
-		return scwList;
+		return createMaskSCWArrayList(result);
 	}
 
 
 	/**
-	 * Creates an instance of {@link MaskWindowList}
+	 * Creates an instance of {@link ScoredChromosomeWindowList}
 	 * @param startList list of start positions
 	 * @param stopList list of stop position
 	 * @return a {@link ScoredChromosomeWindowList} of {@link MaskChromosomeWindow}
@@ -154,10 +146,9 @@ public class MaskChromosomeListFactory {
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public static ScoredChromosomeWindowList convertIntoMaskSCWArrayList(final GenomicDataList<Integer> startList,
+	public static ScoredChromosomeWindowList createMaskSCWArrayList(final GenomicDataList<Integer> startList,
 			final GenomicDataList<Integer> stopList) throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		// TODO remove this method when the new file loading system is on
-		ScoredChromosomeWindowList scwList = new ScoredChromosomeWindowArrayList(SCWListType.MASK);
 		// retrieve the project chromosome
 		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		// retrieve the instance of the OperationPool
@@ -187,17 +178,7 @@ public class MaskChromosomeListFactory {
 		List<List<ScoredChromosomeWindow>> result = null;
 		// starts the pool
 		result = op.startPool(threadList);
-		// add the chromosome results
-		if (result != null) {
-			for (List<ScoredChromosomeWindow> currentList: result) {
-				scwList.add(currentList);
-			}
-		}
-		// generate the statistics
-		scwList.sort();
-		scwList = new SCWLOMergeWindows(scwList).compute();
-		scwList.computeStatistics();
-		return scwList;
+		return createMaskSCWArrayList(result);
 	}
 
 	
@@ -209,7 +190,6 @@ public class MaskChromosomeListFactory {
 	 * @throws InterruptedException
 	 */
 	public static ScoredChromosomeWindowList createMaskSCWArrayList (final BinList binList) throws InterruptedException, ExecutionException {
-		ScoredChromosomeWindowList scwList = new ScoredChromosomeWindowArrayList(SCWListType.MASK);
 		// retrieve the project chromosome
 		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		// retrieve the instance of the OperationPool
@@ -257,13 +237,6 @@ public class MaskChromosomeListFactory {
 		List<List<ScoredChromosomeWindow>> result = null;
 		// starts the pool
 		result = op.startPool(threadList);
-		// add the chromosome results
-		if (result != null) {
-			for (List<ScoredChromosomeWindow> currentList: result) {
-				scwList.add(currentList);
-			}
-		}
-		scwList.computeStatistics();
-		return scwList;
+		return createMaskSCWArrayList(result);
 	}
 }

@@ -63,7 +63,7 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 	private static final double 			SCORE_SATURATION = 0.02d;		// saturation of the score of the exon for the display
 	private static final short				GENE_HEIGHT = 6;				// size of a gene in pixel
 	private static final short				UTR_HEIGHT = 3;					// height of a UTR region of a gene in pixel
-	private GeneListScaler		dataScaler;						// object that scales the list of genes for display
+	private transient GeneListScaler		dataScaler;						// object that scales the list of genes for display
 	private int 							firstLineToDisplay;				// number of the first line to be displayed
 	private int 							geneLinesCount;					// number of line of genes
 	private int 							mouseStartDragY = -1;			// position of the mouse when start dragging

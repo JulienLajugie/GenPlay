@@ -28,7 +28,6 @@ import edu.yu.einstein.genplay.core.converter.ConverterFactory;
 import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
-import edu.yu.einstein.genplay.dataStructure.list.SCWList.MaskWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
@@ -136,9 +135,9 @@ public class LAConvert extends TrackListActionWorker<GenomicDataList<?>> {
 			} else if (layerType == LayerType.BIN_LAYER) {
 				newLayer = new BinLayer(resultTrack, (BinList) actionResult, layerName);
 			} else if (layerType == LayerType.SCW_LAYER) {
-				newLayer = new SCWLayer(resultTrack, (ScoredChromosomeWindowList)actionResult, layerName);
+				newLayer = new SCWLayer(resultTrack, (ScoredChromosomeWindowList) actionResult, layerName);
 			} else if (layerType == LayerType.MASK_LAYER) {
-				newLayer = new MaskLayer(resultTrack, (MaskWindowList) actionResult, layerName);
+				newLayer = new MaskLayer(resultTrack, (ScoredChromosomeWindowList) actionResult, layerName);
 			}
 			if (newLayer != null) {
 				((VersionedLayer<?>) newLayer).getHistory().add(layerType + " generated from " + selectedLayer.getType() + " \"" + selectedLayer.getName()+ "\"", Colors.GREY);

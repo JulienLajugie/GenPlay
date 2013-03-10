@@ -28,11 +28,9 @@ import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.list.SCWList.MaskWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowArrayList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-
 
 
 /**
@@ -181,14 +179,8 @@ public class SCWLOCleanList implements Operation<ScoredChromosomeWindowList> {
 
 
 	@Override
-	public int getStepCount() {
-		if (scwList instanceof SimpleScoredChromosomeWindowList) {
-			return 1 + SimpleScoredChromosomeWindowList.getCreationStepCount();
-		} else if (scwList instanceof MaskWindowList) {
-			return MaskWindowList.getCreationStepCount();
-		} else {
-			return 1;
-		}
+	public int getStepCount() {	
+		return ScoredChromosomeWindowArrayList.getCreationStepCount();
 	}
 
 
