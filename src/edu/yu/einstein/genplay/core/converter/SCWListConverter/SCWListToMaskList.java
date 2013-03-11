@@ -23,7 +23,7 @@ package edu.yu.einstein.genplay.core.converter.SCWListConverter;
 
 import edu.yu.einstein.genplay.core.converter.Converter;
 import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
-import edu.yu.einstein.genplay.dataStructure.list.SCWList.MaskChromosomeListFactory;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.MaskSCWListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.MaskChromosomeWindow;
 
@@ -63,7 +63,7 @@ public class SCWListToMaskList implements Converter {
 
 	@Override
 	public void convert() throws Exception {
-		result = MaskChromosomeListFactory.createMaskSCWArrayList(list);
+		result = MaskSCWListFactory.createMaskSCWArrayList(list);
 	}
 
 

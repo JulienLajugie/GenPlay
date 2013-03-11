@@ -38,7 +38,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
@@ -73,10 +73,10 @@ public class ConverterFactory {
 			} else if (data instanceof GeneList) {
 				GeneList geneList = (GeneList) data;
 				converter = getGeneListConverter(geneList, layerType, binSize, precision, method);
-			} else if (data instanceof SimpleScoredChromosomeWindowList) {
+			} else if (data instanceof SimpleSCWList) {
 				ScoredChromosomeWindowList scwList = (ScoredChromosomeWindowList) data;
 				converter = getSCWListConverter(scwList, layerType, binSize, precision, method);
-			} else if ((data instanceof ScoredChromosomeWindowList) && (((ScoredChromosomeWindowList) data).getScoredChromosomeWindowListType() == SCWListType.MASK)) {
+			} else if ((data instanceof ScoredChromosomeWindowList) && (((ScoredChromosomeWindowList) data).getSCWListType() == SCWListType.MASK)) {
 				ScoredChromosomeWindowList scwList = (ScoredChromosomeWindowList) data;
 				converter = getMaskListConverter(scwList, layerType, binSize, precision, method);
 			}

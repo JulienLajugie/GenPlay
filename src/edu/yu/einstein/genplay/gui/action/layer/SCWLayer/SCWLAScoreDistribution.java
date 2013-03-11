@@ -31,7 +31,7 @@ import javax.swing.JOptionPane;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOScoreDistribution;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotData;
 import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotPane;
@@ -123,7 +123,7 @@ public final class SCWLAScoreDistribution extends TrackListActionOperationWorker
 						selectedLayers[0] =	(SCWLayer) scwLayers[0];
 					}
 					if ((selectedLayers != null)) {
-						ScoredChromosomeWindowList[] scwListArray = new SimpleScoredChromosomeWindowList[selectedLayers.length];
+						ScoredChromosomeWindowList[] scwListArray = new SimpleSCWList[selectedLayers.length];
 						for (int i = 0; i < selectedLayers.length; i++) {
 							scwListArray[i] = selectedLayers[i].getData();
 						}

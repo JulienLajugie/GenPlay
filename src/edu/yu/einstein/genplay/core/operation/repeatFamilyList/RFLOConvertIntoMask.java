@@ -29,11 +29,11 @@ import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.core.repeatFamily.RepeatFamily;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.repeatFamilyList.RepeatFamilyList;
+import edu.yu.einstein.genplay.dataStructure.repeatFamily.RepeatFamily;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.MaskChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
@@ -119,7 +119,7 @@ public class RFLOConvertIntoMask implements Operation<ScoredChromosomeWindowList
 		}
 		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			ScoredChromosomeWindowList resultList = new SimpleScoredChromosomeWindowList(result);
+			ScoredChromosomeWindowList resultList = new SimpleSCWList(result);
 			return resultList;
 		} else {
 			return null;

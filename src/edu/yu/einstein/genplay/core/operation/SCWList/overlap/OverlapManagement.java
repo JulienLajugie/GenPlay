@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.operation.SCWList.overLap;
+package edu.yu.einstein.genplay.core.operation.SCWList.overlap;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -45,13 +45,13 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class OverLappingManagement implements Serializable {
+public class OverlapManagement implements Serializable {
 
 	private static final long serialVersionUID = 419831643761204027L;
 
 	protected final ProjectChromosome 			projectChromosome;		// TChromosomeManager
 	private final 	SCWLOptions 				sortSCW;				// use the sort option for chromosome list
-	private 		List<OverLappingEngine> 	overLappingEngineList;	// overlapping engine for chromosome list
+	private 		List<OverlapEngine> 	overLappingEngineList;	// overlapping engine for chromosome list
 
 	/**
 	 * OverLapManagement constructor
@@ -62,7 +62,7 @@ public class OverLappingManagement implements Serializable {
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
-	public OverLappingManagement (	GenomicDataList<Integer> startList,
+	public OverlapManagement (	GenomicDataList<Integer> startList,
 			GenomicDataList<Integer> stopList,
 			GenomicDataList<Double> scoreList) throws InterruptedException, ExecutionException {
 		this.projectChromosome = ProjectManager.getInstance().getProjectChromosome();
@@ -113,9 +113,9 @@ public class OverLappingManagement implements Serializable {
 	 * @param scm the score calculation method
 	 */
 	public void setScoreCalculationMethod (ScoreCalculationMethod scm) {
-		this.overLappingEngineList = new ArrayList<OverLappingEngine>();
+		this.overLappingEngineList = new ArrayList<OverlapEngine>();
 		for (int i = 0; i < projectChromosome.size(); i++) {
-			this.overLappingEngineList.add(new OverLappingEngine(scm));
+			this.overLappingEngineList.add(new OverlapEngine(scm));
 		}
 	}
 }

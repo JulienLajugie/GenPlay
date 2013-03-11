@@ -40,7 +40,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.CoordinateSystemType;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.dataStructure.enums.VCFColumnName;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.Utils;
@@ -252,7 +252,7 @@ public class MGOBedConvertSingleFile extends ExportEngine {
 	 * @throws ExecutionException
 	 */
 	private ScoredChromosomeWindowList getList (AlleleSettingsBedConvert alleleSettings) throws InvalidChromosomeException, InterruptedException, ExecutionException {
-		return new SimpleScoredChromosomeWindowList(alleleSettings.getStartList(), alleleSettings.getStopList(), alleleSettings.getScoreList(), ScoreCalculationMethod.AVERAGE);
+		return new SimpleSCWList(alleleSettings.getStartList(), alleleSettings.getStopList(), alleleSettings.getScoreList(), ScoreCalculationMethod.AVERAGE);
 	}
 
 

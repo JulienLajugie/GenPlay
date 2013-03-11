@@ -57,14 +57,23 @@ public class ScoredChromosomeWindowArrayList extends GenomicDataArrayList<Scored
 
 	/** Saved format version */
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;
-	
+
+
 	/**
-	 * @return the number of steps needed to create the list.  
+	 * @param scwListType a {@link SCWListType}
+	 * @return the number of steps needed to create the list.
 	 */
-	public static int getCreationStepCount() {
-		return 2;
+	public static int getCreationStepCount(SCWListType scwListType) {
+		switch (scwListType) {
+		case GENERIC:
+			return 5;
+		case MASK:
+			return 2;
+		default:
+			return 0;
+		}
 	}
-	
+
 
 	/** Type of the list */
 	private SCWListType scwListType;
@@ -136,7 +145,7 @@ public class ScoredChromosomeWindowArrayList extends GenomicDataArrayList<Scored
 
 
 	/**
-	 * Performs a deep clone of the current {@link SimpleScoredChromosomeWindowList}
+	 * Performs a deep clone of the current {@link SimpleSCWList}
 	 * @return a new ScoredChromosomeWindowList
 	 */
 	@Override
@@ -186,7 +195,7 @@ public class ScoredChromosomeWindowArrayList extends GenomicDataArrayList<Scored
 		if (indexWindow < 0) {
 			// retrieve the window right before the insert point
 			indexWindow = -indexWindow - 2;
-			if (indexWindow < 0) { 
+			if (indexWindow < 0) {
 				return 0;
 			}
 		}
@@ -199,7 +208,7 @@ public class ScoredChromosomeWindowArrayList extends GenomicDataArrayList<Scored
 
 
 	@Override
-	public SCWListType getScoredChromosomeWindowListType() {
+	public SCWListType getSCWListType() {
 		return scwListType;
 	}
 
@@ -231,8 +240,8 @@ public class ScoredChromosomeWindowArrayList extends GenomicDataArrayList<Scored
 			ExceptionManager.getInstance().caughtException(e);
 		}
 	}
-	
-	
+
+
 	@Override
 	public void sort() {
 		for(List<ScoredChromosomeWindow> currentList: this) {

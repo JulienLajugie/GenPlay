@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.operation.SCWList.overLap;
+package edu.yu.einstein.genplay.core.operation.SCWList.overlap;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -45,14 +45,14 @@ import edu.yu.einstein.genplay.util.DoubleLists;
  * @author Nicolas Fourel
  * @version 0.1
  */
-final class OverLappingEngine implements Serializable {
+final class OverlapEngine implements Serializable {
 
 	private static final long serialVersionUID = 7462066006408418433L;
 	private List<ScoredChromosomeWindow> 	list;					//original list of value
 	private IntArrayAsIntegerList 			newStartList;			//new list of start positions
 	private IntArrayAsIntegerList 			newStopList;			//new list of stop positions
 	private List<Double> 					newScoresList;			//new list of scores
-	private List<OverLappingNode> 			currentListOfNode;		//current list of nodes
+	private List<OverlapNode> 			currentListOfNode;		//current list of nodes
 	private List<Integer> 					currentListOfPosition;	//current list of positions
 	private List<Double> 					currentListOfScore;		//current list of scores
 	private final ScoreCalculationMethod			scm;
@@ -62,7 +62,7 @@ final class OverLappingEngine implements Serializable {
 	 * The OverLapManagement class controls this class
 	 * @param scm the score calculation method
 	 */
-	protected OverLappingEngine (ScoreCalculationMethod scm) {
+	protected OverlapEngine (ScoreCalculationMethod scm) {
 		this.scm = scm;
 	}
 
@@ -125,7 +125,7 @@ final class OverLappingEngine implements Serializable {
 	 */
 	private int overLappingManagement(int index) {
 		//Lists initialization
-		this.currentListOfNode = new ArrayList<OverLappingNode>();
+		this.currentListOfNode = new ArrayList<OverlapNode>();
 		this.currentListOfPosition = new ArrayList<Integer>();
 		this.currentListOfScore = new ArrayList<Double>();
 		//Lists generation
@@ -152,16 +152,16 @@ final class OverLappingEngine implements Serializable {
 	 */
 	private void generatePositionsAndNodesLists (int index) {
 		int nextIndex = index + 1;
-		addNode(new OverLappingNode(true, this.list.get(index)));	//the first node is the current position, added as a start node
-		addNode(new OverLappingNode(false, this.list.get(index)));	//added as a stop node
+		addNode(new OverlapNode(true, this.list.get(index)));	//the first node is the current position, added as a start node
+		addNode(new OverlapNode(false, this.list.get(index)));	//added as a stop node
 		addPosition(this.getOriginalStart(index));	//added as a start position
 		addPosition(this.getOriginalStop(index));	//added as a stop position
 		boolean valid = true;
 		if (nextIndex < this.list.size()) {	//if the next index is valid
 			while (valid) {
 				if (getOriginalStop(index) > getOriginalStart(nextIndex)) {	//if the current stop is higher than the next start, nodes and position are added
-					addNode(new OverLappingNode(true, this.list.get(nextIndex)));	//added as a start node
-					addNode(new OverLappingNode(false, this.list.get(nextIndex)));	//added as a stop node
+					addNode(new OverlapNode(true, this.list.get(nextIndex)));	//added as a start node
+					addNode(new OverlapNode(false, this.list.get(nextIndex)));	//added as a stop node
 					addPosition(this.getOriginalStart(nextIndex));	//added as a start position
 					addPosition(this.getOriginalStop(nextIndex));	//added as a stop position
 					if (getOriginalStop(nextIndex) > getOriginalStop(index)) {	//if the next stop is higher than the current stop
@@ -186,7 +186,7 @@ final class OverLappingEngine implements Serializable {
 	private void generateScoreList () {
 		LinkedList<ScoredChromosomeWindow> linkedList = new LinkedList<ScoredChromosomeWindow>();
 		Integer currentPos = this.currentListOfNode.get(0).getValue();	//the current position is the position of the first node
-		for (OverLappingNode node: this.currentListOfNode) {	//for all nodes
+		for (OverlapNode node: this.currentListOfNode) {	//for all nodes
 			if (node.getValue() != currentPos) {	//if the value of the node is different than the value of the current position
 				this.currentListOfScore.add(getScore(linkedList));	//the score of the current position is calculated
 				currentPos = node.getValue();	//the value of the node become the current position
@@ -277,7 +277,7 @@ final class OverLappingEngine implements Serializable {
 		}
 	}
 
-	private void addNode (OverLappingNode node) {
+	private void addNode (OverlapNode node) {
 		if (!this.currentListOfNode.contains(node)) {
 			this.currentListOfNode.add(node);
 		}

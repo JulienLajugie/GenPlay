@@ -179,8 +179,8 @@ public class SCWLOCleanList implements Operation<ScoredChromosomeWindowList> {
 
 
 	@Override
-	public int getStepCount() {	
-		return ScoredChromosomeWindowArrayList.getCreationStepCount();
+	public int getStepCount() {
+		return ScoredChromosomeWindowArrayList.getCreationStepCount(scwList.getSCWListType());
 	}
 
 

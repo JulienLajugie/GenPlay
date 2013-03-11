@@ -44,7 +44,7 @@ import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.GenomicDataArrayList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneListFactory;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
@@ -399,7 +399,7 @@ public class DASConnector {
 				}
 			}
 		}
-		return new SimpleScoredChromosomeWindowList(resultList);
+		return new SimpleSCWList(resultList);
 	}
 
 	/**
@@ -469,7 +469,7 @@ public class DASConnector {
 				}
 			}
 		}
-		return new SimpleScoredChromosomeWindowList(resultList);
+		return new SimpleSCWList(resultList);
 	}
 
 

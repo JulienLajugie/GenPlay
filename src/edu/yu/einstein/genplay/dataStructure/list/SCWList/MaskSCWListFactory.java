@@ -43,11 +43,11 @@ import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 
 
 /**
- * Factory class for vending mask {@link ScoredChromosomeWindowList} objects.
+ * Factory class for vending mask {@link ScoredChromosomeWindowList} of {@link MaskChromosomeWindow} objects.
  * Mask SCWL are lists with a score or 0 or 1
  * @author Julien Lajugie
  */
-public class MaskChromosomeListFactory {
+public class MaskSCWListFactory {
 
 	/**
 	 * Creates a {@link ScoredChromosomeWindowList} from the data retrieved by the specified {@link SCWReader}
@@ -88,7 +88,7 @@ public class MaskChromosomeListFactory {
 		}
 		if (isMaskInputList) {
 			ScoredChromosomeWindowList scwList = new ScoredChromosomeWindowArrayList(SCWListType.MASK);
-			// if the data list elements are mask chromosome window we just add them 
+			// if the data list elements are mask chromosome window we just add them
 			for (int i = 0; (i < data.size()) && (i < scwList.size()); i++) {
 				scwList.set(i, (List<ScoredChromosomeWindow>) data.get(i));
 			}
@@ -97,12 +97,12 @@ public class MaskChromosomeListFactory {
 			scwList.computeStatistics();
 			return scwList;
 		} else {
-			// if the data list elements are not mask chromosome window we need to convert them 
+			// if the data list elements are not mask chromosome window we need to convert them
 			return convertIntoMaskSCWArrayList(data);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Converts a list of list of {@link ScoredChromosomeWindow} into a {@link ScoredChromosomeWindowList} of {@link MaskChromosomeWindow}
 	 * @param data a list of list of {@link ScoredChromosomeWindow}
@@ -181,7 +181,7 @@ public class MaskChromosomeListFactory {
 		return createMaskSCWArrayList(result);
 	}
 
-	
+
 	/**
 	 * Creates an instance of mask SCWList from a specified {@link BinList}
 	 * @param binList BinList used for the creation of the mask list

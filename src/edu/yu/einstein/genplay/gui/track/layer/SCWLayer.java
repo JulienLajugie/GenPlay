@@ -25,6 +25,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
@@ -33,8 +36,9 @@ import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOMaxScoreToDisplay;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOMinScoreToDisplay;
 import edu.yu.einstein.genplay.dataStructure.enums.GraphType;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.gui.dataScalerForTrackDisplay.SimpleSCWLScaler;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackConstants;
 import edu.yu.einstein.genplay.util.colors.Colors;
@@ -47,9 +51,11 @@ import edu.yu.einstein.genplay.util.colors.LayerColors;
  */
 public class SCWLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList> implements Layer<ScoredChromosomeWindowList>, VersionedLayer<ScoredChromosomeWindowList>, GraphLayer, ColoredLayer {
 
-	private static final long serialVersionUID = 3779631846077486596L; // generated ID
-	private GraphType 	graphType;	// type of graph display in the layer
-	private Color		color;		// color of the layer
+	private static final long serialVersionUID = 3779631846077486596L; 	// generated ID
+	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// Saved format version
+	private transient SimpleSCWLScaler	dataScaler;	// object that scales the list of SCW for display
+	private GraphType 					graphType;	// type of graph display in the layer
+	private Color						color;		// color of the layer
 
 
 	/**
@@ -108,7 +114,10 @@ public class SCWLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList>
 				reverseCurveColor = Colors.GREY;
 			}
 			reverseCurveColor = new Color(reverseCurveColor.getRed(), reverseCurveColor.getGreen(), reverseCurveColor.getBlue(), getColor().getAlpha());
-			List<ScoredChromosomeWindow> listToPrint = ((SimpleScoredChromosomeWindowList) getData()).getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
+			// check that the data scaler is valid
+			validateDataScaler();
+			// Retrieve the genes to print
+			List<ScoredChromosomeWindow> listToPrint = dataScaler.getDataScaledForTrackDisplay();
 			if (listToPrint != null) {
 				for (ScoredChromosomeWindow currentWindow: listToPrint) {
 					// we want to make sure that x is > 0
@@ -143,7 +152,10 @@ public class SCWLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList>
 		if (getData() != null) {
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
 			g.setColor(getColor());
-			List<ScoredChromosomeWindow> listToPrint = ((SimpleScoredChromosomeWindowList) getData()).getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
+			// check that the data scaler is valid
+			validateDataScaler();
+			// Retrieve the genes to print
+			List<ScoredChromosomeWindow> listToPrint = dataScaler.getDataScaledForTrackDisplay();
 			if ((listToPrint != null) && (listToPrint.size() > 0)) {
 				int x1 = -1;
 				int x2 = -1;
@@ -193,7 +205,10 @@ public class SCWLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList>
 	private void drawDenseGraph(Graphics g, int width, int height) {
 		if (getData() != null) {
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-			List<ScoredChromosomeWindow> listToPrint = ((SimpleScoredChromosomeWindowList) getData()).getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
+			// check that the data scaler is valid
+			validateDataScaler();
+			// Retrieve the genes to print
+			List<ScoredChromosomeWindow> listToPrint = dataScaler.getDataScaledForTrackDisplay();
 			if (listToPrint != null) {
 				for (ScoredChromosomeWindow currentWindow: listToPrint) {
 					int x = projectWindow.genomeToScreenPosition(currentWindow.getStart());
@@ -220,7 +235,10 @@ public class SCWLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList>
 		if (getData() != null) {
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
 			g.setColor(getColor());
-			List<ScoredChromosomeWindow> listToPrint = ((SimpleScoredChromosomeWindowList) getData()).getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
+			// check that the data scaler is valid
+			validateDataScaler();
+			// Retrieve the genes to print
+			List<ScoredChromosomeWindow> listToPrint = dataScaler.getDataScaledForTrackDisplay();
 			if (listToPrint != null) {
 				for (ScoredChromosomeWindow currentWindow: listToPrint) {
 					// we want to make sure that x is > 0
@@ -248,7 +266,7 @@ public class SCWLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList>
 	public Double getCurrentScoreToDisplay() {
 		if (getData() != null) {
 			double middlePosition = ProjectManager.getInstance().getProjectWindow().getGenomeWindow().getMiddlePosition();
-			return ((SimpleScoredChromosomeWindowList) getData()).getScore((int) middlePosition);
+			return ((SimpleSCWList) getData()).getScore((int) middlePosition);
 		} else {
 			return 0d;
 		}
@@ -276,6 +294,18 @@ public class SCWLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList>
 	@Override
 	public LayerType getType() {
 		return LayerType.SCW_LAYER;
+	}
+
+
+	/**
+	 * Method used for deserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		color = (Color) in.readObject();
 	}
 
 
@@ -308,5 +338,27 @@ public class SCWLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList>
 	@Override
 	public void setGraphType(GraphType graphType) {
 		this.graphType = graphType;
+	}
+
+
+	/**
+	 * Checks that the data scaler is valid. Regenerates the data scaler if it's not valid
+	 */
+	private void validateDataScaler() {
+		// if the data scaler is null or is not set to scale the current data we regenerate it
+		if ((dataScaler == null) || (getData() != dataScaler.getDataToScale())) {
+			dataScaler = new SimpleSCWLScaler(getData());
+		}
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(color);
 	}
 }

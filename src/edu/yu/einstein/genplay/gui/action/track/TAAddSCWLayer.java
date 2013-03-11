@@ -33,7 +33,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.newCurveLayerDialog.NewCurveLayerDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -136,14 +136,14 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<ScoredCh
 			if (nctd.showDialog(getRootPane()) == NewCurveLayerDialog.APPROVE_OPTION) {
 				name = nctd.getLayerName();
 				scoreCalculation = nctd.getScoreCalculationMethod();
-				notifyActionStart("Generating Layer", SimpleScoredChromosomeWindowList.getCreationStepCount(), true);
+				notifyActionStart("Generating Layer", SimpleSCWList.getCreationStepCount(), true);
 				return ((ScoredChromosomeWindowListGenerator)extractor).toScoredChromosomeWindowList(scoreCalculation);
 			}
 		} else {
 			NewCurveLayerDialog nctd = new NewCurveLayerDialog(name, true, false, false, false, false, false,  false);
 			if (nctd.showDialog(getRootPane()) == NewCurveLayerDialog.APPROVE_OPTION) {
 				name = nctd.getLayerName();
-				notifyActionStart("Generating Layer", SimpleScoredChromosomeWindowList.getCreationStepCount(), true);
+				notifyActionStart("Generating Layer", SimpleSCWList.getCreationStepCount(), true);
 				return ((ScoredChromosomeWindowListGenerator)extractor).toScoredChromosomeWindowList(null);
 			}
 		}

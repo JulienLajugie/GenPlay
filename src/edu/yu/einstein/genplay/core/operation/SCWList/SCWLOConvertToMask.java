@@ -28,9 +28,9 @@ import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.list.SCWList.MaskChromosomeListFactory;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.MaskSCWListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.MaskChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
@@ -91,7 +91,7 @@ public class SCWLOConvertToMask implements Operation<ScoredChromosomeWindowList>
 		}
 		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			ScoredChromosomeWindowList resultList = MaskChromosomeListFactory.createMaskSCWArrayList(result);
+			ScoredChromosomeWindowList resultList = MaskSCWListFactory.createMaskSCWArrayList(result);
 			return resultList;
 		} else {
 			return null;
@@ -113,7 +113,7 @@ public class SCWLOConvertToMask implements Operation<ScoredChromosomeWindowList>
 
 	@Override
 	public int getStepCount() {
-		return 1 + SimpleScoredChromosomeWindowList.getCreationStepCount();
+		return 1 + SimpleSCWList.getCreationStepCount();
 	}
 
 

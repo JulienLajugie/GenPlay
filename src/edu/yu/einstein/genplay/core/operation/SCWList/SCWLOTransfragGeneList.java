@@ -36,7 +36,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneListFactory;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
@@ -165,7 +165,7 @@ public class SCWLOTransfragGeneList implements Operation<GeneList> {
 
 	@Override
 	public int getStepCount() {
-		return SimpleScoredChromosomeWindowList.getCreationStepCount() + 1;
+		return SimpleSCWList.getCreationStepCount() + 1;
 	}
 
 

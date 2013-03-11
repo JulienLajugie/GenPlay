@@ -35,12 +35,12 @@ import java.util.concurrent.ExecutionException;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.core.repeatFamily.RepeatFamily;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.DisplayableListOfLists;
+import edu.yu.einstein.genplay.dataStructure.repeatFamily.RepeatFamily;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 

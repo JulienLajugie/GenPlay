@@ -32,19 +32,19 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
 
 /**
  * A {@link GenomicDataList} of {@link ScoredChromosomeWindow}
- * @author Nicolas Fourel
+ * @author Julien Lajugie
  */
 public interface ScoredChromosomeWindowList extends List<List<ScoredChromosomeWindow>>, GenomicDataList<ScoredChromosomeWindow> {
 
-	
+
 	/**
 	 * Computes the statistics for the list
-	 * @throws InterruptedException 
-	 * @throws ExecutionException 
+	 * @throws InterruptedException
+	 * @throws ExecutionException
 	 */
 	public void computeStatistics() throws InterruptedException, ExecutionException;
 
-	
+
 	/**
 	 * Performs a deep clone of the current object
 	 * @return a new ScoredChromosomeWindowList
@@ -57,7 +57,7 @@ public interface ScoredChromosomeWindowList extends List<List<ScoredChromosomeWi
 	 */
 	public Double getAverage();
 
-	
+
 	/**
 	 * @return the greatest score of the windows of the list list
 	 */
@@ -99,9 +99,9 @@ public interface ScoredChromosomeWindowList extends List<List<ScoredChromosomeWi
 	/**
 	 * @return the type of the {@link ScoredChromosomeWindowList}
 	 */
-	public SCWListType getScoredChromosomeWindowListType();
-	
-	
+	public SCWListType getSCWListType();
+
+
 	/**
 	 * Sort the list for each chromosome ordering items by window start positions
 	 */

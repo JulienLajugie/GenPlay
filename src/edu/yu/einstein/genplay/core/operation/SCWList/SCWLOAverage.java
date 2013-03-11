@@ -30,14 +30,14 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.util.Utils;
 
 
 
 /**
- * Computes the average value of the scores of the {@link SimpleScoredChromosomeWindowList}
+ * Computes the average value of the scores of the {@link SimpleSCWList}
  * @author Julien Lajugie
  * @version 0.1
  */

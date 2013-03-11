@@ -29,13 +29,13 @@ import java.util.concurrent.Callable;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
-import edu.yu.einstein.genplay.core.operation.SCWList.overLap.SCWLTwoLayersManagement;
+import edu.yu.einstein.genplay.core.operation.SCWList.overlap.SCWLTwoLayersManagement;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationTwoLayersMethod;
 import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
@@ -88,7 +88,7 @@ public class SCWLOTwoLayers implements Operation<GenomicDataList<?>>, Stoppable 
 		}
 		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			ScoredChromosomeWindowList resultList = new SimpleScoredChromosomeWindowList(result);
+			ScoredChromosomeWindowList resultList = new SimpleSCWList(result);
 			return resultList;
 		} else {
 			return null;
@@ -110,7 +110,7 @@ public class SCWLOTwoLayers implements Operation<GenomicDataList<?>>, Stoppable 
 
 	@Override
 	public int getStepCount() {
-		return 1 + SimpleScoredChromosomeWindowList.getCreationStepCount();
+		return 1 + SimpleSCWList.getCreationStepCount();
 	}
 
 

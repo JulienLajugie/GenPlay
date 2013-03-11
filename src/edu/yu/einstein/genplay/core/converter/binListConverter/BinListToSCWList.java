@@ -24,7 +24,7 @@ package edu.yu.einstein.genplay.core.converter.binListConverter;
 import edu.yu.einstein.genplay.core.converter.Converter;
 import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
 
 
@@ -63,7 +63,7 @@ public class BinListToSCWList implements Converter {
 
 	@Override
 	public void convert() throws Exception {
-		result = new SimpleScoredChromosomeWindowList(list);
+		result = new SimpleSCWList(list);
 	}
 
 

@@ -26,7 +26,7 @@ import java.util.List;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
@@ -120,7 +120,7 @@ public class SCWLOFilterPercentage implements Operation<ScoredChromosomeWindowLi
 
 	@Override
 	public int getStepCount() {
-		return 1 + SimpleScoredChromosomeWindowList.getCreationStepCount();
+		return 1 + SimpleSCWList.getCreationStepCount();
 	}
 
 

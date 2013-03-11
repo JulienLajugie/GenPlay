@@ -30,7 +30,7 @@ import java.util.concurrent.ExecutionException;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 
@@ -93,7 +93,7 @@ public class SCWLONormalize implements Operation<ScoredChromosomeWindowList> {
 		}
 		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			ScoredChromosomeWindowList resultList = new SimpleScoredChromosomeWindowList(result);
+			ScoredChromosomeWindowList resultList = new SimpleSCWList(result);
 			return resultList;
 		} else {
 			return null;
@@ -109,7 +109,7 @@ public class SCWLONormalize implements Operation<ScoredChromosomeWindowList> {
 
 	@Override
 	public int getStepCount() {
-		return SimpleScoredChromosomeWindowList.getCreationStepCount() + 1;
+		return SimpleSCWList.getCreationStepCount() + 1;
 	}
 
 

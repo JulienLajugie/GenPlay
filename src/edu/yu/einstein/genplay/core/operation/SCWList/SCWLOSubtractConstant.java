@@ -29,7 +29,7 @@ import java.util.concurrent.Callable;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 
@@ -93,7 +93,7 @@ public class SCWLOSubtractConstant implements Operation<ScoredChromosomeWindowLi
 		}
 		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			ScoredChromosomeWindowList resultList = new SimpleScoredChromosomeWindowList(result);
+			ScoredChromosomeWindowList resultList = new SimpleSCWList(result);
 			return resultList;
 		} else {
 			return null;
@@ -115,7 +115,7 @@ public class SCWLOSubtractConstant implements Operation<ScoredChromosomeWindowLi
 
 	@Override
 	public int getStepCount() {
-		return 1 + SimpleScoredChromosomeWindowList.getCreationStepCount();
+		return 1 + SimpleSCWList.getCreationStepCount();
 	}
 
 

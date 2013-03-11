@@ -24,6 +24,9 @@ package edu.yu.einstein.genplay.util;
 import java.util.List;
 
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
+import edu.yu.einstein.genplay.dataStructure.list.GenomicDataArrayList;
+import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.arrayList.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
@@ -83,6 +86,26 @@ public class SCWLists {
 		} else {
 			return sum / n;
 		}
+	}
+
+
+	/**
+	 * @param scwList a {@link GenomicDataList} of Object that extends {@link ScoredChromosomeWindow}
+	 * @return a {@link GenomicDataList} containing the scores of the specified list. This list is organized the same way as the input list
+	 */
+	public static GenomicDataList<Double> getScoreList(GenomicDataList<? extends ScoredChromosomeWindow> scwList) {
+		GenomicDataList<Double> list = new GenomicDataArrayList<Double>();
+		for (int i = 0; i < scwList.size(); i++) {
+			list.add(new DoubleArrayAsDoubleList());
+		}
+
+		for (int i = 0; i < scwList.size(); i++) {
+			List<? extends ScoredChromosomeWindow> currentList = scwList.get(i);
+			for (ScoredChromosomeWindow currentChromosomeWindow: currentList) {
+				list.get(i).add(currentChromosomeWindow.getScore());
+			}
+		}
+		return list;
 	}
 
 

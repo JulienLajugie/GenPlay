@@ -70,9 +70,9 @@ public class MaskLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList
 				// check that the data scaler is valid
 				validateDataScaler();
 				// Retrieve the genes to print
-				List<ScoredChromosomeWindow> chromoStripeList = dataScaler.getDataScaledForTrackDisplay();
-				if (chromoStripeList != null) {
-					for (ScoredChromosomeWindow currentStripe: chromoStripeList) {
+				List<ScoredChromosomeWindow> listToPrint = dataScaler.getDataScaledForTrackDisplay();
+				if (listToPrint != null) {
+					for (ScoredChromosomeWindow currentStripe: listToPrint) {
 						int x = projectWindow.genomeToScreenPosition(currentStripe.getStart());
 						int widthWindow = projectWindow.genomeToScreenWidth(currentStripe.getStop() - currentStripe.getStart());
 						if (widthWindow < 1) {
@@ -98,34 +98,6 @@ public class MaskLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList
 	}
 
 
-	@Override
-	public void setColor(Color color) {
-		this.color = color;
-	}
-	
-	
-	/**
-	 * Checks that the data scaler is valid. Regenerates the data scaler if it's not valid
-	 */
-	private void validateDataScaler() {
-		// if the data scaler is null or is not set to scale the current data we regenerate it
-		if ((dataScaler == null) || (getData() != dataScaler.getDataToScale())) {
-			dataScaler = new MaskSCWLScaler(getData());
-		}
-	}
-	
-	
-	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(color);
-	}
-	
-	
 	/**
 	 * Method used for deserialization
 	 * @param in
@@ -135,5 +107,33 @@ public class MaskLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		color = (Color) in.readObject();
+	}
+
+
+	@Override
+	public void setColor(Color color) {
+		this.color = color;
+	}
+
+
+	/**
+	 * Checks that the data scaler is valid. Regenerates the data scaler if it's not valid
+	 */
+	private void validateDataScaler() {
+		// if the data scaler is null or is not set to scale the current data we regenerate it
+		if ((dataScaler == null) || (getData() != dataScaler.getDataToScale())) {
+			dataScaler = new MaskSCWLScaler(getData());
+		}
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(color);
 	}
 }

@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.operation.SCWList.overLap;
+package edu.yu.einstein.genplay.core.operation.SCWList.overlap;
 
 import java.io.Serializable;
 import java.util.ArrayList;

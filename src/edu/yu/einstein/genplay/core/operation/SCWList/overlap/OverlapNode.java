@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.operation.SCWList.overLap;
+package edu.yu.einstein.genplay.core.operation.SCWList.overlap;
 
 import java.io.Serializable;
 
@@ -33,7 +33,7 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
  * @author Nicolas
  * @version 0.1
  */
-final class OverLappingNode implements Comparable<OverLappingNode>, Serializable {
+final class OverlapNode implements Comparable<OverlapNode>, Serializable {
 
 	private static final long serialVersionUID = 2744418236142472607L;
 	private final boolean 				start;	//the node refer to a start position
@@ -45,7 +45,7 @@ final class OverLappingNode implements Comparable<OverLappingNode>, Serializable
 	 * @param start	true if the node refers to a start position
 	 * @param scw	scored chromosome window associated
 	 */
-	protected OverLappingNode(boolean start, ScoredChromosomeWindow scw) {
+	protected OverlapNode(boolean start, ScoredChromosomeWindow scw) {
 		this.start = start;
 		this.scw = scw;
 	}
@@ -86,7 +86,7 @@ final class OverLappingNode implements Comparable<OverLappingNode>, Serializable
 	}
 
 	@Override
-	public int compareTo(OverLappingNode arg) {
+	public int compareTo(OverlapNode arg) {
 		if (this.getValue() > arg.getValue()) {
 			return 1;
 		} else if (this.getValue() == arg.getValue()) {

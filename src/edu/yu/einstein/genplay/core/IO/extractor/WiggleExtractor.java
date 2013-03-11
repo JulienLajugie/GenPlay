@@ -34,9 +34,9 @@ import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.dataStructure.list.GenomicDataArrayList;
 import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
-import edu.yu.einstein.genplay.dataStructure.list.SCWList.MaskChromosomeListFactory;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.MaskSCWListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
@@ -241,13 +241,13 @@ implements Serializable, ScoredChromosomeWindowListGenerator, BinListGenerator{
 
 	@Override
 	public ScoredChromosomeWindowList toScoredChromosomeWindowList(ScoreCalculationMethod scm) throws InvalidChromosomeException, InterruptedException, ExecutionException {
-		return new SimpleScoredChromosomeWindowList(startList, stopList, scoreList, scm);
+		return new SimpleSCWList(startList, stopList, scoreList, scm);
 	}
 
 
 	@Override
 	public ScoredChromosomeWindowList toMaskChromosomeWindowList() throws InvalidChromosomeException, InterruptedException,	ExecutionException {
-		return MaskChromosomeListFactory.createMaskSCWArrayList(startList, stopList);
+		return MaskSCWListFactory.createMaskSCWArrayList(startList, stopList);
 	}
 
 
@@ -292,7 +292,7 @@ implements Serializable, ScoredChromosomeWindowListGenerator, BinListGenerator{
 
 	@Override
 	public boolean overlapped() {
-		return SimpleScoredChromosomeWindowList.overLappingExist(startList, stopList);
+		return SimpleSCWList.overLappingExist(startList, stopList);
 	}
 
 

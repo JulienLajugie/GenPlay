@@ -23,7 +23,7 @@ package edu.yu.einstein.genplay.core.operation.binList;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
 
 
@@ -49,7 +49,7 @@ public class BLOGenerateSCWList implements Operation<ScoredChromosomeWindowList>
 
 	@Override
 	public ScoredChromosomeWindowList compute() throws Exception {
-		return new SimpleScoredChromosomeWindowList(this.binList);
+		return new SimpleSCWList(this.binList);
 	}
 
 
@@ -67,7 +67,7 @@ public class BLOGenerateSCWList implements Operation<ScoredChromosomeWindowList>
 
 	@Override
 	public int getStepCount() {
-		return 1 + SimpleScoredChromosomeWindowList.getCreationStepCount();
+		return 1 + SimpleSCWList.getCreationStepCount();
 	}
 
 

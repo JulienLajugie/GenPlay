@@ -28,8 +28,8 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.MaskChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 import edu.yu.einstein.genplay.util.ChromosomeWindowLists;
@@ -37,10 +37,10 @@ import edu.yu.einstein.genplay.util.DoubleLists;
 
 
 /**
- * This class scales a {@link ScoredChromosomeWindowList} of {@link MaskChromosomeWindow} to be displayed on a track.
+ * This class scales a {@link ScoredChromosomeWindowList} of {@link SimpleScoredChromosomeWindow} to be displayed on a track.
  * @author Julien Lajugie
  */
-public class MaskSCWLScaler implements DataScalerForTrackDisplay<ScoredChromosomeWindowList, List<ScoredChromosomeWindow>> {
+public class SimpleSCWLScaler implements DataScalerForTrackDisplay<ScoredChromosomeWindowList, List<ScoredChromosomeWindow>> {
 
 	/** Generate serial ID */
 	private static final long serialVersionUID = 264219231566141709L;
@@ -52,10 +52,10 @@ public class MaskSCWLScaler implements DataScalerForTrackDisplay<ScoredChromosom
 
 
 	/**
-	 * Creates an instance of {@link MaskSCWLScaler}
+	 * Creates an instance of {@link SimpleSCWLScaler}
 	 * @param dataToScale the data that needs to be scaled
 	 */
-	public MaskSCWLScaler(ScoredChromosomeWindowList dataToScale) {
+	public SimpleSCWLScaler(ScoredChromosomeWindowList dataToScale) {
 		this.dataToScale = dataToScale;
 	}
 
@@ -105,7 +105,7 @@ public class MaskSCWLScaler implements DataScalerForTrackDisplay<ScoredChromosom
 			scaledSCWList = new ArrayList<ScoredChromosomeWindow>();
 			if (currentChromosomeList.size() > 0) {
 				ArrayList<Double> scoreList = new ArrayList<Double>();
-				scaledSCWList.add(new MaskChromosomeWindow(currentChromosomeList.get(0)));
+				scaledSCWList.add(new SimpleScoredChromosomeWindow(currentChromosomeList.get(0)));
 				scoreList.add(currentChromosomeList.get(0).getScore());
 				int i = 1;
 				int j = 0;
@@ -129,7 +129,7 @@ public class MaskSCWLScaler implements DataScalerForTrackDisplay<ScoredChromosom
 						nextScore = currentChromosomeList.get(i).getScore();
 					}
 					scaledSCWList.get(j).setScore(DoubleLists.average(scoreList));
-					scaledSCWList.add(new MaskChromosomeWindow(currentChromosomeList.get(i)));
+					scaledSCWList.add(new SimpleScoredChromosomeWindow(currentChromosomeList.get(i)));
 					scoreList = new ArrayList<Double>();
 					scoreList.add(currentChromosomeList.get(i).getScore());
 					j++;

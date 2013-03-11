@@ -36,7 +36,7 @@ import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.operation.SCWList.overLap.OverLappingManagement;
+import edu.yu.einstein.genplay.core.operation.SCWList.overlap.OverlapManagement;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
@@ -50,7 +50,6 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScored
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 import edu.yu.einstein.genplay.util.ChromosomeWindowLists;
-import edu.yu.einstein.genplay.util.DoubleLists;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -60,7 +59,7 @@ import edu.yu.einstein.genplay.util.Utils;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLists<ScoredChromosomeWindow, List<ScoredChromosomeWindow>> implements ScoredChromosomeWindowList, Serializable {
+public final class SimpleSCWList extends DisplayableListOfLists<ScoredChromosomeWindow, List<ScoredChromosomeWindow>> implements ScoredChromosomeWindowList, Serializable {
 
 	private static final long serialVersionUID = 6268393967488568174L; // generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
@@ -78,7 +77,7 @@ public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLis
 	transient private Double	scoreSum = null;	// sum of the scores of all windows
 	transient private Long 		nonNullLength = null;// count of none-null bins in the BinList
 
-	private OverLappingManagement overLapManagement;
+	private OverlapManagement overLapManagement;
 
 
 	/**
@@ -110,7 +109,7 @@ public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLis
 
 
 	/**
-	 * @return the number of steps needed to create a {@link SimpleScoredChromosomeWindowList}
+	 * @return the number of steps needed to create a {@link SimpleSCWList}
 	 */
 	public static int getCreationStepCount() {
 		return 5;
@@ -181,7 +180,7 @@ public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLis
 	/**
 	 * Default constructor
 	 */
-	public SimpleScoredChromosomeWindowList() {}
+	public SimpleSCWList() {}
 
 
 	/**
@@ -190,7 +189,7 @@ public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLis
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public SimpleScoredChromosomeWindowList (final BinList binList) throws InterruptedException, ExecutionException {
+	public SimpleSCWList (final BinList binList) throws InterruptedException, ExecutionException {
 		super();
 		// retrieve the instance of the OperationPool
 		final OperationPool op = OperationPool.getInstance();
@@ -251,7 +250,7 @@ public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLis
 
 
 	/**
-	 * Creates an instance of {@link SimpleScoredChromosomeWindowList}
+	 * Creates an instance of {@link SimpleSCWList}
 	 * @param startList list of start positions
 	 * @param stopList list of stop position
 	 * @param scoreList list of score
@@ -260,7 +259,7 @@ public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLis
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public SimpleScoredChromosomeWindowList(	final GenomicDataList<Integer> startList,
+	public SimpleSCWList(	final GenomicDataList<Integer> startList,
 			final GenomicDataList<Integer> stopList,
 			final GenomicDataList<Double> scoreList,
 			final ScoreCalculationMethod scm) throws InvalidChromosomeException, InterruptedException, ExecutionException {
@@ -273,7 +272,7 @@ public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLis
 
 
 		final boolean runOverLapEngine;
-		overLapManagement = new OverLappingManagement(startList, stopList, scoreList);
+		overLapManagement = new OverlapManagement(startList, stopList, scoreList);
 		if (scm != null) {
 			overLapManagement.setScoreCalculationMethod(scm);
 			runOverLapEngine = true;
@@ -323,14 +322,14 @@ public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLis
 
 
 	/**
-	 * Creates an instance of {@link SimpleScoredChromosomeWindowList}
+	 * Creates an instance of {@link SimpleSCWList}
 	 * @param geneList list of genes
 	 * @param scm {@link ScoreCalculationMethod} used to create the {@link BinList}
 	 * @throws InvalidChromosomeException
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public SimpleScoredChromosomeWindowList(final GeneList geneList, final ScoreCalculationMethod scm) throws InvalidChromosomeException, InterruptedException, ExecutionException {
+	public SimpleSCWList(final GeneList geneList, final ScoreCalculationMethod scm) throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		super();
 
 		final GenomicDataList<Integer> startList = ChromosomeWindowLists.getStartList(geneList);
@@ -343,7 +342,7 @@ public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLis
 
 
 		final boolean runOverLapEngine;
-		overLapManagement = new OverLappingManagement(startList, stopList, null);
+		overLapManagement = new OverlapManagement(startList, stopList, null);
 		if (scm != null) {
 			overLapManagement.setScoreCalculationMethod(scm);
 			runOverLapEngine = true;
@@ -398,7 +397,7 @@ public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLis
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public SimpleScoredChromosomeWindowList(Collection<? extends List<ScoredChromosomeWindow>> data) throws InterruptedException, ExecutionException {
+	public SimpleSCWList(Collection<? extends List<ScoredChromosomeWindow>> data) throws InterruptedException, ExecutionException {
 		super();
 		addAll(data);
 		// add the eventual missing chromosomes
@@ -418,18 +417,18 @@ public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLis
 
 
 	/**
-	 * Performs a deep clone of the current {@link SimpleScoredChromosomeWindowList}
+	 * Performs a deep clone of the current {@link SimpleSCWList}
 	 * @return a new ScoredChromosomeWindowList
 	 */
 	@Override
-	public SimpleScoredChromosomeWindowList deepClone() {
+	public SimpleSCWList deepClone() {
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ObjectOutputStream oos = new ObjectOutputStream(baos);
 			oos.writeObject(this);
 			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
 			ObjectInputStream ois = new ObjectInputStream(bais);
-			return ((SimpleScoredChromosomeWindowList)ois.readObject());
+			return ((SimpleSCWList)ois.readObject());
 		} catch (Exception e) {
 			ExceptionManager.getInstance().caughtException(e);
 			return null;
@@ -442,56 +441,7 @@ public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLis
 	 */
 	@Override
 	protected void fitToScreen() {
-		List<ScoredChromosomeWindow> currentChromosomeList;
-		try {
-			currentChromosomeList = get(fittedChromosome);
-		} catch (InvalidChromosomeException e) {
-			ExceptionManager.getInstance().caughtException(e);
-			fittedChromosome = null;
-			return;
-		}
-		if (currentChromosomeList == null) {
-			fittedDataList = null;
-			return;
-		}
-		if (fittedXRatio > 1) {
-			fittedDataList = currentChromosomeList;
-		} else {
-			fittedDataList = new ArrayList<ScoredChromosomeWindow>();
-			if (currentChromosomeList.size() > 0) {
-				ArrayList<Double> scoreList = new ArrayList<Double>();
-				fittedDataList.add(new SimpleScoredChromosomeWindow(currentChromosomeList.get(0)));
-				scoreList.add(currentChromosomeList.get(0).getScore());
-				int i = 1;
-				int j = 0;
-				while (i < currentChromosomeList.size()) {
-					double gapDistance = (currentChromosomeList.get(i).getStart() - fittedDataList.get(j).getStop()) * fittedXRatio;
-					double windowWidth = (currentChromosomeList.get(i).getStop() - fittedDataList.get(j).getStart()) * fittedXRatio;
-					double currentScore = fittedDataList.get(j).getScore();
-					double nextScore = currentChromosomeList.get(i).getScore();
-					// we merge two intervals together if there is a gap smaller than 1 pixel and have the same score
-					// or if the width of a window is smaller than 1
-					while ( ((i + 1) < currentChromosomeList.size()) &&
-							( ((gapDistance < 1) && (currentScore == nextScore)) ||
-									((windowWidth < 1) && (nextScore != 0)))) {
-						// the new stop position is the max of the current stop and the stop of the new merged interval
-						int newStop = Math.max(fittedDataList.get(j).getStop(), currentChromosomeList.get(i).getStop());
-						fittedDataList.get(j).setStop(newStop);
-						scoreList.add(currentChromosomeList.get(i).getScore());
-						i++;
-						gapDistance = (currentChromosomeList.get(i).getStart() - fittedDataList.get(j).getStop()) * fittedXRatio;
-						windowWidth = (currentChromosomeList.get(i).getStop() - fittedDataList.get(j).getStart()) * fittedXRatio;
-						nextScore = currentChromosomeList.get(i).getScore();
-					}
-					fittedDataList.get(j).setScore(DoubleLists.average(scoreList));
-					fittedDataList.add(new SimpleScoredChromosomeWindow(currentChromosomeList.get(i)));
-					scoreList = new ArrayList<Double>();
-					scoreList.add(currentChromosomeList.get(i).getScore());
-					j++;
-					i++;
-				}
-			}
-		}
+
 
 	}
 
@@ -699,7 +649,7 @@ public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLis
 
 
 	@Override
-	public SCWListType getScoredChromosomeWindowListType() {
+	public SCWListType getSCWListType() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -714,16 +664,16 @@ public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLis
 
 	@Override
 	public void computeStatistics() throws InterruptedException,
-			ExecutionException {
+	ExecutionException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 
 	@Override
 	public void sort() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
