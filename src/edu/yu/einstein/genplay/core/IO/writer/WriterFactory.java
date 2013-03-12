@@ -39,10 +39,10 @@ import edu.yu.einstein.genplay.core.IO.writer.binListWriter.SerializedBinListWri
 import edu.yu.einstein.genplay.core.IO.writer.geneListWriter.GeneListAsBedWriter;
 import edu.yu.einstein.genplay.core.IO.writer.geneListWriter.GeneListAsGdpGeneWriter;
 import edu.yu.einstein.genplay.core.IO.writer.geneListWriter.GeneListWriter;
-import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.ImmutableGenomicDataList;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
 import edu.yu.einstein.genplay.gui.fileFilter.BedFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.BedGraphFilter;
@@ -144,7 +144,7 @@ public final class WriterFactory {
 	 * @return a class implementing the Writer interface.
 	 * @throws InvalidFileTypeException
 	 */
-	public static Writer getWriter(File outputFile, GenomicDataList<?> data, String name, FileFilter ff) throws InvalidFileTypeException {
+	public static Writer getWriter(File outputFile, ImmutableGenomicDataList<?> data, String name, FileFilter ff) throws InvalidFileTypeException {
 		Writer writer = null;
 		if (data instanceof BinList) {
 			BinList binList = (BinList) data;

@@ -63,7 +63,7 @@ public class MCWLOInvertMask implements Operation<ScoredChromosomeWindowList> {
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
 
 		for (short i = 0; i < scwList.size(); i++) {
-			final List<ScoredChromosomeWindow> currentList = scwList.get(i);
+			final List<ScoredChromosomeWindow> currentList = scwList.getView(i);
 			final Chromosome currentChromosome = ProjectManager.getInstance().getProjectChromosome().get(i);
 
 			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
@@ -125,6 +125,6 @@ public class MCWLOInvertMask implements Operation<ScoredChromosomeWindowList> {
 
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }

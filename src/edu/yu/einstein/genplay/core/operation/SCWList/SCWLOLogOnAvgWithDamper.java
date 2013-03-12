@@ -85,7 +85,7 @@ public class SCWLOLogOnAvgWithDamper implements Operation<ScoredChromosomeWindow
 		}
 
 		for (short i = 0; i < scwList.size(); i++) {
-			final List<ScoredChromosomeWindow> currentList = scwList.get(i);
+			final List<ScoredChromosomeWindow> currentList = scwList.getView(i);
 
 			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
 				@Override
@@ -154,6 +154,6 @@ public class SCWLOLogOnAvgWithDamper implements Operation<ScoredChromosomeWindow
 
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }

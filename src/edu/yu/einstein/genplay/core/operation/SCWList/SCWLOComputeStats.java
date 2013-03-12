@@ -101,7 +101,7 @@ public class SCWLOComputeStats implements Operation<Void> {
 
 		// computes min / max / total score / non null bin count for each chromosome
 		for(short i = 0; i < inputList.size(); i++)  {
-			final List<ScoredChromosomeWindow> currentList = inputList.get(i);
+			final List<ScoredChromosomeWindow> currentList = inputList.getView(i);
 			final short currentIndex = i;
 
 			Callable<Void> currentThread = new Callable<Void>() {
@@ -146,7 +146,7 @@ public class SCWLOComputeStats implements Operation<Void> {
 
 			// compute the standard deviation for each chromosome
 			for(short i = 0; i < inputList.size(); i++)  {
-				final List<ScoredChromosomeWindow> currentList = inputList.get(i);
+				final List<ScoredChromosomeWindow> currentList = inputList.getView(i);
 				final short currentIndex = i;
 
 				Callable<Void> currentThread = new Callable<Void>() {

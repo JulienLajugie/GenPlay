@@ -42,8 +42,6 @@ import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
-import edu.yu.einstein.genplay.dataStructure.list.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.MaskSCWListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleSCWList;
@@ -51,7 +49,9 @@ import edu.yu.einstein.genplay.dataStructure.list.arrayList.DoubleArrayAsDoubleL
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
-import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneListFactory;
+import edu.yu.einstein.genplay.dataStructure.list.geneList.SimpleGeneList;
+import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.GenomicDataArrayList;
+import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.repeatFamilyList.RepeatFamilyList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
@@ -344,7 +344,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 				}
 			}
 		}
-		return GeneListFactory.createGeneArrayList(geneList);
+		return new SimpleGeneList(geneList, null, null);
 	}
 
 

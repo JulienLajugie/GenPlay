@@ -32,7 +32,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
-import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneListFactory;
+import edu.yu.einstein.genplay.dataStructure.list.geneList.SimpleGeneList;
 
 
 
@@ -112,7 +112,7 @@ public class GLOExtractExons implements Operation<GeneList> {
 		if (result == null) {
 			return null;
 		} else {
-			return GeneListFactory.createGeneArrayList(result, geneList.getGeneDBURL(), geneList.getGeneScoreType());
+			return new SimpleGeneList(result, geneList.getGeneScoreType(), geneList.getGeneDBURL());
 		}
 	}
 

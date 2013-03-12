@@ -62,14 +62,14 @@ public class SCWLOUniqueScore implements Operation<ScoredChromosomeWindowList> {
 	@Override
 	public ScoredChromosomeWindowList compute() throws Exception {
 		if (constant == 0) {
-			return scwList.deepClone();
+			return scwList;
 		}
 
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
 
 		for (short i = 0; i < scwList.size(); i++) {
-			final List<ScoredChromosomeWindow> currentList = scwList.get(i);
+			final List<ScoredChromosomeWindow> currentList = scwList.getView(i);
 
 			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
 				@Override
@@ -122,6 +122,6 @@ public class SCWLOUniqueScore implements Operation<ScoredChromosomeWindowList> {
 
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }

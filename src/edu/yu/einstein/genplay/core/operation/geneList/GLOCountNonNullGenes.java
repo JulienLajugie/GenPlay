@@ -65,8 +65,8 @@ public class GLOCountNonNullGenes implements Operation<Long> {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Long>> threadList = new ArrayList<Callable<Long>>();
 		for (int i = 0; i < geneList.size(); i++) {
-			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (geneList.get(i) != null)) {
-				final List<Gene> currentList = geneList.get(i);
+			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (geneList.getView(i) != null)) {
+				final List<Gene> currentList = geneList.getView(i);
 				Callable<Long> currentThread = new Callable<Long>() {
 					@Override
 					public Long call() throws Exception {
@@ -75,7 +75,7 @@ public class GLOCountNonNullGenes implements Operation<Long> {
 						}
 						long total = 0;
 						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
-							if ((currentList.get(j).getGeneRPKM() != null) && (currentList.get(j).getGeneRPKM() != 0)) {
+							if ((currentList.get(j).getScore() != 0) && (currentList.get(j).getScore() != Double.NaN)){
 								total++;
 							}
 						}

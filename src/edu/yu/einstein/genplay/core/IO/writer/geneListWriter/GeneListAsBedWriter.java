@@ -115,7 +115,7 @@ public final class GeneListAsBedWriter extends GeneListWriter implements Stoppab
 							if (!isGeneListScored) {
 								lineToPrint += "1";
 							} else {
-								Double score = currentGene.getGeneRPKM();
+								Double score = currentGene.getScore();
 								if (score == null) {
 									// if there is no score for the gene we put a default 1
 									lineToPrint += "0";
@@ -190,7 +190,7 @@ public final class GeneListAsBedWriter extends GeneListWriter implements Stoppab
 		for (List<Gene> currentList : data) {
 			if (currentList != null) {
 				for (Gene currentGene : currentList) {
-					Double rpkm = currentGene.getGeneRPKM();
+					Double rpkm = currentGene.getScore();
 					if ((rpkm != null) && (rpkm != 0)) {
 						return true;
 					}

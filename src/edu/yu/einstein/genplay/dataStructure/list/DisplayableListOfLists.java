@@ -27,6 +27,8 @@ import java.io.Serializable;
 
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.GenomicDataArrayList;
+import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.GenomicDataList;
 
 
 

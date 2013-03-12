@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -41,8 +41,8 @@ public class DistanceCalculator {
 	private final int refValue;
 	private final GeneList geneList;
 	private final int chromosomeindex;
-		
-	
+
+
 	/**
 	 * Creates instance of {@link DistanceCalculator}
 	 * @param geneList
@@ -60,8 +60,8 @@ public class DistanceCalculator {
 		this.track2Position = track2Position;
 		this.refValue = refValue;
 	}
-	
-	
+
+
 	/**
 	 * Creates instance of {@link DistanceCalculator}
 	 * @param geneList
@@ -81,243 +81,243 @@ public class DistanceCalculator {
 		this.track2Position = track2Position;
 		this.refValue = refValue;
 	}
-	
-	
+
+
 	/**
 	 * @return the closest distance
 	 */
 	public long getClosestDistance() {
-		List<Gene> listOfGenes = geneList.get(chromosomeindex);
+		List<Gene> listOfGenes = geneList.getView(chromosomeindex);
 		long retValue = 0;
 		switch(strandDirection) {
 		case 0: //positive
-				switch(track1Position) {
-				case 0: //start for track 1
-						switch(track2Position) {
-						case 0: //start for track 2
-								//listOfGenes = geneList.get(chromosomeindex);
-								retValue = getDistancePositiveStartStart(listOfGenes,0,listOfGenes.size()-1);									
-								break;
-								
-						case 1: //middle for track 2
-								//listOfGenes = geneList.get(chromosomeindex);
-								retValue = getDistancePositiveStartMiddle(listOfGenes,0,listOfGenes.size()-1);									
-								break;								
-								
-						case 2: //stop for track 2
-								//listOfGenes = geneList.get(chromosomeindex);
-								retValue = getDistancePositiveStartStop(listOfGenes,0,listOfGenes.size()-1);								
-								break;
-						}
-						break;
-						
-				case 1:	//middle for track 1
-						switch(track2Position) {
-						case 0: //start for track 2
-								//listOfGenes = geneList.get(chromosomeindex);
-								retValue = getDistancePositiveMiddleStart(listOfGenes,0,listOfGenes.size()-1);									
-								break;
-								
-						case 1: //middle for track 2
-								//listOfGenes = geneList.get(chromosomeindex);
-								retValue = getDistancePositiveMiddleMiddle(listOfGenes,0,listOfGenes.size()-1);									
-								break;
-								
-						case 2: //stop for track 2
-								//listOfGenes = geneList.get(chromosomeindex);
-								retValue = getDistancePositiveMiddleStop(listOfGenes,0,listOfGenes.size()-1);									
-								break;
-						}
-						break;
-						
-				case 2:	//stop for track 1
-						switch(track2Position) {
-						case 0: //start for track 2
-								//listOfGenes = geneList.get(chromosomeindex);
-								retValue = getDistancePositiveStopStart(listOfGenes,0,listOfGenes.size()-1);
-								break;
-								
-						case 1: //middle for track 2
-								//listOfGenes = geneList.get(chromosomeindex);
-								retValue = getDistancePositiveStopMiddle(listOfGenes,0,listOfGenes.size()-1);
-								break;
-								
-						case 2: //stop for track 2
-								//listOfGenes = geneList.get(chromosomeindex);
-								retValue = getDistancePositiveStopStop(listOfGenes,0,listOfGenes.size()-1);
-								break;
-						}
-						break;
+			switch(track1Position) {
+			case 0: //start for track 1
+				switch(track2Position) {
+				case 0: //start for track 2
+					//listOfGenes = geneList.get(chromosomeindex);
+					retValue = getDistancePositiveStartStart(listOfGenes,0,listOfGenes.size()-1);
+					break;
+
+				case 1: //middle for track 2
+					//listOfGenes = geneList.get(chromosomeindex);
+					retValue = getDistancePositiveStartMiddle(listOfGenes,0,listOfGenes.size()-1);
+					break;
+
+				case 2: //stop for track 2
+					//listOfGenes = geneList.get(chromosomeindex);
+					retValue = getDistancePositiveStartStop(listOfGenes,0,listOfGenes.size()-1);
+					break;
 				}
 				break;
-					
-		case 1: //negative
-				switch(track1Position) {
-				case 0: //start for track 1
-						switch(track2Position) {
-						case 0: //start for track 2
-								//listOfGenes = geneList.get(chromosomeindex);
-								retValue = getDistanceNegativeStartStart(listOfGenes,0,listOfGenes.size()-1);
-								break;
-								
-						case 1: //middle for track 2
-								//listOfGenes = geneList.get(chromosomeindex);
-								retValue = getDistanceNegativeStartMiddle(listOfGenes,0,listOfGenes.size()-1);
-								break;
-								
-						case 2: //stop for track 2
-								//listOfGenes = geneList.get(chromosomeindex);
-								retValue = getDistanceNegativeStartStop(listOfGenes,0,listOfGenes.size()-1);
-								break;
-						}
-						break;
-						
-				case 1:	//middle for track 1
-						switch(track2Position) {
-						case 0: //start for track 2
-								//listOfGenes = geneList.get(chromosomeindex);
-								retValue = getDistanceNegativeMiddleStart(listOfGenes,0,listOfGenes.size()-1);
-								break;
-								
-						case 1: //middle for track 2
-								//listOfGenes = geneList.get(chromosomeindex);
-								retValue = getDistanceNegativeMiddleMiddle(listOfGenes,0,listOfGenes.size()-1);
-								break;
-								
-						case 2: //stop for track 2
-								//listOfGenes = geneList.get(chromosomeindex);
-								retValue = getDistanceNegativeMiddleStop(listOfGenes,0,listOfGenes.size()-1);
-								break;
-						}
-						break;
-						
-				case 2:	//stop for track 1
-						switch(track2Position) {
-						case 0: //start for track 2
-								//listOfGenes = geneList.get(chromosomeindex);
-								retValue = getDistanceNegativeStopStart(listOfGenes,0,listOfGenes.size()-1);
-								break;
-								
-						case 1: //middle for track 2
-								//listOfGenes = geneList.get(chromosomeindex);
-								retValue = getDistanceNegativeStopMiddle(listOfGenes,0,listOfGenes.size()-1);
-								break;
-								
-						case 2: //stop for track 2
-								//listOfGenes = geneList.get(chromosomeindex);
-								retValue = getDistanceNegativeStopStop(listOfGenes,0,listOfGenes.size()-1);
-								break;	
-						}
-						break;
+
+			case 1:	//middle for track 1
+				switch(track2Position) {
+				case 0: //start for track 2
+					//listOfGenes = geneList.get(chromosomeindex);
+					retValue = getDistancePositiveMiddleStart(listOfGenes,0,listOfGenes.size()-1);
+					break;
+
+				case 1: //middle for track 2
+					//listOfGenes = geneList.get(chromosomeindex);
+					retValue = getDistancePositiveMiddleMiddle(listOfGenes,0,listOfGenes.size()-1);
+					break;
+
+				case 2: //stop for track 2
+					//listOfGenes = geneList.get(chromosomeindex);
+					retValue = getDistancePositiveMiddleStop(listOfGenes,0,listOfGenes.size()-1);
+					break;
 				}
 				break;
-				
-		case 2: //both
-				switch(relAbs) {
-				case 0: switch(track1Position) {
-						case 0: //start for track 1
-								switch(track2Position) {
-								case 0: //start for track 2
-										getDistanceRelativeStartStart(listOfGenes,0,listOfGenes.size()-1);
-										break;
-										
-								case 1: //middle for track 2
-										getDistanceRelativeStartMiddle(listOfGenes,0,listOfGenes.size()-1);
-										break;
-										
-								case 2: //stop for track 2
-										getDistanceRelativeStartStop(listOfGenes,0,listOfGenes.size()-1);
-										break;
-								}
-								break;
-							
-						case 1:	//middle for track 1
-								switch(track2Position) {
-								case 0: //start for track 2
-										getDistanceRelativeMiddleStart(listOfGenes,0,listOfGenes.size()-1);
-										break;
-										
-								case 1: //middle for track 2
-										getDistanceRelativeMiddleMiddle(listOfGenes,0,listOfGenes.size()-1);
-										break;
-										
-								case 2: //stop for track 2
-										getDistanceRelativeMiddleStop(listOfGenes,0,listOfGenes.size()-1);
-										break;
-								}
-								break;
-								
-						case 2:	//stop for track 1
-								switch(track2Position) {
-								case 0: //start for track 2
-										getDistanceRelativeStopStart(listOfGenes,0,listOfGenes.size()-1);
-										break;
-										
-								case 1: //middle for track 2
-										getDistanceRelativeStopMiddle(listOfGenes,0,listOfGenes.size()-1);
-										break;
-										
-								case 2: //stop for track 2
-										getDistanceRelativeStopStop(listOfGenes,0,listOfGenes.size()-1);
-										break;
-								}
-								break;
-						}
-						break;
-						
-				case 1: switch(track1Position) {
-						case 0: //start for track 1
-								switch(track2Position) {
-								case 0: //start for track 2
-										getDistanceAbsoluteStartStart(listOfGenes,0,listOfGenes.size()-1);
-										break;
-										
-								case 1: //middle for track 2
-										getDistanceAbsoluteStartMiddle(listOfGenes,0,listOfGenes.size()-1);
-										break;
-										
-								case 2: //stop for track 2
-										getDistanceAbsoluteStartStop(listOfGenes,0,listOfGenes.size()-1);
-										break;
-								}
-								break;
-							
-						case 1:	//middle for track 1
-								switch(track2Position) {
-								case 0: //start for track 2
-										getDistanceAbsoluteMiddleStart(listOfGenes,0,listOfGenes.size()-1);
-										break;
-										
-								case 1: //middle for track 2
-										getDistanceAbsoluteMiddleMiddle(listOfGenes,0,listOfGenes.size()-1);
-										break;
-										
-								case 2: //stop for track 2
-										getDistanceAbsoluteMiddleStop(listOfGenes,0,listOfGenes.size()-1);
-										break;
-								}
-								break;
-								
-						case 2:	//stop for track 1
-								switch(track2Position) {
-								case 0: //start for track 2
-										getDistanceAbsoluteStopStart(listOfGenes,0,listOfGenes.size()-1);
-										break;
-										
-								case 1: //middle for track 2
-										getDistanceAbsoluteStopMiddle(listOfGenes,0,listOfGenes.size()-1);
-										break;
-										
-								case 2: //stop for track 2
-										getDistanceAbsoluteStopStop(listOfGenes,0,listOfGenes.size()-1);
-										break;
-								}
-								break;
-						}
-						break;
+
+			case 2:	//stop for track 1
+				switch(track2Position) {
+				case 0: //start for track 2
+					//listOfGenes = geneList.get(chromosomeindex);
+					retValue = getDistancePositiveStopStart(listOfGenes,0,listOfGenes.size()-1);
+					break;
+
+				case 1: //middle for track 2
+					//listOfGenes = geneList.get(chromosomeindex);
+					retValue = getDistancePositiveStopMiddle(listOfGenes,0,listOfGenes.size()-1);
+					break;
+
+				case 2: //stop for track 2
+					//listOfGenes = geneList.get(chromosomeindex);
+					retValue = getDistancePositiveStopStop(listOfGenes,0,listOfGenes.size()-1);
+					break;
 				}
-				break;	
+				break;
 			}
+			break;
+
+		case 1: //negative
+			switch(track1Position) {
+			case 0: //start for track 1
+				switch(track2Position) {
+				case 0: //start for track 2
+					//listOfGenes = geneList.get(chromosomeindex);
+					retValue = getDistanceNegativeStartStart(listOfGenes,0,listOfGenes.size()-1);
+					break;
+
+				case 1: //middle for track 2
+					//listOfGenes = geneList.get(chromosomeindex);
+					retValue = getDistanceNegativeStartMiddle(listOfGenes,0,listOfGenes.size()-1);
+					break;
+
+				case 2: //stop for track 2
+					//listOfGenes = geneList.get(chromosomeindex);
+					retValue = getDistanceNegativeStartStop(listOfGenes,0,listOfGenes.size()-1);
+					break;
+				}
+				break;
+
+			case 1:	//middle for track 1
+				switch(track2Position) {
+				case 0: //start for track 2
+					//listOfGenes = geneList.get(chromosomeindex);
+					retValue = getDistanceNegativeMiddleStart(listOfGenes,0,listOfGenes.size()-1);
+					break;
+
+				case 1: //middle for track 2
+					//listOfGenes = geneList.get(chromosomeindex);
+					retValue = getDistanceNegativeMiddleMiddle(listOfGenes,0,listOfGenes.size()-1);
+					break;
+
+				case 2: //stop for track 2
+					//listOfGenes = geneList.get(chromosomeindex);
+					retValue = getDistanceNegativeMiddleStop(listOfGenes,0,listOfGenes.size()-1);
+					break;
+				}
+				break;
+
+			case 2:	//stop for track 1
+				switch(track2Position) {
+				case 0: //start for track 2
+					//listOfGenes = geneList.get(chromosomeindex);
+					retValue = getDistanceNegativeStopStart(listOfGenes,0,listOfGenes.size()-1);
+					break;
+
+				case 1: //middle for track 2
+					//listOfGenes = geneList.get(chromosomeindex);
+					retValue = getDistanceNegativeStopMiddle(listOfGenes,0,listOfGenes.size()-1);
+					break;
+
+				case 2: //stop for track 2
+					//listOfGenes = geneList.get(chromosomeindex);
+					retValue = getDistanceNegativeStopStop(listOfGenes,0,listOfGenes.size()-1);
+					break;
+				}
+				break;
+			}
+			break;
+
+		case 2: //both
+			switch(relAbs) {
+			case 0: switch(track1Position) {
+			case 0: //start for track 1
+				switch(track2Position) {
+				case 0: //start for track 2
+					getDistanceRelativeStartStart(listOfGenes,0,listOfGenes.size()-1);
+					break;
+
+				case 1: //middle for track 2
+					getDistanceRelativeStartMiddle(listOfGenes,0,listOfGenes.size()-1);
+					break;
+
+				case 2: //stop for track 2
+					getDistanceRelativeStartStop(listOfGenes,0,listOfGenes.size()-1);
+					break;
+				}
+				break;
+
+			case 1:	//middle for track 1
+				switch(track2Position) {
+				case 0: //start for track 2
+					getDistanceRelativeMiddleStart(listOfGenes,0,listOfGenes.size()-1);
+					break;
+
+				case 1: //middle for track 2
+					getDistanceRelativeMiddleMiddle(listOfGenes,0,listOfGenes.size()-1);
+					break;
+
+				case 2: //stop for track 2
+					getDistanceRelativeMiddleStop(listOfGenes,0,listOfGenes.size()-1);
+					break;
+				}
+				break;
+
+			case 2:	//stop for track 1
+				switch(track2Position) {
+				case 0: //start for track 2
+					getDistanceRelativeStopStart(listOfGenes,0,listOfGenes.size()-1);
+					break;
+
+				case 1: //middle for track 2
+					getDistanceRelativeStopMiddle(listOfGenes,0,listOfGenes.size()-1);
+					break;
+
+				case 2: //stop for track 2
+					getDistanceRelativeStopStop(listOfGenes,0,listOfGenes.size()-1);
+					break;
+				}
+				break;
+			}
+			break;
+
+			case 1: switch(track1Position) {
+			case 0: //start for track 1
+				switch(track2Position) {
+				case 0: //start for track 2
+					getDistanceAbsoluteStartStart(listOfGenes,0,listOfGenes.size()-1);
+					break;
+
+				case 1: //middle for track 2
+					getDistanceAbsoluteStartMiddle(listOfGenes,0,listOfGenes.size()-1);
+					break;
+
+				case 2: //stop for track 2
+					getDistanceAbsoluteStartStop(listOfGenes,0,listOfGenes.size()-1);
+					break;
+				}
+				break;
+
+			case 1:	//middle for track 1
+				switch(track2Position) {
+				case 0: //start for track 2
+					getDistanceAbsoluteMiddleStart(listOfGenes,0,listOfGenes.size()-1);
+					break;
+
+				case 1: //middle for track 2
+					getDistanceAbsoluteMiddleMiddle(listOfGenes,0,listOfGenes.size()-1);
+					break;
+
+				case 2: //stop for track 2
+					getDistanceAbsoluteMiddleStop(listOfGenes,0,listOfGenes.size()-1);
+					break;
+				}
+				break;
+
+			case 2:	//stop for track 1
+				switch(track2Position) {
+				case 0: //start for track 2
+					getDistanceAbsoluteStopStart(listOfGenes,0,listOfGenes.size()-1);
+					break;
+
+				case 1: //middle for track 2
+					getDistanceAbsoluteStopMiddle(listOfGenes,0,listOfGenes.size()-1);
+					break;
+
+				case 2: //stop for track 2
+					getDistanceAbsoluteStopStop(listOfGenes,0,listOfGenes.size()-1);
+					break;
+				}
+				break;
+			}
+			break;
+			}
+			break;
+		}
 		return retValue;
 	}
 
@@ -485,11 +485,11 @@ public class DistanceCalculator {
 
 
 	/**
-	 * Recursive and dichotomic search algorithm.  
+	 * Recursive and dichotomic search algorithm.
 	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
-	 * @return The index of a gene with a position Stop equals to value. 
+	 * @return The index of a gene with a position Stop equals to value.
 	 * Index of the first gene with a Stop position inferior to value if nothing found.
 	 */
 	private int getDistanceNegativeStopStop(List<Gene> listOfGenes, int indexStart, int indexStop) {
@@ -507,11 +507,11 @@ public class DistanceCalculator {
 
 
 	/**
-	 * Recursive and dichotomic search algorithm.  
+	 * Recursive and dichotomic search algorithm.
 	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
-	 * @return The index of a gene with a position middle equals to value. 
+	 * @return The index of a gene with a position middle equals to value.
 	 * Index of the first gene with a middle position inferior to value if nothing found.
 	 */
 	private int getDistanceNegativeStopMiddle(List<Gene> listOfGenes, int indexStart, int indexStop) {
@@ -529,11 +529,11 @@ public class DistanceCalculator {
 
 
 	/**
-	 * Recursive and dichotomic search algorithm.  
+	 * Recursive and dichotomic search algorithm.
 	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
-	 * @return The index of a gene with a position start equals to value. 
+	 * @return The index of a gene with a position start equals to value.
 	 * Index of the first gene with a start position inferior to value if nothing found.
 	 */
 	private int getDistanceNegativeStopStart(List<Gene> listOfGenes, int indexStart, int indexStop) {
@@ -551,11 +551,11 @@ public class DistanceCalculator {
 
 
 	/**
-	 * Recursive and dichotomic search algorithm.  
+	 * Recursive and dichotomic search algorithm.
 	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
-	 * @return The index of a gene with a position Stop equals to value. 
+	 * @return The index of a gene with a position Stop equals to value.
 	 * Index of the first gene with a Stop position inferior to value if nothing found.
 	 */
 	private int getDistanceNegativeMiddleStop(List<Gene> listOfGenes, int indexStart, int indexStop) {
@@ -573,11 +573,11 @@ public class DistanceCalculator {
 
 
 	/**
-	 * Recursive and dichotomic search algorithm.  
+	 * Recursive and dichotomic search algorithm.
 	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
-	 * @return The index of a gene with a position middle equals to value. 
+	 * @return The index of a gene with a position middle equals to value.
 	 * Index of the first gene with a middle position inferior to value if nothing found.
 	 */
 	private int getDistanceNegativeMiddleMiddle(List<Gene> listOfGenes, int indexStart, int indexStop) {
@@ -595,11 +595,11 @@ public class DistanceCalculator {
 
 
 	/**
-	 * Recursive and dichotomic search algorithm.  
+	 * Recursive and dichotomic search algorithm.
 	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
-	 * @return The index of a gene with a position start equals to value. 
+	 * @return The index of a gene with a position start equals to value.
 	 * Index of the first gene with a start position inferior to value if nothing found.
 	 */
 	private int getDistanceNegativeMiddleStart(List<Gene> listOfGenes, int indexStart, int indexStop) {
@@ -617,11 +617,11 @@ public class DistanceCalculator {
 
 
 	/**
-	 * Recursive and dichotomic search algorithm.  
+	 * Recursive and dichotomic search algorithm.
 	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
-	 * @return The index of a gene with a position Stop equals to value. 
+	 * @return The index of a gene with a position Stop equals to value.
 	 * Index of the first gene with a Stop position inferior to value if nothing found.
 	 */
 	private int getDistanceNegativeStartStop(List<Gene> listOfGenes, int indexStart, int indexStop) {
@@ -639,11 +639,11 @@ public class DistanceCalculator {
 
 
 	/**
-	 * Recursive and dichotomic search algorithm.  
+	 * Recursive and dichotomic search algorithm.
 	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
-	 * @return The index of a gene with a position middle equals to value. 
+	 * @return The index of a gene with a position middle equals to value.
 	 * Index of the first gene with a middle position inferior to value if nothing found.
 	 */
 	private int getDistanceNegativeStartMiddle(List<Gene> listOfGenes, int indexStart, int indexStop) {
@@ -661,11 +661,11 @@ public class DistanceCalculator {
 
 
 	/**
-	 * Recursive and dichotomic search algorithm.  
+	 * Recursive and dichotomic search algorithm.
 	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
-	 * @return The index of a gene with a position start equals to value. 
+	 * @return The index of a gene with a position start equals to value.
 	 * Index of the first gene with a start position inferior to value if nothing found.
 	 */
 	private int getDistanceNegativeStartStart(List<Gene> listOfGenes, int indexStart, int indexStop) {
@@ -683,11 +683,11 @@ public class DistanceCalculator {
 
 
 	/**
-	 * Recursive and dichotomic search algorithm.  
+	 * Recursive and dichotomic search algorithm.
 	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
-	 * @return The index of a gene with a position Stop equals to value. 
+	 * @return The index of a gene with a position Stop equals to value.
 	 * Index of the first gene with a Stop position superior to value if nothing found.
 	 */
 	private int getDistancePositiveStopStop(List<Gene> listOfGenes, int indexStart, int indexStop) {
@@ -705,11 +705,11 @@ public class DistanceCalculator {
 
 
 	/**
-	 * Recursive and dichotomic search algorithm.  
+	 * Recursive and dichotomic search algorithm.
 	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
-	 * @return The index of a gene with a position middle equals to value. 
+	 * @return The index of a gene with a position middle equals to value.
 	 * Index of the first gene with a middle position superior to value if nothing found.
 	 */
 	private int getDistancePositiveStopMiddle(List<Gene> listOfGenes, int indexStart, int indexStop) {
@@ -727,11 +727,11 @@ public class DistanceCalculator {
 
 
 	/**
-	 * Recursive and dichotomic search algorithm.  
+	 * Recursive and dichotomic search algorithm.
 	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
-	 * @return The index of a gene with a position start equals to value. 
+	 * @return The index of a gene with a position start equals to value.
 	 * Index of the first gene with a start position superior to value if nothing found.
 	 */
 	private int getDistancePositiveStopStart(List<Gene> listOfGenes, int indexStart, int indexStop) {
@@ -749,11 +749,11 @@ public class DistanceCalculator {
 
 
 	/**
-	 * Recursive and dichotomic search algorithm.  
+	 * Recursive and dichotomic search algorithm.
 	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
-	 * @return The index of a gene with a position Stop equals to value. 
+	 * @return The index of a gene with a position Stop equals to value.
 	 * Index of the first gene with a Stop position superior to value if nothing found.
 	 */
 	private int getDistancePositiveMiddleStop(List<Gene> listOfGenes, int indexStart, int indexStop) {
@@ -771,11 +771,11 @@ public class DistanceCalculator {
 
 
 	/**
-	 * Recursive and dichotomic search algorithm.  
+	 * Recursive and dichotomic search algorithm.
 	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
-	 * @return The index of a gene with a position middle equals to value. 
+	 * @return The index of a gene with a position middle equals to value.
 	 * Index of the first gene with a middle position superior to value if nothing found.
 	 */
 	private int getDistancePositiveMiddleMiddle(List<Gene> listOfGenes, int indexStart, int indexStop) {
@@ -793,11 +793,11 @@ public class DistanceCalculator {
 
 
 	/**
-	 * Recursive and dichotomic search algorithm.  
+	 * Recursive and dichotomic search algorithm.
 	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
-	 * @return The index of a gene with a position start equals to value. 
+	 * @return The index of a gene with a position start equals to value.
 	 * Index of the first gene with a start position superior to value if nothing found.
 	 */
 	private int getDistancePositiveMiddleStart(List<Gene> listOfGenes, int indexStart, int indexStop) {
@@ -815,11 +815,11 @@ public class DistanceCalculator {
 
 
 	/**
-	 * Recursive and dichotomic search algorithm.  
+	 * Recursive and dichotomic search algorithm.
 	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
-	 * @return The index of a gene with a position Stop equals to value. 
+	 * @return The index of a gene with a position Stop equals to value.
 	 * Index of the first gene with a Stop position superior to value if nothing found.
 	 */
 	private int getDistancePositiveStartStop(List<Gene> listOfGenes, int indexStart, int indexStop) {
@@ -837,11 +837,11 @@ public class DistanceCalculator {
 
 
 	/**
-	 * Recursive and dichotomic search algorithm.  
+	 * Recursive and dichotomic search algorithm.
 	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
-	 * @return The index of a gene with a position middle equals to value. 
+	 * @return The index of a gene with a position middle equals to value.
 	 * Index of the first gene with a middle position superior to value if nothing found.
 	 */
 	private int getDistancePositiveStartMiddle(List<Gene> listOfGenes, int indexStart, int indexStop) {
@@ -859,11 +859,11 @@ public class DistanceCalculator {
 
 
 	/**
-	 * Recursive and dichotomic search algorithm.  
+	 * Recursive and dichotomic search algorithm.
 	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
-	 * @return The index of a gene with a position start equals to value. 
+	 * @return The index of a gene with a position start equals to value.
 	 * Index of the first gene with a start position superior to value if nothing found.
 	 */
 	private int getDistancePositiveStartStart(List<Gene> listOfGenes, int indexStart, int indexStop) {

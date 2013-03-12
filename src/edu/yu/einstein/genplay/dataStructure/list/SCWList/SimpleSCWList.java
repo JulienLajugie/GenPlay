@@ -21,8 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.dataStructure.list.SCWList;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -42,9 +40,9 @@ import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.dataStructure.list.DisplayableListOfLists;
-import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
@@ -417,26 +415,6 @@ public final class SimpleSCWList extends DisplayableListOfLists<ScoredChromosome
 
 
 	/**
-	 * Performs a deep clone of the current {@link SimpleSCWList}
-	 * @return a new ScoredChromosomeWindowList
-	 */
-	@Override
-	public SimpleSCWList deepClone() {
-		try {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ObjectOutputStream oos = new ObjectOutputStream(baos);
-			oos.writeObject(this);
-			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-			ObjectInputStream ois = new ObjectInputStream(bais);
-			return ((SimpleSCWList)ois.readObject());
-		} catch (Exception e) {
-			ExceptionManager.getInstance().caughtException(e);
-			return null;
-		}
-	}
-
-
-	/**
 	 * Merges two windows together if the gap between this two windows is not visible
 	 */
 	@Override
@@ -555,7 +533,7 @@ public final class SimpleSCWList extends DisplayableListOfLists<ScoredChromosome
 	 * @return the average of the BinList
 	 */
 	@Override
-	public Double getAverage() {
+	public double getAverage() {
 		return average;
 	}
 
@@ -573,7 +551,7 @@ public final class SimpleSCWList extends DisplayableListOfLists<ScoredChromosome
 	 * @return the greatest value of the BinList
 	 */
 	@Override
-	public Double getMaximum() {
+	public double getMaximum() {
 		return max;
 	}
 
@@ -582,7 +560,7 @@ public final class SimpleSCWList extends DisplayableListOfLists<ScoredChromosome
 	 * @return the smallest value of the BinList
 	 */
 	@Override
-	public Double getMinimum() {
+	public double getMinimum() {
 		return min;
 	}
 
@@ -591,7 +569,7 @@ public final class SimpleSCWList extends DisplayableListOfLists<ScoredChromosome
 	 * @return the count of none-null bins in the BinList
 	 */
 	@Override
-	public Long getNonNullLength() {
+	public long getNonNullLength() {
 		return nonNullLength;
 	}
 
@@ -626,7 +604,7 @@ public final class SimpleSCWList extends DisplayableListOfLists<ScoredChromosome
 	 * @return the sum of the scores
 	 */
 	@Override
-	public final Double getScoreSum() {
+	public final double getScoreSum() {
 		return scoreSum;
 	}
 
@@ -635,7 +613,7 @@ public final class SimpleSCWList extends DisplayableListOfLists<ScoredChromosome
 	 * @return the standard deviation of the BinList
 	 */
 	@Override
-	public Double getStandardDeviation() {
+	public double getStandardDeviation() {
 		return stDev;
 	}
 
@@ -660,20 +638,4 @@ public final class SimpleSCWList extends DisplayableListOfLists<ScoredChromosome
 		// TODO Auto-generated method stub
 		return 0;
 	}
-
-
-	@Override
-	public void computeStatistics() throws InterruptedException,
-	ExecutionException {
-		// TODO Auto-generated method stub
-
-	}
-
-
-	@Override
-	public void sort() {
-		// TODO Auto-generated method stub
-
-	}
-
 }

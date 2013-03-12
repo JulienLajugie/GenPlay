@@ -61,7 +61,7 @@ public class SCWLOStandardDeviation implements Operation<Double> {
 	public Double compute() throws Exception {
 		// if the operation has to be calculated on all chromosome
 		// and if it has already been calculated we don't do the calculation again
-		if ((Utils.allChromosomeSelected(chromoList)) && (scwList.getStandardDeviation() != null)) {
+		if (Utils.allChromosomeSelected(chromoList)) {
 			return scwList.getStandardDeviation();
 		}
 
@@ -77,14 +77,14 @@ public class SCWLOStandardDeviation implements Operation<Double> {
 		final Collection<Callable<Double>> threadList = new ArrayList<Callable<Double>>();
 
 		for (int i = 0; i < scwList.size(); i++) {
-			final List<ScoredChromosomeWindow> currentList = scwList.get(i);
+			final List<ScoredChromosomeWindow> currentList = scwList.getView(i);
 			final int currentIndex = i;
 
 			Callable<Double> currentThread = new Callable<Double>() {
 				@Override
 				public Double call() throws Exception {
 					double stDev = 0;
-					if (((chromoList == null) || ((currentIndex < chromoList.length) && (chromoList[currentIndex]))) && (scwList.get(currentIndex) != null)) {
+					if (((chromoList == null) || ((currentIndex < chromoList.length) && (chromoList[currentIndex]))) && (scwList.getView(currentIndex) != null)) {
 						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 							ScoredChromosomeWindow currentWindow = currentList.get(j);
 							if (currentWindow.getScore() != 0) {

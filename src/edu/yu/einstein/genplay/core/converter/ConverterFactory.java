@@ -36,11 +36,11 @@ import edu.yu.einstein.genplay.core.converter.maskListConverter.MaskListToSCWLis
 import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.ImmutableGenomicDataList;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
 import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
@@ -64,7 +64,7 @@ public class ConverterFactory {
 	 * @param method method to generate the BinList (eg: AVERAGE, SUM or MAXIMUM)	(can be null if the layer type is not a {@link BinList}
 	 * @return				the appropriate converter
 	 */
-	public static Converter getConverter (GenomicDataList<?> data, LayerType layerType, int binSize, DataPrecision precision, ScoreCalculationMethod method) {
+	public static Converter getConverter (ImmutableGenomicDataList<?> data, LayerType layerType, int binSize, DataPrecision precision, ScoreCalculationMethod method) {
 		Converter converter = null;
 		if (data != null) {
 			if (data instanceof BinList) {
@@ -175,7 +175,7 @@ public class ConverterFactory {
 	 * @param data	the data to convert
 	 * @return		the {@link LayerType} available for the given data, null otherwise
 	 */
-	public static LayerType[] getLayerTypes (GenomicDataList<?> data) {
+	public static LayerType[] getLayerTypes (ImmutableGenomicDataList<?> data) {
 		LayerType[] layerTypes = null;
 		if (data instanceof BinList) {
 			layerTypes = getBinLayerType();

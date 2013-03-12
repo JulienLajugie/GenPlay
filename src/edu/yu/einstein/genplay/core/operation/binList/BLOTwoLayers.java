@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -31,9 +31,9 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationTwoLayersMethod;
-import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.ListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.ImmutableGenomicDataList;
 import edu.yu.einstein.genplay.exception.exceptions.BinListDifferentWindowSizeException;
 
 
@@ -43,12 +43,12 @@ import edu.yu.einstein.genplay.exception.exceptions.BinListDifferentWindowSizeEx
  * @author Julien Lajugie
  * @version 0.1
  */
-public class BLOTwoLayers implements Operation<GenomicDataList<?>> {
+public class BLOTwoLayers implements Operation<ImmutableGenomicDataList<?>> {
 
-	private final BinList 					binList1;		// first binlist to add 
+	private final BinList 					binList1;		// first binlist to add
 	private final BinList 					binList2; 		// second binlist to add
 	private final DataPrecision 			precision;		// precision of the result list
-	private ScoreCalculationTwoLayersMethod 	scm;			// method of calculation for the score 
+	private final ScoreCalculationTwoLayersMethod 	scm;			// method of calculation for the score
 	private boolean							stopped = false;// true if the operation must be stopped
 
 
@@ -100,7 +100,7 @@ public class BLOTwoLayers implements Operation<GenomicDataList<?>> {
 
 					if (!firstLayerIsEmpty && !secondLayerIsEmpty) {
 						resultList = ListFactory.createList(precision, currentList1.size());
-						for (int j = 0; j < currentList1.size() && !stopped; j++) {
+						for (int j = 0; (j < currentList1.size()) && !stopped; j++) {
 							if (j < currentList2.size()) {
 								// we add the bins of the two binlists
 								resultList.set(j, getScore(currentList1.get(j), currentList2.get(j)));
@@ -115,11 +115,11 @@ public class BLOTwoLayers implements Operation<GenomicDataList<?>> {
 						} else if (firstLayerIsEmpty & !secondLayerIsEmpty) {
 							currentList = currentList2;
 						}
-						
+
 						if (currentList != null) {
 							resultList = ListFactory.createList(precision, currentList.size());
-							if (scm == ScoreCalculationTwoLayersMethod.ADDITION || scm == ScoreCalculationTwoLayersMethod.MAXIMUM) {
-								for (int j = 0; j < currentList.size() && !stopped; j++) {
+							if ((scm == ScoreCalculationTwoLayersMethod.ADDITION) || (scm == ScoreCalculationTwoLayersMethod.MAXIMUM)) {
+								for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 									resultList.set(j, currentList.get(j));
 								}
 							} else if (scm == ScoreCalculationTwoLayersMethod.SUBTRACTION) {
@@ -127,21 +127,21 @@ public class BLOTwoLayers implements Operation<GenomicDataList<?>> {
 								if (firstLayerIsEmpty) {
 									factor = -1;
 								}
-								for (int j = 0; j < currentList.size() && !stopped; j++) {
+								for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 									resultList.set(j, factor*currentList.get(j));
 								}
-							} else if (scm == ScoreCalculationTwoLayersMethod.MULTIPLICATION || scm == ScoreCalculationTwoLayersMethod.DIVISION || scm == ScoreCalculationTwoLayersMethod.MINIMUM) {
-								for (int j = 0; j < currentList.size() && !stopped; j++) {
+							} else if ((scm == ScoreCalculationTwoLayersMethod.MULTIPLICATION) || (scm == ScoreCalculationTwoLayersMethod.DIVISION) || (scm == ScoreCalculationTwoLayersMethod.MINIMUM)) {
+								for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 									resultList.set(j, 0d);
 								}
 							} else if (scm == ScoreCalculationTwoLayersMethod.AVERAGE) {
-								for (int j = 0; j < currentList.size() && !stopped; j++) {
+								for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 									resultList.set(j, currentList.get(j) / 2);
 								}
 							}
 						}
 					}
-					
+
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
 					return resultList;
@@ -224,7 +224,7 @@ public class BLOTwoLayers implements Operation<GenomicDataList<?>> {
 
 
 	private double division(double a, double b) {
-		if (a != 0.0 && b != 0.0) {
+		if ((a != 0.0) && (b != 0.0)) {
 			return a / b;
 		} else {
 			return 0.0;
@@ -249,6 +249,6 @@ public class BLOTwoLayers implements Operation<GenomicDataList<?>> {
 
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }

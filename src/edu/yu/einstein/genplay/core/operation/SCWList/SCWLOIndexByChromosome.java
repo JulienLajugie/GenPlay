@@ -73,7 +73,7 @@ public class SCWLOIndexByChromosome implements Operation<ScoredChromosomeWindowL
 		// We calculate the difference between the greatest and the smallest scores
 		final double newDistance = newMax - newMin;
 		for (short i = 0; i < scwList.size(); i++) {
-			final List<ScoredChromosomeWindow> currentList = scwList.get(i);
+			final List<ScoredChromosomeWindow> currentList = scwList.getView(i);
 
 			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
 				@Override
@@ -167,6 +167,6 @@ public class SCWLOIndexByChromosome implements Operation<ScoredChromosomeWindowL
 
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }

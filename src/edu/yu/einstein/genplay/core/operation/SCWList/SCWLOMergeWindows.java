@@ -44,7 +44,7 @@ public class SCWLOMergeWindows implements Operation<ScoredChromosomeWindowList> 
 	private final ScoredChromosomeWindowList 	scwList;		// input list
 	private boolean								stopped = false;// true if the operation must be stopped
 
-	
+
 	/**
 	 * Creates an instance of {@link SCWLOMergeWindows}
 	 * @param scwList {@link ScoredChromosomeWindowList} with windows to merge
@@ -52,7 +52,7 @@ public class SCWLOMergeWindows implements Operation<ScoredChromosomeWindowList> 
 	public SCWLOMergeWindows(ScoredChromosomeWindowList scwList) {
 		this.scwList = scwList;
 	}
-	
+
 
 	@Override
 	public void stop() {
@@ -79,7 +79,7 @@ public class SCWLOMergeWindows implements Operation<ScoredChromosomeWindowList> 
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
 
 		for (short i = 0; i < scwList.size(); i++) {
-			final List<ScoredChromosomeWindow> currentList = scwList.get(i);
+			final List<ScoredChromosomeWindow> currentList = scwList.getView(i);
 
 			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
 				@Override
@@ -89,9 +89,9 @@ public class SCWLOMergeWindows implements Operation<ScoredChromosomeWindowList> 
 						ScoredChromosomeWindow windowToAdd = currentList.get(0).deepClone();
 						for (int j = 1; (j < currentList.size()) && !stopped; j++) {
 							ScoredChromosomeWindow currentWindow = currentList.get(j);
-							if ((currentWindow.getStart() <= windowToAdd.getStop()) && 
+							if ((currentWindow.getStart() <= windowToAdd.getStop()) &&
 									(currentWindow.getStop() > windowToAdd.getStop())) {
-									windowToAdd.setStop(currentWindow.getStop());
+								windowToAdd.setStop(currentWindow.getStop());
 							} else {
 								resultList.add(windowToAdd);
 								windowToAdd = currentWindow;

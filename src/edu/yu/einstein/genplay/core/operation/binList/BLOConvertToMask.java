@@ -53,7 +53,7 @@ public class BLOConvertToMask implements Operation<ScoredChromosomeWindowList> {
 	 * @param scwList input mask list
 	 */
 	public BLOConvertToMask(BinList scwList) {
-		this.cwList = scwList;
+		cwList = scwList;
 	}
 
 
@@ -136,6 +136,6 @@ public class BLOConvertToMask implements Operation<ScoredChromosomeWindowList> {
 
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }

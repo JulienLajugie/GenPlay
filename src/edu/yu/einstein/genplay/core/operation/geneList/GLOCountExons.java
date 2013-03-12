@@ -66,8 +66,8 @@ public class GLOCountExons implements Operation<Long> {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Long>> threadList = new ArrayList<Callable<Long>>();
 		for (int i = 0; i < geneList.size(); i++) {
-			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (geneList.get(i) != null)) {
-				final List<Gene> currentList = geneList.get(i);
+			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (geneList.getView(i) != null)) {
+				final List<Gene> currentList = geneList.getView(i);
 				Callable<Long> currentThread = new Callable<Long>() {
 					@Override
 					public Long call() throws Exception {

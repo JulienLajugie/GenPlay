@@ -42,11 +42,11 @@ import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
-import edu.yu.einstein.genplay.dataStructure.list.GenomicDataArrayList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
-import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneListFactory;
+import edu.yu.einstein.genplay.dataStructure.list.geneList.SimpleGeneList;
+import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.GenomicDataArrayList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
@@ -215,8 +215,9 @@ public class DASConnector {
 				}
 			}
 		}
-		return GeneListFactory.createGeneArrayList(resultList);
+		return new SimpleGeneList(resultList, null, null);
 	}
+
 
 	/**
 	 * Retrieves a list of genes from a specified Data Source and a specified DAS Type and a specified Data Range
@@ -288,7 +289,7 @@ public class DASConnector {
 				}
 			}
 		}
-		return GeneListFactory.createGeneArrayList(resultList);
+		return new SimpleGeneList(resultList, null, null);
 	}
 
 

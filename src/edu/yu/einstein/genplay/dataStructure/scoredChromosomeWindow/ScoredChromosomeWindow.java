@@ -30,11 +30,11 @@ import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
  */
 public interface ScoredChromosomeWindow extends ChromosomeWindow {
 
-	
+
 	@Override
 	public ScoredChromosomeWindow deepClone();
-	
-	
+
+
 	/**
 	 * @return the score of the window
 	 */
@@ -46,5 +46,4 @@ public interface ScoredChromosomeWindow extends ChromosomeWindow {
 	 * @param score	the score
 	 */
 	public void setScore (double score);
-
 }

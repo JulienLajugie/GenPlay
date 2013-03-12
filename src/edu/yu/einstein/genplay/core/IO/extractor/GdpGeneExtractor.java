@@ -32,11 +32,11 @@ import edu.yu.einstein.genplay.core.generator.GeneListGenerator;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
-import edu.yu.einstein.genplay.dataStructure.list.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneListFactory;
+import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.GenomicDataArrayList;
+import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.GenomicDataList;
 import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 import edu.yu.einstein.genplay.util.Utils;
@@ -196,7 +196,7 @@ public final class GdpGeneExtractor extends TextFileExtractor implements Seriali
 
 	@Override
 	public GeneList toGeneList() throws InvalidChromosomeException, InterruptedException, ExecutionException {
-		return GeneListFactory.createGeneArrayList(nameList, strandList, startList, stopList, null, null, null, exonStartsList, exonStopsList, exonScoresList, geneDBURL, geneScoreType);
+		return GeneListFactory.createGeneList(nameList, strandList, startList, stopList, null, null, null, exonStartsList, exonStopsList, exonScoresList, geneDBURL, geneScoreType);
 	}
 
 }

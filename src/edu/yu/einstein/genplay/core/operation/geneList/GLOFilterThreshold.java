@@ -31,7 +31,7 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
-import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneListFactory;
+import edu.yu.einstein.genplay.dataStructure.list.geneList.SimpleGeneList;
 
 
 /**
@@ -68,7 +68,7 @@ public class GLOFilterThreshold implements Operation<GeneList> {
 		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();
 
 		for(short i = 0; i < geneList.size(); i++) {
-			final List<Gene> currentList = geneList.get(i);
+			final List<Gene> currentList = geneList.getView(i);
 			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {
 				@Override
 				public List<Gene> call() throws Exception {
@@ -78,9 +78,9 @@ public class GLOFilterThreshold implements Operation<GeneList> {
 					List<Gene> resultList = new ArrayList<Gene>();
 					for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 						Gene currentGene = currentList.get(j);
-						if ((currentGene.getGeneRPKM() != null)) {
+						if ((currentGene.getScore() != Double.NaN)) {
 							Gene geneToAdd = null;
-							if (currentGene.getGeneRPKM() > highThreshold) {
+							if (currentGene.getScore() > highThreshold) {
 								// if the score is greater than the high threshold
 								if (isSaturation) {
 									// set the value to high threshold (saturation)
@@ -89,7 +89,7 @@ public class GLOFilterThreshold implements Operation<GeneList> {
 										geneToAdd.getExonScores()[k] = highThreshold;
 									}
 								}
-							} else if (currentGene.getGeneRPKM() < lowThreshold) {
+							} else if (currentGene.getScore() < lowThreshold) {
 								// if the score is smaller than the low threshold
 								if (isSaturation) {
 									// set the value to low threshold (saturation)
@@ -118,7 +118,7 @@ public class GLOFilterThreshold implements Operation<GeneList> {
 		if (result == null) {
 			return null;
 		} else {
-			return GeneListFactory.createGeneArrayList(result, geneList.getGeneDBURL(), geneList.getGeneScoreType());
+			return new SimpleGeneList(result, geneList.getGeneScoreType(), geneList.getGeneDBURL());
 		}
 	}
 

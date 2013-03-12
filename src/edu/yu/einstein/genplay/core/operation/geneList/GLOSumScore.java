@@ -65,8 +65,8 @@ public class GLOSumScore implements Operation<Double> {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Double>> threadList = new ArrayList<Callable<Double>>();
 		for (int i = 0; i < geneList.size(); i++) {
-			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (geneList.get(i) != null)) {
-				final List<Gene> currentList = geneList.get(i);
+			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (geneList.getView(i) != null)) {
+				final List<Gene> currentList = geneList.getView(i);
 
 				Callable<Double> currentThread = new Callable<Double>() {
 					@Override
@@ -76,7 +76,7 @@ public class GLOSumScore implements Operation<Double> {
 						for (int i = 0; (i < currentList.size()) && !stopped; i++) {
 							Gene currentGene = currentList.get(i);
 							if ((currentGene != null) && (currentGene.getExonScores() != null)) {
-								for (Double currentScore: currentGene.getExonScores()) {
+								for (double currentScore: currentGene.getExonScores()) {
 									if (currentScore != 0) {
 										sum += currentScore;
 									}
@@ -126,6 +126,6 @@ public class GLOSumScore implements Operation<Double> {
 
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }

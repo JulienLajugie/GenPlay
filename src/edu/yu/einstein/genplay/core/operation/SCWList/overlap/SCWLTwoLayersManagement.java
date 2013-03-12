@@ -29,7 +29,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationTwoLayersMethod;
-import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.ImmutableGenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
@@ -47,8 +47,8 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 public class SCWLTwoLayersManagement implements Serializable, Stoppable {
 
 	private static final long serialVersionUID = -4066526880193456101L;
-	protected 	final 	ProjectChromosome 				projectChromosome;	//ChromosomeManager
-	private 	final 	List<GenomicDataList<?>> 			scwList;		//list containing originals lists
+	protected 	final 	ProjectChromosome 					projectChromosome;	//ChromosomeManager
+	private 	final 	List<ImmutableGenomicDataList<?>> 	scwList;			//list containing originals lists
 	private 	final 	List<SCWLTwoLayersEngine>			twoLayersEngineList;
 
 	/**
@@ -58,16 +58,16 @@ public class SCWLTwoLayersManagement implements Serializable, Stoppable {
 	 * @param list2	second layer
 	 * @param scm		operation
 	 */
-	public SCWLTwoLayersManagement (	GenomicDataList<?> list1,
-			GenomicDataList<?> list2,
+	public SCWLTwoLayersManagement (	ImmutableGenomicDataList<?> list1,
+			ImmutableGenomicDataList<?> list2,
 			ScoreCalculationTwoLayersMethod scm) {
-		this.projectChromosome = ProjectManager.getInstance().getProjectChromosome();
-		this.scwList = new ArrayList<GenomicDataList<?>>();
-		this.scwList.add(list1);
-		this.scwList.add(list2);
-		this.twoLayersEngineList = new ArrayList<SCWLTwoLayersEngine>();
+		projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		scwList = new ArrayList<ImmutableGenomicDataList<?>>();
+		scwList.add(list1);
+		scwList.add(list2);
+		twoLayersEngineList = new ArrayList<SCWLTwoLayersEngine>();
 		for (int i = 0; i < projectChromosome.size(); i++) {
-			this.twoLayersEngineList.add(new SCWLTwoLayersEngine(scm));
+			twoLayersEngineList.add(new SCWLTwoLayersEngine(scm));
 		}
 	}
 
@@ -76,7 +76,7 @@ public class SCWLTwoLayersManagement implements Serializable, Stoppable {
 	 * @param chromosome the chromosome
 	 */
 	public void run(Chromosome chromosome) {
-		this.twoLayersEngineList.get(projectChromosome.getIndex(chromosome)).init(scwList.get(0), scwList.get(1), chromosome);
+		twoLayersEngineList.get(projectChromosome.getIndex(chromosome)).init(scwList.get(0), scwList.get(1), chromosome);
 	}
 
 	/**
@@ -84,7 +84,7 @@ public class SCWLTwoLayersManagement implements Serializable, Stoppable {
 	 * @return the new list of scored chromosome window
 	 */
 	public List<ScoredChromosomeWindow> getList(Chromosome chromosome) {
-		return this.twoLayersEngineList.get(projectChromosome.getIndex(chromosome)).getList();
+		return twoLayersEngineList.get(projectChromosome.getIndex(chromosome)).getList();
 	}
 
 	@Override

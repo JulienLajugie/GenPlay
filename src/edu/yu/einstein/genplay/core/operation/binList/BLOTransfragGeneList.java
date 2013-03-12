@@ -37,7 +37,7 @@ import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
-import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneListFactory;
+import edu.yu.einstein.genplay.dataStructure.list.geneList.SimpleGeneList;
 import edu.yu.einstein.genplay.util.DoubleLists;
 
 
@@ -150,7 +150,7 @@ public class BLOTransfragGeneList implements Operation<GeneList> {
 		}
 		List<List<Gene>> result = op.startPool(threadList);
 		if (result != null) {
-			GeneList resultList = GeneListFactory.createGeneArrayList(result);
+			GeneList resultList = new SimpleGeneList(result, null, null);
 			return resultList;
 		} else {
 			return null;

@@ -69,7 +69,7 @@ public class SCWLONormalizeStandardScore implements Operation<ScoredChromosomeWi
 		// creates collection of thread for the operation pool
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
 		for (short i = 0; i < scwList.size(); i++) {
-			final List<ScoredChromosomeWindow> currentList = scwList.get(i);
+			final List<ScoredChromosomeWindow> currentList = scwList.getView(i);
 
 			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
 				@Override
@@ -125,6 +125,6 @@ public class SCWLONormalizeStandardScore implements Operation<ScoredChromosomeWi
 
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }

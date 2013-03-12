@@ -35,7 +35,7 @@ import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
-import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneListFactory;
+import edu.yu.einstein.genplay.dataStructure.list.geneList.SimpleGeneList;
 
 
 
@@ -79,7 +79,7 @@ public class GLOScoreFromBinList implements Operation<GeneList> {
 		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();
 		for(int i = 0; i < geneList.size(); i++) {
 			final List<Double> currentBinList = binList.get(i);
-			final List<Gene> currentGeneList = geneList.get(i);
+			final List<Gene> currentGeneList = geneList.getView(i);
 			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {
 				@Override
 				public List<Gene> call() throws Exception {
@@ -155,7 +155,7 @@ public class GLOScoreFromBinList implements Operation<GeneList> {
 		if (result == null) {
 			return null;
 		} else {
-			return GeneListFactory.createGeneArrayList(result, geneList.getGeneDBURL(), geneScoreType);
+			return new SimpleGeneList(result, geneScoreType, geneList.getGeneDBURL());
 		}
 	}
 

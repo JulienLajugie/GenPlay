@@ -22,10 +22,10 @@
 package edu.yu.einstein.genplay.core.converter.geneListConverter;
 
 import edu.yu.einstein.genplay.core.converter.Converter;
-import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.MaskSCWListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.ImmutableGenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.MaskChromosomeWindow;
 
 
@@ -38,7 +38,7 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.MaskChromoso
 public class GeneListToMaskList implements Converter {
 
 	private final GeneList 						list; 			// The input list.
-	private GenomicDataList<?> 					result;			// The output list.
+	private ImmutableGenomicDataList<?>			result;			// The output list.
 
 
 	/**
@@ -69,7 +69,7 @@ public class GeneListToMaskList implements Converter {
 
 
 	@Override
-	public GenomicDataList<?> getList() {
+	public ImmutableGenomicDataList<?> getList() {
 		return result;
 	}
 }

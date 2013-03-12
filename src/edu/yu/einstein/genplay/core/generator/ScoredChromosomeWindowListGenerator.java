@@ -24,8 +24,8 @@ package edu.yu.einstein.genplay.core.generator;
 import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.dataStructure.list.GenomicDataArrayList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.GenomicDataArrayList;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 
 

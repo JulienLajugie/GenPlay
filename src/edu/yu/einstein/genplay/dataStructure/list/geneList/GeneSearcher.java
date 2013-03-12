@@ -24,7 +24,6 @@ package edu.yu.einstein.genplay.dataStructure.list.geneList;
 import java.io.Serializable;
 
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
-import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 
 
 
@@ -36,7 +35,7 @@ import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 public final class GeneSearcher implements Serializable {
 
 	private static final long serialVersionUID = 2905806587397044885L;			// generated ID
-	private final GenomicDataList<Gene> 	geneList;						// GeneList where to search the genes
+	private final GeneList 						geneList;						// GeneList where to search the genes
 	private String 								lastSearchedGeneName = null;	// name of the last searched gene
 	private Gene 								lastGeneFound = null;			// last found gene
 	private int 								lastFoundChromoIndex;			// index of the chromosome of the last found gene
@@ -49,7 +48,7 @@ public final class GeneSearcher implements Serializable {
 	 * Creates an instance of {@link GeneSearcher}
 	 * @param geneList {@link GeneList} where to search the genes
 	 */
-	public GeneSearcher(GenomicDataList<Gene> geneList) {
+	public GeneSearcher(GeneList geneList) {
 		super();
 		this.geneList = geneList;
 	}
@@ -241,7 +240,7 @@ public final class GeneSearcher implements Serializable {
 
 		int i = lastFoundChromoIndex;
 		int j = lastFoundGeneIndex + 1;
-		if (j < geneList.get(i).size()) {
+		if (j < geneList.getView(i).size()) {
 			lastFoundChromoIndex = i;
 			lastFoundGeneIndex = j;
 			lastGeneFound = geneList.get(i, j);
@@ -295,8 +294,8 @@ public final class GeneSearcher implements Serializable {
 	 * @return a new result for the search with the new parameter. Null if nothing found
 	 */
 	public Gene setWholeWord(boolean wholeWorld) {
-		if (this.wholeWord != wholeWorld) {
-			this.wholeWord = wholeWorld;
+		if (wholeWord != wholeWorld) {
+			wholeWord = wholeWorld;
 			if (isASearchedGene(lastGeneFound, lastSearchedGeneName)) {
 				return lastGeneFound;
 			} else {

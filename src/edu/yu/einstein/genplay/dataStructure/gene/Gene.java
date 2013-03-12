@@ -52,14 +52,14 @@ public interface Gene extends Serializable, Cloneable, ScoredChromosomeWindow {
 	 */
 	public void addExon(int exonStart, int exonStop, double exonScore);
 
-	
+
 	/**
 	 * @return a deep copy of the object
 	 */
 	@Override
 	public Gene deepClone();
-	
-	
+
+
 	/**
 	 * @param aName Name of a chromosome
 	 * @return True if <i>aName</i> equals the name of the chromosome. False otherwise.
@@ -89,12 +89,6 @@ public interface Gene extends Serializable, Cloneable, ScoredChromosomeWindow {
 	 * @return the exonStops
 	 */
 	public int[] getExonStops();
-
-
-	/**
-	 * @return the RPKM value of a gene calculated from the RPKM of its exons
-	 */
-	public Double getGeneRPKM();
 
 
 	/**

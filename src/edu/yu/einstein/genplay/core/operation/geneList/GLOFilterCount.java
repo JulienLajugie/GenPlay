@@ -27,7 +27,6 @@ import java.util.List;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
-import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneListFactory;
 
 
 /**
@@ -70,15 +69,15 @@ public class GLOFilterCount implements Operation<GeneList> {
 
 		int totalLenght = new GLOCountNonNullGenes(geneList,selectedChromo).compute().intValue();
 		if (totalLenght == 0) {
-			return GeneListFactory.createGeneArrayList(geneList, geneList.getGeneDBURL(), geneList.getGeneScoreType());
+			return geneList;
 		}
 		double[] allScores = new double[totalLenght];
 		int i = 0;
 		for (List<Gene> currentList: geneList) {
 			if (currentList != null) {
 				for (int j = 0; (j < currentList.size()) && !stopped; j++) {
-					Double currentScore = currentList.get(j).getGeneRPKM();
-					if ((currentScore != null) && (currentScore != 0)) {
+					double currentScore = currentList.get(j).getScore();
+					if ((currentScore != Double.NaN) && (currentScore != 0)) {
 						allScores[i] = currentScore;
 						i++;
 					}

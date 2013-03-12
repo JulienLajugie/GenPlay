@@ -33,7 +33,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
-import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneListFactory;
+import edu.yu.einstein.genplay.dataStructure.list.geneList.SimpleGeneList;
 
 
 
@@ -112,7 +112,7 @@ public class GLOExtractIntervals implements Operation<GeneList> {
 		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();
 
 		for(short i = 0; i < geneList.size(); i++) {
-			final List<Gene> currentList = geneList.get(i);
+			final List<Gene> currentList = geneList.getView(i);
 			final int chromoLength = ProjectManager.getInstance().getProjectChromosome().get(i).getLength();
 
 			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {
@@ -256,7 +256,7 @@ public class GLOExtractIntervals implements Operation<GeneList> {
 		if (result == null) {
 			return null;
 		} else {
-			return GeneListFactory.createGeneArrayList(result, geneList.getGeneDBURL(), geneList.getGeneScoreType());
+			return new SimpleGeneList(result, geneList.getGeneScoreType(), geneList.getGeneDBURL());
 		}
 	}
 

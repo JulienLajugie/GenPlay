@@ -77,7 +77,7 @@ public class SCWLOIndex implements Operation<ScoredChromosomeWindowList> {
 		if (oldDistance != 0) {
 			final double newDistance = newMax - newMin;
 			for (short i = 0; i < scwList.size(); i++) {
-				final List<ScoredChromosomeWindow> currentList = scwList.get(i);
+				final List<ScoredChromosomeWindow> currentList = scwList.getView(i);
 
 				Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
 					@Override
@@ -132,6 +132,6 @@ public class SCWLOIndex implements Operation<ScoredChromosomeWindowList> {
 
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }

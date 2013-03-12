@@ -62,15 +62,15 @@ public class SCWLOMin implements Operation<Double> {
 	public Double compute() throws Exception {
 		// if the operation has to be calculated on all chromosome
 		// and if it has already been calculated we don't do the calculation again
-		if ((Utils.allChromosomeSelected(chromoList)) && (scwList.getMinimum() != null)) {
+		if (Utils.allChromosomeSelected(chromoList)) {
 			return scwList.getMinimum();
 		}
 
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Double>> threadList = new ArrayList<Callable<Double>>();
 		for (int i = 0; i < scwList.size(); i++) {
-			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (scwList.get(i) != null)) {
-				final List<ScoredChromosomeWindow> currentList = scwList.get(i);
+			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (scwList.getView(i) != null)) {
+				final List<ScoredChromosomeWindow> currentList = scwList.getView(i);
 
 				Callable<Double> currentThread = new Callable<Double>() {
 					@Override
@@ -124,6 +124,6 @@ public class SCWLOMin implements Operation<Double> {
 
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }

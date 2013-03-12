@@ -22,26 +22,17 @@
 package edu.yu.einstein.genplay.dataStructure.list.geneList;
 
 import java.io.Serializable;
-import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
-import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.ImmutableGenomicDataList;
 
 
 /**
- * A list of {@link Gene}
+ * Immutable list of {@link Gene} organized by chromosome.
  * @author Julien Lajugie
- * @version 0.1
  */
-public interface GeneList extends GenomicDataList<Gene>, Serializable {
-
-
-	/**
-	 * Performs a deep clone of the current GeneList
-	 * @return a new GeneList that is a deep copy of this one
-	 */
-	public GeneList deepClone();
+public interface GeneList extends ImmutableGenomicDataList<Gene>, Serializable {
 
 
 	/**
@@ -60,26 +51,4 @@ public interface GeneList extends GenomicDataList<Gene>, Serializable {
 	 * @return the {@link GeneSearcher} object that handles gene searches
 	 */
 	public GeneSearcher getGeneSearcher();
-
-
-	/**
-	 * Sets the URL of the gene database that contains information about the genes of this list.
-	 * @param geneDBURL URL of the database containing information about the genes of this list
-	 */
-	public void setGeneDBURL(String geneDBURL);
-
-
-	/**
-	 * Sets the type of the scores of the genes and exons of this list (RPKM, max, sum)
-	 * @param geneScoreType
-	 */
-	public void setGeneScoreType(GeneScoreType geneScoreType);
-
-
-	/**
-	 * For each chromosome, sorts the genes by position.
-	 * @throws ExecutionException
-	 * @throws InterruptedException
-	 */
-	public void sort() throws InterruptedException, ExecutionException;
 }

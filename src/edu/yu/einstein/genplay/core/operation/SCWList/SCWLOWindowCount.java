@@ -64,8 +64,8 @@ public class SCWLOWindowCount implements Operation<Long>{
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Long>> threadList = new ArrayList<Callable<Long>>();
 		for (int i = 0; i < scwList.size(); i++) {
-			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (scwList.get(i) != null) && !stopped) {
-				final List<ScoredChromosomeWindow> currentList = scwList.get(i);
+			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (scwList.getView(i) != null) && !stopped) {
+				final List<ScoredChromosomeWindow> currentList = scwList.getView(i);
 
 				Callable<Long> currentThread = new Callable<Long>() {
 					@Override
@@ -114,6 +114,6 @@ public class SCWLOWindowCount implements Operation<Long>{
 
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }

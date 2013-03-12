@@ -108,7 +108,7 @@ public class GeneListScaler implements DataScalerForTrackDisplay<GeneList, List<
 	protected void scaleChromosome() {
 		List<Gene> currentList;
 		try {
-			currentList = dataToScale.get(scaledChromosome);
+			currentList = dataToScale.getView(scaledChromosome);
 		} catch (InvalidChromosomeException e) {
 			e.printStackTrace();
 			scaledGeneList = null;

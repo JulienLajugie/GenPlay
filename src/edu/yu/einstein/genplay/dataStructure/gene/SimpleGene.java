@@ -258,25 +258,6 @@ public final class SimpleGene implements Gene {
 
 
 	/**
-	 * @return the RPKM value of a gene calculated from the RPKM of its exons
-	 */
-	@Override
-	public Double getGeneRPKM() {
-		if ((getExonScores() == null) || (getExonScores().length == 0)) {
-			return null;
-		} else {
-			int exonicLength = 0;
-			double scoreByLengthSum = 0;
-			for (int i = 0; i < getExonScores().length; i++) {
-				exonicLength += exonStops[i] - exonStarts[i];
-				scoreByLengthSum += exonScores[i] * (exonStops[i] - exonStarts[i]);
-			}
-			return scoreByLengthSum / exonicLength;
-		}
-	}
-
-
-	/**
 	 * @return the middle position of the genes
 	 */
 	@Override

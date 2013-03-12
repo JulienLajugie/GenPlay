@@ -38,7 +38,7 @@ import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
-import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneListFactory;
+import edu.yu.einstein.genplay.dataStructure.list.geneList.SimpleGeneList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.util.SCWLists;
 
@@ -81,7 +81,7 @@ public class SCWLOTransfragGeneList implements Operation<GeneList> {
 		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();
 
 		for (short i = 0; i < scwList.size(); i++) {
-			final List<ScoredChromosomeWindow> currentList = scwList.get(i);
+			final List<ScoredChromosomeWindow> currentList = scwList.getView(i);
 			final String chromosomeName = projectChromosome.get(i).getName();
 			final int chromosomeLength = projectChromosome.get(i).getLength();
 			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {
@@ -143,7 +143,7 @@ public class SCWLOTransfragGeneList implements Operation<GeneList> {
 		}
 		List<List<Gene>> result = op.startPool(threadList);
 		if (result != null) {
-			GeneList resultList = GeneListFactory.createGeneArrayList(result);
+			GeneList resultList = new SimpleGeneList(result, null, null);
 			return resultList;
 		} else {
 			return null;

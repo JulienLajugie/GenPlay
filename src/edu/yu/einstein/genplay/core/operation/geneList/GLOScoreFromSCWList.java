@@ -34,7 +34,7 @@ import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
-import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneListFactory;
+import edu.yu.einstein.genplay.dataStructure.list.geneList.SimpleGeneList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.util.Utils;
 
@@ -77,8 +77,8 @@ public class GLOScoreFromSCWList implements Operation<GeneList> {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();
 		for(int i = 0; i < geneList.size(); i++) {
-			final List<ScoredChromosomeWindow> currentSCWList = scwList.get(i);
-			final List<Gene> currentGeneList = geneList.get(i);
+			final List<ScoredChromosomeWindow> currentSCWList = scwList.getView(i);
+			final List<Gene> currentGeneList = geneList.getView(i);
 			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {
 				@Override
 				public List<Gene> call() throws Exception {
@@ -156,7 +156,7 @@ public class GLOScoreFromSCWList implements Operation<GeneList> {
 		if (result == null) {
 			return null;
 		} else {
-			return GeneListFactory.createGeneArrayList(result, geneList.getGeneDBURL(), geneScoreType);
+			return new SimpleGeneList(result, geneScoreType, geneList.getGeneDBURL());
 		}
 	}
 

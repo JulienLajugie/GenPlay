@@ -19,13 +19,14 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.list;
+package edu.yu.einstein.genplay.dataStructure.list.genomicDataList;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -276,5 +277,17 @@ public class GenomicDataArrayList<T> implements List<List<T>>, Cloneable, Serial
 	@Override
 	public <U> U[] toArray(U[] a) {
 		return dataList.toArray(a);
+	}
+
+
+	@Override
+	public List<T> getView(Chromosome chromosome) throws InvalidChromosomeException {
+		return Collections.unmodifiableList(get(chromosome));
+	}
+
+
+	@Override
+	public List<T> getView(int chromosomeIndex) {
+		return Collections.unmodifiableList(get(chromosomeIndex));
 	}
 }

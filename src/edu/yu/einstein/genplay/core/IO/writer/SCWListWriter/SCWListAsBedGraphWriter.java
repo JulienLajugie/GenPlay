@@ -71,7 +71,7 @@ public class SCWListAsBedGraphWriter extends SCWListWriter implements Stoppable 
 			writer.newLine();
 			// print the data
 			for(Chromosome currentChromosome: projectChromosome) {
-				List<ScoredChromosomeWindow> currentList = data.get(currentChromosome);
+				List<ScoredChromosomeWindow> currentList = data.getView(currentChromosome);
 				int currentChromosomeSize = currentChromosome.getLength();
 				if (currentList != null) {
 					for (ScoredChromosomeWindow currentWindow: currentList){

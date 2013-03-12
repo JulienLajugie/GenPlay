@@ -61,7 +61,7 @@ public class SCWLODivideConstant implements Operation<ScoredChromosomeWindowList
 	@Override
 	public ScoredChromosomeWindowList compute() throws Exception {
 		if (constant == 1) {
-			return scwList.deepClone();
+			return scwList;
 		} else if (constant == 0) {
 			throw new ArithmeticException("Division By Zero");
 		}
@@ -70,7 +70,7 @@ public class SCWLODivideConstant implements Operation<ScoredChromosomeWindowList
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
 
 		for (short i = 0; i < scwList.size(); i++) {
-			final List<ScoredChromosomeWindow> currentList = scwList.get(i);
+			final List<ScoredChromosomeWindow> currentList = scwList.getView(i);
 
 			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
 				@Override
@@ -123,6 +123,6 @@ public class SCWLODivideConstant implements Operation<ScoredChromosomeWindowList
 
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }

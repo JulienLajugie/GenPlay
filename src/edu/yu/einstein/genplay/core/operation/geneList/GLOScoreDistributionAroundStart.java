@@ -93,8 +93,8 @@ public class GLOScoreDistributionAroundStart implements Operation<double[][]> {
 
 		for (int i = 0; (i < geneList.size()) && !stopped; i++) {
 			final Chromosome currentChromo = ProjectManager.getInstance().getProjectChromosome().get(i);
-			if (((selectedChromosomes == null) || ((i < selectedChromosomes.length) && (selectedChromosomes[i]))) && (geneList.get(i) != null) && (binList.get(i) != null)) {
-				final List<Gene> currentGeneList = geneList.get(i);
+			if (((selectedChromosomes == null) || ((i < selectedChromosomes.length) && (selectedChromosomes[i]))) && (geneList.getView(i) != null) && (binList.get(i) != null)) {
+				final List<Gene> currentGeneList = geneList.getView(i);
 				Callable<double[]> currentThread = new Callable<double[]>() {
 					@Override
 					public double[] call() throws Exception {

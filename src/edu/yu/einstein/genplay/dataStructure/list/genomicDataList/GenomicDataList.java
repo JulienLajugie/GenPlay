@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.list;
+package edu.yu.einstein.genplay.dataStructure.list.genomicDataList;
 
 import java.io.Serializable;
 import java.util.List;
@@ -37,7 +37,7 @@ import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
  * @author Julien Lajugie
  * @version 0.1
  */
-public interface GenomicDataList<T> extends Cloneable, Serializable, List<List<T>> {
+public interface GenomicDataList<T> extends Serializable, List<List<T>>, ImmutableGenomicDataList<T> {
 
 
 	/**
@@ -55,23 +55,6 @@ public interface GenomicDataList<T> extends Cloneable, Serializable, List<List<T
 	 * @throws InvalidChromosomeException
 	 */
 	public List<T> get(Chromosome chromosome) throws InvalidChromosomeException;
-
-
-	/**
-	 * @param chromosome index of a chromosome
-	 * @param index
-	 * @return the data with the specified index on the specified chromosome
-	 * @throws InvalidChromosomeException
-	 */
-	public T get(Chromosome chromosome, int index) throws InvalidChromosomeException;
-
-
-	/**
-	 * @param chromosomeIndex index of a chromosome
-	 * @param elementIndex
-	 * @return the data with the specified index on the specified chromosome
-	 */
-	public T get(int chromosomeIndex, int elementIndex);
 
 
 	/**
@@ -101,19 +84,4 @@ public interface GenomicDataList<T> extends Cloneable, Serializable, List<List<T
 	 * @param element value to set
 	 */
 	public void set(int chromosomeIndex, int elementIndex, T element);
-
-
-	/**
-	 * @param index index of a chromosome
-	 * @return the size of the list for the specified chromosome
-	 */
-	public int size(int index);
-
-
-	/**
-	 * @param chromosome
-	 * @return the size of the list for a specified chromosome
-	 * @throws InvalidChromosomeException
-	 */
-	public int size(Chromosome chromosome) throws InvalidChromosomeException;
 }

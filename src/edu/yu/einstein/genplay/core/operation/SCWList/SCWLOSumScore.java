@@ -64,15 +64,15 @@ public class SCWLOSumScore  implements Operation<Double> {
 	public Double compute() throws InterruptedException, ExecutionException {
 		// if the sum has to be calculated on all chromosome
 		// and if it has already been calculated we don't do the calculation again
-		if ((Utils.allChromosomeSelected(chromoList)) && (inputList.getScoreSum() != null)) {
+		if (Utils.allChromosomeSelected(chromoList)) {
 			return inputList.getScoreSum();
 		}
 
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Double>> threadList = new ArrayList<Callable<Double>>();
 		for (int i = 0; i < inputList.size(); i++) {
-			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (inputList.get(i) != null)) {
-				final List<ScoredChromosomeWindow> currentList = inputList.get(i);
+			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (inputList.getView(i) != null)) {
+				final List<ScoredChromosomeWindow> currentList = inputList.getView(i);
 
 				Callable<Double> currentThread = new Callable<Double>() {
 					@Override
@@ -125,7 +125,7 @@ public class SCWLOSumScore  implements Operation<Double> {
 
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }
 

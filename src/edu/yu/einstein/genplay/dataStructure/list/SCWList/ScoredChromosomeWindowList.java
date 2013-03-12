@@ -21,12 +21,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.dataStructure.list.SCWList;
 
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
-import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.ImmutableGenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
@@ -34,52 +32,31 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
  * A {@link GenomicDataList} of {@link ScoredChromosomeWindow}
  * @author Julien Lajugie
  */
-public interface ScoredChromosomeWindowList extends List<List<ScoredChromosomeWindow>>, GenomicDataList<ScoredChromosomeWindow> {
-
-
-	/**
-	 * Computes the statistics for the list
-	 * @throws InterruptedException
-	 * @throws ExecutionException
-	 */
-	public void computeStatistics() throws InterruptedException, ExecutionException;
-
-
-	/**
-	 * Performs a deep clone of the current object
-	 * @return a new ScoredChromosomeWindowList
-	 */
-	public ScoredChromosomeWindowList deepClone();
+public interface ScoredChromosomeWindowList extends ImmutableGenomicDataList<ScoredChromosomeWindow> {
 
 
 	/**
 	 * @return the average score of the windows of the list
 	 */
-	public Double getAverage();
+	public double getAverage();
 
 
 	/**
 	 * @return the greatest score of the windows of the list list
 	 */
-	public Double getMaximum();
+	public double getMaximum();
 
 
 	/**
 	 * @return the smallest score of the windows of the list list
 	 */
-	public Double getMinimum();
+	public double getMinimum();
 
 
 	/**
 	 * @return the sum of the lengths (in bp) of none-null windows of the list
 	 */
-	public Long getNonNullLength();
-
-
-	/**
-	 * @return the sum of the scores of the windows of the list
-	 */
-	public Double getScoreSum();
+	public long getNonNullLength();
 
 
 	/**
@@ -91,9 +68,9 @@ public interface ScoredChromosomeWindowList extends List<List<ScoredChromosomeWi
 
 
 	/**
-	 * @return the standard deviation of the scores of the list
+	 * @return the sum of the scores of the windows of the list
 	 */
-	public Double getStandardDeviation();
+	public double getScoreSum();
 
 
 	/**
@@ -103,7 +80,7 @@ public interface ScoredChromosomeWindowList extends List<List<ScoredChromosomeWi
 
 
 	/**
-	 * Sort the list for each chromosome ordering items by window start positions
+	 * @return the standard deviation of the scores of the list
 	 */
-	public void sort();
+	public double getStandardDeviation();
 }

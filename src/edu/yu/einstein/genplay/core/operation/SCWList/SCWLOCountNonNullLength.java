@@ -64,15 +64,15 @@ public class SCWLOCountNonNullLength implements Operation<Long>{
 	public Long compute() throws InterruptedException, ExecutionException {
 		// if the operation has to be calculated on all chromosome
 		// and if it has already been calculated we don't do the calculation again
-		if ((Utils.allChromosomeSelected(chromoList)) && (scwList.getNonNullLength() != null)) {
+		if (Utils.allChromosomeSelected(chromoList)) {
 			return scwList.getNonNullLength();
 		}
 
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Long>> threadList = new ArrayList<Callable<Long>>();
 		for (int i = 0; i < scwList.size(); i++) {
-			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (scwList.get(i) != null)) {
-				final List<ScoredChromosomeWindow> currentList = scwList.get(i);
+			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (scwList.getView(i) != null)) {
+				final List<ScoredChromosomeWindow> currentList = scwList.getView(i);
 
 				Callable<Long> currentThread = new Callable<Long>() {
 					@Override

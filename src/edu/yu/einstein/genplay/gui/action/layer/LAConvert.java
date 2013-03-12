@@ -27,10 +27,11 @@ import edu.yu.einstein.genplay.core.converter.Converter;
 import edu.yu.einstein.genplay.core.converter.ConverterFactory;
 import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.ImmutableGenomicDataList;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.ConvertDialog;
@@ -50,7 +51,7 @@ import edu.yu.einstein.genplay.util.colors.Colors;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class LAConvert extends TrackListActionWorker<GenomicDataList<?>> {
+public class LAConvert extends TrackListActionWorker<ImmutableGenomicDataList<?>> {
 
 	private static final long serialVersionUID = 4027173438789911860L; 	// generated ID
 	private static final String 	ACTION_NAME = "Convert Layer";// action name
@@ -93,7 +94,7 @@ public class LAConvert extends TrackListActionWorker<GenomicDataList<?>> {
 
 
 	@Override
-	public GenomicDataList<?> processAction() {
+	public ImmutableGenomicDataList<?> processAction() {
 		selectedLayer = (Layer<?>) getValue("Layer");
 		ConvertDialog dialog = new ConvertDialog(selectedLayer);
 		if (dialog.showDialog(getRootPane()) == ConvertDialog.APPROVE_OPTION) {
@@ -127,7 +128,7 @@ public class LAConvert extends TrackListActionWorker<GenomicDataList<?>> {
 
 
 	@Override
-	protected void doAtTheEnd(GenomicDataList<?> actionResult) {
+	protected void doAtTheEnd(ImmutableGenomicDataList<?> actionResult) {
 		if (actionResult != null) {
 			Layer<?> newLayer = null;
 			if (layerType == LayerType.GENE_LAYER) {

@@ -35,8 +35,8 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
-import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.MaskChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
@@ -65,9 +65,7 @@ public class MaskSCWListFactory {
 			MaskChromosomeWindow currentMCW = new MaskChromosomeWindow(currentSCW);
 			scwList.add(scwReader.getCurrentChromosome(), currentMCW);
 		}
-		scwList.sort();
 		scwList = new SCWLOMergeWindows(scwList).compute();
-		scwList.computeStatistics();
 		return scwList;
 	}
 

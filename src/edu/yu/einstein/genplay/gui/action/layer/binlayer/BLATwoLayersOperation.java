@@ -29,9 +29,9 @@ import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOTwoLayers;
 import edu.yu.einstein.genplay.core.operation.binList.BLOTwoLayers;
 import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationTwoLayersMethod;
-import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.ImmutableGenomicDataList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
 import edu.yu.einstein.genplay.gui.dialog.trackChooser.TrackChooser;
@@ -50,7 +50,7 @@ import edu.yu.einstein.genplay.util.colors.Colors;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class BLATwoLayersOperation extends TrackListActionOperationWorker<GenomicDataList<?>> {
+public final class BLATwoLayersOperation extends TrackListActionOperationWorker<ImmutableGenomicDataList<?>> {
 
 	private static final long 				serialVersionUID = 4027173438789911860L; 		// generated ID
 	private static final String 			ACTION_NAME = "Two Layers Operation";			// action name
@@ -79,7 +79,7 @@ public final class BLATwoLayersOperation extends TrackListActionOperationWorker<
 
 
 	@Override
-	public Operation<GenomicDataList<?>> initializeOperation() {
+	public Operation<ImmutableGenomicDataList<?>> initializeOperation() {
 		selectedLayer = (BinLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
@@ -96,7 +96,7 @@ public final class BLATwoLayersOperation extends TrackListActionOperationWorker<
 						if (scm != null) {
 							if (isSCWList()) {
 								operation = new SCWLOTwoLayers(selectedLayer.getData(),
-										(GenomicDataList<?>)otherLayer.getData(),
+										(ImmutableGenomicDataList<?>)otherLayer.getData(),
 										scm);
 							} else {
 								DataPrecision precision = Utils.choosePrecision(getRootPane());
@@ -118,7 +118,7 @@ public final class BLATwoLayersOperation extends TrackListActionOperationWorker<
 
 
 	@Override
-	protected void doAtTheEnd(GenomicDataList<?> actionResult) {
+	protected void doAtTheEnd(ImmutableGenomicDataList<?> actionResult) {
 		if (actionResult != null) {
 			Layer<?> newLayer;
 			if (isSCWList()) {

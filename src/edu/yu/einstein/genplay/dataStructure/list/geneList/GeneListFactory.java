@@ -36,8 +36,9 @@ import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
-import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.GenomicDataArrayList;
+import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 
@@ -47,28 +48,28 @@ import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
  */
 public class GeneListFactory {
 
+
 	/**
-	 * Creates a {@link GeneList} from the data retrieved by the specified {@link GeneReader}
+	 * Creates a {@link GeneList} using {@link ArrayList} structures from the data retrieved by the specified {@link GeneReader}.
 	 * @param geneReader a {@link GeneReader}
 	 * @return a {@link GeneList}
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public static GeneList createGeneArrayList(GeneReader geneReader) throws InterruptedException, ExecutionException {
-		GeneList geneList = new GeneArrayList();
-		geneList.setGeneDBURL(geneReader.getGeneDBURL());
-		geneList.setGeneScoreType(geneReader.getGeneScoreType());
+	public static GeneList createGeneList(GeneReader geneReader) throws InterruptedException, ExecutionException {
+		GenomicDataList<Gene> geneList = new GenomicDataArrayList<Gene>();
 		Gene currentGene = null;
 		while ((currentGene = geneReader.readGene()) != null) {
 			geneList.add(currentGene.getChromosome(), currentGene);
 		}
-		geneList.sort();
-		return geneList;
+		String geneDBURL = geneReader.getGeneDBURL();
+		GeneScoreType geneScoreType = geneReader.getGeneScoreType();
+		return new SimpleGeneList(geneList, geneScoreType, geneDBURL);
 	}
 
 
 	/**
-	 * Creates an instance of {@link GeneList}
+	 * Creates an instance of {@link GeneList} using {@link ArrayList} structures.
 	 * @param nameList a list of gene names
 	 * @param strandList a list of {@link Strand}
 	 * @param startList a list of start positions
@@ -86,7 +87,7 @@ public class GeneListFactory {
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public static GeneList createGeneArrayList(final GenomicDataList<String> nameList, final GenomicDataList<Strand> strandList,
+	public static GeneList createGeneList(final GenomicDataList<String> nameList, final GenomicDataList<Strand> strandList,
 			final GenomicDataList<Integer> startList, final GenomicDataList<Integer> stopList,
 			final GenomicDataList<Double> scoreList, final GenomicDataList<Integer> UTR5BoundList,
 			final GenomicDataList<Integer> UTR3BoundList,final GenomicDataList<int[]> exonStartsList,
@@ -149,41 +150,7 @@ public class GeneListFactory {
 		List<List<Gene>> result = null;
 		// starts the pool
 		result = op.startPool(threadList);
-		return createGeneArrayList(result, geneDBURL, geneScoreType);
-	}
-
-
-	/**
-	 * Creates a {@link GeneList} containing the specified data.
-	 * @param data list of genes
-	 * @return a {@link GeneList}
-	 * @throws ExecutionException
-	 * @throws InterruptedException
-	 */
-	public static GeneList createGeneArrayList(List<? extends List<Gene>> data) throws InterruptedException, ExecutionException {
-		return createGeneArrayList(data, null, null);
-	}
-
-
-
-	/**
-	 * Creates a {@link GeneList} containing the specified data.
-	 * @param data list of genes
-	 * @param geneDBURL URL of the gene data base, can be null
-	 * @param geneScoreType  the type of the scores of the genes and exons of this list (RPKM, max, sum)
-	 * @return a {@link GeneList}
-	 * @throws ExecutionException
-	 * @throws InterruptedException
-	 */
-	public static GeneList createGeneArrayList(List<? extends List<Gene>> data, String geneDBURL, GeneScoreType geneScoreType) throws InterruptedException, ExecutionException {
-		GeneList geneList = new GeneArrayList();
-		geneList.setGeneDBURL(geneDBURL);
-		geneList.setGeneScoreType(geneScoreType);
-		for (int i = 0; (i < data.size()) && (i < geneList.size()); i++) {
-			geneList.set(i, data.get(i));
-		}
-		geneList.sort();
-		return geneList;
+		return new SimpleGeneList(result, geneScoreType, geneDBURL);
 	}
 
 
@@ -194,13 +161,12 @@ public class GeneListFactory {
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
-	public static GeneList createGeneArrayList(ScoredChromosomeWindowList scoredChromosomeWindowList) throws InterruptedException, ExecutionException {
-		GeneList geneList = new GeneArrayList();
+	public static GeneList createGeneList(ScoredChromosomeWindowList scoredChromosomeWindowList) throws InterruptedException, ExecutionException {
 		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();
-		for (int i = 0; (i < scoredChromosomeWindowList.size()) && (i < geneList.size()); i++) {
-			final List<ScoredChromosomeWindow> currentList = scoredChromosomeWindowList.get(i);
+		for (int i = 0; i < scoredChromosomeWindowList.size(); i++) {
+			final List<ScoredChromosomeWindow> currentList = scoredChromosomeWindowList.getView(i);
 			final Chromosome chromosome = projectChromosome.get(i);
 			final String prefixName = chromosome.getName() + ".";
 			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {
@@ -231,6 +197,6 @@ public class GeneListFactory {
 			threadList.add(currentThread);
 		}
 		List<List<Gene>> result = op.startPool(threadList);
-		return createGeneArrayList(result);
+		return new SimpleGeneList(result, null, null);
 	}
 }

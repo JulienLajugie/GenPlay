@@ -24,11 +24,16 @@ package edu.yu.einstein.genplay.core.operation.geneList;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.dataStructure.gene.Gene;
+import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.geneList.SimpleGeneList;
+import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.GenomicDataArrayList;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -38,7 +43,6 @@ import edu.yu.einstein.genplay.util.Utils;
  * @author Chirag Gorasia
  * @version 0.1
  */
-
 public class GLOGeneRenamer implements Operation<GeneList> {
 
 	private final GeneList 	geneList;			// input geneList
@@ -62,7 +66,6 @@ public class GLOGeneRenamer implements Operation<GeneList> {
 		BufferedReader bufReader = null;
 		try {
 			bufReader = new BufferedReader(new FileReader(fileName));
-			GeneList renamedList = geneList.deepClone();
 			Map<String, String> nameMap = new HashMap<String, String>();
 			String lineRead;
 			while (((lineRead = bufReader.readLine()) != null) && !stopped) {
@@ -70,20 +73,24 @@ public class GLOGeneRenamer implements Operation<GeneList> {
 				if (splitLine.length > 1) {
 					if (!nameMap.containsKey(splitLine[1])) {
 						nameMap.put(splitLine[1], splitLine[0]);
-						System.out.println(splitLine[1] + "\t" + splitLine[0]);
 					}
 				}
 			}
-			for (int i = 0; (i < renamedList.size()) && !stopped; i++) {
-				for (int j = 0; (j < renamedList.size(i)) && !stopped; j++) {
+
+			GenomicDataArrayList<Gene> renamedList = new GenomicDataArrayList<Gene>();
+			for (int i = 0; (i < geneList.size()) && !stopped; i++) {
+				renamedList.add(new ArrayList<Gene>());
+				for (int j = 0; (j < geneList.size(i)) && !stopped; j++) {
+					Gene currentGene = new SimpleGene(geneList.get(i,  j));
 					String newName = null;
 					if ((newName = nameMap.get(renamedList.get(i,
 							j).getName())) != null) {
-						renamedList.get(i, j).setName(newName);
+						currentGene.setName(newName);
 					}
+					renamedList.get(i).add(currentGene);
 				}
 			}
-			return renamedList;
+			return new SimpleGeneList(renamedList, geneList.getGeneScoreType(), geneList.getGeneDBURL());
 		} finally {
 			if (bufReader != null) {
 				bufReader.close();
@@ -112,6 +119,6 @@ public class GLOGeneRenamer implements Operation<GeneList> {
 
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }

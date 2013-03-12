@@ -33,13 +33,12 @@ import edu.yu.einstein.genplay.core.operation.SCWList.overlap.SCWLTwoLayersManag
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationTwoLayersMethod;
-import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.ImmutableGenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
-
 
 
 /**
@@ -47,7 +46,7 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class SCWLOTwoLayers implements Operation<GenomicDataList<?>>, Stoppable {
+public class SCWLOTwoLayers implements Operation<ImmutableGenomicDataList<?>>, Stoppable {
 
 	private final ScoreCalculationTwoLayersMethod 	scm;
 	private final SCWLTwoLayersManagement 		twoLayers;			// manage the operation between two Layers
@@ -59,8 +58,8 @@ public class SCWLOTwoLayers implements Operation<GenomicDataList<?>>, Stoppable 
 	 * @param list2 2nd input list
 	 * @param scm {@link ScoreCalculationTwoLayersMethod}
 	 */
-	public SCWLOTwoLayers(	GenomicDataList<?> list1,
-			GenomicDataList<?> list2,
+	public SCWLOTwoLayers(	ImmutableGenomicDataList<?> list1,
+			ImmutableGenomicDataList<?> list2,
 			ScoreCalculationTwoLayersMethod scm) {
 		this.scm = scm;
 		twoLayers = new SCWLTwoLayersManagement(list1, list2, scm);

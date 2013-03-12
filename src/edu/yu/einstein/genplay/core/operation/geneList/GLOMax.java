@@ -64,8 +64,8 @@ public class GLOMax implements Operation<Double> {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Double>> threadList = new ArrayList<Callable<Double>>();
 		for (int i = 0; i < geneList.size(); i++) {
-			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (geneList.get(i) != null)) {
-				final List<Gene> currentList = geneList.get(i);
+			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (geneList.getView(i) != null)) {
+				final List<Gene> currentList = geneList.getView(i);
 
 				Callable<Double> currentThread = new Callable<Double>() {
 					@Override

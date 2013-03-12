@@ -29,9 +29,10 @@ import edu.yu.einstein.genplay.core.comparator.ChromosomeWindowStartComparator;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
-import edu.yu.einstein.genplay.dataStructure.list.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.IntArrayAsIntegerList;
+import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.GenomicDataArrayList;
+import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.ImmutableGenomicDataList;
 
 
 /**
@@ -42,16 +43,16 @@ public class ChromosomeWindowLists {
 
 	/**
 	 * @param chromosomeWindowList a {@link GenomicDataList} of Object that extends {@link ChromosomeWindow}
-	 * @return a {@link GenomicDataList} containing the start positions of the specified list. This list is organized the same way as the input list
+	 * @return a {@link ImmutableGenomicDataList} containing the start positions of the specified list. This list is organized the same way as the input list
 	 */
-	public static GenomicDataList<Integer> getStartList(GenomicDataList<? extends ChromosomeWindow> chromosomeWindowList) {
+	public static GenomicDataList<Integer> getStartList(ImmutableGenomicDataList<? extends ChromosomeWindow> chromosomeWindowList) {
 		GenomicDataList<Integer> list = new GenomicDataArrayList<Integer>();
 		for (int i = 0; i < chromosomeWindowList.size(); i++) {
 			list.add(new IntArrayAsIntegerList());
 		}
 
 		for (int i = 0; i < chromosomeWindowList.size(); i++) {
-			List<? extends ChromosomeWindow> currentList = chromosomeWindowList.get(i);
+			List<? extends ChromosomeWindow> currentList = chromosomeWindowList.getView(i);
 			for (ChromosomeWindow currentChromosomeWindow: currentList) {
 				list.get(i).add(currentChromosomeWindow.getStop());
 			}
@@ -62,16 +63,16 @@ public class ChromosomeWindowLists {
 
 	/**
 	 * @param chromosomeWindowList a {@link GenomicDataList} of Object that extends {@link ChromosomeWindow}
-	 * @return a {@link GenomicDataList} containing the stop positions of the specified list. This list is organized the same way as the input list
+	 * @return a {@link ImmutableGenomicDataList} containing the stop positions of the specified list. This list is organized the same way as the input list
 	 */
-	public static GenomicDataList<Integer> getStopList(GenomicDataList<? extends ChromosomeWindow> chromosomeWindowList) {
+	public static GenomicDataList<Integer> getStopList(ImmutableGenomicDataList<? extends ChromosomeWindow> chromosomeWindowList) {
 		GenomicDataList<Integer> list = new GenomicDataArrayList<Integer>();
 		for (int i = 0; i < chromosomeWindowList.size(); i++) {
 			list.add(new IntArrayAsIntegerList());
 		}
 
 		for (int i = 0; i < chromosomeWindowList.size(); i++) {
-			List<? extends ChromosomeWindow> currentList = chromosomeWindowList.get(i);
+			List<? extends ChromosomeWindow> currentList = chromosomeWindowList.getView(i);
 			for (ChromosomeWindow currentChromosomeWindow: currentList) {
 				list.get(i).add(currentChromosomeWindow.getStop());
 			}
@@ -118,7 +119,7 @@ public class ChromosomeWindowLists {
 			indexStop = -indexStop - 1;
 		}
 		indexStop = Math.min(list.size(), indexStop);
-		
+
 		// add the elements between the index start and the index stop
 		for (int i = indexStart; i < indexStop; i++) {
 			resultList.add(list.get(i));

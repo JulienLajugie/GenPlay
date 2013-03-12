@@ -27,9 +27,9 @@ import java.util.List;
 
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationTwoLayersMethod;
-import edu.yu.einstein.genplay.dataStructure.list.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.ImmutableGenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
@@ -48,7 +48,7 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 public class SCWLTwoLayersEngine implements Serializable, Stoppable {
 
 	private static final long serialVersionUID = 2965349494486829320L;
-	private final 	List<GenomicDataList<?>> 		list;				//list containing originals lists
+	private final 	List<ImmutableGenomicDataList<?>> 	list;				//list containing originals lists
 	private final 	List<ScoredChromosomeWindow> 		newScwList;			//new list
 	private final	ScoreCalculationTwoLayersMethod		scm;				//operation to apply
 	private 		Chromosome 							chromosome;
@@ -67,8 +67,8 @@ public class SCWLTwoLayersEngine implements Serializable, Stoppable {
 	 * @param scm		operation
 	 */
 	public SCWLTwoLayersEngine (ScoreCalculationTwoLayersMethod scm) {
-		this.list = new ArrayList<GenomicDataList<?>>();
-		this.newScwList = new ArrayList<ScoredChromosomeWindow>();
+		list = new ArrayList<ImmutableGenomicDataList<?>>();
+		newScwList = new ArrayList<ScoredChromosomeWindow>();
 		this.scm = scm;
 	}
 
@@ -80,30 +80,30 @@ public class SCWLTwoLayersEngine implements Serializable, Stoppable {
 	 * @param list2 		second list
 	 * @param chromosome 	chromosome
 	 */
-	public void init (GenomicDataList<?> list1, GenomicDataList<?> list2, Chromosome chromosome) {
+	public void init (ImmutableGenomicDataList<?> list1, ImmutableGenomicDataList<?> list2, Chromosome chromosome) {
 		//index 0 refers to the first layer
 		//index 1 refers to the second layer
-		this.list.add(list1);
-		this.list.add(list2);
-		this.isSCWList = new boolean[2];
-		this.isSCWList[0] = list1 instanceof ScoredChromosomeWindowList;
-		this.isSCWList[1] = list2 instanceof ScoredChromosomeWindowList;
+		list.add(list1);
+		list.add(list2);
+		isSCWList = new boolean[2];
+		isSCWList[0] = list1 instanceof ScoredChromosomeWindowList;
+		isSCWList[1] = list2 instanceof ScoredChromosomeWindowList;
 		this.chromosome = chromosome;
-		this.onStart = new boolean[2];
-		this.onStart[0] = true;
-		this.onStart[1] = true;
-		this.validPosition = new boolean[2];
-		this.validPosition[0] = getLayerSize(0) > 0;
-		this.validPosition[1] = getLayerSize(1) > 0;
-		this.currentScore = new Double[2];
-		this.currentScore[0] = 0.0;
-		this.currentScore[1] = 0.0;
-		this.currentPosition = new Integer[2];
-		this.currentPosition[0] = 0;
-		this.currentPosition[1] = 0;
-		this.currentIndex = new Integer[2];
-		this.currentIndex[0] = 0;
-		this.currentIndex[1] = 0;
+		onStart = new boolean[2];
+		onStart[0] = true;
+		onStart[1] = true;
+		validPosition = new boolean[2];
+		validPosition[0] = getLayerSize(0) > 0;
+		validPosition[1] = getLayerSize(1) > 0;
+		currentScore = new Double[2];
+		currentScore[0] = 0.0;
+		currentScore[1] = 0.0;
+		currentPosition = new Integer[2];
+		currentPosition[0] = 0;
+		currentPosition[1] = 0;
+		currentIndex = new Integer[2];
+		currentIndex[0] = 0;
+		currentIndex[1] = 0;
 		run();
 	}
 
@@ -275,7 +275,7 @@ public class SCWLTwoLayersEngine implements Serializable, Stoppable {
 		while (valid && !stopped) {
 			if (index >= getLayerSize(layer)) {
 				valid = false;
-				this.validPosition[layer] = false;
+				validPosition[layer] = false;
 			} else {
 				if (getScore(layer, index) == 0.0) {
 					index++;
@@ -409,18 +409,18 @@ public class SCWLTwoLayersEngine implements Serializable, Stoppable {
 	}
 
 	private int getStart (int layer) {
-		if (this.isSCWList[layer]) {
-			return ((ScoredChromosomeWindow) this.list.get(layer).get(chromosome).get(this.currentIndex[layer])).getStart();
+		if (isSCWList[layer]) {
+			return ((ScoredChromosomeWindow) list.get(layer).getView(chromosome).get(currentIndex[layer])).getStart();
 		} else {
-			return this.currentIndex[layer] * ((BinList)this.list.get(layer)).getBinSize();
+			return currentIndex[layer] * ((BinList)list.get(layer)).getBinSize();
 		}
 	}
 
 	private int getStop (int layer) {
-		if (this.isSCWList[layer]) {
-			return ((ScoredChromosomeWindow) this.list.get(layer).get(chromosome).get(this.currentIndex[layer])).getStop();
+		if (isSCWList[layer]) {
+			return ((ScoredChromosomeWindow) list.get(layer).getView(chromosome).get(currentIndex[layer])).getStop();
 		} else {
-			return (this.currentIndex[layer] + 1) * ((BinList)this.list.get(layer)).getBinSize();
+			return (currentIndex[layer] + 1) * ((BinList)list.get(layer)).getBinSize();
 		}
 	}
 
@@ -430,22 +430,22 @@ public class SCWLTwoLayersEngine implements Serializable, Stoppable {
 		} else {
 			return (Double) this.list.get(layer).get(chromosome).get(this.currentIndex[layer]);
 		}*/
-		return getScore(layer, this.currentIndex[layer]);
+		return getScore(layer, currentIndex[layer]);
 	}
 
 	private Double getScore (int layer, int index) {
-		if (this.isSCWList[layer]) {
-			return ((ScoredChromosomeWindow) this.list.get(layer).get(chromosome).get(index)).getScore();
+		if (isSCWList[layer]) {
+			return ((ScoredChromosomeWindow) list.get(layer).getView(chromosome).get(index)).getScore();
 		} else {
-			return (Double) this.list.get(layer).get(chromosome).get(index);
+			return (Double) list.get(layer).getView(chromosome).get(index);
 		}
 	}
 
 	private int getLayerSize (int layer) {
-		if (this.isSCWList[layer]) {
-			return ((ScoredChromosomeWindowList) this.list.get(layer)).get(chromosome).size();
+		if (isSCWList[layer]) {
+			return ((ScoredChromosomeWindowList) list.get(layer)).getView(chromosome).size();
 		} else {
-			List<Double> data = ((BinList) this.list.get(layer)).get(chromosome);
+			List<Double> data = ((BinList) list.get(layer)).get(chromosome);
 			if (data != null) {
 				return data.size();
 			}
@@ -470,6 +470,6 @@ public class SCWLTwoLayersEngine implements Serializable, Stoppable {
 
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }

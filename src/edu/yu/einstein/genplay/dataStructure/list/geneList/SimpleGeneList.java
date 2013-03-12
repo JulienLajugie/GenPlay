@@ -21,14 +21,13 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.dataStructure.list.geneList;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -36,24 +35,28 @@ import java.util.concurrent.ExecutionException;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
-import edu.yu.einstein.genplay.dataStructure.list.GenomicDataArrayList;
+import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.GenomicDataArrayList;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 
 
 /**
- * A list of {@link Gene}.
- * Implementation of the {@link GeneList} interface using an {@link ArrayList} based data structure
+ * Simple implementation of the {@link GeneList} interface.
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class GeneArrayList extends GenomicDataArrayList<Gene> implements GeneList {
+public final class SimpleGeneList implements GeneList {
 
 	/** Generated serial ID */
 	private static final long serialVersionUID = -1567605708127718216L;
 
 	/** Saved format version */
 	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;
+
+	/** {@link GenomicDataArrayList} containing the Genes */
+	private GenomicDataArrayList<Gene> data;
 
 	/** URL to a gene database that can be used to search information about the genes of this list */
 	private String geneDBURL;
@@ -62,35 +65,44 @@ public final class GeneArrayList extends GenomicDataArrayList<Gene> implements G
 	private GeneScoreType geneScoreType;
 
 	/** Object that searches genes and handle funtion such as find next, find previous */
-	private final GeneSearcher	geneSearcher;
+	private GeneSearcher geneSearcher;
 
 
 	/**
-	 * Creates an instance of {@link GeneArrayList}
+	 * Creates an instance of {@link SimpleGeneList}
+	 * @param data list of genes organized by chromosome
+	 * @param geneScoreType type of the scores of the genes and exons (RPKM, max, sum)
+	 * @param geneDBURL URL of the gene database
+	 * @throws ExecutionException
+	 * @throws InterruptedException
 	 */
-	protected GeneArrayList() {
+	public SimpleGeneList(List<List<Gene>> data, GeneScoreType geneScoreType, String geneDBURL) throws InterruptedException, ExecutionException {
 		super();
 		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		for (int i = 0; i < projectChromosome.size(); i++){
-			add(new ArrayList<Gene>());
+			if (i < data.size()) {
+				data.add(data.get(i));
+			} else {
+				// add an empty list
+				data.add(new ArrayList<Gene>());
+			}
 		}
+		this.geneScoreType = geneScoreType;
+		this.geneDBURL = geneDBURL;
 		geneSearcher = new GeneSearcher(this);
+		sort();
 	}
 
 
 	@Override
-	public GeneArrayList deepClone() {
-		try {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ObjectOutputStream oos = new ObjectOutputStream(baos);
-			oos.writeObject(this);
-			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-			ObjectInputStream ois = new ObjectInputStream(bais);
-			return ((GeneArrayList)ois.readObject());
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
+	public Gene get(Chromosome chromosome, int index) throws InvalidChromosomeException {
+		return data.get(chromosome, index);
+	}
+
+
+	@Override
+	public Gene get(int chromosomeIndex, int elementIndex) {
+		return data.get(chromosomeIndex, elementIndex);
 	}
 
 
@@ -112,33 +124,63 @@ public final class GeneArrayList extends GenomicDataArrayList<Gene> implements G
 	}
 
 
+	@Override
+	public List<Gene> getView(Chromosome chromosome) throws InvalidChromosomeException {
+		return data.getView(chromosome);
+	}
+
+
+	@Override
+	public List<Gene> getView(int chromosomeIndex) {
+		return data.getView(chromosomeIndex);
+	}
+
+
+	@Override
+	public Iterator<List<Gene>> iterator() {
+		return data.iterator();
+	}
+
+
 	/**
 	 * Method used for deserialization
 	 * @param in
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
+	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
+		data = (GenomicDataArrayList<Gene>) in.readObject();
 		geneDBURL = (String) in.readObject();
 		geneScoreType = (GeneScoreType) in.readObject();
 	}
 
 
 	@Override
-	public void setGeneDBURL(String geneDBURL) {
-		this.geneDBURL = geneDBURL;
+	public int size() {
+		return data.size();
 	}
 
 
 	@Override
-	public void setGeneScoreType(GeneScoreType geneScoreType) {
-		this.geneScoreType = geneScoreType;
+	public int size(Chromosome chromosome) throws InvalidChromosomeException {
+		return data.size(chromosome);
 	}
 
 
 	@Override
-	public void sort() throws InterruptedException, ExecutionException {
+	public int size(int index) {
+		return data.size(index);
+	}
+
+
+	/**
+	 * Sorts the elements of the {@link GeneList} by position
+	 * @throws InterruptedException
+	 * @throws ExecutionException
+	 */
+	private void sort() throws InterruptedException, ExecutionException {
 		final OperationPool op = OperationPool.getInstance();
 		Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
 		for (final List<Gene> currentList: this) {
@@ -166,7 +208,9 @@ public final class GeneArrayList extends GenomicDataArrayList<Gene> implements G
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(data);
 		out.writeObject(geneDBURL);
 		out.writeObject(geneScoreType);
+		geneSearcher = new GeneSearcher(this);
 	}
 }
