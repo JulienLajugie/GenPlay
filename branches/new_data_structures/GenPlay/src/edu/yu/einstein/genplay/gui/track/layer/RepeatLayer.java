@@ -37,7 +37,7 @@ import java.util.List;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.list.repeatFamilyList.RepeatFamilyList;
+import edu.yu.einstein.genplay.dataStructure.genomeList.repeatFamilyList.RepeatFamilyList;
 import edu.yu.einstein.genplay.dataStructure.repeatFamily.RepeatFamily;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.colors.Colors;

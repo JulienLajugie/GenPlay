@@ -23,142 +23,44 @@ package edu.yu.einstein.genplay.dataStructure.gene;
 
 import java.io.Serializable;
 
-import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
+import edu.yu.einstein.genplay.dataStructure.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
 /**
- * The Gene class provides a representation of a gene.
+ * The {@link Gene} class provides a representation of a gene.
  * @author Julien Lajugie
- * @version 0.1
  */
-public interface Gene extends Serializable, Cloneable, ScoredChromosomeWindow {
+public interface Gene extends Serializable, ScoredChromosomeWindow {
 
 
 	/**
-	 * Adds an exon to the Gene with no score
-	 * @param exonStart start position of the exon
-	 * @param exonStop stop position of the exon
+	 * @return a ListView with the exons of the gene
 	 */
-	public void addExon(int exonStart, int exonStop);
+	public ListView<ScoredChromosomeWindow> getExons();
 
 
 	/**
-	 * Adds an exon to the Gene
-	 * @param exonStart start position of the exon
-	 * @param exonStop stop position of the exon
-	 * @param exonScore score of the exon
-	 */
-	public void addExon(int exonStart, int exonStop, double exonScore);
-
-
-	/**
-	 * @return a deep copy of the object
-	 */
-	@Override
-	public Gene deepClone();
-
-
-	/**
-	 * @param aName Name of a chromosome
-	 * @return True if <i>aName</i> equals the name of the chromosome. False otherwise.
-	 */
-	public boolean equals(String aName);
-
-
-	/**
-	 * @return The chromosome of the gene.
-	 */
-	public Chromosome getChromosome();
-
-
-	/**
-	 * @return the exonScores
-	 */
-	public double[] getExonScores();
-
-
-	/**
-	 * @return the exonStarts
-	 */
-	public int[] getExonStarts();
-
-
-	/**
-	 * @return the exonStops
-	 */
-	public int[] getExonStops();
-
-
-	/**
-	 * @return the name
+	 * @return the name of the gene
 	 */
 	public String getName();
 
 
 	/**
-	 * @return the strand
+	 * @return the strand of the gene
 	 */
 	public Strand getStrand();
 
 
 	/**
-	 * @return the 3' bondary of the translation
+	 * @return the 3' boundary of the translation of the gene
 	 */
 	public int getUTR3Bound();
 
 
 	/**
-	 * @return the 5' bondary of the translation
+	 * @return the 5' boundary of the translation of the gene
 	 */
 	public int getUTR5Bound();
-
-
-	/**
-	 * @param chromosome the chromosome to set
-	 */
-	public void setChromosome(Chromosome chromosome);
-
-
-	/**
-	 * @param exonScores the exonScores to set
-	 */
-	public void setExonScores(double[] exonScores);
-
-
-	/**
-	 * @param exonStarts the exonStarts to set
-	 */
-	public void setExonStarts(int[] exonStarts);
-
-
-	/**
-	 * @param exonStops the exonStops to set
-	 */
-	public void setExonStops(int[] exonStops);
-
-
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name);
-
-
-	/**
-	 * @param strand the strand to set
-	 */
-	public void setStrand(Strand strand);
-
-
-	/**
-	 * @param UTR3Bound the 3' translation bound to set
-	 */
-	public void setUTR3Bond(int UTR3Bound);
-
-
-	/**
-	 * @param UTR5Bound the 5' translation bound to set
-	 */
-	public void setUTR5Bound(int UTR5Bound);
 }

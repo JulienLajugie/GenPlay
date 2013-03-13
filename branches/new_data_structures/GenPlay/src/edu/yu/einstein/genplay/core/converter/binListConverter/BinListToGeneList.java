@@ -24,10 +24,10 @@ package edu.yu.einstein.genplay.core.converter.binListConverter;
 import javax.naming.OperationNotSupportedException;
 
 import edu.yu.einstein.genplay.core.converter.Converter;
-import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
-import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
-import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.genomeList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.genomeList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.genomeList.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.genomeList.geneList.GeneList;
 
 
 /**

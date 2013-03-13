@@ -29,7 +29,7 @@ import java.util.AbstractList;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.multiGenome.data.synchronization.MGSOffset;
-import edu.yu.einstein.genplay.dataStructure.list.nucleotideList.TwoBitSequence;
+import edu.yu.einstein.genplay.dataStructure.genomeList.nucleotideList.TwoBitSequence;
 
 
 /**

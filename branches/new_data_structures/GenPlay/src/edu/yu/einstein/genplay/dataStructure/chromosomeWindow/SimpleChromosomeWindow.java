@@ -29,25 +29,27 @@ import java.text.ParseException;
 
 import edu.yu.einstein.genplay.core.comparator.ChromosomeWindowComparator;
 import edu.yu.einstein.genplay.exception.exceptions.ChromosomeWindowException;
+import edu.yu.einstein.genplay.util.HashCodeUtil;
 
 
 /**
- * The ChromosomeWindow class represents a window on a chromosome.
+ * A simple implementation of the {@link ChromosomeWindow} interface.
+ * {@link SimpleChromosomeWindow} objects are immutable.
  * @author Julien Lajugie
- * @version 0.1
  */
-public class SimpleChromosomeWindow implements ChromosomeWindow, Serializable, Cloneable, Comparable<ChromosomeWindow> {
+public class SimpleChromosomeWindow implements ChromosomeWindow, Serializable, Comparable<ChromosomeWindow> {
 
-	private static final long serialVersionUID = -6548181911063983578L; // generated ID
-	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private int  	start;		// Position start of the window
-	private int 	stop;		// Position stop of the window
+	/**  Generated serial ID */
+	private static final long serialVersionUID = -6548181911063983578L;
 
+	/**  Saved format version */
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;
 
-	/**
-	 * Default constructor of {@link SimpleChromosomeWindow}
-	 */
-	public SimpleChromosomeWindow() {}
+	/** Start position of the window */
+	private int	start;
+
+	/** Stop position of the window */
+	private int stop;
 
 
 	/**
@@ -128,12 +130,6 @@ public class SimpleChromosomeWindow implements ChromosomeWindow, Serializable, C
 
 
 	@Override
-	public ChromosomeWindow deepClone() {
-		return new SimpleChromosomeWindow(this);
-	}
-
-
-	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;
@@ -191,6 +187,15 @@ public class SimpleChromosomeWindow implements ChromosomeWindow, Serializable, C
 	}
 
 
+	@Override
+	public int hashCode() {
+		int hashCode = HashCodeUtil.SEED;
+		hashCode = HashCodeUtil.hash(hashCode, start);
+		hashCode = HashCodeUtil.hash(hashCode, stop);
+		return hashCode;
+	}
+
+
 	/**
 	 * Method used for unserialization
 	 * @param in
@@ -201,25 +206,6 @@ public class SimpleChromosomeWindow implements ChromosomeWindow, Serializable, C
 		in.readInt();
 		start = in.readInt();
 		stop = in.readInt();
-	}
-
-
-
-	/**
-	 * @param start the start to set
-	 */
-	@Override
-	public void setStart(int start) {
-		this.start = start;
-	}
-
-
-	/**
-	 * @param stop the stop to set
-	 */
-	@Override
-	public void setStop(int stop) {
-		this.stop = stop;
 	}
 
 

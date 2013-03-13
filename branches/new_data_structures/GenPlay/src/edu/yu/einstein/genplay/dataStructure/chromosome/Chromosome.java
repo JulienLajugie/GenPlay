@@ -27,44 +27,30 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import edu.yu.einstein.genplay.core.comparator.ChromosomeComparator;
+import edu.yu.einstein.genplay.util.HashCodeUtil;
 
 
 /**
- * The Chromosome class represents a chromosome with a name and a length.
+ * The {@link Chromosome} class represents a chromosome with a name and a length.
+ * {@link Chromosome} objects are immutable.
  * @author Julien Lajugie
- * @version 0.1
  */
-public final class Chromosome implements Cloneable, Serializable, Comparable<Chromosome> {
+public final class Chromosome implements Serializable, Comparable<Chromosome> {
 
-	private static final long 	serialVersionUID = -8339402742378578413L; 	// generated ID
-	private static final int  	SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private String 				name;										// Name of the chromosome
-	private int 				length;										// Length of the chromosome
+	/**  Generated serial ID */
+	private static final long serialVersionUID = -8339402742378578413L;
 
+	/**  Saved format version */
+	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;
 
-	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(name);
-		out.writeInt(length);
-	}
+	/** The hash code is computed once at the creation because the class is immutable */
+	private int	hashCode;
 
+	/** Length of the chromosome */
+	private int length;
 
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		name = (String) in.readObject();
-		length = in.readInt();
-	}
+	/** Name of the chromosome */
+	private String name;
 
 
 	/**
@@ -75,36 +61,25 @@ public final class Chromosome implements Cloneable, Serializable, Comparable<Chr
 	public Chromosome(String name, int length) {
 		this.name = name;
 		this.length = length;
-	}
-
-
-	/**
-	 * @param length the length of a chromosome to set
-	 */
-	public void setLength(int length) {
-		this.length = length;
-	}
-
-
-	/**
-	 * @return the length of a chromosome
-	 */
-	public int getLength() {
-		return length;
-	}
-
-
-	/**
-	 * @return the name of a chromosome
-	 */
-	public String getName() {
-		return name;
+		computeHashCode();
 	}
 
 
 	@Override
-	public String toString() {
-		return name;
+	public int compareTo(Chromosome otherChromosome) {
+		ChromosomeComparator comp = new ChromosomeComparator();
+		return comp.compare(this, otherChromosome);
+	}
+
+
+	/**
+	 * Computes the hashcode. This can be done only once since Chromosome objects are immutable.
+	 */
+	private void computeHashCode() {
+		int result = HashCodeUtil.SEED;
+		result = HashCodeUtil.hash(result, name);
+		result = HashCodeUtil.hash(result, length);
+		hashCode = result;
 	}
 
 
@@ -135,12 +110,27 @@ public final class Chromosome implements Cloneable, Serializable, Comparable<Chr
 
 
 	/**
-	 * The hashCode is computed only on the name
-	 * because it's the only immutable field
+	 * @return the length of a chromosome
+	 */
+	public int getLength() {
+		return length;
+	}
+
+
+	/**
+	 * @return the name of a chromosome
+	 */
+	public String getName() {
+		return name;
+	}
+
+
+	/**
+	 * The hashCode is computed only on the name of the chromosome
 	 */
 	@Override
 	public int hashCode(){
-		return name.hashCode();
+		return hashCode;
 	}
 
 
@@ -171,6 +161,20 @@ public final class Chromosome implements Cloneable, Serializable, Comparable<Chr
 
 
 	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		name = (String) in.readObject();
+		length = in.readInt();
+		hashCode = in.readInt();
+	}
+
+
+	/**
 	 * Prints the chromosome information
 	 */
 	public void show () {
@@ -182,8 +186,20 @@ public final class Chromosome implements Cloneable, Serializable, Comparable<Chr
 
 
 	@Override
-	public int compareTo(Chromosome otherChromosome) {
-		ChromosomeComparator comp = new ChromosomeComparator();
-		return comp.compare(this, otherChromosome);
+	public String toString() {
+		return name;
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(name);
+		out.writeInt(length);
+		out.writeInt(hashCode);
 	}
 }

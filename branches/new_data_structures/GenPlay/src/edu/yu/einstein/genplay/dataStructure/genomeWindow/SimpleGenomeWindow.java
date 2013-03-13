@@ -8,49 +8,25 @@ import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.ChromosomeWindowException;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
+import edu.yu.einstein.genplay.util.HashCodeUtil;
 import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
  * Simple implementation of the {@link GenomeWindow} interface.
- * A window on the genome with a chromosome and a start and stop position (in bp) on this chromosome
+ * {@link SimpleChromosomeWindow} objects are immutable.
  * @author Julien Lajugie
  */
 public class SimpleGenomeWindow extends SimpleChromosomeWindow implements GenomeWindow {
-	private static final long serialVersionUID = 8873056842762282328L; 	// generated ID
-	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private Chromosome chromosome;	// Chromosome of the window
 
+	/** Generated serial ID */
+	private static final long serialVersionUID = 8873056842762282328L;
 
-	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(chromosome);
-	}
+	/** Saved format version */
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;
 
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		chromosome = (Chromosome) in.readObject();
-	}
-
-
-	/**
-	 * Default constructor.
-	 */
-	public SimpleGenomeWindow() {
-		super();
-	}
+	/** Chromosome of the window */
+	private Chromosome chromosome;
 
 
 	/**
@@ -78,30 +54,6 @@ public class SimpleGenomeWindow extends SimpleChromosomeWindow implements Genome
 	}
 
 
-	/**
-	 * @return the chromosome
-	 */
-	@Override
-	public final Chromosome getChromosome() {
-		return chromosome;
-	}
-
-
-	/**
-	 * @param chromosome the chromosome to set
-	 */
-	@Override
-	public final void setChromosome(Chromosome chromosome) {
-		this.chromosome = chromosome;
-	}
-
-
-	@Override
-	public String toString() {
-		return chromosome.toString() + ":" + super.toString();
-	}
-
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -122,5 +74,51 @@ public class SimpleGenomeWindow extends SimpleChromosomeWindow implements Genome
 			return false;
 		}
 		return true;
+	}
+
+
+	@Override
+	public int hashCode() {
+		int hashCode = super.hashCode();
+		hashCode = HashCodeUtil.hash(hashCode, chromosome);
+		return hashCode;
+	}
+
+
+	/**
+	 * @return the chromosome
+	 */
+	@Override
+	public final Chromosome getChromosome() {
+		return chromosome;
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		chromosome = (Chromosome) in.readObject();
+	}
+
+
+	@Override
+	public String toString() {
+		return chromosome.toString() + ":" + super.toString();
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(chromosome);
 	}
 }

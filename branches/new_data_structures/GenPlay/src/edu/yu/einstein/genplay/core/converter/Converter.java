@@ -21,7 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.converter;
 
-import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.ImmutableGenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.genomeList.ImmutableGenomicDataList;
 
 /**
  * @author Nicolas Fourel

@@ -25,25 +25,14 @@ import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 
 
 /**
+ * A {@link ChromosomeWindow} with a score.
  * @author Nicolas Fourel
- * @version 0.1
  */
 public interface ScoredChromosomeWindow extends ChromosomeWindow {
-
-
-	@Override
-	public ScoredChromosomeWindow deepClone();
 
 
 	/**
 	 * @return the score of the window
 	 */
 	public double getScore ();
-
-
-	/**
-	 * Sets the score of the window
-	 * @param score	the score
-	 */
-	public void setScore (double score);
 }

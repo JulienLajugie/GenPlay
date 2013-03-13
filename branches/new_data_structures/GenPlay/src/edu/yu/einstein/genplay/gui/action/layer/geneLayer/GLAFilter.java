@@ -28,7 +28,7 @@ import edu.yu.einstein.genplay.core.operation.geneList.GLOFilterBandStop;
 import edu.yu.einstein.genplay.core.operation.geneList.GLOFilterCount;
 import edu.yu.einstein.genplay.core.operation.geneList.GLOFilterPercentage;
 import edu.yu.einstein.genplay.core.operation.geneList.GLOFilterThreshold;
-import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.genomeList.geneList.GeneList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.filterDialog.FilterDialog;
 import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;

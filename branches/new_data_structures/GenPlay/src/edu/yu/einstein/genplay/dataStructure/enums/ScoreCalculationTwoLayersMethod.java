@@ -21,7 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.dataStructure.enums;
 
-import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.genomeList.binList.BinList;
 
 
 /**

@@ -43,7 +43,7 @@ public class MetaGenomeSynchroniser implements Serializable {
 
 	private static final long serialVersionUID = 8473172631163790164L; 	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private 		Map<Chromosome, Integer> 	chromosomeLength;		// The chromosome length list
+	private 		Map<String, Integer> 		chromosomeLength;		// The chromosome length list
 	private			List<Chromosome> 			chromosomeList;			// The chromosome list for multi genome project
 	private 		long 						genomomeLength = 0;		// Genome length
 
@@ -70,7 +70,7 @@ public class MetaGenomeSynchroniser implements Serializable {
 	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		chromosomeLength = (Map<Chromosome, Integer>) in.readObject();
+		chromosomeLength = (Map<String, Integer>) in.readObject();
 		chromosomeList = (List<Chromosome>) in.readObject();
 		genomomeLength = in.readLong();
 	}
@@ -91,7 +91,7 @@ public class MetaGenomeSynchroniser implements Serializable {
 	 */
 	private void initializeMetaGenomeSynchronizer (List<Chromosome> chromosomeListTmp) {
 		chromosomeList = new ArrayList<Chromosome>();
-		chromosomeLength = new HashMap<Chromosome, Integer>();
+		chromosomeLength = new HashMap<String, Integer>();
 		for (Chromosome chromosome: chromosomeListTmp) {
 			chromosomeList.add(new Chromosome(chromosome.getName(), chromosome.getLength()));
 			chromosomeLength.put(chromosome, chromosome.getLength());

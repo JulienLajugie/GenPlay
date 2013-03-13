@@ -26,7 +26,7 @@ import java.util.concurrent.ExecutionException;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.binList.peakFinder.IslandFinder;
 import edu.yu.einstein.genplay.dataStructure.enums.IslandResultType;
-import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.genomeList.binList.BinList;
 
 
 

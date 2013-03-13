@@ -45,7 +45,7 @@ import edu.yu.einstein.genplay.core.operation.binList.BLOFindIslands;
 import edu.yu.einstein.genplay.core.operation.binList.BLOFindPeaksDensity;
 import edu.yu.einstein.genplay.core.operation.binList.BLOFindPeaksStDev;
 import edu.yu.einstein.genplay.dataStructure.enums.PeakFinderType;
-import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.genomeList.binList.BinList;
 import edu.yu.einstein.genplay.gui.dialog.peakFinderDialog.islandPanel.IslandFinderPanel;
 import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.Utils;

@@ -48,9 +48,9 @@ public final class ProjectChromosome implements Serializable, Iterable<Chromosom
 	private static final long serialVersionUID = 8781043776370540275L;	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 
-
 	private		 	Map<String, Integer> 		chromosomeHash;			// Hashtable indexed by chromosome name
 	private			List<Chromosome> 			chromosomeList;			// List of chromosome
+	// FIXME replace with projectwindow.getchromosome
 	private			Chromosome					currentChromosome;		// Current chromosome in the genome window (uses for multi genome project)
 	private			long						genomeLength;			// Total length of the genome
 
@@ -113,15 +113,12 @@ public final class ProjectChromosome implements Serializable, Iterable<Chromosom
 
 
 	/**
-	 * @param chromosomeList the chromosomeList to set
+	 * @param lengthList the list of new chromosome lengths in the same order as the chromosome list
 	 */
-	public void updateChromosomeLength (List<Chromosome> chromosomeList) {
-
-		for (Chromosome current: chromosomeList) {
-			Chromosome existingChromosome = get(current.getName());
-			if (existingChromosome != null) {
-				existingChromosome.setLength(current.getLength());
-			}
+	public void updateChromosomeLengths(List<Integer> lengthList) {
+		for (int i = 0; i < chromosomeList.size(); i++) {
+			Chromosome newChromosome = new Chromosome(chromosomeList.get(i).getName(), lengthList.get(i));
+			chromosomeList.set(i, newChromosome);
 		}
 		genomeLengthCalculation();
 	}

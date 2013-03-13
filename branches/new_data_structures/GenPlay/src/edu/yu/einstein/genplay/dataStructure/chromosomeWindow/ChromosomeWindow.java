@@ -23,29 +23,10 @@ package edu.yu.einstein.genplay.dataStructure.chromosomeWindow;
 
 
 /**
- * A window on a chromosome or a scaffold with a start and stop position (in bp)
+ * A window on a chromosome or a scaffold with a start and stop position (in bp).
  * @author Nicolas Fourel
- * @version 0.1
  */
 public interface ChromosomeWindow extends Comparable<ChromosomeWindow> {
-
-
-	/**
-	 * @return a deep copy of the object
-	 */
-	public ChromosomeWindow deepClone();
-	
-	
-	/**
-	 * @return the size of the window in base pair (ie: stop - start)
-	 */
-	public int getSize();
-
-
-	/**
-	 * @return the position of the middle of the window
-	 */
-	public double getMiddlePosition();
 
 
 	/**
@@ -56,7 +37,19 @@ public interface ChromosomeWindow extends Comparable<ChromosomeWindow> {
 	 * @param position the position to check
 	 * @return 0 is the position is in the window, -1 if lower, 1 if higher.
 	 */
-	public int containsPosition (int position);
+	public int containsPosition(int position);
+
+
+	/**
+	 * @return the position of the middle of the window
+	 */
+	public double getMiddlePosition();
+
+
+	/**
+	 * @return the size of the window in base pair (ie: stop - start)
+	 */
+	public int getSize();
 
 
 	/**
@@ -66,22 +59,7 @@ public interface ChromosomeWindow extends Comparable<ChromosomeWindow> {
 
 
 	/**
-	 * Sets the start position of the window
-	 * @param start	the start position
-	 */
-	public void setStart (int start);
-
-
-	/**
-	 * @return the sopt position of the window
+	 * @return the stop position of the window
 	 */
 	public int getStop ();
-
-
-	/**
-	 * Sets the stop position of the window
-	 * @param stop	the stop position
-	 */
-	public void setStop (int stop);
-
 }

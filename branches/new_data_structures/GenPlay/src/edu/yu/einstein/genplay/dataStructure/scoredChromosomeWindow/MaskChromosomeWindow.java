@@ -27,37 +27,27 @@ import java.io.Serializable;
 import java.text.NumberFormat;
 
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
+import edu.yu.einstein.genplay.util.HashCodeUtil;
 
 
 /**
- * The ScoredChromosomeWindow class represents a window on a chromosome with a score.
+ * Implementation of a {@link ScoredChromosomeWindow} with a score always equal to one.
+ * {@link MaskChromosomeWindow} objects are immutable.
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class MaskChromosomeWindow implements ScoredChromosomeWindow, ChromosomeWindow, Serializable, Cloneable, Comparable<ChromosomeWindow> {
 
-	private static final long serialVersionUID = 8073707507054963197L; // generated ID
-	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private int  	start;		// Position start of the window
-	private int 	stop;		// Position stop of the window
+	/** Generated serial ID */
+	private static final long serialVersionUID = 8073707507054963197L;
 
+	/** Saved format version */
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;
 
-	/**
-	 * Default constructor
-	 */
-	public MaskChromosomeWindow() {
-		this(0, 0);
-	}
+	/** start position of the window */
+	private int start;		// Position start of the window
 
-
-	/**
-	 * Creates an instance of a {@link MaskChromosomeWindow}
-	 * @param chromosomeWindow a chromosome window
-	 */
-	public MaskChromosomeWindow(ChromosomeWindow chromosomeWindow) {
-		start = chromosomeWindow.getStart();
-		stop = chromosomeWindow.getStop();
-	}
+	/** stop position of the window */
+	private int stop;
 
 
 	/**
@@ -72,7 +62,8 @@ public final class MaskChromosomeWindow implements ScoredChromosomeWindow, Chrom
 
 
 	/**
-	 * Creates an instance of a {@link MaskChromosomeWindow}
+	 * Creates an instance of a {@link MaskChromosomeWindow} having the same
+	 * start and stop value as the specified {@link ScoredChromosomeWindow}
 	 * @param scw a {@link ScoredChromosomeWindow}
 	 */
 	public MaskChromosomeWindow(ScoredChromosomeWindow scw) {
@@ -123,12 +114,6 @@ public final class MaskChromosomeWindow implements ScoredChromosomeWindow, Chrom
 
 
 	@Override
-	public ScoredChromosomeWindow deepClone() {
-		return new MaskChromosomeWindow(this);
-	}
-
-
-	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;
@@ -150,49 +135,42 @@ public final class MaskChromosomeWindow implements ScoredChromosomeWindow, Chrom
 	}
 
 
-	/**
-	 * @return the position of the middle of the window
-	 */
 	@Override
 	public double getMiddlePosition() {
 		return (start + stop) / (double)2;
 	}
 
 
-
-	/**
-	 * @return the score
-	 */
 	@Override
 	public double getScore() {
 		return 1;
 	}
 
 
-	/**
-	 * @return the size of the window in base pair (ie: stop - start)
-	 */
 	@Override
 	public int getSize() {
 		return stop - start;
 	}
 
 
-	/**
-	 * @return the start
-	 */
 	@Override
 	public int getStart() {
 		return start;
 	}
 
 
-	/**
-	 * @return the stop
-	 */
 	@Override
 	public int getStop() {
 		return stop;
+	}
+
+
+	@Override
+	public int hashCode() {
+		int hashCode = HashCodeUtil.SEED;
+		hashCode = HashCodeUtil.hash(hashCode, start);
+		hashCode = HashCodeUtil.hash(hashCode, stop);
+		return hashCode;
 	}
 
 
@@ -206,31 +184,6 @@ public final class MaskChromosomeWindow implements ScoredChromosomeWindow, Chrom
 		in.readInt();
 		start = in.readInt();
 		stop = in.readInt();
-	}
-
-
-	/**
-	 * @param score the score to set
-	 */
-	@Override
-	public void setScore(double score) {}
-
-
-	/**
-	 * @param start the start to set
-	 */
-	@Override
-	public void setStart(int start) {
-		this.start = start;
-	}
-
-
-	/**
-	 * @param stop the stop to set
-	 */
-	@Override
-	public void setStop(int stop) {
-		this.stop = stop;
 	}
 
 

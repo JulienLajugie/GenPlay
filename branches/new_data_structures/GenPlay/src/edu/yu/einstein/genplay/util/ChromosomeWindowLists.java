@@ -28,11 +28,11 @@ import java.util.List;
 import edu.yu.einstein.genplay.core.comparator.ChromosomeWindowStartComparator;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
+import edu.yu.einstein.genplay.dataStructure.genomeList.GenomicDataArrayList;
+import edu.yu.einstein.genplay.dataStructure.genomeList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.genomeList.ImmutableGenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.IntArrayAsIntegerList;
-import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.GenomicDataList;
-import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.ImmutableGenomicDataList;
 
 
 /**

@@ -39,7 +39,7 @@ import edu.yu.einstein.genplay.core.multiGenome.operation.synchronization.MGSync
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.VariantType;
-import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.genomeList.GenomicDataList;
 import edu.yu.einstein.genplay.gui.action.multiGenome.synchronization.MGASynchronizing;
 
 
@@ -115,11 +115,11 @@ public class MultiGenomeProject implements Serializable {
 	 * @param project the instance of {@link MultiGenomeProject} to use
 	 */
 	protected void setMultiGenomeProject (MultiGenomeProject project) {
-		this.genomeNames = project.getGenomeNames();
-		this.genomeFileAssociation = project.getGenomeFileAssociation();
-		this.multiGenome = project.getMultiGenome();
-		this.multiGenomeSynchronizer = project.getMultiGenomeSynchronizer();
-		this.fileContentManager = project.getFileContentManager();
+		genomeNames = project.getGenomeNames();
+		genomeFileAssociation = project.getGenomeFileAssociation();
+		multiGenome = project.getMultiGenome();
+		multiGenomeSynchronizer = project.getMultiGenomeSynchronizer();
+		fileContentManager = project.getFileContentManager();
 	}
 
 
@@ -135,7 +135,7 @@ public class MultiGenomeProject implements Serializable {
 	 */
 	public void initializeSynchronization (Map<String, List<VCFFile>> genomeFileAssociation) {
 		this.genomeFileAssociation = genomeFileAssociation;
-		this.genomeNames = new ArrayList<String>(this.genomeFileAssociation.keySet());
+		genomeNames = new ArrayList<String>(this.genomeFileAssociation.keySet());
 		Collections.sort(genomeNames);
 
 		for (String genomeName: genomeNames) {
@@ -145,9 +145,9 @@ public class MultiGenomeProject implements Serializable {
 			}
 		}
 
-		this.multiGenome = new MGSMultiGenome(genomeNames);
-		this.multiGenomeSynchronizer = new MGSynchronizer(this);
-		this.fileContentManager = new MGFileContentManager(getAllVCFFiles());
+		multiGenome = new MGSMultiGenome(genomeNames);
+		multiGenomeSynchronizer = new MGSynchronizer(this);
+		fileContentManager = new MGFileContentManager(getAllVCFFiles());
 		initializeFileDependancy();
 	}
 
@@ -252,20 +252,19 @@ public class MultiGenomeProject implements Serializable {
 	public void updateChromosomeList () {
 		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		List<Chromosome> currentChromosomeList = projectChromosome.getChromosomeList();
-		List<Chromosome> newChromosomeList = new ArrayList<Chromosome>();
+		List<Integer> newChromosomeLengths = new ArrayList<Integer>();
 		GenomicDataList<MGSOffset> offsetList = multiGenome.getReferenceGenome().getAllele().getOffsetList();
 
 		for (Chromosome current: currentChromosomeList) {
-			String name = current.getName();
 			int lastOffsetIndex = offsetList.get(current).size() - 1;
 			int length = current.getLength();
 			if (lastOffsetIndex > -1) {
 				length += offsetList.get(current, lastOffsetIndex).getValue();
 			}
-			newChromosomeList.add(new Chromosome(name, length));
+			newChromosomeLengths.add(length);
 		}
 
-		projectChromosome.updateChromosomeLength(newChromosomeList);
+		projectChromosome.updateChromosomeLengths(newChromosomeLengths);
 	}
 
 

@@ -23,7 +23,7 @@ package edu.yu.einstein.genplay.gui.action.layer.binlayer;
 
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.genomeList.binList.BinList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
 

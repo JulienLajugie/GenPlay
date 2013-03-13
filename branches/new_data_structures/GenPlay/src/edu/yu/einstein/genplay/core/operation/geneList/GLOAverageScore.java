@@ -24,7 +24,7 @@ package edu.yu.einstein.genplay.core.operation.geneList;
 import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
-import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.genomeList.geneList.GeneList;
 
 
 

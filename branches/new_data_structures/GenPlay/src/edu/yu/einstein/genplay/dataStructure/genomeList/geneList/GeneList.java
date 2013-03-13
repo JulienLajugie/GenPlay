@@ -14,26 +14,41 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.list;
+package edu.yu.einstein.genplay.dataStructure.genomeList.geneList;
 
-import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
+import java.io.Serializable;
+
+import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
+import edu.yu.einstein.genplay.dataStructure.gene.Gene;
+import edu.yu.einstein.genplay.dataStructure.genomeList.ImmutableGenomicDataList;
+
 
 /**
- * Interface to implement to generate a list of data adapted to the track resolution
+ * Immutable list of {@link Gene} organized by chromosome.
  * @author Julien Lajugie
- * @param <T> Type of the data that will be returned to be displayed
  */
-public interface DisplayableDataList<T> {
+public interface GeneList extends ImmutableGenomicDataList<Gene>, Serializable {
+
 
 	/**
-	 * @param genomeWindow {@link SimpleGenomeWindow} to display
-	 * @param xRatio xRatio on the screen (ie ratio between the number of pixel and the number of base to display)
-	 * @return a data list adapted to the track resolution
+	 * @return the URL of the gene database that contains information about the genes of this list
 	 */
-	public T getFittedData(SimpleGenomeWindow genomeWindow, double xRatio);
+	public String getGeneDBURL();
+
+
+	/**
+	 * @return the type of the scores of the genes and exons of this list (RPKM, max, sum)
+	 */
+	public GeneScoreType getGeneScoreType();
+
+
+	/**
+	 * @return the {@link GeneSearcher} object that handles gene searches
+	 */
+	public GeneSearcher getGeneSearcher();
 }

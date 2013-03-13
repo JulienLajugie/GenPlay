@@ -22,7 +22,7 @@
 package edu.yu.einstein.genplay.core.operation.binList;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
-import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.genomeList.binList.BinList;
 
 
 /**

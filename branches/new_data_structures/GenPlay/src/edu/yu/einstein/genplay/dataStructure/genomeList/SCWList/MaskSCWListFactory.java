@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.list.SCWList;
+package edu.yu.einstein.genplay.dataStructure.genomeList.SCWList;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,9 +35,9 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
-import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
-import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.genomeList.GenomicDataArrayList;
+import edu.yu.einstein.genplay.dataStructure.genomeList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.genomeList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.MaskChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;

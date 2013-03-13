@@ -42,8 +42,8 @@ import javax.swing.JTextField;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
+import edu.yu.einstein.genplay.dataStructure.genomeList.geneList.GeneSearcher;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
-import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneSearcher;
 import edu.yu.einstein.genplay.util.Images;
 
 

@@ -31,9 +31,9 @@ import java.util.Map;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
-import edu.yu.einstein.genplay.dataStructure.list.geneList.GeneList;
-import edu.yu.einstein.genplay.dataStructure.list.geneList.SimpleGeneList;
-import edu.yu.einstein.genplay.dataStructure.list.genomicDataList.GenomicDataArrayList;
+import edu.yu.einstein.genplay.dataStructure.genomeList.GenomicDataArrayList;
+import edu.yu.einstein.genplay.dataStructure.genomeList.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.genomeList.geneList.SimpleGeneList;
 import edu.yu.einstein.genplay.util.Utils;
 
 

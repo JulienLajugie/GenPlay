@@ -25,171 +25,96 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
-
+import edu.yu.einstein.genplay.dataStructure.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.util.HashCodeUtil;
 
 
 /**
- * The Gene class provides a representation of a gene.
+ * Simple implementation of the {@link Gene} interface.
+ * {@link SimpleGene} objects are immutable.
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class SimpleGene implements Gene {
 
-	private static final long serialVersionUID = -9086602517817950291L; // generated ID
-	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// Saved format version
+	/** Generated serial ID */
+	private static final long serialVersionUID = -9086602517817950291L;
 
-	private String 		name; 			// name of the gene
-	private Chromosome	chromosome;		// chromosome
-	private Strand		strand;			// strand of the gene
-	private int 		start;	 		// start position of the gene
-	private int 		stop;	 		// end position of the gene
-	private double		score;			// score of the gene
-	private int			UTR5Bound;		// 5' UTR boundary
-	private int			UTR3Bound;		// 3' UTR bondary
-	private int[] 		exonStarts; 	// exon start positions
-	private int[] 		exonStops; 		// exon end positions
-	private double[]	exonScores;		// exon score
+	/**  Saved format version */
+	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;
+
+	/** Name of the gene */
+	private String name;
+
+	/** Strand of the gene */
+	private Strand strand;
+
+	/** Start position of the gene */
+	private int start;
+
+	/** End position of the gene */
+	private int stop;
+
+	/** Score of the gene */
+	private double score;
+
+	/**  5' UTR boundary */
+	private int UTR5Bound;
+
+	/** 3' UTR bondary */
+	private int UTR3Bound;
+
+	/** {@link ListView} of the exons of the gene*/
+	private ListView<ScoredChromosomeWindow> exons;
 
 
 	/**
-	 * Creates an instance of {@link SimpleGene}
-	 */
-	public SimpleGene() {
-		this(null, null, null, 0, 0, Double.NaN, 0, 0, null, null, null);
-	}
-
-
-	/**
-	 * Creates an instance of {@link SimpleGene} having the exact same values as the {@link SimpleGene} in parameter
-	 * @param gene a {@link SimpleGene}
+	 * Creates an instance of {@link SimpleGene} having the exact same values as the gene in parameter.
+	 * @param gene a {@link Gene}
 	 */
 	public SimpleGene(Gene gene) {
-		this(gene.getName(), gene.getChromosome(), gene.getStrand(), gene.getStart(), gene.getStop(), gene.getScore(), gene.getUTR5Bound(), gene.getUTR3Bound(), null, null, null);
-		if (gene.getExonStarts() != null) {
-			exonStarts = gene.getExonStarts().clone();
-		}
-		if (gene.getExonStops() != null) {
-			exonStops = gene.getExonStops().clone();
-		}
-		if (gene.getExonScores() != null) {
-			exonScores = gene.getExonScores().clone();
-		}
+		this(gene.getName(), gene.getStrand(), gene.getStart(), gene.getStop(), gene.getScore(), gene.getUTR5Bound(), gene.getUTR3Bound(), gene.getExons());
 	}
 
 
 	/**
 	 * Creates an instance of Gene.
-	 * @param name Name of gene
-	 * @param chromosome chromosome
-	 * @param strand Strand of the gene
-	 * @param start gene start position
-	 * @param stop gene end position
+	 * @param name name of the gene
+	 * @param strand strand of the gene
+	 * @param start start position of the gene
+	 * @param stop stop position of the gene
 	 * @param score score of the gene
-	 * @param UTR5Bound transcription 5' bond
-	 * @param UTR3Bound transcription 3' bond
-	 * @param exonStarts exon start positions
-	 * @param exonStops exon end positions
-	 * @param exonScores exon scores
+	 * @param UTR5Bound transcription 5' bound
+	 * @param UTR3Bound transcription 3' bound
+	 * @param exons exons of the gene
 	 */
-	public SimpleGene(String name, Chromosome chromosome, Strand strand, int start, int stop, double score, int UTR5Bound,int UTR3Bound, int[] exonStarts, int[] exonStops, double[] exonScores) {
+	public SimpleGene(String name, Strand strand, int start, int stop, double score, int UTR5Bound,int UTR3Bound, ListView<ScoredChromosomeWindow> exons) {
 		super();
 		this.name = name;
-		this.chromosome = chromosome;
 		this.strand = strand;
 		this.start = start;
 		this.stop = stop;
 		this.score = score;
 		this.UTR5Bound = UTR5Bound;
 		this.UTR3Bound = UTR3Bound;
-		this.exonStarts = exonStarts;
-		this.exonStops = exonStops;
-		this.exonScores = exonScores;
+		this.exons = exons;
 	}
 
 
 	/**
 	 * Creates an instance of Gene.
-	 * @param name Name of gene.
-	 * @param chromosome chromosome
-	 * @param strand strand of the gene.
-	 * @param start transcription start position.
-	 * @param stop transcription end position.
+	 * @param name name of the gene
+	 * @param strand strand of the gene
+	 * @param start start position of the gene
+	 * @param stop stop position of the gene
 	 * @param score score of the gene
-	 * @param exonStarts exon start positions.
-	 * @param exonStops exon end positions.
-	 * @param exonScores exon scores
+	 * @param exons exons of the gene
 	 */
-	public SimpleGene(String name, Chromosome chromosome, Strand strand, int start, int stop, double score, int[] exonStarts, int[] exonStops, double[] exonScores) {
-		this(name, chromosome, strand, start, stop, score, start, stop, exonStarts, exonStops, exonScores);
-	}
-
-
-	/**
-	 * Adds an exon to the Gene with no score
-	 * @param exonStart start position of the exon
-	 * @param exonStop stop position of the exon
-	 */
-	@Override
-	public void addExon(int exonStart, int exonStop) {
-		// case where it's the first exon
-		if (exonStarts == null) {
-			exonStarts = new int[1];
-			exonStops = new int[1];
-			exonStarts[0] = exonStart;
-			exonStops[0] = exonStop;
-		} else {
-			int length = exonStarts.length;
-			int[] exonStartsTmp = new int[length + 1];
-			int[] exonStopsTmp = new int[length + 1];
-			for (int i = 0; i < exonStarts.length; i++) {
-				exonStartsTmp[i] = exonStarts[i];
-				exonStopsTmp[i] = exonStops[i];
-			}
-			exonStartsTmp[length] = exonStart;
-			exonStopsTmp[length] = exonStop;
-			exonStarts = exonStartsTmp;
-			exonStops = exonStopsTmp;
-		}
-	}
-
-
-	/**
-	 * Adds an exon to the Gene
-	 * @param exonStart start position of the exon
-	 * @param exonStop stop position of the exon
-	 * @param exonScore score of the exon
-	 */
-	@Override
-	public void addExon(int exonStart, int exonStop, double exonScore) {
-		// case where it's the first exon
-		if (exonStarts == null) {
-			exonStarts = new int[1];
-			exonStops = new int[1];
-			exonScores = new double[1];
-			exonStarts[0] = exonStart;
-			exonStops[0] = exonStop;
-			exonScores[0] = exonScore;
-		} else {
-			int length = exonStarts.length;
-			int[] exonStartsTmp = new int[length + 1];
-			int[] exonStopsTmp = new int[length + 1];
-			double[] exonScoresTmp = new double[length + 1];
-			for (int i = 0; i < exonStarts.length; i++) {
-				exonStartsTmp[i] = exonStarts[i];
-				exonStopsTmp[i] = exonStops[i];
-				exonScoresTmp[i] = exonScores[i];
-			}
-			exonStartsTmp[length] = exonStart;
-			exonStopsTmp[length] = exonStop;
-			exonScoresTmp[length] = exonScore;
-			exonStarts = exonStartsTmp;
-			exonStops = exonStopsTmp;
-			exonScores = exonScoresTmp;
-		}
+	public SimpleGene(String name, Strand strand, int start, int stop, double score, ListView<ScoredChromosomeWindow> exons) {
+		this(name, strand, start, stop, score, start, stop, exons);
 	}
 
 
@@ -206,69 +131,69 @@ public final class SimpleGene implements Gene {
 
 
 	@Override
-	public Gene deepClone() {
-		return new SimpleGene(this);
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		SimpleGene other = (SimpleGene) obj;
+		if (name == null) {
+			if (other.name != null) {
+				return false;
+			}
+		} else if (!name.equals(other.name)) {
+			return false;
+		}
+		if (strand == null) {
+			if (other.strand != null) {
+				return false;
+			}
+		} else if (!strand.equals(other.strand)) {
+			return false;
+		}
+		if (start != other.start) {
+			return false;
+		}
+		if (stop != other.stop) {
+			return false;
+		}
+		if (score != other.score) {
+			return false;
+		}
+		if (UTR5Bound != other.UTR5Bound) {
+			return false;
+		}
+		if (UTR3Bound != other.UTR3Bound) {
+			return false;
+		}
+		if (exons == null) {
+			if (other.exons != null) {
+				return false;
+			}
+		} else if (!exons.equals(other.exons)) {
+			return false;
+		}
+		return true;
 	}
 
 
-	/**
-	 * @param aName Name of a chromosome
-	 * @return True if <i>aName</i> equals the name of the chromosome. False otherwise.
-	 */
 	@Override
-	public boolean equals(String aName) {
-		return name.equalsIgnoreCase(aName);
+	public ListView<ScoredChromosomeWindow> getExons() {
+		return exons;
 	}
 
 
-	/**
-	 * @return The chromosome of the gene.
-	 */
-	@Override
-	public Chromosome getChromosome() {
-		return chromosome;
-	}
-
-
-	/**
-	 * @return the exonScores
-	 */
-	@Override
-	public double[] getExonScores() {
-		return exonScores;
-	}
-
-
-	/**
-	 * @return the exonStarts
-	 */
-	@Override
-	public int[] getExonStarts() {
-		return exonStarts;
-	}
-
-
-	/**
-	 * @return the exonStops
-	 */
-	@Override
-	public int[] getExonStops() {
-		return exonStops;
-	}
-
-
-	/**
-	 * @return the middle position of the genes
-	 */
 	@Override
 	public double getMiddlePosition() {
 		return (start + stop) / 2d;
 	}
 
 
-	/**
-	 * @return the name
-	 */
 	@Override
 	public String getName() {
 		return name;
@@ -287,48 +212,48 @@ public final class SimpleGene implements Gene {
 	}
 
 
-	/**
-	 * @return the start position of the gene
-	 */
 	@Override
 	public int getStart() {
 		return start;
 	}
 
 
-	/**
-	 * @return the stop position of the gene
-	 */
 	@Override
 	public int getStop() {
 		return stop;
 	}
 
 
-	/**
-	 * @return the strand
-	 */
 	@Override
 	public Strand getStrand() {
 		return strand;
 	}
 
 
-	/**
-	 * @return the 3' bondary of the translation
-	 */
 	@Override
 	public int getUTR3Bound() {
 		return UTR3Bound;
 	}
 
 
-	/**
-	 * @return the 5' bondary of the translation
-	 */
 	@Override
 	public int getUTR5Bound() {
 		return UTR5Bound;
+	}
+
+
+	@Override
+	public int hashCode() {
+		int hashCode = HashCodeUtil.SEED;
+		hashCode = HashCodeUtil.hash(hashCode, name);
+		hashCode = HashCodeUtil.hash(hashCode, strand);
+		hashCode = HashCodeUtil.hash(hashCode, start);
+		hashCode = HashCodeUtil.hash(hashCode, stop);
+		hashCode = HashCodeUtil.hash(hashCode, score);
+		hashCode = HashCodeUtil.hash(hashCode, UTR5Bound);
+		hashCode = HashCodeUtil.hash(hashCode, UTR3Bound);
+		hashCode = HashCodeUtil.hash(hashCode, exons);
+		return hashCode;
 	}
 
 
@@ -338,121 +263,17 @@ public final class SimpleGene implements Gene {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
+	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		name = (String) in.readObject();
-		chromosome = (Chromosome) in.readObject();
 		strand = (Strand) in.readObject();
 		start = in.readInt();
 		stop = in.readInt();
 		score = in.readDouble();
 		UTR5Bound = in.readInt();
 		UTR3Bound = in.readInt();
-		exonStarts = (int[]) in.readObject();
-		exonStops = (int[]) in.readObject();
-		exonScores = (double[]) in.readObject();
-	}
-
-
-	/**
-	 * @param chromosome the chromosome to set
-	 */
-	@Override
-	public void setChromosome(Chromosome chromosome) {
-		this.chromosome = chromosome;
-	}
-
-
-	/**
-	 * @param exonScores the exonScores to set
-	 */
-	@Override
-	public void setExonScores(double[] exonScores) {
-		this.exonScores = exonScores;
-	}
-
-
-	/**
-	 * @param exonStarts the exonStarts to set
-	 */
-	@Override
-	public void setExonStarts(int[] exonStarts) {
-		this.exonStarts = exonStarts;
-	}
-
-
-	/**
-	 * @param exonStops the exonStops to set
-	 */
-	@Override
-	public void setExonStops(int[] exonStops) {
-		this.exonStops = exonStops;
-	}
-
-
-	/**
-	 * @param name the name to set
-	 */
-	@Override
-	public void setName(String name) {
-		this.name = name;
-	}
-
-
-	@Override
-	public void setScore(double score) {
-		this.score = score;
-	}
-
-
-	/**
-	 * @param start the start position of the gene to set
-	 */
-	@Override
-	public void setStart(int start) {
-		this.start = start;
-	}
-
-
-	/**
-	 * @param stop the stop to set
-	 */
-	@Override
-	public void setStop(int stop) {
-		this.stop = stop;
-	}
-
-
-	/**
-	 * @param strand the strand to set
-	 */
-	@Override
-	public void setStrand(Strand strand) {
-		this.strand = strand;
-	}
-
-
-	/**
-	 * @param UTR3Bound the 3' translation bound to set
-	 */
-	@Override
-	public void setUTR3Bond(int UTR3Bound) {
-		this.UTR3Bound = UTR3Bound;
-	}
-
-
-	/**
-	 * @param UTR5Bound the 5' translation bound to set
-	 */
-	@Override
-	public void setUTR5Bound(int UTR5Bound) {
-		this.UTR5Bound = UTR5Bound;
-	}
-
-
-	@Override
-	public String toString() {
-		return chromosome.toString() + "\t" + start + "\t" + stop +"\t" + name + "\t" + strand;
+		exons = (ListView<ScoredChromosomeWindow>) in.readObject();
 	}
 
 
@@ -464,15 +285,12 @@ public final class SimpleGene implements Gene {
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeObject(name);
-		out.writeObject(chromosome);
 		out.writeObject(strand);
 		out.writeInt(start);
 		out.writeInt(stop);
 		out.writeDouble(score);
 		out.writeInt(UTR5Bound);
 		out.writeInt(UTR3Bound);
-		out.writeObject(exonStarts);
-		out.writeObject(exonStops);
-		out.writeObject(exonScores);
+		out.writeObject(exons);
 	}
 }

@@ -28,22 +28,14 @@ import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 
 
 /**
- * A window on the genome with a chromosome and a start and stop position (in bp) on this chromosome
+ * A window on a genome with a chromosome and a start and stop position (in bp) on this chromosome
  * @author Julien Lajugie
- * @version 0.1
  */
-public interface GenomeWindow extends Serializable, Cloneable, ChromosomeWindow {
+public interface GenomeWindow extends Serializable, ChromosomeWindow {
 
 
 	/**
 	 * @return the chromosome
 	 */
 	public abstract Chromosome getChromosome();
-
-
-
-	/**
-	 * @param chromosome the chromosome to set
-	 */
-	public abstract void setChromosome(Chromosome chromosome);
 }

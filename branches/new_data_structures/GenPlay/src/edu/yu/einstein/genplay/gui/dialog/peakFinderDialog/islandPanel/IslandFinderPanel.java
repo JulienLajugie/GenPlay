@@ -31,7 +31,7 @@ import javax.swing.JPanel;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.binList.BLOFindIslands;
 import edu.yu.einstein.genplay.dataStructure.enums.IslandResultType;
-import edu.yu.einstein.genplay.dataStructure.list.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.genomeList.binList.BinList;
 import edu.yu.einstein.genplay.gui.dialog.peakFinderDialog.PeakFinderPanel;
 
 

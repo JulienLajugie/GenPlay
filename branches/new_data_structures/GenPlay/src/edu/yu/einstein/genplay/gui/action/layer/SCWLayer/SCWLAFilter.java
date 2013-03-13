@@ -28,7 +28,7 @@ import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOFilterBandStop;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOFilterCount;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOFilterPercentage;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOFilterThreshold;
-import edu.yu.einstein.genplay.dataStructure.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.genomeList.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.filterDialog.FilterDialog;
 import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;

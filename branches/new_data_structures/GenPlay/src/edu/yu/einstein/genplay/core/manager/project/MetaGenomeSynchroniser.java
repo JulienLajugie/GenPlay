@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -43,7 +43,7 @@ public class MetaGenomeSynchroniser implements Serializable {
 
 	private static final long serialVersionUID = 8473172631163790164L; 	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private 		Map<Chromosome, Integer> 	chromosomeLength;		// The chromosome length list
+	private 		Map<String, Integer> 		chromosomeLength;		// The chromosome length list
 	private			List<Chromosome> 			chromosomeList;			// The chromosome list for multi genome project
 	private 		long 						genomomeLength = 0;		// Genome length
 
@@ -70,12 +70,12 @@ public class MetaGenomeSynchroniser implements Serializable {
 	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		chromosomeLength = (Map<Chromosome, Integer>) in.readObject();
+		chromosomeLength = (Map<String, Integer>) in.readObject();
 		chromosomeList = (List<Chromosome>) in.readObject();
 		genomomeLength = in.readLong();
 	}
-	
-	
+
+
 	/**
 	 * Constructor of {@link MetaGenomeSynchroniser}
 	 */
@@ -83,7 +83,7 @@ public class MetaGenomeSynchroniser implements Serializable {
 		initializeMetaGenomeSynchronizer(chromosomeList);
 	}
 
-	
+
 	/**
 	 * Initializes basic meta genome synchronizer parameters.
 	 * The list of chromosome and the list of their length to native value.
@@ -91,10 +91,10 @@ public class MetaGenomeSynchroniser implements Serializable {
 	 */
 	private void initializeMetaGenomeSynchronizer (List<Chromosome> chromosomeListTmp) {
 		chromosomeList = new ArrayList<Chromosome>();
-		chromosomeLength = new HashMap<Chromosome, Integer>();
+		chromosomeLength = new HashMap<String, Integer>();
 		for (Chromosome chromosome: chromosomeListTmp) {
 			chromosomeList.add(new Chromosome(chromosome.getName(), chromosome.getLength()));
-			chromosomeLength.put(chromosome, chromosome.getLength());
+			chromosomeLength.put(chromosome.getName(), chromosome.getLength());
 		}
 	}
 
@@ -116,8 +116,8 @@ public class MetaGenomeSynchroniser implements Serializable {
 	 * @param chromosome the chromosome
 	 * @param length	the length to add
 	 */
-	protected void updateChromosomeLength (Chromosome chromosome, int length) {
-		chromosomeLength.put(chromosome, chromosomeLength.get(chromosome) + length);
+	protected void updateChromosomeLength(Chromosome chromosome, int length) {
+		chromosomeLength.put(chromosome.getName(), chromosomeLength.get(chromosome) + length);
 	}
 
 
@@ -125,22 +125,22 @@ public class MetaGenomeSynchroniser implements Serializable {
 	 * Refreshes chromosome references re-creating list with right chromosomes with right lengths.
 	 */
 	protected void refreshChromosomeReferences () {
-		
+
 		// Initializes temporary lists
 		List<Chromosome> chromosomeListTmp = new ArrayList<Chromosome>();
-		Map<Chromosome, Integer> chromosomeLengthTmp = new HashMap<Chromosome, Integer>();
-		
+		Map<String, Integer> chromosomeLengthTmp = new HashMap<String, Integer>();
+
 		// For every chromosome of the project
 		for (Chromosome chromosome: chromosomeList) {
-			
+
 			// Creates a new chromosome with the right length
 			Chromosome newChromosome = new Chromosome(chromosome.getName(), chromosomeLength.get(chromosome));
-			
+
 			// Adds it to the temporary lists
 			chromosomeListTmp.add(newChromosome);
-			chromosomeLengthTmp.put(newChromosome, chromosomeLength.get(chromosome));
+			chromosomeLengthTmp.put(newChromosome.getName(), chromosomeLength.get(chromosome));
 		}
-		
+
 		// Replaces previous list using the new ones
 		chromosomeList = chromosomeListTmp;
 		chromosomeLength = chromosomeLengthTmp;
@@ -168,8 +168,8 @@ public class MetaGenomeSynchroniser implements Serializable {
 	 */
 	public void showData () {
 		System.out.println("========== chromosomeLength");
-		for (Chromosome chromosome: chromosomeLength.keySet()) {
-			System.out.println(chromosome.getName() + ", " + chromosome.getLength() + ", " + chromosomeLength.get(chromosome));
+		for (String chromosomeName: chromosomeLength.keySet()) {
+			System.out.println(chromosomeName + ", " + chromosomeLength.get(chromosomeName) + ", " + chromosomeLength.get(chromosomeName));
 		}
 		System.out.println("========== chromosomeList");
 		for (Chromosome chromosome: chromosomeList) {

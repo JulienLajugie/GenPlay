@@ -45,7 +45,7 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 	private static final long 	serialVersionUID 				= -9014173267531950797L;	// Generated serial version ID
 	private static final int  	SAVED_FORMAT_VERSION_NUMBER 	= 0;						// saved format version
 	private List<GenomeWindowListener> 	gwListenerList;			// list of GenomeWindowListener
-	private SimpleGenomeWindow				genomeWindow;			// the genome window displayed by the track
+	private SimpleGenomeWindow			genomeWindow;			// the genome window displayed by the track
 	private int							trackWidth;				// width of the tracks
 	private transient double			xRatio;					// ratio of the track width to the genome window width
 
