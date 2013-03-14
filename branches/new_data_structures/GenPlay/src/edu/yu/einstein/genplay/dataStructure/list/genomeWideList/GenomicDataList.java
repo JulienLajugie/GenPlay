@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.genomeList;
+package edu.yu.einstein.genplay.dataStructure.list.genomeWideList;
 
 import java.io.Serializable;
 import java.util.List;

@@ -28,7 +28,7 @@ import java.io.ObjectOutputStream;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
-import edu.yu.einstein.genplay.dataStructure.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.util.HashCodeUtil;
 
@@ -43,32 +43,32 @@ public final class SimpleGene implements Gene {
 	/** Generated serial ID */
 	private static final long serialVersionUID = -9086602517817950291L;
 
-	/**  Saved format version */
-	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;
+	/**  Version number of the class */
+	private static final transient int CLASS_VERSION_NUMBER = 0;
 
 	/** Name of the gene */
-	private String name;
+	private final String name;
 
 	/** Strand of the gene */
-	private Strand strand;
+	private final Strand strand;
 
 	/** Start position of the gene */
-	private int start;
+	private final int start;
 
 	/** End position of the gene */
-	private int stop;
+	private final int stop;
 
 	/** Score of the gene */
-	private double score;
+	private final double score;
 
 	/**  5' UTR boundary */
-	private int UTR5Bound;
+	private final int UTR5Bound;
 
 	/** 3' UTR bondary */
-	private int UTR3Bound;
+	private final int UTR3Bound;
 
 	/** {@link ListView} of the exons of the gene*/
-	private ListView<ScoredChromosomeWindow> exons;
+	private final ListView<ScoredChromosomeWindow> exons;
 
 
 	/**
@@ -263,17 +263,11 @@ public final class SimpleGene implements Gene {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		// read the final fields
+		in.defaultReadObject();
+		// read the class version number
 		in.readInt();
-		name = (String) in.readObject();
-		strand = (Strand) in.readObject();
-		start = in.readInt();
-		stop = in.readInt();
-		score = in.readDouble();
-		UTR5Bound = in.readInt();
-		UTR3Bound = in.readInt();
-		exons = (ListView<ScoredChromosomeWindow>) in.readObject();
 	}
 
 
@@ -283,14 +277,9 @@ public final class SimpleGene implements Gene {
 	 * @throws IOException
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(name);
-		out.writeObject(strand);
-		out.writeInt(start);
-		out.writeInt(stop);
-		out.writeDouble(score);
-		out.writeInt(UTR5Bound);
-		out.writeInt(UTR3Bound);
-		out.writeObject(exons);
+		// write the final fields
+		out.defaultWriteObject();
+		// write the class version number
+		out.writeInt(CLASS_VERSION_NUMBER);
 	}
 }

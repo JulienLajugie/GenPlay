@@ -24,10 +24,10 @@ package edu.yu.einstein.genplay.core.converter.geneListConverter;
 import edu.yu.einstein.genplay.core.converter.Converter;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOCleanList;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.dataStructure.genomeList.GenomicDataList;
-import edu.yu.einstein.genplay.dataStructure.genomeList.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.dataStructure.genomeList.SCWList.SimpleSCWList;
-import edu.yu.einstein.genplay.dataStructure.genomeList.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 
 
 /**

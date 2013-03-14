@@ -19,12 +19,12 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.genomeList.SCWList;
+package edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList;
 
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
-import edu.yu.einstein.genplay.dataStructure.genomeList.GenomicDataList;
-import edu.yu.einstein.genplay.dataStructure.genomeList.ImmutableGenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ImmutableGenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 

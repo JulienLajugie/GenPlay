@@ -19,13 +19,13 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.genomeList;
+package edu.yu.einstein.genplay.dataStructure.list.genomeWideList;
 
 import java.io.Serializable;
 import java.util.List;
 
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 
 
@@ -66,7 +66,7 @@ public interface ImmutableGenomicDataList <T> extends Serializable, Iterable<Lis
 	 * @param chromosomeIndex index of a chromosome
 	 * @return the {@link ListView} at the specified index. The returned list is immutable (read only)
 	 */
-	public List<T> getView(int chromosomeIndex);
+	public ListView<T> getView(int chromosomeIndex);
 
 
 	/**

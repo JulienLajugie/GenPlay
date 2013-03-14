@@ -28,7 +28,7 @@ import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.geneList.GLOCountAllGenes;
-import edu.yu.einstein.genplay.dataStructure.genomeList.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
 import edu.yu.einstein.genplay.util.Utils;

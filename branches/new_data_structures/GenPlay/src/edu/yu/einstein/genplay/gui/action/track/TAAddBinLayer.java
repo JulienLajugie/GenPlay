@@ -34,7 +34,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
-import edu.yu.einstein.genplay.dataStructure.genomeList.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.newCurveLayerDialog.NewCurveLayerDialog;
 import edu.yu.einstein.genplay.gui.track.Track;

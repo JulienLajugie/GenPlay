@@ -25,11 +25,11 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.enums.CoordinateSystemType;
-import edu.yu.einstein.genplay.dataStructure.genomeList.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.genomeList.GenomicDataList;
-import edu.yu.einstein.genplay.dataStructure.genomeList.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.IntArrayAsIntegerList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
 
 
 /**

@@ -29,7 +29,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationTwoLayersMethod;
-import edu.yu.einstein.genplay.dataStructure.genomeList.ImmutableGenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ImmutableGenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 

@@ -22,10 +22,10 @@
 package edu.yu.einstein.genplay.core.converter.binListConverter;
 
 import edu.yu.einstein.genplay.core.converter.Converter;
-import edu.yu.einstein.genplay.dataStructure.genomeList.GenomicDataList;
-import edu.yu.einstein.genplay.dataStructure.genomeList.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.dataStructure.genomeList.SCWList.SimpleSCWList;
-import edu.yu.einstein.genplay.dataStructure.genomeList.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 
 
 /**

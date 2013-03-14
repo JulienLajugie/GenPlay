@@ -31,7 +31,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.core.operation.binList.BLOMaxScoreToDisplay;
 import edu.yu.einstein.genplay.core.operation.binList.BLOMinScoreToDisplay;
 import edu.yu.einstein.genplay.dataStructure.enums.GraphType;
-import edu.yu.einstein.genplay.dataStructure.genomeList.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackConstants;
 import edu.yu.einstein.genplay.util.colors.Colors;

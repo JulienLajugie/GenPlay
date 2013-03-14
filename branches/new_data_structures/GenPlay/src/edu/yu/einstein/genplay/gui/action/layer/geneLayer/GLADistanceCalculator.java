@@ -36,7 +36,7 @@ import edu.yu.einstein.genplay.core.comparator.ChromosomeWindowStopComparator;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.geneList.GLODistanceCalculator;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
-import edu.yu.einstein.genplay.dataStructure.genomeList.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotData;
 import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotPane;

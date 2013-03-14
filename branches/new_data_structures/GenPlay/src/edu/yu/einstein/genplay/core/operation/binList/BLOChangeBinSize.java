@@ -25,7 +25,7 @@ import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.dataStructure.genomeList.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 
 
 

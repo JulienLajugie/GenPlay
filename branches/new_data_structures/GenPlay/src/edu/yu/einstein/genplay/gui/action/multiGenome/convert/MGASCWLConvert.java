@@ -30,7 +30,7 @@ import javax.swing.JOptionPane;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.operation.ExportEngine;
 import edu.yu.einstein.genplay.core.multiGenome.operation.BED.MGOBedConvertSingleFile;
-import edu.yu.einstein.genplay.dataStructure.genomeList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;

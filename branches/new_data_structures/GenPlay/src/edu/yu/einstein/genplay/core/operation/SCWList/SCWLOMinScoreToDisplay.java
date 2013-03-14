@@ -22,7 +22,7 @@
 package edu.yu.einstein.genplay.core.operation.SCWList;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
-import edu.yu.einstein.genplay.dataStructure.genomeList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
 
 
 /**

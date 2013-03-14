@@ -8,9 +8,9 @@ import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.repeatFamilyList.RFLOConvertIntoMask;
-import edu.yu.einstein.genplay.dataStructure.genomeList.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.dataStructure.genomeList.repeatFamilyList.RepeatFamilyList;
-import edu.yu.einstein.genplay.dataStructure.repeatFamily.RepeatFamily;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.repeatFamily.RepeatFamily;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.repeatFamilyList.RepeatFamilyList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.checkBoxTableChooser.CheckBoxTableChooserDialog;
 import edu.yu.einstein.genplay.gui.dialog.trackChooser.TrackChooser;

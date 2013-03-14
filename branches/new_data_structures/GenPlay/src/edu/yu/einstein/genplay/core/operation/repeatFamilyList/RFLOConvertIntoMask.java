@@ -30,10 +30,10 @@ import java.util.concurrent.Callable;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.genomeList.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.dataStructure.genomeList.SCWList.SimpleSCWList;
-import edu.yu.einstein.genplay.dataStructure.genomeList.repeatFamilyList.RepeatFamilyList;
-import edu.yu.einstein.genplay.dataStructure.repeatFamily.RepeatFamily;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.repeatFamily.RepeatFamily;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.repeatFamilyList.RepeatFamilyList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.MaskChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 

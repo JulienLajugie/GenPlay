@@ -25,7 +25,7 @@ import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.geneList.GLOUniqueScore;
-import edu.yu.einstein.genplay.dataStructure.genomeList.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
 import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;

@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.ChromosomeWindowException;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
@@ -17,16 +18,19 @@ import edu.yu.einstein.genplay.util.Utils;
  * {@link SimpleChromosomeWindow} objects are immutable.
  * @author Julien Lajugie
  */
-public class SimpleGenomeWindow extends SimpleChromosomeWindow implements GenomeWindow {
+public final class SimpleGenomeWindow implements GenomeWindow {
 
 	/** Generated serial ID */
 	private static final long serialVersionUID = 8873056842762282328L;
 
-	/** Saved format version */
-	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;
+	/**  Version number of the class */
+	private static final transient int CLASS_VERSION_NUMBER = 0;
 
 	/** Chromosome of the window */
-	private Chromosome chromosome;
+	private final Chromosome chromosome;
+
+	/**  Start and stop positions of the window on the chromosome */
+	private final ChromosomeWindow chromosomeWindow;
 
 
 	/**
@@ -36,8 +40,8 @@ public class SimpleGenomeWindow extends SimpleChromosomeWindow implements Genome
 	 * @param stop a window stop
 	 */
 	public SimpleGenomeWindow(Chromosome chromosome, int start, int stop) {
-		super(start, stop);
 		this.chromosome = chromosome;
+		chromosomeWindow = new SimpleChromosomeWindow(start, stop);
 	}
 
 
@@ -49,8 +53,20 @@ public class SimpleGenomeWindow extends SimpleChromosomeWindow implements Genome
 	 * @throws InvalidChromosomeException
 	 */
 	public SimpleGenomeWindow(String genomeWindowStr, ProjectChromosome projectChromosome) throws ChromosomeWindowException, InvalidChromosomeException {
-		super(Utils.split(genomeWindowStr, ':')[1].trim());
 		chromosome = projectChromosome.get(Utils.split(genomeWindowStr, ':')[0].trim());
+		chromosomeWindow = new SimpleChromosomeWindow(Utils.split(genomeWindowStr, ':')[1].trim());
+	}
+
+
+	@Override
+	public int compareTo(ChromosomeWindow o) {
+		return chromosomeWindow.compareTo(o);
+	}
+
+
+	@Override
+	public int containsPosition(int position) {
+		return chromosomeWindow.containsPosition(position);
 	}
 
 
@@ -77,14 +93,6 @@ public class SimpleGenomeWindow extends SimpleChromosomeWindow implements Genome
 	}
 
 
-	@Override
-	public int hashCode() {
-		int hashCode = super.hashCode();
-		hashCode = HashCodeUtil.hash(hashCode, chromosome);
-		return hashCode;
-	}
-
-
 	/**
 	 * @return the chromosome
 	 */
@@ -94,15 +102,49 @@ public class SimpleGenomeWindow extends SimpleChromosomeWindow implements Genome
 	}
 
 
+	@Override
+	public double getMiddlePosition() {
+		return chromosomeWindow.getMiddlePosition();
+	}
+
+
+	@Override
+	public int getSize() {
+		return chromosomeWindow.getSize();
+	}
+
+
+	@Override
+	public int getStart() {
+		return chromosomeWindow.getStart();
+	}
+
+
+	@Override
+	public int getStop() {
+		return chromosomeWindow.getStop();
+	}
+
+
+	@Override
+	public int hashCode() {
+		int hashCode = super.hashCode();
+		hashCode = HashCodeUtil.hash(hashCode, chromosome);
+		return hashCode;
+	}
+
+
 	/**
-	 * Method used for unserialization
+	 * Method used for deserialization
 	 * @param in
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		// read the final fields
+		in.defaultReadObject();
+		// read the class version number
 		in.readInt();
-		chromosome = (Chromosome) in.readObject();
 	}
 
 
@@ -118,7 +160,9 @@ public class SimpleGenomeWindow extends SimpleChromosomeWindow implements Genome
 	 * @throws IOException
 	 */
 	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(chromosome);
+		// write the final fields
+		out.defaultWriteObject();
+		// write the class version number
+		out.writeInt(CLASS_VERSION_NUMBER);
 	}
 }

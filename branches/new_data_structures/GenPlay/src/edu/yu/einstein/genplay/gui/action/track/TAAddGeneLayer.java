@@ -27,7 +27,7 @@ import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.generator.GeneListGenerator;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.dataStructure.genomeList.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection.GenomeSelectionDialog;
 import edu.yu.einstein.genplay.gui.track.Track;

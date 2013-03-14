@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.genomeList.SCWList;
+package edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,10 +34,10 @@ import edu.yu.einstein.genplay.core.operation.SCWList.overlap.OverlapManagement;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.dataStructure.genomeList.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.genomeList.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.IntArrayAsIntegerList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;

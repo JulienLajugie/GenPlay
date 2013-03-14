@@ -30,7 +30,7 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.binList.BLOFindIslands;
 import edu.yu.einstein.genplay.core.operation.binList.BLOFindPeaksDensity;
 import edu.yu.einstein.genplay.core.operation.binList.BLOFindPeaksStDev;
-import edu.yu.einstein.genplay.dataStructure.genomeList.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.peakFinderDialog.PeakFinderDialog;
 import edu.yu.einstein.genplay.gui.dialog.trackChooser.TrackChooser;

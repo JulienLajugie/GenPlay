@@ -34,7 +34,7 @@ import java.util.zip.GZIPInputStream;
 import edu.yu.einstein.genplay.core.generator.BinListGenerator;
 import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.dataStructure.genomeList.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 
 
 

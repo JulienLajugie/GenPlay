@@ -22,9 +22,9 @@
 package edu.yu.einstein.genplay.core.operation.binList;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
-import edu.yu.einstein.genplay.dataStructure.genomeList.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.dataStructure.genomeList.SCWList.SimpleSCWList;
-import edu.yu.einstein.genplay.dataStructure.genomeList.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 
 
 /**

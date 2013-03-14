@@ -31,9 +31,9 @@ import java.util.List;
 import edu.yu.einstein.genplay.core.comparator.MGOffsetComparator;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.genomeList.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.genomeList.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.IntArrayAsOffsetList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
 
 /**
  * @author Nicolas Fourel

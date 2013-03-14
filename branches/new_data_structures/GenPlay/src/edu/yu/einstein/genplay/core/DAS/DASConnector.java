@@ -41,12 +41,12 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
-import edu.yu.einstein.genplay.dataStructure.genomeList.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.genomeList.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.dataStructure.genomeList.SCWList.SimpleSCWList;
-import edu.yu.einstein.genplay.dataStructure.genomeList.geneList.GeneList;
-import edu.yu.einstein.genplay.dataStructure.genomeList.geneList.SimpleGeneList;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.SimpleGeneList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 

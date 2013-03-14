@@ -27,54 +27,36 @@ import java.io.Serializable;
 import java.text.NumberFormat;
 
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
+import edu.yu.einstein.genplay.util.HashCodeUtil;
 
 
 /**
- * The ScoredChromosomeWindow class represents a window on a chromosome with a score.
+ * Simple implementation of the {@link ScoredChromosomeWindow} interface.
+ * {@link ScoredChromosomeWindow} objects are immutable.
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class SimpleScoredChromosomeWindow implements ScoredChromosomeWindow, Serializable, Cloneable, Comparable<ChromosomeWindow> {
 
-	private static final long serialVersionUID = 8073707507054963197L; // generated ID
-	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
+	/** Generated serial ID */
+	private static final long serialVersionUID = 8073707507054963197L;
 
-	private int  	start;		// Position start of the window
-	private int 	stop;		// Position stop of the window
-	private double 	score;		// score of the window
+	/**  Version number of the class */
+	private static final transient int CLASS_VERSION_NUMBER = 0;
 
+	/** Start position of the window */
+	private final int start;
 
-	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeInt(start);
-		out.writeInt(stop);
-		out.writeDouble(score);
-	}
+	/** Stop position of the window */
+	private final int stop;
 
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		start = in.readInt();
-		stop = in.readInt();
-		score = in.readDouble();
-	}
+	/** Score of the window */
+	private final double score;
 
 
 	/**
 	 * Creates an instance of a {@link SimpleScoredChromosomeWindow}
-	 * @param start start position
-	 * @param stop stop position
+	 * @param start start position of the window
+	 * @param stop stop position of the window
 	 * @param score score of the window
 	 */
 	public SimpleScoredChromosomeWindow(int start, int stop, double score) {
@@ -94,17 +76,33 @@ public final class SimpleScoredChromosomeWindow implements ScoredChromosomeWindo
 		score = scw.getScore();
 	}
 
-	/**
-	 * Default constructor of {@link SimpleScoredChromosomeWindow}
-	 */
-	public SimpleScoredChromosomeWindow() {}
+
+	@Override
+	public int compareTo(ChromosomeWindow otherChromosomeWindow) {
+		if (start > otherChromosomeWindow.getStart()) {
+			return 1;
+		} else if (start < otherChromosomeWindow.getStart()) {
+			return -1;
+		} else {
+			if (stop > otherChromosomeWindow.getStop()) {
+				return 1;
+			} else if (stop < otherChromosomeWindow.getStop()) {
+				return -1;
+			} else {
+				return 0;
+			}
+		}
+	}
 
 
 	@Override
-	public String toString() {
-		String startStr = NumberFormat.getInstance().format(start);
-		String stopStr = NumberFormat.getInstance().format(stop);
-		return startStr + "-" + stopStr + " : " + score;
+	public int containsPosition (int position) {
+		if (position < start) {
+			return -1;
+		} else if (position > stop) {
+			return 1;
+		}
+		return 0;
 	}
 
 
@@ -133,114 +131,12 @@ public final class SimpleScoredChromosomeWindow implements ScoredChromosomeWindo
 	}
 
 
-	/**
-	 * @return the size of the window in base pair (ie: stop - start)
-	 */
-	@Override
-	public int getSize() {
-		return stop - start;
-	}
-
-
-
-	/**
-	 * @return the position of the middle of the window
-	 */
 	@Override
 	public double getMiddlePosition() {
 		return (start + stop) / (double)2;
 	}
 
 
-	/**
-	 * Checks if the window contains the given position.
-	 * If the position is located before the window, -1 is returned.
-	 * If the position is located after the window, 1 is returned.
-	 * if the position is included in the window, 0 is returned.
-	 * @param position the position to check
-	 * @return 0 is the position is in the window, -1 if lower, 1 if higher.
-	 */
-	@Override
-	public int containsPosition (int position) {
-		if (position < start) {
-			return -1;
-		} else if (position > stop) {
-			return 1;
-		}
-		return 0;
-	}
-
-
-	/**
-	 * A ChromosomeWindow is superior to another one if its position start is greater
-	 * or if its position start is equal but its position stop is greater.
-	 */
-	@Override
-	public int compareTo(ChromosomeWindow otherChromosomeWindow) {
-		if (start > otherChromosomeWindow.getStart()) {
-			return 1;
-		} else if (start < otherChromosomeWindow.getStart()) {
-			return -1;
-		} else {
-			if (stop > otherChromosomeWindow.getStop()) {
-				return 1;
-			} else if (stop < otherChromosomeWindow.getStop()) {
-				return -1;
-			} else {
-				return 0;
-			}
-		}
-	}
-
-
-	/**
-	 * @param start the start to set
-	 */
-	@Override
-	public void setStart(int start) {
-		this.start = start;
-	}
-
-
-	/**
-	 * @return the start
-	 */
-	@Override
-	public int getStart() {
-		return start;
-	}
-
-
-	/**
-	 * @param stop the stop to set
-	 */
-	@Override
-	public void setStop(int stop) {
-		this.stop = stop;
-	}
-
-
-	/**
-	 * @return the stop
-	 */
-	@Override
-	public int getStop() {
-		return stop;
-	}
-
-
-	/**
-	 * @param score the score to set
-	 */
-	@Override
-	public void setScore(double score) {
-		this.score = score;
-	}
-
-
-	/**
-	 * @return the score
-	 */
 	@Override
 	public double getScore() {
 		return score;
@@ -248,7 +144,64 @@ public final class SimpleScoredChromosomeWindow implements ScoredChromosomeWindo
 
 
 	@Override
-	public ScoredChromosomeWindow deepClone() {
-		return new SimpleScoredChromosomeWindow(this);
+	public int getSize() {
+		return stop - start;
+	}
+
+
+	@Override
+	public int getStart() {
+		return start;
+	}
+
+
+	@Override
+	public int getStop() {
+		return stop;
+	}
+
+
+	@Override
+	public int hashCode() {
+		int hashCode = HashCodeUtil.SEED;
+		hashCode = HashCodeUtil.hash(hashCode, start);
+		hashCode = HashCodeUtil.hash(hashCode, stop);
+		hashCode = HashCodeUtil.hash(hashCode, score);
+		return hashCode;
+	}
+
+
+	/**
+	 * Method used for deserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		// read the final fields
+		in.defaultReadObject();
+		// read the version number of the object
+		in.readInt();
+	}
+
+
+	@Override
+	public String toString() {
+		String startStr = NumberFormat.getInstance().format(start);
+		String stopStr = NumberFormat.getInstance().format(stop);
+		return startStr + "-" + stopStr + " : " + score;
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+		// write the final fields
+		out.defaultWriteObject();
+		// write the format version number of the object
+		out.writeInt(CLASS_VERSION_NUMBER);
 	}
 }

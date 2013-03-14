@@ -30,7 +30,7 @@ import javax.swing.filechooser.FileFilter;
 import edu.yu.einstein.genplay.core.IO.writer.Writer;
 import edu.yu.einstein.genplay.core.IO.writer.WriterFactory;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.dataStructure.genomeList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection.GenomeSelectionDialog;
 import edu.yu.einstein.genplay.gui.fileFilter.ExtendedFileFilter;

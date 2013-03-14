@@ -26,7 +26,7 @@ import javax.swing.ActionMap;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.binList.BLOChangeDataPrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
-import edu.yu.einstein.genplay.dataStructure.genomeList.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
 import edu.yu.einstein.genplay.util.Utils;

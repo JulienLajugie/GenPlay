@@ -23,7 +23,7 @@ package edu.yu.einstein.genplay.core.generator;
 
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.dataStructure.genomeList.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 
 

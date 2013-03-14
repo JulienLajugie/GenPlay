@@ -37,7 +37,7 @@ import javax.swing.text.NumberFormatter;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.binList.BLOFindPeaksStDev;
 import edu.yu.einstein.genplay.dataStructure.enums.PeakFinderType;
-import edu.yu.einstein.genplay.dataStructure.genomeList.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 
 
 

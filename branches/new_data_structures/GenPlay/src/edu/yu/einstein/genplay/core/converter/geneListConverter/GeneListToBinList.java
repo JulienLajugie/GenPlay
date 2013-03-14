@@ -24,9 +24,9 @@ package edu.yu.einstein.genplay.core.converter.geneListConverter;
 import edu.yu.einstein.genplay.core.converter.Converter;
 import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.dataStructure.genomeList.GenomicDataList;
-import edu.yu.einstein.genplay.dataStructure.genomeList.binList.BinList;
-import edu.yu.einstein.genplay.dataStructure.genomeList.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 
 
 /**

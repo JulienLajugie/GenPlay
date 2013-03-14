@@ -24,7 +24,7 @@ package edu.yu.einstein.genplay.dataStructure.gene;
 import java.io.Serializable;
 
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
-import edu.yu.einstein.genplay.dataStructure.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 

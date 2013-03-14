@@ -40,20 +40,20 @@ public final class MaskChromosomeWindow implements ScoredChromosomeWindow, Chrom
 	/** Generated serial ID */
 	private static final long serialVersionUID = 8073707507054963197L;
 
-	/** Saved format version */
-	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;
+	/**  Version number of the class */
+	private static final transient int CLASS_VERSION_NUMBER = 0;
 
 	/** start position of the window */
-	private int start;		// Position start of the window
+	private final int start;
 
 	/** stop position of the window */
-	private int stop;
+	private final int stop;
 
 
 	/**
 	 * Creates an instance of a {@link MaskChromosomeWindow}
-	 * @param start start position
-	 * @param stop stop position
+	 * @param start start position of the window
+	 * @param stop stop position of the window
 	 */
 	public MaskChromosomeWindow(int start, int stop) {
 		this.start = start;
@@ -63,7 +63,7 @@ public final class MaskChromosomeWindow implements ScoredChromosomeWindow, Chrom
 
 	/**
 	 * Creates an instance of a {@link MaskChromosomeWindow} having the same
-	 * start and stop value as the specified {@link ScoredChromosomeWindow}
+	 * start and stop values as the specified {@link ScoredChromosomeWindow}
 	 * @param scw a {@link ScoredChromosomeWindow}
 	 */
 	public MaskChromosomeWindow(ScoredChromosomeWindow scw) {
@@ -175,15 +175,16 @@ public final class MaskChromosomeWindow implements ScoredChromosomeWindow, Chrom
 
 
 	/**
-	 * Method used for unserialization
+	 * Method used for deserialization
 	 * @param in
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		// read the final fields
+		in.defaultReadObject();
+		// read the version number of the object
 		in.readInt();
-		start = in.readInt();
-		stop = in.readInt();
 	}
 
 
@@ -201,8 +202,9 @@ public final class MaskChromosomeWindow implements ScoredChromosomeWindow, Chrom
 	 * @throws IOException
 	 */
 	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeInt(start);
-		out.writeInt(stop);
+		// write the final fields
+		out.defaultWriteObject();
+		// write the format version number of the object
+		out.writeInt(CLASS_VERSION_NUMBER);
 	}
 }

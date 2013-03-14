@@ -19,11 +19,10 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.listView;
+package edu.yu.einstein.genplay.dataStructure.list.listView;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Iterator;
 import java.util.List;
 
@@ -32,16 +31,16 @@ import java.util.List;
  * @param <T> type of the data of the {@link SimpleListView}
  * @author Julien Lajugie
  */
-public class SimpleListView<T> implements ListView<T>{
+public final class SimpleListView<T> implements ListView<T>{
 
 	/** Generated serial ID */
 	private static final long serialVersionUID = 2581587146772942209L;
 
-	/** Saved format version  */
-	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;
+	/**  Version number of the class */
+	private static final transient int CLASS_VERSION_NUMBER = 0;
 
 	/** Data of the view */
-	private List<T> data;
+	private final List<T> data;
 
 
 	/**
@@ -71,10 +70,11 @@ public class SimpleListView<T> implements ListView<T>{
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		// read the final fields
+		in.defaultReadObject();
+		// read the version number of the object
 		in.readInt();
-		data = (List<T>) in.readObject();
 	}
 
 
@@ -89,8 +89,10 @@ public class SimpleListView<T> implements ListView<T>{
 	 * @param out
 	 * @throws IOException
 	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(data);
+	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+		// write the final fields
+		out.defaultWriteObject();
+		// write the format version number of the object
+		out.writeInt(CLASS_VERSION_NUMBER);
 	}
 }

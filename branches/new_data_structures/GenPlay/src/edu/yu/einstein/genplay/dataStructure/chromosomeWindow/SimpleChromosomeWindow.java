@@ -37,19 +37,19 @@ import edu.yu.einstein.genplay.util.HashCodeUtil;
  * {@link SimpleChromosomeWindow} objects are immutable.
  * @author Julien Lajugie
  */
-public class SimpleChromosomeWindow implements ChromosomeWindow, Serializable, Comparable<ChromosomeWindow> {
+public final class SimpleChromosomeWindow implements ChromosomeWindow, Serializable, Comparable<ChromosomeWindow> {
 
 	/**  Generated serial ID */
 	private static final long serialVersionUID = -6548181911063983578L;
 
-	/**  Saved format version */
-	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;
+	/**  Version number of the class */
+	private static final transient int CLASS_VERSION_NUMBER = 0;
 
 	/** Start position of the window */
-	private int	start;
+	private final int start;
 
 	/** Stop position of the window */
-	private int stop;
+	private final int stop;
 
 
 	/**
@@ -197,15 +197,16 @@ public class SimpleChromosomeWindow implements ChromosomeWindow, Serializable, C
 
 
 	/**
-	 * Method used for unserialization
+	 * Method used for deserialization
 	 * @param in
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		// read the final fields
+		in.defaultReadObject();
+		// read the version number of the object
 		in.readInt();
-		start = in.readInt();
-		stop = in.readInt();
 	}
 
 
@@ -223,8 +224,9 @@ public class SimpleChromosomeWindow implements ChromosomeWindow, Serializable, C
 	 * @throws IOException
 	 */
 	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeInt(start);
-		out.writeInt(stop);
+		// write the final fields
+		out.defaultWriteObject();
+		// write the format version number of the object
+		out.writeInt(CLASS_VERSION_NUMBER);
 	}
 }

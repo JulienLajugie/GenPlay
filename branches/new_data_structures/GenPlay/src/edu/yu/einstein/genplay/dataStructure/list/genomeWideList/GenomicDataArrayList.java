@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.genomeList;
+package edu.yu.einstein.genplay.dataStructure.list.genomeWideList;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -34,6 +34,8 @@ import java.util.ListIterator;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.SimpleListView;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 
 
@@ -42,7 +44,6 @@ import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
  * This class represents a generic list organized by {@link Chromosome}
  * @param <T> type of the objects stored in the list
  * @author Julien Lajugie
- * @version 0.1
  */
 public class GenomicDataArrayList<T> implements List<List<T>>, Cloneable, Serializable, GenomicDataList<T> {
 
@@ -62,33 +63,6 @@ public class GenomicDataArrayList<T> implements List<List<T>>, Cloneable, Serial
 	}
 
 
-	/**
-	 * Saves the format version number during serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(projectChromosome);
-		out.writeObject(dataList);
-	}
-
-
-	/**
-	 * Unserializes the save format version number
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	@SuppressWarnings("unchecked")
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		projectChromosome = (ProjectChromosome) in.readObject();
-		dataList = (List<List<T>>) in.readObject();
-	}
-
-
-	// Implentation of ChromosomeListOfLists<T>
 	@Override
 	public void add(Chromosome chromosome, T element) throws InvalidChromosomeException {
 		get(projectChromosome.getIndex(chromosome)).add(element);
@@ -96,63 +70,14 @@ public class GenomicDataArrayList<T> implements List<List<T>>, Cloneable, Serial
 
 
 	@Override
-	public List<T> get(Chromosome chromosome) throws InvalidChromosomeException {
-		return get(projectChromosome.getIndex(chromosome));
+	public void add(int index, List<T> element) {
+		dataList.add(index, element);
 	}
 
 
-	@Override
-	public T get(int chromosomeIndex, int elementIndex) {
-		return get(chromosomeIndex).get(elementIndex);
-	}
-
-
-	@Override
-	public T get(Chromosome chromosome, int index) throws InvalidChromosomeException {
-		return get(projectChromosome.getIndex(chromosome)).get(index);
-	}
-
-
-	@Override
-	public void set(Chromosome chromosome, int index, T element) throws InvalidChromosomeException {
-		get(projectChromosome.getIndex(chromosome)).set(index, element);
-	}
-
-
-	@Override
-	public void set(Chromosome chromosome, List<T> list) throws InvalidChromosomeException {
-		set(projectChromosome.getIndex(chromosome), list);
-	}
-
-
-	@Override
-	public void set(int chromosomeIndex, int elementIndex, T element) {
-		get(chromosomeIndex).set(elementIndex, element);
-	}
-
-
-	@Override
-	public int size(int index) {
-		return get(index).size();
-	}
-
-
-	@Override
-	public int size(Chromosome chromosome) throws InvalidChromosomeException {
-		return get(projectChromosome.getIndex(chromosome)).size();
-	}
-
-
-	// Implementation of List<List<T>>
 	@Override
 	public boolean add(List<T> e) {
 		return dataList.add(e);
-	}
-
-
-	@Override
-	public void add(int index, List<T> element) {
-		dataList.add(index, element);
 	}
 
 
@@ -187,8 +112,38 @@ public class GenomicDataArrayList<T> implements List<List<T>>, Cloneable, Serial
 
 
 	@Override
+	public List<T> get(Chromosome chromosome) throws InvalidChromosomeException {
+		return get(projectChromosome.getIndex(chromosome));
+	}
+
+
+	@Override
+	public T get(Chromosome chromosome, int index) throws InvalidChromosomeException {
+		return get(projectChromosome.getIndex(chromosome)).get(index);
+	}
+
+
+	@Override
 	public List<T> get(int index) {
 		return dataList.get(index);
+	}
+
+
+	@Override
+	public T get(int chromosomeIndex, int elementIndex) {
+		return get(chromosomeIndex).get(elementIndex);
+	}
+
+
+	@Override
+	public ListView<T> getView(Chromosome chromosome) throws InvalidChromosomeException {
+		return new SimpleListView<T>(Collections.unmodifiableList(get(chromosome)));
+	}
+
+
+	@Override
+	public ListView<T> getView(int chromosomeIndex) {
+		return new SimpleListView<T>(Collections.unmodifiableList(get(chromosomeIndex)));
 	}
 
 
@@ -220,15 +175,25 @@ public class GenomicDataArrayList<T> implements List<List<T>>, Cloneable, Serial
 	public ListIterator<List<T>> listIterator() {
 		return dataList.listIterator();
 	}
+
+
 	@Override
 	public ListIterator<List<T>> listIterator(int index) {
 		return dataList.listIterator(index);
 	}
 
 
-	@Override
-	public boolean remove(Object o) {
-		return dataList.remove(o);
+	/**
+	 * Unserializes the save format version number
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		projectChromosome = (ProjectChromosome) in.readObject();
+		dataList = (List<List<T>>) in.readObject();
 	}
 
 
@@ -239,14 +204,36 @@ public class GenomicDataArrayList<T> implements List<List<T>>, Cloneable, Serial
 
 
 	@Override
-	public boolean removeAll(Collection<?> c) {
-		return dataList.removeAll(c);
+	public boolean remove(Object o) {
+		return dataList.remove(o);
 	}
 
 
 	@Override
+	public boolean removeAll(Collection<?> c) {
+		return dataList.removeAll(c);
+	}
+	@Override
 	public boolean retainAll(Collection<?> c) {
 		return retainAll(c);
+	}
+
+
+	@Override
+	public void set(Chromosome chromosome, int index, T element) throws InvalidChromosomeException {
+		get(projectChromosome.getIndex(chromosome)).set(index, element);
+	}
+
+
+	@Override
+	public void set(Chromosome chromosome, List<T> list) throws InvalidChromosomeException {
+		set(projectChromosome.getIndex(chromosome), list);
+	}
+
+
+	@Override
+	public void set(int chromosomeIndex, int elementIndex, T element) {
+		get(chromosomeIndex).set(elementIndex, element);
 	}
 
 
@@ -259,6 +246,18 @@ public class GenomicDataArrayList<T> implements List<List<T>>, Cloneable, Serial
 	@Override
 	public int size() {
 		return dataList.size();
+	}
+
+
+	@Override
+	public int size(Chromosome chromosome) throws InvalidChromosomeException {
+		return get(projectChromosome.getIndex(chromosome)).size();
+	}
+
+
+	@Override
+	public int size(int index) {
+		return get(index).size();
 	}
 
 
@@ -280,14 +279,14 @@ public class GenomicDataArrayList<T> implements List<List<T>>, Cloneable, Serial
 	}
 
 
-	@Override
-	public List<T> getView(Chromosome chromosome) throws InvalidChromosomeException {
-		return Collections.unmodifiableList(get(chromosome));
-	}
-
-
-	@Override
-	public List<T> getView(int chromosomeIndex) {
-		return Collections.unmodifiableList(get(chromosomeIndex));
+	/**
+	 * Saves the format version number during serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(projectChromosome);
+		out.writeObject(dataList);
 	}
 }

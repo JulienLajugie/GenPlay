@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -34,16 +34,16 @@ import java.util.List;
 public class SuperIntArrayAsIntegerList extends AbstractList<Integer> implements Serializable, List<Integer> {
 
 	private static final long serialVersionUID = 8605012555225930866L;	// generated ID
-	private static final int ARRAY_SIZE = 100000;		// size of the sub arrays
+	private static final int ARRAY_SIZE = 10000;		// size of the sub arrays
 	private final List<int[]> 	data;					// data of the list
 	private int 				currentIndex = 0;		// index in the current sub-array of the list
 
-	
+
 	/**
 	 * Creates an instance of {@link SuperIntArrayAsIntegerList}
 	 */
 	public SuperIntArrayAsIntegerList() {
-		this.data = new ArrayList<int[]>();
+		data = new ArrayList<int[]>();
 		data.add(new int[ARRAY_SIZE]);
 	}
 
@@ -53,19 +53,15 @@ public class SuperIntArrayAsIntegerList extends AbstractList<Integer> implements
 	 * @param size size of the list
 	 */
 	public SuperIntArrayAsIntegerList(int size) {
-		int listCount = size / ARRAY_SIZE + 1;
+		int listCount = (size / ARRAY_SIZE) + 1;
 		data = new ArrayList<int[]>(listCount);
 	}
 
 
 	@Override
 	public boolean add(Integer e) {
-		/*int currentIndex = size % ARRAY_SIZE;
-		if (currentIndex == 0) {
-			data.add(new int[ARRAY_SIZE]);
-		}*/
 		int[] currentArray = data.get(data.size() - 1);
-		if (currentIndex < currentArray.length) {		
+		if (currentIndex < currentArray.length) {
 			currentArray[currentIndex] = e;
 			currentIndex++;
 			return true;
@@ -96,7 +92,7 @@ public class SuperIntArrayAsIntegerList extends AbstractList<Integer> implements
 
 	@Override
 	public int size() {
-		int size = (data.size() - 1) * ARRAY_SIZE + currentIndex;
+		int size = ((data.size() - 1) * ARRAY_SIZE) + currentIndex;
 		return size;
 	}
 }

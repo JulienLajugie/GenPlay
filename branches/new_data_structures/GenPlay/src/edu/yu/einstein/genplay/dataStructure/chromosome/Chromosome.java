@@ -21,185 +21,23 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.dataStructure.chromosome;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
-
-import edu.yu.einstein.genplay.core.comparator.ChromosomeComparator;
-import edu.yu.einstein.genplay.util.HashCodeUtil;
 
 
 /**
- * The {@link Chromosome} class represents a chromosome with a name and a length.
- * {@link Chromosome} objects are immutable.
+ * A representation of a chromosome with a name and a length.
  * @author Julien Lajugie
  */
-public final class Chromosome implements Serializable, Comparable<Chromosome> {
-
-	/**  Generated serial ID */
-	private static final long serialVersionUID = -8339402742378578413L;
-
-	/**  Saved format version */
-	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;
-
-	/** The hash code is computed once at the creation because the class is immutable */
-	private int	hashCode;
-
-	/** Length of the chromosome */
-	private int length;
-
-	/** Name of the chromosome */
-	private String name;
-
-
-	/**
-	 * Constructor. Creates an instance of a Chromosome.
-	 * @param name Name of the chromosome.
-	 * @param length Length of the chromosome.
-	 */
-	public Chromosome(String name, int length) {
-		this.name = name;
-		this.length = length;
-		computeHashCode();
-	}
-
-
-	@Override
-	public int compareTo(Chromosome otherChromosome) {
-		ChromosomeComparator comp = new ChromosomeComparator();
-		return comp.compare(this, otherChromosome);
-	}
-
-
-	/**
-	 * Computes the hashcode. This can be done only once since Chromosome objects are immutable.
-	 */
-	private void computeHashCode() {
-		int result = HashCodeUtil.SEED;
-		result = HashCodeUtil.hash(result, name);
-		result = HashCodeUtil.hash(result, length);
-		hashCode = result;
-	}
-
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		Chromosome other = (Chromosome) obj;
-		if (length != other.length) {
-			return false;
-		}
-		if (name == null) {
-			if (other.name != null) {
-				return false;
-			}
-		} else if (!name.equals(other.name)) {
-			return false;
-		}
-		return true;
-	}
-
+public interface Chromosome extends Serializable, Comparable<Chromosome> {
 
 	/**
 	 * @return the length of a chromosome
 	 */
-	public int getLength() {
-		return length;
-	}
+	public int getLength();
 
 
 	/**
 	 * @return the name of a chromosome
 	 */
-	public String getName() {
-		return name;
-	}
-
-
-	/**
-	 * The hashCode is computed only on the name of the chromosome
-	 */
-	@Override
-	public int hashCode(){
-		return hashCode;
-	}
-
-
-	/**
-	 * Returns true if the name of the current chromosome is equal to the specified string.
-	 * Removes "chr" and "chromosome" before comparing if the string in parameter or if the
-	 * chromosome name starts this way (ex: "chr1" becomes "1")
-	 * @param otherChromoName
-	 * @return true if equal, false otherwise
-	 */
-	public boolean hasSameNameAs(String otherChromoName) {
-		// we remove "chr" or "chromosome" if the name of the current chromosome starts this way
-		String chromoName = getName().trim();
-		if ((chromoName.length() >= 10) && (chromoName.substring(0, 10).equalsIgnoreCase("chromosome"))) {
-			chromoName = chromoName.substring(10);
-		} else if ((chromoName.length() >= 3) && (chromoName.substring(0, 3).equalsIgnoreCase("chr"))) {
-			chromoName = chromoName.substring(3);
-		}
-		// we remove "chr" or "chromosome" if the name of the other chromosome starts this way
-		otherChromoName = otherChromoName.trim();
-		if ((otherChromoName.length() >= 10) && (otherChromoName.substring(0, 10).equalsIgnoreCase("chromosome"))) {
-			otherChromoName = otherChromoName.substring(10);
-		} else if ((otherChromoName.length() >= 3) && (otherChromoName.substring(0, 3).equalsIgnoreCase("chr"))) {
-			otherChromoName = otherChromoName.substring(3);
-		}
-		return chromoName.equalsIgnoreCase(otherChromoName);
-	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		name = (String) in.readObject();
-		length = in.readInt();
-		hashCode = in.readInt();
-	}
-
-
-	/**
-	 * Prints the chromosome information
-	 */
-	public void show () {
-		String info = "";
-		info += "Name: " + name + "; ";
-		info += "Length: " + length;
-		System.out.println(info);
-	}
-
-
-	@Override
-	public String toString() {
-		return name;
-	}
-
-
-	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(name);
-		out.writeInt(length);
-		out.writeInt(hashCode);
-	}
+	public String getName();
 }

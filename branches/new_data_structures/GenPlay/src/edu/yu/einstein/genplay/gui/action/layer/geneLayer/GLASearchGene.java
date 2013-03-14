@@ -27,7 +27,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.ActionMap;
 import javax.swing.KeyStroke;
 
-import edu.yu.einstein.genplay.dataStructure.genomeList.geneList.GeneSearcher;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneSearcher;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.SearchGeneDialog;
 import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;

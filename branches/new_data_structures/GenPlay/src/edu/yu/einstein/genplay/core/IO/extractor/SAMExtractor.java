@@ -32,11 +32,11 @@ import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWi
 import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
-import edu.yu.einstein.genplay.dataStructure.genomeList.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.genomeList.GenomicDataList;
-import edu.yu.einstein.genplay.dataStructure.genomeList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.IntArrayAsIntegerList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 import edu.yu.einstein.genplay.util.Utils;
