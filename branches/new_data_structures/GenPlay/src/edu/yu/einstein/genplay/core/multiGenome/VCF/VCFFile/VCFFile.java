@@ -37,7 +37,7 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvan
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics.VCFFileFullStatistic;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.VariantType;
-import edu.yu.einstein.genplay.dataStructure.list.arrayList.IntArrayAsIntegerList;
+import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.IntArrayAsIntegerList;
 
 
 /**

@@ -33,7 +33,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.list.arrayList.IntArrayAsIntegerList;
+import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;

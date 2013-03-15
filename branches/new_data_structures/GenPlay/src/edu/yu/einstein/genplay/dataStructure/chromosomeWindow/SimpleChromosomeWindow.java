@@ -203,10 +203,10 @@ public final class SimpleChromosomeWindow implements ChromosomeWindow, Serializa
 	 * @throws ClassNotFoundException
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		// read the final fields
-		in.defaultReadObject();
 		// read the version number of the object
 		in.readInt();
+		// read the final fields
+		in.defaultReadObject();
 	}
 
 
@@ -224,9 +224,9 @@ public final class SimpleChromosomeWindow implements ChromosomeWindow, Serializa
 	 * @throws IOException
 	 */
 	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
-		// write the final fields
-		out.defaultWriteObject();
 		// write the format version number of the object
 		out.writeInt(CLASS_VERSION_NUMBER);
+		// write the final fields
+		out.defaultWriteObject();
 	}
 }

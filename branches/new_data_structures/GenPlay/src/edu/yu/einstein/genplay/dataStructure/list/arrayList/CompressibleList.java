@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -26,29 +26,27 @@ import java.util.List;
 import edu.yu.einstein.genplay.exception.exceptions.CompressionException;
 
 
-
 /**
- * Interface defining the method of the compressible {@link List}.
+ * {@link List} objects implementing this interface can be compressed and uncompressed.
  * @author Julien Lajugie
- * @version 0.1
  */
 public interface CompressibleList {
 
-	
+
 	/**
 	 * Compresses the data of the list
-	 * @throws CompressionException 
+	 * @throws CompressionException
 	 */
-	public void compress() throws  CompressionException ;
-	
-	
+	public void compress() throws CompressionException ;
+
+
 	/**
 	 * Uncompresses the data of the list
-	 * @throws CompressionException 
+	 * @throws CompressionException
 	 */
-	public void uncompress() throws  CompressionException;
-	
-	
+	public void uncompress() throws CompressionException;
+
+
 	/**
 	 * @return true if the list is compressed. False otherwise.
 	 */

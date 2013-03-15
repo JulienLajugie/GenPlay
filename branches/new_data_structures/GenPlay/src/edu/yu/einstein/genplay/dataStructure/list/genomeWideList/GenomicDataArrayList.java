@@ -35,7 +35,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
-import edu.yu.einstein.genplay.dataStructure.list.listView.SimpleListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.SimpleListView.SimpleListView;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 
 

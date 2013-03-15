@@ -36,7 +36,7 @@ import edu.yu.einstein.genplay.core.stat.MathFunctions;
 import edu.yu.einstein.genplay.core.stat.Poisson;
 import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.IslandResultType;
-import edu.yu.einstein.genplay.dataStructure.list.arrayList.ListFactory;
+import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.ListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidFactorialParameterException;

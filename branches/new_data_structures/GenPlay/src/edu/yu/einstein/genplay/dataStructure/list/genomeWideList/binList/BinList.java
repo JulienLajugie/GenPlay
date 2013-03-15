@@ -41,7 +41,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.dataStructure.list.DisplayableListOfLists;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.CompressibleList;
-import edu.yu.einstein.genplay.dataStructure.list.arrayList.ListFactory;
+import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.ListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ImmutableGenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;

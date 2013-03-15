@@ -31,7 +31,7 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationTwoLayersMethod;
-import edu.yu.einstein.genplay.dataStructure.list.arrayList.ListFactory;
+import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.ListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ImmutableGenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.exception.exceptions.BinListDifferentWindowSizeException;

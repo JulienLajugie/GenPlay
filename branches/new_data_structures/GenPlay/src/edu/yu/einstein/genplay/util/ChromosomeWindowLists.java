@@ -29,7 +29,7 @@ import edu.yu.einstein.genplay.core.comparator.ChromosomeWindowStartComparator;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
-import edu.yu.einstein.genplay.dataStructure.list.arrayList.IntArrayAsIntegerList;
+import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ImmutableGenomicDataList;

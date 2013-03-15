@@ -19,48 +19,76 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.list.listView;
+package edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.mask;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Iterator;
 import java.util.List;
 
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
+
+
 /**
- * Simple implementation of the {@link ListView} with data stored in a {@link List} implementation
- * @param <T> type of the data of the {@link SimpleListView}
+ * {@link ListView} of masks {@link ScoredChromosomeWindow}. Masks always have a score of 1.
+ * {@link MaskListView} objects are immutable.
  * @author Julien Lajugie
  */
-public final class SimpleListView<T> implements ListView<T>{
+public final class MaskListView implements ListView<ScoredChromosomeWindow>, Iterator<ScoredChromosomeWindow> {
 
 	/** Generated serial ID */
-	private static final long serialVersionUID = 2581587146772942209L;
+	private static final long serialVersionUID = -2065237090366294538L;
 
-	/**  Version number of the class */
+	/** Version number of the class */
 	private static final transient int CLASS_VERSION_NUMBER = 0;
 
-	/** Data of the view */
-	private final List<T> data;
+	/** Current index of the iterator */
+	private transient int iteratorIndex = 0;
+
+	/** List of the start positions of the masks */
+	private final List<Integer> maskStarts;
+
+	/** List of the stop positions of the masks */
+	private final List<Integer> maskStops;
 
 
 	/**
-	 * Creates an instance of {@link SimpleListView}
-	 * @param data data of the view.  This object should not be modified after the creation of the view
+	 * Creates an instance of {@link MaskListView}
+	 * @param maskStarts list of the start positions of the masks
+	 * @param maskStops list of the stop positions of the masks
 	 */
-	public SimpleListView(List<T> data) {
-		this.data = data;
+	MaskListView(List<Integer> maskStarts, List<Integer> maskStops) {
+		super();
+		this.maskStarts = maskStarts;
+		this.maskStops = maskStops;
 	}
 
 
 	@Override
-	public T get(int elementIndex) {
-		return data.get(elementIndex);
+	public ScoredChromosomeWindow get(int elementIndex) {
+		return new SimpleScoredChromosomeWindow(maskStarts.get(elementIndex), maskStops.get(elementIndex), 1);
 	}
 
 
 	@Override
-	public Iterator<T> iterator() {
-		return data.iterator();
+	public boolean hasNext() {
+		return (iteratorIndex + 1) < size();
+	}
+
+
+	@Override
+	public Iterator<ScoredChromosomeWindow> iterator() {
+		return this;
+	}
+
+
+	@Override
+	public ScoredChromosomeWindow next() {
+		iteratorIndex++;
+		return get(iteratorIndex);
 	}
 
 
@@ -79,8 +107,12 @@ public final class SimpleListView<T> implements ListView<T>{
 
 
 	@Override
+	public void remove() {}
+
+
+	@Override
 	public int size() {
-		return data.size();
+		return maskStarts.size();
 	}
 
 
@@ -89,10 +121,12 @@ public final class SimpleListView<T> implements ListView<T>{
 	 * @param out
 	 * @throws IOException
 	 */
-	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+	private void writeObject(ObjectOutputStream out) throws IOException {
 		// write the final fields
 		out.defaultWriteObject();
 		// write the format version number of the object
 		out.writeInt(CLASS_VERSION_NUMBER);
+		// reinitialize the index of the iterator
+		iteratorIndex = 0;
 	}
 }

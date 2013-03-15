@@ -34,5 +34,5 @@ public interface ScoredChromosomeWindow extends ChromosomeWindow {
 	/**
 	 * @return the score of the window
 	 */
-	public double getScore ();
+	public float getScore ();
 }

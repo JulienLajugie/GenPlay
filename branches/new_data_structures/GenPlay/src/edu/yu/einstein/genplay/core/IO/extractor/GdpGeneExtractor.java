@@ -32,7 +32,7 @@ import edu.yu.einstein.genplay.core.generator.GeneListGenerator;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
-import edu.yu.einstein.genplay.dataStructure.list.arrayList.IntArrayAsIntegerList;
+import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;

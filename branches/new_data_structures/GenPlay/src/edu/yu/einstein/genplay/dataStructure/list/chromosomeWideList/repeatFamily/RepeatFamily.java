@@ -21,10 +21,15 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.repeatFamily;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Iterator;
+import java.util.List;
 
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
+import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 
 
@@ -35,17 +40,25 @@ import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
  * {@link RepeatFamily} objects are immutable.
  * @author Julien Lajugie
  */
-public class RepeatFamily implements Serializable, ListView<ChromosomeWindow> {
+public final class RepeatFamily implements Serializable, ListView<ChromosomeWindow>, Iterator<ChromosomeWindow> {
 
 	/** generated ID */
 	private static final long serialVersionUID = -7691967168795920365L;
 
+	/** Version number of the class */
+	private static final transient int CLASS_VERSION_NUMBER = 0;
+
+	/** Current index of the iterator */
+	private transient int iteratorIndex = 0;
+
+	/** List of the start positions of the repeats */
+	private final List<Integer> repeatStarts;
+
+	/** List of the stop positions of the repeats */
+	private final List<Integer> repeatStops;
+
 	/** Name of the family of repeat */
 	private final String name;
-
-	/** {@link ListView} of repeats. Repeats are {@link ChromosomeWindow} objects
-	 * containing the start and the stop position of the repeat */
-	private final ListView<ChromosomeWindow> repeatList;
 
 
 	/**
@@ -53,9 +66,10 @@ public class RepeatFamily implements Serializable, ListView<ChromosomeWindow> {
 	 * @param name name of the family
 	 * @param repeatList {@link ListView} of {@link ChromosomeWindow} with the start and stop position of the repeats
 	 */
-	public RepeatFamily(String name, ListView<ChromosomeWindow> repeatList) {
+	RepeatFamily(String name, List<Integer> repeatStarts, List<Integer> repeatStops) {
 		this.name = name;
-		this.repeatList = repeatList;
+		this.repeatStarts = repeatStarts;
+		this.repeatStops = repeatStops;
 	}
 
 
@@ -73,8 +87,8 @@ public class RepeatFamily implements Serializable, ListView<ChromosomeWindow> {
 	public void print() {
 		String info = "";
 		info += "Family name: " + name + "\n";
-		info += "Number of repeats: " + repeatList.size() + "\n";
-		for (ChromosomeWindow repeat: repeatList) {
+		info += "Number of repeats: " + size() + "\n";
+		for (ChromosomeWindow repeat: this) {
 			info += "(" + repeat.getStart() + ", " + repeat.getStop() + ") ";
 		}
 		System.out.println(info);
@@ -83,18 +97,64 @@ public class RepeatFamily implements Serializable, ListView<ChromosomeWindow> {
 
 	@Override
 	public Iterator<ChromosomeWindow> iterator() {
-		return repeatList.iterator();
+		return this;
 	}
 
 
 	@Override
 	public int size() {
-		return repeatList.size();
+		return repeatStarts.size();
 	}
 
 
 	@Override
 	public ChromosomeWindow get(int repeatIndex) {
-		return repeatList.get(repeatIndex);
+		return new SimpleChromosomeWindow(repeatStarts.get(repeatIndex), repeatStops.get(repeatIndex));
+	}
+
+
+	@Override
+	public boolean hasNext() {
+		return (iteratorIndex + 1) < size();
+	}
+
+
+	@Override
+	public ChromosomeWindow next() {
+		iteratorIndex++;
+		return get(iteratorIndex);
+	}
+
+
+	@Override
+	public void remove() {}
+
+
+	/**
+	 * Method used for deserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		// read the final fields
+		in.defaultReadObject();
+		// read the version number of the object
+		in.readInt();
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		// write the final fields
+		out.defaultWriteObject();
+		// write the format version number of the object
+		out.writeInt(CLASS_VERSION_NUMBER);
+		// reinitialize the index of the iterator
+		iteratorIndex = 0;
 	}
 }

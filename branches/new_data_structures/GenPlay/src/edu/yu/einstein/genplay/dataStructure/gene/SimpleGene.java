@@ -59,7 +59,7 @@ public final class SimpleGene implements Gene {
 	private final int stop;
 
 	/** Score of the gene */
-	private final double score;
+	private final float score;
 
 	/**  5' UTR boundary */
 	private final int UTR5Bound;
@@ -91,7 +91,7 @@ public final class SimpleGene implements Gene {
 	 * @param UTR3Bound transcription 3' bound
 	 * @param exons exons of the gene
 	 */
-	public SimpleGene(String name, Strand strand, int start, int stop, double score, int UTR5Bound,int UTR3Bound, ListView<ScoredChromosomeWindow> exons) {
+	public SimpleGene(String name, Strand strand, int start, int stop, float score, int UTR5Bound,int UTR3Bound, ListView<ScoredChromosomeWindow> exons) {
 		super();
 		this.name = name;
 		this.strand = strand;
@@ -113,7 +113,7 @@ public final class SimpleGene implements Gene {
 	 * @param score score of the gene
 	 * @param exons exons of the gene
 	 */
-	public SimpleGene(String name, Strand strand, int start, int stop, double score, ListView<ScoredChromosomeWindow> exons) {
+	public SimpleGene(String name, Strand strand, int start, int stop, float score, ListView<ScoredChromosomeWindow> exons) {
 		this(name, strand, start, stop, score, start, stop, exons);
 	}
 
@@ -201,7 +201,7 @@ public final class SimpleGene implements Gene {
 
 
 	@Override
-	public double getScore() {
+	public float getScore() {
 		return score;
 	}
 
@@ -264,10 +264,10 @@ public final class SimpleGene implements Gene {
 	 * @throws ClassNotFoundException
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		// read the final fields
-		in.defaultReadObject();
 		// read the class version number
 		in.readInt();
+		// read the final fields
+		in.defaultReadObject();
 	}
 
 
@@ -277,9 +277,9 @@ public final class SimpleGene implements Gene {
 	 * @throws IOException
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
-		// write the final fields
-		out.defaultWriteObject();
 		// write the class version number
 		out.writeInt(CLASS_VERSION_NUMBER);
+		// write the final fields
+		out.defaultWriteObject();
 	}
 }

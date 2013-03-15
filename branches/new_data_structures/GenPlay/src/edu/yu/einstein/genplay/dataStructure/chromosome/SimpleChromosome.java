@@ -159,10 +159,10 @@ public final class SimpleChromosome implements Chromosome {
 	 * @throws ClassNotFoundException
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		// read the final fields
-		in.defaultReadObject();
 		// read the class version number
 		in.readInt();
+		// read the final fields
+		in.defaultReadObject();
 	}
 
 
@@ -189,9 +189,9 @@ public final class SimpleChromosome implements Chromosome {
 	 * @throws IOException
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
-		// write the final fields
-		out.defaultWriteObject();
 		// write the class version number
 		out.writeInt(CLASS_VERSION_NUMBER);
+		// write the final fields
+		out.defaultWriteObject();
 	}
 }
