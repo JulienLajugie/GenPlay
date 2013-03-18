@@ -31,11 +31,11 @@ import java.io.Serializable;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.enums.Nucleotide;
-import edu.yu.einstein.genplay.dataStructure.list.DisplayableListOfLists;
+import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.nucleotideListView.TwoBitListView.TwoBitSequence;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ImmutableGenomicDataList;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
@@ -49,71 +49,50 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucleotide[]> implements Serializable, Stoppable {
+public class TwoBitSequenceList implements ImmutableGenomicDataList<Gene>, Serializable, Stoppable {
 
-	private static final long serialVersionUID = -2253030492143151302L;	// generated ID
-	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private final static String 		TWOBIT_SIGNATURE = "1A412743";	// signature of a 2bit file
-	private ProjectChromosome 			projectChromosome;	 			// Instance of the Chromosome Manager
-	private boolean 					reverseBytes = false;			// true if the bytes of a multi-byte entity need to be reversed when read
-	private int 						version;						// version of the 2bit file
-	private String						filePath;						// path of the 2bit file  (used for the serialization)
-	private transient RandomAccessFile	twoBitFile;						// 2bit file
-	private TwoBitSequence 				sequence = null;				// sequence being extracted
-	private boolean						needToBeStopped = false;		// true if the execution need to be stopped
-	protected String					genomeName = null;				// genome name for a multi genome project
-	protected AlleleType 				alleleType = null;				// allele type for a multi genome project
+	/** Generated serial ID */
+	private static final long serialVersionUID = -2253030492143151302L;
 
+	/** Version number of the class */
+	private static final transient int CLASS_VERSION_NUMBER = 0;
 
+	/** Signature of a 2bit file */
+	private final static String TWOBIT_SIGNATURE = "1A412743";
 
-	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(projectChromosome);
-		out.writeBoolean(reverseBytes);
-		out.writeInt(version);
-		out.writeObject(filePath);
-		out.writeObject(sequence);
-		out.writeObject(genomeName);
-	}
+	/** 2bit file */
+	private transient RandomAccessFile twoBitFile;
 
+	/** Path of the 2bit file  (used for the serialization) */
+	private final String filePath;
 
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		projectChromosome = (ProjectChromosome) in.readObject();
-		reverseBytes = in.readBoolean();
-		version = in.readInt();
-		filePath = (String) in.readObject();
-		sequence = (TwoBitSequence) in.readObject();
-		needToBeStopped = false;
-		genomeName = (String) in.readObject();
-	}
+	/** True if the bytes of multi-byte entities need to be reversed when read */
+	private final boolean reverseBytes;
+
+	/** Genome name for a multi genome project */
+	private final String genomeName;
+
+	/** Allele type for a multi genome project */
+	private final AlleleType alleleType;
+
 
 
 	/**
 	 * Creates an instance of {@link TwoBitSequenceList}
+	 * @param filePath path to the 2bit file
+	 * @param reverseBytes true if the bytes of multi-byte entities need to be reversed when read
 	 * @param genomeName name of the genome the {@link TwoBitSequenceList} represents
 	 * @param alleleType 	allele type for a multi genome project
+	 * @throws IOException
 	 */
-	public TwoBitSequenceList(String genomeName, AlleleType alleleType) {
+	public TwoBitSequenceList(String filePath, boolean reverseBytes, String genomeName, AlleleType alleleType) throws IOException {
 		super();
+		this.filePath = filePath;
+		this.reverseBytes = reverseBytes;
 		this.genomeName = genomeName;
 		this.alleleType = alleleType;
-		projectChromosome = ProjectManager.getInstance().getProjectChromosome();
-		// initializes the lists
-		for (int i = 0; i < projectChromosome.size(); i++) {
-			add(null);
-		}
+		twoBitFile = new RandomAccessFile(filePath, "r");
+		twoBitFile.seek(0);
 	}
 
 
@@ -197,26 +176,11 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 
 
 	/**
-	 * @return the version
+	 * @return the path to the random access file containing the sequences
 	 */
-	public final int getVersion() {
-		return version;
+	public String getDataFilePath() {
+		return filePath;
 	}
-
-
-	/**
-	 * @return the twoBitFile
-	 */
-	public final RandomAccessFile getTwoBitFile() {
-		return twoBitFile;
-	}
-
-
-	/**
-	 * Does nothing
-	 */
-	@Override
-	protected void fitToScreen() {}
 
 
 	@Override
@@ -230,7 +194,6 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 			fittedDataList = null;
 			return null;
 		}
-
 		int j = 0;
 		for (int i = start; i <= stop; i++) {
 			result[j] = currentList.get(i);
@@ -238,6 +201,40 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 		}
 
 		return result;
+	}
+
+
+	/**
+	 * @return the twoBitFile
+	 */
+	public final RandomAccessFile getTwoBitFile() {
+		return twoBitFile;
+	}
+
+
+	/**
+	 * @return the version
+	 */
+	public final int getVersion() {
+		return version;
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		projectChromosome = (ProjectChromosome) in.readObject();
+		reverseBytes = in.readBoolean();
+		version = in.readInt();
+		filePath = (String) in.readObject();
+		sequence = (TwoBitSequence) in.readObject();
+		needToBeStopped = false;
+		genomeName = (String) in.readObject();
 	}
 
 
@@ -251,14 +248,6 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 			((TwoBitSequence) currentSequence).reinitDataFile();
 		}
 		sequence.reinitDataFile();
-	}
-
-
-	/**
-	 * @return the path to the random access file containing the sequences
-	 */
-	public String getDataFilePath() {
-		return filePath;
 	}
 
 
@@ -286,5 +275,21 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 			sequence.stop();
 		}
 		needToBeStopped = true;
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(projectChromosome);
+		out.writeBoolean(reverseBytes);
+		out.writeInt(version);
+		out.writeObject(filePath);
+		out.writeObject(sequence);
+		out.writeObject(genomeName);
 	}
 }
