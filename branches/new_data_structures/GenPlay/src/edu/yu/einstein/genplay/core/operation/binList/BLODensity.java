@@ -29,7 +29,7 @@ import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.ListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 
@@ -63,7 +63,7 @@ public class BLODensity implements Operation<BinList> {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
 		// the result is returned in 32 bits because the result is btw 0 and 1
-		final DataPrecision defaultPrecision = DataPrecision.PRECISION_32BIT;
+		final ScorePrecision defaultPrecision = ScorePrecision.PRECISION_32BIT;
 		final int binCount = 2 * halfWidth + 1;
 
 		for (short i = 0; i < binList.size(); i++) {

@@ -29,7 +29,7 @@ import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.ListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 
@@ -43,7 +43,7 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList
 public class BLOChangeDataPrecision implements Operation<BinList> {
 
 	private final BinList 		binList;		// input BinList
-	private final DataPrecision precision; 		// new data precision
+	private final ScorePrecision precision; 		// new data precision
 	private boolean				stopped = false;// true if the operation must be stopped
 	
 
@@ -52,7 +52,7 @@ public class BLOChangeDataPrecision implements Operation<BinList> {
 	 * @param binList input BinList
 	 * @param precision new precision
 	 */
-	public BLOChangeDataPrecision(BinList binList, DataPrecision precision) {
+	public BLOChangeDataPrecision(BinList binList, ScorePrecision precision) {
 		this.binList = binList;
 		this.precision = precision; 
 	}

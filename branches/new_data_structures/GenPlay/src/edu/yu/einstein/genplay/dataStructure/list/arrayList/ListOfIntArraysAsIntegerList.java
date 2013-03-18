@@ -41,7 +41,7 @@ import edu.yu.einstein.genplay.exception.exceptions.CompressionException;
  * The data of the list are stored in {@link ArrayList} objects of arrays of int primitives
  * @author Julien Lajugie
  */
-public class ListofIntArraysAsIntegerList extends AbstractList<Integer> implements Serializable, List<Integer>, CompressibleList {
+public class ListOfIntArraysAsIntegerList extends AbstractList<Integer> implements Serializable, List<Integer>, CompressibleList {
 
 	/** Generated serial ID */
 	private static final long serialVersionUID = 8605012555225930866L;
@@ -66,19 +66,19 @@ public class ListofIntArraysAsIntegerList extends AbstractList<Integer> implemen
 
 
 	/**
-	 * Creates an instance of {@link ListofIntArraysAsIntegerList}
+	 * Creates an instance of {@link ListOfIntArraysAsIntegerList}
 	 */
-	public ListofIntArraysAsIntegerList() {
+	public ListOfIntArraysAsIntegerList() {
 		data = new ArrayList<int[]>();
 		data.add(new int[ARRAY_SIZE]);
 	}
 
 
 	/**
-	 * Creates an instance of {@link ListofIntArraysAsIntegerList}
+	 * Creates an instance of {@link ListOfIntArraysAsIntegerList}
 	 * @param size size of the list
 	 */
-	public ListofIntArraysAsIntegerList(int size) {
+	public ListOfIntArraysAsIntegerList(int size) {
 		int listCount = (size / ARRAY_SIZE) + 1;
 		data = new ArrayList<int[]>(listCount);
 	}

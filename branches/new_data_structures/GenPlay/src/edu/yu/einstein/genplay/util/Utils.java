@@ -39,7 +39,7 @@ import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.FilterType;
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
 import edu.yu.einstein.genplay.dataStructure.enums.IslandResultType;
@@ -286,36 +286,36 @@ public final class Utils {
 
 
 	/**
-	 * A dialog box used to choose a {@link DataPrecision}
+	 * A dialog box used to choose a {@link ScorePrecision}
 	 * @param parentComponent the parent Component for the dialog
-	 * @return a {@link DataPrecision}
+	 * @return a {@link ScorePrecision}
 	 */
-	public final static DataPrecision choosePrecision(Component parentComponent) {
-		return (DataPrecision)JOptionPane.showInputDialog(
+	public final static ScorePrecision choosePrecision(Component parentComponent) {
+		return (ScorePrecision)JOptionPane.showInputDialog(
 				parentComponent,
 				"Choose a precision for the data of the fixed window list",
 				"Select Data Precision",
 				JOptionPane.QUESTION_MESSAGE,
 				null,
-				DataPrecision.values(),
-				DataPrecision.PRECISION_32BIT);
+				ScorePrecision.values(),
+				ScorePrecision.PRECISION_32BIT);
 	}
 
 
 	/**
-	 * A dialog box used to choose a {@link DataPrecision}
+	 * A dialog box used to choose a {@link ScorePrecision}
 	 * @param parentComponent the parent Component for the dialog
 	 * @param defaultValue default value in the input box
-	 * @return a {@link DataPrecision}
+	 * @return a {@link ScorePrecision}
 	 */
-	public final static DataPrecision choosePrecision(Component parentComponent, DataPrecision defaultValue) {
-		return (DataPrecision)JOptionPane.showInputDialog(
+	public final static ScorePrecision choosePrecision(Component parentComponent, ScorePrecision defaultValue) {
+		return (ScorePrecision)JOptionPane.showInputDialog(
 				parentComponent,
 				"Choose a precision for the data of the fixed window list",
 				"Select Data Precision",
 				JOptionPane.QUESTION_MESSAGE,
 				null,
-				DataPrecision.values(),
+				ScorePrecision.values(),
 				defaultValue);
 	}
 

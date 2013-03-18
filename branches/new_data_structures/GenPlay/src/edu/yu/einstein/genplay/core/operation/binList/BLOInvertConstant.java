@@ -28,7 +28,7 @@ import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.ListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 
@@ -65,7 +65,7 @@ public class BLOInvertConstant implements Operation<BinList> {
 		
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
-		final DataPrecision precision = binList.getPrecision();
+		final ScorePrecision precision = binList.getPrecision();
 
 		for (short i = 0; i < binList.size(); i++) {
 			final List<Double> currentList = binList.get(i);

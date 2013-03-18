@@ -37,7 +37,7 @@ import java.util.List;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.repeatFamily.RepeatFamily;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.repeatListView.RepeatFamilyListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.repeatFamilyList.RepeatFamilyList;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.colors.Colors;
@@ -78,7 +78,7 @@ public class RepeatLayer extends AbstractLayer<RepeatFamilyList> implements Laye
 			int currentHeight = SPACE_HEIGHT;
 			if (getData() != null) {
 				ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-				List<RepeatFamily> repeatFamilyList = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
+				List<RepeatFamilyListView> repeatFamilyList = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
 				if ((repeatFamilyList != null) && (repeatFamilyList.size() > 0)) {
 					// calculate how many lines are displayable
 					int displayedLineCount = ((height - SPACE_HEIGHT) / (REPEAT_HEIGHT + (2 * SPACE_HEIGHT))) + 1;
@@ -90,7 +90,7 @@ public class RepeatLayer extends AbstractLayer<RepeatFamilyList> implements Laye
 						if ((i + firstLineToDisplay) < familyNames.size()) {
 							// retrieve the repeat associated to the current line to draw
 							String familyToDraw = familyNames.get(i + firstLineToDisplay);
-							RepeatFamily currentFamily = null;
+							RepeatFamilyListView currentFamily = null;
 							int indexFamilyToDisplay = 0;
 							while ((currentFamily == null) && (indexFamilyToDisplay < repeatFamilyList.size())) {
 								if (repeatFamilyList.get(indexFamilyToDisplay).getName().equals(familyToDraw)) {
@@ -170,8 +170,8 @@ public class RepeatLayer extends AbstractLayer<RepeatFamilyList> implements Laye
 	 */
 	private void generateFamilyNameList() {
 		familyNames = new ArrayList<String>();
-		for (List<RepeatFamily> currentChromoList: getData()) {
-			for (RepeatFamily currentRepeatFamily: currentChromoList) {
+		for (List<RepeatFamilyListView> currentChromoList: getData()) {
+			for (RepeatFamilyListView currentRepeatFamily: currentChromoList) {
 				String currentRepeatFamilyName = currentRepeatFamily.getName();
 				if (!familyNames.contains(currentRepeatFamilyName)) {
 					familyNames.add(currentRepeatFamilyName);

@@ -8,7 +8,7 @@ import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.repeatFamilyList.RFLOConvertIntoMask;
-import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.repeatFamily.RepeatFamily;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.repeatListView.RepeatFamilyListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.repeatFamilyList.RepeatFamilyList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
@@ -55,8 +55,8 @@ public class RFLAGenerateMask extends TrackListActionOperationWorker<ScoredChrom
 		if (selectedLayer != null) {
 			RepeatFamilyList selectedTrackData = selectedLayer.getData();
 			List<String> families = new ArrayList<String>(); 
-			for (List<RepeatFamily> currentRepeatList: selectedTrackData) {
-				for (RepeatFamily currentFamily: currentRepeatList) {
+			for (List<RepeatFamilyListView> currentRepeatList: selectedTrackData) {
+				for (RepeatFamilyListView currentFamily: currentRepeatList) {
 					if (!families.contains(currentFamily.getName())) {
 						families.add(currentFamily.getName());
 					}

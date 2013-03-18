@@ -19,49 +19,54 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.repeatFamily;
+package edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.bin;
 
 import java.util.List;
 
-import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.list.arrayList.ListofIntArraysAsIntegerList;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
+import edu.yu.einstein.genplay.dataStructure.list.arrayList.ListOfFloatArraysAsFloatList;
+import edu.yu.einstein.genplay.dataStructure.list.arrayList.ListOfHalfArraysAsFloatList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
 
 /**
  * Implementation of the {@link ListViewBuilder} interface vending
- * {@link RepeatFamily} objects.
+ * {@link BinListView} objects.
  * @author Julien Lajugie
  */
-public class RepeatFamilyBuilder implements ListViewBuilder<ChromosomeWindow> {
+public final class BinListViewBuilder implements ListViewBuilder<ScoredChromosomeWindow> {
 
-	/** List of the start positions of the repeats */
-	private List<Integer> repeatStarts;
+	/** Size of the bins of the list */
+	private final int binSize;
 
-	/** List of the stop positions of the repeats */
-	private List<Integer> repeatStops;
-
-	/** Name of the family of repeat */
-	private String name;
+	/** List of the score values of the SCWs */
+	private List<Float> windowScores;
 
 
 	/**
-	 * Creates an instance of {@link RepeatFamilyBuilder}
-	 * @param repeatFamilyName name of the family of repeat to build
+	 * Creates an instance of {@link BinListViewBuilder}
+	 * @param scorePrecision precision of the scores of the {@link ListView} to build
+	 * @param binSize size of the bins of the {@link ListView}
 	 */
-	public RepeatFamilyBuilder(String repeatFamilyName) {
-		name = repeatFamilyName;
-		repeatStarts = new ListofIntArraysAsIntegerList();
-		repeatStops = new ListofIntArraysAsIntegerList();
+	public BinListViewBuilder(ScorePrecision scorePrecision, int binSize) {
+		this.binSize = binSize;
+		switch (scorePrecision) {
+		case PRECISION_16BIT:
+			windowScores = new ListOfHalfArraysAsFloatList();
+			break;
+		case PRECISION_32BIT:
+			windowScores = new ListOfFloatArraysAsFloatList();
+			break;
+		}
 	}
 
 
 	@Override
-	public void addElementToBuild(ChromosomeWindow element) throws ObjectAlreadyBuiltException {
-		if (repeatStarts != null) {
-			repeatStarts.add(element.getStart());
-			repeatStops.add(element.getStop());
+	public void addElementToBuild(ScoredChromosomeWindow element) throws ObjectAlreadyBuiltException {
+		if (windowScores != null) {
+			windowScores.add(element.getScore());
 		} else {
 			throw new ObjectAlreadyBuiltException();
 		}
@@ -69,11 +74,9 @@ public class RepeatFamilyBuilder implements ListViewBuilder<ChromosomeWindow> {
 
 
 	@Override
-	public ListView<ChromosomeWindow> getListView() {
-		ListView<ChromosomeWindow> listView = new RepeatFamily(name, repeatStarts, repeatStops);
-		repeatStarts = null;
-		repeatStops = null;
-		name = null;
+	public ListView<ScoredChromosomeWindow> getListView() {
+		ListView<ScoredChromosomeWindow> listView = new BinListView(binSize, windowScores);
+		windowScores = null;
 		return listView;
 	}
 }

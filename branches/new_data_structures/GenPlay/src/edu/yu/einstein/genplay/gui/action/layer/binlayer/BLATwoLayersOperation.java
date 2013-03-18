@@ -27,7 +27,7 @@ import javax.swing.ActionMap;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOTwoLayers;
 import edu.yu.einstein.genplay.core.operation.binList.BLOTwoLayers;
-import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationTwoLayersMethod;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ImmutableGenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
@@ -99,7 +99,7 @@ public final class BLATwoLayersOperation extends TrackListActionOperationWorker<
 										(ImmutableGenomicDataList<?>)otherLayer.getData(),
 										scm);
 							} else {
-								DataPrecision precision = Utils.choosePrecision(getRootPane());
+								ScorePrecision precision = Utils.choosePrecision(getRootPane());
 								if (precision != null) {
 									operation = new BLOTwoLayers(selectedLayer.getData(),
 											((BinLayer)otherLayer).getData(),

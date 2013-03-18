@@ -42,7 +42,7 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
 import edu.yu.einstein.genplay.core.converter.ConverterFactory;
-import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
@@ -164,8 +164,8 @@ public class ConvertDialog extends JDialog {
 
 		// Create the data precision elements
 		JLabel jlDataPrecision = new JLabel("Select a data precision:");
-		jcbDataPrecision = new JComboBox(DataPrecision.values());
-		jcbDataPrecision.setSelectedItem(DataPrecision.PRECISION_32BIT);
+		jcbDataPrecision = new JComboBox(ScorePrecision.values());
+		jcbDataPrecision.setSelectedItem(ScorePrecision.PRECISION_32BIT);
 		jcbCalculMetod.setPreferredSize(dimension);
 
 		// Creates the panel
@@ -226,10 +226,10 @@ public class ConvertDialog extends JDialog {
 
 
 	/**
-	 * @return the selected {@link DataPrecision}
+	 * @return the selected {@link ScorePrecision}
 	 */
-	public DataPrecision getDataPrecision() {
-		return (DataPrecision) jcbDataPrecision.getSelectedItem();
+	public ScorePrecision getDataPrecision() {
+		return (ScorePrecision) jcbDataPrecision.getSelectedItem();
 	}
 
 

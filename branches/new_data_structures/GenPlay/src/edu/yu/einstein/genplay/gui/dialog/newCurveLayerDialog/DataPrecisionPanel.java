@@ -25,7 +25,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 
 
 
@@ -38,7 +38,7 @@ class DataPrecisionPanel extends JPanel {
 
 	private static final long serialVersionUID = -2255804422921021285L; 				// generated ID
 	private final JComboBox 		jcbDataPrecision; 									// combo box for the data precision 
-	private static DataPrecision 	defaultPrecision = DataPrecision.PRECISION_32BIT; 	// default data precision
+	private static ScorePrecision 	defaultPrecision = ScorePrecision.PRECISION_32BIT; 	// default data precision
 	
 	
 	/**
@@ -46,7 +46,7 @@ class DataPrecisionPanel extends JPanel {
 	 */
 	DataPrecisionPanel() {
 		super();
-		jcbDataPrecision = new JComboBox(DataPrecision.values());
+		jcbDataPrecision = new JComboBox(ScorePrecision.values());
 		jcbDataPrecision.setSelectedItem(defaultPrecision);
 		add(jcbDataPrecision);
 		setBorder(BorderFactory.createTitledBorder("Data Precision"));
@@ -54,10 +54,10 @@ class DataPrecisionPanel extends JPanel {
 	
 	
 	/**
-	 * @return the selected {@link DataPrecision}
+	 * @return the selected {@link ScorePrecision}
 	 */
-	DataPrecision getDataPrecision() {
-		return (DataPrecision) jcbDataPrecision.getSelectedItem();
+	ScorePrecision getDataPrecision() {
+		return (ScorePrecision) jcbDataPrecision.getSelectedItem();
 	}
 	
 	

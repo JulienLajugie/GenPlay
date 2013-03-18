@@ -19,44 +19,49 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.mask;
+package edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.repeatListView;
 
 import java.util.List;
 
+import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.ListOfIntArraysAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
-import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
 
 /**
  * Implementation of the {@link ListViewBuilder} interface vending
- * {@link MaskListView} objects.
+ * {@link RepeatFamilyListView} objects.
  * @author Julien Lajugie
  */
-public final class MaskListViewBuilder implements ListViewBuilder<ScoredChromosomeWindow> {
+public class RepeatFamilyListViewBuilder implements ListViewBuilder<ChromosomeWindow> {
 
-	/** List of the start positions of the masks */
-	private List<Integer> maskStarts;
+	/** List of the start positions of the repeats */
+	private List<Integer> repeatStarts;
 
-	/** List of the stop positions of the masks */
-	private List<Integer> maskStops;
+	/** List of the stop positions of the repeats */
+	private List<Integer> repeatStops;
+
+	/** Name of the family of repeat */
+	private String name;
 
 
 	/**
-	 * Creates an instance of {@link MaskListViewBuilder}
+	 * Creates an instance of {@link RepeatFamilyListViewBuilder}
+	 * @param repeatFamilyName name of the family of repeat to build
 	 */
-	public MaskListViewBuilder() {
-		maskStarts = new ListOfIntArraysAsIntegerList();
-		maskStops = new ListOfIntArraysAsIntegerList();
+	public RepeatFamilyListViewBuilder(String repeatFamilyName) {
+		name = repeatFamilyName;
+		repeatStarts = new ListOfIntArraysAsIntegerList();
+		repeatStops = new ListOfIntArraysAsIntegerList();
 	}
 
 
 	@Override
-	public void addElementToBuild(ScoredChromosomeWindow element) throws ObjectAlreadyBuiltException {
-		if (maskStarts != null) {
-			maskStarts.add(element.getStart());
-			maskStarts.add(element.getStop());
+	public void addElementToBuild(ChromosomeWindow element) throws ObjectAlreadyBuiltException {
+		if (repeatStarts != null) {
+			repeatStarts.add(element.getStart());
+			repeatStops.add(element.getStop());
 		} else {
 			throw new ObjectAlreadyBuiltException();
 		}
@@ -64,10 +69,11 @@ public final class MaskListViewBuilder implements ListViewBuilder<ScoredChromoso
 
 
 	@Override
-	public ListView<ScoredChromosomeWindow> getListView() {
-		ListView<ScoredChromosomeWindow> listView = new MaskListView(maskStarts, maskStops);
-		maskStarts = null;
-		maskStops = null;
+	public ListView<ChromosomeWindow> getListView() {
+		ListView<ChromosomeWindow> listView = new RepeatFamilyListView(name, repeatStarts, repeatStops);
+		repeatStarts = null;
+		repeatStops = null;
+		name = null;
 		return listView;
 	}
 }

@@ -44,7 +44,7 @@ import edu.yu.einstein.genplay.exception.exceptions.CompressionException;
  * and from float using the tools from the {@link HalfFloat} class.
  * @author Julien Lajugie
  */
-public class ListofHalfArraysAsFloatList extends AbstractList<Float> implements Serializable, List<Float>, CompressibleList {
+public class ListOfHalfArraysAsFloatList extends AbstractList<Float> implements Serializable, List<Float>, CompressibleList {
 
 	/** Generated serial ID */
 	private static final long serialVersionUID = -4262827816090843034L;
@@ -69,19 +69,19 @@ public class ListofHalfArraysAsFloatList extends AbstractList<Float> implements 
 
 
 	/**
-	 * Creates an instance of {@link ListofHalfArraysAsFloatList}
+	 * Creates an instance of {@link ListOfHalfArraysAsFloatList}
 	 */
-	public ListofHalfArraysAsFloatList() {
+	public ListOfHalfArraysAsFloatList() {
 		data = new ArrayList<char[]>();
 		data.add(new char[ARRAY_SIZE]);
 	}
 
 
 	/**
-	 * Creates an instance of {@link ListofHalfArraysAsFloatList}
+	 * Creates an instance of {@link ListOfHalfArraysAsFloatList}
 	 * @param size size of the list
 	 */
-	public ListofHalfArraysAsFloatList(int size) {
+	public ListOfHalfArraysAsFloatList(int size) {
 		int listCount = (size / ARRAY_SIZE) + 1;
 		data = new ArrayList<char[]>(listCount);
 	}

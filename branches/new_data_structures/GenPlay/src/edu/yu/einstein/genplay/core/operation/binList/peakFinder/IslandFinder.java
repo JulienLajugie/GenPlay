@@ -34,7 +34,7 @@ import edu.yu.einstein.genplay.core.operation.binList.BLOSumScore;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.core.stat.MathFunctions;
 import edu.yu.einstein.genplay.core.stat.Poisson;
-import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.IslandResultType;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.ListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
@@ -115,7 +115,7 @@ public class IslandFinder implements Serializable, Stoppable {
 	public BinList findIsland () throws InterruptedException, ExecutionException {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
-		final DataPrecision precision = binList.getPrecision();
+		final ScorePrecision precision = binList.getPrecision();
 		for (short i = 0; i < binList.size(); i++) {
 			final List<Double> currentList = binList.get(i);
 			Callable<List<Double>> currentThread = new Callable<List<Double>>() {
@@ -279,7 +279,7 @@ public class IslandFinder implements Serializable, Stoppable {
 	 * @param islandSummits		summit values of the islands
 	 * @return					list of windows values
 	 */
-	private List<Double> getListIsland (	DataPrecision precision,
+	private List<Double> getListIsland (	ScorePrecision precision,
 			List<Double> currentList,
 			List<Double> scoreIsland,
 			List<Integer> islandsStart,

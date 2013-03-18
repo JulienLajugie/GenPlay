@@ -35,6 +35,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.enums.Nucleotide;
 import edu.yu.einstein.genplay.dataStructure.list.DisplayableListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.nucleotideListView.TwoBitListView.TwoBitSequence;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;

@@ -35,7 +35,7 @@ import javax.swing.JDialog;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
-import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.gui.dialog.genomeSelectionPanel.GenomeSelectionPanel;
@@ -297,9 +297,9 @@ public class NewCurveLayerDialog extends JDialog {
 
 
 	/**
-	 * @return the selected {@link DataPrecision}
+	 * @return the selected {@link ScorePrecision}
 	 */
-	public DataPrecision getDataPrecision() {
+	public ScorePrecision getDataPrecision() {
 		return dataPrecisionPanel.getDataPrecision();
 	}
 

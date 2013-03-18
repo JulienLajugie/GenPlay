@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.mask;
+package edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.bin;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -33,14 +33,14 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScored
 
 
 /**
- * {@link ListView} of masks {@link ScoredChromosomeWindow}. Masks always have a score of 1.
- * {@link MaskListView} objects are immutable.
+ * A memory efficient {@link ListView} of bins with a fix size
+ * {@link BinListView} objects are immutable.
  * @author Julien Lajugie
  */
-public final class MaskListView implements ListView<ScoredChromosomeWindow>, Iterator<ScoredChromosomeWindow> {
+public final class BinListView implements ListView<ScoredChromosomeWindow>, Iterator<ScoredChromosomeWindow> {
 
 	/** Generated serial ID */
-	private static final long serialVersionUID = -2065237090366294538L;
+	private static final long serialVersionUID = 304172516803341537L;
 
 	/** Version number of the class */
 	private static final transient int CLASS_VERSION_NUMBER = 0;
@@ -48,28 +48,31 @@ public final class MaskListView implements ListView<ScoredChromosomeWindow>, Ite
 	/** Current index of the iterator */
 	private transient int iteratorIndex = 0;
 
-	/** List of the start positions of the masks */
-	private final List<Integer> maskStarts;
+	/** Size of the bins of the list */
+	private final int binSize;
 
-	/** List of the stop positions of the masks */
-	private final List<Integer> maskStops;
+	/** List of the score values of the bins */
+	private final List<Float> binScores;
 
 
 	/**
-	 * Creates an instance of {@link MaskListView}
-	 * @param maskStarts list of the start positions of the masks
-	 * @param maskStops list of the stop positions of the masks
+	 * Creates an instance of {@link BinListView}
+	 * @param binSize size of the bins of the list
+	 * @param windowScore list of the score values of the bins
 	 */
-	MaskListView(List<Integer> maskStarts, List<Integer> maskStops) {
+	BinListView(int binSize, List<Float> binScores) {
 		super();
-		this.maskStarts = maskStarts;
-		this.maskStops = maskStops;
+		this.binSize = binSize;
+		this.binScores = binScores;
 	}
 
 
 	@Override
 	public ScoredChromosomeWindow get(int elementIndex) {
-		return new SimpleScoredChromosomeWindow(maskStarts.get(elementIndex), maskStops.get(elementIndex), 1);
+		int start = binSize * elementIndex;
+		int stop = start + binSize;
+		float score = binScores.get(elementIndex);
+		return new SimpleScoredChromosomeWindow(start, stop, score);
 	}
 
 
@@ -113,7 +116,7 @@ public final class MaskListView implements ListView<ScoredChromosomeWindow>, Ite
 
 	@Override
 	public int size() {
-		return maskStarts.size();
+		return binScores.size();
 	}
 
 

@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.list.genomeWideList.nucleotideList;
+package edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.nucleotideListView.TwoBitListView;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,8 +28,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
-import java.util.AbstractList;
-import java.util.List;
+import java.util.Iterator;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
@@ -37,6 +36,7 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.enums.Nucleotide;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
 
@@ -46,16 +46,31 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializable, List<Nucleotide>, Stoppable {
+public final class TwoBitSequence implements Iterator<Nucleotide>, ListView<Nucleotide>, Serializable, Stoppable {
 
-	/** int code for a missing genome position (a billion) in multi genome project. */
-	public static final int MISSING_POSITION = -1000000000;
+	/** Generated Serial ID */
 	private static final long serialVersionUID = 4155123051619828951L;	// generated ID
-	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private transient RandomAccessFile 	raf;	// 2bit random access file
-	private String	filePath;					// path of the 2bit file (used for the serialization)
-	private int 	headerSize;					// the size in byte of the header of the sequence
-	private String 	name;						// the sequence name
+
+	/** Version number of the class */
+	private static final transient int CLASS_VERSION_NUMBER = 0;
+
+	/** Code for a missing genome position (a billion) in multi genome project. */
+	public static final int MISSING_POSITION = -1000000000;
+
+	/** Current index of the iterator */
+	private transient int iteratorIndex = 0;
+
+	/** 2bit random access file */
+	private transient RandomAccessFile 	raf;
+
+	/** Path of the 2bit file (used for the serialization) */
+	private final String	filePath;
+
+	/** the size in byte of the header of the sequence */
+	private int 	headerSize;
+
+	/** The sequence name */
+	private String 	name;
 	private int 	offset;						// the offset of the sequence data relative to the start of the file
 	private int 	dnaSize;					// number of bases of DNA in the sequence
 	private int[] 	nBlockStarts;				// the starting position for each block of Ns
@@ -66,6 +81,7 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 	protected String	genomeName = null;		// genome name for a multi genome project
 	protected AlleleType alleleType = null;		// allele type for a multi genome project
 	private Chromosome chromosome;				// chromosome of the current list
+
 
 
 	/**
@@ -354,4 +370,28 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 	protected void setSequenceFilePath(String filePath) throws FileNotFoundException {
 		this.filePath = filePath;
 	}
+
+
+	@Override
+	public Iterator<Nucleotide> iterator() {
+		return this;
+	}
+
+
+	@Override
+	public boolean hasNext() {
+		return iteratorIndex < size();
+	}
+
+
+	@Override
+	public Nucleotide next() {
+		int currentIndex = iteratorIndex;
+		iteratorIndex++;
+		return get(currentIndex);
+	}
+
+
+	@Override
+	public void remove() {}
 }

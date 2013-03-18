@@ -19,10 +19,13 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.mask;
+package edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.dense;
 
 import java.util.List;
 
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
+import edu.yu.einstein.genplay.dataStructure.list.arrayList.ListOfFloatArraysAsFloatList;
+import edu.yu.einstein.genplay.dataStructure.list.arrayList.ListOfHalfArraysAsFloatList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.ListOfIntArraysAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
@@ -31,32 +34,48 @@ import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
 
 /**
  * Implementation of the {@link ListViewBuilder} interface vending
- * {@link MaskListView} objects.
+ * {@link DenseSCWListView} objects.
  * @author Julien Lajugie
  */
-public final class MaskListViewBuilder implements ListViewBuilder<ScoredChromosomeWindow> {
+public final class DenseSCWListViewBuilder implements ListViewBuilder<ScoredChromosomeWindow> {
 
-	/** List of the start positions of the masks */
-	private List<Integer> maskStarts;
+	/** List of the stop positions of the SCWs */
+	private List<Integer> windowStops;
 
-	/** List of the stop positions of the masks */
-	private List<Integer> maskStops;
+	/** List of the score values of the SCWs */
+	private List<Float> windowScores;
 
 
 	/**
-	 * Creates an instance of {@link MaskListViewBuilder}
+	 * Creates an instance of {@link DenseSCWListViewBuilder}
+	 * @param scorePrecision precision of the scores of the {@link ListView} to build
 	 */
-	public MaskListViewBuilder() {
-		maskStarts = new ListOfIntArraysAsIntegerList();
-		maskStops = new ListOfIntArraysAsIntegerList();
+	public DenseSCWListViewBuilder(ScorePrecision scorePrecision) {
+		windowStops = new ListOfIntArraysAsIntegerList();
+		switch (scorePrecision) {
+		case PRECISION_16BIT:
+			windowScores = new ListOfHalfArraysAsFloatList();
+			break;
+		case PRECISION_32BIT:
+			windowScores = new ListOfFloatArraysAsFloatList();
+			break;
+		}
 	}
 
 
 	@Override
 	public void addElementToBuild(ScoredChromosomeWindow element) throws ObjectAlreadyBuiltException {
-		if (maskStarts != null) {
-			maskStarts.add(element.getStart());
-			maskStarts.add(element.getStop());
+		if (windowStops != null) {
+			int previousStop = 0;
+			if (windowStops.size() > 0) {
+				previousStop = windowStops.get(windowStops.size() - 1);
+			}
+			if (previousStop != element.getStart()) {
+				windowStops.add(element.getStart());
+				windowScores.add(0f);
+			}
+			windowStops.add(element.getStop());
+			windowScores.add(element.getScore());
 		} else {
 			throw new ObjectAlreadyBuiltException();
 		}
@@ -65,9 +84,9 @@ public final class MaskListViewBuilder implements ListViewBuilder<ScoredChromoso
 
 	@Override
 	public ListView<ScoredChromosomeWindow> getListView() {
-		ListView<ScoredChromosomeWindow> listView = new MaskListView(maskStarts, maskStops);
-		maskStarts = null;
-		maskStops = null;
+		ListView<ScoredChromosomeWindow> listView = new DenseSCWListView(windowStops, windowScores);
+		windowStops = null;
+		windowScores = null;
 		return listView;
 	}
 }

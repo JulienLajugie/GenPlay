@@ -29,7 +29,7 @@ import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.ListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 
@@ -64,7 +64,7 @@ public class BLONormalize implements Operation<BinList> {
 		scoreSum = new BLOSumScore(binList, null).compute();
 		// we want to multiply each bin by the following coefficient
 		final double coef = factor / scoreSum;
-		final DataPrecision precision = binList.getPrecision();
+		final ScorePrecision precision = binList.getPrecision();
 		
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();

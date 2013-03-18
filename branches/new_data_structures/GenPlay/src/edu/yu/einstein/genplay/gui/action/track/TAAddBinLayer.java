@@ -31,7 +31,7 @@ import edu.yu.einstein.genplay.core.IO.extractor.ReadLengthAndShiftHandler;
 import edu.yu.einstein.genplay.core.IO.extractor.StrandedExtractor;
 import edu.yu.einstein.genplay.core.generator.BinListGenerator;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
@@ -55,7 +55,7 @@ public final class TAAddBinLayer extends TrackListActionExtractorWorker<BinList>
 	private static final String 	DESCRIPTION = "Add a layer displaying bins with a fixed size"; 	// tooltip
 	private int 					binSize = 0;													// Size of the bins of the BinList
 	private ScoreCalculationMethod 	scoreCalculation = null;										// Method of calculation of the score of the BinList
-	private DataPrecision 			precision = DataPrecision.PRECISION_32BIT;						// Precision of the Data
+	private ScorePrecision 			precision = ScorePrecision.PRECISION_32BIT;						// Precision of the Data
 	private BinListGenerator 		binListGenerator;												// BinList Generator
 	private Strand					strand = null;													// strand to extract
 	private int						strandShift = 0;												// position shift on a strand

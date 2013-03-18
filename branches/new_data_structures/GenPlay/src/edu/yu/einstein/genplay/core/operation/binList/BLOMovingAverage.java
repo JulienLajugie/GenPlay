@@ -29,7 +29,7 @@ import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.ListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 
@@ -65,7 +65,7 @@ public class BLOMovingAverage implements Operation<BinList> {
 	public BinList compute() throws InterruptedException, ExecutionException {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
-		final DataPrecision precision = binList.getPrecision();
+		final ScorePrecision precision = binList.getPrecision();
 		final int binSize =  binList.getBinSize();
 		final int halfWidthBin = movingWindowWidth / 2 / binSize;
 		// we apply the moving average

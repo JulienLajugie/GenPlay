@@ -25,7 +25,7 @@ import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.converter.Converter;
 import edu.yu.einstein.genplay.core.converter.ConverterFactory;
-import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ImmutableGenomicDataList;
@@ -64,7 +64,7 @@ public class LAConvert extends TrackListActionWorker<ImmutableGenomicDataList<?>
 	private LayerType 					layerType;
 	private String 						layerName;
 	private int 						binSize;
-	private DataPrecision 				precision;
+	private ScorePrecision 				precision;
 	private ScoreCalculationMethod 		method;
 
 

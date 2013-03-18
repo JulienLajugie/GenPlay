@@ -30,7 +30,7 @@ import java.util.concurrent.Callable;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.repeatFamily.RepeatFamily;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.repeatListView.RepeatFamilyListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.repeatFamilyList.RepeatFamilyList;
@@ -84,14 +84,14 @@ public class RFLOConvertIntoMask implements Operation<ScoredChromosomeWindowList
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
 
 		for (short i = 0; i < repeatFamilyList.size(); i++) {
-			final List<RepeatFamily> currentList = repeatFamilyList.get(i);
+			final List<RepeatFamilyListView> currentList = repeatFamilyList.get(i);
 
 			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
 				@Override
 				public List<ScoredChromosomeWindow> call() throws Exception {
 					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
 					if ((currentList != null) && (currentList.size() != 0)) {
-						for (RepeatFamily currentFamily: currentList) {
+						for (RepeatFamilyListView currentFamily: currentList) {
 							// if the operation is being stopped we directly return null
 							if (stopped) {
 								op.notifyDone();

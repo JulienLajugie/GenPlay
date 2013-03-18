@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.mask;
+package edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.dense;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -33,14 +33,16 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScored
 
 
 /**
- * {@link ListView} of masks {@link ScoredChromosomeWindow}. Masks always have a score of 1.
- * {@link MaskListView} objects are immutable.
+ * A {@link ListView} of {@link ScoredChromosomeWindow} optimized to minimize the memory usage
+ * when most of the windows are consecutive (not separated by windows with a score of 0).
+ * In this representation, the windows with a score of 0 are stored.
+ * {@link DenseSCWListView} objects are immutable.
  * @author Julien Lajugie
  */
-public final class MaskListView implements ListView<ScoredChromosomeWindow>, Iterator<ScoredChromosomeWindow> {
+public final class DenseSCWListView implements ListView<ScoredChromosomeWindow>, Iterator<ScoredChromosomeWindow> {
 
 	/** Generated serial ID */
-	private static final long serialVersionUID = -2065237090366294538L;
+	private static final long serialVersionUID = -3175441402429504834L;
 
 	/** Version number of the class */
 	private static final transient int CLASS_VERSION_NUMBER = 0;
@@ -48,28 +50,35 @@ public final class MaskListView implements ListView<ScoredChromosomeWindow>, Ite
 	/** Current index of the iterator */
 	private transient int iteratorIndex = 0;
 
-	/** List of the start positions of the masks */
-	private final List<Integer> maskStarts;
+	/** List of the stop positions of the SCWs.
+	 * A stop position is also the start position of the next window in the list */
+	private final List<Integer> windowStops;
 
-	/** List of the stop positions of the masks */
-	private final List<Integer> maskStops;
+	/** List of the score values of the SCWs */
+	private final List<Float> windowScores;
 
 
 	/**
-	 * Creates an instance of {@link MaskListView}
-	 * @param maskStarts list of the start positions of the masks
-	 * @param maskStops list of the stop positions of the masks
+	 * Creates an instance of {@link DenseSCWListView}
+	 * @param windowStops list of the stop positions of the SCWs
+	 * @param windowScore list of the score values of the SCWs
 	 */
-	MaskListView(List<Integer> maskStarts, List<Integer> maskStops) {
+	DenseSCWListView(List<Integer> windowStops, List<Float> windowScores) {
 		super();
-		this.maskStarts = maskStarts;
-		this.maskStops = maskStops;
+		this.windowStops = windowStops;
+		this.windowScores = windowScores;
 	}
 
 
 	@Override
 	public ScoredChromosomeWindow get(int elementIndex) {
-		return new SimpleScoredChromosomeWindow(maskStarts.get(elementIndex), maskStops.get(elementIndex), 1);
+		int start = 0;
+		int stop = windowStops.get(elementIndex);
+		float score = windowScores.get(elementIndex);
+		if (elementIndex > 0) {
+			start = windowStops.get(elementIndex - 1);
+		}
+		return new SimpleScoredChromosomeWindow(start, stop, score);
 	}
 
 
@@ -113,7 +122,7 @@ public final class MaskListView implements ListView<ScoredChromosomeWindow>, Ite
 
 	@Override
 	public int size() {
-		return maskStarts.size();
+		return windowStops.size();
 	}
 
 

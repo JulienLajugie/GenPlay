@@ -25,7 +25,7 @@ import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.binList.BLOChangeDataPrecision;
-import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
@@ -34,7 +34,7 @@ import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
- * Changes the {@link DataPrecision} of a {@link BinLayer}
+ * Changes the {@link ScorePrecision} of a {@link BinLayer}
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -70,7 +70,7 @@ public class BLAChangeDataPrecision extends TrackListActionOperationWorker<BinLi
 		selectedLayer = (BinLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			BinList binList = selectedLayer.getData();
-			DataPrecision precision = Utils.choosePrecision(getRootPane(), binList.getPrecision());
+			ScorePrecision precision = Utils.choosePrecision(getRootPane(), binList.getPrecision());
 			if (precision != null) {
 				Operation<BinList> operation = new BLOChangeDataPrecision(binList, precision);
 				return operation;

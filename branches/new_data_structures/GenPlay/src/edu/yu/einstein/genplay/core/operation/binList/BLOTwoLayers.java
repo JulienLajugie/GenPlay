@@ -29,7 +29,7 @@ import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationTwoLayersMethod;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.ListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ImmutableGenomicDataList;
@@ -47,7 +47,7 @@ public class BLOTwoLayers implements Operation<ImmutableGenomicDataList<?>> {
 
 	private final BinList 					binList1;		// first binlist to add
 	private final BinList 					binList2; 		// second binlist to add
-	private final DataPrecision 			precision;		// precision of the result list
+	private final ScorePrecision 			precision;		// precision of the result list
 	private final ScoreCalculationTwoLayersMethod 	scm;			// method of calculation for the score
 	private boolean							stopped = false;// true if the operation must be stopped
 
@@ -59,7 +59,7 @@ public class BLOTwoLayers implements Operation<ImmutableGenomicDataList<?>> {
 	 * @param precision precision of the result {@link BinList}
 	 * @param scm {@link ScoreCalculationTwoLayersMethod} method used to compute the scores
 	 */
-	public BLOTwoLayers(BinList binList1, BinList binList2, DataPrecision precision, ScoreCalculationTwoLayersMethod scm) {
+	public BLOTwoLayers(BinList binList1, BinList binList2, ScorePrecision precision, ScoreCalculationTwoLayersMethod scm) {
 		this.binList1 = binList1;
 		this.binList2 = binList2;
 		this.precision = precision;

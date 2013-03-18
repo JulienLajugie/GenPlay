@@ -39,7 +39,7 @@ import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.DisplayableListOfLists;
-import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.repeatFamily.RepeatFamily;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.repeatListView.RepeatFamilyListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
@@ -50,7 +50,7 @@ import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily, List<RepeatFamily>> implements Serializable {
+public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamilyListView, List<RepeatFamilyListView>> implements Serializable {
 
 	private static final long serialVersionUID = -7553643226353657650L; // generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
@@ -94,14 +94,14 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 		// retrieve the instance of the OperationPool
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
-		final Collection<Callable<List<RepeatFamily>>> threadList = new ArrayList<Callable<List<RepeatFamily>>>();
+		final Collection<Callable<List<RepeatFamilyListView>>> threadList = new ArrayList<Callable<List<RepeatFamilyListView>>>();
 		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		for(final Chromosome currentChromosome : projectChromosome) {
 
-			Callable<List<RepeatFamily>> currentThread = new Callable<List<RepeatFamily>>() {
+			Callable<List<RepeatFamilyListView>> currentThread = new Callable<List<RepeatFamilyListView>>() {
 				@Override
-				public List<RepeatFamily> call() throws Exception {
-					List<RepeatFamily> resultList = new ArrayList<RepeatFamily>();
+				public List<RepeatFamilyListView> call() throws Exception {
+					List<RepeatFamilyListView> resultList = new ArrayList<RepeatFamilyListView>();
 					// Hashtable indexed by repeat family name
 					Hashtable<String, Integer> indexTable = new Hashtable<String, Integer>();;
 					for(int j = 0; j < startList.size(currentChromosome); j++) {
@@ -109,7 +109,7 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 						String familyName = familyNameList.get(currentChromosome, j);
 						// case when a chromosome doesn't have any data yet
 						if (resultList.size() == 0) {
-							resultList.add(new RepeatFamily(familyName));
+							resultList.add(new RepeatFamilyListView(familyName));
 							resultList.get(0).addRepeat(currentRepeat);
 							indexTable.put(familyName, 0);
 						} else {
@@ -119,7 +119,7 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 							if (familyIndex != null) {
 								resultList.get(familyIndex).addRepeat(currentRepeat);
 							} else { // we didn't find the family
-								resultList.add(new RepeatFamily(familyName));
+								resultList.add(new RepeatFamilyListView(familyName));
 								int index = resultList.size() - 1;
 								resultList.get(index).addRepeat(currentRepeat);
 								indexTable.put(familyName, index);
@@ -134,19 +134,19 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 
 			threadList.add(currentThread);
 		}
-		List<List<RepeatFamily>> result = null;
+		List<List<RepeatFamilyListView>> result = null;
 		// starts the pool
 		result = op.startPool(threadList);
 		// add the chromosome results
 		if (result != null) {
-			for (List<RepeatFamily> currentList: result) {
+			for (List<RepeatFamilyListView> currentList: result) {
 				add(currentList);
 			}
 		}
 		// sort the RepeatFamilyList
-		for (List<RepeatFamily> currentRepeatFamilyList : this) {
+		for (List<RepeatFamilyListView> currentRepeatFamilyList : this) {
 			Collections.sort(currentRepeatFamilyList);
-			for (RepeatFamily currentRepeatFamily : currentRepeatFamilyList) {
+			for (RepeatFamilyListView currentRepeatFamily : currentRepeatFamilyList) {
 				Collections.sort(currentRepeatFamily.getRepeatList());
 			}
 		}
@@ -158,7 +158,7 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 	 */
 	@Override
 	protected void fitToScreen() {
-		List<RepeatFamily> currentChromosomeList;
+		List<RepeatFamilyListView> currentChromosomeList;
 		try {
 			currentChromosomeList = get(fittedChromosome);
 		} catch (InvalidChromosomeException e) {
@@ -170,10 +170,10 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 		if (fittedXRatio > 1) {
 			fittedDataList = currentChromosomeList;
 		} else {
-			fittedDataList = new ArrayList<RepeatFamily>();
-			for (RepeatFamily currentFamily : currentChromosomeList) {
+			fittedDataList = new ArrayList<RepeatFamilyListView>();
+			for (RepeatFamilyListView currentFamily : currentChromosomeList) {
 				if (currentFamily.repeatCount() > 1) {
-					RepeatFamily fittedFamily = new RepeatFamily(currentFamily.getName());
+					RepeatFamilyListView fittedFamily = new RepeatFamilyListView(currentFamily.getName());
 					fittedFamily.addRepeat(new SimpleChromosomeWindow(currentFamily.getRepeat(0)));
 					int i = 1;
 					int j = 0;
@@ -191,7 +191,7 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 					}
 					fittedDataList.add(fittedFamily);
 				} else if (currentFamily.repeatCount() == 1) {
-					RepeatFamily fittedFamily = new RepeatFamily(currentFamily.getName());
+					RepeatFamilyListView fittedFamily = new RepeatFamilyListView(currentFamily.getName());
 					fittedFamily.addRepeat(new SimpleChromosomeWindow(currentFamily.getRepeat(0)));
 					fittedDataList.add(fittedFamily);
 				}
@@ -248,20 +248,20 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 
 
 	@Override
-	protected List<RepeatFamily> getFittedData(int start, int stop) {
+	protected List<RepeatFamilyListView> getFittedData(int start, int stop) {
 		if ((fittedDataList == null) || (fittedDataList.size() == 0)) {
 			return null;
 		}
 
-		List<RepeatFamily> resultList = new ArrayList<RepeatFamily>();
+		List<RepeatFamilyListView> resultList = new ArrayList<RepeatFamilyListView>();
 
-		for (RepeatFamily currentFamily : fittedDataList) {
+		for (RepeatFamilyListView currentFamily : fittedDataList) {
 			int indexStart = findStart(currentFamily.getRepeatList(), start, 0, currentFamily.getRepeatList().size());
 			int indexStop = findStop(currentFamily.getRepeatList(), stop, 0, currentFamily.getRepeatList().size());
 			if ((indexStart > 0) && (currentFamily.getRepeatList().get(indexStart - 1).getStop() > start)) {
 				indexStart--;
 			}
-			resultList.add(new RepeatFamily(currentFamily.getName()));
+			resultList.add(new RepeatFamilyListView(currentFamily.getName()));
 			if ((indexStart == indexStop) && (indexStart < currentFamily.repeatCount())) {
 				if (currentFamily.getRepeat(indexStart).getStart() < stop) {
 					resultList.get(resultList.size() - 1).addRepeat(currentFamily.getRepeat(indexStart));

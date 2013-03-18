@@ -27,7 +27,7 @@ import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.binList.BLOIntervalsScoring;
-import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
@@ -96,7 +96,7 @@ public class BLAIntervalsScoring extends TrackListActionOperationWorker<BinList>
 						if (method != null) {
 							resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackListPanel().getModel().getTracks());
 							if (resultTrack != null) {
-								DataPrecision precision = Utils.choosePrecision(getRootPane());;
+								ScorePrecision precision = Utils.choosePrecision(getRootPane());;
 								if (precision != null) {
 									BinList valueBinList = selectedLayer.getData();
 									BinList scoringBinList = intervalLayer.getData();

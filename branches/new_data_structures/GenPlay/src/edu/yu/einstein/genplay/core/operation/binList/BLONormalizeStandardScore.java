@@ -28,7 +28,7 @@ import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.ListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 
@@ -64,7 +64,7 @@ public class BLONormalizeStandardScore implements Operation<BinList> {
 		// compute standard deviation
 		final double stdev = stdevOp.compute();
 		// retrieve data precision
-		final DataPrecision precision = binList.getPrecision();
+		final ScorePrecision precision = binList.getPrecision();
 		// retrieve singleton operation pool
 		final OperationPool op = OperationPool.getInstance();
 		// creates collection of thread for the operation pool

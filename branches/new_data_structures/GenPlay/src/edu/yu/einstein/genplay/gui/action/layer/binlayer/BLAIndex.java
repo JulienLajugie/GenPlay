@@ -26,7 +26,7 @@ import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.binList.BLOIndex;
-import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
@@ -68,7 +68,7 @@ public final class BLAIndex extends TrackListActionOperationWorker<BinList> {
 	public Operation<BinList> initializeOperation() {
 		selectedLayer = (BinLayer) getValue("Layer");
 		if (selectedLayer != null) {
-			if (selectedLayer.getData().getPrecision() == DataPrecision.PRECISION_1BIT) {
+			if (selectedLayer.getData().getPrecision() == ScorePrecision.PRECISION_1BIT) {
 				JOptionPane.showMessageDialog(getRootPane(), "Error, indexation is not available for 1-Bit data", "Error", JOptionPane.ERROR_MESSAGE);
 			}
 			Number indexMin = NumberOptionPane.getValue(getRootPane(), "Minimum", "New minimum score:", -1000000, 1000000, 0);

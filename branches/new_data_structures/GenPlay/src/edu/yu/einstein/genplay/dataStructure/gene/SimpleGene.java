@@ -258,6 +258,28 @@ public final class SimpleGene implements Gene {
 
 
 	/**
+	 * Prints the state of the gene
+	 */
+	public void print() {
+		System.out.println("Name:\t" + name);
+		System.out.println("Strand:\t" + strand);
+		System.out.println("Start:\t" + start);
+		System.out.println("Stop:\t" + stop);
+		System.out.println("Score:\t" + score);
+		System.out.println("UTR5:\t" + UTR5Bound);
+		System.out.println("UTR3:\t" + UTR3Bound);
+		if (exons != null) {
+			for (int i = 0; i < exons.size(); i++) {
+				System.out.println("Exon " + (i + 1) + ":");
+				System.out.println("\tStart:\t" + exons.get(i).getStart());
+				System.out.println("\tStop:\t" + exons.get(i).getStop());
+				System.out.println("\tScore:\t" + exons.get(i).getScore());
+			}
+		}
+	}
+
+
+	/**
 	 * Method used for deserialization
 	 * @param in
 	 * @throws IOException

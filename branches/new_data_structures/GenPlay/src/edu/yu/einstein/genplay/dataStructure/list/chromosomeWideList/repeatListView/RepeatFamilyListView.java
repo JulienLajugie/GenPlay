@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.repeatFamily;
+package edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.repeatListView;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -37,10 +37,10 @@ import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
  * Representation of a family of repeats. A repeat family has a name and
  * a list of repeats. Repeats are {@link ChromosomeWindow} objects having a
  * start and a stop position.
- * {@link RepeatFamily} objects are immutable.
+ * {@link RepeatFamilyListView} objects are immutable.
  * @author Julien Lajugie
  */
-public final class RepeatFamily implements Serializable, ListView<ChromosomeWindow>, Iterator<ChromosomeWindow> {
+public final class RepeatFamilyListView implements Serializable, ListView<ChromosomeWindow>, Iterator<ChromosomeWindow> {
 
 	/** generated ID */
 	private static final long serialVersionUID = -7691967168795920365L;
@@ -62,11 +62,11 @@ public final class RepeatFamily implements Serializable, ListView<ChromosomeWind
 
 
 	/**
-	 * Creates an instance of {@link RepeatFamily}
+	 * Creates an instance of {@link RepeatFamilyListView}
 	 * @param name name of the family
 	 * @param repeatList {@link ListView} of {@link ChromosomeWindow} with the start and stop position of the repeats
 	 */
-	RepeatFamily(String name, List<Integer> repeatStarts, List<Integer> repeatStops) {
+	RepeatFamilyListView(String name, List<Integer> repeatStarts, List<Integer> repeatStops) {
 		this.name = name;
 		this.repeatStarts = repeatStarts;
 		this.repeatStops = repeatStops;
@@ -82,7 +82,7 @@ public final class RepeatFamily implements Serializable, ListView<ChromosomeWind
 
 
 	/**
-	 * Prints the name and the repeats of the {@link RepeatFamily}
+	 * Prints the name and the repeats of the {@link RepeatFamilyListView}
 	 */
 	public void print() {
 		String info = "";
@@ -115,14 +115,15 @@ public final class RepeatFamily implements Serializable, ListView<ChromosomeWind
 
 	@Override
 	public boolean hasNext() {
-		return (iteratorIndex + 1) < size();
+		return iteratorIndex < size();
 	}
 
 
 	@Override
 	public ChromosomeWindow next() {
+		int currentIndex = iteratorIndex;
 		iteratorIndex++;
-		return get(iteratorIndex);
+		return get(currentIndex);
 	}
 
 

@@ -22,7 +22,7 @@
 package edu.yu.einstein.genplay.core.converter.SCWListConverter;
 
 import edu.yu.einstein.genplay.core.converter.Converter;
-import edu.yu.einstein.genplay.dataStructure.enums.DataPrecision;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
@@ -39,7 +39,7 @@ public class SCWListToBinList implements Converter {
 
 	private final ScoredChromosomeWindowList 	list; 		// input list
 	private final int 							binSize;		// size of the bin of the result binlist
-	private final DataPrecision 				precision;		// precision of the result binlist
+	private final ScorePrecision 				precision;		// precision of the result binlist
 	private final ScoreCalculationMethod 		method; 		// method for the calculation of the scores of the result binlist
 	private GenomicDataList<?> 			result;			// The output list.
 
@@ -51,7 +51,7 @@ public class SCWListToBinList implements Converter {
 	 * @param precision precision of the data (eg: 1/8/16/32/64-BIT)
 	 * @param method method to generate the BinList (eg: AVERAGE, SUM or MAXIMUM)
 	 */
-	public SCWListToBinList(ScoredChromosomeWindowList scwList, int binSize, DataPrecision precision, ScoreCalculationMethod method) {
+	public SCWListToBinList(ScoredChromosomeWindowList scwList, int binSize, ScorePrecision precision, ScoreCalculationMethod method) {
 		list = scwList;
 		this.binSize = binSize;
 		this.precision = precision;

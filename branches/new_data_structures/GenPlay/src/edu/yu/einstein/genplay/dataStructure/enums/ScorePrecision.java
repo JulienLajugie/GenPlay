@@ -14,56 +14,65 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
 package edu.yu.einstein.genplay.dataStructure.enums;
 
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 
 
 /**
- * Enumeration representing a precision of data for a {@link BinList}
+ * Enumeration of the different precisions for the scores of data in GenPlay
  * @author Julien Lajugie
  * @version 0.1
  */
-public enum DataPrecision {
-	
+public enum ScorePrecision {
+
+
 	/**
-	 * 1-BIT data
+	 * 16-bit floating point format
 	 */
-	PRECISION_1BIT ("1-Bit"),
+	PRECISION_16BIT ("16-Bit", "16-bit floating point format"),
 	/**
-	 * 8-BIT data
+	 * 32-bit floating point format
 	 */
-	PRECISION_8BIT ("8-Bit"),
+	PRECISION_32BIT ("32-Bit", "32-bit floating point format");
+
+
+	private final String name; 			// name of the precision
+	private final String description;	// description of the precision
+
+
 	/**
-	 * 16-BIT data
-	 */
-	PRECISION_16BIT ("16-Bit"),
-	/**
-	 * 32-BIT data
-	 */
-	PRECISION_32BIT ("32-Bit"),
-	/**
-	 * 64-BIT data
-	 */
-	PRECISION_64BIT ("64-Bit");
-	
-	private final String name; // name of the precision
-	
-	
-	/**
-	 * Private constructor. Creates an instance of {@link DataPrecision}
+	 * Private constructor. Creates an instance of {@link ScorePrecision}
 	 * @param name name of the precision
+	 * @param description
 	 */
-	private DataPrecision(String name) {
+	private ScorePrecision(String name, String description) {
 		this.name = name;
+		this.description = description;
 	}
-	
-	
+
+
+	/**
+	 * @return the description of the score precision
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+
+	/**
+	 * @return the name of the score precision
+	 */
+	public String getName() {
+		return name;
+	}
+
+
+	@Override
 	public String toString() {
 		return name;
 	}
