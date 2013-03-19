@@ -67,15 +67,29 @@ public final class SparseSCWListViewBuilder implements ListViewBuilder<ScoredChr
 	}
 
 
-	@Override
-	public void addElementToBuild(ScoredChromosomeWindow element) throws ObjectAlreadyBuiltException {
+	/**
+	 * Adds an element to the ListView that will be built.
+	 * To assure that ListView objects are immutable, this method
+	 * will throw an exception if called after the getListView() has been called.
+	 * @param start start position of the SCW to add
+	 * @param stop stop position of the SCW to add
+	 * @param score score value of the SCW to add
+	 * @throws ObjectAlreadyBuiltException
+	 */
+	public void addElementToBuild(int start, int stop, float score) throws ObjectAlreadyBuiltException {
 		if (windowStops != null) {
-			windowStarts.add(element.getStart());
-			windowStops.add(element.getStop());
-			windowScores.add(element.getScore());
+			windowStarts.add(start);
+			windowStops.add(stop);
+			windowScores.add(score);
 		} else {
 			throw new ObjectAlreadyBuiltException();
 		}
+	}
+
+
+	@Override
+	public void addElementToBuild(ScoredChromosomeWindow element) throws ObjectAlreadyBuiltException {
+		addElementToBuild(element.getStart(), element.getStop(), element.getScore());
 	}
 
 

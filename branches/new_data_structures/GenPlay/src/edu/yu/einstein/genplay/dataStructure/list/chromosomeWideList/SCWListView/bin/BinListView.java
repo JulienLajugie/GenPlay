@@ -83,6 +83,12 @@ public final class BinListView implements ListView<ScoredChromosomeWindow>, Iter
 
 
 	@Override
+	public boolean isEmpty() {
+		return size() == 0;
+	}
+
+
+	@Override
 	public Iterator<ScoredChromosomeWindow> iterator() {
 		return this;
 	}

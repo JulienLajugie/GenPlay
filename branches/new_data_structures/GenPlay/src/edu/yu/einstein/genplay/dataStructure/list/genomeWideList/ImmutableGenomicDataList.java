@@ -22,7 +22,6 @@
 package edu.yu.einstein.genplay.dataStructure.list.genomeWideList;
 
 import java.io.Serializable;
-import java.util.List;
 
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
@@ -34,7 +33,7 @@ import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
  * @param <T> type of the objects stored in the list
  * @author Julien Lajugie
  */
-public interface ImmutableGenomicDataList <T> extends Serializable, Iterable<List<T>> {
+public interface ImmutableGenomicDataList<T> extends Serializable, Iterable<ListView<T>> {
 
 
 	/**

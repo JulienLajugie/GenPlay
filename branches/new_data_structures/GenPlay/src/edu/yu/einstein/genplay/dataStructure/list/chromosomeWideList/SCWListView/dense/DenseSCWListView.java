@@ -89,6 +89,12 @@ public final class DenseSCWListView implements ListView<ScoredChromosomeWindow>,
 
 
 	@Override
+	public boolean isEmpty() {
+		return size() == 0;
+	}
+
+
+	@Override
 	public Iterator<ScoredChromosomeWindow> iterator() {
 		return this;
 	}

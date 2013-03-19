@@ -67,7 +67,7 @@ public class MaskSCWListFactory {
 			scwList.add(scwReader.getCurrentChromosome(), currentMCW);
 		}
 		scwList = new SCWLOMergeWindows(scwList).compute();
-		ScoredChromosomeWindowList scwList = new ScoredChromosomeWindowArrayList(SCWListType.MASK);
+		ScoredChromosomeWindowList scwList = new SimpleSCWList(SCWListType.MASK);
 		ScoredChromosomeWindow currentSCW = null;
 		return scwList;
 	}
@@ -88,7 +88,7 @@ public class MaskSCWListFactory {
 			isMaskInputList = ((data.get(i) == null) || data.get(i).isEmpty() || (data.get(i).get(0) == null) || (data.get(i).get(0) instanceof MaskChromosomeWindow));
 		}
 		if (isMaskInputList) {
-			ScoredChromosomeWindowList scwList = new ScoredChromosomeWindowArrayList(SCWListType.MASK);
+			ScoredChromosomeWindowList scwList = new SimpleSCWList(SCWListType.MASK);
 			// if the data list elements are mask chromosome window we just add them
 			for (int i = 0; (i < data.size()) && (i < scwList.size()); i++) {
 				scwList.set(i, (List<ScoredChromosomeWindow>) data.get(i));

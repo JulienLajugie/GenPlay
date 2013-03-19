@@ -35,7 +35,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.ListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.exception.exceptions.BinListDifferentWindowSizeException;
-import edu.yu.einstein.genplay.util.DoubleLists;
+import edu.yu.einstein.genplay.util.FloatLists;
 
 
 
@@ -113,7 +113,7 @@ public class BLOIntervalsScoring implements Operation<BinList> {
 								double result = 0;
 								switch (method) {
 								case AVERAGE:
-									result = DoubleLists.average(values, indexStart, values.size() - 1);
+									result = FloatLists.average(values, indexStart, values.size() - 1);
 									break;
 								case MAXIMUM:
 									List<Double> listTmp = values.subList(indexStart, values.size() - 1);
@@ -122,7 +122,7 @@ public class BLOIntervalsScoring implements Operation<BinList> {
 									}
 									break;							
 								case SUM:
-									result = DoubleLists.sum(values, indexStart, values.size() - 1);
+									result = FloatLists.sum(values, indexStart, values.size() - 1);
 									break;
 								default:
 									throw new IllegalArgumentException("Invalid score calculation method");

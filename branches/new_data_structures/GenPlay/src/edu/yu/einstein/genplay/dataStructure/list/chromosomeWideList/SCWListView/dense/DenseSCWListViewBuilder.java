@@ -63,22 +63,36 @@ public final class DenseSCWListViewBuilder implements ListViewBuilder<ScoredChro
 	}
 
 
-	@Override
-	public void addElementToBuild(ScoredChromosomeWindow element) throws ObjectAlreadyBuiltException {
+	/**
+	 * Adds an element to the ListView that will be built.
+	 * To assure that ListView objects are immutable, this method
+	 * will throw an exception if called after the getListView() has been called.
+	 * @param start start position of the SCW to add
+	 * @param stop stop position of the SCW to add
+	 * @param score score value of the SCW to add
+	 * @throws ObjectAlreadyBuiltException
+	 */
+	public void addElementToBuild(int start, int stop, float score) throws ObjectAlreadyBuiltException {
 		if (windowStops != null) {
 			int previousStop = 0;
 			if (windowStops.size() > 0) {
 				previousStop = windowStops.get(windowStops.size() - 1);
 			}
-			if (previousStop != element.getStart()) {
-				windowStops.add(element.getStart());
+			if (previousStop != start) {
+				windowStops.add(start);
 				windowScores.add(0f);
 			}
-			windowStops.add(element.getStop());
-			windowScores.add(element.getScore());
+			windowStops.add(stop);
+			windowScores.add(score);
 		} else {
 			throw new ObjectAlreadyBuiltException();
 		}
+	}
+
+
+	@Override
+	public void addElementToBuild(ScoredChromosomeWindow element) throws ObjectAlreadyBuiltException {
+		addElementToBuild(element.getStart(), element.getStop(), element.getScore());
 	}
 
 

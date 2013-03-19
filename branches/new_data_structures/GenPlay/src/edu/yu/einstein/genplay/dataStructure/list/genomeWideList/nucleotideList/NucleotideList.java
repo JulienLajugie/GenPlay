@@ -19,36 +19,20 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.list.listView;
+package edu.yu.einstein.genplay.dataStructure.list.genomeWideList.nucleotideList;
 
-import java.io.Serializable;
+import edu.yu.einstein.genplay.dataStructure.enums.Nucleotide;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ImmutableGenomicDataList;
 
 
 /**
- * A read-only ordered collection.
- * This interface provides method to access elements of a list but no method to modify them.
- * Implementation of {@link ListView} should be immutable in order to create immutable lists.
- * The elements of the list should also be immutable in order to guaranty that {@link ListView} are immutable.
- * @param <T> type of the elements of the {@link ListView}. It is preferable that these elements are immutable.
+ * Immutable list of {@link Nucleotide} elements organized by Chromosome
  * @author Julien Lajugie
  */
-public interface ListView<T> extends Serializable, Iterable<T> {
+public interface NucleotideList extends ImmutableGenomicDataList<Nucleotide> {
 
 	/**
-	 * @param elementIndex an index in the {@link ListView}
-	 * @return the element at the specified index
+	 * @return the path to the file containing the sequence of nucleotide
 	 */
-	public T get(int elementIndex);
-
-
-	/**
-	 * @return true if the {@link ListView} contains no elements
-	 */
-	public boolean isEmpty();
-
-
-	/**
-	 * @return the number of elements in the {@link ListView}
-	 */
-	public int size();
+	public String getSequenceFile();
 }

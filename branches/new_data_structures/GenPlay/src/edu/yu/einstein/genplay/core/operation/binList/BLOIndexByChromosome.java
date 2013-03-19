@@ -32,7 +32,7 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.ListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
-import edu.yu.einstein.genplay.util.DoubleLists;
+import edu.yu.einstein.genplay.util.FloatLists;
 
 
 
@@ -83,8 +83,8 @@ public class BLOIndexByChromosome implements Operation<BinList> {
 					if ((currentList != null) && (currentList.size() != 0)) {
 						resultList = ListFactory.createList(precision, currentList.size());
 						// search the min and max for the current chromosome before index 
-						double oldMin = DoubleLists.minNoZero(currentList);						
-						double oldMax = DoubleLists.maxNoZero(currentList);
+						double oldMin = FloatLists.minNoZero(currentList);						
+						double oldMax = FloatLists.maxNoZero(currentList);
 						// we calculate the difference between the highest and the lowest value
 						double oldDistance = oldMax - oldMin;
 						if (oldDistance != 0) {

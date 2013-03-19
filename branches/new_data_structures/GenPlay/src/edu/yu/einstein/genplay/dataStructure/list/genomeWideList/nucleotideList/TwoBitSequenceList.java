@@ -21,25 +21,22 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.dataStructure.list.genomeWideList.nucleotideList;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.RandomAccessFile;
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.enums.Nucleotide;
-import edu.yu.einstein.genplay.dataStructure.gene.Gene;
-import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.nucleotideListView.TwoBitListView.TwoBitSequence;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.nucleotideListView.TwoBitListView.TwoBitListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ImmutableGenomicDataList;
-import edu.yu.einstein.genplay.exception.ExceptionManager;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
-import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
-import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
 
 
@@ -49,7 +46,7 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class TwoBitSequenceList implements ImmutableGenomicDataList<Gene>, Serializable, Stoppable {
+public class TwoBitSequenceList implements ImmutableGenomicDataList<Nucleotide>, Serializable {
 
 	/** Generated serial ID */
 	private static final long serialVersionUID = -2253030492143151302L;
@@ -58,16 +55,10 @@ public class TwoBitSequenceList implements ImmutableGenomicDataList<Gene>, Seria
 	private static final transient int CLASS_VERSION_NUMBER = 0;
 
 	/** Signature of a 2bit file */
-	private final static String TWOBIT_SIGNATURE = "1A412743";
-
-	/** 2bit file */
-	private transient RandomAccessFile twoBitFile;
+	public final static String TWOBIT_SIGNATURE = "1A412743";
 
 	/** Path of the 2bit file  (used for the serialization) */
 	private final String filePath;
-
-	/** True if the bytes of multi-byte entities need to be reversed when read */
-	private final boolean reverseBytes;
 
 	/** Genome name for a multi genome project */
 	private final String genomeName;
@@ -75,6 +66,8 @@ public class TwoBitSequenceList implements ImmutableGenomicDataList<Gene>, Seria
 	/** Allele type for a multi genome project */
 	private final AlleleType alleleType;
 
+	/** Each element of this list read a chromosome in the file */
+	private final List<ListView<Nucleotide>> data;
 
 
 	/**
@@ -85,93 +78,34 @@ public class TwoBitSequenceList implements ImmutableGenomicDataList<Gene>, Seria
 	 * @param alleleType 	allele type for a multi genome project
 	 * @throws IOException
 	 */
-	public TwoBitSequenceList(String filePath, boolean reverseBytes, String genomeName, AlleleType alleleType) throws IOException {
+	protected TwoBitSequenceList(String filePath, boolean reverseBytes, String genomeName, AlleleType alleleType, List<TwoBitListView> data) throws IOException {
 		super();
 		this.filePath = filePath;
-		this.reverseBytes = reverseBytes;
 		this.genomeName = genomeName;
 		this.alleleType = alleleType;
-		twoBitFile = new RandomAccessFile(filePath, "r");
-		twoBitFile.seek(0);
+		this.data = data;
+	}
+
+
+	@Override
+	public Nucleotide get(Chromosome chromosome, int index) throws InvalidChromosomeException {
+		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		int chromosomeIndex = projectChromosome.getIndex(chromosome);
+		return get(chromosomeIndex, index);
+	}
+
+
+	@Override
+	public Nucleotide get(int chromosomeIndex, int elementIndex) {
+		return data.get(chromosomeIndex).get(elementIndex);
 	}
 
 
 	/**
-	 * Extracts the sequence list from a 2bit file
-	 * @param file 2Bit file
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 * @throws InvalidFileTypeException
-	 * @throws InterruptedException
+	 * @return the allele type for a multi genome project
 	 */
-	public void extract(File file) throws FileNotFoundException, IOException, InvalidFileTypeException, InterruptedException  {
-		filePath = file.getAbsolutePath();
-		twoBitFile = new RandomAccessFile(file, "r");
-		twoBitFile.seek(0);
-		int signature = twoBitFile.readInt();
-		// if the signature is not equal to the signature defined in the 2bit files
-		// it might means that the byte order need to be reversed
-		if (!Integer.toHexString(signature).equalsIgnoreCase(TWOBIT_SIGNATURE)) {
-			signature = Integer.reverseBytes(signature);
-			// check if it matches with the bytes reversed
-			if (Integer.toHexString(signature).equalsIgnoreCase(TWOBIT_SIGNATURE)) {
-				// if it matches, turns the reverse mode on
-				reverseBytes = true;
-			} else {
-				// if it doesn't the file is not correct
-				throw new InvalidFileTypeException();
-			}
-		}
-		if (reverseBytes) {
-			version = Integer.reverseBytes(twoBitFile.readInt());
-		} else {
-			version = twoBitFile.readInt();
-		}
-		int sequenceCount = 0;
-		if (reverseBytes) {
-			sequenceCount = Integer.reverseBytes(twoBitFile.readInt());
-		} else {
-			sequenceCount = twoBitFile.readInt();
-		}
-		// skip 4 reserved bytes
-		twoBitFile.skipBytes(4);
-		String[] sequenceNames = new String[sequenceCount];
-		int[] offsets = new int[sequenceCount];
-		for (int i = 0; i < sequenceCount; i++) {
-			// if the execution need to be stopped we generate an InterruptedException
-			if (needToBeStopped) {
-				throw new InterruptedException();
-			}
-			byte sequenceNameSize = twoBitFile.readByte();
-			byte[] sequenceNameBytes = new byte[sequenceNameSize];
-			twoBitFile.read(sequenceNameBytes);
-			sequenceNames[i] = new String(sequenceNameBytes);
-			if (reverseBytes) {
-				offsets[i] = Integer.reverseBytes(twoBitFile.readInt());
-			} else {
-				offsets[i] = twoBitFile.readInt();
-			}
-		}
-		// we add the sequence to the list if the chromosome is specified in the ChromosomeManager
-		for (int i = 0; i < sequenceCount; i++) {
-			short k = 0;
-			boolean found = false;
-			while ((k < projectChromosome.size()) && (!found)) {
-				if (projectChromosome.get(k).getName().equalsIgnoreCase(sequenceNames[i])) {
-					// if the execution need to be stopped we generate an InterruptedException
-					if (needToBeStopped) {
-						throw new InterruptedException();
-					}
-					long currentPosition = twoBitFile.getFilePointer();
-					sequence = new TwoBitSequence(genomeName, projectChromosome.get(k), alleleType);
-					sequence.extract(filePath, twoBitFile, offsets[i], sequenceNames[i], reverseBytes);
-					set(k, sequence);
-					twoBitFile.seek(currentPosition);
-					found = true;
-				}
-				k++;
-			}
-		}
+	public AlleleType getAlleleType() {
+		return alleleType;
 	}
 
 
@@ -183,98 +117,65 @@ public class TwoBitSequenceList implements ImmutableGenomicDataList<Gene>, Seria
 	}
 
 
+	/**
+	 * @return The genome name for a multi genome project
+	 */
+	public String getGenomeName() {
+		return genomeName;
+	}
+
+
 	@Override
-	protected Nucleotide[] getFittedData(int start, int stop) {
-		Nucleotide[] result = new Nucleotide[(stop - start) + 1];
-		List<Nucleotide> currentList;
-		try {
-			currentList = get(fittedChromosome);
-		} catch (InvalidChromosomeException e) {
-			ExceptionManager.getInstance().caughtException(e);
-			fittedDataList = null;
-			return null;
-		}
-		int j = 0;
-		for (int i = start; i <= stop; i++) {
-			result[j] = currentList.get(i);
-			j++;
-		}
+	public ListView<Nucleotide> getView(Chromosome chromosome) throws InvalidChromosomeException {
+		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		int chromosomeIndex = projectChromosome.getIndex(chromosome);
+		return getView(chromosomeIndex);
+	}
 
-		return result;
+
+	@Override
+	public ListView<Nucleotide> getView(int chromosomeIndex) {
+		return data.get(chromosomeIndex);
+	}
+
+
+	@Override
+	public Iterator<ListView<Nucleotide>> iterator() {
+		return data.iterator();
 	}
 
 
 	/**
-	 * @return the twoBitFile
-	 */
-	public final RandomAccessFile getTwoBitFile() {
-		return twoBitFile;
-	}
-
-
-	/**
-	 * @return the version
-	 */
-	public final int getVersion() {
-		return version;
-	}
-
-
-	/**
-	 * Method used for unserialization
+	 * Method used for deserialization
 	 * @param in
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		// read the class version number
 		in.readInt();
-		projectChromosome = (ProjectChromosome) in.readObject();
-		reverseBytes = in.readBoolean();
-		version = in.readInt();
-		filePath = (String) in.readObject();
-		sequence = (TwoBitSequence) in.readObject();
-		needToBeStopped = false;
-		genomeName = (String) in.readObject();
+		// read the final fields
+		in.defaultReadObject();
 	}
 
 
-	/**
-	 * Re-initializes the connection to the random access file containing the sequences
-	 * @throws FileNotFoundException
-	 */
-	public void reinitDataFile() throws FileNotFoundException {
-		twoBitFile = new RandomAccessFile(new File(filePath), "r");
-		for (List<Nucleotide> currentSequence: this) {
-			((TwoBitSequence) currentSequence).reinitDataFile();
-		}
-		sequence.reinitDataFile();
-	}
-
-
-	/**
-	 * Sets the file path to the random access file containing the sequences
-	 * @param filePath path to the
-	 * @throws FileNotFoundException
-	 */
-	public void setSequenceFilePath(String filePath) throws FileNotFoundException {
-		for (List<Nucleotide> currentSequence: this) {
-			((TwoBitSequence) currentSequence).setSequenceFilePath(filePath);
-		}
-		sequence.setSequenceFilePath(filePath);
-		this.filePath = filePath;
-		reinitDataFile();
-	}
-
-
-	/**
-	 * Stops the extraction of the 2bit file
-	 */
 	@Override
-	public void stop() {
-		if (sequence != null) {
-			sequence.stop();
-		}
-		needToBeStopped = true;
+	public int size() {
+		return data.size();
+	}
+
+
+	@Override
+	public int size(Chromosome chromosome) throws InvalidChromosomeException {
+		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		int chromosomeIndex = projectChromosome.getIndex(chromosome);
+		return size(chromosomeIndex);
+	}
+
+
+	@Override
+	public int size(int chromosomeIndex) {
+		return data.get(chromosomeIndex).size();
 	}
 
 
@@ -284,12 +185,9 @@ public class TwoBitSequenceList implements ImmutableGenomicDataList<Gene>, Seria
 	 * @throws IOException
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(projectChromosome);
-		out.writeBoolean(reverseBytes);
-		out.writeInt(version);
-		out.writeObject(filePath);
-		out.writeObject(sequence);
-		out.writeObject(genomeName);
+		// write the class version number
+		out.writeInt(CLASS_VERSION_NUMBER);
+		// write the final fields
+		out.defaultWriteObject();
 	}
 }

@@ -52,14 +52,27 @@ public final class MaskListViewBuilder implements ListViewBuilder<ScoredChromoso
 	}
 
 
-	@Override
-	public void addElementToBuild(ScoredChromosomeWindow element) throws ObjectAlreadyBuiltException {
+	/**
+	 * Adds an element to the ListView that will be built.
+	 * To assure that ListView objects are immutable, this method
+	 * will throw an exception if called after the getListView() has been called.
+	 * @param start start position of the mask to add
+	 * @param stop stop position of the mask to add
+	 * @throws ObjectAlreadyBuiltException
+	 */
+	public void addElementToBuild(int start, int stop) throws ObjectAlreadyBuiltException {
 		if (maskStarts != null) {
-			maskStarts.add(element.getStart());
-			maskStarts.add(element.getStop());
+			maskStarts.add(start);
+			maskStops.add(stop);
 		} else {
 			throw new ObjectAlreadyBuiltException();
 		}
+	}
+
+
+	@Override
+	public void addElementToBuild(ScoredChromosomeWindow element) throws ObjectAlreadyBuiltException {
+		addElementToBuild(element.getStart(), element.getStop());
 	}
 
 

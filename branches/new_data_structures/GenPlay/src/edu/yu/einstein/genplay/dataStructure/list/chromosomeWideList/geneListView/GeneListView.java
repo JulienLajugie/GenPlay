@@ -158,6 +158,12 @@ public final class GeneListView implements Serializable, ListView<Gene>, Iterato
 
 
 	@Override
+	public boolean isEmpty() {
+		return size() == 0;
+	}
+
+
+	@Override
 	public Iterator<Gene> iterator() {
 		return this;
 	}

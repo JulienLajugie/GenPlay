@@ -38,7 +38,7 @@ import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.SimpleGeneList;
-import edu.yu.einstein.genplay.util.DoubleLists;
+import edu.yu.einstein.genplay.util.FloatLists;
 
 
 /**
@@ -122,13 +122,13 @@ public class BLOTransfragGeneList implements Operation<GeneList> {
 								double regionScore = 0;
 								if (operation == ScoreCalculationMethod.AVERAGE) {
 									// all the windows of the region are set with the average value on the region
-									regionScore = DoubleLists.average(currentList, regionStart, regionStop);
+									regionScore = FloatLists.average(currentList, regionStart, regionStop);
 								} else if (operation == ScoreCalculationMethod.SUM) {
 									// all the windows of the region are set with the sum value on the region
-									regionScore = DoubleLists.sum(currentList, regionStart, regionStop);
+									regionScore = FloatLists.sum(currentList, regionStart, regionStop);
 								} else {
 									// all the windows of the region are set with the max value on the region
-									regionScore = DoubleLists.maxNoZero(currentList, regionStart, regionStop);
+									regionScore = FloatLists.maxNoZero(currentList, regionStart, regionStop);
 								}
 								regionStart *= binList.getBinSize();
 								regionStop++;

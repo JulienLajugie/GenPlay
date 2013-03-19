@@ -80,6 +80,12 @@ public final class MaskListView implements ListView<ScoredChromosomeWindow>, Ite
 
 
 	@Override
+	public boolean isEmpty() {
+		return size() == 0;
+	}
+
+
+	@Override
 	public Iterator<ScoredChromosomeWindow> iterator() {
 		return this;
 	}

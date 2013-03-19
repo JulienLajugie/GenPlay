@@ -32,7 +32,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
-import edu.yu.einstein.genplay.util.DoubleLists;
+import edu.yu.einstein.genplay.util.FloatLists;
 
 
 /**
@@ -217,13 +217,13 @@ final class OverlapEngine implements Serializable {
 		} else {
 			switch (this.scm) {
 			case AVERAGE:
-				score = DoubleLists.average(list);
+				score = FloatLists.average(list);
 				break;
 			case MAXIMUM:
-				score = DoubleLists.maxNoZero(list);
+				score = FloatLists.maxNoZero(list);
 				break;
 			case SUM:
-				score = DoubleLists.sum(list);
+				score = FloatLists.sum(list);
 				break;
 			default:
 				break;

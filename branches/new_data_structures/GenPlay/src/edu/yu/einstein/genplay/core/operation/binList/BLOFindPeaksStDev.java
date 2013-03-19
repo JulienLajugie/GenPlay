@@ -31,7 +31,7 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.ListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
-import edu.yu.einstein.genplay.util.DoubleLists;
+import edu.yu.einstein.genplay.util.FloatLists;
 
 
 
@@ -78,7 +78,7 @@ public class BLOFindPeaksStDev implements Operation<BinList[]> {
 					if ((currentList != null) && (currentList.size() != 0)) {
 						resultList = ListFactory.createList(binList.getPrecision(), currentList.size());
 						// compute the stdev for the chromosome
-						double sd = DoubleLists.standardDeviation(currentList, 0, currentList.size() - 1);
+						double sd = FloatLists.standardDeviation(currentList, 0, currentList.size() - 1);
 						if (sd != 0) {
 							// compute the value the local standard deviation must be for a bin to be accepted
 							double minAcceptedSD = nbSDAccepted * sd;
@@ -95,7 +95,7 @@ public class BLOFindPeaksStDev implements Operation<BinList[]> {
 										indexStop = currentList.size() - 1;
 									}
 									// we compute the local stdev centered on the current bin, btw start and stop index
-									double localStdev = DoubleLists.standardDeviation(currentList, indexStart, indexStop);
+									double localStdev = FloatLists.standardDeviation(currentList, indexStart, indexStop);
 									if ((localStdev != 0) && (localStdev >= minAcceptedSD)) {
 										// if the local stdev is higher than the threshold we keep the bin
 										resultList.set(j, currentList.get(j));

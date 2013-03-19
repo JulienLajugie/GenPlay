@@ -29,7 +29,7 @@ import java.util.AbstractList;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.multiGenome.data.synchronization.MGSOffset;
-import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.nucleotideListView.TwoBitListView.TwoBitSequence;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.nucleotideListView.TwoBitListView.TwoBitListView;
 
 
 /**
@@ -252,7 +252,7 @@ public class IntArrayAsOffsetList extends AbstractList<MGSOffset> implements Ser
 			}
 
 			if (difference <= variationLength) {								// if the seek meta genome position is included in the variation length,
-				return TwoBitSequence.MISSING_POSITION;							// this meta genome position does not match with a position of the genome
+				return TwoBitListView.MISSING_POSITION;							// this meta genome position does not match with a position of the genome
 			} else {															// if the seek meta genome position is not included in the variation length,
 				difference -= variationLength;									// we calculate the difference between the current genome position and the one we are looking for
 				return position[genomePositionIndex] - difference;				// we subtract this difference to the genome position found.

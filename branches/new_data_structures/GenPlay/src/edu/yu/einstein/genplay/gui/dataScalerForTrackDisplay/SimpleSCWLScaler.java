@@ -22,33 +22,41 @@
 package edu.yu.einstein.genplay.gui.dataScalerForTrackDisplay;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.sparse.SparseSCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 import edu.yu.einstein.genplay.util.ChromosomeWindowLists;
-import edu.yu.einstein.genplay.util.DoubleLists;
+import edu.yu.einstein.genplay.util.FloatLists;
 
 
 /**
  * This class scales a {@link ScoredChromosomeWindowList} of {@link SimpleScoredChromosomeWindow} to be displayed on a track.
  * @author Julien Lajugie
  */
-public class SimpleSCWLScaler implements DataScalerForTrackDisplay<ScoredChromosomeWindowList, List<ScoredChromosomeWindow>> {
+public class SimpleSCWLScaler implements DataScalerForTrackDisplay<ScoredChromosomeWindowList, ListView<ScoredChromosomeWindow>> {
 
 	/** Generate serial ID */
-	private static final long serialVersionUID = 264219231566141709L;
+	private static final long serialVersionUID = -8886234764096047299L;
 
-	private Chromosome 							scaledChromosome; 	// scaled chromosome
-	private double 								scaledXRatio;		// scaled xRatio (ratio between the track width and the displayed genome window width)
-	private List<ScoredChromosomeWindow>		scaledSCWList;		// the scw list scaled for a specified chromosome and xRatio
-	private final ScoredChromosomeWindowList	dataToScale;		// data to be scaled for track display
+	/** Scaled chromosome */
+	private Chromosome scaledChromosome;
+
+	/** Scaled xRatio (ratio between the track width and the displayed genome window width) */
+	private double scaledXRatio;
+
+	/** The scw list scaled for a specified chromosome and xRatio */
+	private ListView<ScoredChromosomeWindow> scaledSCWList;
+
+	/** Data to be scaled for track display */
+	private final ScoredChromosomeWindowList dataToScale;
 
 
 	/**
@@ -61,7 +69,7 @@ public class SimpleSCWLScaler implements DataScalerForTrackDisplay<ScoredChromos
 
 
 	@Override
-	public List<ScoredChromosomeWindow> getDataScaledForTrackDisplay() {
+	public ListView<ScoredChromosomeWindow> getDataScaledForTrackDisplay() {
 		GenomeWindow projectWindow = ProjectManager.getInstance().getProjectWindow().getGenomeWindow();
 		double projectXRatio = ProjectManager.getInstance().getProjectWindow().getXRatio();
 		// if the chromosome or the xRatio of the project window changed we need to rescale the data
@@ -87,32 +95,32 @@ public class SimpleSCWLScaler implements DataScalerForTrackDisplay<ScoredChromos
 	 * Merges two windows together if the gap between this two windows is not visible
 	 */
 	private void scaleChromosome() {
-		List<ScoredChromosomeWindow> currentChromosomeList;
+		ListView<ScoredChromosomeWindow> currentChromosomeList;
+		scaledSCWList = null;
 		try {
 			currentChromosomeList = dataToScale.getView(scaledChromosome);
 		} catch (InvalidChromosomeException e) {
 			ExceptionManager.getInstance().caughtException(e);
-			scaledChromosome = null;
 			return;
 		}
 		if (currentChromosomeList == null) {
-			scaledSCWList = null;
 			return;
 		}
 		if (scaledXRatio > 1) {
 			scaledSCWList = currentChromosomeList;
 		} else {
-			scaledSCWList = new ArrayList<ScoredChromosomeWindow>();
 			if (currentChromosomeList.size() > 0) {
-				ArrayList<Double> scoreList = new ArrayList<Double>();
-				scaledSCWList.add(new SimpleScoredChromosomeWindow(currentChromosomeList.get(0)));
+				SparseSCWListViewBuilder scaledSCWListBuilder = new SparseSCWListViewBuilder(dataToScale.getScorePrecision);
+				int start = currentChromosomeList.get(0).getStart();
+				int stop = currentChromosomeList.get(0).getStop();
+				ArrayList<Float> scoreList = new ArrayList<Float>();
 				scoreList.add(currentChromosomeList.get(0).getScore());
 				int i = 1;
 				int j = 0;
 				while (i < currentChromosomeList.size()) {
-					double gapDistance = (currentChromosomeList.get(i).getStart() - scaledSCWList.get(j).getStop()) * scaledXRatio;
-					double windowWidth = (currentChromosomeList.get(i).getStop() - scaledSCWList.get(j).getStart()) * scaledXRatio;
-					double currentScore = scaledSCWList.get(j).getScore();
+					double gapDistance = (currentChromosomeList.get(i).getStart() - stop) * scaledXRatio;
+					double windowWidth = (currentChromosomeList.get(i).getStop() - start) * scaledXRatio;
+					double currentScore = scoreList.get(0);
 					double nextScore = currentChromosomeList.get(i).getScore();
 					// we merge two intervals together if there is a gap smaller than 1 pixel and have the same score
 					// or if the width of a window is smaller than 1
@@ -120,21 +128,23 @@ public class SimpleSCWLScaler implements DataScalerForTrackDisplay<ScoredChromos
 							( ((gapDistance < 1) && (currentScore == nextScore)) ||
 									((windowWidth < 1) && (nextScore != 0)))) {
 						// the new stop position is the max of the current stop and the stop of the new merged interval
-						int newStop = Math.max(scaledSCWList.get(j).getStop(), currentChromosomeList.get(i).getStop());
-						scaledSCWList.get(j).setStop(newStop);
+						stop = Math.max(stop, currentChromosomeList.get(i).getStop());
 						scoreList.add(currentChromosomeList.get(i).getScore());
 						i++;
-						gapDistance = (currentChromosomeList.get(i).getStart() - scaledSCWList.get(j).getStop()) * scaledXRatio;
-						windowWidth = (currentChromosomeList.get(i).getStop() - scaledSCWList.get(j).getStart()) * scaledXRatio;
+						gapDistance = (currentChromosomeList.get(i).getStart() - stop) * scaledXRatio;
+						windowWidth = (currentChromosomeList.get(i).getStop() - start) * scaledXRatio;
 						nextScore = currentChromosomeList.get(i).getScore();
 					}
-					scaledSCWList.get(j).setScore(DoubleLists.average(scoreList));
-					scaledSCWList.add(new SimpleScoredChromosomeWindow(currentChromosomeList.get(i)));
-					scoreList = new ArrayList<Double>();
+					float score = FloatLists.average(scoreList);
+					scaledSCWListBuilder.addElementToBuild(start, stop, score);
+					scoreList = new ArrayList<Float>();
 					scoreList.add(currentChromosomeList.get(i).getScore());
+					start = currentChromosomeList.get(i).getStart();
+					stop = currentChromosomeList.get(i).getStop();
 					j++;
 					i++;
 				}
+				scaledSCWList = scaledSCWListBuilder.getListView();
 			}
 		}
 	}

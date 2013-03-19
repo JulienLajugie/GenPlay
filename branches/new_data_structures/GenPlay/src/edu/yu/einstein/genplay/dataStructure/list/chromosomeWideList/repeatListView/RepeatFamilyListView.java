@@ -73,11 +73,43 @@ public final class RepeatFamilyListView implements Serializable, ListView<Chromo
 	}
 
 
+	@Override
+	public ChromosomeWindow get(int repeatIndex) {
+		return new SimpleChromosomeWindow(repeatStarts.get(repeatIndex), repeatStops.get(repeatIndex));
+	}
+
+
 	/**
 	 * @return the name of the family
 	 */
 	public String getName() {
 		return name;
+	}
+
+
+	@Override
+	public boolean hasNext() {
+		return iteratorIndex < size();
+	}
+
+
+	@Override
+	public boolean isEmpty() {
+		return size() == 0;
+	}
+
+
+	@Override
+	public Iterator<ChromosomeWindow> iterator() {
+		return this;
+	}
+
+
+	@Override
+	public ChromosomeWindow next() {
+		int currentIndex = iteratorIndex;
+		iteratorIndex++;
+		return get(currentIndex);
 	}
 
 
@@ -95,42 +127,6 @@ public final class RepeatFamilyListView implements Serializable, ListView<Chromo
 	}
 
 
-	@Override
-	public Iterator<ChromosomeWindow> iterator() {
-		return this;
-	}
-
-
-	@Override
-	public int size() {
-		return repeatStarts.size();
-	}
-
-
-	@Override
-	public ChromosomeWindow get(int repeatIndex) {
-		return new SimpleChromosomeWindow(repeatStarts.get(repeatIndex), repeatStops.get(repeatIndex));
-	}
-
-
-	@Override
-	public boolean hasNext() {
-		return iteratorIndex < size();
-	}
-
-
-	@Override
-	public ChromosomeWindow next() {
-		int currentIndex = iteratorIndex;
-		iteratorIndex++;
-		return get(currentIndex);
-	}
-
-
-	@Override
-	public void remove() {}
-
-
 	/**
 	 * Method used for deserialization
 	 * @param in
@@ -142,6 +138,16 @@ public final class RepeatFamilyListView implements Serializable, ListView<Chromo
 		in.defaultReadObject();
 		// read the version number of the object
 		in.readInt();
+	}
+
+
+	@Override
+	public void remove() {}
+
+
+	@Override
+	public int size() {
+		return repeatStarts.size();
 	}
 
 
