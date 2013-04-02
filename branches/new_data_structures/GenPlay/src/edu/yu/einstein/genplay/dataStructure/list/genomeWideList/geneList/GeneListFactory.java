@@ -39,8 +39,8 @@ import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 
 /**
  * Factory class for vending standard {@link GeneList} objects
@@ -60,97 +60,11 @@ public class GeneListFactory {
 		GenomicDataList<Gene> geneList = new GenomicDataArrayList<Gene>();
 		Gene currentGene = null;
 		while ((currentGene = geneReader.readGene()) != null) {
-			geneList.add(currentGene.getChromosome(), currentGene);
+			geneList.add(geneReader.getCurrentChromosome(), currentGene);
 		}
 		String geneDBURL = geneReader.getGeneDBURL();
 		GeneScoreType geneScoreType = geneReader.getGeneScoreType();
 		return new SimpleGeneList(geneList, geneScoreType, geneDBURL);
-	}
-
-
-	/**
-	 * Creates an instance of {@link GeneList} using {@link ArrayList} structures.
-	 * @param nameList a list of gene names
-	 * @param strandList a list of {@link Strand}
-	 * @param startList a list of start positions
-	 * @param stopList a list of stop positions
-	 * @param scoreList a list of scores
-	 * @param UTR5BoundList a list of transcription 5' bound
-	 * @param UTR3BoundList a list of transcription 3' bound
-	 * @param exonStartsList a list of exon start arrays
-	 * @param exonStopsList a list of exon stop arrays
-	 * @param exonScoresList a list of exon score arrays
-	 * @param geneDBURL url of the gene database
-	 * @param geneScoreType the type of the scores of the genes and exons of this list (RPKM, max, sum)
-	 * @return a {@link GeneList}
-	 * @throws InvalidChromosomeException
-	 * @throws ExecutionException
-	 * @throws InterruptedException
-	 */
-	public static GeneList createGeneList(final GenomicDataList<String> nameList, final GenomicDataList<Strand> strandList,
-			final GenomicDataList<Integer> startList, final GenomicDataList<Integer> stopList,
-			final GenomicDataList<Double> scoreList, final GenomicDataList<Integer> UTR5BoundList,
-			final GenomicDataList<Integer> UTR3BoundList,final GenomicDataList<int[]> exonStartsList,
-			final GenomicDataList<int[]> exonStopsList, final GenomicDataList<double[]> exonScoresList,
-			String geneDBURL, GeneScoreType geneScoreType)
-					throws InvalidChromosomeException, InterruptedException, ExecutionException {
-		// TODO delete this method after refactory of extractors
-		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
-		// retrieve the instance of the OperationPool
-		final OperationPool op = OperationPool.getInstance();
-		// list for the threads
-		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();
-		for(final Chromosome currentChromosome : projectChromosome) {
-			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {
-				@Override
-				public List<Gene> call() throws Exception {
-					List<Gene> resultList = new ArrayList<Gene>();
-					for(int j = 0; j < nameList.size(currentChromosome); j++) {
-						String name = nameList.get(currentChromosome, j);
-						Strand strand = strandList.get(currentChromosome, j);
-						int txStart = startList.get(currentChromosome, j);
-						int txStop = stopList.get(currentChromosome, j);
-						double score = Double.NaN;
-						if ((scoreList != null) && (j < scoreList.size(currentChromosome))) {
-							score = scoreList.get(currentChromosome, j);
-						}
-						int UTR5Bound = txStart;
-						int UTR3Bound = txStop;
-						try {
-							UTR5Bound = UTR5BoundList.get(currentChromosome, j);
-							UTR3Bound = UTR3BoundList.get(currentChromosome, j);
-						} catch (Exception e) {
-							// if we can't retrieve the UTR information we do nothing
-						}
-						int[] exonStarts = null;
-						if (exonStartsList.size(currentChromosome) > 0) {
-							exonStarts = exonStartsList.get(currentChromosome, j);
-						}
-						int[] exonStops = null;
-						if (exonStopsList.size(currentChromosome) > 0) {
-							exonStops = exonStopsList.get(currentChromosome, j);
-						}
-						double[] exonScores = null;
-						if ((exonScoresList != null) && (exonScoresList.size(currentChromosome) > 0)) {
-							exonScores = exonScoresList.get(currentChromosome, j);
-						}
-						// we don't add a gene if it is located after the end of a chromosome
-						if (txStop < currentChromosome.getLength()) {
-							resultList.add(new SimpleGene(name, currentChromosome, strand, txStart, txStop, score, UTR5Bound, UTR3Bound, exonStarts, exonStops, exonScores));
-						}
-					}
-					// tell the operation pool that a chromosome is done
-					op.notifyDone();
-					return resultList;
-				}
-			};
-
-			threadList.add(currentThread);
-		}
-		List<List<Gene>> result = null;
-		// starts the pool
-		result = op.startPool(threadList);
-		return new SimpleGeneList(result, geneScoreType, geneDBURL);
 	}
 
 
@@ -166,7 +80,7 @@ public class GeneListFactory {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();
 		for (int i = 0; i < scoredChromosomeWindowList.size(); i++) {
-			final List<ScoredChromosomeWindow> currentList = scoredChromosomeWindowList.getView(i);
+			final ListView<ScoredChromosomeWindow> currentList = scoredChromosomeWindowList.getView(i);
 			final Chromosome chromosome = projectChromosome.get(i);
 			final String prefixName = chromosome.getName() + ".";
 			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {

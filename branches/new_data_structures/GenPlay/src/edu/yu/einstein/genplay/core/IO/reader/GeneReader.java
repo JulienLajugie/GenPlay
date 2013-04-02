@@ -21,6 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.IO.reader;
 
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 
@@ -32,10 +33,9 @@ import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 public interface GeneReader {
 
 	/**
-	 * Reads the next gene from a file and returns it.  Returns null if its the end of the file
-	 * @return a {@link Gene}
+	 * @return the chromosome of the last gene read
 	 */
-	public Gene readGene();
+	public Chromosome getCurrentChromosome();
 
 
 	/**
@@ -48,4 +48,11 @@ public interface GeneReader {
 	 * @return the type of the scores of the genes and exons of this list (RPKM, max, sum)
 	 */
 	public GeneScoreType getGeneScoreType();
+
+
+	/**
+	 * Reads the next gene from a file and returns it.  Returns null if its the end of the file
+	 * @return a {@link Gene}
+	 */
+	public Gene readGene();
 }

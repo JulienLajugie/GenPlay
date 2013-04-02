@@ -61,6 +61,12 @@ public final class SimpleListView<T> implements ListView<T>{
 
 
 	@Override
+	public boolean isEmpty() {
+		return size() == 0;
+	}
+
+
+	@Override
 	public Iterator<T> iterator() {
 		return data.iterator();
 	}
