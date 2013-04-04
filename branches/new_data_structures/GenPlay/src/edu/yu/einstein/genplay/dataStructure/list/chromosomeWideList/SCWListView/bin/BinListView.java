@@ -117,7 +117,9 @@ public final class BinListView implements ListView<ScoredChromosomeWindow>, Iter
 
 
 	@Override
-	public void remove() {}
+	public void remove() {
+		throw new UnsupportedOperationException();
+	}
 
 
 	@Override

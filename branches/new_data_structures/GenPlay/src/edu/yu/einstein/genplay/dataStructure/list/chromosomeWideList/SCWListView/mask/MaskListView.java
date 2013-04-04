@@ -114,7 +114,9 @@ public final class MaskListView implements ListView<ScoredChromosomeWindow>, Ite
 
 
 	@Override
-	public void remove() {}
+	public void remove() {
+		throw new UnsupportedOperationException();
+	}
 
 
 	@Override

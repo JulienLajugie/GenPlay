@@ -124,7 +124,9 @@ public final class SparseSCWListView implements ListView<ScoredChromosomeWindow>
 
 
 	@Override
-	public void remove() {}
+	public void remove() {
+		throw new UnsupportedOperationException();
+	}
 
 
 	@Override

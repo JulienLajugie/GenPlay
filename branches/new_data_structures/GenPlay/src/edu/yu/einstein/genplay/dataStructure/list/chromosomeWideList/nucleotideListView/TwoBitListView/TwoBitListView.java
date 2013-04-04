@@ -254,7 +254,9 @@ public final class TwoBitListView implements Iterator<Nucleotide>, ListView<Nucl
 
 
 	@Override
-	public void remove() {}
+	public void remove() {
+		throw new UnsupportedOperationException();
+	}
 
 
 	/**

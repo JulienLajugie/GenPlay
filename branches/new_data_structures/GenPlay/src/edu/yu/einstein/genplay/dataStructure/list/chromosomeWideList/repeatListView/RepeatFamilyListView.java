@@ -142,7 +142,9 @@ public final class RepeatFamilyListView implements Serializable, ListView<Chromo
 
 
 	@Override
-	public void remove() {}
+	public void remove() {
+		throw new UnsupportedOperationException();
+	}
 
 
 	@Override
