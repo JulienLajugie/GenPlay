@@ -22,14 +22,14 @@
 package edu.yu.einstein.genplay.dataStructure.list.genomeWideList.nucleotideList;
 
 import edu.yu.einstein.genplay.dataStructure.enums.Nucleotide;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ImmutableGenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 
 
 /**
  * Immutable list of {@link Nucleotide} elements organized by Chromosome
  * @author Julien Lajugie
  */
-public interface NucleotideList extends ImmutableGenomicDataList<Nucleotide> {
+public interface NucleotideList extends GenomicListView<Nucleotide> {
 
 	/**
 	 * @return the path to the file containing the sequence of nucleotide

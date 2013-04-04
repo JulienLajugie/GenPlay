@@ -40,7 +40,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.MaskSCWListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
@@ -63,13 +63,13 @@ public final class PSLExtractor extends TextFileExtractor implements Serializabl
 ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 
 	private static final long serialVersionUID = -7099425835087057587L;	//generated ID
-	private final GenomicDataList<Integer>	startList;		// list of position start
-	private final GenomicDataList<Integer>	stopList;		// list of position stop
-	private final GenomicDataList<String> 	nameList;		// list of name
-	private final GenomicDataList<Double>	scoreList;		// list of scores
-	private final GenomicDataList<Strand> 	strandList;		// list of strand
-	private final GenomicDataList<int[]> 	exonStartsList;	// list of list of exon starts
-	private final GenomicDataList<int[]> 	exonStopsList;	// list of list of exon stops
+	private final GenomicListView<Integer>	startList;		// list of position start
+	private final GenomicListView<Integer>	stopList;		// list of position stop
+	private final GenomicListView<String> 	nameList;		// list of name
+	private final GenomicListView<Double>	scoreList;		// list of scores
+	private final GenomicListView<Strand> 	strandList;		// list of strand
+	private final GenomicListView<int[]> 	exonStartsList;	// list of list of exon starts
+	private final GenomicListView<int[]> 	exonStopsList;	// list of list of exon stops
 	private String							searchURL;		// url of the gene database for the search
 	private Strand 							selectedStrand;	// strand to extract, null for both
 	private ReadLengthAndShiftHandler		readHandler;	// handler that computes the position of read by applying the shift

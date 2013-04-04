@@ -33,7 +33,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.IntArrayAsOffsetList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 
 /**
  * @author Nicolas Fourel
@@ -44,7 +44,7 @@ public class MGSAllele implements Serializable {
 	/** Default serial version ID */
 	private static final long serialVersionUID = -3160689645132714945L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
-	private GenomicDataList<MGSOffset> offsetList;					// List of offset organized by chromosome
+	private GenomicListView<MGSOffset> offsetList;					// List of offset organized by chromosome
 
 
 	/**
@@ -67,7 +67,7 @@ public class MGSAllele implements Serializable {
 	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		offsetList = (GenomicDataList<MGSOffset>) in.readObject();
+		offsetList = (GenomicListView<MGSOffset>) in.readObject();
 	}
 
 
@@ -86,7 +86,7 @@ public class MGSAllele implements Serializable {
 	/**
 	 * @param offsetList the offsetList to set
 	 */
-	public void setOffsetList(GenomicDataList<MGSOffset> offsetList) {
+	public void setOffsetList(GenomicListView<MGSOffset> offsetList) {
 		this.offsetList = offsetList;
 	}
 
@@ -94,7 +94,7 @@ public class MGSAllele implements Serializable {
 	/**
 	 * @return the offsetList
 	 */
-	public GenomicDataList<MGSOffset> getOffsetList() {
+	public GenomicListView<MGSOffset> getOffsetList() {
 		return offsetList;
 	}
 

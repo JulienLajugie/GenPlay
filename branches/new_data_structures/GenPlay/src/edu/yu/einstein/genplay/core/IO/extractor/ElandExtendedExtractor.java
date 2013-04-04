@@ -40,7 +40,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
@@ -56,10 +56,10 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 
 	private static final long serialVersionUID = 8952410963820358882L;	// generated ID
 
-	private final GenomicDataList<Integer>	positionList;		// list of position
-	private GenomicDataList<Integer>	stopPositionList;	// list of stop position. Only used when a read length is specified
-	private GenomicDataList<Double>	scoreList;			// list of score. Only used when a read length is specified
-	private final GenomicDataList<Strand>	strandList;			// list of strand
+	private final GenomicListView<Integer>	positionList;		// list of position
+	private GenomicListView<Integer>	stopPositionList;	// list of stop position. Only used when a read length is specified
+	private GenomicListView<Double>	scoreList;			// list of score. Only used when a read length is specified
+	private final GenomicListView<Strand>	strandList;			// list of strand
 	private final int[][] 						matchTypeCount; 	// number of lines with 0,1,2 mistakes per chromosome
 	private int 							NMCount = 0;		// Non matched line count
 	private int 							QCCount = 0;		// quality control line count

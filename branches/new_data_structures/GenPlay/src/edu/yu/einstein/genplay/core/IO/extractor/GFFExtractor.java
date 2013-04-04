@@ -39,7 +39,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.MaskSCWListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
@@ -61,11 +61,11 @@ implements Serializable, StrandedExtractor, RepeatFamilyListGenerator,
 ScoredChromosomeWindowListGenerator, BinListGenerator {
 
 	private static final long serialVersionUID = -2798372250708609794L; // generated ID
-	private final GenomicDataList<Integer>	startList;		// list of position start
-	private final GenomicDataList<Integer>	stopList;		// list of position stop
-	private final GenomicDataList<String> 	nameList;		// list of name
-	private final GenomicDataList<Double>	scoreList;		// list of scores
-	private final GenomicDataList<Strand> 	strandList;		// list of strand
+	private final GenomicListView<Integer>	startList;		// list of position start
+	private final GenomicListView<Integer>	stopList;		// list of position stop
+	private final GenomicListView<String> 	nameList;		// list of name
+	private final GenomicListView<Double>	scoreList;		// list of scores
+	private final GenomicListView<Strand> 	strandList;		// list of strand
 	private Strand 							selectedStrand;	// strand to extract, null for both
 	private ReadLengthAndShiftHandler		readHandler;	// handler that computes the position of read by applying the shift
 

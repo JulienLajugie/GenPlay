@@ -38,6 +38,9 @@ import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
  */
 public final class BinListViewBuilder implements ListViewBuilder<ScoredChromosomeWindow> {
 
+	/** Precision of the scores */
+	private final ScorePrecision scorePrecision;
+
 	/** Size of the bins of the list */
 	private final int binSize;
 
@@ -51,6 +54,7 @@ public final class BinListViewBuilder implements ListViewBuilder<ScoredChromosom
 	 * @param binSize size of the bins of the {@link ListView}
 	 */
 	public BinListViewBuilder(ScorePrecision scorePrecision, int binSize) {
+		this.scorePrecision = scorePrecision;
 		this.binSize = binSize;
 		switch (scorePrecision) {
 		case PRECISION_16BIT:
@@ -70,6 +74,13 @@ public final class BinListViewBuilder implements ListViewBuilder<ScoredChromosom
 		} else {
 			throw new ObjectAlreadyBuiltException();
 		}
+	}
+
+
+	@Override
+	public BinListViewBuilder clone() throws CloneNotSupportedException {
+		BinListViewBuilder clone = new BinListViewBuilder(scorePrecision, binSize);
+		return clone;
 	}
 
 

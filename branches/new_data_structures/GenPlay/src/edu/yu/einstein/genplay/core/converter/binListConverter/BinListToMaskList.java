@@ -22,7 +22,7 @@
 package edu.yu.einstein.genplay.core.converter.binListConverter;
 
 import edu.yu.einstein.genplay.core.converter.Converter;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.MaskSCWListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
@@ -38,7 +38,7 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.MaskChromoso
 public class BinListToMaskList implements Converter {
 
 	private final BinList 				list; 		// The input list.
-	private GenomicDataList<?> 	result;			// The output list.
+	private GenomicListView<?> 	result;			// The output list.
 
 
 	/**
@@ -69,7 +69,7 @@ public class BinListToMaskList implements Converter {
 
 
 	@Override
-	public GenomicDataList<?> getList() {
+	public GenomicListView<?> getList() {
 		return result;
 	}
 }

@@ -25,11 +25,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.comparator.ChromosomeWindowStartComparator;
@@ -37,13 +35,10 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOComputeStats;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOCountNonNullLength;
-import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
-import edu.yu.einstein.genplay.dataStructure.gene.Gene;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.SimpleGeneList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
@@ -60,8 +55,8 @@ public class SimpleSCWList implements ScoredChromosomeWindowList {
 	/** Generated serial ID */
 	private static final long serialVersionUID = 9159412940141151387L;
 
-	/** Saved format version */
-	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;
+	/** Version number of the class */
+	private static final transient int CLASS_VERSION_NUMBER = 0;
 
 	/**
 	 * @param scwListType a {@link SCWListType}
@@ -79,10 +74,10 @@ public class SimpleSCWList implements ScoredChromosomeWindowList {
 	}
 
 	/** {@link GenomicDataArrayList} containing the ScoredChromosomeWindows */
-	private GenomicDataList<ScoredChromosomeWindow> data;
+	private final List<ListView<ScoredChromosomeWindow>> data;
 
 	/** Type of the list */
-	private SCWListType scwListType;
+	private final SCWListType scwListType;
 
 	/** Smallest value of the list */
 	private double minimum;
@@ -110,19 +105,14 @@ public class SimpleSCWList implements ScoredChromosomeWindowList {
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public SimpleSCWList(List<List<Gene>> data, SCWListType scwListType) throws InterruptedException, ExecutionException {
+	public SimpleSCWList(List<ListView<ScoredChromosomeWindow>> data, SCWListType scwListType) throws InterruptedException, ExecutionException {
 		super();
 		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
-		for (int i = 0; i < projectChromosome.size(); i++){
-			if (i < data.size()) {
-				data.add(data.get(i));
-			} else {
-				// add an empty list
-				data.add(new ArrayList<Gene>());
-			}
+		this.data = new ArrayList<ListView<ScoredChromosomeWindow>>(projectChromosome.size());
+		for (int i = 0; i < data.size(); i++){
+			data.add(data.get(i));
 		}
 		this.scwListType = scwListType;
-		sort();
 		computeStatistics();
 	}
 
@@ -154,14 +144,28 @@ public class SimpleSCWList implements ScoredChromosomeWindowList {
 
 
 	@Override
+	public ListView<ScoredChromosomeWindow> get(Chromosome chromosome) throws InvalidChromosomeException {
+		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		int chromosomeIndex = projectChromosome.getIndex(chromosome);
+		return get(chromosomeIndex);
+	}
+
+
+	@Override
 	public ScoredChromosomeWindow get(Chromosome chromosome, int index) throws InvalidChromosomeException {
-		return data.get(chromosome, index);
+		return get(chromosome).get(index);
+	}
+
+
+	@Override
+	public ListView<ScoredChromosomeWindow> get(int elementIndex) {
+		return 	data.get(elementIndex);
 	}
 
 
 	@Override
 	public ScoredChromosomeWindow get(int chromosomeIndex, int elementIndex) {
-		return data.get(chromosomeIndex, elementIndex);
+		return get(chromosomeIndex).get(elementIndex);
 	}
 
 
@@ -191,7 +195,7 @@ public class SimpleSCWList implements ScoredChromosomeWindowList {
 
 	@Override
 	public double getScore(Chromosome chromosome, int position) {
-		ListView<ScoredChromosomeWindow> currentList = getView(chromosome);
+		ListView<ScoredChromosomeWindow> currentList = get(chromosome);
 		int indexWindow = Collections.binarySearch(currentList, new SimpleChromosomeWindow(position, position), new ChromosomeWindowStartComparator());
 		if (indexWindow < 0) {
 			// retrieve the window right before the insert point
@@ -227,19 +231,13 @@ public class SimpleSCWList implements ScoredChromosomeWindowList {
 
 
 	@Override
-	public ListView<ScoredChromosomeWindow> getView(Chromosome chromosome) throws InvalidChromosomeException {
-		return data.getView(chromosome);
+	public boolean isEmpty() {
+		return data.isEmpty();
 	}
 
 
 	@Override
-	public ListView<ScoredChromosomeWindow> getView(int chromosomeIndex) {
-		return data.getView(chromosomeIndex);
-	}
-
-
-	@Override
-	public Iterator<List<ScoredChromosomeWindow>> iterator() {
+	public Iterator<ListView<ScoredChromosomeWindow>> iterator() {
 		return data.iterator();
 	}
 
@@ -253,7 +251,7 @@ public class SimpleSCWList implements ScoredChromosomeWindowList {
 	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		data = (GenomicDataList<ScoredChromosomeWindow>) in.readObject();
+		data = (GenomicListView<ScoredChromosomeWindow>) in.readObject();
 		scwListType = (SCWListType) in.readObject();
 		maximum = in.readDouble();
 		minimum = in.readDouble();
@@ -272,39 +270,13 @@ public class SimpleSCWList implements ScoredChromosomeWindowList {
 
 	@Override
 	public int size(Chromosome chromosome) throws InvalidChromosomeException {
-		return data.size(chromosome);
+		return get(chromosome).size();
 	}
 
 
 	@Override
 	public int size(int chromosomeIndex) {
-		return data.size(chromosomeIndex);
-	}
-
-
-	/**
-	 * Sorts the elements of the {@link ScoredChromosomeWindowList} by position
-	 * @throws InterruptedException
-	 * @throws ExecutionException
-	 */
-	private void sort() throws InterruptedException, ExecutionException {
-		final OperationPool op = OperationPool.getInstance();
-		Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
-		for (final List<ScoredChromosomeWindow> currentList: this) {
-			Callable<Void> currentThread = new Callable<Void>() {
-				@Override
-				public Void call() throws Exception {
-					if (currentList != null) {
-						Collections.sort(currentList);
-					}
-					// tell the operation pool that a chromosome is done
-					op.notifyDone();
-					return null;
-				}
-			};
-			threadList.add(currentThread);
-		}
-		op.startPool(threadList);
+		return get(chromosomeIndex).size();
 	}
 
 

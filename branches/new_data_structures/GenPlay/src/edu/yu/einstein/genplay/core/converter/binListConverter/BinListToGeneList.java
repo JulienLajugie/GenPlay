@@ -24,7 +24,7 @@ package edu.yu.einstein.genplay.core.converter.binListConverter;
 import javax.naming.OperationNotSupportedException;
 
 import edu.yu.einstein.genplay.core.converter.Converter;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
@@ -40,7 +40,7 @@ public class BinListToGeneList implements Converter {
 
 	@SuppressWarnings("unused")
 	private final BinList 		list; 		// The input list.
-	private GenomicDataList<?> 	result;		// The output list.
+	private GenomicListView<?> 	result;		// The output list.
 
 
 	/**
@@ -73,7 +73,7 @@ public class BinListToGeneList implements Converter {
 
 
 	@Override
-	public GenomicDataList<?> getList() {
+	public GenomicListView<?> getList() {
 		return result;
 	}
 }

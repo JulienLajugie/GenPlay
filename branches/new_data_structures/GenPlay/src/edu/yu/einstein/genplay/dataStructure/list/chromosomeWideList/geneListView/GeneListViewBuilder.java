@@ -79,12 +79,16 @@ public final class GeneListViewBuilder implements ListViewBuilder<Gene> {
 	/** List of the offsets of the exons inside the exon start, stop and score lists */
 	private List<Integer> exonOffsets;
 
+	/**	Precision of the scores of the genes */
+	private final ScorePrecision scorePrecision;
+
 
 	/**
 	 * Creates an instance of {@link GeneListViewBuilder}
 	 * @param scorePrecision precision of the score of the genes of the {@link ListView} to build
 	 */
 	public GeneListViewBuilder(ScorePrecision scorePrecision) {
+		this.scorePrecision = scorePrecision;
 		geneNames = new ListOfByteArraysAsByteList();
 		geneNameOffsets = new ListOfIntArraysAsIntegerList();
 		geneStrands = new ByteArrayAsBooleanList();
@@ -137,6 +141,13 @@ public final class GeneListViewBuilder implements ListViewBuilder<Gene> {
 				exonScores.add(currentExon.getScore());
 			}
 		}
+	}
+
+
+	@Override
+	public GeneListViewBuilder clone() throws CloneNotSupportedException {
+		GeneListViewBuilder clone = new GeneListViewBuilder(scorePrecision);
+		return clone;
 	}
 
 

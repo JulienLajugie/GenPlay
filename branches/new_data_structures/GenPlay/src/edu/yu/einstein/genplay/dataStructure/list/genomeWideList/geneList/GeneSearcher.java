@@ -55,6 +55,14 @@ public final class GeneSearcher implements Serializable {
 
 
 	/**
+	 * @return the lastGeneFound
+	 */
+	public Gene getLastGeneFound() {
+		return lastGeneFound;
+	}
+
+
+	/**
 	 * @return the name of the last searched gene
 	 */
 	public String getLastSearchedGeneName() {
@@ -159,6 +167,26 @@ public final class GeneSearcher implements Serializable {
 
 
 	/**
+	 * @return the next gene (starting from the last found gene), null is returned if nothing is found.
+	 */
+	public Gene searchNextGene() {
+		if (lastGeneFound == null) {
+			return null;
+		}
+
+		int i = lastFoundChromoIndex;
+		int j = lastFoundGeneIndex + 1;
+		if (j < geneList.get(i).size()) {
+			lastFoundChromoIndex = i;
+			lastFoundGeneIndex = j;
+			lastGeneFound = geneList.get(i, j);
+		}
+
+		return lastGeneFound;
+	}
+
+
+	/**
 	 * @return the next gene (starting from the last found gene)
 	 * that has a name that correspond to the searched name.
 	 * Null is returned if nothing is found
@@ -190,6 +218,26 @@ public final class GeneSearcher implements Serializable {
 			lastFoundGeneIndex = j;
 			lastGeneFound = geneList.get(i, j);
 		}
+		return lastGeneFound;
+	}
+
+
+	/**
+	 * @return the previous gene (starting from the last found gene), null is returned if nothing is found.
+	 */
+	public Gene searchPreviousGene() {
+		if (lastGeneFound == null) {
+			return null;
+		}
+
+		int i = lastFoundChromoIndex;
+		int j = lastFoundGeneIndex - 1;
+		if (j >= 0) {
+			lastFoundChromoIndex = i;
+			lastFoundGeneIndex = j;
+			lastGeneFound = geneList.get(i, j);
+		}
+
 		return lastGeneFound;
 	}
 
@@ -230,45 +278,6 @@ public final class GeneSearcher implements Serializable {
 	}
 
 
-	/**
-	 * @return the next gene (starting from the last found gene), null is returned if nothing is found.
-	 */
-	public Gene searchNextGene() {
-		if (lastGeneFound == null) {
-			return null;
-		}
-
-		int i = lastFoundChromoIndex;
-		int j = lastFoundGeneIndex + 1;
-		if (j < geneList.getView(i).size()) {
-			lastFoundChromoIndex = i;
-			lastFoundGeneIndex = j;
-			lastGeneFound = geneList.get(i, j);
-		}
-
-		return lastGeneFound;
-	}
-
-
-	/**
-	 * @return the previous gene (starting from the last found gene), null is returned if nothing is found.
-	 */
-	public Gene searchPreviousGene() {
-		if (lastGeneFound == null) {
-			return null;
-		}
-
-		int i = lastFoundChromoIndex;
-		int j = lastFoundGeneIndex - 1;
-		if (j >= 0) {
-			lastFoundChromoIndex = i;
-			lastFoundGeneIndex = j;
-			lastGeneFound = geneList.get(i, j);
-		}
-
-		return lastGeneFound;
-	}
-
 
 	/**
 	 * @param caseSensitive set to true for a case sensitive search
@@ -288,7 +297,6 @@ public final class GeneSearcher implements Serializable {
 	}
 
 
-
 	/**
 	 * @param wholeWorld set to true for a whole word search
 	 * @return a new result for the search with the new parameter. Null if nothing found
@@ -304,14 +312,6 @@ public final class GeneSearcher implements Serializable {
 		} else {
 			return lastGeneFound;
 		}
-	}
-
-
-	/**
-	 * @return the lastGeneFound
-	 */
-	public Gene getLastGeneFound() {
-		return lastGeneFound;
 	}
 
 }

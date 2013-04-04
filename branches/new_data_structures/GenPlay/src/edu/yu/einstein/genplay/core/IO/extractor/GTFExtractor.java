@@ -45,7 +45,7 @@ import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.MaskSCWListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
@@ -69,10 +69,10 @@ public class GTFExtractor extends TextFileExtractor implements Serializable, Str
 ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 
 	private static final long serialVersionUID = 6374158568964537008L; // generated ID
-	private final GenomicDataList<Integer>		startList;		// list of position start
-	private final GenomicDataList<Integer>		stopList;		// list of position stop
-	private final GenomicDataList<String> 		nameList;		// list of name
-	private final GenomicDataList<Strand> 		strandList;		// list of strand
+	private final GenomicListView<Integer>		startList;		// list of position start
+	private final GenomicListView<Integer>		stopList;		// list of position stop
+	private final GenomicListView<String> 		nameList;		// list of name
+	private final GenomicListView<Strand> 		strandList;		// list of strand
 	private final GenomicDataArrayList<Double>	scoreList;		// list of scores
 	private Strand 								selectedStrand;	// strand to extract, null for both
 	private ReadLengthAndShiftHandler			readHandler;	// handler that computes the position of read by applying the shift

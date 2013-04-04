@@ -21,6 +21,8 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.IO.reader;
 
+import java.util.concurrent.ExecutionException;
+
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
@@ -53,6 +55,8 @@ public interface GeneReader {
 	/**
 	 * Reads the next gene from a file and returns it.  Returns null if its the end of the file
 	 * @return a {@link Gene}
+	 * @throws InterruptedException
+	 * @throws ExecutionException
 	 */
-	public Gene readGene();
+	public Gene readGene() throws InterruptedException, ExecutionException;
 }

@@ -50,7 +50,7 @@ import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.VariantType;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.IntArrayAsOffsetList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 
 /**
  * @author Nicolas Fourel
@@ -71,7 +71,7 @@ public class MGSynchronizer implements VCFScannerReceiver, Serializable {
 
 	// Attributes used for the synchronization
 	private Map<Chromosome, Integer> chromosomeIndexes;
-	private GenomicDataList<MGSOffset> referenceOffsetList;
+	private GenomicListView<MGSOffset> referenceOffsetList;
 	private VCFFile currentFile;
 	private VCFFileStatistics currentStatistics;
 	private List<String> currentGenomes;
@@ -102,7 +102,7 @@ public class MGSynchronizer implements VCFScannerReceiver, Serializable {
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		chromosomeIndexes = (Map<Chromosome, Integer>) in.readObject();
-		referenceOffsetList = (GenomicDataList<MGSOffset>) in.readObject();
+		referenceOffsetList = (GenomicListView<MGSOffset>) in.readObject();
 		currentFile = (VCFFile) in.readObject();
 		currentStatistics = (VCFFileStatistics) in.readObject();
 		currentGenomes = (List<String>) in.readObject();
@@ -410,7 +410,7 @@ public class MGSynchronizer implements VCFScannerReceiver, Serializable {
 			List<MGSAllele> alleles = genomeInformation.getAlleles();
 
 			for (MGSAllele allele: alleles) {
-				GenomicDataList<MGSOffset> chromosomeAlleleAOffsetList = synchronizeToAlleleLevel(allele.getOffsetList());		// get the synchronized chromosome list of list for the current allele
+				GenomicListView<MGSOffset> chromosomeAlleleAOffsetList = synchronizeToAlleleLevel(allele.getOffsetList());		// get the synchronized chromosome list of list for the current allele
 				allele.setOffsetList(chromosomeAlleleAOffsetList);																	// set the current chromosome list of list of the current allele with the synchronized one
 			}
 		}
@@ -423,9 +423,9 @@ public class MGSynchronizer implements VCFScannerReceiver, Serializable {
 	 * @param chromosomeAlleleOffsetList chromosome list of list of an allele
 	 * @return a synchronized chromosome list of list
 	 */
-	private GenomicDataList<MGSOffset> synchronizeToAlleleLevel (GenomicDataList<MGSOffset> chromosomeAlleleOffsetList) {
+	private GenomicListView<MGSOffset> synchronizeToAlleleLevel (GenomicListView<MGSOffset> chromosomeAlleleOffsetList) {
 		int chromosomeListSize = ProjectManager.getInstance().getProjectChromosome().getChromosomeList().size();						// get the number of chromosome
-		GenomicDataList<MGSOffset> list = new GenomicDataArrayList<MGSOffset>();												// instantiate a new chromosome list of list (to insert the synchronized list of offset)
+		GenomicListView<MGSOffset> list = new GenomicDataArrayList<MGSOffset>();												// instantiate a new chromosome list of list (to insert the synchronized list of offset)
 
 		for (int i = 0; i < chromosomeListSize; i++) {																					// scan on the number of chromosome (loop on ever chromosome)
 			List<MGSOffset> referenceOffsetList = this.referenceOffsetList.get(i);														// get the list of offset from the reference genome for the current chromosome

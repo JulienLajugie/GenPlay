@@ -36,7 +36,7 @@ import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.MaskChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
@@ -58,7 +58,7 @@ public class MaskSCWListFactory {
 	 * @throws InterruptedException
 	 */
 	public static ScoredChromosomeWindowList createMaskSCWArrayList(SCWReader scwReader) throws InterruptedException, ExecutionException {
-		GenomicDataList<ScoredChromosomeWindow> scwList = new GenomicDataArrayList<ScoredChromosomeWindow>();
+		GenomicListView<ScoredChromosomeWindow> scwList = new GenomicDataArrayList<ScoredChromosomeWindow>();
 		ScoredChromosomeWindow currentSCW;
 		// read until eof
 		while ((currentSCW = scwReader.readScoredChromosomeWindow()) != null) {
@@ -147,8 +147,8 @@ public class MaskSCWListFactory {
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public static ScoredChromosomeWindowList createMaskSCWArrayList(final GenomicDataList<Integer> startList,
-			final GenomicDataList<Integer> stopList) throws InvalidChromosomeException, InterruptedException, ExecutionException {
+	public static ScoredChromosomeWindowList createMaskSCWArrayList(final GenomicListView<Integer> startList,
+			final GenomicListView<Integer> stopList) throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		// TODO remove this method when the new file loading system is on
 		// retrieve the project chromosome
 		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();

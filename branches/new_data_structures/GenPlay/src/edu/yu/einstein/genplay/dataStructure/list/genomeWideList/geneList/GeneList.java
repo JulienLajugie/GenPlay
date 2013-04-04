@@ -25,14 +25,14 @@ import java.io.Serializable;
 
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ImmutableGenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 
 
 /**
  * Immutable list of {@link Gene} organized by chromosome.
  * @author Julien Lajugie
  */
-public interface GeneList extends ImmutableGenomicDataList<Gene>, Serializable {
+public interface GeneList extends GenomicListView<Gene>, Serializable {
 
 
 	/**

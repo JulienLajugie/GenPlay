@@ -42,7 +42,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.MaskSCWListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
@@ -67,16 +67,16 @@ implements Serializable, StrandedExtractor, RepeatFamilyListGenerator,
 ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 
 	private static final long serialVersionUID = 7967902877674655813L; // generated ID
-	private final GenomicDataList<Integer>	startList;		// list of position start
-	private final GenomicDataList<Integer>	stopList;		// list of position stop
-	private final GenomicDataList<String> 	nameList;		// list of name
-	private final GenomicDataList<Double>	scoreList;		// list of scores
-	private final GenomicDataList<Strand> 	strandList;		// list of strand
-	private final GenomicDataList<Integer>	UTR5BoundList;	// list of translation 5' bounds
-	private final GenomicDataList<Integer>	UTR3BoundList;	// list of translation 3' bounds
-	private final GenomicDataList<int[]> 	exonStartsList;	// list of list of exon starts
-	private final GenomicDataList<int[]> 	exonStopsList;	// list of list of exon stops
-	private final GenomicDataList<double[]>	exonScoresList;	// list of list of exon scores
+	private final GenomicListView<Integer>	startList;		// list of position start
+	private final GenomicListView<Integer>	stopList;		// list of position stop
+	private final GenomicListView<String> 	nameList;		// list of name
+	private final GenomicListView<Double>	scoreList;		// list of scores
+	private final GenomicListView<Strand> 	strandList;		// list of strand
+	private final GenomicListView<Integer>	UTR5BoundList;	// list of translation 5' bounds
+	private final GenomicListView<Integer>	UTR3BoundList;	// list of translation 3' bounds
+	private final GenomicListView<int[]> 	exonStartsList;	// list of list of exon starts
+	private final GenomicListView<int[]> 	exonStopsList;	// list of list of exon stops
+	private final GenomicListView<double[]>	exonScoresList;	// list of list of exon scores
 	private String							geneDBURL;		// url of the gene database
 	private Strand 							selectedStrand;	// strand to extract, null for both
 	private GeneScoreType					geneScoreType;	// type of gene and exon score (RPKM, max, sum)

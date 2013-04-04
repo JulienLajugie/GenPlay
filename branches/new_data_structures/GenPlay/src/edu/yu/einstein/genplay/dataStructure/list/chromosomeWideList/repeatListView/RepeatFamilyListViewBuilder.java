@@ -69,6 +69,13 @@ public class RepeatFamilyListViewBuilder implements ListViewBuilder<ChromosomeWi
 
 
 	@Override
+	public RepeatFamilyListViewBuilder clone() throws CloneNotSupportedException {
+		RepeatFamilyListViewBuilder clone = new RepeatFamilyListViewBuilder(name);
+		return clone;
+	}
+
+
+	@Override
 	public ListView<ChromosomeWindow> getListView() {
 		ListView<ChromosomeWindow> listView = new RepeatFamilyListView(name, repeatStarts, repeatStops);
 		repeatStarts = null;

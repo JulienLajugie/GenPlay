@@ -28,7 +28,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.CoordinateSystemType;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
 
 
@@ -40,9 +40,9 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredC
  */
 public class AlleleSettingsBedConvert extends AlleleSettingsBed {
 
-	private final GenomicDataList<Integer> 	startList;	// List of start position.
-	private final GenomicDataList<Integer> 	stopList;	// List of stop position.
-	private final GenomicDataList<Double> 	scoreList;	// List of scores.
+	private final GenomicListView<Integer> 	startList;	// List of start position.
+	private final GenomicListView<Integer> 	stopList;	// List of stop position.
+	private final GenomicListView<Double> 	scoreList;	// List of scores.
 
 
 	/**
@@ -97,7 +97,7 @@ public class AlleleSettingsBedConvert extends AlleleSettingsBed {
 	/**
 	 * @return the startList
 	 */
-	public GenomicDataList<Integer> getStartList() {
+	public GenomicListView<Integer> getStartList() {
 		return startList;
 	}
 
@@ -105,7 +105,7 @@ public class AlleleSettingsBedConvert extends AlleleSettingsBed {
 	/**
 	 * @return the stopList
 	 */
-	public GenomicDataList<Integer> getStopList() {
+	public GenomicListView<Integer> getStopList() {
 		return stopList;
 	}
 
@@ -113,7 +113,7 @@ public class AlleleSettingsBedConvert extends AlleleSettingsBed {
 	/**
 	 * @return the scoreList
 	 */
-	public GenomicDataList<Double> getScoreList() {
+	public GenomicListView<Double> getScoreList() {
 		return scoreList;
 	}
 

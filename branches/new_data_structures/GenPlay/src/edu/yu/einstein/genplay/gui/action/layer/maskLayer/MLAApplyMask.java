@@ -27,7 +27,7 @@ import javax.swing.ActionMap;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOTwoLayers;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationTwoLayersMethod;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ImmutableGenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
@@ -87,7 +87,7 @@ public final class MLAApplyMask extends TrackListActionOperationWorker<Immutable
 			if (layerChooserDialog.showDialog(getRootPane(), "Select Layer to Mask") == LayerChooserDialog.APPROVE_OPTION) {
 				maskedLayer = layerChooserDialog.getSelectedLayer();
 				if (maskedLayer != null) {
-					ImmutableGenomicDataList<?> data = (GenomicDataList<?>) maskedLayer.getData();
+					ImmutableGenomicDataList<?> data = (GenomicListView<?>) maskedLayer.getData();
 					ImmutableGenomicDataList<?> mask = selectedLayer.getData();
 					resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackListPanel().getModel().getTracks());
 					if (resultTrack != null) {

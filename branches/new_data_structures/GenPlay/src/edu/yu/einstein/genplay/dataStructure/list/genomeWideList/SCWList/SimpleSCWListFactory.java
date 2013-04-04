@@ -37,7 +37,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
@@ -59,9 +59,9 @@ public class SimpleSCWListFactory {
 	 * @throws InterruptedException
 	 */
 	public static ScoredChromosomeWindowList createSimpleSCWArrayList(SCWReader scwReader, ScoreCalculationMethod scm) throws InterruptedException, ExecutionException {
-		GenomicDataList<Integer> startList = new GenomicDataArrayList<Integer>();
-		GenomicDataList<Integer> stopList = new GenomicDataArrayList<Integer>();
-		GenomicDataList<Double> scoreList = new GenomicDataArrayList<Double>();
+		GenomicListView<Integer> startList = new GenomicDataArrayList<Integer>();
+		GenomicListView<Integer> stopList = new GenomicDataArrayList<Integer>();
+		GenomicListView<Double> scoreList = new GenomicDataArrayList<Double>();
 		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		for (int i = 0; i < projectChromosome.size(); i++) {
 			startList.add(new IntArrayAsIntegerList());
@@ -90,9 +90,9 @@ public class SimpleSCWListFactory {
 	 * @throws InterruptedException
 	 */
 	public static <T extends ScoredChromosomeWindow> ScoredChromosomeWindowList createSimpleSCWList(List<List<T>> data, ScoreCalculationMethod scm) throws InterruptedException, ExecutionException {
-		GenomicDataList<Integer> startList = new GenomicDataArrayList<Integer>();
-		GenomicDataList<Integer> stopList = new GenomicDataArrayList<Integer>();
-		GenomicDataList<Double> scoreList = new GenomicDataArrayList<Double>();
+		GenomicListView<Integer> startList = new GenomicDataArrayList<Integer>();
+		GenomicListView<Integer> stopList = new GenomicDataArrayList<Integer>();
+		GenomicListView<Double> scoreList = new GenomicDataArrayList<Double>();
 		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		for (int i = 0; i < projectChromosome.size(); i++) {
 			startList.add(new IntArrayAsIntegerList());
@@ -191,9 +191,9 @@ public class SimpleSCWListFactory {
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public static ScoredChromosomeWindowList createSimpleSCWArrayList(final GenomicDataList<Integer> startList,
-			final GenomicDataList<Integer> stopList,
-			final GenomicDataList<Double> scoreList,
+	public static ScoredChromosomeWindowList createSimpleSCWArrayList(final GenomicListView<Integer> startList,
+			final GenomicListView<Integer> stopList,
+			final GenomicListView<Double> scoreList,
 			final ScoreCalculationMethod scm) throws InvalidChromosomeException, InterruptedException, ExecutionException {
 
 		// retrieve chromosome manager

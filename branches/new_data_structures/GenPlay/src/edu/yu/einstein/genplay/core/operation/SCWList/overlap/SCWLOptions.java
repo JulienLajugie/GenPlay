@@ -35,7 +35,7 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 
@@ -53,9 +53,9 @@ final class SCWLOptions implements Serializable {
 
 	protected final ProjectChromosome 									projectChromosome;	//ChromosomeManager
 	private final 		GenomicDataArrayList<ScoredChromosomeWindow> 	list;				//list of scored chromosome windows indexed by chromosome
-	private final 		GenomicDataList<Integer> 				startList;			//store the original start list position
-	private final 		GenomicDataList<Integer> 				stopList;			//store the original stop list position
-	private final 		GenomicDataList<Double> 				scoreList;			//store the original score list
+	private final 		GenomicListView<Integer> 				startList;			//store the original start list position
+	private final 		GenomicListView<Integer> 				stopList;			//store the original stop list position
+	private final 		GenomicListView<Double> 				scoreList;			//store the original score list
 
 	/**
 	 * SCWOption constructor
@@ -66,9 +66,9 @@ final class SCWLOptions implements Serializable {
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
-	protected SCWLOptions (	final GenomicDataList<Integer> startList,
-			final GenomicDataList<Integer> stopList,
-			final GenomicDataList<Double> scoreList) throws InterruptedException, ExecutionException {
+	protected SCWLOptions (	final GenomicListView<Integer> startList,
+			final GenomicListView<Integer> stopList,
+			final GenomicListView<Double> scoreList) throws InterruptedException, ExecutionException {
 		this.projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		this.list = new GenomicDataArrayList<ScoredChromosomeWindow>();
 		this.startList = startList;

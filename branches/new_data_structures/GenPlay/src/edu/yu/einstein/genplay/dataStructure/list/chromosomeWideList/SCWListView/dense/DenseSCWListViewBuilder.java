@@ -39,6 +39,9 @@ import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
  */
 public final class DenseSCWListViewBuilder implements ListViewBuilder<ScoredChromosomeWindow> {
 
+	/** Precision of the scores */
+	private final ScorePrecision scorePrecision;
+
 	/** List of the stop positions of the SCWs */
 	private List<Integer> windowStops;
 
@@ -51,6 +54,7 @@ public final class DenseSCWListViewBuilder implements ListViewBuilder<ScoredChro
 	 * @param scorePrecision precision of the scores of the {@link ListView} to build
 	 */
 	public DenseSCWListViewBuilder(ScorePrecision scorePrecision) {
+		this.scorePrecision = scorePrecision;
 		windowStops = new ListOfIntArraysAsIntegerList();
 		switch (scorePrecision) {
 		case PRECISION_16BIT:
@@ -93,6 +97,13 @@ public final class DenseSCWListViewBuilder implements ListViewBuilder<ScoredChro
 	@Override
 	public void addElementToBuild(ScoredChromosomeWindow element) throws ObjectAlreadyBuiltException {
 		addElementToBuild(element.getStart(), element.getStop(), element.getScore());
+	}
+
+
+	@Override
+	public DenseSCWListViewBuilder clone() throws CloneNotSupportedException {
+		DenseSCWListViewBuilder clone = new DenseSCWListViewBuilder(scorePrecision);
+		return clone;
 	}
 
 

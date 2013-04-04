@@ -151,7 +151,6 @@ public class TwoBitListViewBuilder implements Stoppable {
 		return lv;
 	}
 
-
 	@Override
 	public void stop() {
 		needToBeStopped = true;

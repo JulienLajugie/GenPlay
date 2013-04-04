@@ -23,16 +23,15 @@ package edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList;
 
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ImmutableGenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
 /**
- * A {@link GenomicDataList} of {@link ScoredChromosomeWindow}
+ * A {@link GenomicListView} of {@link ScoredChromosomeWindow}
  * @author Julien Lajugie
  */
-public interface ScoredChromosomeWindowList extends ImmutableGenomicDataList<ScoredChromosomeWindow> {
+public interface ScoredChromosomeWindowList extends GenomicListView<ScoredChromosomeWindow> {
 
 
 	/**

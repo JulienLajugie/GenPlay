@@ -76,6 +76,17 @@ public final class MaskListViewBuilder implements ListViewBuilder<ScoredChromoso
 	}
 
 
+	/**
+	 * Creates a clone of this {@link MaskListViewBuilder} prototype
+	 * containing no elements.
+	 */
+	@Override
+	public MaskListViewBuilder clone() throws CloneNotSupportedException {
+		MaskListViewBuilder clone = new MaskListViewBuilder();
+		return clone;
+	}
+
+
 	@Override
 	public ListView<ScoredChromosomeWindow> getListView() {
 		ListView<ScoredChromosomeWindow> listView = new MaskListView(maskStarts, maskStops);

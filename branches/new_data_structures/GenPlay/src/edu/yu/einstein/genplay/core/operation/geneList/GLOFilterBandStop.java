@@ -22,7 +22,6 @@
 package edu.yu.einstein.genplay.core.operation.geneList;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -32,6 +31,7 @@ import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.SimpleGeneList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 
 
 
@@ -68,8 +68,8 @@ public class GLOFilterBandStop implements Operation<GeneList> {
 		}
 
 		final OperationPool op = OperationPool.getInstance();
-		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();
-		for (final List<Gene> currentList: geneList) {
+		final List<Callable<ListView<Gene>>> threadList = new ArrayList<Callable<ListView<Gene>>>();
+		for (final ListView<Gene> currentList: geneList) {
 
 			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {
 				@Override

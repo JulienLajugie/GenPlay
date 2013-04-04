@@ -24,21 +24,16 @@ package edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.geneListView.GeneListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 
@@ -48,25 +43,28 @@ import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class SimpleGeneList implements GeneList {
+public final class SimpleGeneList implements GeneList, Iterator<ListView<Gene>> {
 
 	/** Generated serial ID */
 	private static final long serialVersionUID = -1567605708127718216L;
 
-	/** Saved format version */
-	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;
+	/** Version number of the class */
+	private static final transient int CLASS_VERSION_NUMBER = 0;
 
 	/** {@link GenomicDataArrayList} containing the Genes */
-	private GenomicDataArrayList<Gene> data;
+	private final ListView<Gene>[] data;
+
+	/** Current index of the iterator */
+	private transient int iteratorIndex = 0;
 
 	/** URL to a gene database that can be used to search information about the genes of this list */
-	private String geneDBURL;
+	private final String geneDBURL;
 
 	/** Type of the scores of the genes and exons of this list (RPKM, max, sum) */
-	private GeneScoreType geneScoreType;
+	private final GeneScoreType geneScoreType;
 
 	/** Object that searches genes and handle funtion such as find next, find previous */
-	private GeneSearcher geneSearcher;
+	private transient GeneSearcher geneSearcher;
 
 
 	/**
@@ -77,33 +75,44 @@ public final class SimpleGeneList implements GeneList {
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public SimpleGeneList(List<List<Gene>> data, GeneScoreType geneScoreType, String geneDBURL) throws InterruptedException, ExecutionException {
+	public SimpleGeneList(List<ListView<Gene>> data, GeneScoreType geneScoreType, String geneDBURL) throws InterruptedException, ExecutionException {
 		super();
 		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		this.data = new GeneListView[projectChromosome.size()];
 		for (int i = 0; i < projectChromosome.size(); i++){
 			if (i < data.size()) {
-				data.add(data.get(i));
-			} else {
-				// add an empty list
-				data.add(new ArrayList<Gene>());
+				this.data[i] = data.get(i);
 			}
 		}
 		this.geneScoreType = geneScoreType;
 		this.geneDBURL = geneDBURL;
 		geneSearcher = new GeneSearcher(this);
-		sort();
+	}
+
+
+	@Override
+	public ListView<Gene> get(Chromosome chromosome) throws InvalidChromosomeException {
+		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		int index = projectChromosome.getIndex(chromosome);
+		return get(index);
 	}
 
 
 	@Override
 	public Gene get(Chromosome chromosome, int index) throws InvalidChromosomeException {
-		return data.get(chromosome, index);
+		return get(chromosome).get(index);
+	}
+
+
+	@Override
+	public ListView<Gene> get(int chromosomeIndex) {
+		return data[chromosomeIndex];
 	}
 
 
 	@Override
 	public Gene get(int chromosomeIndex, int elementIndex) {
-		return data.get(chromosomeIndex, elementIndex);
+		return get(chromosomeIndex).get(elementIndex);
 	}
 
 
@@ -126,20 +135,28 @@ public final class SimpleGeneList implements GeneList {
 
 
 	@Override
-	public ListView<Gene> getView(Chromosome chromosome) throws InvalidChromosomeException {
-		return data.getView(chromosome);
+	public boolean hasNext() {
+		return iteratorIndex < size();
 	}
 
 
 	@Override
-	public ListView<Gene> getView(int chromosomeIndex) {
-		return data.getView(chromosomeIndex);
+	public boolean isEmpty() {
+		return data.length == 0;
 	}
 
 
 	@Override
-	public Iterator<List<Gene>> iterator() {
-		return data.iterator();
+	public Iterator<ListView<Gene>> iterator() {
+		return this;
+	}
+
+
+	@Override
+	public ListView<Gene> next() {
+		int currentIndex = iteratorIndex;
+		iteratorIndex++;
+		return get(currentIndex);
 	}
 
 
@@ -149,56 +166,36 @@ public final class SimpleGeneList implements GeneList {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		data = (GenomicDataArrayList<Gene>) in.readObject();
-		geneDBURL = (String) in.readObject();
-		geneScoreType = (GeneScoreType) in.readObject();
+		// read final fields
+		in.defaultReadObject();
+		// set the gene searcher
+		geneSearcher = new GeneSearcher(this);
+	}
+
+
+	@Override
+	public void remove() {
+		throw new UnsupportedOperationException();
 	}
 
 
 	@Override
 	public int size() {
-		return data.size();
+		return data.length;
 	}
 
 
 	@Override
 	public int size(Chromosome chromosome) throws InvalidChromosomeException {
-		return data.size(chromosome);
+		return get(chromosome).size();
 	}
 
 
 	@Override
 	public int size(int index) {
-		return data.size(index);
-	}
-
-
-	/**
-	 * Sorts the elements of the {@link GeneList} by position
-	 * @throws InterruptedException
-	 * @throws ExecutionException
-	 */
-	private void sort() throws InterruptedException, ExecutionException {
-		final OperationPool op = OperationPool.getInstance();
-		Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
-		for (final List<Gene> currentList: this) {
-			Callable<Void> currentThread = new Callable<Void>() {
-				@Override
-				public Void call() throws Exception {
-					if (currentList != null) {
-						Collections.sort(currentList);
-					}
-					// tell the operation pool that a chromosome is done
-					op.notifyDone();
-					return null;
-				}
-			};
-			threadList.add(currentThread);
-		}
-		op.startPool(threadList);
+		return get(index).size();
 	}
 
 
@@ -208,10 +205,7 @@ public final class SimpleGeneList implements GeneList {
 	 * @throws IOException
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(data);
-		out.writeObject(geneDBURL);
-		out.writeObject(geneScoreType);
-		geneSearcher = new GeneSearcher(this);
+		out.writeInt(CLASS_VERSION_NUMBER);
+		out.defaultWriteObject();
 	}
 }

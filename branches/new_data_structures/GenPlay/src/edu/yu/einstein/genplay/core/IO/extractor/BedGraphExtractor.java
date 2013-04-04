@@ -34,7 +34,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.MaskSCWListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
@@ -54,9 +54,9 @@ public final class BedGraphExtractor extends TextFileExtractor
 implements Serializable, ScoredChromosomeWindowListGenerator, BinListGenerator {
 
 	private static final long serialVersionUID = 7106474719716124894L; // generated ID
-	private final GenomicDataList<Integer>	startList;		// list of position start
-	private final GenomicDataList<Integer>	stopList;		// list of position stop
-	private final GenomicDataList<Double>		scoreList;		// list of scores
+	private final GenomicListView<Integer>	startList;		// list of position start
+	private final GenomicListView<Integer>	stopList;		// list of position stop
+	private final GenomicListView<Double>		scoreList;		// list of scores
 
 
 	/**

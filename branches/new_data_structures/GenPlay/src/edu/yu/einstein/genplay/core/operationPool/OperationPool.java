@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -40,14 +40,25 @@ import edu.yu.einstein.genplay.gui.event.operationProgressEvent.OperationProgres
 
 /**
  * Pool of threads with tools to start, interrupt and retrieve the result of the execution.
- * Generate progress events and send this events to listeners.  
+ * Generate progress events and send this events to listeners.
  * @author Julien Lajugie
  * @version 0.1
  */
 public final class OperationPool implements OperationProgressEventsGenerator {
 
 	private static OperationPool 	instance = null;	// unique instance of this singleton class
-	private ExecutorService 		executor = null;	// thread executor 
+	/**
+	 * @return an instance of the singleton class {@link OperationPool}
+	 */
+	public static OperationPool getInstance() {
+		if (instance == null) {
+			instance = new OperationPool(ProjectManager.getInstance().getProjectChromosome());
+		}
+		return instance;
+	}
+	private ExecutorService 		executor = null;	// thread executor
+
+
 	private final List<OperationProgressListener> progressListeners; // list of progress listeners
 
 
@@ -61,14 +72,16 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 	}
 
 
-	/**
-	 * @return an instance of the singleton class {@link OperationPool}
-	 */
-	public static OperationPool getInstance() {
-		if (instance == null) {
-			instance = new OperationPool(ProjectManager.getInstance().getProjectChromosome());
-		}
-		return instance;
+	@Override
+	public void addOperationProgressListener(OperationProgressListener operationProgressListener) {
+		progressListeners.add(operationProgressListener);
+	}
+
+
+	@Override
+	public OperationProgressListener[] getOperationProgressListeners() {
+		OperationProgressListener[] listeners = new OperationProgressListener[progressListeners.size()];
+		return progressListeners.toArray(listeners);
 	}
 
 
@@ -81,13 +94,21 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 
 
 	/**
-	 * Interrupts all the running thread and cancel the execution 
+	 * Notifies all the listeners that the progression of an operation changed
+	 * @param progressState state of the progression
+	 * @param completion completion if the state is IN_PROGRESS
 	 */
-	public synchronized void stopPool() {
-		if ((executor != null) && (!executor.isShutdown()) && (!executor.isTerminated())) {   
-			executor.shutdownNow();
-			notifyAll();
+	private void notifyProgressListeners(int progressState, double completion) {
+		OperationProgressEvent evt = new OperationProgressEvent(progressState, completion);
+		for (OperationProgressListener listener: progressListeners) {
+			listener.operationProgressChanged(evt);
 		}
+	}
+
+
+	@Override
+	public void removeOperationProgressListener(OperationProgressListener operationProgressListener) {
+		progressListeners.remove(operationProgressListener);
 	}
 
 
@@ -106,7 +127,7 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 		executor = Executors.newFixedThreadPool(nbProcessor);
 		// notify the listeners that the operation starts
 		notifyProgressListeners(OperationProgressEvent.STARTING, 0d);
-		// list of futur for the result of the callables		
+		// list of futur for the result of the callables
 		List<Future<T>> futures = new ArrayList<Future<T>>();
 		// list for the return value of this method
 		List<T> results = new ArrayList<T>();
@@ -130,7 +151,7 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 			}
 			long done = 0;
 			stillAlive = false;
-			// compute the completion and check if everything's done 
+			// compute the completion and check if everything's done
 			for (short i = 0; i < futures.size(); i++) {
 				if (futures.get(i).isDone() || futures.get(i).isCancelled()) {
 					done += projectChromosome.get(i).getLength();
@@ -153,39 +174,18 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 		}
 
 		// notify the listeners that the operation is complete
-		notifyProgressListeners(OperationProgressEvent.COMPLETE, 100d);		
+		notifyProgressListeners(OperationProgressEvent.COMPLETE, 100d);
 		return results;
 	}
 
 
 	/**
-	 * Notifies all the listeners that the progression of an operation changed
-	 * @param progressState state of the progression
-	 * @param completion completion if the state is IN_PROGRESS
+	 * Interrupts all the running thread and cancel the execution
 	 */
-	private void notifyProgressListeners(int progressState, double completion) {
-		OperationProgressEvent evt = new OperationProgressEvent(progressState, completion);
-		for (OperationProgressListener listener: progressListeners) {
-			listener.operationProgressChanged(evt);
-		}		
-	}
-
-
-	@Override
-	public void addOperationProgressListener(OperationProgressListener operationProgressListener) {
-		progressListeners.add(operationProgressListener);
-	}
-
-
-	@Override
-	public OperationProgressListener[] getOperationProgressListeners() {
-		OperationProgressListener[] listeners = new OperationProgressListener[progressListeners.size()];
-		return progressListeners.toArray(listeners);
-	}
-
-
-	@Override
-	public void removeOperationProgressListener(OperationProgressListener operationProgressListener) {
-		progressListeners.remove(operationProgressListener);
+	public synchronized void stopPool() {
+		if ((executor != null) && (!executor.isShutdown()) && (!executor.isTerminated())) {
+			executor.shutdownNow();
+			notifyAll();
+		}
 	}
 }

@@ -34,7 +34,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
@@ -51,8 +51,8 @@ public final class PairExtractor extends TextFileExtractor
 implements Serializable, BinListGenerator {
 
 	private static final long serialVersionUID = -2160273514926102255L; // generated ID
-	private final GenomicDataList<Integer>	positionList;		// list of position start
-	private final GenomicDataList<Double>	scoreList;			// list of scores
+	private final GenomicListView<Integer>	positionList;		// list of position start
+	private final GenomicListView<Double>	scoreList;			// list of scores
 
 
 	/**

@@ -27,7 +27,7 @@ import edu.yu.einstein.genplay.core.converter.Converter;
 import edu.yu.einstein.genplay.core.converter.ConverterFactory;
 import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ImmutableGenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
@@ -60,7 +60,7 @@ public class LAConvert extends TrackListActionWorker<ImmutableGenomicDataList<?>
 	private Track					resultTrack;					// The result track.
 	private Converter				converter;						// The track converter.
 
-	private GenomicDataList<?> 	data;
+	private GenomicListView<?> 	data;
 	private LayerType 					layerType;
 	private String 						layerName;
 	private int 						binSize;
@@ -106,7 +106,7 @@ public class LAConvert extends TrackListActionWorker<ImmutableGenomicDataList<?>
 			}
 			resultTrack = dialog.getOutputTrack();
 			layerName = dialog.getOutputLayerName();
-			data = (GenomicDataList<?>) selectedLayer.getData();
+			data = (GenomicListView<?>) selectedLayer.getData();
 
 			if (data != null) {
 				converter = ConverterFactory.getConverter(data, layerType, binSize, precision, method);
