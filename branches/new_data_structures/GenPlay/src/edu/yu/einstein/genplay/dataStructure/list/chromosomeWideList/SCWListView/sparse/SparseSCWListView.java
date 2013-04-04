@@ -116,10 +116,10 @@ public final class SparseSCWListView implements ListView<ScoredChromosomeWindow>
 	 * @throws ClassNotFoundException
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		// read the final fields
-		in.defaultReadObject();
 		// read the version number of the object
 		in.readInt();
+		// read the final fields
+		in.defaultReadObject();
 	}
 
 
@@ -141,10 +141,10 @@ public final class SparseSCWListView implements ListView<ScoredChromosomeWindow>
 	 * @throws IOException
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
-		// write the final fields
-		out.defaultWriteObject();
 		// write the format version number of the object
 		out.writeInt(CLASS_VERSION_NUMBER);
+		// write the final fields
+		out.defaultWriteObject();
 		// reinitialize the index of the iterator
 		iteratorIndex = 0;
 	}
