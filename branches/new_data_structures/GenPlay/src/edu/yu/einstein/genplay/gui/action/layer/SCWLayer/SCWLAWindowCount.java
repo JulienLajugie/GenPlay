@@ -28,14 +28,14 @@ import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOWindowCount;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
- * Counts the number of windows in a {@link ScoredChromosomeWindowList}
+ * Counts the number of windows in a {@link SCWList}
  * @author Nicolas Fourel
  */
 public class SCWLAWindowCount extends TrackListActionOperationWorker<Long> {
@@ -68,7 +68,7 @@ public class SCWLAWindowCount extends TrackListActionOperationWorker<Long> {
 		if (selectedLayer != null) {
 			boolean[] selectedChromo = Utils.chooseChromosomes(getRootPane());
 			if (selectedChromo != null) {
-				ScoredChromosomeWindowList scwList = selectedLayer.getData();
+				SCWList scwList = selectedLayer.getData();
 				Operation<Long> operation = new SCWLOWindowCount(scwList, selectedChromo);
 				return operation;
 			}

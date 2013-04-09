@@ -28,7 +28,7 @@ import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
@@ -41,9 +41,9 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScored
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class SCWLOFilterWidth implements Operation<ScoredChromosomeWindowList> {
+public class SCWLOFilterWidth implements Operation<SCWList> {
 
-	private final ScoredChromosomeWindowList 	scwList;	// input list
+	private final SCWList 	scwList;	// input list
 	private final int 							width;		// minimum width
 	private boolean				stopped = false;// true if the operation must be stopped
 
@@ -53,14 +53,14 @@ public class SCWLOFilterWidth implements Operation<ScoredChromosomeWindowList> {
 	 * @param scwList input list
 	 * @param width constant to add
 	 */
-	public SCWLOFilterWidth(ScoredChromosomeWindowList scwList, int width) {
+	public SCWLOFilterWidth(SCWList scwList, int width) {
 		this.scwList = scwList;
 		this.width = width;
 	}
 
 
 	@Override
-	public ScoredChromosomeWindowList compute() throws Exception {
+	public SCWList compute() throws Exception {
 		if (width < 1) {
 			return scwList;
 		}
@@ -102,7 +102,7 @@ public class SCWLOFilterWidth implements Operation<ScoredChromosomeWindowList> {
 		}
 		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			ScoredChromosomeWindowList resultList = new SimpleSCWList(result);
+			SCWList resultList = new SimpleSCWList(result);
 			return resultList;
 		} else {
 			return null;

@@ -21,7 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.util;
 
-import java.util.Collections;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.comparator.ChromosomeWindowStartComparator;
@@ -29,9 +28,7 @@ import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.ListOfIntArraysAsIntegerList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ImmutableGenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.SimpleListView.SimpleListViewBuilder;
@@ -106,7 +103,7 @@ public class ChromosomeWindowLists {
 		ChromosomeWindow stopChromosomeWindow = new SimpleChromosomeWindow(stop, stop);
 
 		// search the start
-		int indexStart = Collections.binarySearch(list, startChromosomeWindow, new ChromosomeWindowStartComparator());
+		int indexStart = ListViews.binarySearch(list, startChromosomeWindow, new ChromosomeWindowStartComparator());
 		if (indexStart < 0) {
 			indexStart = -indexStart - 1;
 		}
@@ -116,7 +113,7 @@ public class ChromosomeWindowLists {
 		}
 
 		// search the stop
-		int indexStop = Collections.binarySearch(list, stopChromosomeWindow, new ChromosomeWindowStartComparator());
+		int indexStop = ListViews.binarySearch(list, stopChromosomeWindow, new ChromosomeWindowStartComparator());
 		if (indexStop < 0) {
 			indexStop = -indexStop - 1;
 		}

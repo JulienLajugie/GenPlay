@@ -27,7 +27,7 @@ import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.generator.ScoredChromosomeWindowListGenerator;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection.GenomeSelectionDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -42,7 +42,7 @@ import edu.yu.einstein.genplay.util.colors.Colors;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public final class TAAddMask extends TrackListActionExtractorWorker<ScoredChromosomeWindowList> {
+public final class TAAddMask extends TrackListActionExtractorWorker<SCWList> {
 
 	private static final long serialVersionUID = -900140642202561851L; 					// generated ID
 	private static final String ACTION_NAME = "Add Mask Layer"; 						// action name
@@ -97,13 +97,13 @@ public final class TAAddMask extends TrackListActionExtractorWorker<ScoredChromo
 
 
 	@Override
-	public ScoredChromosomeWindowList generateList() throws Exception {
+	public SCWList generateList() throws Exception {
 		return ((ScoredChromosomeWindowListGenerator)extractor).toMaskChromosomeWindowList();
 	}
 
 
 	@Override
-	protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
+	protected void doAtTheEnd(SCWList actionResult) {
 		if (actionResult != null) {
 			MaskLayer newLayer = new MaskLayer(selectedTrack, actionResult, fileToExtract.getName());
 			newLayer.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Colors.GREY);

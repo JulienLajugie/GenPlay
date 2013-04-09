@@ -35,9 +35,9 @@ import edu.yu.einstein.genplay.core.converter.maskListConverter.MaskListToGeneLi
 import edu.yu.einstein.genplay.core.converter.maskListConverter.MaskListToSCWList;
 import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ImmutableGenomicDataList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
@@ -64,7 +64,7 @@ public class ConverterFactory {
 	 * @param method method to generate the BinList (eg: AVERAGE, SUM or MAXIMUM)	(can be null if the layer type is not a {@link BinList}
 	 * @return				the appropriate converter
 	 */
-	public static Converter getConverter (ImmutableGenomicDataList<?> data, LayerType layerType, int binSize, ScorePrecision precision, ScoreCalculationMethod method) {
+	public static Converter getConverter (ImmutableGenomicDataList<?> data, LayerType layerType, int binSize, ScorePrecision precision, ScoreOperation method) {
 		Converter converter = null;
 		if (data != null) {
 			if (data instanceof BinList) {
@@ -74,10 +74,10 @@ public class ConverterFactory {
 				GeneList geneList = (GeneList) data;
 				converter = getGeneListConverter(geneList, layerType, binSize, precision, method);
 			} else if (data instanceof SimpleSCWList) {
-				ScoredChromosomeWindowList scwList = (ScoredChromosomeWindowList) data;
+				SCWList scwList = (SCWList) data;
 				converter = getSCWListConverter(scwList, layerType, binSize, precision, method);
-			} else if ((data instanceof ScoredChromosomeWindowList) && (((ScoredChromosomeWindowList) data).getSCWListType() == SCWListType.MASK)) {
-				ScoredChromosomeWindowList scwList = (ScoredChromosomeWindowList) data;
+			} else if ((data instanceof SCWList) && (((SCWList) data).getSCWListType() == SCWListType.MASK)) {
+				SCWList scwList = (SCWList) data;
 				converter = getMaskListConverter(scwList, layerType, binSize, precision, method);
 			}
 		}
@@ -114,7 +114,7 @@ public class ConverterFactory {
 	 * @param method method to generate the BinList (eg: AVERAGE, SUM or MAXIMUM)	(can be null if the layer type is not a {@link BinList}
 	 * @return				the appropriate converter
 	 */
-	private static Converter getSCWListConverter (ScoredChromosomeWindowList scwList, LayerType layerType, int binSize, ScorePrecision precision, ScoreCalculationMethod method) {
+	private static Converter getSCWListConverter (SCWList scwList, LayerType layerType, int binSize, ScorePrecision precision, ScoreOperation method) {
 		Converter converter = null;
 		if (layerType == LayerType.BIN_LAYER) {
 			converter = new SCWListToBinList(scwList, binSize, precision, method);
@@ -136,7 +136,7 @@ public class ConverterFactory {
 	 * @param method method to generate the BinList (eg: AVERAGE, SUM or MAXIMUM)	(can be null if the layer type is not a {@link BinList}
 	 * @return				the appropriate converter
 	 */
-	private static Converter getGeneListConverter (GeneList geneList, LayerType layerType, int binSize, ScorePrecision precision, ScoreCalculationMethod method) {
+	private static Converter getGeneListConverter (GeneList geneList, LayerType layerType, int binSize, ScorePrecision precision, ScoreOperation method) {
 		Converter converter = null;
 		if (layerType == LayerType.BIN_LAYER) {
 			converter = new GeneListToBinList(geneList, binSize, precision, method);
@@ -158,7 +158,7 @@ public class ConverterFactory {
 	 * @param method method to generate the BinList (eg: AVERAGE, SUM or MAXIMUM)	(can be null if the layer type is not a {@link BinList}
 	 * @return				the appropriate converter
 	 */
-	private static Converter getMaskListConverter (ScoredChromosomeWindowList maskList, LayerType layerType, int binSize, ScorePrecision precision, ScoreCalculationMethod method) {
+	private static Converter getMaskListConverter (SCWList maskList, LayerType layerType, int binSize, ScorePrecision precision, ScoreOperation method) {
 		Converter converter = null;
 		if (layerType == LayerType.BIN_LAYER) {
 			converter = new MaskListToBinList(maskList, binSize, precision, method);
@@ -181,7 +181,7 @@ public class ConverterFactory {
 			layerTypes = getBinLayerType();
 		} else if (data instanceof GeneList) {
 			layerTypes = getGeneLayerType();
-		} else if (data instanceof ScoredChromosomeWindowList) {
+		} else if (data instanceof SCWList) {
 			layerTypes = getSCWLayerType();
 		}
 		return layerTypes;

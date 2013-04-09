@@ -31,7 +31,7 @@ import java.util.concurrent.ExecutionException;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.ListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.exception.exceptions.BinListDifferentWindowSizeException;
@@ -49,7 +49,7 @@ public class BLOIntervalsScoring implements Operation<BinList> {
 	private final BinList 					intervalList;				// BinList defining the intervals 
 	private final BinList 					valueList;					// BinList defining the values for the calculation
 	private final int 						percentageAcceptedValues;	// the calculation is calculated only on the x% greatest values of each interval 
-	private final ScoreCalculationMethod 	method;						// method of calculation
+	private final ScoreOperation 	method;						// method of calculation
 	private final ScorePrecision 			precision;					// precision of the result BinList
 	private boolean							stopped = false;			// true if the operation must be stopped
 	
@@ -63,7 +63,7 @@ public class BLOIntervalsScoring implements Operation<BinList> {
 	 * @param method method of calculation
 	 * @param precision precision of the result BinList
 	 */
-	public BLOIntervalsScoring(BinList intervalList, BinList valueList, int percentageAcceptedValues, ScoreCalculationMethod method, ScorePrecision precision) {
+	public BLOIntervalsScoring(BinList intervalList, BinList valueList, int percentageAcceptedValues, ScoreOperation method, ScorePrecision precision) {
 		this.intervalList = intervalList;
 		this.valueList = valueList;
 		this.percentageAcceptedValues = percentageAcceptedValues;

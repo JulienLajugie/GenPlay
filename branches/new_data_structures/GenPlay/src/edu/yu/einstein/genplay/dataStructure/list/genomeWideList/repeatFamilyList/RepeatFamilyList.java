@@ -21,136 +21,19 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.dataStructure.list.genomeWideList.repeatFamilyList;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Hashtable;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.list.DisplayableListOfLists;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.repeatListView.RepeatFamilyListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
-import edu.yu.einstein.genplay.exception.ExceptionManager;
-import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 
 
 /**
- * An organized list of repeat families that provides tools to fit the list to the screen.
+ * A {@link GenomicListView} of repeats organized in repeat families.
  * @author Julien Lajugie
- * @version 0.1
  */
-public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamilyListView, List<RepeatFamilyListView>> implements Serializable {
-
-	private static final long serialVersionUID = -7553643226353657650L; // generated ID
-	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-
-
-	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-	}
-
-
-	/**
-	 * Creates an instance of {@link RepeatFamilyList}
-	 * Generates an organize list of repeats from the data in parameter
-	 * @param startList list of start position of the repeats organized by chromosome
-	 * @param stopList	list of stop position of the repeats organized by chromosome
-	 * @param familyNameList list of name of the repeats organized by chromosome
-	 * @throws InvalidChromosomeException
-	 * @throws ExecutionException
-	 * @throws InterruptedException
-	 */
-	public RepeatFamilyList(final GenomicListView<Integer> startList,
-			final GenomicListView<Integer> stopList,
-			final GenomicListView<String> familyNameList) throws InvalidChromosomeException, InterruptedException, ExecutionException {
-		super();
-		// retrieve the instance of the OperationPool
-		final OperationPool op = OperationPool.getInstance();
-		// list for the threads
-		final Collection<Callable<List<RepeatFamilyListView>>> threadList = new ArrayList<Callable<List<RepeatFamilyListView>>>();
-		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
-		for(final Chromosome currentChromosome : projectChromosome) {
-
-			Callable<List<RepeatFamilyListView>> currentThread = new Callable<List<RepeatFamilyListView>>() {
-				@Override
-				public List<RepeatFamilyListView> call() throws Exception {
-					List<RepeatFamilyListView> resultList = new ArrayList<RepeatFamilyListView>();
-					// Hashtable indexed by repeat family name
-					Hashtable<String, Integer> indexTable = new Hashtable<String, Integer>();;
-					for(int j = 0; j < startList.size(currentChromosome); j++) {
-						SimpleChromosomeWindow currentRepeat = new SimpleChromosomeWindow(startList.get(currentChromosome, j), stopList.get(currentChromosome, j));
-						String familyName = familyNameList.get(currentChromosome, j);
-						// case when a chromosome doesn't have any data yet
-						if (resultList.size() == 0) {
-							resultList.add(new RepeatFamilyListView(familyName));
-							resultList.get(0).addRepeat(currentRepeat);
-							indexTable.put(familyName, 0);
-						} else {
-							// search if the family already exist on the current chromosome
-							Integer familyIndex = indexTable.get(familyName);
-							// case we found the family
-							if (familyIndex != null) {
-								resultList.get(familyIndex).addRepeat(currentRepeat);
-							} else { // we didn't find the family
-								resultList.add(new RepeatFamilyListView(familyName));
-								int index = resultList.size() - 1;
-								resultList.get(index).addRepeat(currentRepeat);
-								indexTable.put(familyName, index);
-							}
-						}
-					}
-					// tell the operation pool that a chromosome is done
-					op.notifyDone();
-					return resultList;
-				}
-			};
-
-			threadList.add(currentThread);
-		}
-		List<List<RepeatFamilyListView>> result = null;
-		// starts the pool
-		result = op.startPool(threadList);
-		// add the chromosome results
-		if (result != null) {
-			for (List<RepeatFamilyListView> currentList: result) {
-				add(currentList);
-			}
-		}
-		// sort the RepeatFamilyList
-		for (List<RepeatFamilyListView> currentRepeatFamilyList : this) {
-			Collections.sort(currentRepeatFamilyList);
-			for (RepeatFamilyListView currentRepeatFamily : currentRepeatFamilyList) {
-				Collections.sort(currentRepeatFamily.getRepeatList());
-			}
-		}
-	}
+public interface RepeatFamilyList extends Serializable, GenomicListView<List<RepeatFamilyListView>> {
 
 
 	/**
@@ -198,52 +81,6 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamilyL
 			}
 		}
 		//System.out.println(fittedXRatio + "; " + currentChromosomeList.size() + "; " + fittedDataList.size());
-	}
-
-
-	/**
-	 * Recursive and dichotomic search algorithm.
-	 * @param list List in which the search is performed.
-	 * @param value Searched value.
-	 * @param indexStart Start index where to look for the value.
-	 * @param indexStop Stop index where to look for the value.
-	 * @return The index of a Repeat with a position start equals to value.
-	 * Index of the first Repeat with a start position superior to value if nothing found.
-	 */
-	private int findStart(List<ChromosomeWindow> list, int value, int indexStart, int indexStop) {
-		int middle = (indexStop - indexStart) / 2;
-		if (indexStart == indexStop) {
-			return indexStart;
-		} else if (value == list.get(indexStart + middle).getStart()) {
-			return indexStart + middle;
-		} else if (value > list.get(indexStart + middle).getStart()) {
-			return findStart(list, value, indexStart + middle + 1, indexStop);
-		} else {
-			return findStart(list, value, indexStart, indexStart + middle);
-		}
-	}
-
-
-	/**
-	 * Recursive and dichotomic search algorithm.
-	 * @param list List in which the search is performed.
-	 * @param value Searched value.
-	 * @param indexStart Start index where to look for the value.
-	 * @param indexStop Stop index where to look for the value.
-	 * @return The index of a Repeat with a position stop equals to value.
-	 * Index of the first Repeat with a stop position superior to value if nothing found.
-	 */
-	private int findStop(List<ChromosomeWindow> list, int value, int indexStart, int indexStop) {
-		int middle = (indexStop - indexStart) / 2;
-		if (indexStart == indexStop) {
-			return indexStart;
-		} else if (value == list.get(indexStart + middle).getStop()) {
-			return indexStart + middle;
-		} else if (value > list.get(indexStart + middle).getStop()) {
-			return findStop(list, value, indexStart + middle + 1, indexStop);
-		} else {
-			return findStop(list, value, indexStart, indexStart + middle);
-		}
 	}
 
 

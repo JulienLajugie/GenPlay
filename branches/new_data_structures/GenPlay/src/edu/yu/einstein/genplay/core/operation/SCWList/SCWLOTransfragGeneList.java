@@ -31,11 +31,11 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.SimpleGeneList;
@@ -54,9 +54,9 @@ import edu.yu.einstein.genplay.util.SCWLists;
 public class SCWLOTransfragGeneList implements Operation<GeneList> {
 
 	private final ProjectChromosome projectChromosome; // Instance of the Chromosome Manager
-	private final ScoredChromosomeWindowList 	scwList;		// input list
+	private final SCWList 	scwList;		// input list
 	private final int 						zeroSCWGap;		// minimum size of the gap separating two intervals
-	private final ScoreCalculationMethod 		operation;		// operation to use to compute the score of the intervals
+	private final ScoreOperation 		operation;		// operation to use to compute the score of the intervals
 	private boolean						stopped = false;// true if the operation must be stopped
 
 
@@ -67,7 +67,7 @@ public class SCWLOTransfragGeneList implements Operation<GeneList> {
 	 * @param zeroSCWGap minimum size of the gap separating two intervals
 	 * @param operation operation to use to compute the score of the intervals
 	 */
-	public SCWLOTransfragGeneList(ScoredChromosomeWindowList scwList, int zeroSCWGap, ScoreCalculationMethod operation) {
+	public SCWLOTransfragGeneList(SCWList scwList, int zeroSCWGap, ScoreOperation operation) {
 		projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		this.scwList = scwList;
 		this.zeroSCWGap = zeroSCWGap;
@@ -113,10 +113,10 @@ public class SCWLOTransfragGeneList implements Operation<GeneList> {
 							}
 							if (regionStopIndex >= regionStartIndex) {
 								double regionScore = 0;
-								if (operation == ScoreCalculationMethod.AVERAGE) {
+								if (operation == ScoreOperation.AVERAGE) {
 									// all the windows of the region are set with the average value on the region
 									regionScore = SCWLists.average(currentList, regionStartIndex, regionStopIndex);
-								} else if (operation == ScoreCalculationMethod.MAXIMUM) {
+								} else if (operation == ScoreOperation.MAXIMUM) {
 									// all the windows of the region are set with the max value on the region
 									regionScore = SCWLists.maxNoZero(currentList, regionStartIndex, regionStopIndex);
 								} else {

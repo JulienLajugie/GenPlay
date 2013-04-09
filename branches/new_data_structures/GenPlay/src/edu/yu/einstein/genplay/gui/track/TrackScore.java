@@ -40,8 +40,8 @@ public class TrackScore implements Serializable {
 	private static final long serialVersionUID = -2515234024119807964L; // generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 
-	private double 			minimumScore;			// minimum score displayed in the track
-	private double		 	maximumScore;			// maximum score displayed in the track
+	private float 			minimumScore;			// minimum score displayed in the track
+	private float		 	maximumScore;			// maximum score displayed in the track
 	private boolean 		isScoreAxisAutorescaled;// true if the score axis needs to be auto rescaled
 	private Track 			track;					// track displaying this scores
 
@@ -63,8 +63,8 @@ public class TrackScore implements Serializable {
 	 */
 	public void autorescaleScoreAxis() {
 		if (isScoreAxisAutorescaled()) {
-			List<Double> minimumScores = new ArrayList<Double>();
-			List<Double> maximumScores = new ArrayList<Double>();
+			List<Float> minimumScores = new ArrayList<Float>();
+			List<Float> maximumScores = new ArrayList<Float>();
 			for (Layer<?> currentLayer: getTrack().getLayers()) {
 				if (currentLayer instanceof ScoredLayer) {
 					// for each scoredLayer of the track we save the minimum and maximum value to display
@@ -87,7 +87,7 @@ public class TrackScore implements Serializable {
 	/**
 	 * @return the score displayed in the middle of the track
 	 */
-	public Double getCurrentScore() {
+	public Float getCurrentScore() {
 		if (getTrack() != null) {
 			Layer<?> activeLayer = getTrack().getActiveLayer();
 			if ((activeLayer != null) && (activeLayer instanceof ScoredLayer) && (activeLayer.isVisible())) {
@@ -101,7 +101,7 @@ public class TrackScore implements Serializable {
 	/**
 	 * @return the maximum score displayed in the track
 	 */
-	public double getMaximumScore() {
+	public float getMaximumScore() {
 		return maximumScore;
 	}
 
@@ -109,7 +109,7 @@ public class TrackScore implements Serializable {
 	/**
 	 * @return the minimum score displayed in the track
 	 */
-	public double getMinimumScore() {
+	public float getMinimumScore() {
 		return minimumScore;
 	}
 
@@ -148,18 +148,18 @@ public class TrackScore implements Serializable {
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		minimumScore = in.readDouble();
-		maximumScore = in.readDouble();
+		minimumScore = in.readFloat();
+		maximumScore = in.readFloat();
 		isScoreAxisAutorescaled = in.readBoolean();
 		track = (Track)in.readObject();
 	}
 
 
 	/**
-	 * @param score a double value
+	 * @param score a float value
 	 * @return the value on the screen
 	 */
-	public int scoreToScreenPosition(double score) {
+	public int scoreToScreenPosition(float score) {
 		int trackHeight = getTrack().getHeight();
 		if (score < getMinimumScore()) {
 			return trackHeight;
@@ -175,7 +175,7 @@ public class TrackScore implements Serializable {
 	 * Sets the maximum score displayed in the track
 	 * @param maximumScore the maximum displayed score to set
 	 */
-	public void setMaximumScore(double maximumScore) {
+	public void setMaximumScore(float maximumScore) {
 		this.maximumScore = maximumScore;
 	}
 
@@ -184,7 +184,7 @@ public class TrackScore implements Serializable {
 	 * Sets the minimum score displayed in the track
 	 * @param minimumScore the minimum displayed score to set
 	 */
-	public void setMinimumScore(double minimumScore) {
+	public void setMinimumScore(float minimumScore) {
 		this.minimumScore = minimumScore;
 	}
 
@@ -214,8 +214,8 @@ public class TrackScore implements Serializable {
 	 */
 	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeDouble(minimumScore);
-		out.writeDouble(maximumScore);
+		out.writeFloat(minimumScore);
+		out.writeFloat(maximumScore);
 		out.writeBoolean(isScoreAxisAutorescaled);
 		out.writeObject(track);
 	}

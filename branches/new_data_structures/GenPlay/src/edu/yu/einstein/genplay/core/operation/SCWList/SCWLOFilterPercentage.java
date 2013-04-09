@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
@@ -36,24 +36,24 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
  * @author Julien Lajugie
  * @version 0.1
  */
-public class SCWLOFilterPercentage implements Operation<ScoredChromosomeWindowList> {
+public class SCWLOFilterPercentage implements Operation<SCWList> {
 
-	private final ScoredChromosomeWindowList 		inputList;				// list to filter
+	private final SCWList 		inputList;				// list to filter
 	private final double 							lowPercentage;			// percentage of low values to filter
 	private final double 							highPercentage;			// percentage of high values to filter
 	private final boolean							isSaturation;			// true if we saturate, false if we remove the filtered values
 	private boolean									stopped = false;		// true if the operation must be stopped
-	private Operation<ScoredChromosomeWindowList> 	scwloFilterThreshold;	// threshold filter that does the real fitering operation
+	private Operation<SCWList> 	scwloFilterThreshold;	// threshold filter that does the real fitering operation
 
 
 	/**
 	 * Creates an instance of {@link SCWLOFilterPercentage}
-	 * @param inputList {@link ScoredChromosomeWindowList} to filter
+	 * @param inputList {@link SCWList} to filter
 	 * @param lowPercentage percentage of low values to filter
 	 * @param highPercentage percentage of high values to filter
 	 * @param isSaturation true to saturate, false to remove the filtered values
 	 */
-	public SCWLOFilterPercentage(ScoredChromosomeWindowList inputList, double lowPercentage, double highPercentage, boolean isSaturation) {
+	public SCWLOFilterPercentage(SCWList inputList, double lowPercentage, double highPercentage, boolean isSaturation) {
 		this.inputList = inputList;
 		this.lowPercentage = lowPercentage;
 		this.highPercentage = highPercentage;
@@ -62,7 +62,7 @@ public class SCWLOFilterPercentage implements Operation<ScoredChromosomeWindowLi
 
 
 	@Override
-	public ScoredChromosomeWindowList compute() throws Exception {
+	public SCWList compute() throws Exception {
 		if ((highPercentage < 0) || (highPercentage > 1) || (lowPercentage < 0) ||(lowPercentage > 1)) {
 			throw new IllegalArgumentException("The percentage value must be between 0 and 1");
 		}

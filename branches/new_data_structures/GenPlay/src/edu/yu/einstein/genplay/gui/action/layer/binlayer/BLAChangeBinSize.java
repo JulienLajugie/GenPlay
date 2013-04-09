@@ -25,7 +25,7 @@ import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.binList.BLOChangeBinSize;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
@@ -72,7 +72,7 @@ public class BLAChangeBinSize extends TrackListActionOperationWorker<BinList> {
 		if (selectedLayer != null) {
 			Number binSize = NumberOptionPane.getValue(getTrackListPanel().getRootPane(), "Fixed Window Size", "Enter window size", 0, Integer.MAX_VALUE, 1000);
 			if (binSize != null) {
-				ScoreCalculationMethod method = Utils.chooseScoreCalculation(getTrackListPanel().getRootPane());
+				ScoreOperation method = Utils.chooseScoreCalculation(getTrackListPanel().getRootPane());
 				Operation<BinList> operation = new BLOChangeBinSize(binList, binSize.intValue(), method);
 				if (method != null) {
 					return operation;

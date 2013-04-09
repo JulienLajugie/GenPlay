@@ -23,15 +23,15 @@ package edu.yu.einstein.genplay.core.converter.geneListConverter;
 
 import edu.yu.einstein.genplay.core.converter.Converter;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOCleanList;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 
 
 /**
- * Creates a {@link ScoredChromosomeWindowList} from the data of the input {@link GeneList}
+ * Creates a {@link SCWList} from the data of the input {@link GeneList}
  * @author Julien Lajugie
  * @author Nicolas Fourel
  * @version 0.1
@@ -39,16 +39,16 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneLi
 public class GeneListToSCWList implements Converter {
 
 	private final GeneList 						list; 			// The input list.
-	private final ScoreCalculationMethod 		method; 		// method for the calculation of the scores of the result binlist
+	private final ScoreOperation 		method; 		// method for the calculation of the scores of the result binlist
 	private GenomicListView<?> 			result;			// The output list.
 
 
 	/**
-	 * Creates a {@link ScoredChromosomeWindowList} from the data of the input {@link GeneList}
+	 * Creates a {@link SCWList} from the data of the input {@link GeneList}
 	 * @param geneList the BinList
 	 * @param method method to generate the BinList (eg: AVERAGE, SUM or MAXIMUM)
 	 */
-	public GeneListToSCWList(GeneList geneList, ScoreCalculationMethod method) {
+	public GeneListToSCWList(GeneList geneList, ScoreOperation method) {
 		list = geneList;
 		this.method = method;
 	}
@@ -69,7 +69,7 @@ public class GeneListToSCWList implements Converter {
 	@Override
 	public void convert() throws Exception {
 		result = new SimpleSCWList(list, method);
-		SCWLOCleanList operation = new SCWLOCleanList((ScoredChromosomeWindowList) result);
+		SCWLOCleanList operation = new SCWLOCleanList((SCWList) result);
 		result = operation.compute();
 	}
 

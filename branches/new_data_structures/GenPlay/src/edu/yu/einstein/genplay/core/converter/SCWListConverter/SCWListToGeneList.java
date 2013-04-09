@@ -23,28 +23,28 @@ package edu.yu.einstein.genplay.core.converter.SCWListConverter;
 
 import edu.yu.einstein.genplay.core.converter.Converter;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ImmutableGenomicDataList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneListFactory;
 
 
 /**
- * Creates a {@link GeneList} from the data of the input {@link ScoredChromosomeWindowList}
+ * Creates a {@link GeneList} from the data of the input {@link SCWList}
  * @author Julien Lajugie
  * @author Nicolas Fourel
  * @version 0.1
  */
 public class SCWListToGeneList implements Converter {
 
-	private final ScoredChromosomeWindowList 	list; 		// input list
+	private final SCWList 	list; 		// input list
 	private ImmutableGenomicDataList<?> 		result;		// The output list.
 
 
 	/**
-	 * Creates a {@link GeneList} from the data of the input {@link ScoredChromosomeWindowList}
+	 * Creates a {@link GeneList} from the data of the input {@link SCWList}
 	 * @param scwList input list
 	 */
-	public SCWListToGeneList(ScoredChromosomeWindowList scwList) {
+	public SCWListToGeneList(SCWList scwList) {
 		list = scwList;
 	}
 

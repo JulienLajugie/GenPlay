@@ -28,8 +28,8 @@ import javax.swing.ActionMap;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOTransfrag;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOTransfragGeneList;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
@@ -77,12 +77,12 @@ public class SCWLATransfrag extends TrackListAction {
 	public void actionPerformed(ActionEvent e) {
 		selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
-			final ScoredChromosomeWindowList scwList = selectedLayer.getData();
+			final SCWList scwList = selectedLayer.getData();
 			final TransfragDialog tfDialog = new TransfragDialog(TransfragDialog.SCWLIST_TRANSFRAG);
 			int res = tfDialog.showTransfragDialog(getRootPane());
 			if (res == TransfragDialog.APPROVE_OPTION) {
 				int resType = tfDialog.getResultType();
-				final ScoreCalculationMethod operationType = Utils.chooseScoreCalculation(getRootPane());
+				final ScoreOperation operationType = Utils.chooseScoreCalculation(getRootPane());
 				if(operationType != null) {
 					try {
 						if (resType == TransfragDialog.GENERATE_GENE_LIST) {
@@ -109,16 +109,16 @@ public class SCWLATransfrag extends TrackListAction {
 
 
 						} else if (resType == TransfragDialog.GENERATE_SCORED_LIST) {
-							new TrackListActionOperationWorker<ScoredChromosomeWindowList>(){
+							new TrackListActionOperationWorker<SCWList>(){
 								private static final long serialVersionUID = 1L;
 								@Override
-								public Operation<ScoredChromosomeWindowList> initializeOperation()
+								public Operation<SCWList> initializeOperation()
 										throws Exception {
 									// case where the result type is a GeneList
 									return new SCWLOTransfrag(scwList, tfDialog.getGapSize(), operationType);
 								}
 								@Override
-								protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
+								protected void doAtTheEnd(SCWList actionResult) {
 									if (actionResult != null) {
 										selectedLayer.setData(actionResult, operation.getDescription());
 									}

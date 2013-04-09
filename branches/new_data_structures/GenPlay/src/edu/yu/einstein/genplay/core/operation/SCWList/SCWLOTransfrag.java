@@ -28,8 +28,8 @@ import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
@@ -40,15 +40,15 @@ import edu.yu.einstein.genplay.util.SCWLists;
  * Defines regions as "islands" of non zero value ScoredChromosomeWindows
  * separated by more than a specified number of zero value ScoredChromosomeWindows.
  * Computes the average/sum/max on these regions.
- * Returns a new {@link ScoredChromosomeWindowList} with the defined regions having their average/max/sum as a score
+ * Returns a new {@link SCWList} with the defined regions having their average/max/sum as a score
  * @author Chirag Gorasia
  * @version 0.1
  */
-public class SCWLOTransfrag implements Operation<ScoredChromosomeWindowList> {
+public class SCWLOTransfrag implements Operation<SCWList> {
 
-	private final ScoredChromosomeWindowList 	scwList;		// input list
+	private final SCWList 	scwList;		// input list
 	private final int 						zeroSCWGap;		// minimum size of the gap separating two intervals
-	private final ScoreCalculationMethod 		operation;		// operation to use to compute the score of the intervals
+	private final ScoreOperation 		operation;		// operation to use to compute the score of the intervals
 	private boolean						stopped = false;// true if the operation must be stopped
 
 
@@ -58,7 +58,7 @@ public class SCWLOTransfrag implements Operation<ScoredChromosomeWindowList> {
 	 * @param zeroSCWGap minimum size of the gap separating two intervals
 	 * @param operation operation to use to compute the score of the intervals
 	 */
-	public SCWLOTransfrag(ScoredChromosomeWindowList scwList, int zeroSCWGap, ScoreCalculationMethod operation) {
+	public SCWLOTransfrag(SCWList scwList, int zeroSCWGap, ScoreOperation operation) {
 		this.scwList = scwList;
 		this.zeroSCWGap = zeroSCWGap;
 		this.operation = operation;
@@ -66,7 +66,7 @@ public class SCWLOTransfrag implements Operation<ScoredChromosomeWindowList> {
 
 
 	@Override
-	public ScoredChromosomeWindowList compute() throws Exception {
+	public SCWList compute() throws Exception {
 
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
@@ -97,10 +97,10 @@ public class SCWLOTransfrag implements Operation<ScoredChromosomeWindowList> {
 							}
 							if (regionStopIndex >= regionStartIndex) {
 								double regionScore = 0;
-								if (operation == ScoreCalculationMethod.AVERAGE) {
+								if (operation == ScoreOperation.AVERAGE) {
 									// all the windows of the region are set with the average value on the region
 									regionScore = SCWLists.average(currentList, regionStartIndex, regionStopIndex);
-								} else if (operation == ScoreCalculationMethod.MAXIMUM) {
+								} else if (operation == ScoreOperation.MAXIMUM) {
 									// all the windows of the region are set with the max value on the region
 									regionScore = SCWLists.maxNoZero(currentList, regionStartIndex, regionStopIndex);
 								} else {
@@ -121,7 +121,7 @@ public class SCWLOTransfrag implements Operation<ScoredChromosomeWindowList> {
 		}
 		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			ScoredChromosomeWindowList resultList = new SimpleSCWList(result);
+			SCWList resultList = new SimpleSCWList(result);
 			return resultList;
 		} else {
 			return null;

@@ -29,11 +29,11 @@ import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.DoubleArrayAsDou
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 
 
 /**
- * This class help for the convertion of VCF track to a {@link ScoredChromosomeWindowList} for a specific allele.
+ * This class help for the convertion of VCF track to a {@link SCWList} for a specific allele.
  * 
  * @author Nicolas Fourel
  * @version 0.1

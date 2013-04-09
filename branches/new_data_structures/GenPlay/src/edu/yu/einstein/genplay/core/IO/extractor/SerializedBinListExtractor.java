@@ -33,7 +33,7 @@ import java.util.zip.GZIPInputStream;
 
 import edu.yu.einstein.genplay.core.generator.BinListGenerator;
 import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 
 
@@ -98,7 +98,7 @@ public class SerializedBinListExtractor extends Extractor implements BinListGene
 
 
 	@Override
-	public BinList toBinList(int binSize, ScorePrecision precision, ScoreCalculationMethod method) throws IllegalArgumentException {
+	public BinList toBinList(int binSize, ScorePrecision precision, ScoreOperation method) throws IllegalArgumentException {
 		return extractedBinList;
 	}
 }

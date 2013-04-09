@@ -30,7 +30,6 @@ import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.exception.exceptions.BinListDifferentWindowSizeException;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
-import edu.yu.einstein.genplay.exception.exceptions.valueOutOfRangeException.ValueOutOfRangeException;
 import edu.yu.einstein.genplay.exception.report.ReportBuilder;
 import edu.yu.einstein.genplay.gui.dialog.exceptionDialog.ExceptionReportDialog;
 
@@ -43,7 +42,6 @@ import edu.yu.einstein.genplay.gui.dialog.exceptionDialog.ExceptionReportDialog;
  * 
  * @author Julien Lajugie
  * @author Nicolas Fourel
- * @version 0.1
  */
 public final class ExceptionManager implements UncaughtExceptionHandler {
 
@@ -61,10 +59,6 @@ public final class ExceptionManager implements UncaughtExceptionHandler {
 
 	private static	ExceptionManager	instance = null;		// unique instance of the singleton
 
-	private final ReportBuilder report;
-	private Throwable throwable;
-
-
 	/**
 	 * @return an instance of a {@link ExceptionManager}.
 	 * Makes sure that there is only one unique instance as specified in the singleton pattern
@@ -79,6 +73,10 @@ public final class ExceptionManager implements UncaughtExceptionHandler {
 		}
 		return instance;
 	}
+	private final ReportBuilder report;
+
+
+	private Throwable throwable;
 
 
 	/**
@@ -89,18 +87,15 @@ public final class ExceptionManager implements UncaughtExceptionHandler {
 	}
 
 
-	@Override
-	public void uncaughtException(Thread thread, Throwable throwable) {
-		handleThrowable(thread, throwable, null);
-	}
-
-
 	/**
-	 * Handles the exception
-	 * @param throwable an exception
+	 * @param b a boolean
+	 * @return YES if b is true, NO otherwise
 	 */
-	public void caughtException(Throwable throwable) {
-		caughtException(null, throwable);
+	private int boolToIn (boolean b) {
+		if (b) {
+			return YES;
+		}
+		return NO;
 	}
 
 
@@ -124,6 +119,39 @@ public final class ExceptionManager implements UncaughtExceptionHandler {
 
 
 	/**
+	 * Handles the exception
+	 * @param throwable an exception
+	 */
+	public void caughtException(Throwable throwable) {
+		caughtException(null, throwable);
+	}
+
+
+	/**
+	 * @param printReport the printReport to set
+	 */
+	public void enablePrintReport(boolean printReport) {
+		this.printReport = boolToIn(printReport);
+	}
+
+
+	/**
+	 * @param printStackTrace the printStackTrace to set
+	 */
+	public void enablePrintStackTrace(boolean printStackTrace) {
+		this.printStackTrace = boolToIn(printStackTrace);
+	}
+
+
+	/**
+	 * @param showReport the printStackTrace to set
+	 */
+	public void enableShowReport(boolean showReport) {
+		this.showReport = boolToIn(showReport);
+	}
+
+
+	/**
 	 * Handle the {@link Throwable} object
 	 * @param thread a thread
 	 * @param component a component
@@ -134,6 +162,71 @@ public final class ExceptionManager implements UncaughtExceptionHandler {
 		this.throwable = throwable;
 		report.initializeReport(thread, throwable, message);
 		processError();
+	}
+
+
+
+	/**
+	 * @param i an int
+	 * @return true if i meets the YES option, false otherwise
+	 */
+	private boolean intToBool (int i) {
+		if (i == YES) {
+			return true;
+		}
+		return false;
+	}
+
+
+	/**
+	 * Shows a message associated to the specified exception
+	 * @param component a component
+	 * @param e exception
+	 * @param message default message to print
+	 */
+	public void notifyUser(Component component, Throwable e, String message) {
+		boolean exceptionHandled = false;
+		boolean hasCause = true;
+		Throwable exception = e;
+
+		while (!exceptionHandled && hasCause) {
+			// no message for the interrupted or cancel exceptions
+			if ((exception instanceof InterruptedException) || (exception instanceof CancellationException)) {
+				exceptionHandled = true;
+			} else if (exception instanceof InvalidFileTypeException) {
+				// case where the user tries to load an invalid file type
+				JOptionPane.showMessageDialog(component, exception.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				exceptionHandled = true;
+			} else if (exception instanceof BinListDifferentWindowSizeException) {
+				// case when the user tries to do an operation on 2 binlists with different binsize
+				JOptionPane.showMessageDialog(component, exception.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				exceptionHandled = true;
+			}
+			if (exception.getCause() != null) {
+				exception = exception.getCause();
+			} else {
+				hasCause = false;
+			}
+		}
+		if (!exceptionHandled) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(component, message, "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	/**
+	 * @return the printReport
+	 */
+	public boolean printReport() {
+		return intToBool(printReport);
+	}
+
+
+	/**
+	 * @return the printStackTrace
+	 */
+	public boolean printStackTrace() {
+		return intToBool(printStackTrace);
 	}
 
 
@@ -157,43 +250,10 @@ public final class ExceptionManager implements UncaughtExceptionHandler {
 
 
 	/**
-	 * Shows a message associated to the specified exception
-	 * @param component a component
-	 * @param e exception
-	 * @param message default message to print
+	 * @return the printReport
 	 */
-	public void notifyUser(Component component, Throwable e, String message) {
-		boolean exceptionHandled = false;
-		boolean hasCause = true;
-		Throwable exception = e;
-
-		while (!exceptionHandled && hasCause) {
-			// no message for the interrupted or cancel exceptions
-			if ((exception instanceof InterruptedException) || (exception instanceof CancellationException)) {
-				exceptionHandled = true;
-			} else if (exception instanceof InvalidFileTypeException) {
-				// case where the user tries to load an invalid file type
-				JOptionPane.showMessageDialog(component, exception.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-				exceptionHandled = true;
-			} else if (exception instanceof ValueOutOfRangeException) {
-				// case where the value of a binlist is out of the range of the data precision
-				JOptionPane.showMessageDialog(component, exception.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-				exceptionHandled = true;
-			} else if (exception instanceof BinListDifferentWindowSizeException) {
-				// case when the user tries to do an operation on 2 binlists with different binsize
-				JOptionPane.showMessageDialog(component, exception.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-				exceptionHandled = true;
-			}
-			if (exception.getCause() != null) {
-				exception = exception.getCause();
-			} else {
-				hasCause = false;
-			}
-		}
-		if (!exceptionHandled) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(component, message, "Error", JOptionPane.ERROR_MESSAGE);
-		}
+	public boolean showReport() {
+		return intToBool(showReport);
 	}
 
 
@@ -215,74 +275,8 @@ public final class ExceptionManager implements UncaughtExceptionHandler {
 	}
 
 
-
-	/**
-	 * @param i an int
-	 * @return true if i meets the YES option, false otherwise
-	 */
-	private boolean intToBool (int i) {
-		if (i == YES) {
-			return true;
-		}
-		return false;
-	}
-
-
-	/**
-	 * @param b a boolean
-	 * @return YES if b is true, NO otherwise
-	 */
-	private int boolToIn (boolean b) {
-		if (b) {
-			return YES;
-		}
-		return NO;
-	}
-
-	/**
-	 * @return the printStackTrace
-	 */
-	public boolean printStackTrace() {
-		return intToBool(printStackTrace);
-	}
-
-
-	/**
-	 * @param printStackTrace the printStackTrace to set
-	 */
-	public void enablePrintStackTrace(boolean printStackTrace) {
-		this.printStackTrace = boolToIn(printStackTrace);
-	}
-
-
-	/**
-	 * @return the printReport
-	 */
-	public boolean printReport() {
-		return intToBool(printReport);
-	}
-
-
-	/**
-	 * @param printReport the printReport to set
-	 */
-	public void enablePrintReport(boolean printReport) {
-		this.printReport = boolToIn(printReport);
-	}
-
-
-	/**
-	 * @return the printReport
-	 */
-	public boolean showReport() {
-		return intToBool(showReport);
-	}
-
-
-	/**
-	 * @param showReport the printStackTrace to set
-	 */
-	public void enableShowReport(boolean showReport) {
-		this.showReport = boolToIn(showReport);
+	@Override
+	public void uncaughtException(Thread thread, Throwable throwable) {
+		handleThrowable(thread, throwable, null);
 	}
 }

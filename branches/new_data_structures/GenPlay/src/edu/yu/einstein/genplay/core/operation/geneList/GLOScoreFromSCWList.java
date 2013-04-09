@@ -32,7 +32,7 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.SimpleGeneList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
@@ -40,13 +40,13 @@ import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
- * Attributes a score to the exons of a GeneList from the scores of a {@link ScoredChromosomeWindowList}
+ * Attributes a score to the exons of a GeneList from the scores of a {@link SCWList}
  * @author Julien Lajugie
  * @version 0.1
  */
 public class GLOScoreFromSCWList implements Operation<GeneList> {
 	private final GeneList 						geneList;		// input GeneList
-	private final ScoredChromosomeWindowList 	scwList;		// BinList with the scores
+	private final SCWList 	scwList;		// BinList with the scores
 	private final GeneScoreType 				geneScoreType;	// the score type of the genes and exons (RPKM, base coverage sum, max coverage)
 	private boolean 							stopped = false;// true if the writer needs to be stopped
 
@@ -54,10 +54,10 @@ public class GLOScoreFromSCWList implements Operation<GeneList> {
 	/**
 	 * Creates an instance of {@link GLOScoreFromSCWList}
 	 * @param geneList input GeneList
-	 * @param scwList {@link ScoredChromosomeWindowList} with the scores
+	 * @param scwList {@link SCWList} with the scores
 	 * @param geneScore the score type of the genes and exons (RPKM, base coverage sum, max coverage)
 	 */
-	public GLOScoreFromSCWList(GeneList geneList, ScoredChromosomeWindowList scwList, GeneScoreType geneScore) {
+	public GLOScoreFromSCWList(GeneList geneList, SCWList scwList, GeneScoreType geneScore) {
 		this.geneList = geneList;
 		this.scwList = scwList;
 		geneScoreType = geneScore;

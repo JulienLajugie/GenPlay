@@ -23,6 +23,7 @@ package edu.yu.einstein.genplay.gui.track;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 
@@ -33,18 +34,49 @@ import edu.yu.einstein.genplay.exception.ExceptionManager;
  */
 public class ScrollingManager {
 
-	private static ScrollingManager instance = null;
-	private ScrollingThread 	scrollingThread; 					// thread executed when the scroll mode is on
-	private int					scrollingIntensity;					// intensity of the scroll.
-
-
 	/**
-	 * Creates an instance of {@link ScrollingManager}
+	 * The ScrollModeThread class is used to scroll the track horizontally
+	 * when the scroll mode is on (ie when the middle button of the mouse is clicked)
+	 * @author Julien Lajugie
+	 * @version 0.1
 	 */
-	private ScrollingManager() {
-		this.scrollingIntensity = 0;
+	private class ScrollingThread extends Thread {
+		@Override
+		public void run() {
+			synchronized (this) {
+				Thread thisThread = Thread.currentThread();
+				ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
+				while (scrollingThread == thisThread) {
+					Chromosome chromo = projectWindow.getGenomeWindow().getChromosome();
+					int start = projectWindow.getGenomeWindow().getStart() + scrollingIntensity;
+					int stop = projectWindow.getGenomeWindow().getStop() + scrollingIntensity;
+					SimpleGenomeWindow newWindow = new SimpleGenomeWindow(chromo, start, stop);
+					if (newWindow.getMiddlePosition() < 0) {
+						start = -projectWindow.getGenomeWindow().getSize() / 2;
+						stop = newWindow.getStart() + projectWindow.getGenomeWindow().getSize();
+						newWindow = new SimpleGenomeWindow(chromo, start, stop);
+					} else if (newWindow.getMiddlePosition() > newWindow.getChromosome().getLength()) {
+						stop = newWindow.getChromosome().getLength() + (projectWindow.getGenomeWindow().getSize() / 2);
+						start = newWindow.getStop() - projectWindow.getGenomeWindow().getSize();
+						newWindow = new SimpleGenomeWindow(chromo, start, stop);
+					}
+					projectWindow.setGenomeWindow(newWindow);
+					yield();
+					try {
+						if ((scrollingIntensity == 1) || (scrollingIntensity == -1)) {
+							sleep(100);
+						} else {
+							sleep(10);
+						}
+					} catch (InterruptedException e) {
+						ExceptionManager.getInstance().caughtException(e);
+					}
+				}
+			}
+		}
 	}
 
+	private static ScrollingManager instance = null;
 
 	/**
 	 * @return the instance of the {@link ScrollingManager} singleton
@@ -59,6 +91,28 @@ public class ScrollingManager {
 			}
 		}
 		return instance;
+	}
+
+
+	private ScrollingThread 	scrollingThread; 					// thread executed when the scroll mode is on
+
+
+	private int					scrollingIntensity;					// intensity of the scroll.
+
+
+	/**
+	 * Creates an instance of {@link ScrollingManager}
+	 */
+	private ScrollingManager() {
+		scrollingIntensity = 0;
+	}
+
+
+	/**
+	 * @return the value of the scrolling intensity
+	 */
+	public int getScrollingIntensity() {
+		return scrollingIntensity;
 	}
 
 
@@ -113,55 +167,6 @@ public class ScrollingManager {
 			scrollingIntensity = (int) (scrollingIntensityTmp / 10d) + 1;
 		} else {
 			scrollingIntensity = (int) (scrollingIntensityTmp / 10d) - 1;
-		}
-	}
-
-
-	/**
-	 * @return the value of the scrolling intensity
-	 */
-	public int getScrollingIntensity() {
-		return scrollingIntensity;
-	}
-
-
-	/**
-	 * The ScrollModeThread class is used to scroll the track horizontally
-	 * when the scroll mode is on (ie when the middle button of the mouse is clicked)
-	 * @author Julien Lajugie
-	 * @version 0.1
-	 */
-	private class ScrollingThread extends Thread {
-		@Override
-		public void run() {
-			synchronized (this) {
-				Thread thisThread = Thread.currentThread();
-				ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-				while (scrollingThread == thisThread) {
-					SimpleGenomeWindow newWindow = new SimpleGenomeWindow();
-					newWindow.setChromosome(projectWindow.getGenomeWindow().getChromosome());
-					newWindow.setStart(projectWindow.getGenomeWindow().getStart() + scrollingIntensity);
-					newWindow.setStop(projectWindow.getGenomeWindow().getStop() + scrollingIntensity);
-					if (newWindow.getMiddlePosition() < 0) {
-						newWindow.setStart(-projectWindow.getGenomeWindow().getSize() / 2);
-						newWindow.setStop(newWindow.getStart() + projectWindow.getGenomeWindow().getSize());
-					} else if (newWindow.getMiddlePosition() > newWindow.getChromosome().getLength()) {
-						newWindow.setStop(newWindow.getChromosome().getLength() + (projectWindow.getGenomeWindow().getSize() / 2));
-						newWindow.setStart(newWindow.getStop() - projectWindow.getGenomeWindow().getSize());
-					}
-					projectWindow.setGenomeWindow(newWindow);
-					yield();
-					try {
-						if ((scrollingIntensity == 1) || (scrollingIntensity == -1)) {
-							sleep(100);
-						} else {
-							sleep(10);
-						}
-					} catch (InterruptedException e) {
-						ExceptionManager.getInstance().caughtException(e);
-					}
-				}
-			}
 		}
 	}
 }

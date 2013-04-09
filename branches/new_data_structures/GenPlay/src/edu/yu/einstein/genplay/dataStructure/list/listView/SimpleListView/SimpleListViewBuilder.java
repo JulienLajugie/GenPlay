@@ -60,6 +60,12 @@ public class SimpleListViewBuilder<T> implements ListViewBuilder<T>{
 
 
 	@Override
+	public SimpleListViewBuilder<T> clone() throws CloneNotSupportedException {
+		return new SimpleListViewBuilder<T>();
+	}
+
+
+	@Override
 	public ListView<T> getListView() {
 		ListView<T> newList = new SimpleListView<T>(data);
 		data = null;

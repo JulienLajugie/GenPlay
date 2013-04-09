@@ -26,7 +26,7 @@ import javax.swing.ActionMap;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOLog;
 import edu.yu.einstein.genplay.dataStructure.enums.LogBase;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 import edu.yu.einstein.genplay.util.Utils;
@@ -38,7 +38,7 @@ import edu.yu.einstein.genplay.util.Utils;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class SCWLALog extends TrackListActionOperationWorker<ScoredChromosomeWindowList> {
+public final class SCWLALog extends TrackListActionOperationWorker<SCWList> {
 
 	private static final long serialVersionUID = -7633526345952471304L; // generated ID
 	private static final String 	ACTION_NAME = "Log";				// action name
@@ -65,13 +65,13 @@ public final class SCWLALog extends TrackListActionOperationWorker<ScoredChromos
 
 
 	@Override
-	public Operation<ScoredChromosomeWindowList> initializeOperation() {
+	public Operation<SCWList> initializeOperation() {
 		selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			LogBase logBase = Utils.chooseLogBase(getRootPane());
 			if (logBase != null) {
-				ScoredChromosomeWindowList scwList = selectedLayer.getData();
-				Operation<ScoredChromosomeWindowList> operation = new SCWLOLog(scwList, logBase);
+				SCWList scwList = selectedLayer.getData();
+				Operation<SCWList> operation = new SCWLOLog(scwList, logBase);
 				return operation;
 			}
 		}
@@ -80,7 +80,7 @@ public final class SCWLALog extends TrackListActionOperationWorker<ScoredChromos
 
 
 	@Override
-	protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
+	protected void doAtTheEnd(SCWList actionResult) {
 		if (actionResult != null)	{
 			selectedLayer.setData(actionResult, operation.getDescription());
 		}

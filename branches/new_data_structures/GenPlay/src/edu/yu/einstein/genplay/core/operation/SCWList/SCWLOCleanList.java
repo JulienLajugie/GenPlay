@@ -29,7 +29,7 @@ import java.util.concurrent.Callable;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
@@ -46,9 +46,9 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class SCWLOCleanList implements Operation<ScoredChromosomeWindowList> {
+public class SCWLOCleanList implements Operation<SCWList> {
 
-	private final ScoredChromosomeWindowList 	scwList;		// input list
+	private final SCWList 	scwList;		// input list
 	private boolean								stopped = false;// true if the operation must be stopped
 
 
@@ -56,13 +56,13 @@ public class SCWLOCleanList implements Operation<ScoredChromosomeWindowList> {
 	 * Cleans a {@link ScoredChromosomeWindow}.
 	 * @param scwList input list
 	 */
-	public SCWLOCleanList(ScoredChromosomeWindowList scwList) {
+	public SCWLOCleanList(SCWList scwList) {
 		this.scwList = scwList;
 	}
 
 
 	@Override
-	public ScoredChromosomeWindowList compute() throws Exception {
+	public SCWList compute() throws Exception {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
 
@@ -101,7 +101,7 @@ public class SCWLOCleanList implements Operation<ScoredChromosomeWindowList> {
 		}
 		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			ScoredChromosomeWindowList resultList = scwList.getClass().newInstance();
+			SCWList resultList = scwList.getClass().newInstance();
 			resultList.addAll(result);
 			return resultList;
 		} else {
@@ -111,7 +111,7 @@ public class SCWLOCleanList implements Operation<ScoredChromosomeWindowList> {
 
 
 	/**
-	 * @param list the {@link ScoredChromosomeWindowList} for the current chromosome
+	 * @param list the {@link SCWList} for the current chromosome
 	 * @param indexStart index of the first window of the cluster to merge
 	 * @param indexStop index of the last window of the cluster to merge
 	 * @return a single window that is the merging of the specified ones

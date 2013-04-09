@@ -30,7 +30,7 @@ import edu.yu.einstein.genplay.core.operation.binList.BLOTwoLayers;
 import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationTwoLayersMethod;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ImmutableGenomicDataList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
@@ -122,7 +122,7 @@ public final class BLATwoLayersOperation extends TrackListActionOperationWorker<
 		if (actionResult != null) {
 			Layer<?> newLayer;
 			if (isSCWList()) {
-				newLayer = new SCWLayer(resultTrack, (ScoredChromosomeWindowList) actionResult, selectedLayer.getName() + " & " + otherLayer.getName());
+				newLayer = new SCWLayer(resultTrack, (SCWList) actionResult, selectedLayer.getName() + " & " + otherLayer.getName());
 			} else {
 				newLayer = new BinLayer(resultTrack, (BinList) actionResult, selectedLayer.getName() + " & " + otherLayer.getName());
 			}

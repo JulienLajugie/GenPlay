@@ -26,10 +26,10 @@ import javax.swing.ActionMap;
 import edu.yu.einstein.genplay.core.converter.Converter;
 import edu.yu.einstein.genplay.core.converter.ConverterFactory;
 import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ImmutableGenomicDataList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
@@ -65,7 +65,7 @@ public class LAConvert extends TrackListActionWorker<ImmutableGenomicDataList<?>
 	private String 						layerName;
 	private int 						binSize;
 	private ScorePrecision 				precision;
-	private ScoreCalculationMethod 		method;
+	private ScoreOperation 		method;
 
 
 	/**
@@ -136,9 +136,9 @@ public class LAConvert extends TrackListActionWorker<ImmutableGenomicDataList<?>
 			} else if (layerType == LayerType.BIN_LAYER) {
 				newLayer = new BinLayer(resultTrack, (BinList) actionResult, layerName);
 			} else if (layerType == LayerType.SCW_LAYER) {
-				newLayer = new SCWLayer(resultTrack, (ScoredChromosomeWindowList) actionResult, layerName);
+				newLayer = new SCWLayer(resultTrack, (SCWList) actionResult, layerName);
 			} else if (layerType == LayerType.MASK_LAYER) {
-				newLayer = new MaskLayer(resultTrack, (ScoredChromosomeWindowList) actionResult, layerName);
+				newLayer = new MaskLayer(resultTrack, (SCWList) actionResult, layerName);
 			}
 			if (newLayer != null) {
 				((VersionedLayer<?>) newLayer).getHistory().add(layerType + " generated from " + selectedLayer.getType() + " \"" + selectedLayer.getName()+ "\"", Colors.GREY);

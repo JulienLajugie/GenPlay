@@ -30,7 +30,7 @@ import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
@@ -40,7 +40,7 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
  */
 public class SCWLOScoreDistribution implements Operation<double [][][]>{
 
-	private final ScoredChromosomeWindowList[] 	scwListArray;	// input list
+	private final SCWList[] 	scwListArray;	// input list
 	private final double 						scoreBinSize;	// size of the bins of score
 	private final int 							graphType;		// type of the plot (window count or bp count)
 	private boolean								stopped = false;// true if the operation must be stopped
@@ -62,7 +62,7 @@ public class SCWLOScoreDistribution implements Operation<double [][][]>{
 	 * @param scoreBinSize size of the bins of score
 	 * @param graphType type of graph (window count or base count)
 	 */
-	public SCWLOScoreDistribution(ScoredChromosomeWindowList[] scwListArray, double scoreBinSize, int graphType) {
+	public SCWLOScoreDistribution(SCWList[] scwListArray, double scoreBinSize, int graphType) {
 		this.scwListArray = scwListArray;
 		this.scoreBinSize = scoreBinSize;
 		this.graphType = graphType;
@@ -84,12 +84,12 @@ public class SCWLOScoreDistribution implements Operation<double [][][]>{
 
 	/**
 	 * Generates the scatter plot data for the specified list
-	 * @param scwList {@link ScoredChromosomeWindowList}
+	 * @param scwList {@link SCWList}
 	 * @return the scater plot data for the specified list
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
-	public double[][] singleSCWListResult (final ScoredChromosomeWindowList scwList) throws InterruptedException, ExecutionException {
+	public double[][] singleSCWListResult (final SCWList scwList) throws InterruptedException, ExecutionException {
 		// search the greatest and smallest score
 		double max = Math.max(0, scwList.getMaximum());
 		double min = Math.min(0, scwList.getMinimum());

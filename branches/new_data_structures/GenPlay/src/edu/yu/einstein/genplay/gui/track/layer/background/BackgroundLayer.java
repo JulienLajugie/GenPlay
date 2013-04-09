@@ -70,8 +70,8 @@ public class BackgroundLayer extends AbstractLayer<BackgroundData> implements La
 	 */
 	private void drawHorizontalLines(Graphics g, int width, int height) {
 		if (getData().isHorizontalGridVisible()) {
-			double scoreMin = getTrack().getScore().getMinimumScore();
-			double scoreMax = getTrack().getScore().getMaximumScore();
+			float scoreMin = getTrack().getScore().getMinimumScore();
+			float scoreMax = getTrack().getScore().getMaximumScore();
 			int horizontalLineCount = getData().getHorizontalLineCount();
 			double scoreGapBetweenLineY = (scoreMax - scoreMin) / horizontalLineCount;
 			double intensityFirstLineY = scoreMin - (scoreMin % scoreGapBetweenLineY);
@@ -79,7 +79,7 @@ public class BackgroundLayer extends AbstractLayer<BackgroundData> implements La
 			for(int i = 0; i <= horizontalLineCount; i++) {
 				double intensityLineY = ((i) * scoreGapBetweenLineY) + intensityFirstLineY;
 				if (intensityLineY >= scoreMin) {
-					int screenLineY = getTrack().getScore().scoreToScreenPosition(intensityLineY);
+					int screenLineY = getTrack().getScore().scoreToScreenPosition((float) intensityLineY);
 					g.drawLine(0, screenLineY, width, screenLineY);
 					NumberFormat nf = NumberFormat.getInstance();
 					nf.setMaximumFractionDigits(3);

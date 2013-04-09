@@ -31,7 +31,7 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.repeatListView.RepeatFamilyListView;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.repeatFamilyList.RepeatFamilyList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.MaskChromosomeWindow;
@@ -42,7 +42,7 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
  * Converts the selected families of a repeat track into a MaskList
  * @author Julien Lajugie
  */
-public class RFLOConvertIntoMask implements Operation<ScoredChromosomeWindowList> {
+public class RFLOConvertIntoMask implements Operation<SCWList> {
 
 	private boolean	stopped = false;					// true if the operation must be stopped
 	private final RepeatFamilyList 	repeatFamilyList;	// 
@@ -79,7 +79,7 @@ public class RFLOConvertIntoMask implements Operation<ScoredChromosomeWindowList
 
 
 	@Override
-	public ScoredChromosomeWindowList compute() throws Exception {
+	public SCWList compute() throws Exception {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
 
@@ -119,7 +119,7 @@ public class RFLOConvertIntoMask implements Operation<ScoredChromosomeWindowList
 		}
 		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			ScoredChromosomeWindowList resultList = new SimpleSCWList(result);
+			SCWList resultList = new SimpleSCWList(result);
 			return resultList;
 		} else {
 			return null;

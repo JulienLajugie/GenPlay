@@ -29,27 +29,27 @@ import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
 /**
- * Merges overlapping windows of a {@link ScoredChromosomeWindowList}. The score of the merged window will be the score
+ * Merges overlapping windows of a {@link SCWList}. The score of the merged window will be the score
  * of the first window of the overlapping cluster of windows
  * @author Julien Lajugie
  */
-public class SCWLOMergeWindows implements Operation<ScoredChromosomeWindowList> {
+public class SCWLOMergeWindows implements Operation<SCWList> {
 
-	private final ScoredChromosomeWindowList 	scwList;		// input list
+	private final SCWList 	scwList;		// input list
 	private boolean								stopped = false;// true if the operation must be stopped
 
 
 	/**
 	 * Creates an instance of {@link SCWLOMergeWindows}
-	 * @param scwList {@link ScoredChromosomeWindowList} with windows to merge
+	 * @param scwList {@link SCWList} with windows to merge
 	 */
-	public SCWLOMergeWindows(ScoredChromosomeWindowList scwList) {
+	public SCWLOMergeWindows(SCWList scwList) {
 		this.scwList = scwList;
 	}
 
@@ -74,7 +74,7 @@ public class SCWLOMergeWindows implements Operation<ScoredChromosomeWindowList> 
 
 
 	@Override
-	public ScoredChromosomeWindowList compute() throws InterruptedException, ExecutionException {
+	public SCWList compute() throws InterruptedException, ExecutionException {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
 
@@ -107,7 +107,7 @@ public class SCWLOMergeWindows implements Operation<ScoredChromosomeWindowList> 
 		}
 		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			ScoredChromosomeWindowList resultList = new SimpleSCWList(result);
+			SCWList resultList = new SimpleSCWList(result);
 			return resultList;
 		} else {
 			return null;

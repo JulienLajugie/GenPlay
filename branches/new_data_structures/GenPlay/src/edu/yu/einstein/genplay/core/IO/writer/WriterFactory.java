@@ -40,7 +40,7 @@ import edu.yu.einstein.genplay.core.IO.writer.geneListWriter.GeneListAsBedWriter
 import edu.yu.einstein.genplay.core.IO.writer.geneListWriter.GeneListAsGdpGeneWriter;
 import edu.yu.einstein.genplay.core.IO.writer.geneListWriter.GeneListWriter;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ImmutableGenomicDataList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
@@ -115,12 +115,12 @@ public final class WriterFactory {
 	/**
 	 * Tries to create and to return a subclass of {@link SCWListWriter} depending on the file filter used to save
 	 * @param outputFile output {@link File}
-	 * @param data {@link ScoredChromosomeWindowList} to write
+	 * @param data {@link SCWList} to write
 	 * @param name a name for the data
 	 * @param ff a subclass of {@link FileFilter}
 	 * @return a subclass of {@link SCWListWriter} or null if the type can't be figured out
 	 */
-	private static SCWListWriter getSCWListWriter(File outputFile, ScoredChromosomeWindowList data, String name, FileFilter ff) {
+	private static SCWListWriter getSCWListWriter(File outputFile, SCWList data, String name, FileFilter ff) {
 		if (ff == null) {
 			return null;
 		} else if (ff instanceof BedFilter) {
@@ -152,8 +152,8 @@ public final class WriterFactory {
 		} else if (data instanceof GeneList) {
 			GeneList geneList = (GeneList) data;
 			writer = getGeneListWriter(outputFile, geneList, name, ff);
-		} else if (data instanceof ScoredChromosomeWindowList) {
-			ScoredChromosomeWindowList scwList = (ScoredChromosomeWindowList) data;
+		} else if (data instanceof SCWList) {
+			SCWList scwList = (SCWList) data;
 			writer = getSCWListWriter(outputFile, scwList, name, ff);
 		}
 		if (writer != null) {

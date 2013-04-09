@@ -36,7 +36,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.gui.dialog.genomeSelectionPanel.GenomeSelectionPanel;
 import edu.yu.einstein.genplay.util.Images;
@@ -305,9 +305,9 @@ public class NewCurveLayerDialog extends JDialog {
 
 
 	/**
-	 * @return the selected {@link ScoreCalculationMethod}
+	 * @return the selected {@link ScoreOperation}
 	 */
-	public ScoreCalculationMethod getScoreCalculationMethod() {
+	public ScoreOperation getScoreCalculationMethod() {
 		return calculMethodPanel.getScoreCalculationMethod();
 	}
 

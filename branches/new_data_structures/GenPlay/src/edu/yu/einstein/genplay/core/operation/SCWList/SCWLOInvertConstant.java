@@ -28,7 +28,7 @@ import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
@@ -36,30 +36,30 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScored
 
 
 /**
- * Inverses the specified {@link ScoredChromosomeWindowList}. Applies the function f(x) = a / x, where a is a specified double
+ * Inverses the specified {@link SCWList}. Applies the function f(x) = a / x, where a is a specified double
  * @author Julien Lajugie
  * @version 0.1
  */
-public class SCWLOInvertConstant implements Operation<ScoredChromosomeWindowList> {
+public class SCWLOInvertConstant implements Operation<SCWList> {
 
-	private final ScoredChromosomeWindowList 	scwList;	// input list
+	private final SCWList 	scwList;	// input list
 	private final double 						constant;	// coefficient a in f(x) = a / x
 	private boolean				stopped = false;// true if the operation must be stopped
 
 
 	/**
 	 * Creates an instance of {@link SCWLOInvertConstant}
-	 * @param scwList input {@link ScoredChromosomeWindowList}
+	 * @param scwList input {@link SCWList}
 	 * @param constant constant a in f(x) = a / x
 	 */
-	public SCWLOInvertConstant(ScoredChromosomeWindowList scwList, double constant) {
+	public SCWLOInvertConstant(SCWList scwList, double constant) {
 		this.scwList = scwList;
 		this.constant = constant;
 	}
 
 
 	@Override
-	public ScoredChromosomeWindowList compute() throws Exception {
+	public SCWList compute() throws Exception {
 		if (constant == 0) {
 			return null;
 		}
@@ -95,7 +95,7 @@ public class SCWLOInvertConstant implements Operation<ScoredChromosomeWindowList
 		}
 		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			ScoredChromosomeWindowList resultList = new SimpleSCWList(result);
+			SCWList resultList = new SimpleSCWList(result);
 			return resultList;
 		} else {
 			return null;

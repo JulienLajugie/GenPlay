@@ -24,7 +24,7 @@ package edu.yu.einstein.genplay.core.operation.binList;
 import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 
 
@@ -38,16 +38,16 @@ public class BLOChangeBinSize implements Operation<BinList> {
 
 	private final BinList 					binList;		// input BinList
 	private final int 						binSize;		// new bin size 
-	private final ScoreCalculationMethod 	method;			// method for the calculation of the new binlist
+	private final ScoreOperation 	method;			// method for the calculation of the new binlist
 	
 
 	/**
 	 * Creates a new BinList with a new bin size
 	 * @param binList input BinList
 	 * @param binSize new bin size
-	 * @param method {@link ScoreCalculationMethod} for the calculation of the new BinList
+	 * @param method {@link ScoreOperation} for the calculation of the new BinList
 	 */
-	public BLOChangeBinSize(BinList binList, int binSize, ScoreCalculationMethod method) {
+	public BLOChangeBinSize(BinList binList, int binSize, ScoreOperation method) {
 		this.binList = binList;
 		this.binSize = binSize;
 		this.method = method;

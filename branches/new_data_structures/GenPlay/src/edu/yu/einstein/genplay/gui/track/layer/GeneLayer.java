@@ -45,6 +45,8 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.dataScalerForTrackDisplay.GeneListScaler;
 import edu.yu.einstein.genplay.gui.track.ScrollingManager;
@@ -60,7 +62,7 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 
 	private static final long serialVersionUID = 3779631846077486596L; 		// generated ID
 	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;				// Saved format version
-	private static final double 			SCORE_SATURATION = 0.02d;		// saturation of the score of the exon for the display
+	private static final float 				SCORE_SATURATION = 0.02f;		// saturation of the score of the exon for the display
 	private static final short				GENE_HEIGHT = 6;				// size of a gene in pixel
 	private static final short				UTR_HEIGHT = 3;					// height of a UTR region of a gene in pixel
 	private transient GeneListScaler		dataScaler;						// object that scales the list of genes for display
@@ -68,8 +70,8 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 	private int 							geneLinesCount;					// number of line of genes
 	private int 							mouseStartDragY = -1;			// position of the mouse when start dragging
 	private Gene 							geneUnderMouse = null;			// gene under the cursor of the mouse
-	private double 							min;							// minimum score of the GeneList to display
-	private double							max;							// maximum score of the GeneList to display
+	private float 							min;							// minimum score of the GeneList to display
+	private float							max;							// maximum score of the GeneList to display
 
 
 	/**
@@ -98,14 +100,14 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 			// we retrieve the project window
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
 			// we retrieve the minimum and maximum scores displayed in the track
-			double max = getTrack().getScore().getMaximumScore();
-			double min = getTrack().getScore().getMinimumScore();
+			float max = getTrack().getScore().getMaximumScore();
+			float min = getTrack().getScore().getMinimumScore();
 			// we print the gene names if the x ratio > MIN_X_RATIO_PRINT_NAME
 			boolean isGeneNamePrinted = projectWindow.getXRatio() > GeneListScaler.MIN_X_RATIO_PRINT_NAME;
 			// check that the data scaler is valid
 			validateDataScaler();
 			// Retrieve the genes to print
-			List<List<Gene>> genesToPrint = dataScaler.getDataScaledForTrackDisplay();
+			List<ListView<Gene>> genesToPrint = dataScaler.getDataScaledForTrackDisplay();
 			if ((genesToPrint != null) && (genesToPrint.size() > 0)){
 				// Compute the maximum number of line displayable
 				int displayedLineCount = 0;
@@ -150,33 +152,29 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 									}
 								}
 								// For each exon of the current gene
-								if (geneToPrint.getExonStarts() != null) {
-									for (int j = 0; j < geneToPrint.getExonStarts().length; j++) {
-										int exonX = projectWindow.genomeToScreenPosition(geneToPrint.getExonStarts()[j]);
-										if (geneToPrint.getExonStops()[j] >= projectWindow.getGenomeWindow().getStart()) {
-											int exonWidth = projectWindow.genomeToScreenPosition(geneToPrint.getExonStops()[j]) - exonX;
+								if (geneToPrint.getExons() != null) {
+									for (int j = 0; j < geneToPrint.getExons().size(); j++) {
+										ScoredChromosomeWindow currentExon = geneToPrint.getExons().get(j);
+										int exonX = projectWindow.genomeToScreenPosition(currentExon.getStart());
+										if (currentExon.getStop() >= projectWindow.getGenomeWindow().getStart()) {
+											int exonWidth = projectWindow.genomeToScreenPosition(currentExon.getStop()) - exonX;
 											if (exonWidth < 1) {
 												exonWidth = 1;
 											}
 											// if we have some exon score values
-											if (geneToPrint.getExonScores() != null) {
-												// if we have just one exon score
-												if (geneToPrint.getExonScores().length == 1) {
-													g.setColor(Colors.scoreToColor(geneToPrint.getExonScores()[0], min, max));
-												} else { // if we have values for each exon
-													g.setColor(Colors.scoreToColor(geneToPrint.getExonScores()[j], min, max));
-												}
+											if (currentExon.getScore() != Float.NaN) {
+												g.setColor(Colors.scoreToColor(currentExon.getScore(), min, max));
 											}
 											// case where the exon is not at all in a UTR (untranslated region)
-											if ((geneToPrint.getExonStarts()[j] >= geneToPrint.getUTR5Bound()) && (geneToPrint.getExonStops()[j] <= geneToPrint.getUTR3Bound())) {
+											if ((currentExon.getStart() >= geneToPrint.getUTR5Bound()) && (currentExon.getStop() <= geneToPrint.getUTR3Bound())) {
 												g.fillRect(exonX, currentHeight + 1, exonWidth, GENE_HEIGHT);
 											} else {
 												// case where the whole exon is in a UTR
-												if ((geneToPrint.getExonStops()[j] <= geneToPrint.getUTR5Bound()) || (geneToPrint.getExonStarts()[j] >= geneToPrint.getUTR3Bound())) {
+												if ((currentExon.getStop() <= geneToPrint.getUTR5Bound()) || (currentExon.getStart() >= geneToPrint.getUTR3Bound())) {
 													g.fillRect(exonX, currentHeight + 1, exonWidth, UTR_HEIGHT);
 												} else {
 													// case where the exon is in both UTR
-													if ((geneToPrint.getExonStarts()[j] <= geneToPrint.getUTR5Bound()) && (geneToPrint.getExonStops()[j] >= geneToPrint.getUTR3Bound())) {
+													if ((currentExon.getStart() <= geneToPrint.getUTR5Bound()) && (currentExon.getStop() >= geneToPrint.getUTR3Bound())) {
 														int UTR5Width = projectWindow.genomeToScreenPosition(geneToPrint.getUTR5Bound()) - exonX;
 														int TRWidth = projectWindow.genomeToScreenPosition(geneToPrint.getUTR3Bound()) - exonX - UTR5Width;
 														int UTR3Width = exonWidth - UTR5Width - TRWidth;
@@ -186,12 +184,12 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 
 													} else {
 														// case where part of the exon is in the UTR and part is not
-														if ((geneToPrint.getExonStarts()[j] <= geneToPrint.getUTR5Bound()) && (geneToPrint.getExonStops()[j] >= geneToPrint.getUTR5Bound())) {
+														if ((currentExon.getStart() <= geneToPrint.getUTR5Bound()) && (currentExon.getStop() >= geneToPrint.getUTR5Bound())) {
 															// case where part is in the 5'UTR
 															int UTRWidth = projectWindow.genomeToScreenPosition(geneToPrint.getUTR5Bound()) - exonX;
 															g.fillRect(exonX, currentHeight + 1, UTRWidth, UTR_HEIGHT);
 															g.fillRect(exonX + UTRWidth, currentHeight + 1, exonWidth - UTRWidth, GENE_HEIGHT);
-														} else if ((geneToPrint.getExonStarts()[j] <= geneToPrint.getUTR3Bound()) && (geneToPrint.getExonStops()[j] >= geneToPrint.getUTR3Bound())) {
+														} else if ((currentExon.getStart() <= geneToPrint.getUTR3Bound()) && (currentExon.getStop() >= geneToPrint.getUTR3Bound())) {
 															// case where part is in the 3' UTR
 															int TRWidth = projectWindow.genomeToScreenPosition(geneToPrint.getUTR3Bound()) - exonX; // TRWidth is the with of the TRANSLATED region
 															g.fillRect(exonX, currentHeight + 1, TRWidth, GENE_HEIGHT);
@@ -213,20 +211,20 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 
 
 	@Override
-	public Double getCurrentScoreToDisplay() {
+	public float getCurrentScoreToDisplay() {
 		// we return null because they could be more than one score to display at a position
-		return null;
+		return Float.NaN;
 	}
 
 
 	@Override
-	public double getMaximumScoreToDisplay() {
+	public float getMaximumScoreToDisplay() {
 		return max;
 	}
 
 
 	@Override
-	public double getMinimumScoreToDisplay() {
+	public float getMinimumScoreToDisplay() {
 		return min;
 	}
 
@@ -312,7 +310,7 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 				// check that the data scaler is valid
 				validateDataScaler();
 				// retrieve the list of the printed genes
-				List<List<Gene>> printedGenes = dataScaler.getDataScaledForTrackDisplay();
+				List<ListView<Gene>> printedGenes = dataScaler.getDataScaledForTrackDisplay();
 				// do nothing if there is no genes
 				if (printedGenes == null) {
 					return;
@@ -362,16 +360,13 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 				} else {
 					// if there is a gene under the mouse we also check
 					// if there is an exon with a score under the mouse cursor
-					Double scoreExonUnderMouse = null;
-					if ((geneUnderMouse.getExonScores() != null) && (geneUnderMouse.getExonScores().length > 0)) {
-						for (int k = 0; (k < geneUnderMouse.getExonStarts().length) && (scoreExonUnderMouse == null); k++) {
-							if ((mousePosition.x >= projectWindow.genomeToScreenPosition(geneUnderMouse.getExonStarts()[k])) &&
-									(mousePosition.x <= projectWindow.genomeToScreenPosition(geneUnderMouse.getExonStops()[k]))) {
-								if (geneUnderMouse.getExonScores().length == 1) {
-									scoreExonUnderMouse = geneUnderMouse.getExonScores()[0];
-								} else {
-									scoreExonUnderMouse = geneUnderMouse.getExonScores()[k];
-								}
+					Float scoreExonUnderMouse = null;
+					if ((geneUnderMouse.getExons() != null) && (geneUnderMouse.getExons().size() > 0)) {
+						for (int k = 0; (k < geneUnderMouse.getExons().size()) && (scoreExonUnderMouse == null); k++) {
+							ScoredChromosomeWindow currentExon = geneUnderMouse.getExons().get(k);
+							if ((mousePosition.x >= projectWindow.genomeToScreenPosition(currentExon.getStart())) &&
+									(mousePosition.x <= projectWindow.genomeToScreenPosition(currentExon.getStop()))) {
+								scoreExonUnderMouse = currentExon.getScore();
 							}
 						}
 					}
@@ -382,7 +377,7 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 					if (geneList.getGeneScoreType() != null) {
 						toolTipText += "Score Type: <i>" + geneList.getGeneScoreType() + "</i><br>";
 					}
-					if (geneUnderMouse.getScore() != Double.NaN) {
+					if (geneUnderMouse.getScore() != Float.NaN) {
 						toolTipText += "Gene Score = <i>" + NumberFormat.getInstance().format(geneUnderMouse.getScore()) + "</i><br>";
 					}
 					if (scoreExonUnderMouse != null) {
@@ -444,8 +439,8 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		min = in.readDouble();
-		max = in.readDouble();
+		min = in.readFloat();
+		max = in.readFloat();
 		firstLineToDisplay = 0;
 		geneLinesCount = 0;
 		mouseStartDragY = -1;
@@ -478,17 +473,16 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 	 */
 	private void setSaturatedMinMax() {
 		// put the scores of every exon in a big list
-		List<Double> scoreList = new ArrayList<Double>();
-		for (List<Gene> currentList: getData()) {
+		List<Float> scoreList = new ArrayList<Float>();
+		for (ListView<Gene> currentList: getData()) {
 			if ((currentList != null) && (!currentList.isEmpty())) {
 				for (Gene currentGene: currentList) {
-					if (currentGene.getExonScores() != null) {
-						for (double currentScore: currentGene.getExonScores()) {
-							if (currentScore != 0) {
-								scoreList.add(currentScore);
+					if (currentGene.getExons() != null) {
+						for (ScoredChromosomeWindow currentExon: currentGene.getExons()) {
+							if ((currentExon.getScore() != Float.NaN) && (currentExon.getScore() != 0)) {
+								scoreList.add(currentExon.getScore());
 							}
 						}
-
 					}
 				}
 			}
@@ -496,7 +490,6 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 		if (!scoreList.isEmpty()) {
 			// sort the list
 			Collections.sort(scoreList);
-
 			int minIndex = (int)(SCORE_SATURATION * (scoreList.size() - 1));
 			int maxIndex = (scoreList.size() - 1) - (int)((SCORE_SATURATION * scoreList.size()) - 1);
 			min = scoreList.get(minIndex);
@@ -524,7 +517,7 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeDouble(min);
-		out.writeDouble(max);
+		out.writeFloat(min);
+		out.writeFloat(max);
 	}
 }

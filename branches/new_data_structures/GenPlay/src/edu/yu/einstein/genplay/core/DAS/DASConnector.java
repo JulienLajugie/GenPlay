@@ -43,7 +43,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.SimpleGeneList;
@@ -347,7 +347,7 @@ public class DASConnector {
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public ScoredChromosomeWindowList getSCWList(DataSource dataSource, DASType dasType) throws IOException, ParserConfigurationException, SAXException, InterruptedException, ExecutionException {
+	public SCWList getSCWList(DataSource dataSource, DASType dasType) throws IOException, ParserConfigurationException, SAXException, InterruptedException, ExecutionException {
 		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
 		ArrayList<List<ScoredChromosomeWindow>> resultList = new ArrayList<List<ScoredChromosomeWindow>>();
 		for (Chromosome currentChromo: projectChromosome) {
@@ -416,7 +416,7 @@ public class DASConnector {
 	 * @throws InterruptedException
 	 */
 
-	public ScoredChromosomeWindowList getSCWList(DataSource dataSource, DASType dasType, SimpleGenomeWindow genomeWindow) throws IOException, ParserConfigurationException, SAXException, InterruptedException, ExecutionException {
+	public SCWList getSCWList(DataSource dataSource, DASType dasType, SimpleGenomeWindow genomeWindow) throws IOException, ParserConfigurationException, SAXException, InterruptedException, ExecutionException {
 		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
 		ArrayList<List<ScoredChromosomeWindow>> resultList = new ArrayList<List<ScoredChromosomeWindow>>();
 		Chromosome currentChromo = genomeWindow.getChromosome();

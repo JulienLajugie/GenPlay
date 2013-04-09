@@ -37,6 +37,7 @@ import javax.swing.SwingUtilities;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.core.manager.project.ProjectZoom;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
@@ -115,10 +116,10 @@ public class GraphicsPanel extends JPanel implements Serializable, ComponentList
 			int screenWidth = e.getX() - (getWidth() / 2);
 			// compute the corresponding genomic distance
 			int genomeWidth = projectWindow.screenToGenomeWidth(screenWidth);
-			SimpleGenomeWindow newWindow = new SimpleGenomeWindow();
-			newWindow.setChromosome(projectWindow.getGenomeWindow().getChromosome());
-			newWindow.setStart(projectWindow.getGenomeWindow().getStart()+ genomeWidth);
-			newWindow.setStop(projectWindow.getGenomeWindow().getStop() + genomeWidth);
+			Chromosome chromo = projectWindow.getGenomeWindow().getChromosome();
+			int start = projectWindow.getGenomeWindow().getStart()+ genomeWidth;
+			int stop = projectWindow.getGenomeWindow().getStop() + genomeWidth;
+			SimpleGenomeWindow newWindow = new SimpleGenomeWindow(chromo, start, stop);
 			if (((newWindow.getMiddlePosition()) >= 0) && (newWindow.getMiddlePosition() <= newWindow.getChromosome().getLength())) {
 				projectWindow.setGenomeWindow(newWindow);
 			}
@@ -144,16 +145,18 @@ public class GraphicsPanel extends JPanel implements Serializable, ComponentList
 			// compute the corresponding genomic distance
 			double genomeWidth = projectWindow.screenToGenomeWidth(screenWidth);
 			if ((genomeWidth >= 1) || (genomeWidth <= -1)) {
-				SimpleGenomeWindow newWindow = new SimpleGenomeWindow();
-				newWindow.setChromosome(projectWindow.getGenomeWindow().getChromosome());
-				newWindow.setStart(projectWindow.getGenomeWindow().getStart()+ (int) genomeWidth);
-				newWindow.setStop(projectWindow.getGenomeWindow().getStop() + (int) genomeWidth);
+				Chromosome chromo = projectWindow.getGenomeWindow().getChromosome();
+				int start = projectWindow.getGenomeWindow().getStart()+ (int) genomeWidth;
+				int stop = projectWindow.getGenomeWindow().getStop() + (int) genomeWidth;
+				SimpleGenomeWindow newWindow = new SimpleGenomeWindow(chromo, start, stop);
 				if (newWindow.getMiddlePosition() < 0) {
-					newWindow.setStart(-projectWindow.getGenomeWindow().getSize() / 2);
-					newWindow.setStop(newWindow.getStart() + projectWindow.getGenomeWindow().getSize());
+					start = -projectWindow.getGenomeWindow().getSize() / 2;
+					stop = newWindow.getStart() + projectWindow.getGenomeWindow().getSize();
+					newWindow = new SimpleGenomeWindow(chromo, start, stop);
 				} else if (newWindow.getMiddlePosition() > newWindow.getChromosome().getLength()) {
-					newWindow.setStop(newWindow.getChromosome().getLength() + (projectWindow.getGenomeWindow().getSize() / 2));
-					newWindow.setStart(newWindow.getStop() - projectWindow.getGenomeWindow().getSize());
+					stop = newWindow.getChromosome().getLength() + (projectWindow.getGenomeWindow().getSize() / 2);
+					start = newWindow.getStop() - projectWindow.getGenomeWindow().getSize();
+					newWindow = new SimpleGenomeWindow(chromo, start, stop);
 				}
 				projectWindow.setGenomeWindow(newWindow);
 				mouseStartDragX = e.getX();
@@ -220,10 +223,10 @@ public class GraphicsPanel extends JPanel implements Serializable, ComponentList
 				}
 				newZoom = Math.min(projectWindow.getGenomeWindow().getChromosome().getLength() * 2, newZoom);
 			}
-			SimpleGenomeWindow newWindow = new SimpleGenomeWindow();
-			newWindow.setChromosome(projectWindow.getGenomeWindow().getChromosome());
-			newWindow.setStart((int)(projectWindow.getGenomeWindow().getMiddlePosition() - (newZoom / 2)));
-			newWindow.setStop(newWindow.getStart() + newZoom);
+			Chromosome chromo = projectWindow.getGenomeWindow().getChromosome();
+			int start =  (int)(projectWindow.getGenomeWindow().getMiddlePosition() - (newZoom / 2));
+			int stop = start + newZoom;
+			SimpleGenomeWindow newWindow = new SimpleGenomeWindow(chromo, start, stop);
 			projectWindow.setGenomeWindow(newWindow);
 		}
 	}

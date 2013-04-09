@@ -28,15 +28,17 @@ import java.awt.RenderingHints;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.List;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOMaxScoreToDisplay;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOMinScoreToDisplay;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.GraphType;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.gui.dataScalerForTrackDisplay.SimpleSCWLScaler;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -46,10 +48,10 @@ import edu.yu.einstein.genplay.util.colors.LayerColors;
 
 
 /**
- * Layer displaying a {@link ScoredChromosomeWindowList}
+ * Layer displaying a {@link SCWList}
  * @author Julien Lajugie
  */
-public class SCWLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList> implements Layer<ScoredChromosomeWindowList>, VersionedLayer<ScoredChromosomeWindowList>, GraphLayer, ColoredLayer {
+public class SCWLayer extends AbstractVersionedLayer<SCWList> implements Layer<SCWList>, VersionedLayer<SCWList>, GraphLayer, ColoredLayer {
 
 	private static final long serialVersionUID = 3779631846077486596L; 	// generated ID
 	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// Saved format version
@@ -64,7 +66,7 @@ public class SCWLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList>
 	 * @param data data of the layer
 	 * @param name name of the layer
 	 */
-	public SCWLayer(Track track, ScoredChromosomeWindowList data, String name) {
+	public SCWLayer(Track track, SCWList data, String name) {
 		super(track, data, name);
 		setGraphType(TrackConstants.DEFAULT_GRAPH_TYPE);
 		color = LayerColors.getLayerColor();
@@ -117,7 +119,7 @@ public class SCWLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList>
 			// check that the data scaler is valid
 			validateDataScaler();
 			// Retrieve the genes to print
-			List<ScoredChromosomeWindow> listToPrint = dataScaler.getDataScaledForTrackDisplay();
+			ListView<ScoredChromosomeWindow> listToPrint = dataScaler.getDataScaledForTrackDisplay();
 			if (listToPrint != null) {
 				for (ScoredChromosomeWindow currentWindow: listToPrint) {
 					// we want to make sure that x is > 0
@@ -155,13 +157,13 @@ public class SCWLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList>
 			// check that the data scaler is valid
 			validateDataScaler();
 			// Retrieve the genes to print
-			List<ScoredChromosomeWindow> listToPrint = dataScaler.getDataScaledForTrackDisplay();
+			ListView<ScoredChromosomeWindow> listToPrint = dataScaler.getDataScaledForTrackDisplay();
 			if ((listToPrint != null) && (listToPrint.size() > 0)) {
 				int x1 = -1;
 				int x2 = -1;
-				double score1 = -1;
+				float score1 = Float.NaN;
 				int y1 = -1;
-				double score2 = -1;
+				float score2 = Float.NaN;
 				int y2 = -1;
 				for (ScoredChromosomeWindow currentWindow: listToPrint) {
 					x2 = projectWindow.genomeToScreenPosition(currentWindow.getStart());
@@ -208,7 +210,7 @@ public class SCWLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList>
 			// check that the data scaler is valid
 			validateDataScaler();
 			// Retrieve the genes to print
-			List<ScoredChromosomeWindow> listToPrint = dataScaler.getDataScaledForTrackDisplay();
+			ListView<ScoredChromosomeWindow> listToPrint = dataScaler.getDataScaledForTrackDisplay();
 			if (listToPrint != null) {
 				for (ScoredChromosomeWindow currentWindow: listToPrint) {
 					int x = projectWindow.genomeToScreenPosition(currentWindow.getStart());
@@ -238,7 +240,7 @@ public class SCWLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList>
 			// check that the data scaler is valid
 			validateDataScaler();
 			// Retrieve the genes to print
-			List<ScoredChromosomeWindow> listToPrint = dataScaler.getDataScaledForTrackDisplay();
+			ListView<ScoredChromosomeWindow> listToPrint = dataScaler.getDataScaledForTrackDisplay();
 			if (listToPrint != null) {
 				for (ScoredChromosomeWindow currentWindow: listToPrint) {
 					// we want to make sure that x is > 0
@@ -263,12 +265,14 @@ public class SCWLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList>
 
 
 	@Override
-	public Double getCurrentScoreToDisplay() {
+	public float getCurrentScoreToDisplay() {
 		if (getData() != null) {
-			double middlePosition = ProjectManager.getInstance().getProjectWindow().getGenomeWindow().getMiddlePosition();
-			return ((SimpleSCWList) getData()).getScore((int) middlePosition);
+			GenomeWindow displayedWindow = ProjectManager.getInstance().getProjectWindow().getGenomeWindow();
+			Chromosome chromo = displayedWindow.getChromosome();
+			int middlePosition = (int) displayedWindow.getMiddlePosition();
+			return ((SimpleSCWList) getData()).getScore(chromo, middlePosition);
 		} else {
-			return 0d;
+			return 0f;
 		}
 	}
 
@@ -280,13 +284,13 @@ public class SCWLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList>
 
 
 	@Override
-	public double getMaximumScoreToDisplay() {
+	public float getMaximumScoreToDisplay() {
 		return new SCWLOMaxScoreToDisplay(getData()).compute();
 	}
 
 
 	@Override
-	public double getMinimumScoreToDisplay() {
+	public float getMinimumScoreToDisplay() {
 		return new SCWLOMinScoreToDisplay(getData()).compute();
 	}
 
@@ -316,7 +320,7 @@ public class SCWLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList>
 
 
 	@Override
-	public void setData(ScoredChromosomeWindowList data) {
+	public void setData(SCWList data) {
 		super.setData(data);
 		// tells the track score object to auto-rescale the score axis
 		if ((getTrack() != null) && (getTrack().getScore() != null)) {
@@ -326,7 +330,7 @@ public class SCWLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList>
 
 
 	@Override
-	public void setData(ScoredChromosomeWindowList data, String description) {
+	public void setData(SCWList data, String description) {
 		super.setData(data, description);
 		// tells the track score object to auto-rescale the score axis
 		if ((getTrack() != null) && (getTrack().getScore() != null)) {

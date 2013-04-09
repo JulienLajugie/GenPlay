@@ -35,7 +35,7 @@ import edu.yu.einstein.genplay.core.generator.BinListGenerator;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.IntArrayAsIntegerList;
@@ -291,10 +291,10 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 
 
 	@Override
-	public BinList toBinList(int binSize, ScorePrecision precision, ScoreCalculationMethod method) throws IllegalArgumentException, InterruptedException, ExecutionException {
+	public BinList toBinList(int binSize, ScorePrecision precision, ScoreOperation method) throws IllegalArgumentException, InterruptedException, ExecutionException {
 		// case where a read length is specified
 		if ((readHandler != null) && (readHandler.getReadLength() != 0)) {
-			return new BinList(binSize, precision, ScoreCalculationMethod.SUM, positionList, stopPositionList, scoreList);
+			return new BinList(binSize, precision, ScoreOperation.SUM, positionList, stopPositionList, scoreList);
 		} else { // case where there is no specified read length
 			return new BinList(binSize, precision, positionList);
 		}

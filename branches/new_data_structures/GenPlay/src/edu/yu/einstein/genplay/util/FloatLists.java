@@ -37,19 +37,7 @@ public class FloatLists {
 	 * @return the average value of the list
 	 */
 	public static float average(List<Float> list) {
-		float sum = 0;
-		int n = 0;
-		for (Float currentValue : list) {
-			if (currentValue != 0) {
-				sum += currentValue;
-				n++;
-			}
-		}
-		if (n == 0) {
-			return 0;
-		} else {
-			return sum / n;
-		}
+		return average(list, 0, list.size() - 1);
 	}
 
 
@@ -90,18 +78,12 @@ public class FloatLists {
 	 * @return the non-zero maximum of the specified list
 	 */
 	public static float maxNoZero(List<Float> list) {
-		float max = Float.NEGATIVE_INFINITY;
-		for (Float currentValue : list) {
-			if (currentValue != 0) {
-				max = Math.max(max, currentValue);
-			}
-		}
-		return max;
+		return maxNoZero(list, 0, list.size() - 1);
 	}
 
 
 	/**
-	 * Returns the maximum of the list in parameter. Doesn't take the 0 value elements into account.
+	 * Returns the maximum of the list in parameter between indexStart and indexStop included. Doesn't take the 0 value elements into account.
 	 * @param list
 	 * @param indexStart index where to start in the list
 	 * @param indexStop index where to stop in the list
@@ -113,7 +95,6 @@ public class FloatLists {
 		} else if (indexStart == indexStop) {
 			return list.get(indexStart);
 		}
-
 		float max = Float.NEGATIVE_INFINITY;
 		int i = indexStart;
 		while ((i <= indexStop) && (i < list.size())) {
@@ -133,13 +114,42 @@ public class FloatLists {
 	 * @return the non-zero minimum of the specified list
 	 */
 	public static float minNoZero(List<Float> list) {
-		Float min = Float.POSITIVE_INFINITY;
-		for (Float currentValue : list) {
+		return minNoZero(list, 0, list.size() - 1);
+	}
+
+
+	/**
+	 * Returns the minimum of the list in parameter between indexStart and indexStop included. Doesn't take the 0 value elements into account.
+	 * @param list
+	 * @param indexStart index where to start in the list
+	 * @param indexStop index where to stop in the list
+	 * @return the non-zero maximum of the specified list
+	 */
+	public static float minNoZero(List<Float> list, int indexStart, int indexStop) {
+		if (indexStart > indexStop) {
+			return 0;
+		} else if (indexStart == indexStop) {
+			return list.get(indexStart);
+		}
+		float min = Float.POSITIVE_INFINITY;
+		int i = indexStart;
+		while ((i <= indexStop) && (i < list.size())) {
+			float currentValue = list.get(i);
 			if (currentValue != 0) {
-				min = Math.min(min, currentValue);
+				min = Math.max(min, currentValue);
 			}
+			i++;
 		}
 		return min;
+	}
+
+
+	/**
+	 * @param list {@link List} of Float elements
+	 * @return the standard deviation of the values of the list
+	 */
+	public static float standardDeviation(List<Float> list) {
+		return standardDeviation(list, 0, list.size() - 1);
 	}
 
 
@@ -180,11 +190,7 @@ public class FloatLists {
 	 * @return the sum of the values of the list
 	 */
 	public static float sum(List<Float> list) {
-		float result = 0;
-		for (Float currentValue : list) {
-			result += currentValue;
-		}
-		return result;
+		return sum(list, 0, list.size() - 1);
 	}
 
 

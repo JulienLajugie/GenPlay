@@ -30,7 +30,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
@@ -49,7 +49,7 @@ public class GLOScoreDistributionAroundStart implements Operation<double[][]> {
 	private final boolean[] 				selectedChromosomes;	// selected chromosomes
 	private final int 						binSize;				// size of the bins of scores
 	private final int 						binCount;				// number of bins each side of the zero position
-	private final ScoreCalculationMethod 	scoreCalculationMethod; // method for the calculation of the bin of scores
+	private final ScoreOperation 	scoreCalculationMethod; // method for the calculation of the bin of scores
 
 
 	/**
@@ -60,10 +60,10 @@ public class GLOScoreDistributionAroundStart implements Operation<double[][]> {
 	 * @param selectedChromosomes chromosome on which we show the distribution
 	 * @param binSize size of the bins of score
 	 * @param binCount count of bins each side of the promoter
-	 * @param scoreCalculationMethod {@link ScoreCalculationMethod} to compute the score of the bins
+	 * @param scoreCalculationMethod {@link ScoreOperation} to compute the score of the bins
 	 */
 	public GLOScoreDistributionAroundStart(GeneList geneList, BinList binList, boolean[] selectedChromosomes,
-			int binSize, int binCount, ScoreCalculationMethod scoreCalculationMethod) {
+			int binSize, int binCount, ScoreOperation scoreCalculationMethod) {
 		this.geneList = geneList;
 		this.binList = binList;
 		this.selectedChromosomes = selectedChromosomes;
@@ -82,7 +82,7 @@ public class GLOScoreDistributionAroundStart implements Operation<double[][]> {
 		}
 		// if the method to compute the score is max
 		// we need to initialize all the score to negative infinity
-		if (scoreCalculationMethod == ScoreCalculationMethod.MAXIMUM) {
+		if (scoreCalculationMethod == ScoreOperation.MAXIMUM) {
 			for (int i = 0; i < totalBinCount; i++) {
 				result[i][1] = Double.NEGATIVE_INFINITY;
 			}
@@ -101,7 +101,7 @@ public class GLOScoreDistributionAroundStart implements Operation<double[][]> {
 						double[] chromoResult = new double[totalBinCount];
 						// if the method to compute the score is max
 						// we need to initialize all the score to negative infinity
-						if (scoreCalculationMethod == ScoreCalculationMethod.MAXIMUM) {
+						if (scoreCalculationMethod == ScoreOperation.MAXIMUM) {
 							for (int j = 0; j < totalBinCount; j++) {
 								chromoResult[j] = Double.NEGATIVE_INFINITY;
 							}
@@ -140,7 +140,7 @@ public class GLOScoreDistributionAroundStart implements Operation<double[][]> {
 							}
 						}
 						// compute the average if it's the method for the score calculation
-						if (scoreCalculationMethod == ScoreCalculationMethod.AVERAGE) {
+						if (scoreCalculationMethod == ScoreOperation.AVERAGE) {
 							for (int j = 0; j < totalBinCount; j++) {
 								if (count[j] != 0) {
 									chromoResult[j] /= count[j];
@@ -183,7 +183,7 @@ public class GLOScoreDistributionAroundStart implements Operation<double[][]> {
 			}
 		}
 		// compute the average if it's the method for the score calculation
-		if (scoreCalculationMethod == ScoreCalculationMethod.AVERAGE) {
+		if (scoreCalculationMethod == ScoreOperation.AVERAGE) {
 			for (int i = 0; i < totalBinCount; i++) {
 				if (count[i] != 0) {
 					result[i][1] /= count[i];

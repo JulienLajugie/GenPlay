@@ -25,7 +25,7 @@ import edu.yu.einstein.genplay.core.DAS.DASConnector;
 import edu.yu.einstein.genplay.core.DAS.DASType;
 import edu.yu.einstein.genplay.core.DAS.DataSource;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.DASDialog.DASDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -39,7 +39,7 @@ import edu.yu.einstein.genplay.util.colors.Colors;
  * @author Chirag Gorasia
  * @version 0.1
  */
-public class TAAddSCWLayerFromDAS extends TrackListActionWorker<ScoredChromosomeWindowList> {
+public class TAAddSCWLayerFromDAS extends TrackListActionWorker<SCWList> {
 
 	private static final long serialVersionUID = 8520156015849830140L; // generated ID
 	private final DataSource 	dataSource;			// DAS data source
@@ -74,7 +74,7 @@ public class TAAddSCWLayerFromDAS extends TrackListActionWorker<ScoredChromosome
 
 
 	@Override
-	protected ScoredChromosomeWindowList processAction() throws Exception {
+	protected SCWList processAction() throws Exception {
 		notifyActionStart("Loading From DAS Server", 1, false);
 		if(dataRange == DASDialog.GENERATE_GENOMEWIDE_LIST) {
 			return dasConnector.getSCWList(dataSource, dasType);
@@ -93,7 +93,7 @@ public class TAAddSCWLayerFromDAS extends TrackListActionWorker<ScoredChromosome
 
 
 	@Override
-	protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
+	protected void doAtTheEnd(SCWList actionResult) {
 		if (actionResult != null) {
 			SCWLayer newLayer = new SCWLayer(selectedTrack, actionResult, dataSource.getName());
 			newLayer.getHistory().add("Load " + dataSource.getName() + " From DAS Server", Colors.GREY);

@@ -28,7 +28,7 @@ import java.util.List;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationTwoLayersMethod;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ImmutableGenomicDataList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
@@ -86,8 +86,8 @@ public class SCWLTwoLayersEngine implements Serializable, Stoppable {
 		list.add(list1);
 		list.add(list2);
 		isSCWList = new boolean[2];
-		isSCWList[0] = list1 instanceof ScoredChromosomeWindowList;
-		isSCWList[1] = list2 instanceof ScoredChromosomeWindowList;
+		isSCWList[0] = list1 instanceof SCWList;
+		isSCWList[1] = list2 instanceof SCWList;
 		this.chromosome = chromosome;
 		onStart = new boolean[2];
 		onStart[0] = true;
@@ -443,7 +443,7 @@ public class SCWLTwoLayersEngine implements Serializable, Stoppable {
 
 	private int getLayerSize (int layer) {
 		if (isSCWList[layer]) {
-			return ((ScoredChromosomeWindowList) list.get(layer)).getView(chromosome).size();
+			return ((SCWList) list.get(layer)).getView(chromosome).size();
 		} else {
 			List<Double> data = ((BinList) list.get(layer)).get(chromosome);
 			if (data != null) {

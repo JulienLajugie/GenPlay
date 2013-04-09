@@ -28,30 +28,30 @@ import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.util.Utils;
 
 
 
 /**
- * Searches the maximum value of the selected chromosomes of a specified {@link ScoredChromosomeWindowList}
+ * Searches the maximum value of the selected chromosomes of a specified {@link SCWList}
  * @author Julien Lajugie
  */
 public class SCWLOMax implements Operation<Double> {
 
 	private final boolean[] chromoList;	// list of the selected chromosomes
-	private final ScoredChromosomeWindowList scwList; // input list
+	private final SCWList scwList; // input list
 	private boolean				stopped = false;// true if the operation must be stopped
 
 
 	/**
-	 * Searches the maximum value of the selected chromosomes of a specified {@link ScoredChromosomeWindowList}
+	 * Searches the maximum value of the selected chromosomes of a specified {@link SCWList}
 	 * @param scwList input list
 	 * @param chromoList list of boolean. A boolean set to true means that the
 	 * chromosome with the same index is going to be used for the calculation.
 	 */
-	public SCWLOMax(ScoredChromosomeWindowList scwList, boolean[] chromoList) {
+	public SCWLOMax(SCWList scwList, boolean[] chromoList) {
 		this.scwList = scwList;
 		this.chromoList = chromoList;
 	}

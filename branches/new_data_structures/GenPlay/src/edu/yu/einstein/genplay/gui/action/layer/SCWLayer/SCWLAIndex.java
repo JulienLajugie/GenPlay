@@ -25,7 +25,7 @@ import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOIndex;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
 import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
@@ -36,7 +36,7 @@ import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class SCWLAIndex extends TrackListActionOperationWorker<ScoredChromosomeWindowList> {
+public final class SCWLAIndex extends TrackListActionOperationWorker<SCWList> {
 
 	private static final long serialVersionUID = -4566157311251154991L; // generated ID
 	private static final String 	ACTION_NAME = "Indexation";			// action name
@@ -62,15 +62,15 @@ public final class SCWLAIndex extends TrackListActionOperationWorker<ScoredChrom
 
 
 	@Override
-	public Operation<ScoredChromosomeWindowList> initializeOperation() {
+	public Operation<SCWList> initializeOperation() {
 		selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			Number indexMin = NumberOptionPane.getValue(getRootPane(), "Minimum", "New minimum score:", -1000000, 1000000, 0);
 			if (indexMin != null) {
 				Number indexMax = NumberOptionPane.getValue(getRootPane(), "Maximum", "New maximum score:", -1000000, 1000000, 100);
 				if(indexMax != null) {
-					ScoredChromosomeWindowList scwList = selectedLayer.getData();
-					Operation<ScoredChromosomeWindowList> operation = new SCWLOIndex(scwList, indexMin.doubleValue(), indexMax.doubleValue());
+					SCWList scwList = selectedLayer.getData();
+					Operation<SCWList> operation = new SCWLOIndex(scwList, indexMin.doubleValue(), indexMax.doubleValue());
 					return operation;
 				}
 			}
@@ -80,7 +80,7 @@ public final class SCWLAIndex extends TrackListActionOperationWorker<ScoredChrom
 
 
 	@Override
-	protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
+	protected void doAtTheEnd(SCWList actionResult) {
 		if (actionResult != null) {
 			selectedLayer.setData(actionResult, operation.getDescription());
 		}

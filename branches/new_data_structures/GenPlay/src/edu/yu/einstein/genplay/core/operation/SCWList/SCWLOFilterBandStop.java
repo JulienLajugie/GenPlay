@@ -28,7 +28,7 @@ import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
@@ -40,9 +40,9 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScored
  * @author Julien Lajugie
  * @version 0.1
  */
-public class SCWLOFilterBandStop implements Operation<ScoredChromosomeWindowList> {
+public class SCWLOFilterBandStop implements Operation<SCWList> {
 
-	private final ScoredChromosomeWindowList 	inputList;		// input SCW list
+	private final SCWList 	inputList;		// input SCW list
 	private final double 						lowThreshold;	// low bound
 	private final double 						highThreshold;	// high bound
 	private boolean								stopped = false;// true if the operation must be stopped
@@ -50,11 +50,11 @@ public class SCWLOFilterBandStop implements Operation<ScoredChromosomeWindowList
 
 	/**
 	 * Creates an instance of {@link SCWLOFilterBandStop}
-	 * @param inputList input {@link ScoredChromosomeWindowList}
+	 * @param inputList input {@link SCWList}
 	 * @param lowThreshold low threshold
 	 * @param highThreshold high threshold
 	 */
-	public SCWLOFilterBandStop(ScoredChromosomeWindowList inputList, double lowThreshold, double highThreshold) {
+	public SCWLOFilterBandStop(SCWList inputList, double lowThreshold, double highThreshold) {
 		this.inputList = inputList;
 		this.lowThreshold = lowThreshold;
 		this.highThreshold = highThreshold;
@@ -62,7 +62,7 @@ public class SCWLOFilterBandStop implements Operation<ScoredChromosomeWindowList
 
 
 	@Override
-	public ScoredChromosomeWindowList compute() throws Exception {
+	public SCWList compute() throws Exception {
 		if (lowThreshold >= highThreshold) {
 			throw new IllegalArgumentException("The high threshold must be greater than the low one");
 		}
@@ -94,7 +94,7 @@ public class SCWLOFilterBandStop implements Operation<ScoredChromosomeWindowList
 		}
 		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			ScoredChromosomeWindowList resultList = new SimpleSCWList(result);
+			SCWList resultList = new SimpleSCWList(result);
 			return resultList;
 		} else {
 			return null;

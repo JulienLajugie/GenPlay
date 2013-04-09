@@ -30,7 +30,7 @@ import javax.swing.JOptionPane;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.operation.ExportEngine;
 import edu.yu.einstein.genplay.core.multiGenome.operation.BED.MGOBedConvertSingleFile;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
@@ -131,14 +131,14 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 
 		if (success) {
 			try {
-				ScoredChromosomeWindowList list = ((MGOBedConvertSingleFile) exportEngine).getFirstList();
+				SCWList list = ((MGOBedConvertSingleFile) exportEngine).getFirstList();
 				setTrack(dialog.getFirstAlleleTrack(), list);
 			} catch (Exception e) {
 				ExceptionManager.getInstance().caughtException(e);
 			}
 
 			try {
-				ScoredChromosomeWindowList list = ((MGOBedConvertSingleFile) exportEngine).getSecondList();
+				SCWList list = ((MGOBedConvertSingleFile) exportEngine).getSecondList();
 				setTrack(dialog.getSecondAlleleTrack(), list);
 			} catch (Exception e) {
 				ExceptionManager.getInstance().caughtException(e);
@@ -147,7 +147,7 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 	}
 
 
-	private void setTrack (Track currentTrack, ScoredChromosomeWindowList list) throws InvalidChromosomeException, InterruptedException, ExecutionException {
+	private void setTrack (Track currentTrack, SCWList list) throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		if ((list!= null) && (currentTrack != null)) {
 			// TODO replace currentTrack.getName per currentLayer.getName
 			SCWLayer newLayer = new SCWLayer(currentTrack, list, currentTrack.getName());

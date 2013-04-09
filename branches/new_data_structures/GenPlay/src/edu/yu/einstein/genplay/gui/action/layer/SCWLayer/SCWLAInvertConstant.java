@@ -26,7 +26,7 @@ import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOInvertConstant;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
 import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
@@ -37,7 +37,7 @@ import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class SCWLAInvertConstant extends TrackListActionOperationWorker<ScoredChromosomeWindowList> {
+public final class SCWLAInvertConstant extends TrackListActionOperationWorker<SCWList> {
 
 	private static final long serialVersionUID = 4027173438789911860L; 	// generated ID
 	private static final String 	ACTION_NAME = "Invert (Constant)";	// action name
@@ -64,7 +64,7 @@ public final class SCWLAInvertConstant extends TrackListActionOperationWorker<Sc
 
 
 	@Override
-	public Operation<ScoredChromosomeWindowList> initializeOperation() {
+	public Operation<SCWList> initializeOperation() {
 		selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			Number constant = NumberOptionPane.getValue(getRootPane(), "Constant", "Enter a value C in: f(x)= C / x", Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 1);
@@ -72,7 +72,7 @@ public final class SCWLAInvertConstant extends TrackListActionOperationWorker<Sc
 				if (constant.doubleValue() == 0) {
 					JOptionPane.showMessageDialog(getRootPane(), "The constant must be different from 0", "Invalid Parameter", JOptionPane.WARNING_MESSAGE);
 				} else {
-					ScoredChromosomeWindowList scwList = selectedLayer.getData();
+					SCWList scwList = selectedLayer.getData();
 					operation = new SCWLOInvertConstant(scwList, constant.doubleValue());
 					return operation;
 				}
@@ -83,7 +83,7 @@ public final class SCWLAInvertConstant extends TrackListActionOperationWorker<Sc
 
 
 	@Override
-	protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
+	protected void doAtTheEnd(SCWList actionResult) {
 		if (actionResult != null) {
 			selectedLayer.setData(actionResult, operation.getDescription());
 		}

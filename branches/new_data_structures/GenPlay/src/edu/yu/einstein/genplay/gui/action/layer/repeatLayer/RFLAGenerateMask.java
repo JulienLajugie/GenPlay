@@ -9,7 +9,7 @@ import javax.swing.ActionMap;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.repeatFamilyList.RFLOConvertIntoMask;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.repeatListView.RepeatFamilyListView;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.repeatFamilyList.RepeatFamilyList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.checkBoxTableChooser.CheckBoxTableChooserDialog;
@@ -24,7 +24,7 @@ import edu.yu.einstein.genplay.gui.track.layer.RepeatLayer;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class RFLAGenerateMask extends TrackListActionOperationWorker<ScoredChromosomeWindowList> {
+public class RFLAGenerateMask extends TrackListActionOperationWorker<SCWList> {
 
 	private static final long serialVersionUID = -167849335384206182L;  						// generated ID
 	private static final String 	ACTION_NAME = "Convert Into Mask";							// action name
@@ -50,7 +50,7 @@ public class RFLAGenerateMask extends TrackListActionOperationWorker<ScoredChrom
 
 
 	@Override
-	public Operation<ScoredChromosomeWindowList> initializeOperation() throws Exception {		
+	public Operation<SCWList> initializeOperation() throws Exception {		
 		selectedLayer = (RepeatLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			RepeatFamilyList selectedTrackData = selectedLayer.getData();
@@ -81,7 +81,7 @@ public class RFLAGenerateMask extends TrackListActionOperationWorker<ScoredChrom
 
 
 	@Override
-	protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
+	protected void doAtTheEnd(SCWList actionResult) {
 		if (actionResult != null) {
 			String layerName = "Mask from repeats:";
 			for (String currentFamily: selectedFamilies) {

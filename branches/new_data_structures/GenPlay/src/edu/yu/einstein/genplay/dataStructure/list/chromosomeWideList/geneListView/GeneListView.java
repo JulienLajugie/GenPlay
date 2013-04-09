@@ -33,7 +33,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.ListOfHalfArraysAsFloatList;
-import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.sparse.SparseSCWListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
@@ -216,7 +216,7 @@ public final class GeneListView implements Serializable, ListView<Gene>, Iterato
 		} else {
 			scorePrecision = ScorePrecision.PRECISION_32BIT;
 		}
-		SparseSCWListViewBuilder exonListBuilder = new SparseSCWListViewBuilder(scorePrecision);
+		GenericSCWListViewBuilder exonListBuilder = new GenericSCWListViewBuilder(scorePrecision);
 		for (int i = firstExonIndex; i <= lastExonIndex; i++) {
 			ScoredChromosomeWindow exon = new SimpleScoredChromosomeWindow(exonStarts.get(i), exonStops.get(i), exonScores.get(i));
 			exonListBuilder.addElementToBuild(exon);

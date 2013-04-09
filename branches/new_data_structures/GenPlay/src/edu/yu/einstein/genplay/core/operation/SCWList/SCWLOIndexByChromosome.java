@@ -29,7 +29,7 @@ import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
@@ -37,14 +37,14 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScored
 
 
 /**
- * Indexes the scores of a {@link ScoredChromosomeWindowList} based on
+ * Indexes the scores of a {@link SCWList} based on
  * the greatest and the smallest value of each chromosome
  * @author Julien Lajugie
  * @version 0.1
  */
-public class SCWLOIndexByChromosome implements Operation<ScoredChromosomeWindowList> {
+public class SCWLOIndexByChromosome implements Operation<SCWList> {
 
-	private final ScoredChromosomeWindowList	scwList;	// list to index
+	private final SCWList	scwList;	// list to index
 	private final double 						newMin;		// new min after index
 	private final double 						newMax;		// new max after index
 	private boolean				stopped = false;// true if the operation must be stopped
@@ -54,11 +54,11 @@ public class SCWLOIndexByChromosome implements Operation<ScoredChromosomeWindowL
 	 * Creates an instance of {@link SCWLOIndexByChromosome}
 	 * Indexes the scores between the specified minimum and maximum
 	 * based on the greatest and the smallest value of each chromosome.
-	 * @param scwList {@link ScoredChromosomeWindowList} to index
+	 * @param scwList {@link SCWList} to index
 	 * @param newMin minimum value after index
 	 * @param newMax maximum value after index
 	 */
-	public SCWLOIndexByChromosome(ScoredChromosomeWindowList scwList, double newMin, double newMax) {
+	public SCWLOIndexByChromosome(SCWList scwList, double newMin, double newMax) {
 		this.scwList = scwList;
 		this.newMin = newMin;
 		this.newMax = newMax;
@@ -66,7 +66,7 @@ public class SCWLOIndexByChromosome implements Operation<ScoredChromosomeWindowL
 
 
 	@Override
-	public ScoredChromosomeWindowList compute() throws InterruptedException, ExecutionException {
+	public SCWList compute() throws InterruptedException, ExecutionException {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
 
@@ -107,7 +107,7 @@ public class SCWLOIndexByChromosome implements Operation<ScoredChromosomeWindowL
 		}
 		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			ScoredChromosomeWindowList resultList = new SimpleSCWList(result);
+			SCWList resultList = new SimpleSCWList(result);
 			return resultList;
 		} else {
 			return null;

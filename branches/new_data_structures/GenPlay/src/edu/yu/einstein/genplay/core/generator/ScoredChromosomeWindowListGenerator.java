@@ -23,9 +23,9 @@ package edu.yu.einstein.genplay.core.generator;
 
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 
 
@@ -43,7 +43,7 @@ public interface ScoredChromosomeWindowListGenerator extends Generator {
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
-	public ScoredChromosomeWindowList toScoredChromosomeWindowList(ScoreCalculationMethod scm) throws InvalidChromosomeException, InterruptedException, ExecutionException;
+	public SCWList toScoredChromosomeWindowList(ScoreOperation scm) throws InvalidChromosomeException, InterruptedException, ExecutionException;
 
 	
 	/**
@@ -52,7 +52,7 @@ public interface ScoredChromosomeWindowListGenerator extends Generator {
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
-	public ScoredChromosomeWindowList toMaskChromosomeWindowList() throws InvalidChromosomeException, InterruptedException, ExecutionException;
+	public SCWList toMaskChromosomeWindowList() throws InvalidChromosomeException, InterruptedException, ExecutionException;
 	
 	
 	/**

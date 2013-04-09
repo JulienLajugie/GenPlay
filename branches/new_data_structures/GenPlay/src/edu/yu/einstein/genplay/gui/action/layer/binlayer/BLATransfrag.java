@@ -28,7 +28,7 @@ import javax.swing.ActionMap;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.binList.BLOTransfrag;
 import edu.yu.einstein.genplay.core.operation.binList.BLOTransfragGeneList;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
@@ -83,7 +83,7 @@ public class BLATransfrag extends TrackListAction {
 			int res = tfDialog.showTransfragDialog(getRootPane());
 			if (res == TransfragDialog.APPROVE_OPTION) {
 				int resType = tfDialog.getResultType();
-				final ScoreCalculationMethod operationType = Utils.chooseScoreCalculation(getRootPane());
+				final ScoreOperation operationType = Utils.chooseScoreCalculation(getRootPane());
 				if(operationType != null) {
 					try {
 						if (resType == TransfragDialog.GENERATE_GENE_LIST) {

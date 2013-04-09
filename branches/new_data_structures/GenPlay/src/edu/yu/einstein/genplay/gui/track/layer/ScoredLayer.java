@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -30,19 +30,19 @@ package edu.yu.einstein.genplay.gui.track.layer;
 public interface ScoredLayer {
 
 	/**
-	 * @return the minimum displayed score
+	 * @return the current displayed score (the score at the middle of the track)
 	 */
-	abstract double getMinimumScoreToDisplay();
+	abstract float getCurrentScoreToDisplay();
 
 
 	/**
 	 * @return the maximum displayed score
 	 */
-	abstract double getMaximumScoreToDisplay();
+	abstract float getMaximumScoreToDisplay();
 
 
 	/**
-	 * @return the current displayed score (the score at the middle of the track)
+	 * @return the minimum displayed score
 	 */
-	abstract Double getCurrentScoreToDisplay();
+	abstract float getMinimumScoreToDisplay();
 }

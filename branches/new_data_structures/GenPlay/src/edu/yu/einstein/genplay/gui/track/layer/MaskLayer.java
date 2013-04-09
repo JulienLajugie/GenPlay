@@ -30,7 +30,7 @@ import java.util.List;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.gui.dataScalerForTrackDisplay.MaskSCWLScaler;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -41,7 +41,7 @@ import edu.yu.einstein.genplay.util.colors.LayerColors;
  * Layer displaying a mask
  * @author Julien Lajugie
  */
-public class MaskLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList> implements Layer<ScoredChromosomeWindowList>, VersionedLayer<ScoredChromosomeWindowList>, ColoredLayer {
+public class MaskLayer extends AbstractVersionedLayer<SCWList> implements Layer<SCWList>, VersionedLayer<SCWList>, ColoredLayer {
 
 	private static final long serialVersionUID = 3779631846077486596L; // generated ID
 	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// Saved format version
@@ -55,7 +55,7 @@ public class MaskLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList
 	 * @param data data of the layer
 	 * @param name name of the layer
 	 */
-	public MaskLayer(Track track, ScoredChromosomeWindowList data, String name) {
+	public MaskLayer(Track track, SCWList data, String name) {
 		super(track, data, name);
 		color = LayerColors.getLayerColor();
 	}

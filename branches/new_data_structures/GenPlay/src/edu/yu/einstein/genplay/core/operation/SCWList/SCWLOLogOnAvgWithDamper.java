@@ -30,7 +30,7 @@ import java.util.concurrent.ExecutionException;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.enums.LogBase;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
@@ -38,25 +38,25 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScored
 
 
 /**
- * Applies the function f(x)=log((x + damper) / (avg + damper)) to each score x of the {@link ScoredChromosomeWindowList}
+ * Applies the function f(x)=log((x + damper) / (avg + damper)) to each score x of the {@link SCWList}
  * @author Julien Lajugie
  * @version 0.1
  */
-public class SCWLOLogOnAvgWithDamper implements Operation<ScoredChromosomeWindowList> {
+public class SCWLOLogOnAvgWithDamper implements Operation<SCWList> {
 
-	private final ScoredChromosomeWindowList 	scwList;	// input binlist
+	private final SCWList 	scwList;	// input binlist
 	private final LogBase						logBase;	// base of the log
 	private final double						damper;		// damper
 	private boolean				stopped = false;// true if the operation must be stopped
 
 
 	/**
-	 * Applies the function f(x)=log((x + damper) / (avg + damper)) to each score x of the {@link ScoredChromosomeWindowList}
-	 * @param scwList input {@link ScoredChromosomeWindowList}
+	 * Applies the function f(x)=log((x + damper) / (avg + damper)) to each score x of the {@link SCWList}
+	 * @param scwList input {@link SCWList}
 	 * @param logBase base of the logarithm
 	 * @param damper a double value
 	 */
-	public SCWLOLogOnAvgWithDamper(ScoredChromosomeWindowList scwList, LogBase logBase, double damper) {
+	public SCWLOLogOnAvgWithDamper(SCWList scwList, LogBase logBase, double damper) {
 		this.scwList = scwList;
 		this.logBase = logBase;
 		this.damper = damper;
@@ -64,7 +64,7 @@ public class SCWLOLogOnAvgWithDamper implements Operation<ScoredChromosomeWindow
 
 
 	@Override
-	public ScoredChromosomeWindowList compute() throws InterruptedException, ExecutionException, ArithmeticException {
+	public SCWList compute() throws InterruptedException, ExecutionException, ArithmeticException {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
 
@@ -126,7 +126,7 @@ public class SCWLOLogOnAvgWithDamper implements Operation<ScoredChromosomeWindow
 		}
 		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			ScoredChromosomeWindowList resultList = new SimpleSCWList(result);
+			SCWList resultList = new SimpleSCWList(result);
 			return resultList;
 		} else {
 			return null;

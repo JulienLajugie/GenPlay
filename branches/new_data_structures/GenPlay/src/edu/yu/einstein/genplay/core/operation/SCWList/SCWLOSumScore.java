@@ -29,32 +29,32 @@ import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.util.Utils;
 
 
 
 /**
- * Computes the sum of the scores of a {@link ScoredChromosomeWindowList}
+ * Computes the sum of the scores of a {@link SCWList}
  * @author Julien Lajugie
  * @version 0.1
  */
 public class SCWLOSumScore  implements Operation<Double> {
 
-	private final ScoredChromosomeWindowList 	inputList;		// input list
+	private final SCWList 	inputList;		// input list
 	private final boolean[] 					chromoList;		// 1 boolean / chromosome.
 	// each boolean sets to true means that the corresponding chromosome is selected
 	private boolean								stopped = false;// true if the operation must be stopped
 
 
 	/**
-	 * Computes the sum of the scores of a {@link ScoredChromosomeWindowList}
-	 * @param inputList input {@link ScoredChromosomeWindowList}
+	 * Computes the sum of the scores of a {@link SCWList}
+	 * @param inputList input {@link SCWList}
 	 * @param chromoList list of boolean. A boolean set to true means that the
 	 * chromosome with the same index is going to be used for the calculation.
 	 */
-	public SCWLOSumScore(ScoredChromosomeWindowList inputList, boolean[] chromoList) {
+	public SCWLOSumScore(SCWList inputList, boolean[] chromoList) {
 		this.inputList = inputList;
 		this.chromoList = chromoList;
 	}

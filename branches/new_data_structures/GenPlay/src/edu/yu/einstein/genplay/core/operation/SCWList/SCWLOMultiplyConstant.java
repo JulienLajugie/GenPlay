@@ -28,7 +28,7 @@ import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
@@ -40,9 +40,9 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScored
  * @author Julien Lajugie
  * @version 0.1
  */
-public class SCWLOMultiplyConstant implements Operation<ScoredChromosomeWindowList> {
+public class SCWLOMultiplyConstant implements Operation<SCWList> {
 
-	private final ScoredChromosomeWindowList 	scwList;	// input list
+	private final SCWList 	scwList;	// input list
 	private final double 						constant;	// constant of the multiplication
 	private boolean				stopped = false;// true if the operation must be stopped
 
@@ -52,14 +52,14 @@ public class SCWLOMultiplyConstant implements Operation<ScoredChromosomeWindowLi
 	 * @param scwList input list
 	 * @param constant constant to add
 	 */
-	public SCWLOMultiplyConstant(ScoredChromosomeWindowList scwList, double constant) {
+	public SCWLOMultiplyConstant(SCWList scwList, double constant) {
 		this.scwList = scwList;
 		this.constant = constant;
 	}
 
 
 	@Override
-	public ScoredChromosomeWindowList compute() throws Exception {
+	public SCWList compute() throws Exception {
 		if (constant == 1) {
 			return scwList;
 		}
@@ -93,7 +93,7 @@ public class SCWLOMultiplyConstant implements Operation<ScoredChromosomeWindowLi
 		}
 		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			ScoredChromosomeWindowList resultList = new SimpleSCWList(result);
+			SCWList resultList = new SimpleSCWList(result);
 			return resultList;
 		} else {
 			return null;

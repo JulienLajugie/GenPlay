@@ -28,7 +28,7 @@ import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
@@ -36,13 +36,13 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScored
 
 
 /**
- * Computes a Standard Score normalization on a {@link ScoredChromosomeWindowList}
+ * Computes a Standard Score normalization on a {@link SCWList}
  * @author Julien Lajugie
  * @version 0.1
  */
-public class SCWLONormalizeStandardScore implements Operation<ScoredChromosomeWindowList> {
+public class SCWLONormalizeStandardScore implements Operation<SCWList> {
 
-	private final ScoredChromosomeWindowList 	scwList;		// input list
+	private final SCWList 	scwList;		// input list
 	private final SCWLOAverage 					avgOp;			// average
 	private final SCWLOStandardDeviation 		stdevOp;		// standard deviation
 	private boolean								stopped = false;// true if the operation must be stopped
@@ -52,14 +52,14 @@ public class SCWLONormalizeStandardScore implements Operation<ScoredChromosomeWi
 	 * Creates an instance of {@link SCWLONormalizeStandardScore}
 	 * @param scwList input list
 	 */
-	public SCWLONormalizeStandardScore(ScoredChromosomeWindowList scwList) {
+	public SCWLONormalizeStandardScore(SCWList scwList) {
 		this.scwList = scwList;
 		avgOp = new SCWLOAverage(scwList, null);
 		stdevOp = new SCWLOStandardDeviation(scwList, null);
 	}
 
 	@Override
-	public ScoredChromosomeWindowList compute() throws Exception {
+	public SCWList compute() throws Exception {
 		// compute average
 		final double avg = avgOp.compute();
 		// compute standard deviation
@@ -97,7 +97,7 @@ public class SCWLONormalizeStandardScore implements Operation<ScoredChromosomeWi
 		}
 		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			ScoredChromosomeWindowList resultList = new SimpleSCWList(result);
+			SCWList resultList = new SimpleSCWList(result);
 			return resultList;
 		} else {
 			return null;

@@ -29,7 +29,7 @@ import java.util.concurrent.Callable;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.util.Utils;
@@ -44,7 +44,7 @@ import edu.yu.einstein.genplay.util.Utils;
 public class SCWLOAverage implements Operation<Double> {
 
 	private final boolean[] chromoList; // list of the selected chromosomes
-	private final ScoredChromosomeWindowList scwList; // input list
+	private final SCWList scwList; // input list
 	private Long length = null; // sum of the lengths of non null windows
 	private boolean				stopped = false;// true if the operation must be stopped
 
@@ -55,7 +55,7 @@ public class SCWLOAverage implements Operation<Double> {
 	 * @param chromoList set to true each chromosome of this list that you want to use in the calculation
 	 * Perform the operation on every chromosome if null
 	 */
-	public SCWLOAverage(ScoredChromosomeWindowList scwList, boolean[] chromoList) {
+	public SCWLOAverage(SCWList scwList, boolean[] chromoList) {
 		this.chromoList = chromoList;
 		this.scwList = scwList;
 	}
@@ -69,7 +69,7 @@ public class SCWLOAverage implements Operation<Double> {
 	 * chromosome with the same index is going to be used for the calculation.
 	 * @param length sum of the lengths of non null windows
 	 */
-	public SCWLOAverage(ScoredChromosomeWindowList scwList, boolean[] chromoList, long length) {
+	public SCWLOAverage(SCWList scwList, boolean[] chromoList, long length) {
 		this.chromoList = chromoList;
 		this.scwList = scwList;
 		this.length = length;

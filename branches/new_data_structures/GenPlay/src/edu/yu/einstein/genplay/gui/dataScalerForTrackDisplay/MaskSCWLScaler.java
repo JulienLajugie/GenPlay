@@ -25,7 +25,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.mask.MaskListViewBuilder;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
@@ -34,10 +34,10 @@ import edu.yu.einstein.genplay.util.ChromosomeWindowLists;
 
 
 /**
- * This class scales a {@link ScoredChromosomeWindowList} of masks to be displayed on a track.
+ * This class scales a {@link SCWList} of masks to be displayed on a track.
  * @author Julien Lajugie
  */
-public class MaskSCWLScaler implements DataScalerForTrackDisplay<ScoredChromosomeWindowList, ListView<ScoredChromosomeWindow>> {
+public class MaskSCWLScaler implements DataScalerForTrackDisplay<SCWList, ListView<ScoredChromosomeWindow>> {
 
 	/** Generate serial ID */
 	private static final long serialVersionUID = -6692681405567001332L;
@@ -52,14 +52,14 @@ public class MaskSCWLScaler implements DataScalerForTrackDisplay<ScoredChromosom
 	private ListView<ScoredChromosomeWindow> scaledSCWList;
 
 	/** Data to be scaled for track display */
-	private final ScoredChromosomeWindowList dataToScale;
+	private final SCWList dataToScale;
 
 
 	/**
 	 * Creates an instance of {@link MaskSCWLScaler}
 	 * @param dataToScale the data that needs to be scaled
 	 */
-	public MaskSCWLScaler(ScoredChromosomeWindowList dataToScale) {
+	public MaskSCWLScaler(SCWList dataToScale) {
 		this.dataToScale = dataToScale;
 	}
 
@@ -82,7 +82,7 @@ public class MaskSCWLScaler implements DataScalerForTrackDisplay<ScoredChromosom
 
 
 	@Override
-	public ScoredChromosomeWindowList getDataToScale() {
+	public SCWList getDataToScale() {
 		return dataToScale;
 	}
 

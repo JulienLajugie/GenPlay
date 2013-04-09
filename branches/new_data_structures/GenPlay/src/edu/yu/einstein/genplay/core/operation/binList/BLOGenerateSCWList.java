@@ -22,18 +22,18 @@
 package edu.yu.einstein.genplay.core.operation.binList;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 
 
 /**
- * Creates a SCWList from the data of the input {@link ScoredChromosomeWindowList}
+ * Creates a SCWList from the data of the input {@link SCWList}
  * @author Julien Lajugie
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class BLOGenerateSCWList implements Operation<ScoredChromosomeWindowList> {
+public class BLOGenerateSCWList implements Operation<SCWList> {
 
 	private final BinList 	binList; 		// input list
 
@@ -48,7 +48,7 @@ public class BLOGenerateSCWList implements Operation<ScoredChromosomeWindowList>
 
 
 	@Override
-	public ScoredChromosomeWindowList compute() throws Exception {
+	public SCWList compute() throws Exception {
 		return new SimpleSCWList(this.binList);
 	}
 

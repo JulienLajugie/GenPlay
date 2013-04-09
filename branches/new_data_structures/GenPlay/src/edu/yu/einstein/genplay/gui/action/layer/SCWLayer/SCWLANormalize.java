@@ -25,7 +25,7 @@ import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLONormalize;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
 import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
@@ -36,7 +36,7 @@ import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class SCWLANormalize extends TrackListActionOperationWorker<ScoredChromosomeWindowList> {
+public class SCWLANormalize extends TrackListActionOperationWorker<SCWList> {
 
 	private static final long serialVersionUID = 3820923997838773226L;	// generated ID
 	private static final String 	ACTION_NAME = "Normalize";			// action name
@@ -63,13 +63,13 @@ public class SCWLANormalize extends TrackListActionOperationWorker<ScoredChromos
 
 
 	@Override
-	public Operation<ScoredChromosomeWindowList> initializeOperation() {
+	public Operation<SCWList> initializeOperation() {
 		selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			Number factor = NumberOptionPane.getValue(getRootPane(), "Multiplicative constant", "Enter a factor of X:", 0, 1000000000, 10000000);
 			if(factor != null) {
-				ScoredChromosomeWindowList inputList = selectedLayer.getData();
-				Operation<ScoredChromosomeWindowList> operation = new SCWLONormalize(inputList, factor.doubleValue());
+				SCWList inputList = selectedLayer.getData();
+				Operation<SCWList> operation = new SCWLONormalize(inputList, factor.doubleValue());
 				return operation;
 			}
 		}
@@ -78,7 +78,7 @@ public class SCWLANormalize extends TrackListActionOperationWorker<ScoredChromos
 
 
 	@Override
-	protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
+	protected void doAtTheEnd(SCWList actionResult) {
 		if (actionResult != null) {
 			selectedLayer.setData(actionResult, operation.getDescription());
 		}

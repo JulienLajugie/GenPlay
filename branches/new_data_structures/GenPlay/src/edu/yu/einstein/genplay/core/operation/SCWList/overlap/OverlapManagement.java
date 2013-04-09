@@ -29,7 +29,7 @@ import java.util.concurrent.ExecutionException;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
@@ -112,7 +112,7 @@ public class OverlapManagement implements Serializable {
 	 * Sets the score calculation method
 	 * @param scm the score calculation method
 	 */
-	public void setScoreCalculationMethod (ScoreCalculationMethod scm) {
+	public void setScoreCalculationMethod (ScoreOperation scm) {
 		this.overLappingEngineList = new ArrayList<OverlapEngine>();
 		for (int i = 0; i < projectChromosome.size(); i++) {
 			this.overLappingEngineList.add(new OverlapEngine(scm));

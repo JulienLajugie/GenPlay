@@ -51,7 +51,7 @@ public interface ListViewBuilder<T> extends Cloneable {
 
 	/**
 	 * @return a new instance of {@link ListViewBuilder} that is a clone of the current prototype instance.
-	 * Potential elements added to prototype instance won't be present in the clone.
+	 * Potential elements to build added to prototype instance won't be present in the clone.
 	 * @throws CloneNotSupportedException
 	 */
 	public ListViewBuilder<T> clone() throws CloneNotSupportedException;

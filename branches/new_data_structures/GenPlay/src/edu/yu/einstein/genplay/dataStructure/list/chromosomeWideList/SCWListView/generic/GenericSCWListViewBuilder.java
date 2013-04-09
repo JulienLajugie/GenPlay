@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.sparse;
+package edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic;
 
 import java.util.List;
 
@@ -34,10 +34,10 @@ import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
 
 /**
  * Implementation of the {@link ListViewBuilder} interface vending
- * {@link SparseSCWListView} objects.
+ * {@link GenericSCWListView} objects.
  * @author Julien Lajugie
  */
-public final class SparseSCWListViewBuilder implements ListViewBuilder<ScoredChromosomeWindow> {
+public final class GenericSCWListViewBuilder implements ListViewBuilder<ScoredChromosomeWindow> {
 
 	/** Precision of the scores */
 	private final ScorePrecision scorePrecision;
@@ -53,10 +53,10 @@ public final class SparseSCWListViewBuilder implements ListViewBuilder<ScoredChr
 
 
 	/**
-	 * Creates an instance of {@link SparseSCWListViewBuilder}
+	 * Creates an instance of {@link GenericSCWListViewBuilder}
 	 * @param scorePrecision precision of the scores of the {@link ListView} to build
 	 */
-	public SparseSCWListViewBuilder(ScorePrecision scorePrecision) {
+	public GenericSCWListViewBuilder(ScorePrecision scorePrecision) {
 		this.scorePrecision = scorePrecision;
 		windowStarts = new ListOfIntArraysAsIntegerList();
 		windowStops = new ListOfIntArraysAsIntegerList();
@@ -98,19 +98,19 @@ public final class SparseSCWListViewBuilder implements ListViewBuilder<ScoredChr
 
 
 	/**
-	 * Creates a clone of this {@link SparseSCWListViewBuilder} prototype
+	 * Creates a clone of this {@link GenericSCWListViewBuilder} prototype
 	 * containing no elements.
 	 */
 	@Override
-	public SparseSCWListViewBuilder clone() throws CloneNotSupportedException {
-		SparseSCWListViewBuilder clone = new SparseSCWListViewBuilder(scorePrecision);
+	public GenericSCWListViewBuilder clone() throws CloneNotSupportedException {
+		GenericSCWListViewBuilder clone = new GenericSCWListViewBuilder(scorePrecision);
 		return clone;
 	}
 
 
 	@Override
 	public ListView<ScoredChromosomeWindow> getListView() {
-		ListView<ScoredChromosomeWindow> listView = new SparseSCWListView(windowStarts, windowStops, windowScores);
+		ListView<ScoredChromosomeWindow> listView = new GenericSCWListView(windowStarts, windowStops, windowScores);
 		windowStarts = null;
 		windowStops = null;
 		windowScores = null;

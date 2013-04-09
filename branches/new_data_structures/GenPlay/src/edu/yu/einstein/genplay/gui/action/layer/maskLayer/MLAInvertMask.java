@@ -26,7 +26,7 @@ import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.SCWList.MCWLOInvertMask;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.track.layer.MaskLayer;
 
@@ -37,7 +37,7 @@ import edu.yu.einstein.genplay.gui.track.layer.MaskLayer;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public final class MLAInvertMask extends TrackListActionOperationWorker<ScoredChromosomeWindowList> {
+public final class MLAInvertMask extends TrackListActionOperationWorker<SCWList> {
 
 	private static final long 				serialVersionUID = 4027173438789911860L; 		// generated ID
 	private static final String 			ACTION_NAME = "Invert Mask";					// action name
@@ -63,10 +63,10 @@ public final class MLAInvertMask extends TrackListActionOperationWorker<ScoredCh
 
 
 	@Override
-	public Operation<ScoredChromosomeWindowList> initializeOperation() {
+	public Operation<SCWList> initializeOperation() {
 		selectedLayer = (MaskLayer) getValue("Layer");
 		if (selectedLayer != null) {
-			ScoredChromosomeWindowList mask = selectedLayer.getData();
+			SCWList mask = selectedLayer.getData();
 			operation = new MCWLOInvertMask(mask);
 			return operation;
 		}
@@ -75,7 +75,7 @@ public final class MLAInvertMask extends TrackListActionOperationWorker<ScoredCh
 
 
 	@Override
-	protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
+	protected void doAtTheEnd(SCWList actionResult) {
 		if (actionResult != null) {
 			selectedLayer.setData(actionResult, "Mask Inverted");
 		}

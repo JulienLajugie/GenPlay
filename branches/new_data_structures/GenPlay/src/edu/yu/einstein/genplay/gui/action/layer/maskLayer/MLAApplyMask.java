@@ -29,7 +29,7 @@ import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOTwoLayers;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationTwoLayersMethod;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ImmutableGenomicDataList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
 import edu.yu.einstein.genplay.gui.dialog.trackChooser.TrackChooser;
@@ -105,7 +105,7 @@ public final class MLAApplyMask extends TrackListActionOperationWorker<Immutable
 	@Override
 	protected void doAtTheEnd(ImmutableGenomicDataList<?> actionResult) {
 		if (actionResult != null) {
-			SCWLayer newLayer = new SCWLayer(resultTrack, (ScoredChromosomeWindowList) actionResult, maskedLayer.getName() + " masked");
+			SCWLayer newLayer = new SCWLayer(resultTrack, (SCWList) actionResult, maskedLayer.getName() + " masked");
 			// add info to the history
 			newLayer.getHistory().add(maskedLayer.getName() + " masked by " + selectedLayer.getName(), Colors.GREY);
 			resultTrack.getLayers().add(newLayer);

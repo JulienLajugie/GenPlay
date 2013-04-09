@@ -28,7 +28,7 @@ import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOFilterBandStop;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOFilterCount;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOFilterPercentage;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOFilterThreshold;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.filterDialog.FilterDialog;
 import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
@@ -39,7 +39,7 @@ import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
  * Different kind of filters are availables
  * @author Julien Lajugie
  */
-public class SCWLAFilter extends TrackListActionOperationWorker<ScoredChromosomeWindowList> {
+public class SCWLAFilter extends TrackListActionOperationWorker<SCWList> {
 
 	private static final long serialVersionUID = 960963269753754801L;	// generated ID
 	private static final String 	ACTION_NAME = "Filter";				// action name
@@ -65,12 +65,12 @@ public class SCWLAFilter extends TrackListActionOperationWorker<ScoredChromosome
 	}
 
 	@Override
-	public Operation<ScoredChromosomeWindowList> initializeOperation() {
+	public Operation<SCWList> initializeOperation() {
 		selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			FilterDialog filterDialog = new FilterDialog();
 			if (filterDialog.showFilterDialog(getRootPane()) == FilterDialog.APPROVE_OPTION) {
-				ScoredChromosomeWindowList list = selectedLayer.getData();
+				SCWList list = selectedLayer.getData();
 				Number min = filterDialog.getMinInput();
 				Number max = filterDialog.getMaxInput();
 				boolean isSaturation = filterDialog.isSaturation();
@@ -94,7 +94,7 @@ public class SCWLAFilter extends TrackListActionOperationWorker<ScoredChromosome
 
 
 	@Override
-	protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
+	protected void doAtTheEnd(SCWList actionResult) {
 		if (actionResult != null) {
 			selectedLayer.setData(actionResult, operation.getDescription());
 		}

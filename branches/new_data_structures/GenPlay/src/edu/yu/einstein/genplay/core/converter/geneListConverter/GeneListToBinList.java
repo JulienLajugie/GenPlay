@@ -23,7 +23,7 @@ package edu.yu.einstein.genplay.core.converter.geneListConverter;
 
 import edu.yu.einstein.genplay.core.converter.Converter;
 import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
@@ -40,7 +40,7 @@ public class GeneListToBinList implements Converter {
 	private final GeneList 						list; 			// The input list.
 	private final int 							binSize;		// size of the bin of the result binlist
 	private final ScorePrecision 				precision;		// precision of the result binlist
-	private final ScoreCalculationMethod 		method; 		// method for the calculation of the scores of the result binlist
+	private final ScoreOperation 		method; 		// method for the calculation of the scores of the result binlist
 	private GenomicListView<?> 			result;			// The output list.
 
 
@@ -51,7 +51,7 @@ public class GeneListToBinList implements Converter {
 	 * @param precision precision of the data (eg: 1/8/16/32/64-BIT)
 	 * @param method method to generate the BinList (eg: AVERAGE, SUM or MAXIMUM)
 	 */
-	public GeneListToBinList(GeneList geneList, int binSize, ScorePrecision precision, ScoreCalculationMethod method) {
+	public GeneListToBinList(GeneList geneList, int binSize, ScorePrecision precision, ScoreOperation method) {
 		list = geneList;
 		this.binSize = binSize;
 		this.precision = precision;

@@ -25,7 +25,7 @@ import javax.naming.OperationNotSupportedException;
 
 import edu.yu.einstein.genplay.core.converter.Converter;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 
@@ -44,7 +44,7 @@ public class BinListToGeneList implements Converter {
 
 
 	/**
-	 * Creates a {@link ScoredChromosomeWindowList} from the data of the input {@link BinList}
+	 * Creates a {@link SCWList} from the data of the input {@link BinList}
 	 * @param binList the BinList
 	 */
 	public BinListToGeneList(BinList binList) {

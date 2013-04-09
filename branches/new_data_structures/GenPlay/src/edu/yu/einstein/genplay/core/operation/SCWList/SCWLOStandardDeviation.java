@@ -28,20 +28,20 @@ import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
- * Computes the average value of the scores of the {@link ScoredChromosomeWindowList}
+ * Computes the average value of the scores of the {@link SCWList}
  * @author Julien Lajugie
  * @version 0.1
  */
 public class SCWLOStandardDeviation implements Operation<Double> {
 
 	private final boolean[] 					chromoList; 		// list of the selected chromosomes
-	private final ScoredChromosomeWindowList 	scwList; 			// input list
+	private final SCWList 	scwList; 			// input list
 	private boolean								stopped = false;	// true if the operation must be stopped
 
 
@@ -51,7 +51,7 @@ public class SCWLOStandardDeviation implements Operation<Double> {
 	 * @param chromoList set to true each chromosome of this list that you want to use in the calculation
 	 * Perform the operation on every chromosome if null
 	 */
-	public SCWLOStandardDeviation(ScoredChromosomeWindowList scwList, boolean[] chromoList) {
+	public SCWLOStandardDeviation(SCWList scwList, boolean[] chromoList) {
 		this.chromoList = chromoList;
 		this.scwList = scwList;
 	}

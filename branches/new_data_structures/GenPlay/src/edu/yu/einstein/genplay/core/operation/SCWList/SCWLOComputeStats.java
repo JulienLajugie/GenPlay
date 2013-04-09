@@ -31,11 +31,11 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 /**
- * Computes statistics (eg: min, max, avg, stdev) on a specified {@link ScoredChromosomeWindowList}
+ * Computes statistics (eg: min, max, avg, stdev) on a specified {@link SCWList}
  * @author Julien Lajugie
  */
 public class SCWLOComputeStats implements Operation<Void> {
@@ -59,7 +59,7 @@ public class SCWLOComputeStats implements Operation<Void> {
 	private Long nonNullLength = null;
 
 	/**  input list */
-	private final ScoredChromosomeWindowList inputList;
+	private final SCWList inputList;
 
 	/** True if the operation must be stopped */
 	private boolean stopped = false;
@@ -69,7 +69,7 @@ public class SCWLOComputeStats implements Operation<Void> {
 	 * Creates an instance of {@link SCWLOComputeStats}
 	 * @param inputList input list to analyze
 	 */
-	public SCWLOComputeStats(ScoredChromosomeWindowList inputList) {
+	public SCWLOComputeStats(SCWList inputList) {
 		this.inputList = inputList;
 	}
 
@@ -198,7 +198,7 @@ public class SCWLOComputeStats implements Operation<Void> {
 	/**
 	 * @return the inputList
 	 */
-	public ScoredChromosomeWindowList getInputList() {
+	public SCWList getInputList() {
 		return inputList;
 	}
 

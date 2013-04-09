@@ -31,7 +31,7 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
  * A {@link GenomicListView} of {@link ScoredChromosomeWindow}
  * @author Julien Lajugie
  */
-public interface ScoredChromosomeWindowList extends GenomicListView<ScoredChromosomeWindow> {
+public interface SCWList extends GenomicListView<ScoredChromosomeWindow> {
 
 
 	/**
@@ -63,7 +63,7 @@ public interface ScoredChromosomeWindowList extends GenomicListView<ScoredChromo
 	 * @param position a position on the chromosome
 	 * @return the score at the specified position
 	 */
-	public double getScore(Chromosome chromosome, int position);
+	public float getScore(Chromosome chromosome, int position);
 
 
 	/**
@@ -73,7 +73,7 @@ public interface ScoredChromosomeWindowList extends GenomicListView<ScoredChromo
 
 
 	/**
-	 * @return the type of the {@link ScoredChromosomeWindowList}
+	 * @return the type of the {@link SCWList}
 	 */
 	public SCWListType getSCWListType();
 

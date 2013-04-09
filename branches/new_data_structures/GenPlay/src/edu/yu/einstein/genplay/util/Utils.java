@@ -39,14 +39,13 @@ import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.FilterType;
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
 import edu.yu.einstein.genplay.dataStructure.enums.IslandResultType;
 import edu.yu.einstein.genplay.dataStructure.enums.LogBase;
 import edu.yu.einstein.genplay.dataStructure.enums.SaturationType;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationTwoLayersMethod;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.gui.dialog.chromosomeChooser.ChromosomeChooserDialog;
 import edu.yu.einstein.genplay.gui.fileFilter.BedFilter;
@@ -338,36 +337,36 @@ public final class Utils {
 
 
 	/**
-	 * A dialog box used to choose a {@link ScoreCalculationMethod}
+	 * A dialog box used to choose a {@link ScoreOperation}
 	 * @param parentComponent the parent Component for the dialog
-	 * @return a {@link ScoreCalculationMethod}
+	 * @return a {@link ScoreOperation}
 	 */
-	public final static ScoreCalculationMethod chooseScoreCalculation(Component parentComponent) {
-		return (ScoreCalculationMethod)JOptionPane.showInputDialog(
+	public final static ScoreOperation chooseScoreCalculation(Component parentComponent) {
+		return (ScoreOperation)JOptionPane.showInputDialog(
 				parentComponent,
 				"Choose a method for the calculation of the score",
 				"Score Calculation",
 				JOptionPane.QUESTION_MESSAGE,
 				null,
-				ScoreCalculationMethod.values(),
-				ScoreCalculationMethod.AVERAGE);
+				ScoreOperation.values(),
+				ScoreOperation.AVERAGE);
 	}
 
 
 	/**
-	 * A dialog box used to choose a {@link ScoreCalculationMethod}
+	 * A dialog box used to choose a {@link ScoreOperation}
 	 * @param parentComponent the parent Component for the dialog
-	 * @return a {@link ScoreCalculationMethod}
+	 * @return a {@link ScoreOperation}
 	 */
-	public final static ScoreCalculationTwoLayersMethod chooseScoreCalculationTwoLayersMethod(Component parentComponent) {
-		return (ScoreCalculationTwoLayersMethod)JOptionPane.showInputDialog(
+	public final static ScoreOperation chooseScoreOperation(Component parentComponent) {
+		return (ScoreOperation)JOptionPane.showInputDialog(
 				parentComponent,
 				"Choose a method for the calculation of the score",
 				"Score Calculation",
 				JOptionPane.QUESTION_MESSAGE,
 				null,
-				ScoreCalculationTwoLayersMethod.values(),
-				ScoreCalculationTwoLayersMethod.ADDITION);
+				ScoreOperation.values(),
+				ScoreOperation.ADDITION);
 	}
 
 

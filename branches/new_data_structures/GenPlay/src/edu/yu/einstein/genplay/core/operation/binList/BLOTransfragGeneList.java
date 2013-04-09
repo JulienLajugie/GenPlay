@@ -31,7 +31,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
@@ -53,7 +53,7 @@ public class BLOTransfragGeneList implements Operation<GeneList> {
 
 	private final BinList 					binList;		// input binlist
 	private final int 						zeroBinGap; 	// number of zero value bins defining a gap between two islands
-	private final ScoreCalculationMethod 	operation;		//sum / average / max
+	private final ScoreOperation 	operation;		//sum / average / max
 	private final ProjectChromosome projectChromosome; // Instance of the Chromosome Manager
 	private boolean							stopped = false;// true if the operation must be stopped
 
@@ -67,7 +67,7 @@ public class BLOTransfragGeneList implements Operation<GeneList> {
 	 * @param zeroBinGap number of zero value windows defining a gap between two islands
 	 * @param operation operation to use to compute the score of the intervals
 	 */
-	public BLOTransfragGeneList(BinList binList, int zeroBinGap, ScoreCalculationMethod operation) {
+	public BLOTransfragGeneList(BinList binList, int zeroBinGap, ScoreOperation operation) {
 		this.binList = binList;
 		this.zeroBinGap = zeroBinGap;
 		this.operation = operation;
@@ -120,10 +120,10 @@ public class BLOTransfragGeneList implements Operation<GeneList> {
 							}
 							if (regionStop >= regionStart) {
 								double regionScore = 0;
-								if (operation == ScoreCalculationMethod.AVERAGE) {
+								if (operation == ScoreOperation.AVERAGE) {
 									// all the windows of the region are set with the average value on the region
 									regionScore = FloatLists.average(currentList, regionStart, regionStop);
-								} else if (operation == ScoreCalculationMethod.SUM) {
+								} else if (operation == ScoreOperation.SUM) {
 									// all the windows of the region are set with the sum value on the region
 									regionScore = FloatLists.sum(currentList, regionStart, regionStop);
 								} else {

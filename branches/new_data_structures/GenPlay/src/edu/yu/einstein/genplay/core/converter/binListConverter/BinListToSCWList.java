@@ -23,13 +23,13 @@ package edu.yu.einstein.genplay.core.converter.binListConverter;
 
 import edu.yu.einstein.genplay.core.converter.Converter;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 
 
 /**
- * Creates a {@link ScoredChromosomeWindowList} from the data of the input {@link BinList}
+ * Creates a {@link SCWList} from the data of the input {@link BinList}
  * @author Julien Lajugie
  * @author Nicolas Fourel
  * @version 0.1
@@ -41,7 +41,7 @@ public class BinListToSCWList implements Converter {
 
 
 	/**
-	 * Creates a {@link ScoredChromosomeWindowList} from the data of the input {@link BinList}
+	 * Creates a {@link SCWList} from the data of the input {@link BinList}
 	 * @param binList the BinList
 	 */
 	public BinListToSCWList(BinList binList) {

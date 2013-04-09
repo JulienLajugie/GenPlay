@@ -25,7 +25,7 @@ import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLONormalizeStandardScore;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 
@@ -35,7 +35,7 @@ import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class SCWLANormalizeStandardScore extends TrackListActionOperationWorker<ScoredChromosomeWindowList> {
+public class SCWLANormalizeStandardScore extends TrackListActionOperationWorker<SCWList> {
 
 	private static final long serialVersionUID = 4481408947601757066L;	// generated ID
 	private static final String 	ACTION_NAME = "Standard Score";		// action name
@@ -62,11 +62,11 @@ public class SCWLANormalizeStandardScore extends TrackListActionOperationWorker<
 
 
 	@Override
-	public Operation<ScoredChromosomeWindowList> initializeOperation() {
+	public Operation<SCWList> initializeOperation() {
 		selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
-			ScoredChromosomeWindowList scwList = selectedLayer.getData();
-			Operation<ScoredChromosomeWindowList> operation = new SCWLONormalizeStandardScore(scwList);
+			SCWList scwList = selectedLayer.getData();
+			Operation<SCWList> operation = new SCWLONormalizeStandardScore(scwList);
 			return operation;
 		}
 		return null;
@@ -74,7 +74,7 @@ public class SCWLANormalizeStandardScore extends TrackListActionOperationWorker<
 
 
 	@Override
-	protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
+	protected void doAtTheEnd(SCWList actionResult) {
 		if (actionResult != null) {
 			selectedLayer.setData(actionResult, operation.getDescription());
 		}

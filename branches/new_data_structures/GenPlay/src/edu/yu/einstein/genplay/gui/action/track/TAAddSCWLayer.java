@@ -30,9 +30,9 @@ import edu.yu.einstein.genplay.core.IO.extractor.ReadLengthAndShiftHandler;
 import edu.yu.einstein.genplay.core.IO.extractor.StrandedExtractor;
 import edu.yu.einstein.genplay.core.generator.ScoredChromosomeWindowListGenerator;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.newCurveLayerDialog.NewCurveLayerDialog;
@@ -47,12 +47,12 @@ import edu.yu.einstein.genplay.util.colors.Colors;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class TAAddSCWLayer extends TrackListActionExtractorWorker<ScoredChromosomeWindowList> {
+public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList> {
 
 	private static final long serialVersionUID = -7836987725953057426L;								// generated ID
 	private static final String ACTION_NAME = "Add Variable Window Layer";							// action name
 	private static final String DESCRIPTION = "Add a layer displaying windows of variable sizes"; 	// tooltip
-	private ScoreCalculationMethod 	scoreCalculation = null;										// method of calculation for the score
+	private ScoreOperation 	scoreCalculation = null;										// method of calculation for the score
 	private Strand					strand = null;													// strand to extract
 	private int						strandShift = 0;												// position shift on a strand
 	private int 					readLength = 0;													// user specified length of the reads (0 to keep the original length)
@@ -129,7 +129,7 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<ScoredCh
 
 
 	@Override
-	protected ScoredChromosomeWindowList generateList() throws Exception {
+	protected SCWList generateList() throws Exception {
 		notifyActionStop();
 		if (((ScoredChromosomeWindowListGenerator)extractor).overlapped()){
 			NewCurveLayerDialog nctd = new NewCurveLayerDialog(name, true, false, false, true, false, false,  false);
@@ -152,7 +152,7 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<ScoredCh
 
 
 	@Override
-	public void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
+	public void doAtTheEnd(SCWList actionResult) {
 		if (actionResult != null) {
 			Track selectedTrack = getTrackListPanel().getSelectedTrack();
 			SCWLayer newLayer = new SCWLayer(selectedTrack, actionResult, fileToExtract.getName());

@@ -34,14 +34,14 @@ import edu.yu.einstein.genplay.core.generator.ScoredChromosomeWindowListGenerato
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.MaskSCWListFactory;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.repeatFamilyList.RepeatFamilyList;
@@ -181,12 +181,12 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 
 
 	@Override
-	public ScoredChromosomeWindowList toScoredChromosomeWindowList(ScoreCalculationMethod scm) throws InvalidChromosomeException, InterruptedException, ExecutionException {
+	public SCWList toScoredChromosomeWindowList(ScoreOperation scm) throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		return new SimpleSCWList(startList, stopList, scoreList, scm);
 	}
 
 	@Override
-	public ScoredChromosomeWindowList toMaskChromosomeWindowList() throws InvalidChromosomeException, InterruptedException,	ExecutionException {
+	public SCWList toMaskChromosomeWindowList() throws InvalidChromosomeException, InterruptedException,	ExecutionException {
 		return MaskSCWListFactory.createMaskSCWArrayList(startList, stopList);
 	}
 
@@ -209,7 +209,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 
 
 	@Override
-	public BinList toBinList(int binSize, ScorePrecision precision, ScoreCalculationMethod method) throws IllegalArgumentException, InterruptedException, ExecutionException {
+	public BinList toBinList(int binSize, ScorePrecision precision, ScoreOperation method) throws IllegalArgumentException, InterruptedException, ExecutionException {
 		return new BinList(binSize, precision, method, startList, stopList, scoreList);
 	}
 

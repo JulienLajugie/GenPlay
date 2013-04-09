@@ -38,7 +38,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.DisplayableListOfLists;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.CompressibleList;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.ListFactory;
@@ -257,7 +257,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @throws InterruptedException
 	 * @throws IllegalArgumentException thrown if precision is not valid
 	 */
-	public BinList(int binSize, ScorePrecision precision, final ScoreCalculationMethod method, final BinList binList, boolean generateStatistics) throws InterruptedException, ExecutionException {
+	public BinList(int binSize, ScorePrecision precision, final ScoreOperation method, final BinList binList, boolean generateStatistics) throws InterruptedException, ExecutionException {
 		super();
 		this.binSize = binSize;
 		this.precision = precision;
@@ -277,7 +277,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 						int currentSize = (currentChromosome.getLength() / getBinSize()) + 1;
 						// array to count how many elements for the average
 						int[] counts = null;
-						if (method == ScoreCalculationMethod.AVERAGE) {
+						if (method == ScoreOperation.AVERAGE) {
 							counts = new int[currentSize];
 						}
 						resultList = ListFactory.createList(getPrecision(), currentSize);
@@ -326,7 +326,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public BinList(final int binSize, final ScorePrecision precision, final ScoreCalculationMethod method, final GenomicListView<Integer> positions, final GenomicListView<Double> scores) throws IllegalArgumentException, InterruptedException, ExecutionException {
+	public BinList(final int binSize, final ScorePrecision precision, final ScoreOperation method, final GenomicListView<Integer> positions, final GenomicListView<Double> scores) throws IllegalArgumentException, InterruptedException, ExecutionException {
 		super();
 		this.binSize = binSize;
 		this.precision = precision;
@@ -347,7 +347,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 						resultList = ListFactory.createList(getPrecision(), currentSize);
 						// if the method is average we create an array to store the count of scores
 						int[] counts = null;
-						if (method == ScoreCalculationMethod.AVERAGE) {
+						if (method == ScoreOperation.AVERAGE) {
 							counts = new int[currentSize];
 						}
 
@@ -390,7 +390,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public BinList(final int binSize, final ScorePrecision precision, final ScoreCalculationMethod method, final GenomicListView<Integer> starts, final GenomicListView<Integer> stops, final GenomicListView<Double> scores) throws IllegalArgumentException, InterruptedException, ExecutionException {
+	public BinList(final int binSize, final ScorePrecision precision, final ScoreOperation method, final GenomicListView<Integer> starts, final GenomicListView<Integer> stops, final GenomicListView<Double> scores) throws IllegalArgumentException, InterruptedException, ExecutionException {
 		super();
 		this.binSize = binSize;
 		this.precision = precision;
@@ -409,7 +409,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 						int currentSize = (currentChromosome.getLength() / binSize) + 1;
 						// array to count how many elements for the average
 						int[] counts = null;
-						if (method == ScoreCalculationMethod.AVERAGE) {
+						if (method == ScoreOperation.AVERAGE) {
 							counts = new int[currentSize];
 						}
 						resultList = ListFactory.createList(precision, currentSize);
@@ -451,7 +451,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public BinList(final int binSize, final ScorePrecision precision, final ScoreCalculationMethod method, final ImmutableGenomicDataList<ScoredChromosomeWindow> list)  throws IllegalArgumentException, InterruptedException, ExecutionException {
+	public BinList(final int binSize, final ScorePrecision precision, final ScoreOperation method, final ImmutableGenomicDataList<ScoredChromosomeWindow> list)  throws IllegalArgumentException, InterruptedException, ExecutionException {
 		super();
 		this.binSize = binSize;
 		this.precision = precision;
@@ -471,7 +471,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 						int currentSize = (currentChromosome.getLength() / binSize) + 1;
 						// array to count how many elements for the average
 						int[] counts = null;
-						if (method == ScoreCalculationMethod.AVERAGE) {
+						if (method == ScoreOperation.AVERAGE) {
 							counts = new int[currentSize];
 						}
 						resultList = ListFactory.createList(precision, currentSize);
@@ -511,7 +511,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public BinList(final int binSize, final ScorePrecision precision, final ScoreCalculationMethod method, final GeneList geneList) throws IllegalArgumentException, InterruptedException, ExecutionException {
+	public BinList(final int binSize, final ScorePrecision precision, final ScoreOperation method, final GeneList geneList) throws IllegalArgumentException, InterruptedException, ExecutionException {
 		super();
 
 		final GenomicListView<Integer> starts = ChromosomeWindowLists.getStartList(geneList);
@@ -534,7 +534,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 						int currentSize = (currentChromosome.getLength() / binSize) + 1;
 						// array to count how many elements for the average
 						int[] counts = null;
-						if (method == ScoreCalculationMethod.AVERAGE) {
+						if (method == ScoreOperation.AVERAGE) {
 							counts = new int[currentSize];
 						}
 						resultList = ListFactory.createList(precision, currentSize);
@@ -636,7 +636,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @param resultList result list that's represent one chromosome of BinList that is created
 	 * @param counts used only if the method is average. Stores the number of element inserted in order to be able to compute the average. Must be the same length as the result list
 	 */
-	private void computeScore(ScoreCalculationMethod method, ScoredChromosomeWindow window, List<Double>resultList, int[] counts) {
+	private void computeScore(ScoreOperation method, ScoredChromosomeWindow window, List<Double>resultList, int[] counts) {
 		double start = window.getStart() / (double) binSize;
 		double stop = window.getStop() / (double) binSize;
 		int currentWindowSize = window.getSize();
@@ -727,7 +727,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 			if ((fittedXRatio * binSize) < (1 / (double)ACCELERATOR_FACTOR)) {
 				// if the accelerator binlist doesn't exist we create it
 				if (acceleratorBinList == null) {
-					acceleratorBinList = new BinList(binSize * ACCELERATOR_FACTOR, getPrecision(), ScoreCalculationMethod.AVERAGE, this, false);
+					acceleratorBinList = new BinList(binSize * ACCELERATOR_FACTOR, getPrecision(), ScoreOperation.AVERAGE, this, false);
 					acceleratorBinList.fittedChromosome = fittedChromosome;
 					acceleratorBinList.chromosomeChanged();
 				}
@@ -784,7 +784,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 */
 	private void generateAcceleratorBinList() throws InterruptedException, ExecutionException {
 		if (binSize < ACCELERATOR_MAX_BINSIZE) {
-			acceleratorBinList = new BinList(binSize * ACCELERATOR_FACTOR, getPrecision(), ScoreCalculationMethod.AVERAGE, this, false);
+			acceleratorBinList = new BinList(binSize * ACCELERATOR_FACTOR, getPrecision(), ScoreOperation.AVERAGE, this, false);
 		}
 	}
 

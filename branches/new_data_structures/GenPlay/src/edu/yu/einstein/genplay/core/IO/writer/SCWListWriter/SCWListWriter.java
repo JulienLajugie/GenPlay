@@ -27,12 +27,12 @@ import edu.yu.einstein.genplay.core.IO.writer.Writer;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 
 
 
 /**
- * Abstract class that must be extended by the classes able to write a {@link ScoredChromosomeWindowList} into a file
+ * Abstract class that must be extended by the classes able to write a {@link SCWList} into a file
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -40,7 +40,7 @@ public abstract class SCWListWriter implements Writer {
 
 	protected final ProjectChromosome			projectChromosome;	// ChromosomeManager
 	protected final File 						outputFile;			// output file
-	protected final ScoredChromosomeWindowList	data;				// data to print
+	protected final SCWList	data;				// data to print
 	protected final String						name;				// name of the BinList
 
 	protected String							fullGenomeName;		// the genome name (multi genome project only)
@@ -50,10 +50,10 @@ public abstract class SCWListWriter implements Writer {
 	/**
 	 * Constructor
 	 * @param outputFile output {@link File}
-	 * @param data {@link ScoredChromosomeWindowList} to write
+	 * @param data {@link SCWList} to write
 	 * @param name a name for the data
 	 */
-	public SCWListWriter(File outputFile, ScoredChromosomeWindowList data, String name) {
+	public SCWListWriter(File outputFile, SCWList data, String name) {
 		this.projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		this.outputFile = outputFile;
 		this.data = data;

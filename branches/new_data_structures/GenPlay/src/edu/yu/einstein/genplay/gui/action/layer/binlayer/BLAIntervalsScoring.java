@@ -28,7 +28,7 @@ import javax.swing.ActionMap;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.binList.BLOIntervalsScoring;
 import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
@@ -57,7 +57,7 @@ public class BLAIntervalsScoring extends TrackListActionOperationWorker<BinList>
 	private BinLayer	 			selectedLayer;		// selected layer
 	private BinLayer				intervalLayer;		// layer defining the intervals
 	private Number 					percentage;			// percentage of the greatest values
-	private ScoreCalculationMethod 	method;				// method of calculation
+	private ScoreOperation 	method;				// method of calculation
 	private Track 					resultTrack;		// result track
 
 

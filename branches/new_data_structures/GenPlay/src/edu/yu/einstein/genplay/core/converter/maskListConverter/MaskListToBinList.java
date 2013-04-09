@@ -23,36 +23,36 @@ package edu.yu.einstein.genplay.core.converter.maskListConverter;
 
 import edu.yu.einstein.genplay.core.converter.Converter;
 import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.MaskChromosomeWindow;
 
 
 /**
- * Creates a {@link BinList} from the data of the input {@link ScoredChromosomeWindowList} of {@link MaskChromosomeWindow}
+ * Creates a {@link BinList} from the data of the input {@link SCWList} of {@link MaskChromosomeWindow}
  * @author Julien Lajugie
  * @author Nicolas Fourel
  * @version 0.1
  */
 public class MaskListToBinList implements Converter {
 
-	private final ScoredChromosomeWindowList 	list; 		// input list
+	private final SCWList 	list; 		// input list
 	private final int 							binSize;		// size of the bin of the result binlist
 	private final ScorePrecision 				precision;		// precision of the result binlist
-	private final ScoreCalculationMethod 		method; 		// method for the calculation of the scores of the result binlist
+	private final ScoreOperation 		method; 		// method for the calculation of the scores of the result binlist
 	private GenomicListView<?> 			result;			// The output list.
 
 
 	/**
-	 * Creates a {@link BinList} from the data of the input {@link ScoredChromosomeWindowList} of {@link MaskChromosomeWindow}
+	 * Creates a {@link BinList} from the data of the input {@link SCWList} of {@link MaskChromosomeWindow}
 	 * @param maskList input list
 	 * @param binSize size of the bins
 	 * @param precision precision of the data (eg: 1/8/16/32/64-BIT)
 	 * @param method method to generate the BinList (eg: AVERAGE, SUM or MAXIMUM)
 	 */
-	public MaskListToBinList(ScoredChromosomeWindowList maskList, int binSize, ScorePrecision precision, ScoreCalculationMethod method) {
+	public MaskListToBinList(SCWList maskList, int binSize, ScorePrecision precision, ScoreOperation method) {
 		list = maskList;
 		this.binSize = binSize;
 		this.precision = precision;

@@ -29,7 +29,7 @@ import java.util.concurrent.Callable;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.MaskSCWListFactory;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.MaskChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
@@ -37,13 +37,13 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
 
 
 /**
- * Converts a {@link ScoredChromosomeWindowList} to a {@link ScoredChromosomeWindowList} of {@link MaskChromosomeWindow}
+ * Converts a {@link SCWList} to a {@link SCWList} of {@link MaskChromosomeWindow}
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class SCWLOConvertToMask implements Operation<ScoredChromosomeWindowList> {
+public class SCWLOConvertToMask implements Operation<SCWList> {
 
-	private final ScoredChromosomeWindowList 	scwList;	// input list
+	private final SCWList 	scwList;	// input list
 	private boolean				stopped = false;// true if the operation must be stopped
 
 
@@ -51,13 +51,13 @@ public class SCWLOConvertToMask implements Operation<ScoredChromosomeWindowList>
 	 * Constructor of {@link SCWLOConvertToMask}
 	 * @param scwList input mask list
 	 */
-	public SCWLOConvertToMask(ScoredChromosomeWindowList scwList) {
+	public SCWLOConvertToMask(SCWList scwList) {
 		this.scwList = scwList;
 	}
 
 
 	@Override
-	public ScoredChromosomeWindowList compute() throws Exception {
+	public SCWList compute() throws Exception {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
 
@@ -91,7 +91,7 @@ public class SCWLOConvertToMask implements Operation<ScoredChromosomeWindowList>
 		}
 		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			ScoredChromosomeWindowList resultList = MaskSCWListFactory.createMaskSCWArrayList(result);
+			SCWList resultList = MaskSCWListFactory.createMaskSCWArrayList(result);
 			return resultList;
 		} else {
 			return null;

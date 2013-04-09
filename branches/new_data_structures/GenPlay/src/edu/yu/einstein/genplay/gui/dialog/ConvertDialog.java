@@ -43,7 +43,7 @@ import javax.swing.SpinnerNumberModel;
 
 import edu.yu.einstein.genplay.core.converter.ConverterFactory;
 import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
@@ -158,8 +158,8 @@ public class ConvertDialog extends JDialog {
 
 		// Create the calculation method elements
 		JLabel jlCalculationMethod = new JLabel("Select a calculation method:");
-		jcbCalculMetod = new JComboBox(ScoreCalculationMethod.values());
-		jcbCalculMetod.setSelectedItem(ScoreCalculationMethod.SUM);
+		jcbCalculMetod = new JComboBox(ScoreOperation.values());
+		jcbCalculMetod.setSelectedItem(ScoreOperation.SUM);
 		jcbCalculMetod.setPreferredSize(dimension);
 
 		// Create the data precision elements
@@ -409,8 +409,8 @@ public class ConvertDialog extends JDialog {
 	/**
 	 * @return the selected score calculation method
 	 */
-	public ScoreCalculationMethod getScoreCalculationMethod() {
-		return (ScoreCalculationMethod) jcbCalculMetod.getSelectedItem();
+	public ScoreOperation getScoreCalculationMethod() {
+		return (ScoreOperation) jcbCalculMetod.getSelectedItem();
 	}
 
 

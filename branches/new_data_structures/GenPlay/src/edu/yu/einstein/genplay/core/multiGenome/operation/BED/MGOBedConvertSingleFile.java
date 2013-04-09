@@ -37,9 +37,9 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.VCFLineUtility;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.enums.CoordinateSystemType;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.enums.VCFColumnName;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -217,7 +217,7 @@ public class MGOBedConvertSingleFile extends ExportEngine {
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
-	public ScoredChromosomeWindowList getFirstList () throws InvalidChromosomeException, InterruptedException, ExecutionException {
+	public SCWList getFirstList () throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		if (firstAlleleTrack != null) {
 			AlleleSettingsBedConvert alleleSettings = alleleListToConvert.get(0);
 			return getList(alleleSettings);
@@ -232,7 +232,7 @@ public class MGOBedConvertSingleFile extends ExportEngine {
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
-	public ScoredChromosomeWindowList getSecondList () throws InvalidChromosomeException, InterruptedException, ExecutionException {
+	public SCWList getSecondList () throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		if (secondAlleleTrack != null) {
 			AlleleSettingsBedConvert alleleSettings = alleleListToConvert.get(0);;
 			if (alleleListToConvert.size() == 2) {
@@ -246,13 +246,13 @@ public class MGOBedConvertSingleFile extends ExportEngine {
 
 	/**
 	 * @param alleleSettings	the allele settings helper
-	 * @return the {@link ScoredChromosomeWindowList}
+	 * @return the {@link SCWList}
 	 * @throws InvalidChromosomeException
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
-	private ScoredChromosomeWindowList getList (AlleleSettingsBedConvert alleleSettings) throws InvalidChromosomeException, InterruptedException, ExecutionException {
-		return new SimpleSCWList(alleleSettings.getStartList(), alleleSettings.getStopList(), alleleSettings.getScoreList(), ScoreCalculationMethod.AVERAGE);
+	private SCWList getList (AlleleSettingsBedConvert alleleSettings) throws InvalidChromosomeException, InterruptedException, ExecutionException {
+		return new SimpleSCWList(alleleSettings.getStartList(), alleleSettings.getStopList(), alleleSettings.getScoreList(), ScoreOperation.AVERAGE);
 	}
 
 

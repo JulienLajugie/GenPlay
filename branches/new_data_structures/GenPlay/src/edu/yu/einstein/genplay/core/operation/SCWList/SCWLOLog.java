@@ -29,7 +29,7 @@ import java.util.concurrent.Callable;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.enums.LogBase;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
@@ -37,13 +37,13 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScored
 
 
 /**
- * Applies the function f(x)=log(x) to each score x of the {@link ScoredChromosomeWindowList}
+ * Applies the function f(x)=log(x) to each score x of the {@link SCWList}
  * @author Julien Lajugie
  * @version 0.1
  */
-public class SCWLOLog implements Operation<ScoredChromosomeWindowList> {
+public class SCWLOLog implements Operation<SCWList> {
 
-	private final ScoredChromosomeWindowList 	scwList;	// input list
+	private final SCWList 	scwList;	// input list
 	private final LogBase						logBase;	// base of the log
 	private boolean				stopped = false;// true if the operation must be stopped
 
@@ -53,14 +53,14 @@ public class SCWLOLog implements Operation<ScoredChromosomeWindowList> {
 	 * @param scwList input list
 	 * @param logBase base of the log
 	 */
-	public SCWLOLog(ScoredChromosomeWindowList scwList, LogBase logBase) {
+	public SCWLOLog(SCWList scwList, LogBase logBase) {
 		this.scwList = scwList;
 		this.logBase = logBase;
 	}
 
 
 	@Override
-	public ScoredChromosomeWindowList compute() throws Exception {
+	public SCWList compute() throws Exception {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
 
@@ -106,7 +106,7 @@ public class SCWLOLog implements Operation<ScoredChromosomeWindowList> {
 		}
 		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			ScoredChromosomeWindowList resultList = new SimpleSCWList(result);
+			SCWList resultList = new SimpleSCWList(result);
 			return resultList;
 		} else {
 			return null;

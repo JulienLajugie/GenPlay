@@ -22,7 +22,7 @@
 package edu.yu.einstein.genplay.core.operation.SCWList;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 
 
 /**
@@ -31,15 +31,15 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredC
  */
 public class SCWLOMaxScoreToDisplay implements Operation<Double> {
 
-	private final ScoredChromosomeWindowList 	scwList;		// input list
+	private final SCWList 	scwList;		// input list
 	private boolean								stopped = false;// true if the operation must be stopped
 
 
 	/**
 	 * Calculates the maximum score to display on a ScoredChromosomeWindowList track
-	 * @param scwList input {@link ScoredChromosomeWindowList}
+	 * @param scwList input {@link SCWList}
 	 */
-	public SCWLOMaxScoreToDisplay(ScoredChromosomeWindowList scwList) {
+	public SCWLOMaxScoreToDisplay(SCWList scwList) {
 		this.scwList = scwList;
 	}
 

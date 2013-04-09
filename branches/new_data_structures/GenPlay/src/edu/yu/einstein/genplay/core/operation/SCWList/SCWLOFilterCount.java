@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
@@ -36,24 +36,24 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
  * @author Julien Lajugie
  * @version 0.1
  */
-public class SCWLOFilterCount implements Operation<ScoredChromosomeWindowList> {
+public class SCWLOFilterCount implements Operation<SCWList> {
 
-	private final ScoredChromosomeWindowList 		inputList;				// list to filter
+	private final SCWList 		inputList;				// list to filter
 	private final int 								lowValuesCount;			// number of low values to filter
 	private final int 								highValuesCount;		// number of high values to filter
 	private final boolean							isSaturation;			// true if we saturate, false if we remove the filtered values
 	private boolean									stopped = false;		// true if the operation must be stopped
-	private Operation<ScoredChromosomeWindowList> 	scwloFilterThreshold;	// threshold filter that does the real fitering operation
+	private Operation<SCWList> 	scwloFilterThreshold;	// threshold filter that does the real fitering operation
 
 
 	/**
 	 * Creates an instance of {@link SCWLOFilterCount}
-	 * @param inputList {@link ScoredChromosomeWindowList} to filter
+	 * @param inputList {@link SCWList} to filter
 	 * @param lowValuesCount number of low values to filter
 	 * @param highValuesCount number of high values to filter
 	 * @param isSaturation true to saturate, false to remove the filtered values
 	 */
-	public SCWLOFilterCount(ScoredChromosomeWindowList inputList, int lowValuesCount, int highValuesCount, boolean isSaturation) {
+	public SCWLOFilterCount(SCWList inputList, int lowValuesCount, int highValuesCount, boolean isSaturation) {
 		this.inputList = inputList;
 		this.lowValuesCount = lowValuesCount;
 		this.highValuesCount = highValuesCount;
@@ -62,7 +62,7 @@ public class SCWLOFilterCount implements Operation<ScoredChromosomeWindowList> {
 
 
 	@Override
-	public ScoredChromosomeWindowList compute() throws Exception {
+	public SCWList compute() throws Exception {
 		if ((lowValuesCount < 0) || (highValuesCount < 0)) {
 			throw new IllegalArgumentException("The number of values to filter must be positive");
 		}

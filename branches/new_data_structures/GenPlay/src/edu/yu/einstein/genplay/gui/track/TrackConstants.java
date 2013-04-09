@@ -65,13 +65,13 @@ public class TrackConstants {
 	/**
 	 * Default maximum score displayed in a track
 	 */
-	public static final double DEFAULT_MAXIMUM_SCORE = 100;
+	public static final float DEFAULT_MAXIMUM_SCORE = 100;
 
 
 	/**
 	 * Default minimum score displayed in a track
 	 */
-	public static final double DEFAULT_MINIMUM_SCORE = 0;
+	public static final float DEFAULT_MINIMUM_SCORE = 0;
 
 
 	/**

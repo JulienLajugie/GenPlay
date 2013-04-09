@@ -29,7 +29,7 @@ import java.util.concurrent.Callable;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.MaskSCWListFactory;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.MaskChromosomeWindow;
@@ -38,11 +38,11 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
 
 
 /**
- * Converts any type {@link ScoredChromosomeWindowList} into {@link ScoredChromosomeWindowList} of {@link MaskChromosomeWindow}
+ * Converts any type {@link SCWList} into {@link SCWList} of {@link MaskChromosomeWindow}
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class BLOConvertToMask implements Operation<ScoredChromosomeWindowList> {
+public class BLOConvertToMask implements Operation<SCWList> {
 
 	private final BinList 		cwList;	// input list
 	private boolean				stopped = false;// true if the operation must be stopped
@@ -58,7 +58,7 @@ public class BLOConvertToMask implements Operation<ScoredChromosomeWindowList> {
 
 
 	@Override
-	public ScoredChromosomeWindowList compute() throws Exception {
+	public SCWList compute() throws Exception {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
 		final int windowData = cwList.getBinSize();
@@ -108,7 +108,7 @@ public class BLOConvertToMask implements Operation<ScoredChromosomeWindowList> {
 		}
 		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			ScoredChromosomeWindowList resultList = MaskSCWListFactory.createMaskSCWArrayList(result);
+			SCWList resultList = MaskSCWListFactory.createMaskSCWArrayList(result);
 			return resultList;
 		} else {
 			return null;

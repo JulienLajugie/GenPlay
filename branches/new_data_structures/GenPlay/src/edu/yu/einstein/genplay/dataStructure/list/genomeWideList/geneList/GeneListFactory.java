@@ -37,10 +37,10 @@ import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
-import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.sparse.SparseSCWListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.geneListView.GeneListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ListOfListViewBuilder;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
@@ -54,7 +54,7 @@ public class GeneListFactory {
 
 
 	/**
-	 * Creates a {@link GeneList} using {@link ArrayList} structures from the data retrieved by the specified {@link GeneReader}.
+	 * Creates a {@link GeneList} from the data retrieved by the specified {@link GeneReader}.
 	 * @param geneReader a {@link GeneReader}
 	 * @param scorePrecision precision of the gene and exon scores
 	 * @return a {@link GeneList}
@@ -76,7 +76,7 @@ public class GeneListFactory {
 
 
 	/**
-	 * Creates a {@link GeneList} from a {@link ScoredChromosomeWindowList}.
+	 * Creates a {@link GeneList} from a {@link SCWList}.
 	 * It creates one gene per window with a single exon having the same start, stop and score as the window.
 	 * @param scoredChromosomeWindowList
 	 * @param scorePrecision precision of the gene and exon scores
@@ -84,7 +84,7 @@ public class GeneListFactory {
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
-	public static GeneList createGeneList(ScoredChromosomeWindowList scoredChromosomeWindowList, final ScorePrecision scorePrecision) throws InterruptedException, ExecutionException {
+	public static GeneList createGeneList(SCWList scoredChromosomeWindowList, final ScorePrecision scorePrecision) throws InterruptedException, ExecutionException {
 		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<ListView<Gene>>> threadList = new ArrayList<Callable<ListView<Gene>>>();
@@ -103,7 +103,7 @@ public class GeneListFactory {
 						int stop = currentWindow.getStop();
 						float score = currentWindow.getScore();
 						Strand strand = Strand.FIVE;
-						ListViewBuilder<ScoredChromosomeWindow> exonListBuilder = new SparseSCWListViewBuilder(scorePrecision);
+						ListViewBuilder<ScoredChromosomeWindow> exonListBuilder = new GenericSCWListViewBuilder(scorePrecision);
 						ScoredChromosomeWindow exonToAdd = new SimpleScoredChromosomeWindow(currentWindow.getStart(), currentWindow.getStop(), currentWindow.getScore());
 						exonListBuilder.addElementToBuild(exonToAdd);
 						Gene geneToAdd = new SimpleGene(name, strand, start, stop, score, exonListBuilder.getListView());

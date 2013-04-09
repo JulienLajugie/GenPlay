@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.sparse;
+package edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -33,13 +33,13 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScored
 
 
 /**
- * A {@link ListView} of {@link ScoredChromosomeWindow} optimized to minimize the memory usage
+ * A generic {@link ListView} of {@link ScoredChromosomeWindow} optimized to minimize the memory usage
  * when most of the windows are not consecutive (ie: when they are separated by windows with a score of 0).
  * In this representation, the windows with a score of 0 are not stored.
- * {@link SparseSCWListView} objects are immutable.
+ * {@link GenericSCWListView} objects are immutable.
  * @author Julien Lajugie
  */
-public final class SparseSCWListView implements ListView<ScoredChromosomeWindow>, Iterator<ScoredChromosomeWindow> {
+public final class GenericSCWListView implements ListView<ScoredChromosomeWindow>, Iterator<ScoredChromosomeWindow> {
 
 	/** Generated serial ID */
 	private static final long serialVersionUID = -1875439465830656207L;
@@ -61,12 +61,12 @@ public final class SparseSCWListView implements ListView<ScoredChromosomeWindow>
 
 
 	/**
-	 * Creates an instance of {@link SparseSCWListView}
+	 * Creates an instance of {@link GenericSCWListView}
 	 * @param windowStarts list of the start positions of the SCWs
 	 * @param windowStops list of the stop positions of the SCWs
 	 * @param windowScore list of the score values of the SCWs
 	 */
-	SparseSCWListView(List<Integer> windowStarts, List<Integer> windowStops, List<Float> windowScores) {
+	GenericSCWListView(List<Integer> windowStarts, List<Integer> windowStops, List<Float> windowScores) {
 		super();
 		this.windowStarts = windowStarts;
 		this.windowStops = windowStops;

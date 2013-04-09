@@ -24,7 +24,7 @@ package edu.yu.einstein.genplay.core.generator;
 import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 
 
@@ -46,11 +46,11 @@ public interface BinListGenerator extends Generator {
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
-	public BinList toBinList(int binSize, ScorePrecision precision, ScoreCalculationMethod method) throws IllegalArgumentException, InterruptedException, ExecutionException;
+	public BinList toBinList(int binSize, ScorePrecision precision, ScoreOperation method) throws IllegalArgumentException, InterruptedException, ExecutionException;
 	
 	
 	/**
-	 * @return true if the yu.einstein.gdp2.core.generator needs information regarding the {@link ScoreCalculationMethod} criterion
+	 * @return true if the yu.einstein.gdp2.core.generator needs information regarding the {@link ScoreOperation} criterion
 	 */
 	public boolean isCriterionNeeded();
 	

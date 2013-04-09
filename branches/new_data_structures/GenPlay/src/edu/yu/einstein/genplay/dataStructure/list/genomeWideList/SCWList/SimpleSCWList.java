@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -38,19 +37,19 @@ import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOCountNonNullLength;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.SimpleGeneList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
+import edu.yu.einstein.genplay.util.ListViews;
 
 
 /**
- * Class implementing the {@link ScoredChromosomeWindowList} interface using an {@link ArrayList} based data structure
+ * Class implementing the {@link SCWList} interface using an {@link ArrayList} based data structure
  * @author Julien Lajugie
  * @version 0.1
  */
-public class SimpleSCWList implements ScoredChromosomeWindowList {
+public final class SimpleSCWList implements SCWList {
 
 	/** Generated serial ID */
 	private static final long serialVersionUID = 9159412940141151387L;
@@ -80,22 +79,22 @@ public class SimpleSCWList implements ScoredChromosomeWindowList {
 	private final SCWListType scwListType;
 
 	/** Smallest value of the list */
-	private double minimum;
+	private final double minimum;
 
 	/** Greatest value of the list */
-	private double maximum;
+	private final double maximum;
 
 	/** Average of the list */
-	private double average;
+	private final double average;
 
 	/** Standard deviation of the list */
-	private double standardDeviation;
+	private final double standardDeviation;
 
 	/** Sum of the scores of all windows */
-	private double scoreSum;
+	private final double scoreSum;
 
 	/** Count of none-null bins in the BinList */
-	private long nonNullLength;
+	private final long nonNullLength;
 
 
 	/**
@@ -113,16 +112,7 @@ public class SimpleSCWList implements ScoredChromosomeWindowList {
 			data.add(data.get(i));
 		}
 		this.scwListType = scwListType;
-		computeStatistics();
-	}
-
-
-	/**
-	 * Computes some statistic values for this list
-	 * @throws ExecutionException
-	 * @throws InterruptedException
-	 */
-	private void computeStatistics() throws InterruptedException, ExecutionException {
+		// computes some statistic values for this list
 		if (scwListType == SCWListType.MASK) {
 			maximum = 1d;
 			minimum = 1d;
@@ -194,9 +184,9 @@ public class SimpleSCWList implements ScoredChromosomeWindowList {
 
 
 	@Override
-	public double getScore(Chromosome chromosome, int position) {
+	public float getScore(Chromosome chromosome, int position) {
 		ListView<ScoredChromosomeWindow> currentList = get(chromosome);
-		int indexWindow = Collections.binarySearch(currentList, new SimpleChromosomeWindow(position, position), new ChromosomeWindowStartComparator());
+		int indexWindow = ListViews.binarySearch(currentList, new SimpleChromosomeWindow(position, position), new ChromosomeWindowStartComparator());
 		if (indexWindow < 0) {
 			// retrieve the window right before the insert point
 			indexWindow = -indexWindow - 2;
@@ -248,17 +238,9 @@ public class SimpleSCWList implements ScoredChromosomeWindowList {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		data = (GenomicListView<ScoredChromosomeWindow>) in.readObject();
-		scwListType = (SCWListType) in.readObject();
-		maximum = in.readDouble();
-		minimum = in.readDouble();
-		average = in.readDouble();
-		standardDeviation = in.readDouble();
-		nonNullLength = in.readLong();
-		scoreSum = in.readDouble();
+		in.defaultReadObject();
 	}
 
 
@@ -286,14 +268,7 @@ public class SimpleSCWList implements ScoredChromosomeWindowList {
 	 * @throws IOException
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(data);
-		out.writeObject(scwListType);
-		out.writeDouble(maximum);
-		out.writeDouble(minimum);
-		out.writeDouble(average);
-		out.writeDouble(standardDeviation);
-		out.writeLong(nonNullLength);
-		out.writeDouble(scoreSum);
+		out.writeInt(CLASS_VERSION_NUMBER);
+		out.defaultWriteObject();
 	}
 }

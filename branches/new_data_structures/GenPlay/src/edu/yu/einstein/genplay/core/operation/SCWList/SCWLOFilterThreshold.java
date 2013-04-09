@@ -28,7 +28,7 @@ import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
@@ -40,8 +40,8 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScored
  * @author Julien Lajugie
  * @version 0.1
  */
-public class SCWLOFilterThreshold implements Operation<ScoredChromosomeWindowList> {
-	private final ScoredChromosomeWindowList 	inputList; 		// input SCW list
+public class SCWLOFilterThreshold implements Operation<SCWList> {
+	private final SCWList 	inputList; 		// input SCW list
 	private final double 						lowThreshold;	// filters the values under this threshold
 	private final double 						highThreshold;	// filters the values above this threshold
 	private final boolean						isSaturation;	// true if we saturate, false if we remove the filtered values
@@ -50,12 +50,12 @@ public class SCWLOFilterThreshold implements Operation<ScoredChromosomeWindowLis
 
 	/**
 	 * Creates an instance of {@link SCWLOFilterThreshold}
-	 * @param inputList {@link ScoredChromosomeWindowList} to filter
+	 * @param inputList {@link SCWList} to filter
 	 * @param lowThreshold filters the values under this threshold
 	 * @param highThreshold filters the values above this threshold
 	 * @param isSaturation true to saturate, false to remove the filtered values
 	 */
-	public SCWLOFilterThreshold(ScoredChromosomeWindowList inputList, double lowThreshold, double highThreshold, boolean isSaturation) {
+	public SCWLOFilterThreshold(SCWList inputList, double lowThreshold, double highThreshold, boolean isSaturation) {
 		this.inputList = inputList;
 		this.lowThreshold = lowThreshold;
 		this.highThreshold = highThreshold;
@@ -64,7 +64,7 @@ public class SCWLOFilterThreshold implements Operation<ScoredChromosomeWindowLis
 
 
 	@Override
-	public ScoredChromosomeWindowList compute() throws Exception {
+	public SCWList compute() throws Exception {
 		if (lowThreshold >= highThreshold) {
 			throw new IllegalArgumentException("The high threshold must be greater than the low one");
 		}
@@ -115,7 +115,7 @@ public class SCWLOFilterThreshold implements Operation<ScoredChromosomeWindowLis
 		}
 		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			ScoredChromosomeWindowList resultList = new SimpleSCWList(result);
+			SCWList resultList = new SimpleSCWList(result);
 			return resultList;
 		} else {
 			return null;

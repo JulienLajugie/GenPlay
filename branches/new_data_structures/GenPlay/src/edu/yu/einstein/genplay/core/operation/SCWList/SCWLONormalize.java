@@ -29,7 +29,7 @@ import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
@@ -37,31 +37,31 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScored
 
 
 /**
- * Normalizes a {@link ScoredChromosomeWindowList} and multiplies the result by a factor
+ * Normalizes a {@link SCWList} and multiplies the result by a factor
  * @author Julien Lajugie
  * @version 0.1
  */
-public class SCWLONormalize implements Operation<ScoredChromosomeWindowList> {
+public class SCWLONormalize implements Operation<SCWList> {
 
-	private final ScoredChromosomeWindowList 	inputList;		// input ScoredChromosomeWindowList
+	private final SCWList 	inputList;		// input ScoredChromosomeWindowList
 	private final double						factor;			// the result of the normalization is multiplied by this factor
 	private Double 								scoreSum;		// sum of the scores
 	private boolean								stopped = false;// true if the operation must be stopped
 
 
 	/**
-	 * Normalizes a {@link ScoredChromosomeWindowList} and multiplies the result by a specified factor
+	 * Normalizes a {@link SCWList} and multiplies the result by a specified factor
 	 * @param inputList ScoredChromosomeWindowList to normalize
 	 * @param factor factor
 	 */
-	public SCWLONormalize(ScoredChromosomeWindowList inputList, double factor) {
+	public SCWLONormalize(SCWList inputList, double factor) {
 		this.inputList = inputList;
 		this.factor = factor;
 	}
 
 
 	@Override
-	public ScoredChromosomeWindowList compute() throws InterruptedException, ExecutionException {
+	public SCWList compute() throws InterruptedException, ExecutionException {
 		scoreSum = new SCWLOSumScore(inputList, null).compute();
 		// we want to multiply each window by the following coefficient
 		final double coef = factor / scoreSum;
@@ -93,7 +93,7 @@ public class SCWLONormalize implements Operation<ScoredChromosomeWindowList> {
 		}
 		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			ScoredChromosomeWindowList resultList = new SimpleSCWList(result);
+			SCWList resultList = new SimpleSCWList(result);
 			return resultList;
 		} else {
 			return null;

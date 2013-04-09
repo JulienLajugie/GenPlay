@@ -27,7 +27,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 
 
 
@@ -41,8 +41,8 @@ class CalculMethodPanel extends JPanel {
 	private static final long serialVersionUID = -2863825210102188370L;	// generated ID
 	private static final int 				PANEL_WIDTH = 150;	// width of the panel
 	private final JComboBox 				jcbCalculMetod; 	// combo box for the score calculation method
-	private static ScoreCalculationMethod 	defaultMethod = 
-		ScoreCalculationMethod.SUM;								// default method of calculation
+	private static ScoreOperation 	defaultMethod = 
+		ScoreOperation.SUM;								// default method of calculation
 	
 	
 	/**
@@ -50,7 +50,7 @@ class CalculMethodPanel extends JPanel {
 	 */
 	CalculMethodPanel() {
 		super();
-		jcbCalculMetod = new JComboBox(ScoreCalculationMethod.values());
+		jcbCalculMetod = new JComboBox(ScoreOperation.values());
 		jcbCalculMetod.setSelectedItem(defaultMethod);
 		add(jcbCalculMetod);
 		setBorder(BorderFactory.createTitledBorder("Score Calculation"));
@@ -61,8 +61,8 @@ class CalculMethodPanel extends JPanel {
 	/**
 	 * @return the selected score calculation method
 	 */
-	ScoreCalculationMethod getScoreCalculationMethod() {
-		return (ScoreCalculationMethod) jcbCalculMetod.getSelectedItem();
+	ScoreOperation getScoreCalculationMethod() {
+		return (ScoreOperation) jcbCalculMetod.getSelectedItem();
 	}
 	
 	

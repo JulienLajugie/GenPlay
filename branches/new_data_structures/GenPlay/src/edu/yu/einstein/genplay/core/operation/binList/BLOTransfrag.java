@@ -30,7 +30,7 @@ import java.util.concurrent.ExecutionException;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.ListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.util.FloatLists;
@@ -50,7 +50,7 @@ public class BLOTransfrag implements Operation<BinList> {
 
 	private final BinList 					binList;	// input binlist
 	private final int 						zeroBinGap; // number of zero value bins defining a gap between two islands
-	private final ScoreCalculationMethod	operation;	// max / sum / average 
+	private final ScoreOperation	operation;	// max / sum / average 
 	private boolean							stopped = false;// true if the operation must be stopped
 	
 
@@ -63,7 +63,7 @@ public class BLOTransfrag implements Operation<BinList> {
 	 * @param zeroBinGap number of zero value windows defining a gap between two islands
 	 * @param operation operation to use to compute the score of the intervals
 	 */
-	public BLOTransfrag(BinList binList, int zeroBinGap, ScoreCalculationMethod operation) {
+	public BLOTransfrag(BinList binList, int zeroBinGap, ScoreOperation operation) {
 		this.binList = binList;
 		this.zeroBinGap = zeroBinGap;
 		this.operation = operation;		
@@ -111,10 +111,10 @@ public class BLOTransfrag implements Operation<BinList> {
 							}
 							if (regionStop >= regionStart) { 
 								double regionScore = 0;
-								if (operation == ScoreCalculationMethod.AVERAGE) {
+								if (operation == ScoreOperation.AVERAGE) {
 									// all the windows of the region are set with the average value on the region
 									regionScore = FloatLists.average(currentList, regionStart, regionStop);
-								} else if (operation == ScoreCalculationMethod.SUM) {
+								} else if (operation == ScoreOperation.SUM) {
 									// all the windows of the region are set with the sum value on the region
 									regionScore = FloatLists.sum(currentList, regionStart, regionStop);
 								} else {

@@ -14,23 +14,20 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
 package edu.yu.einstein.genplay.dataStructure.enums;
 
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
-
 
 /**
- * Enumeration representing a method for the calculation of the scores of a {@link BinList}
+ * Enumeration of the operations available to flatten pileups
  * @author Julien Lajugie
  * @author Nicolas Fourel
- * @version 0.1
  */
-public enum ScoreCalculationTwoLayersMethod {
+public enum ScoreOperation {
 
 	/**
 	 * Addition operation
@@ -60,28 +57,22 @@ public enum ScoreCalculationTwoLayersMethod {
 	 * Minimum operation
 	 */
 	MINIMUM ("Minimum");
-	
-	private final String name;	// name of the method of score calculation
-	
+
+	/** Name of the method of score calculation */
+	private final String name;
+
+
 	/**
-	 * Private constructor. Creates an instance of a {@link ScoreCalculationTwoLayersMethod}
+	 * Private constructor. Creates an instance of a {@link ScoreOperation}
 	 * @param name name of the method of score calculation
 	 */
-	private ScoreCalculationTwoLayersMethod(String name) {
+	private ScoreOperation(String name) {
 		this.name = name;
 	}
-	
+
+
 	@Override
 	public String toString() {
 		return name;
-	}
-	
-	
-	/**
-	 * @return the operation between two layers
-	 */
-	public ScoreCalculationTwoLayersMethod[] getOperationTwoLayers() {
-		ScoreCalculationTwoLayersMethod[] result = {ADDITION, DIVISION};
-		return result;
 	}
 }

@@ -28,7 +28,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
@@ -55,14 +55,14 @@ final class OverlapEngine implements Serializable {
 	private List<OverlapNode> 			currentListOfNode;		//current list of nodes
 	private List<Integer> 					currentListOfPosition;	//current list of positions
 	private List<Double> 					currentListOfScore;		//current list of scores
-	private final ScoreCalculationMethod			scm;
+	private final ScoreOperation			scm;
 
 	/**
 	 * OverLapEngine constructor
 	 * The OverLapManagement class controls this class
 	 * @param scm the score calculation method
 	 */
-	protected OverlapEngine (ScoreCalculationMethod scm) {
+	protected OverlapEngine (ScoreOperation scm) {
 		this.scm = scm;
 	}
 

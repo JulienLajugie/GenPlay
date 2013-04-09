@@ -29,7 +29,7 @@ import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.geneList.GLOScoreDistributionAroundStart;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
@@ -100,7 +100,7 @@ public class GLAScoreDistributionAroundStart extends TrackListActionOperationWor
 							if (binSize != null) {
 								Number binCount = NumberOptionPane.getValue(getRootPane(), "Enter Value", "Enter the number of bins each side of the promoters", 1, Integer.MAX_VALUE, 50);
 								if (binCount != null) {
-									ScoreCalculationMethod scm = Utils.chooseScoreCalculation(getRootPane());
+									ScoreOperation scm = Utils.chooseScoreCalculation(getRootPane());
 									if (scm != null) {
 										operation = new GLOScoreDistributionAroundStart(geneList, binList, selectedChromo, binSize.intValue(), binCount.intValue(), scm);
 										return operation;

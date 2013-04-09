@@ -25,7 +25,7 @@ import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOUniqueScore;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
 import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
@@ -36,7 +36,7 @@ import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class SCWLAUniqueScore extends TrackListActionOperationWorker<ScoredChromosomeWindowList> {
+public final class SCWLAUniqueScore extends TrackListActionOperationWorker<SCWList> {
 
 	private static final long serialVersionUID = 4027173438789911860L; 						// generated ID
 	private static final String 	ACTION_NAME = "Unique Score (Constant)";				// action name
@@ -62,12 +62,12 @@ public final class SCWLAUniqueScore extends TrackListActionOperationWorker<Score
 
 
 	@Override
-	public Operation<ScoredChromosomeWindowList> initializeOperation() {
+	public Operation<SCWList> initializeOperation() {
 		selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			Number constant = NumberOptionPane.getValue(getRootPane(), "Unique Score", "Enter a score for all windows", Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
 			if ((constant != null) && (constant.doubleValue() != 0)) {
-				ScoredChromosomeWindowList scwList = selectedLayer.getData();
+				SCWList scwList = selectedLayer.getData();
 				operation = new SCWLOUniqueScore(scwList, constant.doubleValue());
 				return operation;
 			}
@@ -77,7 +77,7 @@ public final class SCWLAUniqueScore extends TrackListActionOperationWorker<Score
 
 
 	@Override
-	protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
+	protected void doAtTheEnd(SCWList actionResult) {
 		if (actionResult != null) {
 			selectedLayer.setData(actionResult, operation.getDescription());
 		}

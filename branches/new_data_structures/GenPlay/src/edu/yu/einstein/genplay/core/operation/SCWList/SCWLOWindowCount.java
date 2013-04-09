@@ -28,20 +28,20 @@ import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
 
 /**
- * Counts the number of windows in a {@link ScoredChromosomeWindowList}
+ * Counts the number of windows in a {@link SCWList}
  * @author Julien Lajugie
  * @author Nicolas Fourel
  * @version 0.1
  */
 public class SCWLOWindowCount implements Operation<Long>{
 
-	private final ScoredChromosomeWindowList scwList;	// input list
+	private final SCWList scwList;	// input list
 	private final boolean[] chromoList;		// 1 boolean / chromosome.
 	// each boolean sets to true means that the corresponding chromosome is selected
 	private boolean				stopped = false;// true if the operation must be stopped
@@ -53,7 +53,7 @@ public class SCWLOWindowCount implements Operation<Long>{
 	 * @param chromoList list of boolean. A boolean set to true means that the
 	 * chromosome with the same index is going to be used for the calculation.
 	 */
-	public SCWLOWindowCount(ScoredChromosomeWindowList scwList, boolean[] chromoList) {
+	public SCWLOWindowCount(SCWList scwList, boolean[] chromoList) {
 		this.scwList = scwList;
 		this.chromoList = chromoList;
 	}

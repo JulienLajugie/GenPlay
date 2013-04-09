@@ -28,7 +28,7 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.geneList.GLOScoreFromBinList;
 import edu.yu.einstein.genplay.core.operation.geneList.GLOScoreFromSCWList;
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
@@ -93,8 +93,8 @@ public class GLAScoreExons  extends TrackListActionOperationWorker<GeneList> {
 				if (geneScore != null) {
 					if (otherLayer.getData() instanceof BinList) {
 						operation = new GLOScoreFromBinList(selectedLayer.getData(), (BinList) otherLayer.getData(), geneScore);
-					} else if (otherLayer.getData() instanceof ScoredChromosomeWindowList) {
-						operation = new GLOScoreFromSCWList(selectedLayer.getData(), (ScoredChromosomeWindowList) otherLayer.getData(), geneScore);
+					} else if (otherLayer.getData() instanceof SCWList) {
+						operation = new GLOScoreFromSCWList(selectedLayer.getData(), (SCWList) otherLayer.getData(), geneScore);
 					}
 					return operation;
 				}

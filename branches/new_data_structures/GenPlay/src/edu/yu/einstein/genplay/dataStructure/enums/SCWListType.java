@@ -21,23 +21,27 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.dataStructure.enums;
 
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 
 
 /**
- * Enumeration of the different types of {@link ScoredChromosomeWindowList}
+ * Enumeration of the different types of {@link SCWList}
  * @author Julien Lajugie
  */
 public enum SCWListType {
 
-	/** A generic, multi-purpose {@link ScoredChromosomeWindowList} */
+	/**  A bin {@link SCWList} having windows of a fixed lengths */
+	BIN ("Bin List"),
+
+	/** A {@link SCWList} optimized to minimize the memory usage when most
+	 * of the windows are consecutive (not separated by windows with a score of 0). */
+	DENSE ("Dense List"),
+
+	/** A generic, multi-purpose {@link SCWList} */
 	GENERIC ("Generic List"),
 
-	/** A mask {@link ScoredChromosomeWindowList} with every windows having a score of one */
-	MASK ("Mask List"),
-
-	/**  A bin {@link ScoredChromosomeWindowList} having windows of a fixed lengths */
-	BIN ("Bin List");
+	/** A mask {@link SCWList} with every windows having a score of one */
+	MASK ("Mask List");
 
 
 	/**  description of the enumeration element */
@@ -53,16 +57,16 @@ public enum SCWListType {
 	}
 
 
-	@Override
-	public String toString() {
-		return description;
-	}
-
-
 	/**
 	 * @return the description of the {@link SCWListType} element
 	 */
 	public String getDescription() {
+		return description;
+	}
+
+
+	@Override
+	public String toString() {
 		return description;
 	}
 }

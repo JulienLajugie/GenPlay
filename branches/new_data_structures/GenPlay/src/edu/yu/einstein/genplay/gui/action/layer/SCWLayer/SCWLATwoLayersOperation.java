@@ -27,7 +27,7 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOTwoLayers;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationTwoLayersMethod;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ImmutableGenomicDataList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
 import edu.yu.einstein.genplay.gui.dialog.trackChooser.TrackChooser;
@@ -104,7 +104,7 @@ public final class SCWLATwoLayersOperation extends TrackListActionOperationWorke
 	@Override
 	protected void doAtTheEnd(ImmutableGenomicDataList<?> actionResult) {
 		if (actionResult != null) {
-			SCWLayer newLayer = new SCWLayer(resultTrack, (ScoredChromosomeWindowList)actionResult, selectedLayer.getName() + " & " + otherLayer.getName());
+			SCWLayer newLayer = new SCWLayer(resultTrack, (SCWList)actionResult, selectedLayer.getName() + " & " + otherLayer.getName());
 			// add info to the history
 			newLayer.getHistory().add("Operation on two tracks", Colors.GREY);
 			newLayer.getHistory().add("Operation: " + scm.toString(), Colors.GREY);

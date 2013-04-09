@@ -26,8 +26,8 @@ import java.util.ArrayList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
-import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.sparse.SparseSCWListViewBuilder;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
@@ -38,10 +38,10 @@ import edu.yu.einstein.genplay.util.FloatLists;
 
 
 /**
- * This class scales a {@link ScoredChromosomeWindowList} of {@link SimpleScoredChromosomeWindow} to be displayed on a track.
+ * This class scales a {@link SCWList} of {@link SimpleScoredChromosomeWindow} to be displayed on a track.
  * @author Julien Lajugie
  */
-public class SimpleSCWLScaler implements DataScalerForTrackDisplay<ScoredChromosomeWindowList, ListView<ScoredChromosomeWindow>> {
+public class SimpleSCWLScaler implements DataScalerForTrackDisplay<SCWList, ListView<ScoredChromosomeWindow>> {
 
 	/** Generate serial ID */
 	private static final long serialVersionUID = -8886234764096047299L;
@@ -56,14 +56,14 @@ public class SimpleSCWLScaler implements DataScalerForTrackDisplay<ScoredChromos
 	private ListView<ScoredChromosomeWindow> scaledSCWList;
 
 	/** Data to be scaled for track display */
-	private final ScoredChromosomeWindowList dataToScale;
+	private final SCWList dataToScale;
 
 
 	/**
 	 * Creates an instance of {@link SimpleSCWLScaler}
 	 * @param dataToScale the data that needs to be scaled
 	 */
-	public SimpleSCWLScaler(ScoredChromosomeWindowList dataToScale) {
+	public SimpleSCWLScaler(SCWList dataToScale) {
 		this.dataToScale = dataToScale;
 	}
 
@@ -86,7 +86,7 @@ public class SimpleSCWLScaler implements DataScalerForTrackDisplay<ScoredChromos
 
 
 	@Override
-	public ScoredChromosomeWindowList getDataToScale() {
+	public SCWList getDataToScale() {
 		return dataToScale;
 	}
 
@@ -110,7 +110,7 @@ public class SimpleSCWLScaler implements DataScalerForTrackDisplay<ScoredChromos
 			scaledSCWList = currentChromosomeList;
 		} else {
 			if (currentChromosomeList.size() > 0) {
-				SparseSCWListViewBuilder scaledSCWListBuilder = new SparseSCWListViewBuilder(dataToScale.getScorePrecision);
+				GenericSCWListViewBuilder scaledSCWListBuilder = new GenericSCWListViewBuilder(dataToScale.getScorePrecision);
 				int start = currentChromosomeList.get(0).getStart();
 				int stop = currentChromosomeList.get(0).getStop();
 				ArrayList<Float> scoreList = new ArrayList<Float>();

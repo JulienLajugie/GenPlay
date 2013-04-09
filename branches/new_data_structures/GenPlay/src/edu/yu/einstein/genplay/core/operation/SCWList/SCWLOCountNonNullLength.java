@@ -29,7 +29,7 @@ import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.util.Utils;
 
@@ -42,7 +42,7 @@ import edu.yu.einstein.genplay.util.Utils;
  */
 public class SCWLOCountNonNullLength implements Operation<Long>{
 
-	private final ScoredChromosomeWindowList scwList;	// input list
+	private final SCWList scwList;	// input list
 	private final boolean[] chromoList;		// 1 boolean / chromosome.
 	// each boolean sets to true means that the corresponding chromosome is selected
 	private boolean				stopped = false;// true if the operation must be stopped
@@ -54,7 +54,7 @@ public class SCWLOCountNonNullLength implements Operation<Long>{
 	 * @param chromoList list of boolean. A boolean set to true means that the
 	 * chromosome with the same index is going to be used for the calculation.
 	 */
-	public SCWLOCountNonNullLength(ScoredChromosomeWindowList scwList, boolean[] chromoList) {
+	public SCWLOCountNonNullLength(SCWList scwList, boolean[] chromoList) {
 		this.scwList = scwList;
 		this.chromoList = chromoList;
 	}

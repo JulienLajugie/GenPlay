@@ -31,7 +31,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
@@ -50,10 +50,10 @@ public final class SCWListAsGFFWriter extends SCWListWriter implements Stoppable
 	/**
 	 * Creates an instance of {@link SCWListAsBedGraphWriter}.
 	 * @param outputFile output {@link File}
-	 * @param data {@link ScoredChromosomeWindowList} to write
+	 * @param data {@link SCWList} to write
 	 * @param name a name for the data
 	 */
-	public SCWListAsGFFWriter(File outputFile, ScoredChromosomeWindowList data, String name) {
+	public SCWListAsGFFWriter(File outputFile, SCWList data, String name) {
 		super(outputFile, data, name);
 	}
 
