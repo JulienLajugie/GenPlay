@@ -29,10 +29,10 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList
  * Calculates the maximum score to display on a ScoredChromosomeWindowList track
  * @author Julien Lajugie
  */
-public class SCWLOMaxScoreToDisplay implements Operation<Double> {
+public class SCWLOMaxScoreToDisplay implements Operation<Float> {
 
 	private final SCWList 	scwList;		// input list
-	private boolean								stopped = false;// true if the operation must be stopped
+	private boolean			stopped = false;// true if the operation must be stopped
 
 
 	/**
@@ -45,14 +45,14 @@ public class SCWLOMaxScoreToDisplay implements Operation<Double> {
 
 
 	@Override
-	public Double compute() {
-		final double realMax = scwList.getMaximum();
+	public Float compute() {
+		final float realMax = scwList.getMaximum();
 		// if the max is negative we return 0
 		if (realMax <= 0) {
-			return 0d;
+			return 0f;
 		}
 		// if the max of the BinList can be written as 10^x we return this value as a maximum
-		double maxScoreDisplayed = 1;
+		float maxScoreDisplayed = 1;
 		while (((realMax / maxScoreDisplayed) > 1) && !stopped) {
 			maxScoreDisplayed *= 10;
 		}
@@ -60,9 +60,9 @@ public class SCWLOMaxScoreToDisplay implements Operation<Double> {
 			return realMax;
 		}
 		// otherwise we try to find the closest 10^x value above (average + stdev)
-		double proposedMax = scwList.getAverage() + scwList.getStandardDeviation();
+		float proposedMax = scwList.getAverage() + scwList.getStandardDeviation();
 		if (proposedMax <= 0) {
-			return 0d;
+			return 0f;
 		}
 		maxScoreDisplayed = 1;
 		while (((proposedMax / maxScoreDisplayed) > 1) && !stopped) {
@@ -79,19 +79,19 @@ public class SCWLOMaxScoreToDisplay implements Operation<Double> {
 
 
 	@Override
-	public int getStepCount() {
-		return 1;
-	}
-
-
-	@Override
 	public String getProcessingDescription() {
 		return "Searching Maximum";
 	}
 
 
 	@Override
+	public int getStepCount() {
+		return 1;
+	}
+
+
+	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }

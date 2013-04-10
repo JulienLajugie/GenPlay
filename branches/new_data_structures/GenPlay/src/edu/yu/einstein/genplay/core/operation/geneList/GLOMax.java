@@ -31,15 +31,15 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
-
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
 /**
  * Searches the maximum value of the selected chromosomes of a specified {@link GeneList}
  * @author Julien Lajugie
- * @version 0.1
  */
-public class GLOMax implements Operation<Double> {
+public class GLOMax implements Operation<Float> {
 
 	private final GeneList 	geneList;		// input GeneList
 	private final boolean[] chromoList;		// 1 boolean / chromosome.
@@ -60,23 +60,24 @@ public class GLOMax implements Operation<Double> {
 
 
 	@Override
-	public Double compute() throws InterruptedException, ExecutionException {
+	public Float compute() throws InterruptedException, ExecutionException {
 		final OperationPool op = OperationPool.getInstance();
-		final Collection<Callable<Double>> threadList = new ArrayList<Callable<Double>>();
+		final Collection<Callable<Float>> threadList = new ArrayList<Callable<Float>>();
 		for (int i = 0; i < geneList.size(); i++) {
-			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (geneList.getView(i) != null)) {
-				final List<Gene> currentList = geneList.getView(i);
+			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (geneList.get(i) != null)) {
+				final ListView<Gene> currentList = geneList.get(i);
 
-				Callable<Double> currentThread = new Callable<Double>() {
+				Callable<Float> currentThread = new Callable<Float>() {
 					@Override
-					public Double call() throws Exception {
-						// we set the max to the smallest double value
-						double max = Double.NEGATIVE_INFINITY;
+					public Float call() throws Exception {
+						// we set the max to the smallest float value
+						float max = Float.NEGATIVE_INFINITY;
 						for (int i = 0; (i < currentList.size()) && !stopped; i++) {
 							Gene currentGene = currentList.get(i);
-							if ((currentGene != null) && (currentGene.getExonScores() != null)) {
-								for (Double currentScore: currentGene.getExonScores()) {
-									if (currentScore != 0) {
+							if ((currentGene != null) && (currentGene.getExons() != null)) {
+								for (ScoredChromosomeWindow currentExon: currentGene.getExons()) {
+									Float currentScore = currentExon.getScore();
+									if ((currentScore != 0) && (currentScore != Float.NaN)) {
 										max = Math.max(max, currentScore);
 									}
 								}
@@ -92,13 +93,13 @@ public class GLOMax implements Operation<Double> {
 			}
 		}
 
-		List<Double> result = op.startPool(threadList);
+		List<Float> result = op.startPool(threadList);
 		if (result == null) {
 			return null;
 		}
 		// we search for the max of the chromosome minimums
-		double max = Double.NEGATIVE_INFINITY;
-		for (Double currentMax: result) {
+		float max = Float.NEGATIVE_INFINITY;
+		for (Float currentMax: result) {
 			max = Math.max(max, currentMax);
 		}
 		return max;
@@ -112,14 +113,14 @@ public class GLOMax implements Operation<Double> {
 
 
 	@Override
-	public int getStepCount() {
-		return 1;
+	public String getProcessingDescription() {
+		return "Searching Maximum";
 	}
 
 
 	@Override
-	public String getProcessingDescription() {
-		return "Searching Maximum";
+	public int getStepCount() {
+		return 1;
 	}
 
 

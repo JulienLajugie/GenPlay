@@ -23,7 +23,6 @@ package edu.yu.einstein.genplay.core.operation.geneList;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
@@ -31,6 +30,7 @@ import edu.yu.einstein.genplay.core.operation.geneList.distanceCalculator.Distan
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 
 
 
@@ -120,9 +120,9 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 			Callable<long[]> currentThread = new Callable<long[]>() {
 				@Override
 				public long[] call() throws Exception {
-					long[] chromoresult = new long[geneList1.getView(chromoindex).size()];
+					long[] chromoresult = new long[geneList1.get(chromoindex).size()];
 					if ((geneList1 != null) && (geneList2 != null)) {
-						chromoresult = handleCases(geneList1.getView(chromoindex), geneList2, chromoindex);
+						chromoresult = handleCases(geneList1.get(chromoindex), geneList2, chromoindex);
 					}
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
@@ -145,13 +145,31 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 	}
 
 
+	@Override
+	public String getDescription() {
+		return "Operation: Distance Calculation";
+	}
+
+
+	@Override
+	public String getProcessingDescription() {
+		return "Calculating Distance";
+	}
+
+
+	@Override
+	public int getStepCount() {
+		return 1;
+	}
+
+
 	/**
 	 * Method to handle all of the 20 cases to compute the distance
 	 * @param firstList
 	 * @param secondList
 	 * @return a double 2-D array containing distances
 	 */
-	private long[] handleCases(List<Gene> firstList, GeneList secondList, int chrindex) {
+	private long[] handleCases(ListView<Gene> firstList, GeneList secondList, int chrindex) {
 		DistanceCalculator dc;
 		int k = 0;
 		long[] distanceByChromosomes = new long[firstList.size()];
@@ -484,24 +502,6 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 			break;
 		}
 		return distanceByChromosomes;
-	}
-
-
-	@Override
-	public String getDescription() {
-		return "Operation: Distance Calculation";
-	}
-
-
-	@Override
-	public String getProcessingDescription() {
-		return "Calculating Distance";
-	}
-
-
-	@Override
-	public int getStepCount() {
-		return 1;
 	}
 
 

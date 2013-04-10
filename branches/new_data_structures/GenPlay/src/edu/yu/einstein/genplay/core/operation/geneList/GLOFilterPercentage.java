@@ -22,11 +22,11 @@
 package edu.yu.einstein.genplay.core.operation.geneList;
 
 import java.util.Arrays;
-import java.util.List;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 
 
 /**
@@ -75,7 +75,7 @@ public class GLOFilterPercentage implements Operation<GeneList> {
 		}
 		double[] allScores = new double[totalLenght];
 		int i = 0;
-		for (List<Gene> currentList: geneList) {
+		for (ListView<Gene> currentList: geneList) {
 			if (currentList != null) {
 				for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 					double currentScore = currentList.get(j).getScore();

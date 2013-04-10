@@ -38,8 +38,9 @@ import javax.swing.JOptionPane;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.dataStructure.enums.Nucleotide;
-import edu.yu.einstein.genplay.dataStructure.list.DisplayableListOfLists;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.nucleotideList.NucleotideList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.nucleotideList.TwoBitSequenceList;
+import edu.yu.einstein.genplay.gui.dataScalerForTrackDisplay.NucleotideListScaler;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.ScrollingManager;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -52,13 +53,14 @@ import edu.yu.einstein.genplay.util.colors.Colors;
  * Layer displaying a mask
  * @author Julien Lajugie
  */
-public class NucleotideLayer extends AbstractLayer<DisplayableListOfLists<Nucleotide, Nucleotide[]>> implements Layer<DisplayableListOfLists<Nucleotide, Nucleotide[]>>, MouseMotionListener, MouseListener {
+public class NucleotideLayer extends AbstractLayer<NucleotideList> implements Layer<NucleotideList>, MouseMotionListener, MouseListener {
 
 	private static final long 	serialVersionUID = 3779631846077486596L;// generated ID
-	private static final int 	NUCLEOTIDE_HEIGHT = 10;				 	// y position of the nucleotides on the track
-	private transient Integer	maxBaseWidth = null;					// size on the screen of the widest base to display (in pixels)
-	private transient Integer 	baseUnderMouseIndex = null;				// index of the base under the mouse
-	private transient boolean	nucleotidePrinted = false;				// true if the nucleotide are printed
+	private static final int 				NUCLEOTIDE_HEIGHT = 10;		// y position of the nucleotides on the track
+	private transient NucleotideListScaler	dataScaler;					// object that scales the list of nucleotide for display
+	private transient Integer				maxBaseWidth = null;		// size on the screen of the widest base to display (in pixels)
+	private transient Integer 				baseUnderMouseIndex = null;	// index of the base under the mouse
+	private transient boolean				nucleotidePrinted = false;	// true if the nucleotide are printed
 
 
 	/**
@@ -67,7 +69,7 @@ public class NucleotideLayer extends AbstractLayer<DisplayableListOfLists<Nucleo
 	 * @param data data of the layer
 	 * @param name name of the layer
 	 */
-	public NucleotideLayer(Track track, DisplayableListOfLists<Nucleotide, Nucleotide[]> data, String name) {
+	public NucleotideLayer(Track track, NucleotideList data, String name) {
 		super(track, data, name);
 		maxBaseWidth = computeMaximumBaseWidth();
 	}
@@ -114,7 +116,9 @@ public class NucleotideLayer extends AbstractLayer<DisplayableListOfLists<Nucleo
 		if (getData() != null) {
 			if (nucleotidePrinted) {
 				ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-				Nucleotide[] nucleotides = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
+				// check that the data scaler is valid
+				validateDataScaler();
+				Nucleotide[] nucleotides = dataScaler.getDataScaledForTrackDisplay();
 				for (int position = projectWindow.getGenomeWindow().getStart(); position <= projectWindow.getGenomeWindow().getStop(); position++) {
 					int index = position - projectWindow.getGenomeWindow().getStart();
 					if (nucleotides[index] != null) {
@@ -154,7 +158,9 @@ public class NucleotideLayer extends AbstractLayer<DisplayableListOfLists<Nucleo
 		if (getData() != null) {
 			if (nucleotidePrinted) {
 				ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-				Nucleotide[] nucleotides = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
+				// check that the data scaler is valid
+				validateDataScaler();
+				Nucleotide[] nucleotides = dataScaler.getDataScaledForTrackDisplay();
 				for (int position = projectWindow.getGenomeWindow().getStart(); position <= projectWindow.getGenomeWindow().getStop(); position++) {
 					int index = position - projectWindow.getGenomeWindow().getStart();
 					if (nucleotides[index] != null) {
@@ -239,8 +245,10 @@ public class NucleotideLayer extends AbstractLayer<DisplayableListOfLists<Nucleo
 				if (nucleotidePrinted) {
 					// retrieve the position of the mouse
 					Point mousePosition = e.getPoint();
+					// check that the data scaler is valid
+					validateDataScaler();
 					// retrieve the list of the printed nucleotides
-					Nucleotide[] printedBases = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
+					Nucleotide[] printedBases = dataScaler.getDataScaledForTrackDisplay();
 					// do nothing if there is no genes
 					if (printedBases != null) {
 						double distance = projectWindow.screenToGenomeWidth(mousePosition.x);
@@ -254,7 +262,9 @@ public class NucleotideLayer extends AbstractLayer<DisplayableListOfLists<Nucleo
 					}
 				}
 				if (baseUnderMouseIndex != null) {
-					Nucleotide nucleotide = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio())[baseUnderMouseIndex];
+					// check that the data scaler is valid
+					validateDataScaler();
+					Nucleotide nucleotide = dataScaler.getDataScaledForTrackDisplay()[baseUnderMouseIndex];
 					if (nucleotide != null) {
 						getTrack().setToolTipText(nucleotide.name());
 					}
@@ -322,6 +332,17 @@ public class NucleotideLayer extends AbstractLayer<DisplayableListOfLists<Nucleo
 					setData(null);
 				}
 			}
+		}
+	}
+
+
+	/**
+	 * Checks that the data scaler is valid. Regenerates the data scaler if it's not valid
+	 */
+	private void validateDataScaler() {
+		// if the data scaler is null or is not set to scale the current data we regenerate it
+		if ((dataScaler == null) || (getData() != dataScaler.getDataToScale())) {
+			dataScaler = new NucleotideListScaler(getData());
 		}
 	}
 }

@@ -29,10 +29,17 @@ import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.geneListView.GeneListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.SimpleGeneList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 
 
 
@@ -43,68 +50,98 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.Simple
  */
 public class GLOIndexScores implements Operation<GeneList> {
 
-	private final GeneList 	geneList;		// input GeneList
-	private boolean			stopped = false;// true if the operation must be stopped
+	private final GeneList 			geneList;			// input GeneList
+	private boolean					stopped = false;	// true if the operation must be stopped
+	private final ScorePrecision 	scorePrecision;		// precision of the scores of the result list
 
 
 	/**
 	 * Indexes the score values of a {@link GeneList}
 	 * @param geneList input {@link GeneList}
+	 * @param scorePrecision precision of the scores of the genes of the result list
 	 */
-	public GLOIndexScores(GeneList geneList) {
+	public GLOIndexScores(GeneList geneList, ScorePrecision scorePrecision) {
 		this.geneList = geneList;
+		this.scorePrecision = scorePrecision;
 	}
 
 
 	@Override
 	public GeneList compute() throws InterruptedException, ExecutionException {
 		final OperationPool op = OperationPool.getInstance();
-		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();
+		final Collection<Callable<ListView<Gene>>> threadList = new ArrayList<Callable<ListView<Gene>>>();
 		// compute the distance between the min and the max
-		final double min = new GLOMin(geneList, null).compute();
-		double max = new GLOMax(geneList, null).compute();
-		double distanceMinMax = max - min;
-		final double indexFactor = 1000d / distanceMinMax;
+		final float min = new GLOMin(geneList, null).compute();
+		float max = new GLOMax(geneList, null).compute();
+		float distanceMinMax = max - min;
+		final float indexFactor = 1000f / distanceMinMax;
 
 		for (int i = 0; i < geneList.size(); i++) {
-			final List<Gene> currentList = geneList.getView(i);
+			final ListView<Gene> currentList = geneList.get(i);
 
-			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {
+			Callable<ListView<Gene>> currentThread = new Callable<ListView<Gene>>() {
 				@Override
-				public List<Gene> call() throws Exception {
+				public ListView<Gene> call() throws Exception {
 					if (currentList == null) {
 						return null;
 					}
-					List<Gene> resultList = new ArrayList<Gene>();
+					ListViewBuilder<Gene> resultLVBuilder = new GeneListViewBuilder(scorePrecision);
 					for (int i = 0; (i < currentList.size()) && !stopped; i++) {
 						Gene currentGene = currentList.get(i);
 						if (currentGene != null) {
-							Gene copyCurrentGene = new SimpleGene(currentGene);
-							if (copyCurrentGene.getExonScores() != null){
-								for(int j = 0; j < copyCurrentGene.getExonScores().length; j++) {
-									double score = (copyCurrentGene.getExonScores()[j] - min) * indexFactor;
-									score = Math.max(0, score);
-									score = Math.min(1000, score);
-									copyCurrentGene.getExonScores()[j] = score;
-								}
-							}
-							resultList.add(copyCurrentGene);
+							Gene copyCurrentGene;
+							copyCurrentGene = createIndexedGene(currentGene, min, indexFactor);
+							resultLVBuilder.addElementToBuild(copyCurrentGene);
 						}
 					}
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
-					return resultList;
+					return resultLVBuilder.getListView();
 				}
+
 			};
 
 			threadList.add(currentThread);
 		}
-		List<List<Gene>> result = op.startPool(threadList);
+		List<ListView<Gene>> result = op.startPool(threadList);
 		if (result == null) {
 			return null;
 		} else {
 			return new SimpleGeneList(result, geneList.getGeneScoreType(), geneList.getGeneDBURL());
 		}
+	}
+
+
+	/**
+	 * Creates a new gene having the same attribute as the specified gene, except for the gene score
+	 * and the exon scores that are indexed
+	 * @param gene a {@link Gene}
+	 * @param min minimum value of the {@link GeneList} (needed for the indexing)
+	 * @param indexFactor factor of the indexing
+	 * @return
+	 */
+	private Gene createIndexedGene(Gene gene, float min, float indexFactor) {
+		float geneScore = Float.NaN;
+		if (gene.getScore() != Float.NaN) {
+			geneScore = (gene.getScore() - min) * indexFactor;
+			geneScore = Math.max(0, geneScore);
+			geneScore = Math.min(1000, geneScore);
+		}
+		ListViewBuilder<ScoredChromosomeWindow> exonLVBuilder = new GenericSCWListViewBuilder(scorePrecision);
+		if (gene.getExons() != null) {
+			for (ScoredChromosomeWindow exon: gene.getExons()) {
+				float exonScore = Float.NaN;
+				if (exon.getScore() != Float.NaN) {
+					exonScore = (exon.getScore() - min) * indexFactor;
+					exonScore = Math.max(0, exonScore);
+					exonScore = Math.min(1000, exonScore);
+				}
+				ScoredChromosomeWindow exonToAdd = new SimpleScoredChromosomeWindow(exon.getStart(), exon.getStop(), exonScore);
+				exonLVBuilder.addElementToBuild(exonToAdd);
+			}
+		}
+		Gene newGene = new SimpleGene(gene.getName(), gene.getStrand(), gene.getStart(), gene.getStop(), geneScore, gene.getUTR5Bound(), gene.getUTR3Bound(), exonLVBuilder.getListView());
+		return newGene;
 	}
 
 
@@ -115,15 +152,15 @@ public class GLOIndexScores implements Operation<GeneList> {
 
 
 	@Override
-	public int getStepCount() {
-		// 1 for the min, 1 for the max and 1 for the indexation
-		return 3;
+	public String getProcessingDescription() {
+		return "Indexing Scores";
 	}
 
 
 	@Override
-	public String getProcessingDescription() {
-		return "Indexing Scores";
+	public int getStepCount() {
+		// 1 for the min, 1 for the max and 1 for the indexing
+		return 3;
 	}
 
 

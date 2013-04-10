@@ -29,10 +29,10 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList
  * Calculates the minimum score to display on a ScoredChromosomeWindowList track
  * @author Julien Lajugie
  */
-public class SCWLOMinScoreToDisplay implements Operation<Double> {
+public class SCWLOMinScoreToDisplay implements Operation<Float> {
 
 	private final SCWList 	scwList;			// input list
-	private boolean								stopped = false;	// true if the operation must be stopped
+	private boolean			stopped = false;	// true if the operation must be stopped
 
 
 	/**
@@ -45,14 +45,14 @@ public class SCWLOMinScoreToDisplay implements Operation<Double> {
 
 
 	@Override
-	public Double compute() {
+	public Float compute() {
 		// if the min is positive we return 0
-		double realMin = scwList.getMinimum();
+		float realMin = scwList.getMinimum();
 		if (realMin >= 0) {
-			return 0d;
+			return 0f;
 		}
 		// if the min of the list can be written as -10^x we return this value as a minimum
-		double minScoreDisplayed = -1;
+		float minScoreDisplayed = -1;
 		while (((realMin / minScoreDisplayed) > 1) && !stopped) {
 			minScoreDisplayed *= 10;
 		}
@@ -60,9 +60,9 @@ public class SCWLOMinScoreToDisplay implements Operation<Double> {
 			return realMin;
 		}
 		// otherwise we try to find the closest 10^x value under (average - stdev)
-		double proposedMin = scwList.getAverage() - scwList.getStandardDeviation();
+		float proposedMin = scwList.getAverage() - scwList.getStandardDeviation();
 		if (proposedMin >= 0) {
-			return 0d;
+			return 0f;
 		}
 		minScoreDisplayed = -1;
 		while (((proposedMin / minScoreDisplayed) > 1) && !stopped) {
@@ -79,14 +79,14 @@ public class SCWLOMinScoreToDisplay implements Operation<Double> {
 
 
 	@Override
-	public int getStepCount() {
-		return 1;
+	public String getProcessingDescription() {
+		return "Searching Minimum";
 	}
 
 
 	@Override
-	public String getProcessingDescription() {
-		return "Searching Minimum";
+	public int getStepCount() {
+		return 1;
 	}
 
 

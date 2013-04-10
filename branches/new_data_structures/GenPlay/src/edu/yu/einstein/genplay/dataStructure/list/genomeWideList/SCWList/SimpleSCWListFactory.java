@@ -58,7 +58,7 @@ public class SimpleSCWListFactory {
 	 */
 	public static SCWList createDenseSCWArrayList(SCWReader scwReader, ScorePrecision scorePrecision, ScoreOperation scoreOperation) throws InterruptedException, ExecutionException, CloneNotSupportedException {
 		ListViewBuilder<ScoredChromosomeWindow> lvBuilderPrototype = new DenseSCWListViewBuilder(scorePrecision);
-		return createSimpleSCWArrayList(scwReader, lvBuilderPrototype, scoreOperation);
+		return createSimpleSCWArrayList(scwReader, scorePrecision, lvBuilderPrototype, scoreOperation);
 	}
 
 
@@ -76,7 +76,7 @@ public class SimpleSCWListFactory {
 	 */
 	public static SCWList createGenericSCWArrayList(SCWReader scwReader, ScorePrecision scorePrecision, ScoreOperation scoreOperation) throws InterruptedException, ExecutionException, CloneNotSupportedException {
 		ListViewBuilder<ScoredChromosomeWindow> lvBuilderPrototype = new GenericSCWListViewBuilder(scorePrecision);
-		return createSimpleSCWArrayList(scwReader, lvBuilderPrototype, scoreOperation);
+		return createSimpleSCWArrayList(scwReader, scorePrecision, lvBuilderPrototype, scoreOperation);
 	}
 
 
@@ -92,7 +92,7 @@ public class SimpleSCWListFactory {
 	 */
 	public static SCWList createMaskSCWArrayList(SCWReader scwReader, ScoreOperation scoreOperation) throws InterruptedException, ExecutionException, CloneNotSupportedException {
 		ListViewBuilder<ScoredChromosomeWindow> lvBuilderPrototype = new MaskListViewBuilder();
-		return createSimpleSCWArrayList(scwReader, lvBuilderPrototype, scoreOperation);
+		return createSimpleSCWArrayList(scwReader, null, lvBuilderPrototype, scoreOperation);
 	}
 
 
@@ -100,6 +100,7 @@ public class SimpleSCWListFactory {
 	 * Creates a {@link SCWList} from the data retrieved by the specified {@link SCWReader}.
 	 * The specified prototype determine the underlying data structure of the {@link SCWList}.
 	 * @param scwReader a {@link SCWReader}
+	 * @param scorePrecision precision of the scores of the scores of the genes and exons
 	 * @param lvBuilderPrototype a prototype of builder
 	 * @param scoreOperation {@link ScoreOperation} to compute the score of windows resulting from the "flattening" of a pileup of overlapping windows
 	 * @return a new {@link SCWList}
@@ -107,7 +108,7 @@ public class SimpleSCWListFactory {
 	 * @throws ExecutionException
 	 * @throws CloneNotSupportedException
 	 */
-	private static SCWList createSimpleSCWArrayList(SCWReader scwReader, ListViewBuilder<ScoredChromosomeWindow> lvBuilderPrototype, ScoreOperation scoreOperation) throws InterruptedException, ExecutionException, CloneNotSupportedException {
+	private static SCWList createSimpleSCWArrayList(SCWReader scwReader, ScorePrecision scorePrecision, ListViewBuilder<ScoredChromosomeWindow> lvBuilderPrototype, ScoreOperation scoreOperation) throws InterruptedException, ExecutionException, CloneNotSupportedException {
 		// retrieve the type of the SCWList underlying structure from the type of the builder prototype
 		SCWListType listType = null;
 		if (lvBuilderPrototype instanceof DenseSCWListViewBuilder) {
@@ -144,6 +145,6 @@ public class SimpleSCWListFactory {
 				}
 			}
 		}
-		return new SimpleSCWList(builder.getGenomicList(), listType);
+		return new SimpleSCWList(builder.getGenomicList(), listType, scorePrecision);
 	}
 }

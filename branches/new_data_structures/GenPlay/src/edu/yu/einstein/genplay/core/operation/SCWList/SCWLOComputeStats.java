@@ -23,7 +23,6 @@ package edu.yu.einstein.genplay.core.operation.SCWList;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
@@ -32,6 +31,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 /**
@@ -41,19 +41,19 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
 public class SCWLOComputeStats implements Operation<Void> {
 
 	/** Smallest value of the list */
-	private Double minimum = null;
+	private Float minimum = null;
 
 	/** Greatest value of the list */
-	private Double maximum = null;
+	private Float maximum = null;
 
 	/** Average of the list */
-	private Double average = null;
+	private Float average = null;
 
 	/** Standard deviation of the list */
-	private Double standardDeviation = null;
+	private Float standardDeviation = null;
 
-	/** Sum of the scores of all windows */
-	private Double scoreSum = null;
+	/** Sum of Float scores of all windows */
+	private Float scoreSum = null;
 
 	/** Count of none-null bins in the BinList */
 	private Long nonNullLength = null;
@@ -85,30 +85,30 @@ public class SCWLOComputeStats implements Operation<Void> {
 		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
 
 		// set the default value
-		minimum = Double.POSITIVE_INFINITY;
-		maximum = Double.NEGATIVE_INFINITY;
-		average = 0d;
-		standardDeviation = 0d;
-		scoreSum = 0d;
+		minimum = Float.POSITIVE_INFINITY;
+		maximum = Float.NEGATIVE_INFINITY;
+		average = 0f;
+		standardDeviation = 0f;
+		scoreSum = 0f;
 		nonNullLength = 0l;
 
 		// create arrays so each statics variable can be calculated for each chromosome
-		final double[] mins = new double[projectChromosome.size()];
-		final double[] maxs = new double[projectChromosome.size()];
-		final double[] stDevs = new double[projectChromosome.size()];
-		final double[] scoreSums = new double[projectChromosome.size()];
+		final float[] mins = new float[projectChromosome.size()];
+		final float[] maxs = new float[projectChromosome.size()];
+		final float[] stDevs = new float[projectChromosome.size()];
+		final float[] scoreSums = new float[projectChromosome.size()];
 		final long[] nonNullLengths = new long[projectChromosome.size()];
 
 		// computes min / max / total score / non null bin count for each chromosome
 		for(short i = 0; i < inputList.size(); i++)  {
-			final List<ScoredChromosomeWindow> currentList = inputList.getView(i);
+			final ListView<ScoredChromosomeWindow> currentList = inputList.get(i);
 			final short currentIndex = i;
 
 			Callable<Void> currentThread = new Callable<Void>() {
 				@Override
 				public Void call() throws Exception {
-					mins[currentIndex] = Double.POSITIVE_INFINITY;
-					maxs[currentIndex] = Double.NEGATIVE_INFINITY;
+					mins[currentIndex] = Float.POSITIVE_INFINITY;
+					maxs[currentIndex] = Float.NEGATIVE_INFINITY;
 					if (currentList != null) {
 						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 							ScoredChromosomeWindow currentWindow = currentList.get(j);
@@ -141,12 +141,12 @@ public class SCWLOComputeStats implements Operation<Void> {
 
 		if (nonNullLength != 0) {
 			// compute the average
-			average = scoreSum / (double) nonNullLength;
+			average = scoreSum / (float) nonNullLength;
 			threadList.clear();
 
 			// compute the standard deviation for each chromosome
 			for(short i = 0; i < inputList.size(); i++)  {
-				final List<ScoredChromosomeWindow> currentList = inputList.getView(i);
+				final ListView<ScoredChromosomeWindow> currentList = inputList.get(i);
 				final short currentIndex = i;
 
 				Callable<Void> currentThread = new Callable<Void>() {
@@ -175,7 +175,7 @@ public class SCWLOComputeStats implements Operation<Void> {
 			for (int i = 0; i < projectChromosome.size(); i++) {
 				standardDeviation += stDevs[i];
 			}
-			standardDeviation = Math.sqrt(standardDeviation / (double) nonNullLength);
+			standardDeviation = (float) Math.sqrt(standardDeviation / (double) nonNullLength);
 		}
 		return null;
 	}
@@ -184,7 +184,7 @@ public class SCWLOComputeStats implements Operation<Void> {
 	/**
 	 * @return the average
 	 */
-	public Double getAverage() {
+	public Float getAverage() {
 		return average;
 	}
 
@@ -206,7 +206,7 @@ public class SCWLOComputeStats implements Operation<Void> {
 	/**
 	 * @return the maximum
 	 */
-	public Double getMaximum() {
+	public Float getMaximum() {
 		return maximum;
 	}
 
@@ -214,7 +214,7 @@ public class SCWLOComputeStats implements Operation<Void> {
 	/**
 	 * @return the minimum
 	 */
-	public Double getMinimum() {
+	public Float getMinimum() {
 		return minimum;
 	}
 
@@ -236,7 +236,7 @@ public class SCWLOComputeStats implements Operation<Void> {
 	/**
 	 * @return the scoreSum
 	 */
-	public Double getScoreSum() {
+	public Float getScoreSum() {
 		return scoreSum;
 	}
 
@@ -244,7 +244,7 @@ public class SCWLOComputeStats implements Operation<Void> {
 	/**
 	 * @return the standardDeviation
 	 */
-	public Double getStandardDeviation() {
+	public Float getStandardDeviation() {
 		return standardDeviation;
 	}
 

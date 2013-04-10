@@ -34,14 +34,13 @@ import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.SimpleGeneList;
-
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 
 
 /**
  * Extracts intervals relative to gene positions
  * @author Julien Lajugie
  * @author Chirag Gorasia
- * @version 0.1
  */
 public class GLOExtractIntervals implements Operation<GeneList> {
 
@@ -112,7 +111,7 @@ public class GLOExtractIntervals implements Operation<GeneList> {
 		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();
 
 		for(short i = 0; i < geneList.size(); i++) {
-			final List<Gene> currentList = geneList.getView(i);
+			final ListView<Gene> currentList = geneList.get(i);
 			final int chromoLength = ProjectManager.getInstance().getProjectChromosome().get(i).getLength();
 
 			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {
@@ -231,8 +230,9 @@ public class GLOExtractIntervals implements Operation<GeneList> {
 							int[] exonStop = {newStop};
 							geneToAdd.setExonStarts(exonStart);
 							geneToAdd.setExonStops(exonStop);
-							geneToAdd.setStart(newStart);
-							geneToAdd.setStop(newStop);
+							int start = newStart;
+							int stop = newStop;
+
 							resultList.add(geneToAdd);
 						} else if ((newStart > newStop) && (currentGene.getStrand() == Strand.THREE)) {
 							int[] exonStart = {newStop};

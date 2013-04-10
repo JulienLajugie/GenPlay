@@ -21,6 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.operation.geneList;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -35,6 +36,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 
 
 /**
@@ -49,7 +51,7 @@ public class GLOScoreDistributionAroundStart implements Operation<double[][]> {
 	private final boolean[] 				selectedChromosomes;	// selected chromosomes
 	private final int 						binSize;				// size of the bins of scores
 	private final int 						binCount;				// number of bins each side of the zero position
-	private final ScoreOperation 	scoreCalculationMethod; // method for the calculation of the bin of scores
+	private final ScoreOperation 			scoreOperation; 		// method for the calculation of the bin of scores
 
 
 	/**
@@ -69,7 +71,7 @@ public class GLOScoreDistributionAroundStart implements Operation<double[][]> {
 		this.selectedChromosomes = selectedChromosomes;
 		this.binSize = binSize;
 		this.binCount = binCount;
-		this.scoreCalculationMethod = scoreCalculationMethod;
+		scoreOperation = scoreCalculationMethod;
 	}
 
 
@@ -82,7 +84,7 @@ public class GLOScoreDistributionAroundStart implements Operation<double[][]> {
 		}
 		// if the method to compute the score is max
 		// we need to initialize all the score to negative infinity
-		if (scoreCalculationMethod == ScoreOperation.MAXIMUM) {
+		if (scoreOperation == ScoreOperation.MAXIMUM) {
 			for (int i = 0; i < totalBinCount; i++) {
 				result[i][1] = Double.NEGATIVE_INFINITY;
 			}
@@ -93,15 +95,15 @@ public class GLOScoreDistributionAroundStart implements Operation<double[][]> {
 
 		for (int i = 0; (i < geneList.size()) && !stopped; i++) {
 			final Chromosome currentChromo = ProjectManager.getInstance().getProjectChromosome().get(i);
-			if (((selectedChromosomes == null) || ((i < selectedChromosomes.length) && (selectedChromosomes[i]))) && (geneList.getView(i) != null) && (binList.get(i) != null)) {
-				final List<Gene> currentGeneList = geneList.getView(i);
+			if (((selectedChromosomes == null) || ((i < selectedChromosomes.length) && (selectedChromosomes[i]))) && (geneList.get(i) != null) && (binList.get(i) != null)) {
+				final ListView<Gene> currentGeneList = geneList.get(i);
 				Callable<double[]> currentThread = new Callable<double[]>() {
 					@Override
 					public double[] call() throws Exception {
 						double[] chromoResult = new double[totalBinCount];
 						// if the method to compute the score is max
 						// we need to initialize all the score to negative infinity
-						if (scoreCalculationMethod == ScoreOperation.MAXIMUM) {
+						if (scoreOperation == ScoreOperation.MAXIMUM) {
 							for (int j = 0; j < totalBinCount; j++) {
 								chromoResult[j] = Double.NEGATIVE_INFINITY;
 							}
@@ -123,7 +125,7 @@ public class GLOScoreDistributionAroundStart implements Operation<double[][]> {
 									currentScore = retrieveScore(currentChromo, startPos - binSize, startPos, binList);
 									startPos -= binSize;
 								}
-								switch (scoreCalculationMethod) {
+								switch (scoreOperation) {
 								case AVERAGE:
 									if (currentScore != 0) {
 										chromoResult[j] += currentScore;
@@ -133,14 +135,16 @@ public class GLOScoreDistributionAroundStart implements Operation<double[][]> {
 								case MAXIMUM:
 									chromoResult[j] = Math.max(chromoResult[j], currentScore);
 									break;
-								case SUM:
+								case ADDITION:
 									chromoResult[j] += currentScore;
 									break;
+								default:
+									throw new InvalidParameterException("Operation " + scoreOperation + " cannot be used to compute scores");
 								}
 							}
 						}
 						// compute the average if it's the method for the score calculation
-						if (scoreCalculationMethod == ScoreOperation.AVERAGE) {
+						if (scoreOperation == ScoreOperation.AVERAGE) {
 							for (int j = 0; j < totalBinCount; j++) {
 								if (count[j] != 0) {
 									chromoResult[j] /= count[j];
@@ -165,7 +169,7 @@ public class GLOScoreDistributionAroundStart implements Operation<double[][]> {
 		for (double [] currentResult: threadResult) {
 			if (currentResult != null) {
 				for (int i = 0; i < currentResult.length; i++) {
-					switch (scoreCalculationMethod) {
+					switch (scoreOperation) {
 					case AVERAGE:
 						if (currentResult[i] != 0) {
 							result[i][1] += currentResult[i];
@@ -175,15 +179,17 @@ public class GLOScoreDistributionAroundStart implements Operation<double[][]> {
 					case MAXIMUM:
 						result[i][1] = Math.max(result[i][1], currentResult[i]);
 						break;
-					case SUM:
+					case ADDITION:
 						result[i][1] += currentResult[i];
 						break;
+					default:
+						throw new InvalidParameterException("Operation " + scoreOperation + " cannot be used to compute scores");
 					}
 				}
 			}
 		}
 		// compute the average if it's the method for the score calculation
-		if (scoreCalculationMethod == ScoreOperation.AVERAGE) {
+		if (scoreOperation == ScoreOperation.AVERAGE) {
 			for (int i = 0; i < totalBinCount; i++) {
 				if (count[i] != 0) {
 					result[i][1] /= count[i];
@@ -194,6 +200,24 @@ public class GLOScoreDistributionAroundStart implements Operation<double[][]> {
 		}
 		return result;
 
+	}
+
+
+	@Override
+	public String getDescription() {
+		return "Operation: Show Score Distribution Around Gene Start";
+	}
+
+
+	@Override
+	public String getProcessingDescription() {
+		return "Computing Score Distribution";
+	}
+
+
+	@Override
+	public int getStepCount() {
+		return 1;
 	}
 
 
@@ -227,24 +251,6 @@ public class GLOScoreDistributionAroundStart implements Operation<double[][]> {
 		} else {
 			return totalScore / count;
 		}
-	}
-
-
-	@Override
-	public String getDescription() {
-		return "Operation: Show Score Distribution Around Gene Start";
-	}
-
-
-	@Override
-	public String getProcessingDescription() {
-		return "Computing Score Distribution";
-	}
-
-
-	@Override
-	public int getStepCount() {
-		return 1;
 	}
 
 

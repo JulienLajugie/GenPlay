@@ -105,12 +105,11 @@ public final class ControlPanel extends JPanel {
 
 
 	/**
-	 * Decrements the start and the stop positions of the {@link SimpleGenomeWindow}.
-	 * The move is 1/10 of the width of the tracks panel.
+	 * Locks the control panel
 	 */
-	public void moveLeft() {
-		int moveGap = (int) (projectWindow.getGenomeWindow().getSize() / (double) INCREMENT_FACTOR);
-		moveGapLeft(moveGap);
+	public void lock() {
+		chromosomePanel.lock();
+		genomeWindowPanel.lock();
 	}
 
 
@@ -126,20 +125,59 @@ public final class ControlPanel extends JPanel {
 
 
 	/**
+	 * Increments the start and the stop positions of the {@link SimpleGenomeWindow}.
+	 * The move is 4/5 of the width of the tracks panel.
+	 */
+	public void moveFarRight() {
+		int moveGap = (int) (projectWindow.getGenomeWindow().getSize() / (double) INCREMENT_FACTOR);
+		moveGap *= 5;
+		moveGapRight(moveGap);
+	}
+
+
+	/**
 	 * Decrements the start and the stop positions of the {@link SimpleGenomeWindow}.
 	 * @param moveGap the gap to use
 	 */
 	private void moveGapLeft(int moveGap) {
 		// we want to move from at least 1 nucleotide
 		moveGap = Math.max(moveGap, 1);
-
 		SimpleGenomeWindow newGenomeWindow = new SimpleGenomeWindow(projectWindow.getGenomeWindow().getChromosome(), projectWindow.getGenomeWindow().getStart() - moveGap, projectWindow.getGenomeWindow().getStop() - moveGap);
 		if (newGenomeWindow.getMiddlePosition() < 0) {
 			int size = newGenomeWindow.getSize();
-			newGenomeWindow.setStart(-size / 2);
-			newGenomeWindow.setStop(newGenomeWindow.getStart() + size);
+			int start = -size / 2;
+			int stop = newGenomeWindow.getStart() + size;
+			newGenomeWindow = new SimpleGenomeWindow(newGenomeWindow.getChromosome(), start, stop);
 		}
 		projectWindow.setGenomeWindow(newGenomeWindow);
+	}
+
+
+	/**
+	 * Increments the start and the stop positions of the {@link SimpleGenomeWindow}.
+	 * @param moveGap the gap to use
+	 */
+	private void moveGapRight(int moveGap) {
+		// we want to move from at least 1 nucleotide
+		moveGap = Math.max(moveGap, 1);
+		SimpleGenomeWindow newGenomeWindow = new SimpleGenomeWindow(projectWindow.getGenomeWindow().getChromosome(), projectWindow.getGenomeWindow().getStart() + moveGap, projectWindow.getGenomeWindow().getStop() + moveGap);
+		if (newGenomeWindow.getMiddlePosition() > projectWindow.getGenomeWindow().getChromosome().getLength()) {
+			int size = newGenomeWindow.getSize();
+			int start = projectWindow.getGenomeWindow().getChromosome().getLength() - (size / 2);
+			int stop = newGenomeWindow.getStart() + size;
+			newGenomeWindow = new SimpleGenomeWindow(newGenomeWindow.getChromosome(), start, stop);
+		}
+		projectWindow.setGenomeWindow(newGenomeWindow);
+	}
+
+
+	/**
+	 * Decrements the start and the stop positions of the {@link SimpleGenomeWindow}.
+	 * The move is 1/10 of the width of the tracks panel.
+	 */
+	public void moveLeft() {
+		int moveGap = (int) (projectWindow.getGenomeWindow().getSize() / (double) INCREMENT_FACTOR);
+		moveGapLeft(moveGap);
 	}
 
 
@@ -154,30 +192,13 @@ public final class ControlPanel extends JPanel {
 
 
 	/**
-	 * Increments the start and the stop positions of the {@link SimpleGenomeWindow}.
-	 * The move is 4/5 of the width of the tracks panel.
+	 * Registers every control panel components to the genome window manager.
 	 */
-	public void moveFarRight() {
-		int moveGap = (int) (projectWindow.getGenomeWindow().getSize() / (double) INCREMENT_FACTOR);
-		moveGap *= 5;
-		moveGapRight(moveGap);
-	}
-
-
-	/**
-	 * Increments the start and the stop positions of the {@link SimpleGenomeWindow}.
-	 * @param moveGap the gap to use
-	 */
-	private void moveGapRight(int moveGap) {
-		// we want to move from at least 1 nucleotide
-		moveGap = Math.max(moveGap, 1);
-		SimpleGenomeWindow newGenomeWindow = new SimpleGenomeWindow(projectWindow.getGenomeWindow().getChromosome(), projectWindow.getGenomeWindow().getStart() + moveGap, projectWindow.getGenomeWindow().getStop() + moveGap);
-		if (newGenomeWindow.getMiddlePosition() > projectWindow.getGenomeWindow().getChromosome().getLength()) {
-			int size = newGenomeWindow.getSize();
-			newGenomeWindow.setStart(projectWindow.getGenomeWindow().getChromosome().getLength() - (size / 2));
-			newGenomeWindow.setStop(newGenomeWindow.getStart() + size);
-		}
-		projectWindow.setGenomeWindow(newGenomeWindow);
+	private void registerToGenomeWindow () {
+		projectWindow.addGenomeWindowListener(chromosomePanel);
+		projectWindow.addGenomeWindowListener(genomeWindowPanel);
+		projectWindow.addGenomeWindowListener(topPanel);
+		projectWindow.addGenomeWindowListener(zoomPanel);
 	}
 
 
@@ -208,13 +229,11 @@ public final class ControlPanel extends JPanel {
 
 
 	/**
-	 * Registers every control panel components to the genome window manager.
+	 * Unlocks the control panel
 	 */
-	private void registerToGenomeWindow () {
-		projectWindow.addGenomeWindowListener(chromosomePanel);
-		projectWindow.addGenomeWindowListener(genomeWindowPanel);
-		projectWindow.addGenomeWindowListener(topPanel);
-		projectWindow.addGenomeWindowListener(zoomPanel);
+	public void unlock() {
+		chromosomePanel.unlock();
+		genomeWindowPanel.unlock();
 	}
 
 
@@ -233,23 +252,5 @@ public final class ControlPanel extends JPanel {
 	public void zoomOut() {
 		int newZoom = ProjectManager.getInstance().getProjectZoom().getNextZoomOut(projectWindow.getGenomeWindow().getSize());
 		zoomPanel.zoomChanged(newZoom);
-	}
-
-
-	/**
-	 * Locks the control panel
-	 */
-	public void lock() {
-		chromosomePanel.lock();
-		genomeWindowPanel.lock();
-	}
-
-
-	/**
-	 * Unlocks the control panel
-	 */
-	public void unlock() {
-		chromosomePanel.unlock();
-		genomeWindowPanel.unlock();
 	}
 }

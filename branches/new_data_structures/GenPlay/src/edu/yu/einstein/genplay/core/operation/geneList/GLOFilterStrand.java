@@ -28,62 +28,68 @@ import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.geneListView.GeneListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.SimpleGeneList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 
 
 /**
  * Creates a new GeneList containing only the genes on the selected strand
  * @author Julien Lajugie
- * @version 0.1
  */
 public class GLOFilterStrand implements Operation<GeneList> {
-	private final GeneList 	geneList;			// input list
-	private final Strand	strandToKeep;		// strand with the genes we want to keep
-	private boolean			stopped = false;	// true if the operation must be stopped
+	private final GeneList 			geneList;			// input list
+	private final Strand			strandToKeep;		// strand with the genes we want to keep
+	private final ScorePrecision 	scorePrecision;		// precision of the scores of the result list
+	private boolean					stopped = false;	// true if the operation must be stopped
 
 
 	/**
 	 * Creates an instance of {@link GLOFilterStrand}
 	 * @param geneList input list
 	 * @param strandToKeep strand with the genes we want to keep
+	 * @param scorePrecision precision of the scores of the genes of the result list
 	 */
-	public GLOFilterStrand(GeneList geneList, Strand strandToKeep) {
+	public GLOFilterStrand(GeneList geneList, Strand strandToKeep, ScorePrecision scorePrecision) {
 		this.geneList = geneList;
 		this.strandToKeep = strandToKeep;
+		this.scorePrecision = scorePrecision;
 	}
 
 
 	@Override
 	public GeneList compute() throws Exception {
 		final OperationPool op = OperationPool.getInstance();
-		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();
+		final Collection<Callable<ListView<Gene>>> threadList = new ArrayList<Callable<ListView<Gene>>>();
 
 		for(short i = 0; i < geneList.size(); i++) {
-			final List<Gene> currentList = geneList.getView(i);
-			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {
+			final ListView<Gene> currentList = geneList.get(i);
+			Callable<ListView<Gene>> currentThread = new Callable<ListView<Gene>>() {
 				@Override
-				public List<Gene> call() throws Exception {
+				public ListView<Gene> call() throws Exception {
 					if (currentList == null) {
 						return null;
 					}
-					List<Gene> resultList = new ArrayList<Gene>();
+					ListViewBuilder<Gene> resultLVBuilder = new GeneListViewBuilder(scorePrecision);
 					for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 						Gene currentGene = currentList.get(j);
 						if (currentGene.getStrand().equals(strandToKeep)) {
-							resultList.add(currentGene);
+							resultLVBuilder.addElementToBuild(currentGene);
 						}
 					}
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
-					return resultList;
+					return resultLVBuilder.getListView();
 				}
 			};
 			threadList.add(currentThread);
 		}
-		List<List<Gene>> result = op.startPool(threadList);
+		List<ListView<Gene>> result = op.startPool(threadList);
 		if (result == null) {
 			return null;
 		} else {

@@ -119,7 +119,7 @@ public class GeneListScaler implements DataScalerForTrackDisplay<GeneList, List<
 	protected void scaleChromosome() {
 		ListView<Gene> currentList;
 		try {
-			currentList = dataToScale.getView(scaledChromosome);
+			currentList = dataToScale.get(scaledChromosome);
 		} catch (InvalidChromosomeException e) {
 			e.printStackTrace();
 			scaledGeneList = null;
@@ -136,7 +136,6 @@ public class GeneListScaler implements DataScalerForTrackDisplay<GeneList, List<
 		// which genes have already been selected and organized
 		boolean[] organizedGenes = new boolean[currentList.size()];
 		Arrays.fill(organizedGenes, false);
-		int currentLine = 0;
 		// check if we need to print the gene names at the current scale
 		boolean isGeneNamePrinted = (scaledXRatio > MIN_X_RATIO_PRINT_NAME) && (fontMetrics != null);
 		ProjectWindow pw = ProjectManager.getInstance().getProjectWindow();
@@ -177,7 +176,6 @@ public class GeneListScaler implements DataScalerForTrackDisplay<GeneList, List<
 				}
 			}
 			scaledGeneList.add(geneLVBuilder.getListView());
-			currentLine++;
 		}
 	}
 }

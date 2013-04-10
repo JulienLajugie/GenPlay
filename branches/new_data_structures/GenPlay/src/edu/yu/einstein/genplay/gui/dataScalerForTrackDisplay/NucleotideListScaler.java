@@ -89,7 +89,7 @@ public class NucleotideListScaler implements DataScalerForTrackDisplay<Nucleotid
 		Chromosome chromosome = displayedWindow.getChromosome();
 		scaledNucleotides = new Nucleotide[(stop - start) + 1];
 		try {
-			ListView<Nucleotide> currentList = dataToScale.getView(chromosome);
+			ListView<Nucleotide> currentList = dataToScale.get(chromosome);
 			int j = 0;
 			for (int i = start; i <= stop; i++) {
 				scaledNucleotides[j] = currentList.get(i);

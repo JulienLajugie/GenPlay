@@ -31,6 +31,8 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
 
@@ -65,8 +67,8 @@ public class GLOSumScore implements Operation<Double> {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Double>> threadList = new ArrayList<Callable<Double>>();
 		for (int i = 0; i < geneList.size(); i++) {
-			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (geneList.getView(i) != null)) {
-				final List<Gene> currentList = geneList.getView(i);
+			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (geneList.get(i) != null)) {
+				final ListView<Gene> currentList = geneList.get(i);
 
 				Callable<Double> currentThread = new Callable<Double>() {
 					@Override
@@ -75,9 +77,10 @@ public class GLOSumScore implements Operation<Double> {
 						double sum = 0;
 						for (int i = 0; (i < currentList.size()) && !stopped; i++) {
 							Gene currentGene = currentList.get(i);
-							if ((currentGene != null) && (currentGene.getExonScores() != null)) {
-								for (double currentScore: currentGene.getExonScores()) {
-									if (currentScore != 0) {
+							if ((currentGene != null) && (currentGene.getExons() != null)) {
+								for (ScoredChromosomeWindow currentExon : currentGene.getExons()) {
+									float currentScore = currentExon.getScore();
+									if ((currentScore != 0) && (currentScore != Float.NaN)) {
 										sum += currentScore;
 									}
 								}
@@ -113,14 +116,14 @@ public class GLOSumScore implements Operation<Double> {
 
 
 	@Override
-	public int getStepCount() {
-		return 1;
+	public String getProcessingDescription() {
+		return "Computing Score Count";
 	}
 
 
 	@Override
-	public String getProcessingDescription() {
-		return "Computing Score Count";
+	public int getStepCount() {
+		return 1;
 	}
 
 

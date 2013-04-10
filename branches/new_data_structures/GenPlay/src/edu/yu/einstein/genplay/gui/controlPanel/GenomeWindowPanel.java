@@ -70,7 +70,7 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 	 * @param genomeWindow a {@link SimpleGenomeWindow}
 	 */
 	GenomeWindowPanel() {
-		this.projectWindow = ProjectManager.getInstance().getProjectWindow();
+		projectWindow = ProjectManager.getInstance().getProjectWindow();
 
 		// Create the genome window (positions) text field
 		jtfGenomeWindow = new JTextField(20);
@@ -142,22 +142,9 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 	}
 
 
-	/**
-	 * Called when the current {@link SimpleGenomeWindow} changes
-	 */
-	void updateGenomeWindow() {
-		SimpleGenomeWindow newGenomeWindow = getGenomeWindow();
-		if (newGenomeWindow == null) {
-			JOptionPane.showMessageDialog(getRootPane(), "Invalid position", "Error", JOptionPane.WARNING_MESSAGE, null);
-		} else if (!newGenomeWindow.equals(projectWindow.getGenomeWindow())) {
-			int middlePosition = (int)newGenomeWindow.getMiddlePosition();
-			if ((middlePosition < 0) || (middlePosition > newGenomeWindow.getChromosome().getLength())) {
-				JOptionPane.showMessageDialog(getRootPane(), "Invalid position", "Error", JOptionPane.WARNING_MESSAGE, null);
-			} else {
-				projectWindow.setGenomeWindow(newGenomeWindow);
-				updateGenomeWindowField(newGenomeWindow);
-			}
-		}
+	@Override
+	public void genomeWindowChanged(GenomeWindowEvent evt) {
+		updateGenomeWindowField(evt.getNewWindow());
 	}
 
 
@@ -173,8 +160,7 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 			AlleleType inputAlleleType = FormattedMultiGenomeName.getAlleleName(MGDisplaySettings.SELECTED_GENOME);
 			int start = ShiftCompute.getPosition(genomeName, inputAlleleType, newGenomeWindow.getStart(), newGenomeWindow.getChromosome(), outputGenome);
 			int stop = ShiftCompute.getPosition(genomeName, inputAlleleType, newGenomeWindow.getStop(), newGenomeWindow.getChromosome(), outputGenome);
-			newGenomeWindow.setStart(start);
-			newGenomeWindow.setStop(stop);
+			newGenomeWindow = new SimpleGenomeWindow(newGenomeWindow.getChromosome(), start, stop);
 		}
 		return newGenomeWindow;
 	}
@@ -185,38 +171,6 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 	 */
 	public void lock() {
 		jtfGenomeWindow.setEnabled(false);
-	}
-
-
-	/**
-	 * Unlocks the genome window panel
-	 */
-	public void unlock() {
-		jtfGenomeWindow.setEnabled(true);
-	}
-
-
-	@Override
-	public void genomeWindowChanged(GenomeWindowEvent evt) {
-		updateGenomeWindowField(evt.getNewWindow());
-	}
-
-
-	/**
-	 * Actual method when the genome window has changed.
-	 * @param genomeWindow the new genome window
-	 */
-	private void updateGenomeWindowField(SimpleGenomeWindow genomeWindow) {
-		String text = genomeWindow.toString();
-		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			Chromosome currentChromosome = projectWindow.getGenomeWindow().getChromosome();
-			String genomeName = FormattedMultiGenomeName.getFullNameWithoutAllele(MGDisplaySettings.SELECTED_GENOME);
-			AlleleType inputAlleleType = FormattedMultiGenomeName.getAlleleName(MGDisplaySettings.SELECTED_GENOME);
-			int positionStart = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, inputAlleleType, genomeWindow.getStart(), currentChromosome, genomeName);
-			int positionStop = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, inputAlleleType, genomeWindow.getStop(), currentChromosome, genomeName);
-			text = currentChromosome.getName() + ":" + positionStart + "-" + positionStop;
-		}
-		jtfGenomeWindow.setText(text);
 	}
 
 
@@ -250,6 +204,51 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 	public void setSelectedGenomeName (String genomeName) {
 		jcbGenomeSelection.setSelectedItem(genomeName);
 		updateGenomeWindowField(ProjectManager.getInstance().getProjectWindow().getGenomeWindow());
+	}
+
+
+	/**
+	 * Unlocks the genome window panel
+	 */
+	public void unlock() {
+		jtfGenomeWindow.setEnabled(true);
+	}
+
+
+	/**
+	 * Called when the current {@link SimpleGenomeWindow} changes
+	 */
+	void updateGenomeWindow() {
+		SimpleGenomeWindow newGenomeWindow = getGenomeWindow();
+		if (newGenomeWindow == null) {
+			JOptionPane.showMessageDialog(getRootPane(), "Invalid position", "Error", JOptionPane.WARNING_MESSAGE, null);
+		} else if (!newGenomeWindow.equals(projectWindow.getGenomeWindow())) {
+			int middlePosition = (int)newGenomeWindow.getMiddlePosition();
+			if ((middlePosition < 0) || (middlePosition > newGenomeWindow.getChromosome().getLength())) {
+				JOptionPane.showMessageDialog(getRootPane(), "Invalid position", "Error", JOptionPane.WARNING_MESSAGE, null);
+			} else {
+				projectWindow.setGenomeWindow(newGenomeWindow);
+				updateGenomeWindowField(newGenomeWindow);
+			}
+		}
+	}
+
+
+	/**
+	 * Actual method when the genome window has changed.
+	 * @param genomeWindow the new genome window
+	 */
+	private void updateGenomeWindowField(SimpleGenomeWindow genomeWindow) {
+		String text = genomeWindow.toString();
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			Chromosome currentChromosome = projectWindow.getGenomeWindow().getChromosome();
+			String genomeName = FormattedMultiGenomeName.getFullNameWithoutAllele(MGDisplaySettings.SELECTED_GENOME);
+			AlleleType inputAlleleType = FormattedMultiGenomeName.getAlleleName(MGDisplaySettings.SELECTED_GENOME);
+			int positionStart = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, inputAlleleType, genomeWindow.getStart(), currentChromosome, genomeName);
+			int positionStop = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, inputAlleleType, genomeWindow.getStop(), currentChromosome, genomeName);
+			text = currentChromosome.getName() + ":" + positionStart + "-" + positionStop;
+		}
+		jtfGenomeWindow.setText(text);
 	}
 
 }

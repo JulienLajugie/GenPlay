@@ -21,10 +21,9 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.operation.geneList.distanceCalculator;
 
-import java.util.List;
-
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 
 
 /**
@@ -87,7 +86,7 @@ public class DistanceCalculator {
 	 * @return the closest distance
 	 */
 	public long getClosestDistance() {
-		List<Gene> listOfGenes = geneList.getView(chromosomeindex);
+		ListView<Gene> listOfGenes = geneList.get(chromosomeindex);
 		long retValue = 0;
 		switch(strandDirection) {
 		case 0: //positive
@@ -322,43 +321,7 @@ public class DistanceCalculator {
 	}
 
 
-	private int getDistanceAbsoluteStopStop(List<Gene> listOfGenes, int indexStart, int indexStop) {
-		int superior = getDistancePositiveStopStop(listOfGenes, indexStart, indexStop);
-		int inferior = getDistanceNegativeStopStop(listOfGenes, indexStart, indexStop);
-		if (superior < inferior) {
-			return superior;
-		} return inferior;
-	}
-
-
-	private int getDistanceAbsoluteStopMiddle(List<Gene> listOfGenes, int indexStart, int indexStop) {
-		int superior = getDistancePositiveStopMiddle(listOfGenes, indexStart, indexStop);
-		int inferior = getDistanceNegativeStopMiddle(listOfGenes, indexStart, indexStop);
-		if (superior < inferior) {
-			return superior;
-		} return inferior;
-	}
-
-
-	private int getDistanceAbsoluteStopStart(List<Gene> listOfGenes, int indexStart, int indexStop) {
-		int superior = getDistancePositiveStopStart(listOfGenes, indexStart, indexStop);
-		int inferior = getDistanceNegativeStopStart(listOfGenes, indexStart, indexStop);
-		if (superior < inferior) {
-			return superior;
-		} return inferior;
-	}
-
-
-	private int getDistanceAbsoluteMiddleStop(List<Gene> listOfGenes, int indexStart, int indexStop) {
-		int superior = getDistancePositiveMiddleStop(listOfGenes, indexStart, indexStop);
-		int inferior = getDistanceNegativeMiddleStop(listOfGenes, indexStart, indexStop);
-		if (superior < inferior) {
-			return superior;
-		} return inferior;
-	}
-
-
-	private int getDistanceAbsoluteMiddleMiddle(List<Gene> listOfGenes, int indexStart, int indexStop) {
+	private int getDistanceAbsoluteMiddleMiddle(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
 		int superior = getDistancePositiveMiddleMiddle(listOfGenes, indexStart, indexStop);
 		int inferior = getDistanceNegativeMiddleMiddle(listOfGenes, indexStart, indexStop);
 		if (superior < inferior) {
@@ -367,7 +330,7 @@ public class DistanceCalculator {
 	}
 
 
-	private int getDistanceAbsoluteMiddleStart(List<Gene> listOfGenes, int indexStart, int indexStop) {
+	private int getDistanceAbsoluteMiddleStart(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
 		int superior = getDistancePositiveMiddleStart(listOfGenes, indexStart, indexStop);
 		int inferior = getDistanceNegativeMiddleStart(listOfGenes, indexStart, indexStop);
 		if (superior < inferior) {
@@ -376,133 +339,66 @@ public class DistanceCalculator {
 	}
 
 
-	private int getDistanceAbsoluteStartStop(List<Gene> listOfGenes, int indexStart, int indexStop) {
-		int superior = getDistancePositiveStartStop(listOfGenes, indexStart, indexStop);
-		int inferior = getDistanceNegativeStartStop(listOfGenes, indexStart, indexStop);
-		if (superior < inferior) {
-			return superior;
-		} return inferior;
-	}
-
-
-	private int getDistanceAbsoluteStartMiddle(List<Gene> listOfGenes, int indexStart, int indexStop) {
-		int superior = getDistancePositiveStartMiddle(listOfGenes, indexStart, indexStop);
-		int inferior = getDistanceNegativeStartMiddle(listOfGenes, indexStart, indexStop);
-		if (superior < inferior) {
-			return superior;
-		} return inferior;
-	}
-
-
-	private int getDistanceAbsoluteStartStart(List<Gene> listOfGenes, int indexStart, int indexStop) {
-		int superior = getDistancePositiveStartStart(listOfGenes, indexStart, indexStop);
-		int inferior = getDistanceNegativeStartStart(listOfGenes, indexStart, indexStop);
-		if (superior < inferior) {
-			return superior;
-		} return inferior;
-	}
-
-
-	private int getDistanceRelativeStopStop(List<Gene> listOfGenes, int indexStart, int indexStop) {
-		int superior = getDistancePositiveStopStop(listOfGenes, indexStart, indexStop);
-		int inferior = getDistanceNegativeStopStop(listOfGenes, indexStart, indexStop);
-		if (superior < inferior) {
-			return superior;
-		} return (-inferior);
-	}
-
-
-	private int getDistanceRelativeStopMiddle(List<Gene> listOfGenes, int indexStart, int indexStop) {
-		int superior = getDistancePositiveStopMiddle(listOfGenes, indexStart, indexStop);
-		int inferior = getDistanceNegativeStopMiddle(listOfGenes, indexStart, indexStop);
-		if (superior < inferior) {
-			return superior;
-		} return (-inferior);
-	}
-
-
-	private int getDistanceRelativeStopStart(List<Gene> listOfGenes, int indexStart, int indexStop) {
-		int superior = getDistancePositiveStopStart(listOfGenes, indexStart, indexStop);
-		int inferior = getDistanceNegativeStopStart(listOfGenes, indexStart, indexStop);
-		if (superior < inferior) {
-			return superior;
-		} return (-inferior);
-	}
-
-
-	private int getDistanceRelativeMiddleStop(List<Gene> listOfGenes, int indexStart, int indexStop) {
+	private int getDistanceAbsoluteMiddleStop(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
 		int superior = getDistancePositiveMiddleStop(listOfGenes, indexStart, indexStop);
 		int inferior = getDistanceNegativeMiddleStop(listOfGenes, indexStart, indexStop);
 		if (superior < inferior) {
 			return superior;
-		} return (-inferior);
+		} return inferior;
 	}
 
 
-	private int getDistanceRelativeMiddleMiddle(List<Gene> listOfGenes, int indexStart, int indexStop) {
-		int superior = getDistancePositiveMiddleMiddle(listOfGenes, indexStart, indexStop);
-		int inferior = getDistanceNegativeMiddleMiddle(listOfGenes, indexStart, indexStop);
-		if (superior < inferior) {
-			return superior;
-		} return (-inferior);
-	}
-
-
-	private int getDistanceRelativeMiddleStart(List<Gene> listOfGenes, int indexStart, int indexStop) {
-		int superior = getDistancePositiveMiddleStart(listOfGenes, indexStart, indexStop);
-		int inferior = getDistanceNegativeMiddleStart(listOfGenes, indexStart, indexStop);
-		if (superior < inferior) {
-			return superior;
-		} return (-inferior);
-	}
-
-
-	private int getDistanceRelativeStartStop(List<Gene> listOfGenes, int indexStart, int indexStop) {
-		int superior = getDistancePositiveStartStop(listOfGenes, indexStart, indexStop);
-		int inferior = getDistanceNegativeStartStop(listOfGenes, indexStart, indexStop);
-		if (superior < inferior) {
-			return superior;
-		} return (-inferior);
-	}
-
-
-	private int getDistanceRelativeStartMiddle(List<Gene> listOfGenes, int indexStart, int indexStop) {
+	private int getDistanceAbsoluteStartMiddle(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
 		int superior = getDistancePositiveStartMiddle(listOfGenes, indexStart, indexStop);
 		int inferior = getDistanceNegativeStartMiddle(listOfGenes, indexStart, indexStop);
 		if (superior < inferior) {
 			return superior;
-		} return (-inferior);
+		} return inferior;
 	}
 
 
-	private int getDistanceRelativeStartStart(List<Gene> listOfGenes, int indexStart, int indexStop) {
+	private int getDistanceAbsoluteStartStart(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
 		int superior = getDistancePositiveStartStart(listOfGenes, indexStart, indexStop);
 		int inferior = getDistanceNegativeStartStart(listOfGenes, indexStart, indexStop);
 		if (superior < inferior) {
 			return superior;
-		} return (-inferior);
+		} return inferior;
 	}
 
 
-	/**
-	 * Recursive and dichotomic search algorithm.
-	 * @param listOfGenes List in which the search is performed.
-	 * @param indexStart Start index where to look for the value.
-	 * @param indexStop Stop index where to look for the value.
-	 * @return The index of a gene with a position Stop equals to value.
-	 * Index of the first gene with a Stop position inferior to value if nothing found.
-	 */
-	private int getDistanceNegativeStopStop(List<Gene> listOfGenes, int indexStart, int indexStop) {
-		int middle = (indexStop - indexStart) / 2;
-		if (middle == 0) {
-			return (refValue - listOfGenes.get(indexStart).getStop());
-		} else if (refValue == listOfGenes.get(indexStart + middle).getStop()) {
-			return indexStart + middle;
-		} else if (refValue > listOfGenes.get(indexStart + middle).getStop()) {
-			return getDistanceNegativeStopStop(listOfGenes, indexStart + middle, indexStop);
-		} else {
-			return getDistanceNegativeStopStop(listOfGenes, indexStart, indexStart + middle);
-		}
+	private int getDistanceAbsoluteStartStop(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
+		int superior = getDistancePositiveStartStop(listOfGenes, indexStart, indexStop);
+		int inferior = getDistanceNegativeStartStop(listOfGenes, indexStart, indexStop);
+		if (superior < inferior) {
+			return superior;
+		} return inferior;
+	}
+
+
+	private int getDistanceAbsoluteStopMiddle(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
+		int superior = getDistancePositiveStopMiddle(listOfGenes, indexStart, indexStop);
+		int inferior = getDistanceNegativeStopMiddle(listOfGenes, indexStart, indexStop);
+		if (superior < inferior) {
+			return superior;
+		} return inferior;
+	}
+
+
+	private int getDistanceAbsoluteStopStart(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
+		int superior = getDistancePositiveStopStart(listOfGenes, indexStart, indexStop);
+		int inferior = getDistanceNegativeStopStart(listOfGenes, indexStart, indexStop);
+		if (superior < inferior) {
+			return superior;
+		} return inferior;
+	}
+
+
+	private int getDistanceAbsoluteStopStop(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
+		int superior = getDistancePositiveStopStop(listOfGenes, indexStart, indexStop);
+		int inferior = getDistanceNegativeStopStop(listOfGenes, indexStart, indexStop);
+		if (superior < inferior) {
+			return superior;
+		} return inferior;
 	}
 
 
@@ -514,73 +410,7 @@ public class DistanceCalculator {
 	 * @return The index of a gene with a position middle equals to value.
 	 * Index of the first gene with a middle position inferior to value if nothing found.
 	 */
-	private int getDistanceNegativeStopMiddle(List<Gene> listOfGenes, int indexStart, int indexStop) {
-		int middle = (indexStop - indexStart) / 2;
-		if (middle == 0) {
-			return (int) (refValue - listOfGenes.get(indexStart).getMiddlePosition());
-		} else if (refValue == listOfGenes.get(indexStart + middle).getMiddlePosition()) {
-			return indexStart + middle;
-		} else if (refValue > listOfGenes.get(indexStart + middle).getMiddlePosition()) {
-			return getDistanceNegativeStopMiddle(listOfGenes, indexStart + middle, indexStop);
-		} else {
-			return getDistanceNegativeStopMiddle(listOfGenes, indexStart, indexStart + middle);
-		}
-	}
-
-
-	/**
-	 * Recursive and dichotomic search algorithm.
-	 * @param listOfGenes List in which the search is performed.
-	 * @param indexStart Start index where to look for the value.
-	 * @param indexStop Stop index where to look for the value.
-	 * @return The index of a gene with a position start equals to value.
-	 * Index of the first gene with a start position inferior to value if nothing found.
-	 */
-	private int getDistanceNegativeStopStart(List<Gene> listOfGenes, int indexStart, int indexStop) {
-		int middle = (indexStop - indexStart) / 2;
-		if (middle == 0) {
-			return (refValue - listOfGenes.get(indexStart).getStart());
-		} else if (refValue == listOfGenes.get(indexStart + middle).getStart()) {
-			return indexStart + middle;
-		} else if (refValue > listOfGenes.get(indexStart + middle).getStart()) {
-			return getDistanceNegativeStopStart(listOfGenes, indexStart + middle, indexStop);
-		} else {
-			return getDistanceNegativeStopStart(listOfGenes, indexStart, indexStart + middle);
-		}
-	}
-
-
-	/**
-	 * Recursive and dichotomic search algorithm.
-	 * @param listOfGenes List in which the search is performed.
-	 * @param indexStart Start index where to look for the value.
-	 * @param indexStop Stop index where to look for the value.
-	 * @return The index of a gene with a position Stop equals to value.
-	 * Index of the first gene with a Stop position inferior to value if nothing found.
-	 */
-	private int getDistanceNegativeMiddleStop(List<Gene> listOfGenes, int indexStart, int indexStop) {
-		int middle = (indexStop - indexStart) / 2;
-		if (middle == 0) {
-			return (refValue - listOfGenes.get(indexStart).getStop());
-		} else if (refValue == listOfGenes.get(indexStart + middle).getStop()) {
-			return indexStart + middle;
-		} else if (refValue > listOfGenes.get(indexStart + middle).getStop()) {
-			return getDistanceNegativeMiddleStop(listOfGenes, indexStart + middle, indexStop);
-		} else {
-			return getDistanceNegativeMiddleStop(listOfGenes, indexStart, indexStart + middle);
-		}
-	}
-
-
-	/**
-	 * Recursive and dichotomic search algorithm.
-	 * @param listOfGenes List in which the search is performed.
-	 * @param indexStart Start index where to look for the value.
-	 * @param indexStop Stop index where to look for the value.
-	 * @return The index of a gene with a position middle equals to value.
-	 * Index of the first gene with a middle position inferior to value if nothing found.
-	 */
-	private int getDistanceNegativeMiddleMiddle(List<Gene> listOfGenes, int indexStart, int indexStop) {
+	private int getDistanceNegativeMiddleMiddle(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (middle == 0) {
 			return (int) (refValue - listOfGenes.get(indexStart).getMiddlePosition());
@@ -602,7 +432,7 @@ public class DistanceCalculator {
 	 * @return The index of a gene with a position start equals to value.
 	 * Index of the first gene with a start position inferior to value if nothing found.
 	 */
-	private int getDistanceNegativeMiddleStart(List<Gene> listOfGenes, int indexStart, int indexStop) {
+	private int getDistanceNegativeMiddleStart(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (middle == 0) {
 			return (refValue - listOfGenes.get(indexStart).getStart());
@@ -624,16 +454,16 @@ public class DistanceCalculator {
 	 * @return The index of a gene with a position Stop equals to value.
 	 * Index of the first gene with a Stop position inferior to value if nothing found.
 	 */
-	private int getDistanceNegativeStartStop(List<Gene> listOfGenes, int indexStart, int indexStop) {
+	private int getDistanceNegativeMiddleStop(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (middle == 0) {
 			return (refValue - listOfGenes.get(indexStart).getStop());
 		} else if (refValue == listOfGenes.get(indexStart + middle).getStop()) {
 			return indexStart + middle;
 		} else if (refValue > listOfGenes.get(indexStart + middle).getStop()) {
-			return getDistanceNegativeStartStop(listOfGenes, indexStart + middle, indexStop);
+			return getDistanceNegativeMiddleStop(listOfGenes, indexStart + middle, indexStop);
 		} else {
-			return getDistanceNegativeStartStop(listOfGenes, indexStart, indexStart + middle);
+			return getDistanceNegativeMiddleStop(listOfGenes, indexStart, indexStart + middle);
 		}
 	}
 
@@ -646,7 +476,7 @@ public class DistanceCalculator {
 	 * @return The index of a gene with a position middle equals to value.
 	 * Index of the first gene with a middle position inferior to value if nothing found.
 	 */
-	private int getDistanceNegativeStartMiddle(List<Gene> listOfGenes, int indexStart, int indexStop) {
+	private int getDistanceNegativeStartMiddle(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (middle == 0) {
 			return (int) (refValue - listOfGenes.get(indexStart).getMiddlePosition());
@@ -668,7 +498,7 @@ public class DistanceCalculator {
 	 * @return The index of a gene with a position start equals to value.
 	 * Index of the first gene with a start position inferior to value if nothing found.
 	 */
-	private int getDistanceNegativeStartStart(List<Gene> listOfGenes, int indexStart, int indexStop) {
+	private int getDistanceNegativeStartStart(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (middle == 0) {
 			return (refValue - listOfGenes.get(indexStart).getStart());
@@ -688,18 +518,18 @@ public class DistanceCalculator {
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
 	 * @return The index of a gene with a position Stop equals to value.
-	 * Index of the first gene with a Stop position superior to value if nothing found.
+	 * Index of the first gene with a Stop position inferior to value if nothing found.
 	 */
-	private int getDistancePositiveStopStop(List<Gene> listOfGenes, int indexStart, int indexStop) {
+	private int getDistanceNegativeStartStop(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
-		if (indexStart == indexStop) {
-			return (listOfGenes.get(indexStart).getStop() - refValue);
+		if (middle == 0) {
+			return (refValue - listOfGenes.get(indexStart).getStop());
 		} else if (refValue == listOfGenes.get(indexStart + middle).getStop()) {
 			return indexStart + middle;
 		} else if (refValue > listOfGenes.get(indexStart + middle).getStop()) {
-			return getDistancePositiveStopStop(listOfGenes, indexStart + middle + 1, indexStop);
+			return getDistanceNegativeStartStop(listOfGenes, indexStart + middle, indexStop);
 		} else {
-			return getDistancePositiveStopStop(listOfGenes, indexStart, indexStart + middle);
+			return getDistanceNegativeStartStop(listOfGenes, indexStart, indexStart + middle);
 		}
 	}
 
@@ -710,18 +540,18 @@ public class DistanceCalculator {
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
 	 * @return The index of a gene with a position middle equals to value.
-	 * Index of the first gene with a middle position superior to value if nothing found.
+	 * Index of the first gene with a middle position inferior to value if nothing found.
 	 */
-	private int getDistancePositiveStopMiddle(List<Gene> listOfGenes, int indexStart, int indexStop) {
+	private int getDistanceNegativeStopMiddle(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
-		if (indexStart == indexStop) {
-			return (int) (listOfGenes.get(indexStart).getMiddlePosition() - refValue);
+		if (middle == 0) {
+			return (int) (refValue - listOfGenes.get(indexStart).getMiddlePosition());
 		} else if (refValue == listOfGenes.get(indexStart + middle).getMiddlePosition()) {
 			return indexStart + middle;
 		} else if (refValue > listOfGenes.get(indexStart + middle).getMiddlePosition()) {
-			return getDistancePositiveStopMiddle(listOfGenes, indexStart + middle + 1, indexStop);
+			return getDistanceNegativeStopMiddle(listOfGenes, indexStart + middle, indexStop);
 		} else {
-			return getDistancePositiveStopMiddle(listOfGenes, indexStart, indexStart + middle);
+			return getDistanceNegativeStopMiddle(listOfGenes, indexStart, indexStart + middle);
 		}
 	}
 
@@ -732,18 +562,18 @@ public class DistanceCalculator {
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
 	 * @return The index of a gene with a position start equals to value.
-	 * Index of the first gene with a start position superior to value if nothing found.
+	 * Index of the first gene with a start position inferior to value if nothing found.
 	 */
-	private int getDistancePositiveStopStart(List<Gene> listOfGenes, int indexStart, int indexStop) {
+	private int getDistanceNegativeStopStart(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
-		if (indexStart == indexStop) {
-			return (listOfGenes.get(indexStart).getStart() - refValue);
+		if (middle == 0) {
+			return (refValue - listOfGenes.get(indexStart).getStart());
 		} else if (refValue == listOfGenes.get(indexStart + middle).getStart()) {
 			return indexStart + middle;
 		} else if (refValue > listOfGenes.get(indexStart + middle).getStart()) {
-			return getDistancePositiveStopStart(listOfGenes, indexStart + middle + 1, indexStop);
+			return getDistanceNegativeStopStart(listOfGenes, indexStart + middle, indexStop);
 		} else {
-			return getDistancePositiveStopStart(listOfGenes, indexStart, indexStart + middle);
+			return getDistanceNegativeStopStart(listOfGenes, indexStart, indexStart + middle);
 		}
 	}
 
@@ -754,18 +584,18 @@ public class DistanceCalculator {
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
 	 * @return The index of a gene with a position Stop equals to value.
-	 * Index of the first gene with a Stop position superior to value if nothing found.
+	 * Index of the first gene with a Stop position inferior to value if nothing found.
 	 */
-	private int getDistancePositiveMiddleStop(List<Gene> listOfGenes, int indexStart, int indexStop) {
+	private int getDistanceNegativeStopStop(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
-		if (indexStart == indexStop) {
-			return (listOfGenes.get(indexStart).getStop() - refValue);
+		if (middle == 0) {
+			return (refValue - listOfGenes.get(indexStart).getStop());
 		} else if (refValue == listOfGenes.get(indexStart + middle).getStop()) {
 			return indexStart + middle;
 		} else if (refValue > listOfGenes.get(indexStart + middle).getStop()) {
-			return getDistancePositiveMiddleStop(listOfGenes, indexStart + middle + 1, indexStop);
+			return getDistanceNegativeStopStop(listOfGenes, indexStart + middle, indexStop);
 		} else {
-			return getDistancePositiveMiddleStop(listOfGenes, indexStart, indexStart + middle);
+			return getDistanceNegativeStopStop(listOfGenes, indexStart, indexStart + middle);
 		}
 	}
 
@@ -778,7 +608,7 @@ public class DistanceCalculator {
 	 * @return The index of a gene with a position middle equals to value.
 	 * Index of the first gene with a middle position superior to value if nothing found.
 	 */
-	private int getDistancePositiveMiddleMiddle(List<Gene> listOfGenes, int indexStart, int indexStop) {
+	private int getDistancePositiveMiddleMiddle(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (indexStart == indexStop) {
 			return (int) (listOfGenes.get(indexStart).getMiddlePosition() - refValue);
@@ -800,7 +630,7 @@ public class DistanceCalculator {
 	 * @return The index of a gene with a position start equals to value.
 	 * Index of the first gene with a start position superior to value if nothing found.
 	 */
-	private int getDistancePositiveMiddleStart(List<Gene> listOfGenes, int indexStart, int indexStop) {
+	private int getDistancePositiveMiddleStart(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (indexStart == indexStop) {
 			return indexStart;
@@ -822,16 +652,16 @@ public class DistanceCalculator {
 	 * @return The index of a gene with a position Stop equals to value.
 	 * Index of the first gene with a Stop position superior to value if nothing found.
 	 */
-	private int getDistancePositiveStartStop(List<Gene> listOfGenes, int indexStart, int indexStop) {
+	private int getDistancePositiveMiddleStop(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (indexStart == indexStop) {
 			return (listOfGenes.get(indexStart).getStop() - refValue);
 		} else if (refValue == listOfGenes.get(indexStart + middle).getStop()) {
 			return indexStart + middle;
 		} else if (refValue > listOfGenes.get(indexStart + middle).getStop()) {
-			return getDistancePositiveStartStop(listOfGenes, indexStart + middle + 1, indexStop);
+			return getDistancePositiveMiddleStop(listOfGenes, indexStart + middle + 1, indexStop);
 		} else {
-			return getDistancePositiveStartStop(listOfGenes, indexStart, indexStart + middle);
+			return getDistancePositiveMiddleStop(listOfGenes, indexStart, indexStart + middle);
 		}
 	}
 
@@ -844,7 +674,7 @@ public class DistanceCalculator {
 	 * @return The index of a gene with a position middle equals to value.
 	 * Index of the first gene with a middle position superior to value if nothing found.
 	 */
-	private int getDistancePositiveStartMiddle(List<Gene> listOfGenes, int indexStart, int indexStop) {
+	private int getDistancePositiveStartMiddle(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (indexStart == indexStop) {
 			return (int) (listOfGenes.get(indexStart).getMiddlePosition() - refValue);
@@ -866,7 +696,7 @@ public class DistanceCalculator {
 	 * @return The index of a gene with a position start equals to value.
 	 * Index of the first gene with a start position superior to value if nothing found.
 	 */
-	private int getDistancePositiveStartStart(List<Gene> listOfGenes, int indexStart, int indexStop) {
+	private int getDistancePositiveStartStart(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (indexStart == indexStop) {
 			return (listOfGenes.get(indexStart).getStart() - refValue);
@@ -877,5 +707,174 @@ public class DistanceCalculator {
 		} else {
 			return getDistancePositiveStartStart(listOfGenes, indexStart, indexStart + middle);
 		}
+	}
+
+
+	/**
+	 * Recursive and dichotomic search algorithm.
+	 * @param listOfGenes List in which the search is performed.
+	 * @param indexStart Start index where to look for the value.
+	 * @param indexStop Stop index where to look for the value.
+	 * @return The index of a gene with a position Stop equals to value.
+	 * Index of the first gene with a Stop position superior to value if nothing found.
+	 */
+	private int getDistancePositiveStartStop(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
+		int middle = (indexStop - indexStart) / 2;
+		if (indexStart == indexStop) {
+			return (listOfGenes.get(indexStart).getStop() - refValue);
+		} else if (refValue == listOfGenes.get(indexStart + middle).getStop()) {
+			return indexStart + middle;
+		} else if (refValue > listOfGenes.get(indexStart + middle).getStop()) {
+			return getDistancePositiveStartStop(listOfGenes, indexStart + middle + 1, indexStop);
+		} else {
+			return getDistancePositiveStartStop(listOfGenes, indexStart, indexStart + middle);
+		}
+	}
+
+
+	/**
+	 * Recursive and dichotomic search algorithm.
+	 * @param listOfGenes List in which the search is performed.
+	 * @param indexStart Start index where to look for the value.
+	 * @param indexStop Stop index where to look for the value.
+	 * @return The index of a gene with a position middle equals to value.
+	 * Index of the first gene with a middle position superior to value if nothing found.
+	 */
+	private int getDistancePositiveStopMiddle(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
+		int middle = (indexStop - indexStart) / 2;
+		if (indexStart == indexStop) {
+			return (int) (listOfGenes.get(indexStart).getMiddlePosition() - refValue);
+		} else if (refValue == listOfGenes.get(indexStart + middle).getMiddlePosition()) {
+			return indexStart + middle;
+		} else if (refValue > listOfGenes.get(indexStart + middle).getMiddlePosition()) {
+			return getDistancePositiveStopMiddle(listOfGenes, indexStart + middle + 1, indexStop);
+		} else {
+			return getDistancePositiveStopMiddle(listOfGenes, indexStart, indexStart + middle);
+		}
+	}
+
+
+	/**
+	 * Recursive and dichotomic search algorithm.
+	 * @param listOfGenes List in which the search is performed.
+	 * @param indexStart Start index where to look for the value.
+	 * @param indexStop Stop index where to look for the value.
+	 * @return The index of a gene with a position start equals to value.
+	 * Index of the first gene with a start position superior to value if nothing found.
+	 */
+	private int getDistancePositiveStopStart(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
+		int middle = (indexStop - indexStart) / 2;
+		if (indexStart == indexStop) {
+			return (listOfGenes.get(indexStart).getStart() - refValue);
+		} else if (refValue == listOfGenes.get(indexStart + middle).getStart()) {
+			return indexStart + middle;
+		} else if (refValue > listOfGenes.get(indexStart + middle).getStart()) {
+			return getDistancePositiveStopStart(listOfGenes, indexStart + middle + 1, indexStop);
+		} else {
+			return getDistancePositiveStopStart(listOfGenes, indexStart, indexStart + middle);
+		}
+	}
+
+
+	/**
+	 * Recursive and dichotomic search algorithm.
+	 * @param listOfGenes List in which the search is performed.
+	 * @param indexStart Start index where to look for the value.
+	 * @param indexStop Stop index where to look for the value.
+	 * @return The index of a gene with a position Stop equals to value.
+	 * Index of the first gene with a Stop position superior to value if nothing found.
+	 */
+	private int getDistancePositiveStopStop(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
+		int middle = (indexStop - indexStart) / 2;
+		if (indexStart == indexStop) {
+			return (listOfGenes.get(indexStart).getStop() - refValue);
+		} else if (refValue == listOfGenes.get(indexStart + middle).getStop()) {
+			return indexStart + middle;
+		} else if (refValue > listOfGenes.get(indexStart + middle).getStop()) {
+			return getDistancePositiveStopStop(listOfGenes, indexStart + middle + 1, indexStop);
+		} else {
+			return getDistancePositiveStopStop(listOfGenes, indexStart, indexStart + middle);
+		}
+	}
+
+
+	private int getDistanceRelativeMiddleMiddle(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
+		int superior = getDistancePositiveMiddleMiddle(listOfGenes, indexStart, indexStop);
+		int inferior = getDistanceNegativeMiddleMiddle(listOfGenes, indexStart, indexStop);
+		if (superior < inferior) {
+			return superior;
+		} return (-inferior);
+	}
+
+
+	private int getDistanceRelativeMiddleStart(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
+		int superior = getDistancePositiveMiddleStart(listOfGenes, indexStart, indexStop);
+		int inferior = getDistanceNegativeMiddleStart(listOfGenes, indexStart, indexStop);
+		if (superior < inferior) {
+			return superior;
+		} return (-inferior);
+	}
+
+
+	private int getDistanceRelativeMiddleStop(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
+		int superior = getDistancePositiveMiddleStop(listOfGenes, indexStart, indexStop);
+		int inferior = getDistanceNegativeMiddleStop(listOfGenes, indexStart, indexStop);
+		if (superior < inferior) {
+			return superior;
+		} return (-inferior);
+	}
+
+
+	private int getDistanceRelativeStartMiddle(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
+		int superior = getDistancePositiveStartMiddle(listOfGenes, indexStart, indexStop);
+		int inferior = getDistanceNegativeStartMiddle(listOfGenes, indexStart, indexStop);
+		if (superior < inferior) {
+			return superior;
+		} return (-inferior);
+	}
+
+
+	private int getDistanceRelativeStartStart(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
+		int superior = getDistancePositiveStartStart(listOfGenes, indexStart, indexStop);
+		int inferior = getDistanceNegativeStartStart(listOfGenes, indexStart, indexStop);
+		if (superior < inferior) {
+			return superior;
+		} return (-inferior);
+	}
+
+
+	private int getDistanceRelativeStartStop(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
+		int superior = getDistancePositiveStartStop(listOfGenes, indexStart, indexStop);
+		int inferior = getDistanceNegativeStartStop(listOfGenes, indexStart, indexStop);
+		if (superior < inferior) {
+			return superior;
+		} return (-inferior);
+	}
+
+
+	private int getDistanceRelativeStopMiddle(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
+		int superior = getDistancePositiveStopMiddle(listOfGenes, indexStart, indexStop);
+		int inferior = getDistanceNegativeStopMiddle(listOfGenes, indexStart, indexStop);
+		if (superior < inferior) {
+			return superior;
+		} return (-inferior);
+	}
+
+
+	private int getDistanceRelativeStopStart(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
+		int superior = getDistancePositiveStopStart(listOfGenes, indexStart, indexStop);
+		int inferior = getDistanceNegativeStopStart(listOfGenes, indexStart, indexStop);
+		if (superior < inferior) {
+			return superior;
+		} return (-inferior);
+	}
+
+
+	private int getDistanceRelativeStopStop(ListView<Gene> listOfGenes, int indexStart, int indexStop) {
+		int superior = getDistancePositiveStopStop(listOfGenes, indexStart, indexStop);
+		int inferior = getDistanceNegativeStopStop(listOfGenes, indexStart, indexStop);
+		if (superior < inferior) {
+			return superior;
+		} return (-inferior);
 	}
 }

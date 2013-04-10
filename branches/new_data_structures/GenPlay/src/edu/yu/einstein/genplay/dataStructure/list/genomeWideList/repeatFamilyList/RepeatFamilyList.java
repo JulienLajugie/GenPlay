@@ -22,9 +22,7 @@
 package edu.yu.einstein.genplay.dataStructure.list.genomeWideList.repeatFamilyList;
 
 import java.io.Serializable;
-import java.util.List;
 
-import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.repeatListView.RepeatFamilyListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 
@@ -33,84 +31,10 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView
  * A {@link GenomicListView} of repeats organized in repeat families.
  * @author Julien Lajugie
  */
-public interface RepeatFamilyList extends Serializable, GenomicListView<List<RepeatFamilyListView>> {
-
+public interface RepeatFamilyList extends Serializable, GenomicListView<RepeatFamilyListView> {
 
 	/**
-	 * Adapts the list of the {@link Chromosome} in parameter to the screen depending on the xfactor
+	 * @return an array containing the names of all the families present in the list in alphabetical order
 	 */
-	@Override
-	protected void fitToScreen() {
-		List<RepeatFamilyListView> currentChromosomeList;
-		try {
-			currentChromosomeList = get(fittedChromosome);
-		} catch (InvalidChromosomeException e) {
-			ExceptionManager.getInstance().caughtException(e);
-			fittedDataList = null;
-			return;
-		}
-
-		if (fittedXRatio > 1) {
-			fittedDataList = currentChromosomeList;
-		} else {
-			fittedDataList = new ArrayList<RepeatFamilyListView>();
-			for (RepeatFamilyListView currentFamily : currentChromosomeList) {
-				if (currentFamily.repeatCount() > 1) {
-					RepeatFamilyListView fittedFamily = new RepeatFamilyListView(currentFamily.getName());
-					fittedFamily.addRepeat(new SimpleChromosomeWindow(currentFamily.getRepeat(0)));
-					int i = 1;
-					int j = 0;
-					while (i < currentFamily.repeatCount()) {
-						double distance = (currentFamily.getRepeat(i).getStart() - fittedFamily.getRepeat(j).getStop()) * fittedXRatio;
-						while ((distance < 1) && ((i + 1) < currentFamily.repeatCount())) {
-							int newStop = Math.max(fittedFamily.getRepeat(j).getStop(), currentFamily.getRepeat(i).getStop());
-							fittedFamily.getRepeat(j).setStop(newStop);
-							i++;
-							distance = (currentFamily.getRepeat(i).getStart() - fittedFamily.getRepeat(j).getStop()) * fittedXRatio;
-						}
-						fittedFamily.addRepeat(new SimpleChromosomeWindow(currentFamily.getRepeat(i)));
-						i++;
-						j++;
-					}
-					fittedDataList.add(fittedFamily);
-				} else if (currentFamily.repeatCount() == 1) {
-					RepeatFamilyListView fittedFamily = new RepeatFamilyListView(currentFamily.getName());
-					fittedFamily.addRepeat(new SimpleChromosomeWindow(currentFamily.getRepeat(0)));
-					fittedDataList.add(fittedFamily);
-				}
-			}
-		}
-		//System.out.println(fittedXRatio + "; " + currentChromosomeList.size() + "; " + fittedDataList.size());
-	}
-
-
-	@Override
-	protected List<RepeatFamilyListView> getFittedData(int start, int stop) {
-		if ((fittedDataList == null) || (fittedDataList.size() == 0)) {
-			return null;
-		}
-
-		List<RepeatFamilyListView> resultList = new ArrayList<RepeatFamilyListView>();
-
-		for (RepeatFamilyListView currentFamily : fittedDataList) {
-			int indexStart = findStart(currentFamily.getRepeatList(), start, 0, currentFamily.getRepeatList().size());
-			int indexStop = findStop(currentFamily.getRepeatList(), stop, 0, currentFamily.getRepeatList().size());
-			if ((indexStart > 0) && (currentFamily.getRepeatList().get(indexStart - 1).getStop() > start)) {
-				indexStart--;
-			}
-			resultList.add(new RepeatFamilyListView(currentFamily.getName()));
-			if ((indexStart == indexStop) && (indexStart < currentFamily.repeatCount())) {
-				if (currentFamily.getRepeat(indexStart).getStart() < stop) {
-					resultList.get(resultList.size() - 1).addRepeat(currentFamily.getRepeat(indexStart));
-				}
-			} else {
-				for (int i = indexStart; i <= indexStop; i++) {
-					if (i < currentFamily.repeatCount()) {
-						resultList.get(resultList.size() - 1).addRepeat(currentFamily.getRepeat(i));
-					}
-				}
-			}
-		}
-		return resultList;
-	}
+	public String[] getFamilyNames();
 }

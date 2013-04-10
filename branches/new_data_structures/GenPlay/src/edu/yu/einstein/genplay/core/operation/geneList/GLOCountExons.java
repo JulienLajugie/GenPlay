@@ -31,6 +31,7 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 
 
 /**
@@ -66,8 +67,8 @@ public class GLOCountExons implements Operation<Long> {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Long>> threadList = new ArrayList<Callable<Long>>();
 		for (int i = 0; i < geneList.size(); i++) {
-			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (geneList.getView(i) != null)) {
-				final List<Gene> currentList = geneList.getView(i);
+			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (geneList.get(i) != null)) {
+				final ListView<Gene> currentList = geneList.get(i);
 				Callable<Long> currentThread = new Callable<Long>() {
 					@Override
 					public Long call() throws Exception {
@@ -77,8 +78,8 @@ public class GLOCountExons implements Operation<Long> {
 						Long result = 0l;
 						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 							Gene currentGene = currentList.get(j);
-							if ((currentGene != null) && (currentGene.getExonStarts() != null) && (currentGene.getExonStarts().length > 0)) {
-								result += currentGene.getExonStarts().length;
+							if ((currentGene != null) && (currentGene.getExons() != null) && (currentGene.getExons().size() > 0)) {
+								result += currentGene.getExons().size();
 							}
 						}
 						// tell the operation pool that a chromosome is done
@@ -109,14 +110,14 @@ public class GLOCountExons implements Operation<Long> {
 
 
 	@Override
-	public int getStepCount() {
-		return 1;
+	public String getProcessingDescription() {
+		return "Counting Exons";
 	}
 
 
 	@Override
-	public String getProcessingDescription() {
-		return "Counting Exons";
+	public int getStepCount() {
+		return 1;
 	}
 
 

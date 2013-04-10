@@ -31,6 +31,7 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 
 
 /**
@@ -65,8 +66,8 @@ public class GLOCountNonNullGenes implements Operation<Long> {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Long>> threadList = new ArrayList<Callable<Long>>();
 		for (int i = 0; i < geneList.size(); i++) {
-			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (geneList.getView(i) != null)) {
-				final List<Gene> currentList = geneList.getView(i);
+			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (geneList.get(i) != null)) {
+				final ListView<Gene> currentList = geneList.get(i);
 				Callable<Long> currentThread = new Callable<Long>() {
 					@Override
 					public Long call() throws Exception {
@@ -75,7 +76,7 @@ public class GLOCountNonNullGenes implements Operation<Long> {
 						}
 						long total = 0;
 						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
-							if ((currentList.get(j).getScore() != 0) && (currentList.get(j).getScore() != Double.NaN)){
+							if ((currentList.get(j).getScore() != 0) && (currentList.get(j).getScore() != Float.NaN)){
 								total++;
 							}
 						}
@@ -105,14 +106,14 @@ public class GLOCountNonNullGenes implements Operation<Long> {
 
 
 	@Override
-	public int getStepCount() {
-		return 1;
+	public String getProcessingDescription() {
+		return "Counting Genes";
 	}
 
 
 	@Override
-	public String getProcessingDescription() {
-		return "Counting Genes";
+	public int getStepCount() {
+		return 1;
 	}
 
 

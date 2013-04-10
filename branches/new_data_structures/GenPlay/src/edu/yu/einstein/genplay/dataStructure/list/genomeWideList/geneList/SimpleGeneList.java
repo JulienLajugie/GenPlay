@@ -32,6 +32,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.geneListView.GeneListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
@@ -41,12 +42,11 @@ import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 /**
  * Simple implementation of the {@link GeneList} interface.
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class SimpleGeneList implements GeneList, Iterator<ListView<Gene>> {
 
 	/** Generated serial ID */
-	private static final long serialVersionUID = -1567605708127718216L;
+	private static final long serialVersionUID = 2409860942228135092L;
 
 	/** Version number of the class */
 	private static final transient int CLASS_VERSION_NUMBER = 0;
@@ -66,16 +66,20 @@ public final class SimpleGeneList implements GeneList, Iterator<ListView<Gene>> 
 	/** Object that searches genes and handle funtion such as find next, find previous */
 	private transient GeneSearcher geneSearcher;
 
+	/** Precision of the scores of the genes and exons */
+	private final ScorePrecision scorePrecision;
+
 
 	/**
 	 * Creates an instance of {@link SimpleGeneList}
 	 * @param data list of genes organized by chromosome
+	 * @param scorePrecision precision of the scores of the genes and exons
 	 * @param geneScoreType type of the scores of the genes and exons (RPKM, max, sum)
 	 * @param geneDBURL URL of the gene database
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public SimpleGeneList(List<ListView<Gene>> data, GeneScoreType geneScoreType, String geneDBURL) throws InterruptedException, ExecutionException {
+	public SimpleGeneList(List<ListView<Gene>> data, ScorePrecision scorePrecision, GeneScoreType geneScoreType, String geneDBURL) throws InterruptedException, ExecutionException {
 		super();
 		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		this.data = new GeneListView[projectChromosome.size()];
@@ -84,9 +88,10 @@ public final class SimpleGeneList implements GeneList, Iterator<ListView<Gene>> 
 				this.data[i] = data.get(i);
 			}
 		}
-		this.geneScoreType = geneScoreType;
 		this.geneDBURL = geneDBURL;
+		this.geneScoreType = geneScoreType;
 		geneSearcher = new GeneSearcher(this);
+		this.scorePrecision = scorePrecision;
 	}
 
 
@@ -131,6 +136,12 @@ public final class SimpleGeneList implements GeneList, Iterator<ListView<Gene>> 
 	@Override
 	public GeneSearcher getGeneSearcher() {
 		return geneSearcher;
+	}
+
+
+	@Override
+	public ScorePrecision getScorePrecision() {
+		return scorePrecision;
 	}
 
 

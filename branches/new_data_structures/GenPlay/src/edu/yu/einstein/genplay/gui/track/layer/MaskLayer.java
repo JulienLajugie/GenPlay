@@ -26,11 +26,11 @@ import java.awt.Graphics;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.List;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.gui.dataScalerForTrackDisplay.MaskSCWLScaler;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -70,7 +70,7 @@ public class MaskLayer extends AbstractVersionedLayer<SCWList> implements Layer<
 				// check that the data scaler is valid
 				validateDataScaler();
 				// Retrieve the genes to print
-				List<ScoredChromosomeWindow> listToPrint = dataScaler.getDataScaledForTrackDisplay();
+				ListView<ScoredChromosomeWindow> listToPrint = dataScaler.getDataScaledForTrackDisplay();
 				if (listToPrint != null) {
 					for (ScoredChromosomeWindow currentStripe: listToPrint) {
 						int x = projectWindow.genomeToScreenPosition(currentStripe.getStart());

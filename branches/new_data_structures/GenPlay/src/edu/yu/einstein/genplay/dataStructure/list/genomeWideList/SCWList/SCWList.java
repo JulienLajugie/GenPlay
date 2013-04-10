@@ -23,6 +23,7 @@ package edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList;
 
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
@@ -37,19 +38,19 @@ public interface SCWList extends GenomicListView<ScoredChromosomeWindow> {
 	/**
 	 * @return the average score of the windows of the list
 	 */
-	public double getAverage();
+	public float getAverage();
 
 
 	/**
 	 * @return the greatest score of the windows of the list list
 	 */
-	public double getMaximum();
+	public float getMaximum();
 
 
 	/**
 	 * @return the smallest score of the windows of the list list
 	 */
-	public double getMinimum();
+	public float getMinimum();
 
 
 	/**
@@ -67,9 +68,15 @@ public interface SCWList extends GenomicListView<ScoredChromosomeWindow> {
 
 
 	/**
+	 * @return the precision of the scores of the windows
+	 */
+	public ScorePrecision getScorePrecision();
+
+
+	/**
 	 * @return the sum of the scores of the windows of the list
 	 */
-	public double getScoreSum();
+	public float getScoreSum();
 
 
 	/**
@@ -81,5 +88,5 @@ public interface SCWList extends GenomicListView<ScoredChromosomeWindow> {
 	/**
 	 * @return the standard deviation of the scores of the list
 	 */
-	public double getStandardDeviation();
+	public float getStandardDeviation();
 }

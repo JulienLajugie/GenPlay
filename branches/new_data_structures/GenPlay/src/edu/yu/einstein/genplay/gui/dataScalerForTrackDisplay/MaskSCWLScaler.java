@@ -94,7 +94,7 @@ public class MaskSCWLScaler implements DataScalerForTrackDisplay<SCWList, ListVi
 		ListView<ScoredChromosomeWindow> currentChromosomeList;
 		scaledSCWList = null;
 		try {
-			currentChromosomeList = dataToScale.getView(scaledChromosome);
+			currentChromosomeList = dataToScale.get(scaledChromosome);
 		} catch (InvalidChromosomeException e) {
 			ExceptionManager.getInstance().caughtException(e);
 			scaledChromosome = null;

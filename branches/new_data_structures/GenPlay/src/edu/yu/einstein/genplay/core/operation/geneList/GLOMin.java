@@ -31,15 +31,15 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
-
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
 /**
  * Searches the minimum value of the selected chromosomes of a specified {@link GeneList}
  * @author Julien Lajugie
- * @version 0.1
  */
-public class GLOMin implements Operation<Double> {
+public class GLOMin implements Operation<Float> {
 
 	private final GeneList 	geneList;		// input GeneList
 	private final boolean[] chromoList;		// 1 boolean / chromosome.
@@ -60,23 +60,24 @@ public class GLOMin implements Operation<Double> {
 
 
 	@Override
-	public Double compute() throws InterruptedException, ExecutionException {
+	public Float compute() throws InterruptedException, ExecutionException {
 		final OperationPool op = OperationPool.getInstance();
-		final Collection<Callable<Double>> threadList = new ArrayList<Callable<Double>>();
+		final Collection<Callable<Float>> threadList = new ArrayList<Callable<Float>>();
 		for (int i = 0; i < geneList.size(); i++) {
-			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (geneList.getView(i) != null)) {
-				final List<Gene> currentList = geneList.getView(i);
+			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (geneList.get(i) != null)) {
+				final ListView<Gene> currentList = geneList.get(i);
 
-				Callable<Double> currentThread = new Callable<Double>() {
+				Callable<Float> currentThread = new Callable<Float>() {
 					@Override
-					public Double call() throws Exception {
-						// we set the min to the greatest double value
-						double min = Double.POSITIVE_INFINITY;
+					public Float call() throws Exception {
+						// we set the min to the greatest float value
+						float min = Float.POSITIVE_INFINITY;
 						for (int i = 0; (i < currentList.size()) && !stopped; i++) {
 							Gene currentGene = currentList.get(i);
-							if ((currentGene != null) && (currentGene.getExonScores() != null)) {
-								for (Double currentScore: currentGene.getExonScores()) {
-									if (currentScore != 0) {
+							if ((currentGene != null) && (currentGene.getExons() != null)) {
+								for (ScoredChromosomeWindow currentExon: currentGene.getExons()) {
+									Float currentScore = currentExon.getScore();
+									if ((currentScore != 0) && (currentScore != Float.NaN)) {
 										min = Math.min(min, currentScore);
 									}
 								}
@@ -92,13 +93,13 @@ public class GLOMin implements Operation<Double> {
 			}
 		}
 
-		List<Double> result = op.startPool(threadList);
+		List<Float> result = op.startPool(threadList);
 		if (result == null) {
 			return null;
 		}
 		// we search for the min of the chromosome minimums
-		double min = Double.POSITIVE_INFINITY;
-		for (Double currentMin: result) {
+		float min = Float.POSITIVE_INFINITY;
+		for (Float currentMin: result) {
 			min = Math.min(min, currentMin);
 		}
 		return min;
@@ -112,14 +113,14 @@ public class GLOMin implements Operation<Double> {
 
 
 	@Override
-	public int getStepCount() {
-		return 1;
+	public String getProcessingDescription() {
+		return "Searching Minimum";
 	}
 
 
 	@Override
-	public String getProcessingDescription() {
-		return "Searching Minimum";
+	public int getStepCount() {
+		return 1;
 	}
 
 

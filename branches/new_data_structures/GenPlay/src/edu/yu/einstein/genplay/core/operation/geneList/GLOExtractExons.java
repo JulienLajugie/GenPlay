@@ -21,6 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.operation.geneList;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -28,87 +29,85 @@ import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.geneListView.GeneListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.SimpleGeneList;
-
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 
 
 /**
  * Extracts exons of each gene of a {@link GeneList}
- * @author Chirag Gorasia
  * @author Julien Lajugie
- * @version 0.1
  */
 public class GLOExtractExons implements Operation<GeneList> {
 
-	private final GeneList 	geneList;			// input list
-	private final int 		exonOption;			// exon option: first, last or all
-	private boolean			stopped = false;	// true if the operation must be stopped
-	/**
-	 * extract the first exon
-	 */
+	/** Extract the first exon */
 	public static final int FIRST_EXON = 0;
-	/**
-	 * extract the last exon
-	 */
+
+	/** Extract the last exon */
 	public static final int LAST_EXON = 1;
-	/**
-	 * Extract all the exons
-	 */
+
+	/** Extract all the exons */
 	public static final int ALL_EXONS = 2;
+
+	private final GeneList 			geneList;			// input list
+	private final int 				exonOption;			// exon option: first, last or all
+	private final ScorePrecision 	scorePrecision;		// precision of the scores of the result list
+	private boolean					stopped = false;	// true if the operation must be stopped
+
 
 
 	/**
 	 * Creates an instance of {@link GLOExtractExons}
 	 * @param geneList input list
 	 * @param exonOption used to specify to extract only the first exon, the last exon or all the exon
+	 * @param scorePrecision precision of the scores of the genes of the result list
 	 */
-	public GLOExtractExons(GeneList geneList, int exonOption) {
+	public GLOExtractExons(GeneList geneList, int exonOption, ScorePrecision scorePrecision) {
+		if ((exonOption != FIRST_EXON) && (exonOption != LAST_EXON) && (exonOption != ALL_EXONS)) {
+			throw new InvalidParameterException("The exons to extract option is not valid.");
+		}
 		this.geneList = geneList;
 		this.exonOption = exonOption;
+		this.scorePrecision = scorePrecision;
 	}
 
 
 	@Override
 	public GeneList compute() throws Exception {
 		final OperationPool op = OperationPool.getInstance();
-		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();
-		for(final List<Gene> currentList: geneList) {
-			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {
+		final Collection<Callable<ListView<Gene>>> threadList = new ArrayList<Callable<ListView<Gene>>>();
+		for(final ListView<Gene> currentList: geneList) {
+			Callable<ListView<Gene>> currentThread = new Callable<ListView<Gene>>() {
 				@Override
-				public List<Gene> call() throws Exception {
+				public ListView<Gene> call() throws Exception {
 					if (currentList == null) {
 						return null;
 					}
-					List<Gene> resultList = new ArrayList<Gene>();
+					ListViewBuilder<Gene> resultLVBuilder = new GeneListViewBuilder(scorePrecision);
 					for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 						Gene currentGene = currentList.get(j);
-						switch (exonOption) {
-						case FIRST_EXON:
-							resultList.add(extractFirstExon(currentGene));
-							break;
-						case LAST_EXON:
-							resultList.add(extractLastExon(currentGene));
-							break;
-						case ALL_EXONS:
-							resultList.addAll(extractAllExon(currentGene));
-							break;
-						default:
-							// invalid argument
-							throw new IllegalArgumentException("Invalid Choice for Exon");
+						List<Gene> extractedExons = extractExons(currentGene, exonOption);
+						for (Gene extractedExon: extractedExons) {
+							resultLVBuilder.addElementToBuild(extractedExon);
 						}
 					}
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
-					return resultList;
+					return resultLVBuilder.getListView();
 				}
 			};
 			threadList.add(currentThread);
 		}
-		List<List<Gene>> result = op.startPool(threadList);
+		List<ListView<Gene>> result = op.startPool(threadList);
 		if (result == null) {
 			return null;
 		} else {
@@ -118,179 +117,60 @@ public class GLOExtractExons implements Operation<GeneList> {
 
 
 	/**
-	 * @param inputGene a {@link Gene}
-	 * @return a gene representing the first exon of the specified gene
+	 * Convert the specified exon into a gene
+	 * @param gene the gene of the exon to convert
+	 * @param exonsToExtract exon that needs to be converted into a gene
+	 * @param exonName name of the exon
+	 * @return a new {@link Gene}
 	 */
-	private Gene extractFirstExon(Gene inputGene) {
-		Gene outputGene = new SimpleGene(inputGene);
-		if (outputGene.getStrand() == Strand.FIVE) {
-			// new start
-			outputGene.setStart(outputGene.getExonStarts()[0]);
-			// new stop
-			outputGene.setStop(outputGene.getExonStops()[0]);
-			// new exon starts
-			int[] exonStart = new int[1];
-			exonStart[0] = outputGene.getExonStarts()[0];
-			outputGene.setExonStarts(exonStart);
-			// new exon stops
-			int[] exonStop = new int[1];
-			exonStop[0] = outputGene.getExonStops()[0];
-			outputGene.setExonStops(exonStop);
-			// new exon scores
-			if (outputGene.getExonScores() != null) {
-				double[] exonScore = new double[1];
-				exonScore[0] = outputGene.getExonScores()[0];
-				outputGene.setExonScores(exonScore);
-			}
-			// new name
-			outputGene.setName(outputGene.getName() + "(1st)");
-		} else {
-			// new start
-			outputGene.setStart(outputGene.getExonStarts()[outputGene.getExonStarts().length - 1]);
-			// new stop
-			outputGene.setStop(outputGene.getExonStops()[outputGene.getExonStops().length - 1]);
-			// new exon starts
-			int[] exonStart = new int[1];
-			exonStart[0] = outputGene.getExonStarts()[outputGene.getExonStarts().length - 1];
-			outputGene.setExonStarts(exonStart);
-			// new exon stops
-			int[] exonStop = new int[1];
-			exonStop[0] = outputGene.getExonStops()[outputGene.getExonStops().length - 1];
-			outputGene.setExonStops(exonStop);
-			// new exon scores
-			if (outputGene.getExonScores() != null) {
-				double[] exonScore = new double[1];
-				exonScore[0] = outputGene.getExonScores()[outputGene.getExonScores().length - 1];
-				outputGene.setExonScores(exonScore);
-			}
-			// new name
-			outputGene.setName(outputGene.getName() + "(1st)");
-		}
-		return outputGene;
+	private Gene convertExonIntoGene(Gene gene, ScoredChromosomeWindow exonToConvert, String exonName) {
+		int start = exonToConvert.getStart();
+		int stop = exonToConvert.getStop();
+		float score = exonToConvert.getScore();
+		ListViewBuilder<ScoredChromosomeWindow> exonLvBuilder = new GenericSCWListViewBuilder(scorePrecision);
+		exonLvBuilder.addElementToBuild(new SimpleScoredChromosomeWindow(start, stop, score));
+		Strand strand = gene.getStrand();
+		return new SimpleGene(exonName, strand, start, stop, score, exonLvBuilder.getListView());
 	}
 
 
 	/**
-	 * @param inputGene a {@link Gene}
-	 * @return a gene representing the last exon of the specified gene
+	 * 
+	 * @param gene
+	 * @param exonOption
+	 * @return
 	 */
-	private Gene extractLastExon(Gene inputGene) {
-		Gene outputGene = new SimpleGene(inputGene);
-		if (outputGene.getStrand() == Strand.FIVE) {
-			// new start
-			outputGene.setStart(outputGene.getExonStarts()[outputGene.getExonStarts().length - 1]);
-			// new stop
-			outputGene.setStop(outputGene.getExonStops()[outputGene.getExonStops().length - 1]);
-			// new exon starts
-			int[] exonStart = new int[1];
-			exonStart[0] = outputGene.getExonStarts()[outputGene.getExonStarts().length - 1];
-			outputGene.setExonStarts(exonStart);
-			// new exon stops
-			int[] exonStop = new int[1];
-			exonStop[0] = outputGene.getExonStops()[outputGene.getExonStops().length - 1];
-			outputGene.setExonStops(exonStop);
-			// new exon scores
-			if (outputGene.getExonScores() != null) {
-				double[] exonScore = new double[1];
-				exonScore[0] = outputGene.getExonScores()[outputGene.getExonScores().length - 1];
-				outputGene.setExonScores(exonScore);
+	private List<Gene> extractExons(Gene gene, int exonOption) {
+		List<Gene> extractedExons = new ArrayList<Gene>();
+		if (gene.getExons() != null) {
+			ScoredChromosomeWindow exonToExtract = null;
+			String exonName = gene.getName();
+			// find the index of the exon to extract in the list of exons
+			// depending on the strand of the gene
+			if (((exonOption == FIRST_EXON) && (gene.getStrand() == Strand.FIVE))
+					|| ((exonOption == LAST_EXON) && (gene.getStrand() == Strand.THREE))) {
+				exonToExtract = gene.getExons().get(0);
+			} else if (((exonOption == FIRST_EXON) && (gene.getStrand() == Strand.THREE))
+					|| ((exonOption == LAST_EXON) && (gene.getStrand() == Strand.FIVE))) {
+				exonToExtract = gene.getExons().get(gene.getExons().size() - 1);
 			}
-			// new name
-			outputGene.setName(outputGene.getName() + "(last)");
-		} else {
-			// new start
-			outputGene.setStart(outputGene.getExonStarts()[0]);
-			// new stop
-			outputGene.setStop(outputGene.getExonStops()[0]);
-			// new exon starts
-			int[] exonStart = new int[1];
-			exonStart[0] = outputGene.getExonStarts()[0];
-			outputGene.setExonStarts(exonStart);
-			// new exon stops
-			int[] exonStop = new int[1];
-			exonStop[0] = outputGene.getExonStops()[0];
-			outputGene.setExonStops(exonStop);
-			// new exon scores
-			if (outputGene.getExonScores() != null) {
-				double[] exonScore = new double[1];
-				exonScore[0] = outputGene.getExonScores()[0];
-				outputGene.setExonScores(exonScore);
-			}
-			// new name
-			outputGene.setName(outputGene.getName() + "(last)");
-		}
-		return outputGene;
-	}
-
-
-	/**
-	 * @param inputGene a {@link Gene}
-	 * @return a gene list representing each exon of the specified gene
-	 */
-	private List<Gene> extractAllExon(Gene inputGene) {
-		List<Gene> outputGeneList = new ArrayList<Gene>();
-		if (inputGene.getStrand() == Strand.FIVE) {
-			for (int i = 0; i < inputGene.getExonStarts().length; i++) {
-				Gene outputGene = new SimpleGene(inputGene);
-				// new start
-				outputGene.setStart(outputGene.getExonStarts()[i]);
-				// new stop
-				outputGene.setStop(outputGene.getExonStops()[i]);
-				// new exon starts
-				int[] exonStart = new int[1];
-				exonStart[0] = outputGene.getExonStarts()[i];
-				outputGene.setExonStarts(exonStart);
-				// new exon stops
-				int[] exonStop = new int[1];
-				exonStop[0] = outputGene.getExonStops()[i];
-				outputGene.setExonStops(exonStop);
-				// new exon scores
-				if ((outputGene.getExonScores() != null) && (outputGene.getExonScores().length > 0)) {
-					double[] exonScore = new double[1];
-					if (outputGene.getExonScores().length == 1) {
-						exonScore[0] = outputGene.getExonScores()[0];
-					} else {
-						exonScore[0] = outputGene.getExonScores()[i];
-					}
-					outputGene.setExonScores(exonScore);
+			if (exonToExtract != null) {
+				// case where only one exon (first or last one) needs to be extracted
+				if (exonOption == FIRST_EXON) {
+					exonName += " (1st Exon)";
+				} else {
+					exonName += " (Last Exon)";
 				}
-				// new name
-				outputGene.setName(outputGene.getName() + "(" + Integer.toString(i + 1) + ")");
-				// add new gene
-				outputGeneList.add(outputGene);
-			}
-		} else {
-			for (int i = inputGene.getExonStarts().length - 1; i >= 0; i--) {
-				Gene outputGene = new SimpleGene(inputGene);
-				// new start
-				outputGene.setStart(outputGene.getExonStarts()[i]);
-				// new stop
-				outputGene.setStop(outputGene.getExonStops()[i]);
-				// new exon starts
-				int[] exonStart = new int[1];
-				exonStart[0] = outputGene.getExonStarts()[i];
-				outputGene.setExonStarts(exonStart);
-				// new exon stops
-				int[] exonStop = new int[1];
-				exonStop[0] = outputGene.getExonStops()[i];
-				outputGene.setExonStops(exonStop);
-				// new exon scores
-				if ((outputGene.getExonScores() != null) && (outputGene.getExonScores().length > 0)) {
-					double[] exonScore = new double[1];
-					if (outputGene.getExonScores().length == 1) {
-						exonScore[0] = outputGene.getExonScores()[0];
-					} else {
-						exonScore[0] = outputGene.getExonScores()[i];
-					}
-					outputGene.setExonScores(exonScore);
+				extractedExons.add(convertExonIntoGene(gene, exonToExtract, exonName));
+			} else {
+				// case where we need to extract all exon
+				for (int i = 0; i < gene.getExons().size(); i++) {
+
+					extractedExons.add(convertExonIntoGene(gene, gene.getExons().get(i), exonName + " (" + (i + 1) + ")"));
 				}
-				// new name
-				outputGene.setName(outputGene.getName() + "(" + Integer.toString(inputGene.getExonStarts().length - i) + ")");
-				// add new gene
-				outputGeneList.add(outputGene);
 			}
 		}
-		return outputGeneList;
+		return extractedExons;
 	}
 
 

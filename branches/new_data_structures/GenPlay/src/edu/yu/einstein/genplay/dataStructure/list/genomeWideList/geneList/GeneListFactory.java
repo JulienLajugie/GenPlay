@@ -71,7 +71,7 @@ public class GeneListFactory {
 		}
 		String geneDBURL = geneReader.getGeneDBURL();
 		GeneScoreType geneScoreType = geneReader.getGeneScoreType();
-		return new SimpleGeneList(builder.getGenomicList(), geneScoreType, geneDBURL);
+		return new SimpleGeneList(builder.getGenomicList(), scorePrecision, geneScoreType, geneDBURL);
 	}
 
 
@@ -117,6 +117,6 @@ public class GeneListFactory {
 			threadList.add(currentThread);
 		}
 		List<ListView<Gene>> result = op.startPool(threadList);
-		return new SimpleGeneList(result, null, null);
+		return new SimpleGeneList(result, scorePrecision, null, null);
 	}
 }

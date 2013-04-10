@@ -28,10 +28,16 @@ import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.geneListView.GeneListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.SimpleGeneList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
 /**
@@ -40,11 +46,12 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.Simple
  * @version 0.1
  */
 public class GLOFilterThreshold implements Operation<GeneList> {
-	private final GeneList 	geneList;			// input list
-	private final double 	lowThreshold;		// filters the genes with an overall RPKM under this threshold
-	private final double 	highThreshold;		// filters the genes with an overall RPKM above this threshold
-	private final boolean	isSaturation;		// true if we saturate, false if we remove the filtered values
-	private boolean			stopped = false;	// true if the operation must be stopped
+	private final GeneList 			geneList;			// input list
+	private final float 			lowThreshold;		// filters the genes with an overall RPKM under this threshold
+	private final float 			highThreshold;		// filters the genes with an overall RPKM above this threshold
+	private final boolean			isSaturation;		// true if we saturate, false if we remove the filtered values
+	private final ScorePrecision 	scorePrecision;		// precision of the scores of the result list
+	private boolean					stopped = false;	// true if the operation must be stopped
 
 
 	/**
@@ -53,48 +60,53 @@ public class GLOFilterThreshold implements Operation<GeneList> {
 	 * @param lowThreshold filters the genes with an overall RPKM under this threshold
 	 * @param highThreshold filters the genes with an overall RPKM above this threshold
 	 * @param isSaturation true to saturate, false to remove the filtered values
+	 * @param scorePrecision precision of the scores of the genes of the result list
 	 */
-	public GLOFilterThreshold(GeneList geneList, double	lowThreshold, double highThreshold, boolean isSaturation) {
+	public GLOFilterThreshold(GeneList geneList, float	lowThreshold, float highThreshold, boolean isSaturation, ScorePrecision scorePrecision) {
 		this.geneList = geneList;
 		this.lowThreshold = lowThreshold;
 		this.highThreshold = highThreshold;
 		this.isSaturation = isSaturation;
+		this.scorePrecision = scorePrecision;
 	}
 
+
+	// FIXME finish to update this class
 
 	@Override
 	public GeneList compute() throws Exception {
 		final OperationPool op = OperationPool.getInstance();
-		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();
+		final Collection<Callable<ListView<Gene>>> threadList = new ArrayList<Callable<ListView<Gene>>>();
 
 		for(short i = 0; i < geneList.size(); i++) {
-			final List<Gene> currentList = geneList.getView(i);
-			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {
+			final ListView<Gene> currentList = geneList.get(i);
+			Callable<ListView<Gene>> currentThread = new Callable<ListView<Gene>>() {
 				@Override
-				public List<Gene> call() throws Exception {
+				public ListView<Gene> call() throws Exception {
 					if (currentList == null) {
 						return null;
 					}
-					List<Gene> resultList = new ArrayList<Gene>();
+					ListViewBuilder<Gene> resultLVBuilder = new GeneListViewBuilder(scorePrecision);
 					for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 						Gene currentGene = currentList.get(j);
-						if ((currentGene.getScore() != Double.NaN)) {
+
+
+						if ((currentGene.getScore() != Float.NaN)) {
 							Gene geneToAdd = null;
 							if (currentGene.getScore() > highThreshold) {
 								// if the score is greater than the high threshold
 								if (isSaturation) {
 									// set the value to high threshold (saturation)
-									geneToAdd = new SimpleGene(currentGene);
-									for (int k = 0; k < currentGene.getExonScores().length; k++) {
-										geneToAdd.getExonScores()[k] = highThreshold;
+									ListViewBuilder<ScoredChromosomeWindow> exonsLVBuilder = new GenericSCWListViewBuilder(scorePrecision);
+									for (ScoredChromosomeWindow currentExon: currentGene.getExons()) {
+										exonsLVBuilder.addElementToBuild(currentExon.getStart(), currentExon.getStop(), highThreshold);
 									}
 								}
 							} else if (currentGene.getScore() < lowThreshold) {
 								// if the score is smaller than the low threshold
 								if (isSaturation) {
 									// set the value to low threshold (saturation)
-									geneToAdd = new SimpleGene(currentGene);
-									for (int k = 0; k < currentGene.getExonScores().length; k++) {
+									for (int k = 0; k < currentGene.getExons().size(); k++) {
 										geneToAdd.getExonScores()[k] = lowThreshold;
 									}
 								}
@@ -103,18 +115,18 @@ public class GLOFilterThreshold implements Operation<GeneList> {
 								geneToAdd = new SimpleGene(currentGene);
 							}
 							if (geneToAdd != null) {
-								resultList.add(geneToAdd);
+								resultLVBuilder.addElementToBuild(geneToAdd);
 							}
 						}
 					}
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
-					return resultList;
+					return resultLVBuilder.getListView();
 				}
 			};
 			threadList.add(currentThread);
 		}
-		List<List<Gene>> result = op.startPool(threadList);
+		List<ListView<Gene>> result = op.startPool(threadList);
 		if (result == null) {
 			return null;
 		} else {

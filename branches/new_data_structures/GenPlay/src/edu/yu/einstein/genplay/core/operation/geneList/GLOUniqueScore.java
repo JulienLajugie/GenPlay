@@ -28,10 +28,17 @@ import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.geneListView.GeneListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.SimpleGeneList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 
 
 /**
@@ -40,60 +47,74 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.Simple
  * @version 0.1
  */
 public class GLOUniqueScore implements Operation<GeneList> {
-	private final GeneList 	geneList;			// input GeneList
-	private final double 	constant;			// constant to add
-	private boolean 		stopped = false;	// true if the writer needs to be stopped
+	private final GeneList 			geneList;			// input GeneList
+	private final float 			constant;			// constant to add
+	private final ScorePrecision 	scorePrecision;		// precision of the scores of the result list
+	private boolean 				stopped = false;	// true if the writer needs to be stopped
 
 
 	/**
 	 * Creates an instance of {@link GLOUniqueScore}
 	 * @param geneList input GeneList
 	 * @param constant constant to add
+	 * @param scorePrecision precision of the scores of the genes of the result list
 	 */
-	public GLOUniqueScore(GeneList geneList, double constant) {
+	public GLOUniqueScore(GeneList geneList, float constant, ScorePrecision scorePrecision) {
 		this.geneList = geneList;
 		this.constant = constant;
+		this.scorePrecision = scorePrecision;
 	}
 
 
 	@Override
 	public GeneList compute() throws Exception {
 		final OperationPool op = OperationPool.getInstance();
-		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();
+		final Collection<Callable<ListView<Gene>>> threadList = new ArrayList<Callable<ListView<Gene>>>();
 		for(int i = 0; i < geneList.size(); i++) {
-			final List<Gene> currentGeneList = geneList.getView(i);
-			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {
+			final ListView<Gene> currentGeneList = geneList.get(i);
+			Callable<ListView<Gene>> currentThread = new Callable<ListView<Gene>>() {
 				@Override
-				public List<Gene> call() throws Exception {
+				public ListView<Gene> call() throws Exception {
 					if (currentGeneList == null) {
 						return null;
 					}
-					List<Gene> resultList = new ArrayList<Gene>();
+					ListViewBuilder<Gene> resultLVBuilder = new GeneListViewBuilder(scorePrecision);
 					for (int j = 0; (j < currentGeneList.size()) && !stopped; j++) {
 						Gene currentGene = currentGeneList.get(j);
-						if ((currentGene != null) && (currentGene.getExonStarts() != null) && (currentGene.getExonStarts().length != 0))  {
-							double[] scores = new double[currentGene.getExonStarts().length] ;
-							for (int k = 0; (k < currentGene.getExonStarts().length) && !stopped; k++) {
-								scores[k] = constant;
-							}
-							Gene geneToAdd = new SimpleGene(currentGeneList.get(j));
-							geneToAdd.setExonScores(scores);
-							resultList.add(geneToAdd);
-						}
+						Gene geneToAdd = createGeneCopyWithConstantScore(currentGene);
+						resultLVBuilder.addElementToBuild(geneToAdd);
 					}
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
-					return resultList;
+					return resultLVBuilder.getListView();
 				}
 			};
 			threadList.add(currentThread);
 		}
-		List<List<Gene>> result = op.startPool(threadList);
+		List<ListView<Gene>> result = op.startPool(threadList);
 		if (result == null) {
 			return null;
 		} else {
 			return new SimpleGeneList(result, geneList.getGeneScoreType(), geneList.getGeneDBURL());
 		}
+	}
+
+
+	/**
+	 * Creates a copy of the specified gene with a constant score and with
+	 * exons having all the same constant score.
+	 * @param gene a gene
+	 * @return a copy of the specified gene with a constant score
+	 */
+	private Gene createGeneCopyWithConstantScore(Gene gene) {
+		ListViewBuilder<ScoredChromosomeWindow> exonLVBuilder = new GenericSCWListViewBuilder(scorePrecision);
+		if (gene.getExons() != null) {
+			for (ScoredChromosomeWindow currentExon: gene.getExons()) {
+				ScoredChromosomeWindow newExon = new SimpleScoredChromosomeWindow(currentExon.getStart(), currentExon.getStop(), constant);
+				exonLVBuilder.addElementToBuild(newExon);
+			}
+		}
+		return new SimpleGene(gene.getName(), gene.getStrand(), gene.getStart(), gene.getStop(), constant, gene.getUTR5Bound(), gene.getUTR3Bound(), exonLVBuilder.getListView());
 	}
 
 

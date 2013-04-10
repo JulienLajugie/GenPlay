@@ -98,7 +98,7 @@ public class SimpleSCWLScaler implements DataScalerForTrackDisplay<SCWList, List
 		ListView<ScoredChromosomeWindow> currentChromosomeList;
 		scaledSCWList = null;
 		try {
-			currentChromosomeList = dataToScale.getView(scaledChromosome);
+			currentChromosomeList = dataToScale.get(scaledChromosome);
 		} catch (InvalidChromosomeException e) {
 			ExceptionManager.getInstance().caughtException(e);
 			return;
@@ -110,13 +110,12 @@ public class SimpleSCWLScaler implements DataScalerForTrackDisplay<SCWList, List
 			scaledSCWList = currentChromosomeList;
 		} else {
 			if (currentChromosomeList.size() > 0) {
-				GenericSCWListViewBuilder scaledSCWListBuilder = new GenericSCWListViewBuilder(dataToScale.getScorePrecision);
+				GenericSCWListViewBuilder scaledSCWListBuilder = new GenericSCWListViewBuilder(dataToScale.getScorePrecision());
 				int start = currentChromosomeList.get(0).getStart();
 				int stop = currentChromosomeList.get(0).getStop();
 				ArrayList<Float> scoreList = new ArrayList<Float>();
 				scoreList.add(currentChromosomeList.get(0).getScore());
 				int i = 1;
-				int j = 0;
 				while (i < currentChromosomeList.size()) {
 					double gapDistance = (currentChromosomeList.get(i).getStart() - stop) * scaledXRatio;
 					double windowWidth = (currentChromosomeList.get(i).getStop() - start) * scaledXRatio;
@@ -141,7 +140,6 @@ public class SimpleSCWLScaler implements DataScalerForTrackDisplay<SCWList, List
 					scoreList.add(currentChromosomeList.get(i).getScore());
 					start = currentChromosomeList.get(i).getStart();
 					stop = currentChromosomeList.get(i).getStop();
-					j++;
 					i++;
 				}
 				scaledSCWList = scaledSCWListBuilder.getListView();

@@ -59,8 +59,8 @@ public class GLOCountAllGenes implements Operation<Long> {
 	public Long compute() throws InterruptedException, ExecutionException {
 		long total = 0;
 		for (int i = 0; (i < geneList.size()) && !stopped; i++) {
-			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (geneList.getView(i) != null)) {
-				total += geneList.getView(i).size();
+			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (geneList.get(i) != null)) {
+				total += geneList.get(i).size();
 			}
 		}
 		if (stopped) {
@@ -78,14 +78,14 @@ public class GLOCountAllGenes implements Operation<Long> {
 
 
 	@Override
-	public int getStepCount() {
-		return 1;
+	public String getProcessingDescription() {
+		return "Counting Non Null Windows";
 	}
 
 
 	@Override
-	public String getProcessingDescription() {
-		return "Counting Non Null Windows";
+	public int getStepCount() {
+		return 1;
 	}
 
 

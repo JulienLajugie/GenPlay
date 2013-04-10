@@ -27,11 +27,14 @@ import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.geneListView.GeneListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.SimpleGeneList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 
 
 
@@ -42,10 +45,11 @@ import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
  */
 public class GLOFilterBandStop implements Operation<GeneList> {
 
-	private final GeneList 	geneList;		// input GeneList
-	private final double 	lowThreshold;	// low bound
-	private final double 	highThreshold;	// high bound
-	private boolean			stopped = false;// true if the operation must be stopped
+	private final GeneList 			geneList;			// input GeneList
+	private final double 			lowThreshold;		// low bound
+	private final double 			highThreshold;		// high bound
+	private final ScorePrecision 	scorePrecision;		// precision of the scores of the result list
+	private boolean					stopped = false;	// true if the operation must be stopped
 
 
 	/**
@@ -53,11 +57,13 @@ public class GLOFilterBandStop implements Operation<GeneList> {
 	 * @param geneList input {@link GeneList}
 	 * @param lowThreshold low threshold
 	 * @param highThreshold high threshold
+	 * @param scorePrecision precision of the scores of the genes of the result list
 	 */
-	public GLOFilterBandStop(GeneList geneList, double lowThreshold, double highThreshold) {
+	public GLOFilterBandStop(GeneList geneList, double lowThreshold, double highThreshold, ScorePrecision scorePrecision) {
 		this.geneList = geneList;
 		this.lowThreshold = lowThreshold;
 		this.highThreshold = highThreshold;
+		this.scorePrecision = scorePrecision;
 	}
 
 
@@ -71,28 +77,28 @@ public class GLOFilterBandStop implements Operation<GeneList> {
 		final List<Callable<ListView<Gene>>> threadList = new ArrayList<Callable<ListView<Gene>>>();
 		for (final ListView<Gene> currentList: geneList) {
 
-			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {
+			Callable<ListView<Gene>> currentThread = new Callable<ListView<Gene>>() {
 				@Override
-				public List<Gene> call() throws Exception {
-					List<Gene> resultList = new ArrayList<Gene>();
+				public ListView<Gene> call() throws Exception {
+					ListViewBuilder<Gene> resultLVBuilder = new GeneListViewBuilder(scorePrecision);
 					if ((currentList != null) && (currentList.size() != 0)) {
 						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
-							Double currentValue = currentList.get(j).getScore();
+							Float currentValue = currentList.get(j).getScore();
 							if ((currentValue == null) || ((currentValue < lowThreshold) && (currentValue > highThreshold))) {
 								Gene geneToAdd = new SimpleGene(currentList.get(j));
-								resultList.add(geneToAdd);
+								resultLVBuilder.addElementToBuild(geneToAdd);
 							}
 						}
 					}
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
-					return resultList;
+					return resultLVBuilder.getListView();
 				}
 			};
 
 			threadList.add(currentThread);
 		}
-		List<List<Gene>> result = op.startPool(threadList);
+		List<ListView<Gene>> result = op.startPool(threadList);
 		if (result != null) {
 			GeneList resultList = new SimpleGeneList(result, geneList.getGeneScoreType(), geneList.getGeneDBURL());
 			return resultList;

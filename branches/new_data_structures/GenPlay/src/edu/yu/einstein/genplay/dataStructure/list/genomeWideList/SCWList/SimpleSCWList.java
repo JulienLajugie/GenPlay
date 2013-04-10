@@ -37,6 +37,7 @@ import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOCountNonNullLength;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.SimpleGeneList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
@@ -47,9 +48,8 @@ import edu.yu.einstein.genplay.util.ListViews;
 /**
  * Class implementing the {@link SCWList} interface using an {@link ArrayList} based data structure
  * @author Julien Lajugie
- * @version 0.1
  */
-public final class SimpleSCWList implements SCWList {
+public final class SimpleSCWList implements SCWList, Iterator<ListView<ScoredChromosomeWindow>> {
 
 	/** Generated serial ID */
 	private static final long serialVersionUID = 9159412940141151387L;
@@ -75,23 +75,29 @@ public final class SimpleSCWList implements SCWList {
 	/** {@link GenomicDataArrayList} containing the ScoredChromosomeWindows */
 	private final List<ListView<ScoredChromosomeWindow>> data;
 
+	/** Current index of the iterator */
+	private transient int iteratorIndex = 0;
+
 	/** Type of the list */
 	private final SCWListType scwListType;
 
+	/** The precision of the scores of the windows */
+	private final ScorePrecision scorePrecision;
+
 	/** Smallest value of the list */
-	private final double minimum;
+	private final float minimum;
 
 	/** Greatest value of the list */
-	private final double maximum;
+	private final float maximum;
 
 	/** Average of the list */
-	private final double average;
+	private final float average;
 
 	/** Standard deviation of the list */
-	private final double standardDeviation;
+	private final float standardDeviation;
 
 	/** Sum of the scores of all windows */
-	private final double scoreSum;
+	private final float scoreSum;
 
 	/** Count of none-null bins in the BinList */
 	private final long nonNullLength;
@@ -101,23 +107,25 @@ public final class SimpleSCWList implements SCWList {
 	 * Creates an instance of {@link SimpleGeneList}
 	 * @param data {@link ScoredChromosomeWindow} list organized by chromosome
 	 * @param scwListType type of the list (as a {@link SCWListType} element)
+	 * @param scorePrecision precision of the scores of the data
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public SimpleSCWList(List<ListView<ScoredChromosomeWindow>> data, SCWListType scwListType) throws InterruptedException, ExecutionException {
+	public SimpleSCWList(List<ListView<ScoredChromosomeWindow>> data, SCWListType scwListType, ScorePrecision scorePrecision) throws InterruptedException, ExecutionException {
 		super();
 		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		this.data = new ArrayList<ListView<ScoredChromosomeWindow>>(projectChromosome.size());
+		this.scorePrecision = scorePrecision;
 		for (int i = 0; i < data.size(); i++){
 			data.add(data.get(i));
 		}
 		this.scwListType = scwListType;
 		// computes some statistic values for this list
 		if (scwListType == SCWListType.MASK) {
-			maximum = 1d;
-			minimum = 1d;
-			average = 1d;
-			standardDeviation = 0d;
+			maximum = 1f;
+			minimum = 1f;
+			average = 1f;
+			standardDeviation = 0f;
 			nonNullLength = new SCWLOCountNonNullLength(this, null).compute();
 			scoreSum = nonNullLength;
 		} else {
@@ -160,19 +168,19 @@ public final class SimpleSCWList implements SCWList {
 
 
 	@Override
-	public double getAverage() {
+	public float getAverage() {
 		return average;
 	}
 
 
 	@Override
-	public double getMaximum() {
+	public float getMaximum() {
 		return maximum;
 	}
 
 
 	@Override
-	public double getMinimum() {
+	public float getMinimum() {
 		return minimum;
 	}
 
@@ -203,7 +211,13 @@ public final class SimpleSCWList implements SCWList {
 
 
 	@Override
-	public double getScoreSum() {
+	public ScorePrecision getScorePrecision() {
+		return scorePrecision;
+	}
+
+
+	@Override
+	public float getScoreSum() {
 		return scoreSum;
 	}
 
@@ -215,8 +229,14 @@ public final class SimpleSCWList implements SCWList {
 
 
 	@Override
-	public double getStandardDeviation() {
+	public float getStandardDeviation() {
 		return standardDeviation;
+	}
+
+
+	@Override
+	public boolean hasNext() {
+		return iteratorIndex < size();
 	}
 
 
@@ -228,7 +248,15 @@ public final class SimpleSCWList implements SCWList {
 
 	@Override
 	public Iterator<ListView<ScoredChromosomeWindow>> iterator() {
-		return data.iterator();
+		return this;
+	}
+
+
+	@Override
+	public ListView<ScoredChromosomeWindow> next() {
+		int currentIndex = iteratorIndex;
+		iteratorIndex++;
+		return get(currentIndex);
 	}
 
 
@@ -241,6 +269,12 @@ public final class SimpleSCWList implements SCWList {
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		in.defaultReadObject();
+	}
+
+
+	@Override
+	public void remove() {
+		throw new UnsupportedOperationException();
 	}
 
 
