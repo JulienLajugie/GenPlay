@@ -19,44 +19,32 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.IO.reader;
-
-import java.util.concurrent.ExecutionException;
+package edu.yu.einstein.genplay.core.IO.dataReader;
 
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
-import edu.yu.einstein.genplay.dataStructure.gene.Gene;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
 /**
- * Interface defining method for extractors that can read genes
+ * Interface defining method for data readers that can read elements needed to create {@link ScoredChromosomeWindow} objects.
  * @author Julien Lajugie
  */
-public interface GeneReader {
+public interface SCWReader extends DataReader, ChromosomeWindowReader {
 
-	/**
-	 * @return the chromosome of the last gene read
-	 */
-	public Chromosome getCurrentChromosome();
+	@Override
+	public Chromosome getChromosome();
 
 
 	/**
-	 * @return the URL of the database containing informations on the genes
+	 * @return the score of the last extracted item
 	 */
-	public String getGeneDBURL();
+	public float getScore();
 
 
-	/**
-	 * @return the type of the scores of the genes and exons of this list (RPKM, max, sum)
-	 */
-	public GeneScoreType getGeneScoreType();
+	@Override
+	public int getStart();
 
 
-	/**
-	 * Reads the next gene from a file and returns it.  Returns null if its the end of the file
-	 * @return a {@link Gene}
-	 * @throws InterruptedException
-	 * @throws ExecutionException
-	 */
-	public Gene readGene() throws InterruptedException, ExecutionException;
+	@Override
+	public int getStop();
 }

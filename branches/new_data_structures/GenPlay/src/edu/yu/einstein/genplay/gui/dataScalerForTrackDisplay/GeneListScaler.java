@@ -34,6 +34,7 @@ import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.geneListView.GeneListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 import edu.yu.einstein.genplay.util.ChromosomeWindowLists;
 
@@ -43,9 +44,6 @@ import edu.yu.einstein.genplay.util.ChromosomeWindowLists;
  * @author Julien Lajugie
  */
 public class GeneListScaler implements DataScalerForTrackDisplay<GeneList, List<ListView<Gene>>> {
-
-	/** Generated serial ID */
-	private static final long serialVersionUID = -3661197942566804888L;
 
 	/** The name of the genes are printed if the ratio is higher than this value */
 	public static final double MIN_X_RATIO_PRINT_NAME = 0.0005d;
@@ -118,16 +116,16 @@ public class GeneListScaler implements DataScalerForTrackDisplay<GeneList, List<
 	 */
 	protected void scaleChromosome() {
 		ListView<Gene> currentList;
+		scaledGeneList = null;
 		try {
 			currentList = dataToScale.get(scaledChromosome);
 		} catch (InvalidChromosomeException e) {
-			e.printStackTrace();
-			scaledGeneList = null;
+			ExceptionManager.getInstance().caughtException(e);
+			scaledChromosome = null;
 			return;
 		}
 
-		if ((currentList == null) || (currentList.isEmpty())) {
-			scaledGeneList = null;
+		if ((currentList == null) || currentList.isEmpty()) {
 			return;
 		}
 		scaledGeneList = new ArrayList<ListView<Gene>>();

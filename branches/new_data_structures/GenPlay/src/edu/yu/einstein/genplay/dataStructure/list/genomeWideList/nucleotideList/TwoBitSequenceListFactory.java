@@ -30,8 +30,7 @@ import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.nucleotideL
 import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
 
 public class TwoBitSequenceListFactory {
-	/** True if the bytes of multi-byte entities need to be reversed when read */
-	private final boolean reverseBytes;
+
 
 	/**
 	 * Extracts the sequence list from a 2bit file
@@ -42,8 +41,10 @@ public class TwoBitSequenceListFactory {
 	 * @throws InterruptedException
 	 */
 	public void extract(File file) throws FileNotFoundException, IOException, InvalidFileTypeException, InterruptedException  {
-		filePath = file.getAbsolutePath();
-		twoBitFile = new RandomAccessFile(file, "r");
+		// true if the bytes of multi-byte entities need to be reversed when read
+		boolean reverseBytes = false;
+		String filePath = file.getAbsolutePath();
+		RandomAccessFile twoBitFile = new RandomAccessFile(file, "r");
 		twoBitFile.seek(0);
 		int signature = twoBitFile.readInt();
 		// if the signature is not equal to the signature defined in the 2bit files
@@ -59,6 +60,7 @@ public class TwoBitSequenceListFactory {
 				throw new InvalidFileTypeException();
 			}
 		}
+		int version;
 		if (reverseBytes) {
 			version = Integer.reverseBytes(twoBitFile.readInt());
 		} else {

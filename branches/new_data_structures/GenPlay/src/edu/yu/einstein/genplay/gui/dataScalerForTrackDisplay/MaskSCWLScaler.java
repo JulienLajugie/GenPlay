@@ -39,9 +39,6 @@ import edu.yu.einstein.genplay.util.ChromosomeWindowLists;
  */
 public class MaskSCWLScaler implements DataScalerForTrackDisplay<SCWList, ListView<ScoredChromosomeWindow>> {
 
-	/** Generate serial ID */
-	private static final long serialVersionUID = -6692681405567001332L;
-
 	/** scaled chromosome */
 	private Chromosome scaledChromosome;
 
@@ -88,7 +85,8 @@ public class MaskSCWLScaler implements DataScalerForTrackDisplay<SCWList, ListVi
 
 
 	/**
-	 * Merges two windows together if the gap between this two windows is not visible
+	 * Merges two windows together if the gap between the two windows is not visible
+	 * at the current zoom level
 	 */
 	private void scaleChromosome() {
 		ListView<ScoredChromosomeWindow> currentChromosomeList;
@@ -100,38 +98,31 @@ public class MaskSCWLScaler implements DataScalerForTrackDisplay<SCWList, ListVi
 			scaledChromosome = null;
 			return;
 		}
-		if (currentChromosomeList == null) {
+		if ((currentChromosomeList == null) || currentChromosomeList.isEmpty()) {
 			return;
 		}
-		if (scaledXRatio > 1) {
+		if (scaledXRatio >= 1) {
 			scaledSCWList = currentChromosomeList;
 		} else {
-			if (currentChromosomeList.size() > 0) {
-				MaskListViewBuilder maskLVBuilder = new MaskListViewBuilder();
-				int start = currentChromosomeList.get(0).getStart();
-				int stop = currentChromosomeList.get(0).getStop();
-				int i = 1;
-				int j = 0;
-				while (i < currentChromosomeList.size()) {
-					double gapDistance = (currentChromosomeList.get(i).getStart() - scaledSCWList.get(j).getStop()) * scaledXRatio;
-					double windowWidth = (currentChromosomeList.get(i).getStop() - scaledSCWList.get(j).getStart()) * scaledXRatio;
-					// we merge two intervals together if there is a gap smaller than 1 pixel
-					// or if the width of a window is smaller than 1
-					while ((((i + 1) < currentChromosomeList.size()) &&
-							(gapDistance < 1)) ||
-							(windowWidth < 1)) {
-						// the new stop position is the max of the current stop and the stop of the new merged interval
-						stop = Math.max(stop, currentChromosomeList.get(i).getStop());
-						i++;
-						gapDistance = (currentChromosomeList.get(i).getStart() - stop) * scaledXRatio;
-						windowWidth = (currentChromosomeList.get(i).getStop() - start) * scaledXRatio;
-					}
-					maskLVBuilder.addElementToBuild(start, stop);
-					j++;
+			// compute the width on the genome that takes up 1 pixel on the screen
+			double pixelGenomicWidth = 1 / scaledXRatio;
+			MaskListViewBuilder maskLVBuilder = new MaskListViewBuilder();
+			int i = 0;
+			while (i < currentChromosomeList.size()) {
+				int currentStart = currentChromosomeList.get(i).getStart();
+				int currentStop = currentChromosomeList.get(i).getStop();
+				// we merge two windows together if there is a next window
+				// and if the gap between the current window and the next one is smaller than 1 pixel
+				while (((i + 1) < currentChromosomeList.size())
+						&& ((currentChromosomeList.get(i + 1).getStart() - currentStop) < pixelGenomicWidth)) {
 					i++;
+					// the new stop is the one of the next window
+					currentStop = currentChromosomeList.get(i).getStop();
 				}
-				scaledSCWList = maskLVBuilder.getListView();
+				maskLVBuilder.addElementToBuild(currentStart, currentStop);
+				i++;
 			}
+			scaledSCWList = maskLVBuilder.getListView();
 		}
 	}
 }

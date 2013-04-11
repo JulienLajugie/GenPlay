@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.IO.reader.GeneReader;
+import edu.yu.einstein.genplay.core.IO.dataReader.GeneReader;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
@@ -65,9 +65,17 @@ public class GeneListFactory {
 	public static GeneList createGeneList(GeneReader geneReader, ScorePrecision scorePrecision) throws InterruptedException, ExecutionException, CloneNotSupportedException {
 		GeneListViewBuilder lvBuilderPrototype = new GeneListViewBuilder(scorePrecision);
 		ListOfListViewBuilder<Gene> builder = new ListOfListViewBuilder<Gene>(lvBuilderPrototype);
-		Gene currentGene = null;
-		while ((currentGene = geneReader.readGene()) != null) {
-			builder.addElementToBuild(geneReader.getCurrentChromosome(), currentGene);
+		while (geneReader.readItem()) {
+			Gene currentGene = new SimpleGene(
+					geneReader.getName(),
+					geneReader.getStrand(),
+					geneReader.getStart(),
+					geneReader.getStop(),
+					geneReader.getScore(),
+					geneReader.getUTR5Bound(),
+					geneReader.getUTR3Bound(),
+					geneReader.getExons());
+			builder.addElementToBuild(geneReader.getChromosome(), currentGene);
 		}
 		String geneDBURL = geneReader.getGeneDBURL();
 		GeneScoreType geneScoreType = geneReader.getGeneScoreType();

@@ -98,7 +98,20 @@ public class ChromosomeWindowLists {
 	 * The elements that are not fully between the specified positions are still included.
 	 */
 	public static final <T extends ChromosomeWindow> ListView<T> sublist(ListView<T> list, int start, int stop) {
-		ListViewBuilder<T> resultLVBuilder = new SimpleListViewBuilder<T>();
+		ListViewBuilder<T> builder = new SimpleListViewBuilder<T>();
+		return sublist(list, start, stop, builder);
+	}
+
+
+	/**
+	 * @param list a {@link ListView} of objects that extends {@link ChromosomeWindow}
+	 * @param start a start position
+	 * @param stop a stop position
+	 * @param builder builder that will be used to create the result {@link ListView}
+	 * @return a {@link ListView} that contains all the elements of the input list that are located between the start and stop positions.
+	 * The elements that are not fully between the specified positions are still included.
+	 */
+	public static final <T extends ChromosomeWindow> ListView<T> sublist(ListView<T> list, int start, int stop, ListViewBuilder<T> builder) {
 		ChromosomeWindow startChromosomeWindow = new SimpleChromosomeWindow(start, start);
 		ChromosomeWindow stopChromosomeWindow = new SimpleChromosomeWindow(stop, stop);
 
@@ -121,8 +134,8 @@ public class ChromosomeWindowLists {
 
 		// add the elements between the index start and the index stop
 		for (int i = indexStart; i < indexStop; i++) {
-			resultLVBuilder.addElementToBuild(list.get(i));
+			builder.addElementToBuild(list.get(i));
 		}
-		return resultLVBuilder.getListView();
+		return builder.getListView();
 	}
 }

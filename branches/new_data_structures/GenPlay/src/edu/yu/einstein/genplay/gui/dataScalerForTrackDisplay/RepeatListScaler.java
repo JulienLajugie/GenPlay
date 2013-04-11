@@ -27,15 +27,22 @@ import java.util.List;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.repeatListView.RepeatFamilyListView;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.repeatListView.RepeatFamilyListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.repeatFamilyList.RepeatFamilyList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.listView.SimpleListView.SimpleListViewBuilder;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 import edu.yu.einstein.genplay.util.ChromosomeWindowLists;
 
+
+/**
+ * This class scales a {@link RepeatFamilyList} to be displayed on a track.
+ * @author Julien Lajugie
+ */
 public class RepeatListScaler implements DataScalerForTrackDisplay<RepeatFamilyList, List<RepeatFamilyListView>> {
 
 	/** Scaled chromosome */
@@ -48,49 +55,15 @@ public class RepeatListScaler implements DataScalerForTrackDisplay<RepeatFamilyL
 	private final RepeatFamilyList dataToScale;
 
 	/** The list of repeat families scaled for a specified chromosome and xRatio */
-	private List<RepeatFamilyListView> scaledRepeatList;
+	private ListView<RepeatFamilyListView> scaledRepeatList;
 
 
-	protected void fitToScreen() {
-		List<RepeatFamilyListView> currentChromosomeList;
-		try {
-			currentChromosomeList = dataToScale.get(scaledChromosome);
-		} catch (InvalidChromosomeException e) {
-			ExceptionManager.getInstance().caughtException(e);
-			fittedDataList = null;
-			return;
-		}
-
-		if (fittedXRatio > 1) {
-			fittedDataList = currentChromosomeList;
-		} else {
-			fittedDataList = new ArrayList<RepeatFamilyListView>();
-			for (RepeatFamilyListView currentFamily : currentChromosomeList) {
-				if (currentFamily.repeatCount() > 1) {
-					RepeatFamilyListView fittedFamily = new RepeatFamilyListView(currentFamily.getName());
-					fittedFamily.addRepeat(new SimpleChromosomeWindow(currentFamily.getRepeat(0)));
-					int i = 1;
-					int j = 0;
-					while (i < currentFamily.repeatCount()) {
-						double distance = (currentFamily.getRepeat(i).getStart() - fittedFamily.getRepeat(j).getStop()) * fittedXRatio;
-						while ((distance < 1) && ((i + 1) < currentFamily.repeatCount())) {
-							int newStop = Math.max(fittedFamily.getRepeat(j).getStop(), currentFamily.getRepeat(i).getStop());
-							fittedFamily.getRepeat(j).setStop(newStop);
-							i++;
-							distance = (currentFamily.getRepeat(i).getStart() - fittedFamily.getRepeat(j).getStop()) * fittedXRatio;
-						}
-						fittedFamily.addRepeat(new SimpleChromosomeWindow(currentFamily.getRepeat(i)));
-						i++;
-						j++;
-					}
-					fittedDataList.add(fittedFamily);
-				} else if (currentFamily.repeatCount() == 1) {
-					RepeatFamilyListView fittedFamily = new RepeatFamilyListView(currentFamily.getName());
-					fittedFamily.addRepeat(new SimpleChromosomeWindow(currentFamily.getRepeat(0)));
-					fittedDataList.add(fittedFamily);
-				}
-			}
-		}
+	/**
+	 * Creates an instance of {@link RepeatListScaler}
+	 * @param dataToScale data that needs to be scaled
+	 */
+	public RepeatListScaler(RepeatFamilyList dataToScale) {
+		this.dataToScale = dataToScale;
 	}
 
 
@@ -104,49 +77,16 @@ public class RepeatListScaler implements DataScalerForTrackDisplay<RepeatFamilyL
 			scaledXRatio = projectXRatio;
 			scaleChromosome();
 		}
-		if (scaledRepeatList == null) {
+		if ((scaledRepeatList == null) || (scaledRepeatList.size() == 0)) {
 			return null;
 		}
-		List<ListView<Gene>> resultList = new ArrayList<ListView<Gene>>();
-		// search genes for each line
-		for (RepeatFamilyListView currentLine : scaledRepeatList) {
-			// retrieve the sublist of genes that are located between the start and stop displayed positions
-			RepeatFamilyListView lineToAdd = ChromosomeWindowLists.sublist(currentLine, projectWindow.getStart(), projectWindow.getStop());
-			resultList.add(lineToAdd);
-		}
-		return resultList;
-
-
-
-
-
-
-
-
-		if ((fittedDataList == null) || (fittedDataList.size() == 0)) {
-			return null;
-		}
-
 		List<RepeatFamilyListView> resultList = new ArrayList<RepeatFamilyListView>();
-
-		for (RepeatFamilyListView currentFamily : fittedDataList) {
-			int indexStart = findStart(currentFamily.getRepeatList(), start, 0, currentFamily.getRepeatList().size());
-			int indexStop = findStop(currentFamily.getRepeatList(), stop, 0, currentFamily.getRepeatList().size());
-			if ((indexStart > 0) && (currentFamily.getRepeatList().get(indexStart - 1).getStop() > start)) {
-				indexStart--;
-			}
-			resultList.add(new RepeatFamilyListView(currentFamily.getName()));
-			if ((indexStart == indexStop) && (indexStart < currentFamily.repeatCount())) {
-				if (currentFamily.getRepeat(indexStart).getStart() < stop) {
-					resultList.get(resultList.size() - 1).addRepeat(currentFamily.getRepeat(indexStart));
-				}
-			} else {
-				for (int i = indexStart; i <= indexStop; i++) {
-					if (i < currentFamily.repeatCount()) {
-						resultList.get(resultList.size() - 1).addRepeat(currentFamily.getRepeat(i));
-					}
-				}
-			}
+		// search repeats for each family
+		for (RepeatFamilyListView currentFamily : scaledRepeatList) {
+			// retrieve the sublist of genes that are located between the start and stop displayed positions
+			RepeatFamilyListViewBuilder builder = new RepeatFamilyListViewBuilder(currentFamily.getName());
+			RepeatFamilyListView familyToAdd = (RepeatFamilyListView) ChromosomeWindowLists.sublist(currentFamily, projectWindow.getStart(), projectWindow.getStop(), builder);
+			resultList.add(familyToAdd);
 		}
 		return resultList;
 	}
@@ -158,8 +98,49 @@ public class RepeatListScaler implements DataScalerForTrackDisplay<RepeatFamilyL
 	}
 
 
+	/**
+	 * Merges two repeats of the same family together if the gap between
+	 * the two repeats is not visible at the current zoom level
+	 */
 	private void scaleChromosome() {
-		// TODO Auto-generated method stub
-
+		ListView<RepeatFamilyListView> currentChromosomeList;
+		scaledRepeatList = null;
+		try {
+			currentChromosomeList = dataToScale.get(scaledChromosome);
+		} catch (InvalidChromosomeException e) {
+			ExceptionManager.getInstance().caughtException(e);
+			scaledChromosome = null;
+			return;
+		}
+		if ((currentChromosomeList == null) || currentChromosomeList.isEmpty()) {
+			return;
+		}
+		if (scaledXRatio > 1) {
+			scaledRepeatList = currentChromosomeList;
+		} else {
+			// compute the width on the genome that takes up 1 pixel on the screen
+			double pixelGenomicWidth = 1 / scaledXRatio;
+			ListViewBuilder<RepeatFamilyListView> familyListBuilder = new SimpleListViewBuilder<RepeatFamilyListView>();
+			for (RepeatFamilyListView currentFamily : currentChromosomeList) {
+				RepeatFamilyListViewBuilder familyBuilder = new RepeatFamilyListViewBuilder(currentFamily.getName());
+				int i = 0;
+				while (i < currentChromosomeList.size()) {
+					int currentStart = currentFamily.get(i).getStart();
+					int currentStop = currentFamily.get(i).getStop();
+					// we merge two windows together if there is a next window
+					// and if the gap between the current window and the next one is smaller than 1 pixel
+					while (((i + 1) < currentChromosomeList.size())
+							&& ((currentFamily.get(i + 1).getStart() - currentStop) < pixelGenomicWidth)) {
+						i++;
+						// the new stop is the one of the next window
+						currentStop = currentFamily.get(i).getStop();
+					}
+					familyBuilder.addElementToBuild(new SimpleChromosomeWindow(currentStart, currentStop));
+					i++;
+				}
+				familyListBuilder.addElementToBuild((RepeatFamilyListView) familyBuilder.getListView());
+			}
+			scaledRepeatList = familyListBuilder.getListView();
+		}
 	}
 }

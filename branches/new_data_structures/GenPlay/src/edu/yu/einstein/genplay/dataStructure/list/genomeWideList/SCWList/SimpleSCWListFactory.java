@@ -25,7 +25,7 @@ import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.IO.reader.SCWReader;
+import edu.yu.einstein.genplay.core.IO.dataReader.SCWReader;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
@@ -36,9 +36,10 @@ import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ListOfListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 
 /**
- * Factory class for vending {@link SCWList} objects.
+ * Factory class for vending {@link SimpleSCWList} objects.
  * @author Julien Lajugie
  */
 public class SimpleSCWListFactory {
@@ -121,21 +122,22 @@ public class SimpleSCWListFactory {
 			throw new InvalidParameterException("Invalid ListViewBuilder Prototype");
 		}
 		ListOfListViewBuilder<ScoredChromosomeWindow> builder = new ListOfListViewBuilder<ScoredChromosomeWindow>(lvBuilderPrototype);
-		ScoredChromosomeWindow currentWindow = null;
+
 		Chromosome currentChromosome = null;
 		// create object that will "flattened" pileups of overlapping windows
 		PileupFlattener flattener = new PileupFlattener(scoreOperation);
-		while ((currentWindow = scwReader.readScoredChromosomeWindow()) != null) {
+		while (scwReader.readItem()) {
+			ScoredChromosomeWindow currentWindow = new SimpleScoredChromosomeWindow(scwReader.getStart(), scwReader.getStop(), scwReader.getScore());
 			if (currentChromosome == null) {
-				currentChromosome = scwReader.getCurrentChromosome();
-			} else if (currentChromosome != scwReader.getCurrentChromosome()) {
+				currentChromosome = scwReader.getChromosome();
+			} else if (currentChromosome != scwReader.getChromosome()) {
 				// at the end of a chromosome we flush the flattener and
 				// retrieve the remaining of flattened windows
 				List<ScoredChromosomeWindow> flattenedWindows = flattener.flush();
 				for (ScoredChromosomeWindow scw: flattenedWindows) {
 					builder.addElementToBuild(currentChromosome, scw);
 				}
-				currentChromosome = scwReader.getCurrentChromosome();
+				currentChromosome = scwReader.getChromosome();
 			} else {
 				// we add the current window to the flattener and retrieve the list of
 				// flattened windows

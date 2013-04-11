@@ -33,20 +33,16 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.enums.Nucleotide;
-import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.nucleotideListView.TwoBitListView.TwoBitListView;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ImmutableGenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
-
 
 
 /**
  * Reads a 2Bit files and extracts the data from this kind of files.
  * 2bit files are used to store genome sequences in a random access file
  * @author Julien Lajugie
- * @version 0.1
  */
-public class TwoBitSequenceList implements ImmutableGenomicDataList<Nucleotide>, Serializable {
+public class TwoBitSequenceList implements Serializable, NucleotideList, Iterator<ListView<Nucleotide>> {
 
 	/** Generated serial ID */
 	private static final long serialVersionUID = -2253030492143151302L;
@@ -69,6 +65,9 @@ public class TwoBitSequenceList implements ImmutableGenomicDataList<Nucleotide>,
 	/** Each element of this list read a chromosome in the file */
 	private final List<ListView<Nucleotide>> data;
 
+	/** Current index of the iterator */
+	private transient int iteratorIndex = 0;
+
 
 	/**
 	 * Creates an instance of {@link TwoBitSequenceList}
@@ -78,7 +77,7 @@ public class TwoBitSequenceList implements ImmutableGenomicDataList<Nucleotide>,
 	 * @param alleleType 	allele type for a multi genome project
 	 * @throws IOException
 	 */
-	protected TwoBitSequenceList(String filePath, boolean reverseBytes, String genomeName, AlleleType alleleType, List<TwoBitListView> data) throws IOException {
+	protected TwoBitSequenceList(String filePath, boolean reverseBytes, String genomeName, AlleleType alleleType, List<ListView<Nucleotide>> data) throws IOException {
 		super();
 		this.filePath = filePath;
 		this.genomeName = genomeName;
@@ -88,10 +87,24 @@ public class TwoBitSequenceList implements ImmutableGenomicDataList<Nucleotide>,
 
 
 	@Override
+	public ListView<Nucleotide> get(Chromosome chromosome) throws InvalidChromosomeException {
+		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		int chromosomeIndex = projectChromosome.getIndex(chromosome);
+		return get(chromosomeIndex);
+	}
+
+
+	@Override
 	public Nucleotide get(Chromosome chromosome, int index) throws InvalidChromosomeException {
 		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		int chromosomeIndex = projectChromosome.getIndex(chromosome);
 		return get(chromosomeIndex, index);
+	}
+
+
+	@Override
+	public ListView<Nucleotide> get(int chromosomeIndex) {
+		return data.get(chromosomeIndex);
 	}
 
 
@@ -126,22 +139,34 @@ public class TwoBitSequenceList implements ImmutableGenomicDataList<Nucleotide>,
 
 
 	@Override
-	public ListView<Nucleotide> getView(Chromosome chromosome) throws InvalidChromosomeException {
-		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
-		int chromosomeIndex = projectChromosome.getIndex(chromosome);
-		return getView(chromosomeIndex);
+	public String getSequenceFile() {
+		return filePath;
 	}
 
 
 	@Override
-	public ListView<Nucleotide> getView(int chromosomeIndex) {
-		return data.get(chromosomeIndex);
+	public boolean hasNext() {
+		return iteratorIndex < size();
+	}
+
+
+	@Override
+	public boolean isEmpty() {
+		return size() == 0;
 	}
 
 
 	@Override
 	public Iterator<ListView<Nucleotide>> iterator() {
-		return data.iterator();
+		return this;
+	}
+
+
+	@Override
+	public ListView<Nucleotide> next() {
+		int currentIndex = iteratorIndex;
+		iteratorIndex++;
+		return get(currentIndex);
 	}
 
 
@@ -156,6 +181,12 @@ public class TwoBitSequenceList implements ImmutableGenomicDataList<Nucleotide>,
 		in.readInt();
 		// read the final fields
 		in.defaultReadObject();
+	}
+
+
+	@Override
+	public void remove() {
+		throw new UnsupportedOperationException();
 	}
 
 

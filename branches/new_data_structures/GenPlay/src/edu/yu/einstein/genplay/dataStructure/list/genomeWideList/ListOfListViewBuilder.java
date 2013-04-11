@@ -41,7 +41,7 @@ import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
 public class ListOfListViewBuilder<T> {
 
 	/** List of the builders that will create the {@link ListView} objects */
-	private final List<ListViewBuilder<T>> builders;
+	private List<ListViewBuilder<T>> builders;
 
 	/** We store the {@link ProjectChromosome} to avoid wasting time retrieving it */
 	private final ProjectChromosome projectChromosome;
@@ -73,6 +73,9 @@ public class ListOfListViewBuilder<T> {
 	 * @throws ObjectAlreadyBuiltException
 	 */
 	public void addElementToBuild(Chromosome chromosome, T element) throws InvalidChromosomeException, ObjectAlreadyBuiltException {
+		if (builders == null) {
+			throw new ObjectAlreadyBuiltException();
+		}
 		int chromosomeIndex = projectChromosome.getIndex(chromosome);
 		builders.get(chromosomeIndex).addElementToBuild(element);
 	}
@@ -86,6 +89,7 @@ public class ListOfListViewBuilder<T> {
 		for (ListViewBuilder<T> currentBuilder: builders) {
 			genomicList.add(currentBuilder.getListView());
 		}
+		builders = null;
 		return genomicList;
 	}
 }

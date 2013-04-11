@@ -39,9 +39,6 @@ import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
  */
 public class NucleotideListScaler implements DataScalerForTrackDisplay<NucleotideList, Nucleotide[]> {
 
-	/** Generated serial ID */
-	private static final long serialVersionUID = 5332205932487839152L;
-
 	/** Chromosome window of the scaled nucleotide array */
 	private ChromosomeWindow scaledWindow;
 

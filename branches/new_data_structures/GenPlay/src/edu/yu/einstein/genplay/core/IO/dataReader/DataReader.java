@@ -19,27 +19,21 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.IO.reader;
+package edu.yu.einstein.genplay.core.IO.dataReader;
 
-import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
-
 /**
- * Interface defining method for extractors that can read {@link ScoredChromosomeWindow}
+ * Interface defining common methods for the different kind of readers that can read data files.
  * @author Julien Lajugie
  */
-public interface SCWReader {
+public interface DataReader {
 
 	/**
-	 * Reads the next scored chromosome window from a file and returns it.  Returns null if its the end of the file
-	 * @return a {@link ScoredChromosomeWindow}
+	 * Reads a new item (eg: {@link Gene}, {@link ScoredChromosomeWindow}, etc..) in a file.
+	 * Items can be spread on more than one line.
+	 * @return false when EOF is reached. True otherwise
 	 */
-	public ScoredChromosomeWindow readScoredChromosomeWindow();
-
-
-	/**
-	 * @return the chromosome of the last extracted {@link ScoredChromosomeWindow}
-	 */
-	public Chromosome getCurrentChromosome();
+	public boolean readItem();
 }

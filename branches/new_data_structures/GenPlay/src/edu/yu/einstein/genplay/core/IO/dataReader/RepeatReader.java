@@ -19,27 +19,31 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dataScalerForTrackDisplay;
+package edu.yu.einstein.genplay.core.IO.dataReader;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
-
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.repeatListView.RepeatFamilyListView;
 
 /**
- * Interface inherited by classes that rescales data for the display
- * @param <T> type of the data to scale
- * @param <U> type of the data returned by the scaling method
+ * Interface defining method for data readers that can read elements needed to create {@link RepeatFamilyListView} objects.
  * @author Julien Lajugie
  */
-public interface DataScalerForTrackDisplay<T, U> {
+public interface RepeatReader extends ChromosomeWindowReader {
 
-	/**
-	 * @return the data rescaled to be displayed in the track for the {@link ProjectWindow}
-	 */
-	public U getDataScaledForTrackDisplay();
+	@Override
+	public Chromosome getChromosome();
 
 
 	/**
-	 * @return the data to scale for track display
+	 * @return the name of the last extracted item
 	 */
-	public T getDataToScale();
+	public String getName();
+
+
+	@Override
+	public int getStart();
+
+
+	@Override
+	public int getStop();
 }
