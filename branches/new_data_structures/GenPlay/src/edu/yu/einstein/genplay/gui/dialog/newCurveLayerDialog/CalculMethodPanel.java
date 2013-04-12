@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -30,21 +30,18 @@ import javax.swing.JPanel;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 
 
-
 /**
- * Panel for the score calculation method of a {@link NewCurveLayerDialog} 
+ * Panel for the score calculation method of a {@link NewCurveLayerDialog}
  * @author Julien Lajugie
- * @version 0.1
  */
 class CalculMethodPanel extends JPanel {
 
-	private static final long serialVersionUID = -2863825210102188370L;	// generated ID
-	private static final int 				PANEL_WIDTH = 150;	// width of the panel
-	private final JComboBox 				jcbCalculMetod; 	// combo box for the score calculation method
-	private static ScoreOperation 	defaultMethod = 
-		ScoreOperation.SUM;								// default method of calculation
-	
-	
+	private static final long 		serialVersionUID = -2863825210102188370L;	// generated ID
+	private static final int 		PANEL_WIDTH = 150;							// width of the panel
+	private static ScoreOperation 	defaultMethod = ScoreOperation.ADDITION;	// default operation to compute the scores
+	private final JComboBox 		jcbCalculMetod; 							// combo box for the score calculation method
+
+
 	/**
 	 * Creates an instance of a {@link CalculMethodPanel}
 	 */
@@ -56,16 +53,16 @@ class CalculMethodPanel extends JPanel {
 		setBorder(BorderFactory.createTitledBorder("Score Calculation"));
 		setPreferredSize(new Dimension(PANEL_WIDTH, getPreferredSize().height));
 	}
-	
-	
+
+
 	/**
 	 * @return the selected score calculation method
 	 */
 	ScoreOperation getScoreCalculationMethod() {
 		return (ScoreOperation) jcbCalculMetod.getSelectedItem();
 	}
-	
-	
+
+
 	/**
 	 * Saves the selected method of calculation as default
 	 */

@@ -56,39 +56,6 @@ public final class GenomeWindowEvent extends EventObject {
 
 
 	/**
-	 * @return the source
-	 */
-	@Override
-	public final GenomeWindowEventsGenerator getSource() {
-		return source;
-	}
-
-
-	/**
-	 * @return the oldWindow
-	 */
-	public final SimpleGenomeWindow getOldWindow() {
-		return oldWindow;
-	}
-
-
-	/**
-	 * @return the newWindow
-	 */
-	public final SimpleGenomeWindow getNewWindow() {
-		return newWindow;
-	}
-
-
-	/**
-	 * @return true if the size of the {@link SimpleGenomeWindow} changed
-	 */
-	public boolean zoomChanged() {
-		return oldWindow.getSize() != newWindow.getSize();
-	}
-
-
-	/**
 	 * @return true if the {@link Chromosome} of the {@link SimpleGenomeWindow} changed
 	 */
 	public boolean chromosomeChanged() {
@@ -103,6 +70,39 @@ public final class GenomeWindowEvent extends EventObject {
 	 * @return true if the {@link SimpleChromosomeWindow} of the {@link SimpleGenomeWindow} changed
 	 */
 	public boolean chromosomeWindowChanged() {
-		return !((SimpleChromosomeWindow)oldWindow).equals(newWindow);
+		return !oldWindow.equals(newWindow);
+	}
+
+
+	/**
+	 * @return the newWindow
+	 */
+	public final SimpleGenomeWindow getNewWindow() {
+		return newWindow;
+	}
+
+
+	/**
+	 * @return the oldWindow
+	 */
+	public final SimpleGenomeWindow getOldWindow() {
+		return oldWindow;
+	}
+
+
+	/**
+	 * @return the source
+	 */
+	@Override
+	public final GenomeWindowEventsGenerator getSource() {
+		return source;
+	}
+
+
+	/**
+	 * @return true if the size of the {@link SimpleGenomeWindow} changed
+	 */
+	public boolean zoomChanged() {
+		return oldWindow.getSize() != newWindow.getSize();
 	}
 }

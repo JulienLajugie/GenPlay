@@ -18,11 +18,11 @@ public interface ChromosomeWindowReader extends DataReader {
 	/**
 	 * @return the start position of the last extracted item
 	 */
-	public int getStart();
+	public Integer getStart();
 
 
 	/**
 	 * @return the stop position of the last extracted item
 	 */
-	public int getStop();
+	public Integer getStop();
 }

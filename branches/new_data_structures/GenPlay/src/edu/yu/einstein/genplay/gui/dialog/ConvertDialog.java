@@ -42,8 +42,8 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
 import edu.yu.einstein.genplay.core.converter.ConverterFactory;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
@@ -159,7 +159,7 @@ public class ConvertDialog extends JDialog {
 		// Create the calculation method elements
 		JLabel jlCalculationMethod = new JLabel("Select a calculation method:");
 		jcbCalculMetod = new JComboBox(ScoreOperation.values());
-		jcbCalculMetod.setSelectedItem(ScoreOperation.SUM);
+		jcbCalculMetod.setSelectedItem(ScoreOperation.ADDITION);
 		jcbCalculMetod.setPreferredSize(dimension);
 
 		// Create the data precision elements
@@ -273,18 +273,26 @@ public class ConvertDialog extends JDialog {
 
 
 	/**
-	 * @return the output track
-	 */
-	public Track getOutputTrack() {
-		return outputTrack;
-	}
-
-
-	/**
 	 * @return the output layer name
 	 */
 	public String getOutputLayerName() {
 		return jtfLayerName.getText();
+	}
+
+
+	/**
+	 * @return the output layer type
+	 */
+	public LayerType getOutputLayerType () {
+		return outputLayerType;
+	}
+
+
+	/**
+	 * @return the output track
+	 */
+	public Track getOutputTrack() {
+		return outputTrack;
 	}
 
 
@@ -338,14 +346,6 @@ public class ConvertDialog extends JDialog {
 
 		// Return the panel
 		return panel;
-	}
-
-
-	/**
-	 * @return the output layer type
-	 */
-	public LayerType getOutputLayerType () {
-		return outputLayerType;
 	}
 
 

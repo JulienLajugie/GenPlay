@@ -65,15 +65,15 @@ public interface GeneReader extends DataReader, ChromosomeWindowReader, SCWReade
 
 
 	@Override
-	public float getScore();
+	public Float getScore();
 
 
 	@Override
-	public int getStart();
+	public Integer getStart();
 
 
 	@Override
-	public int getStop();
+	public Integer getStop();
 
 
 	/**
@@ -85,11 +85,11 @@ public interface GeneReader extends DataReader, ChromosomeWindowReader, SCWReade
 	/**
 	 * @return the UTR3 boundary position of the last extracted item
 	 */
-	public int getUTR3Bound();
+	public Integer getUTR3Bound();
 
 
 	/**
 	 * @return the UTR5 boundary position of the last extracted item
 	 */
-	public int getUTR5Bound();
+	public Integer getUTR5Bound();
 }

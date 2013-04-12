@@ -21,118 +21,47 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.IO.extractor;
 
-import java.io.File;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-
+import edu.yu.einstein.genplay.core.IO.dataReader.GeneReader;
+import edu.yu.einstein.genplay.core.IO.dataReader.RepeatReader;
+import edu.yu.einstein.genplay.core.IO.dataReader.SCWReader;
 import edu.yu.einstein.genplay.core.IO.utils.DataLineValidator;
-import edu.yu.einstein.genplay.core.IO.utils.TrackLineHeader;
-import edu.yu.einstein.genplay.core.generator.BinListGenerator;
-import edu.yu.einstein.genplay.core.generator.GeneListGenerator;
-import edu.yu.einstein.genplay.core.generator.RepeatFamilyListGenerator;
-import edu.yu.einstein.genplay.core.generator.ScoredChromosomeWindowListGenerator;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
-import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.DoubleArrayAsDoubleList;
-import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.IntArrayAsIntegerList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.MaskSCWListFactory;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneListFactory;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.repeatFamilyList.RepeatFamilyList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 import edu.yu.einstein.genplay.util.Utils;
 
 
-
 /**
  * A BED file extractor
  * @author Julien Lajugie
- * @version 0.1
  */
-public class BedExtractor extends TextFileExtractor
-implements Serializable, StrandedExtractor, RepeatFamilyListGenerator,
-ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
+public class BedExtractor implements StrandedExtractor, SCWReader, GeneReader, RepeatReader {
 
-	private static final long serialVersionUID = 7967902877674655813L; // generated ID
-	private final GenomicListView<Integer>	startList;		// list of position start
-	private final GenomicListView<Integer>	stopList;		// list of position stop
-	private final GenomicListView<String> 	nameList;		// list of name
-	private final GenomicListView<Double>	scoreList;		// list of scores
-	private final GenomicListView<Strand> 	strandList;		// list of strand
-	private final GenomicListView<Integer>	UTR5BoundList;	// list of translation 5' bounds
-	private final GenomicListView<Integer>	UTR3BoundList;	// list of translation 3' bounds
-	private final GenomicListView<int[]> 	exonStartsList;	// list of list of exon starts
-	private final GenomicListView<int[]> 	exonStopsList;	// list of list of exon stops
-	private final GenomicListView<double[]>	exonScoresList;	// list of list of exon scores
-	private String							geneDBURL;		// url of the gene database
-	private Strand 							selectedStrand;	// strand to extract, null for both
-	private GeneScoreType					geneScoreType;	// type of gene and exon score (RPKM, max, sum)
-	private ReadLengthAndShiftHandler		readHandler;	// handler that computes the position of read by applying the shift
-
-
-	/**
-	 * Creates an instance of {@link BedExtractor}
-	 * @param dataFile file containing the data
-	 * @param logFile file for the log (no log if null)
-	 */
-	public BedExtractor(File dataFile, File logFile) {
-		super(dataFile, logFile);
-		// initialize the lists
-		startList = new GenomicDataArrayList<Integer>();
-		stopList = new GenomicDataArrayList<Integer>();
-		nameList = new GenomicDataArrayList<String>();
-		scoreList = new GenomicDataArrayList<Double>();
-		strandList = new GenomicDataArrayList<Strand>();
-		UTR5BoundList = new GenomicDataArrayList<Integer>();
-		UTR3BoundList = new GenomicDataArrayList<Integer>();
-		exonStartsList = new GenomicDataArrayList<int[]>();
-		exonStopsList = new GenomicDataArrayList<int[]>();
-		exonScoresList = new GenomicDataArrayList<double[]>();
-		// initialize the sublists
-		for (int i = 0; i < projectChromosome.size(); i++) {
-			startList.add(new IntArrayAsIntegerList());
-			stopList.add(new IntArrayAsIntegerList());
-			nameList.add(new ArrayList<String>());
-			scoreList.add(new DoubleArrayAsDoubleList());
-			strandList.add(new ArrayList<Strand>());
-			UTR5BoundList.add(new IntArrayAsIntegerList());
-			UTR3BoundList.add(new IntArrayAsIntegerList());
-			exonStartsList.add(new ArrayList<int[]>());
-			exonStopsList.add(new ArrayList<int[]>());
-			exonScoresList.add(new ArrayList<double[]>());
-		}
-	}
-
-
+	private Chromosome 						chromosome = null; 	// chromosome of the last item read
+	private Integer 						start = null;		// start position of the last item read
+	private Integer 						stop = null;		// stop position of the last item read
+	private String 							name = null;		// name of the last item read
+	private Float 							score = null;		// score of the last item read
+	private Strand 							strand = null;		// strand of the last item read
+	private Integer 						UTR5Bound = null;	// UTR5' stop position of the last item read
+	private Integer 						UTR3Bound = null;	// UTR3' start position of the last item read
+	private ListView<ScoredChromosomeWindow>exons = null;		// exons of the last item read
+	
+	
 	@Override
-	public void extractTrackLineHeader(String line) {
-		TrackLineHeader trackLineHeader = new TrackLineHeader();
-		trackLineHeader.parseTrackLine(line);
-		geneDBURL = trackLineHeader.getGeneDBURL();
-		geneScoreType = trackLineHeader.getGeneScoreType();
+	public boolean readItem() {
+		// TODO Auto-generated method stub
+		return false;
 	}
-
-
-	@Override
-	protected boolean extractLine(String extractedLine) throws DataLineException {
-		if ((extractedLine.trim().length() >= 10) && (extractedLine.trim().substring(0, 10).equalsIgnoreCase("searchURL="))) {
-			//searchURL = extractedLine.split("\"")[1].trim();
-			geneDBURL = Utils.split(extractedLine, '"')[1].trim();
-			return false;
-		} else {
+	
+	
+	private boolean extractData(String line) {
 			String[] splitedLine = Utils.parseLineTabOnly(extractedLine);
 			if (splitedLine.length < 3) {
 				//throw new InvalidDataLineException(extractedLine);
@@ -140,27 +69,15 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 			}
 			try {
 				int chromosomeStatus;
-				Chromosome chromosome = null;
 				try {
 					chromosome = projectChromosome.get(splitedLine[0]) ;
-					chromosomeStatus = checkChromosomeStatus(chromosome);
-				} catch (InvalidChromosomeException e) {
-					chromosomeStatus = NEED_TO_BE_SKIPPED;
-				}
-
-				if (chromosomeStatus == AFTER_LAST_SELECTED) {
-					return true;
-				} else if (chromosomeStatus == NEED_TO_BE_SKIPPED) {
-					return false;
-				} else {
-					Strand strand = null;
+				} catch (InvalidChromosomeException e) {}
 					if (splitedLine.length > 5) {
 						strand = Strand.get(splitedLine[5].trim().charAt(0));
 					}
 					if ((strand == null) || (isStrandSelected(strand))) {
-						strandList.add(chromosome, strand);
-						int start = getInt(splitedLine[1].trim());
-						int stop = getInt(splitedLine[2].trim());
+						start = getInt(splitedLine[1].trim());
+						stop = getInt(splitedLine[2].trim());
 
 						String errors = DataLineValidator.getErrors(chromosome, start, stop);
 						if (errors.length() == 0) {
@@ -256,113 +173,60 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 		}
 	}
 
-
 	@Override
-	public BinList toBinList(int binSize, ScorePrecision precision, ScoreOperation method) throws IllegalArgumentException, InterruptedException, ExecutionException {
-		return new BinList(binSize, precision, method, startList, stopList, scoreList);
-	}
-
-
-	@Override
-	public SCWList toScoredChromosomeWindowList(ScoreOperation scm) throws InvalidChromosomeException, InterruptedException, ExecutionException {
-		return new SimpleSCWList(startList, stopList, scoreList, scm);
+	public ListView<ScoredChromosomeWindow> getExons() {
+		return exons;
 	}
 
 	@Override
-	public SCWList toMaskChromosomeWindowList() throws InvalidChromosomeException, InterruptedException,	ExecutionException {
-		return MaskSCWListFactory.createMaskSCWArrayList(startList, stopList);
+	public String getGeneDBURL() {
+		// TODO Auto-generated method stub
+		return null;
 	}
-
 
 	@Override
-	public RepeatFamilyList toRepeatFamilyList() throws InvalidChromosomeException, InterruptedException, ExecutionException {
-		return new RepeatFamilyList(startList, stopList, nameList);
+	public GeneScoreType getGeneScoreType() {
+		// TODO Auto-generated method stub
+		return null;
 	}
-
 
 	@Override
-	public GeneList toGeneList() throws InvalidChromosomeException, InterruptedException, ExecutionException {
-		boolean areExonsScored = false;
-		// check if there is values in the exon scores list
-		for (List<double[]> currentExonScores: exonScoresList) {
-			if ((currentExonScores != null) && (!currentExonScores.isEmpty())) {
-				areExonsScored = true;
-			}
-		}
-		// if there is no exon score value we check if there is a general gene score value
-		if (!areExonsScored) {
-			boolean areGenesScored = false;
-			for (int i = 0; (i < scoreList.size()) && !areGenesScored; i++) {
-				for (int j = 0; (j < scoreList.size(i)) && !areGenesScored; j++) {
-					if ((scoreList.get(i, j) != 0) && (scoreList.get(i, j) != 1)) {
-						areGenesScored = true;
-					}
-				}
-			}
-			// in this case (where there is no exon specific score values but there is
-			// genes score values) we attribute the gene score values as exon scores
-			if (areGenesScored) {
-				for (int i = 0; i < scoreList.size(); i++) {
-					for (int j = 0; j < scoreList.size(i); j++) {
-						double[] scoreToAdd = {scoreList.get(i, j)};
-						exonScoresList.get(i).add(scoreToAdd);
-					}
-				}
-			}
-		}
-		return GeneListFactory.createGeneList(nameList, strandList, startList, stopList, scoreList, UTR5BoundList, UTR3BoundList, exonStartsList, exonStopsList, exonScoresList, geneDBURL, geneScoreType);
+	public String getName() {
+		return name;
 	}
-
 
 	@Override
-	public boolean isBinSizeNeeded() {
-		return true;
+	public Strand getStrand() {
+		return strand;
 	}
-
 
 	@Override
-	public boolean isCriterionNeeded() {
-		return true;
+	public Integer getUTR3Bound() {
+		return UTR3Bound;
 	}
-
 
 	@Override
-	public boolean isPrecisionNeeded() {
-		return true;
+	public Integer getUTR5Bound() {
+		return UTR5Bound;
 	}
-
 
 	@Override
-	public boolean overlapped() {
-		return SimpleSCWList.overLappingExist(startList, stopList);
+	public Chromosome getChromosome() {
+		return chromosome;
 	}
-
 
 	@Override
-	public boolean isStrandSelected(Strand aStrand) {
-		if (selectedStrand == null) {
-			return true;
-		} else {
-			return selectedStrand.equals(aStrand);
-		}
+	public Float getScore() {
+		return score;
 	}
-
 
 	@Override
-	public void selectStrand(Strand strandToSelect) {
-		selectedStrand = strandToSelect;
+	public Integer getStart() {
+		return start;
 	}
-
 
 	@Override
-	public ReadLengthAndShiftHandler getReadLengthAndShiftHandler() {
-		return readHandler;
+	public Integer getStop() {
+		return stop;
 	}
-
-
-	@Override
-	public void setReadLengthAndShiftHandler(ReadLengthAndShiftHandler handler) {
-		readHandler = handler;
-	}
-
 }

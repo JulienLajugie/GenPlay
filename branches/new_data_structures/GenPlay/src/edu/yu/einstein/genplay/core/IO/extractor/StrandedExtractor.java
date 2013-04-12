@@ -14,47 +14,30 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.IO.extractor;
 
-import edu.yu.einstein.genplay.dataStructure.enums.Strand;
+import edu.yu.einstein.genplay.core.IO.extractor.Options.StrandedExtractorOptions;
 
 
 /**
  * Interface that should be implemented by all the extractor that have an information on the strand
  * @author Julien Lajugie
- * @version 0.1
  */
 public interface StrandedExtractor {
 
 	/**
-	 * @param aStrand a {@link Strand}
-	 * @return true if the specified strand is selected
+	 * @return the options set for the stranded extractor
 	 */
-	public boolean isStrandSelected(Strand aStrand);
-	
-	
+	public StrandedExtractorOptions getStrandedExtractorOptions();
+
+
 	/**
-	 * @param strandToSelect select the specified strand. Set the parameter to null to select both strands
+	 * @param options options to set for the stranded extractor
 	 */
-	public void selectStrand(Strand strandToSelect);
-	
-	
-	/**
-	 * @return the {@link ReadLengthAndShiftHandler} that will compute the position 
-	 * of read by applying the shift and the read length values
-	 */
-	public ReadLengthAndShiftHandler getReadLengthAndShiftHandler();
-	
-	
-	/**
-	 * Sets the handler that will compute the position of read by applying the shift
-	 * and the read length values
-	 * @param handler ReadLengthAndShiftHandler
-	 */
-	public void setReadLengthAndShiftHandler(ReadLengthAndShiftHandler handler);
+	public void setStrandedExtractorOptions(StrandedExtractorOptions options);
 }

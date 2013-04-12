@@ -38,13 +38,13 @@ public interface SCWReader extends DataReader, ChromosomeWindowReader {
 	/**
 	 * @return the score of the last extracted item
 	 */
-	public float getScore();
+	public Float getScore();
 
 
 	@Override
-	public int getStart();
+	public Integer getStart();
 
 
 	@Override
-	public int getStop();
+	public Integer getStop();
 }

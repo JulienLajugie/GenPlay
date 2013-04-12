@@ -14,36 +14,43 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.IO.dataReader;
+package edu.yu.einstein.genplay.core.IO.extractor.Options;
 
-import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.repeatListView.RepeatFamilyListView;
+import java.util.HashMap;
+import java.util.Map;
+
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 
 /**
- * Interface defining method for data readers that can read elements needed to create {@link RepeatFamilyListView} objects.
+ * Used by extractor to define which chromosomes need to be extracted
  * @author Julien Lajugie
  */
-public interface RepeatReader extends ChromosomeWindowReader {
+public class ChromosomesSelector {
 
-	@Override
-	public Chromosome getChromosome();
+	/** Map of chromosomes name associated with a boolean set to null if all chromosomes need to be extracted */
+	private final Map<String, Boolean> chromosomesSelection;
 
 
 	/**
-	 * @return the name of the last extracted item
+	 * Creates an instance of {@link ChromosomesSelector}
+	 * @param chromosomesSelection chromosome to extract
 	 */
-	public String getName();
+	public ChromosomesSelector(boolean[] chromosomesSelection) {
+		this.chromosomesSelection = new HashMap<String, Boolean>();
+		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		for (int i = 0; i < projectChromosome.size(); i++) {
+			this.chromosomesSelection.put(projectChromosome.get(i).getName(), chromosomesSelection[i]);
+		}
+	}
 
 
-	@Override
-	public Integer getStart();
 
 
-	@Override
-	public Integer getStop();
+
 }
