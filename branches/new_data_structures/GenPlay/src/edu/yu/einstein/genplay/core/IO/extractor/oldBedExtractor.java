@@ -58,7 +58,7 @@ import edu.yu.einstein.genplay.util.Utils;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class BedExtractor extends TextFileExtractor
+public class oldBedExtractor extends TextFileExtractor
 implements Serializable, StrandedExtractor, RepeatFamilyListGenerator,
 ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 

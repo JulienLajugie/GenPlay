@@ -21,19 +21,25 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.IO.extractor;
 
+import java.io.File;
+
 import edu.yu.einstein.genplay.core.IO.dataReader.GeneReader;
 import edu.yu.einstein.genplay.core.IO.dataReader.RepeatReader;
 import edu.yu.einstein.genplay.core.IO.dataReader.SCWReader;
 import edu.yu.einstein.genplay.core.IO.utils.DataLineValidator;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
+import edu.yu.einstein.genplay.util.Extractors;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -41,137 +47,160 @@ import edu.yu.einstein.genplay.util.Utils;
  * A BED file extractor
  * @author Julien Lajugie
  */
-public class BedExtractor implements StrandedExtractor, SCWReader, GeneReader, RepeatReader {
+public class BedExtractor extends Extractor implements SCWReader, GeneReader, RepeatReader {
 
-	private Chromosome 						chromosome = null; 	// chromosome of the last item read
-	private Integer 						start = null;		// start position of the last item read
-	private Integer 						stop = null;		// stop position of the last item read
-	private String 							name = null;		// name of the last item read
-	private Float 							score = null;		// score of the last item read
-	private Strand 							strand = null;		// strand of the last item read
-	private Integer 						UTR5Bound = null;	// UTR5' stop position of the last item read
-	private Integer 						UTR3Bound = null;	// UTR3' start position of the last item read
-	private ListView<ScoredChromosomeWindow>exons = null;		// exons of the last item read
-	
-	
-	@Override
-	public boolean readItem() {
-		// TODO Auto-generated method stub
-		return false;
+	private final ProjectChromosome 		projectChromosome;	// ProjectChromosome
+	private Chromosome 						chromosome;		 	// chromosome of the last item read
+	private Integer 						start;				// start position of the last item read
+	private Integer 						stop;				// stop position of the last item read
+	private String 							name;				// name of the last item read
+	private Float 							score;				// score of the last item read
+	private Strand 							strand;				// strand of the last item read
+	private Integer 						UTR5Bound;			// UTR5' stop position of the last item read
+	private Integer 						UTR3Bound;			// UTR3' start position of the last item read
+	private ListView<ScoredChromosomeWindow>exons;				// exons of the last item read
+
+
+	/**
+	 * Creates an instance of {@link BedExtractor}
+	 * @param dataFile file containing the data
+	 */
+	public BedExtractor(File dataFile) {
+		super(dataFile);
+		projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 	}
-	
-	
+
+
 	private boolean extractData(String line) {
-			String[] splitedLine = Utils.parseLineTabOnly(extractedLine);
-			if (splitedLine.length < 3) {
-				//throw new InvalidDataLineException(extractedLine);
-				throw new DataLineException(DataLineException.INVALID_PARAMETER_NUMBER);
+		chromosome = null;
+		start = null;
+		stop = null;
+		name = null;
+		score = null;
+		strand = null;
+		UTR5Bound = null;
+		UTR3Bound = null;
+		exons = null;
+
+		String[] splitedLine = Extractors.parseLineTabOnly(line);
+		if (splitedLine.length < 3) {
+			// error in the format, BED files have 3 mandatory fields
+			throw new DataLineException(DataLineException.INVALID_PARAMETER_NUMBER);
+		}
+
+		String chromosomeName = splitedLine[0];
+
+		if (chromosomeSelector != null) {
+			// case where last chromosome already extracted, no more data to extract
+			if (chromosomeSelector.isExtractionDone(chromosomeName)) {
+				return false;
 			}
-			try {
-				int chromosomeStatus;
-				try {
-					chromosome = projectChromosome.get(splitedLine[0]) ;
-				} catch (InvalidChromosomeException e) {}
-					if (splitedLine.length > 5) {
-						strand = Strand.get(splitedLine[5].trim().charAt(0));
-					}
-					if ((strand == null) || (isStrandSelected(strand))) {
-						start = getInt(splitedLine[1].trim());
-						stop = getInt(splitedLine[2].trim());
-
-						String errors = DataLineValidator.getErrors(chromosome, start, stop);
-						if (errors.length() == 0) {
-
-							// Stop position checking, must not overpass the chromosome length
-							DataLineException stopEndException = null;
-							String stopEndErrorMessage = DataLineValidator.getErrors(chromosome, stop);
-							if (!stopEndErrorMessage.isEmpty()) {
-								stopEndException = new DataLineException(stopEndErrorMessage, DataLineException.SHRINK_STOP_PROCESS);
-								stop = chromosome.getLength();
-							}
-							// compute the read position with specified strand shift and read length
-							if (readHandler != null) {
-								SimpleChromosomeWindow resultStartStop = readHandler.computeStartStop(chromosome, start, stop, strand);
-								start = resultStartStop.getStart();
-								stop = resultStartStop.getStop();
-							}
-							// if we are in a multi-genome project, we compute the position on the meta genome
-							start = getMultiGenomePosition(chromosome, start);
-							stop = getMultiGenomePosition(chromosome, stop);
-							startList.add(chromosome, start);
-							stopList.add(chromosome, stop);
-							if (splitedLine.length > 3) {
-								String name = splitedLine[3].trim();
-								if (!name.trim().equals("-")) {
-									nameList.add(chromosome, name);
-								}
-								if (splitedLine.length > 4) {
-									if (!splitedLine[4].trim().equals("-")) {
-										double score = getDouble(splitedLine[4].trim());
-										scoreList.add(chromosome, score);
-									}
-									if (splitedLine.length > 7) {
-										// UTR bounds are for genes only so we don't need to
-										// worry about the strand shift and the read length
-										// since these operations are not available for genes
-										int UTR5Bound = getInt(splitedLine[6].trim(), start);
-										int UTR3Bound = getInt(splitedLine[7].trim(), stop);
-
-										// but we need to compute the position on the meta-genome
-										UTR5Bound = getMultiGenomePosition(chromosome, UTR5Bound);
-										UTR3Bound = getMultiGenomePosition(chromosome, UTR3Bound);
-
-										UTR5BoundList.add(chromosome, UTR5Bound);
-										UTR3BoundList.add(chromosome, UTR3Bound);
-										if (splitedLine.length > 11) {
-											if ((!splitedLine[10].trim().equals("-")) && (!splitedLine[11].trim().equals("-"))) {
-												//String[] exonStartsStr = splitedLine[11].split(",");
-												//String[] exonLengthsStr = splitedLine[10].split(",");
-												String[] exonStartsStr = Utils.split(splitedLine[11], ',');
-												String[] exonLengthsStr = Utils.split(splitedLine[10], ',');
-												int[] exonStarts = new int[exonLengthsStr.length];
-												int[] exonStops = new int[exonLengthsStr.length];
-												for (int i = 0; i < exonLengthsStr.length; i++) {
-													exonStarts[i] = getInt(exonStartsStr[i]) + start;
-													exonStops[i] = exonStarts[i] + getInt(exonLengthsStr[i]);
-												}
-												exonStartsList.add(chromosome, exonStarts);
-												exonStopsList.add(chromosome, exonStops);
-												if (splitedLine.length > 12) {
-													//String[] exonScoresStr = splitedLine[12].split(",");
-													String[] exonScoresStr = Utils.split(splitedLine[12], ',');
-													double[] exonScores = new double[exonScoresStr.length];
-													for (int i = 0; i < exonScoresStr.length; i++) {
-														exonScores[i] = getDouble(exonScoresStr[i]);
-													}
-													exonScoresList.add(chromosome, exonScores);
-												}
-											}
-										}
-									} else {
-										// if the file contains no infomation about the UTR sites
-										UTR5BoundList.add(chromosome, start);
-										UTR3BoundList.add(chromosome, stop);
-									}
-								}
-							}
-							if (stopEndException != null) {
-								throw stopEndException;
-							}
-						} else {
-							throw new DataLineException(errors);
-						}
-					}
-					lineCount++;
-					return false;
-				}
-			} catch (InvalidChromosomeException e) {
-				//throw new InvalidDataLineException(extractedLine);
-				ExceptionManager.getInstance().caughtException(e);
-				throw new DataLineException(DataLineException.INVALID_FORMAT_NUMBER);
+			// chromosome was not selected for extraction
+			if (!chromosomeSelector.isSelected(chromosomeName)) {
+				return true;
 			}
 		}
+
+		try {
+			chromosome = projectChromosome.get(chromosomeName) ;
+		} catch (InvalidChromosomeException e) {
+			// unknown chromosome
+			return true;
+		}
+
+		if (splitedLine.length > 5) {
+			strand = Strand.get(splitedLine[5].trim().charAt(0));
+		}
+
+		if ((strand != null) && (!isStrandSelected(strand))) {
+			chromosome = null;
+			return true;
+		}
+		start = Extractors.getInt(splitedLine[1].trim());
+		stop = Extractors.getInt(splitedLine[2].trim());
+
+		String errors = DataLineValidator.getErrors(chromosome, start, stop);
+		if (!errors.isEmpty()) {
+			throw new DataLineException(errors);
+		}
+
+		// Stop position checking, must not overpass the chromosome length
+		DataLineException stopEndException = null;
+		String stopEndErrorMessage = DataLineValidator.getErrors(chromosome, stop);
+		if (!stopEndErrorMessage.isEmpty()) {
+			stopEndException = new DataLineException(stopEndErrorMessage, DataLineException.SHRINK_STOP_PROCESS);
+			stop = chromosome.getLength();
+		}
+
+		// compute the read position with specified strand shift and read length
+		if (readHandler != null) {
+			SimpleChromosomeWindow resultStartStop = readHandler.computeStartStop(chromosome, start, stop, strand);
+			start = resultStartStop.getStart();
+			stop = resultStartStop.getStop();
+		}
+
+		// if we are in a multi-genome project, we compute the position on the meta genome
+		start = getMultiGenomePosition(chromosome, start);
+		stop = getMultiGenomePosition(chromosome, stop);
+		if (splitedLine.length <= 3) {
+			return true;
+		}
+		// retrieve the name field
+		String name = splitedLine[3].trim();
+		if (splitedLine.length <= 4) {
+			return true;
+		}
+		// retrieve the score field
+		score = Extractors.getFloat(splitedLine[4].trim(), 0f);
+
+		if (splitedLine.length <= 7) {
+			// if the file doesn't contain information about the UTR sites
+			UTR5Bound = start;
+			UTR3Bound = stop;
+		}
+
+		// UTR bounds are for genes only so we don't need to
+		// worry about the strand shift and the read length
+		// since these operations are not available for genes
+		UTR5Bound = Extractors.getInt(splitedLine[6].trim(), start);
+		UTR3Bound = Extractors.getInt(splitedLine[7].trim(), stop);
+
+		// but we need to compute the position on the meta-genome
+		UTR5Bound = getMultiGenomePosition(chromosome, UTR5Bound);
+		UTR3Bound = getMultiGenomePosition(chromosome, UTR3Bound);
+
+		if (splitedLine.length <= 11) {
+			return true;
+		}
+
+		// retrieve exons
+		if ((!splitedLine[10].trim().equals("-")) && (!splitedLine[11].trim().equals("-"))) {
+			String[] exonStartsStr = Utils.split(splitedLine[11], ',');
+			String[] exonLengthsStr = Utils.split(splitedLine[10], ',');
+			String[] exonScoresStr = null;
+			if (splitedLine.length > 12) {
+				exonScoresStr = Utils.split(splitedLine[12], ',');
+			}
+			GenericSCWListViewBuilder exonListBuilder = new GenericSCWListViewBuilder(ScorePrecision.PRECISION_32BIT);
+			for (int i = 0; i < exonLengthsStr.length; i++) {
+				int exonStart = Extractors.getInt(exonStartsStr[i]) + start;
+				int exonStop = exonStart + Extractors.getInt(exonLengthsStr[i]);
+				float exonScore = 0;
+				if (exonScoresStr != null) {
+					exonScore = Extractors.getFloat(exonScoresStr[i], 0f);
+				}
+				exonListBuilder.addElementToBuild(exonStart, exonStop, exonScore);
+			}
+			exons = exonListBuilder.getListView();
+		}
 	}
+
+
+	@Override
+	public Chromosome getChromosome() {
+		return chromosome;
+	}
+
 
 	@Override
 	public ListView<ScoredChromosomeWindow> getExons() {
@@ -196,26 +225,6 @@ public class BedExtractor implements StrandedExtractor, SCWReader, GeneReader, R
 	}
 
 	@Override
-	public Strand getStrand() {
-		return strand;
-	}
-
-	@Override
-	public Integer getUTR3Bound() {
-		return UTR3Bound;
-	}
-
-	@Override
-	public Integer getUTR5Bound() {
-		return UTR5Bound;
-	}
-
-	@Override
-	public Chromosome getChromosome() {
-		return chromosome;
-	}
-
-	@Override
 	public Float getScore() {
 		return score;
 	}
@@ -228,5 +237,28 @@ public class BedExtractor implements StrandedExtractor, SCWReader, GeneReader, R
 	@Override
 	public Integer getStop() {
 		return stop;
+	}
+
+	@Override
+	public Strand getStrand() {
+		return strand;
+	}
+
+
+	@Override
+	public Integer getUTR3Bound() {
+		return UTR3Bound;
+	}
+
+	@Override
+	public Integer getUTR5Bound() {
+		return UTR5Bound;
+	}
+
+
+	@Override
+	public boolean readItem() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

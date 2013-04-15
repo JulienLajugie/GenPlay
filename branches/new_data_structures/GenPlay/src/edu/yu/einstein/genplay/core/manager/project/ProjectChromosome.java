@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.chromosome.SimpleChromosome;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 
 
@@ -45,83 +46,59 @@ import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
  */
 public final class ProjectChromosome implements Serializable, Iterable<Chromosome> {
 
-	private static final long serialVersionUID = 8781043776370540275L;	// generated ID
-	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
+	/**
+	 * Iterator for chromosome manager.
+	 * @author Julien Lajugie
+	 * @author Nicolas Fourel
+	 */
+	private class ChromosomeManagerIterator implements Iterator<Chromosome> {
 
+		private int currentIndex = 0;
+
+		@Override
+		public boolean hasNext() {
+			if (currentIndex < chromosomeHash.size()) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+
+		@Override
+		public Chromosome next() throws NoSuchElementException {
+			for (Chromosome chromosome: chromosomeList){
+				// we put the chromosome name in lower case to avoid problems related to case sensitivity
+				if (chromosomeHash.get(chromosome.getName().toLowerCase()) == currentIndex) {
+					currentIndex++;
+					return chromosome;
+				}
+			}
+			throw new NoSuchElementException();
+		}
+
+
+		@Override
+		public void remove() throws UnsupportedOperationException {
+			throw new UnsupportedOperationException();
+		}
+	}
+	private static final long serialVersionUID = 8781043776370540275L;	// generated ID
+
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private		 	Map<String, Integer> 		chromosomeHash;			// Hashtable indexed by chromosome name
 	private			List<Chromosome> 			chromosomeList;			// List of chromosome
 	// FIXME replace with projectwindow.getchromosome
 	private			Chromosome					currentChromosome;		// Current chromosome in the genome window (uses for multi genome project)
+
+
 	private			long						genomeLength;			// Total length of the genome
-
-
-	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(chromosomeHash);
-		out.writeObject(chromosomeList);
-		out.writeObject(currentChromosome);
-		out.writeLong(genomeLength);
-	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	@SuppressWarnings("unchecked")
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		chromosomeHash = (Map<String, Integer>) in.readObject();
-		chromosomeList = (List<Chromosome>) in.readObject();
-		currentChromosome = (Chromosome) in.readObject();
-		genomeLength = in.readLong();
-	}
-
-
-	/**
-	 * Set the current {@link ProjectChromosome} using another instance of {@link ProjectChromosome}
-	 * Used for the unserialization.
-	 * @param project the instance of {@link ProjectChromosome} to use
-	 */
-	protected void setProjectChromosome (ProjectChromosome project) {
-		setChromosomeList(project.getChromosomeList());
-		setCurrentChromosome(project.getCurrentChromosome());
-	}
 
 
 	/**
 	 * Constructor of {@link ProjectChromosome}.
 	 */
 	protected ProjectChromosome() {}
-
-
-	/**
-	 * @param chromosomeList the chromosomeList to set
-	 */
-	public void setChromosomeList(List<Chromosome> chromosomeList) {
-		this.chromosomeList = chromosomeList;
-		createChromosomeHash();
-		genomeLengthCalculation();
-	}
-
-
-	/**
-	 * @param lengthList the list of new chromosome lengths in the same order as the chromosome list
-	 */
-	public void updateChromosomeLengths(List<Integer> lengthList) {
-		for (int i = 0; i < chromosomeList.size(); i++) {
-			Chromosome newChromosome = new Chromosome(chromosomeList.get(i).getName(), lengthList.get(i));
-			chromosomeList.set(i, newChromosome);
-		}
-		genomeLengthCalculation();
-	}
 
 
 	/**
@@ -153,14 +130,6 @@ public final class ProjectChromosome implements Serializable, Iterable<Chromosom
 		for (Chromosome chromosome: chromosomeList) {
 			genomeLength += chromosome.getLength();
 		}
-	}
-
-
-	/**
-	 * @return the length of the genome in bp
-	 */
-	public long getGenomeLength() {
-		return genomeLength;
 	}
 
 
@@ -202,6 +171,33 @@ public final class ProjectChromosome implements Serializable, Iterable<Chromosom
 
 
 	/**
+	 * @return the chromosomeList
+	 */
+	public List<Chromosome> getChromosomeList() {
+		return chromosomeList;
+	}
+
+
+	/**
+	 * @return the currentChromosome
+	 */
+	public Chromosome getCurrentChromosome() {
+		if (currentChromosome == null) {
+			return get(0);
+		}
+		return currentChromosome;
+	}
+
+
+	/**
+	 * @return the length of the genome in bp
+	 */
+	public long getGenomeLength() {
+		return genomeLength;
+	}
+
+
+	/**
 	 * @param chromosome a {@link Chromosome}
 	 * @return the index of the specified chromosome
 	 * @throws InvalidChromosomeException
@@ -232,6 +228,60 @@ public final class ProjectChromosome implements Serializable, Iterable<Chromosom
 	}
 
 
+	@Override
+	/**
+	 * Constructor for chromosome manager iterator.
+	 */
+	public Iterator<Chromosome> iterator() {
+		return new ChromosomeManagerIterator();
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		chromosomeHash = (Map<String, Integer>) in.readObject();
+		chromosomeList = (List<Chromosome>) in.readObject();
+		currentChromosome = (Chromosome) in.readObject();
+		genomeLength = in.readLong();
+	}
+
+
+	/**
+	 * @param chromosomeList the chromosomeList to set
+	 */
+	public void setChromosomeList(List<Chromosome> chromosomeList) {
+		this.chromosomeList = chromosomeList;
+		createChromosomeHash();
+		genomeLengthCalculation();
+	}
+
+
+	/**
+	 * @param currentChromosome the currentChromosome to set
+	 */
+	public void setCurrentChromosome(Chromosome currentChromosome) {
+		this.currentChromosome = currentChromosome;
+	}
+
+
+	/**
+	 * Set the current {@link ProjectChromosome} using another instance of {@link ProjectChromosome}
+	 * Used for the unserialization.
+	 * @param project the instance of {@link ProjectChromosome} to use
+	 */
+	protected void setProjectChromosome (ProjectChromosome project) {
+		setChromosomeList(project.getChromosomeList());
+		setCurrentChromosome(project.getCurrentChromosome());
+	}
+
+
 	/**
 	 * @return the size of the list of chromosome (ie: the number of chromosomes)
 	 */
@@ -256,76 +306,27 @@ public final class ProjectChromosome implements Serializable, Iterable<Chromosom
 
 
 	/**
-	 * @return the chromosomeList
+	 * @param lengthList the list of new chromosome lengths in the same order as the chromosome list
 	 */
-	public List<Chromosome> getChromosomeList() {
-		return chromosomeList;
+	public void updateChromosomeLengths(List<Integer> lengthList) {
+		for (int i = 0; i < chromosomeList.size(); i++) {
+			Chromosome newChromosome = new SimpleChromosome(chromosomeList.get(i).getName(), lengthList.get(i));
+			chromosomeList.set(i, newChromosome);
+		}
+		genomeLengthCalculation();
 	}
 
 
 	/**
-	 * @return the currentChromosome
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
 	 */
-	public Chromosome getCurrentChromosome() {
-		if (currentChromosome == null) {
-			return get(0);
-		}
-		return currentChromosome;
-	}
-
-
-	/**
-	 * @param currentChromosome the currentChromosome to set
-	 */
-	public void setCurrentChromosome(Chromosome currentChromosome) {
-		this.currentChromosome = currentChromosome;
-	}
-
-
-	@Override
-	/**
-	 * Constructor for chromosome manager iterator.
-	 */
-	public Iterator<Chromosome> iterator() {
-		return new ChromosomeManagerIterator();
-	}
-
-
-	/**
-	 * Iterator for chromosome manager.
-	 * @author Julien Lajugie
-	 * @author Nicolas Fourel
-	 */
-	private class ChromosomeManagerIterator implements Iterator<Chromosome> {
-
-		private int currentIndex = 0;
-
-		@Override
-		public boolean hasNext() {
-			if (currentIndex < chromosomeHash.size()) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-
-
-		@Override
-		public Chromosome next() throws NoSuchElementException {
-			for (Chromosome chromosome: chromosomeList){
-				// we put the chromosome name in lower case to avoid problems related to case sensitivity
-				if (chromosomeHash.get(chromosome.getName().toLowerCase()) == currentIndex) {
-					currentIndex++;
-					return chromosome;
-				}
-			}
-			throw new NoSuchElementException();
-		}
-
-
-		@Override
-		public void remove() throws UnsupportedOperationException {
-			throw new UnsupportedOperationException();
-		}
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(chromosomeHash);
+		out.writeObject(chromosomeList);
+		out.writeObject(currentChromosome);
+		out.writeLong(genomeLength);
 	}
 }

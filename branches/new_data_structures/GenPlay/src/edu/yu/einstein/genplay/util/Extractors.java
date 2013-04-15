@@ -25,6 +25,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
@@ -42,7 +44,7 @@ public class Extractors {
 	 * @param file a file
 	 * @return the number of line containing data in the specified file
 	 */
-	public static Integer countDataLines(File file) {
+	public static final Integer countDataLines(File file) {
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new FileReader(file));
@@ -71,14 +73,14 @@ public class Extractors {
 
 
 	/**
-	 * Convert a string to a double
-	 * @param s	the string
-	 * @return	the double if the string is valid
+	 * Convert a string into a float
+	 * @param s	a string
+	 * @return	a float if the string is valid
 	 * @throws DataLineException
 	 */
-	public static Double getDouble (String s) throws DataLineException {
+	public static final Float getFloat(String s) throws DataLineException {
 		try {
-			return Double.parseDouble(s);
+			return Float.parseFloat(s);
 		} catch (Exception e) {
 			throw new DataLineException("The information '" + s + "' does not seem to be a valid number.", DataLineException.SKIP_PROCESS);
 		}
@@ -86,14 +88,14 @@ public class Extractors {
 
 
 	/**
-	 * Convert a string to a double
+	 * Convert a string into a float
 	 * @param s	the string
 	 * @param alternative the value to return if the string could not be converted  (can be null)
-	 * @return	the double if the string is valid, the alternative otherwise
+	 * @return	the float if the string is valid, the alternative otherwise
 	 */
-	public static Double getDouble (String s, Double alternative) {
+	public static final Float getFloat(String s, Float alternative) {
 		try {
-			return Double.parseDouble(s);
+			return Float.parseFloat(s);
 		} catch (Exception e) {
 			return alternative;
 		}
@@ -106,7 +108,7 @@ public class Extractors {
 	 * @return	the integer if the string is valid
 	 * @throws DataLineException
 	 */
-	public static Integer getInt (String s) throws DataLineException {
+	public static final Integer getInt (String s) throws DataLineException {
 		try {
 			return Integer.parseInt(s);
 		} catch (Exception e) {
@@ -121,7 +123,7 @@ public class Extractors {
 	 * @param alternative the value to return if the string could not be converted (can be null)
 	 * @return	the integer if the string is valid, the alternative otherwise
 	 */
-	public static Integer getInt (String s, Integer alternative) {
+	public static final Integer getInt (String s, Integer alternative) {
 		try {
 			return Integer.parseInt(s);
 		} catch (Exception e) {
@@ -134,7 +136,7 @@ public class Extractors {
 	 * @param line a line from the data file
 	 * @return true if the line is a header line or if the line is empty (could be a blank line in the header)
 	 */
-	public static boolean isHeaderLine(String line) {
+	public static final boolean isHeaderLine(String line) {
 		// if the line starts with chr it's a data line so we skip the other tests
 		if ((line.length() >= 3) && (line.substring(0, 3).equalsIgnoreCase("chr"))) {
 			return false;
@@ -163,7 +165,7 @@ public class Extractors {
 	 * @param line line from the data file
 	 * @return true if the line is a track info line (line starting with 'track'). False otherwise
 	 */
-	public static boolean isTrackInfoLine(String line) {
+	public static final boolean isTrackInfoLine(String line) {
 		if ((line.length() > 5) && (line.substring(0, 5).equalsIgnoreCase("track"))) {
 			return true;
 		}
@@ -172,10 +174,94 @@ public class Extractors {
 
 
 	/**
+	 * This methods parse a line and returns an array of strings containing
+	 * all the fields from the input line that are separated either by one or many
+	 * continuous spaces or tabs except if this tabs or spaces are from inside double quotes.
+	 * @param line input line to parse
+	 * @return an array of strings containing the fields of the input line
+	 */
+	public static final String[] parseLineTabAndSpace(String line) {
+		List<String> parsedLine = new ArrayList<String>();
+		int i = 0;
+		while (i < line.length()) {
+			// skip all the space and tabs
+			while ((i < line.length()) &&
+					((line.charAt(i) == ' ') || (line.charAt(i) == '\t'))) {
+				i++;
+			}
+			if (i < line.length()) {
+				// if the spaces and tabs weren't at the end of the line
+				int indexStart = i; // retrieve the start index
+				boolean isInsideQuotes = false; // when we start we're not inside double quotes
+				while ((i < line.length()) &&
+						(isInsideQuotes || ((line.charAt(i) != ' ') && (line.charAt(i) != '\t')))) {
+					// loop until we meet a new space or tab that is not between double quotes
+					if (line.charAt(i) == '"') { // check if we enter or leave double quotes
+						isInsideQuotes = !isInsideQuotes;
+					}
+					i++;
+				}
+				// add the field to the result list
+				parsedLine.add(line.substring(indexStart, i));
+			}
+		}
+
+		if (parsedLine.isEmpty()) { // if our list is empty we return null
+			return null;
+		} else { // if there is element in our list we transform it in an array and return it
+			String[] returnArray = new String[parsedLine.size()];
+			return parsedLine.toArray(returnArray);
+		}
+	}
+
+
+	/**
+	 * This methods parse a line and returns an array of strings containing
+	 * all the fields from the input line that are separated by one or many
+	 * continuous tabs except if this tabs are from inside double quotes.
+	 * @param line input line to parse
+	 * @return an array of strings containing the fields of the input line
+	 */
+	public static final String[] parseLineTabOnly(String line) {
+		List<String> parsedLine = new ArrayList<String>();
+		int i = 0;
+		while (i < line.length()) {
+			// skip all the tabs
+			while ((i < line.length()) &&
+					(line.charAt(i) == '\t')) {
+				i++;
+			}
+			if (i < line.length()) {
+				// if the tabs weren't at the end of the line
+				int indexStart = i; // retrieve the start index
+				boolean isInsideQuotes = false; // when we start we're not inside double quotes
+				while ((i < line.length()) &&
+						(isInsideQuotes || (line.charAt(i) != '\t'))) {
+					// loop until we meet a new tab that is not between double quotes
+					if (line.charAt(i) == '"') { // check if we enter or leave double quotes
+						isInsideQuotes = !isInsideQuotes;
+					}
+					i++;
+				}
+				// add the field to the result list
+				parsedLine.add(line.substring(indexStart, i));
+			}
+		}
+
+		if (parsedLine.isEmpty()) { // if our list is empty we return null
+			return null;
+		} else { // if there is element in our list we transform it in an array and return it
+			String[] returnArray = new String[parsedLine.size()];
+			return parsedLine.toArray(returnArray);
+		}
+	}
+
+
+	/**
 	 * @param dataFile path to a data file
 	 * @return the name of the data if it is specified in the file. Null otherwise
 	 */
-	public static String retrieveDataName(String dataFile) {
+	public static final String retrieveDataName(String dataFile) {
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new FileReader(dataFile));

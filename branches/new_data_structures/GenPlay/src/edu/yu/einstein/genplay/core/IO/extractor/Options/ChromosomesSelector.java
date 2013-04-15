@@ -26,31 +26,67 @@ import java.util.Map;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 
 /**
- * Used by extractor to define which chromosomes need to be extracted
+ * Used by extractors to define the chromosomes that need to be extracted.
  * @author Julien Lajugie
  */
 public class ChromosomesSelector {
 
-	/** Map of chromosomes name associated with a boolean set to null if all chromosomes need to be extracted */
-	private final Map<String, Boolean> chromosomesSelection;
+	/** Map of chromosome names associated with a boolean set to true if the chromosome should be extracted and false if not.
+	 * If the map is null, all chromosomes need to be extracted
+	 */
+	private final Map<String, Boolean> chromosomeSelection;
+
+	/** Index of the last selected chromosome */
+	private final int indexLastChromosome;
+
+	/** Save a reference to the {@link ProjectChromosome} for fast retrieval */
+	private final ProjectChromosome projectChromosome;
 
 
 	/**
 	 * Creates an instance of {@link ChromosomesSelector}
-	 * @param chromosomesSelection chromosome to extract
+	 * @param chromosomeSelection chromosome to extract
 	 */
-	public ChromosomesSelector(boolean[] chromosomesSelection) {
-		this.chromosomesSelection = new HashMap<String, Boolean>();
-		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+	public ChromosomesSelector(boolean[] chromosomeSelection) {
+		projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		this.chromosomeSelection = new HashMap<String, Boolean>();
+		int indexLastChromosomeTmp = Integer.MAX_VALUE;
 		for (int i = 0; i < projectChromosome.size(); i++) {
-			this.chromosomesSelection.put(projectChromosome.get(i).getName(), chromosomesSelection[i]);
+			if (chromosomeSelection[i]) {
+				indexLastChromosomeTmp = i;
+			}
+			this.chromosomeSelection.put(projectChromosome.get(i).getName(), chromosomeSelection[i]);
+		}
+		indexLastChromosome = indexLastChromosomeTmp;
+	}
+
+
+	/**
+	 * @param chromosomeName name of a chromosome
+	 * @return true if the specified chromosome is after the last selected has already been extracted.
+	 * The order of chromosomes is defined by the {@link ProjectChromosome}
+	 */
+	public final boolean isExtractionDone(String chromosomeName) {
+		try {
+			return projectChromosome.getIndex(chromosomeName) > indexLastChromosome;
+		} catch (InvalidChromosomeException e) {
+			return false;
 		}
 	}
 
 
-
-
-
+	/**
+	 * @param chromosomeName name of a chromosome
+	 * @return true if the specified chromosome was set to be extracted. False otherwise.
+	 */
+	public final boolean isSelected(String chromosomeName) {
+		if (chromosomeSelection == null) {
+			return true;
+		}
+		Boolean isSelected = chromosomeSelection.get(chromosomeName);
+		return (isSelected != null) && isSelected;
+	}
 }
