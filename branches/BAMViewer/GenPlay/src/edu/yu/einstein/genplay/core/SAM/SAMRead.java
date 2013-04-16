@@ -21,12 +21,16 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.SAM;
 
+import edu.yu.einstein.genplay.util.HashCodeUtil;
+import edu.yu.einstein.genplay.util.Utils;
+
 /**
  * @author Nicolas Fourel
  * @version 0.1
  */
 public class SAMRead {
 
+	private int hashcode;
 	private int start;
 	private int stop;
 	private SAMRead pair;
@@ -38,6 +42,7 @@ public class SAMRead {
 	 * @param stop the stop position
 	 */
 	public SAMRead (int start, int stop) {
+		hashcode = 0;
 		initialize(start, stop, null);
 	}
 
@@ -91,11 +96,11 @@ public class SAMRead {
 
 
 	/**
-	 * @return the stop of the paired read if exists, the stop of the current read otherwise
+	 * @return the highest stop (also looking at the paired read if exists)
 	 */
 	public int getFullAlignementStop() {
 		if (isPaired()) {
-			return pair.getStop();
+			return Math.max(stop, pair.getStop());
 		}
 		return stop;
 	}
@@ -142,6 +147,39 @@ public class SAMRead {
 	}
 
 
+	/**
+	 * A {@link SAMRead} is valid if all its position make sense.
+	 * @return true if the read is valid, false otherwise
+	 */
+	public boolean isValid () {
+		boolean valid = true;
+		if (start > stop) {
+			valid = false;
+		}
+		if (valid && isPaired()) {
+			if (getPair().getStart() > getPair().getStop()) {
+				valid = false;
+			}
+		}
+		return valid;
+	}
+
+
+	/**
+	 * A read can overlap with its paired read
+	 * @return true if paired reads overlap, false otherwise
+	 */
+	public boolean overlap () {
+		boolean overlap = false;
+		if (isPaired()) {
+			if (stop >= getPair().getStart()) {
+				overlap = true;
+			}
+		}
+		return overlap;
+	}
+
+
 	@Override
 	public String toString () {
 		String s = "";
@@ -151,4 +189,39 @@ public class SAMRead {
 		}
 		return s;
 	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj){
+			return true;
+		}
+		if((obj == null) || (obj.getClass() != this.getClass())) {
+			return false;
+		}
+
+		// object must be Test at this point
+		SAMRead test = (SAMRead)obj;
+		boolean valid = (start == test.getStart()) && (stop == test.getStop()) && (isPaired() == test.isPaired());
+		if (valid && isPaired()) {
+			valid = pair.equals(test.getPair());
+		}
+
+		return valid;
+	}
+
+
+	@Override
+	public int hashCode() {
+		if (hashcode == 0) {
+			int result = HashCodeUtil.SEED;
+			result = HashCodeUtil.hash(result, start);
+			result = HashCodeUtil.hash(result, stop);
+			result = HashCodeUtil.hash(result, pair);
+			result = HashCodeUtil.hash(result, Utils.getRandomValue(1, 1000000));
+			hashcode = result;
+		}
+		return hashcode;
+	}
+
 }

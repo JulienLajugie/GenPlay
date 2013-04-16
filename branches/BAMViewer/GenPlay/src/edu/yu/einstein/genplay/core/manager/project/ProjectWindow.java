@@ -32,6 +32,9 @@ import edu.yu.einstein.genplay.core.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
+import edu.yu.einstein.genplay.gui.event.genomeWindowLoader.GenomeWindowLoaderEvent;
+import edu.yu.einstein.genplay.gui.event.genomeWindowLoader.GenomeWindowLoaderEventsGenerator;
+import edu.yu.einstein.genplay.gui.event.genomeWindowLoader.GenomeWindowLoaderListener;
 
 /**
  * This class manages the genome window displayed, the track current width and the ratio between them.
@@ -40,14 +43,15 @@ import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator {
+public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator, GenomeWindowLoaderEventsGenerator {
 
 	private static final long 	serialVersionUID 				= -9014173267531950797L;	// Generated serial version ID
 	private static final int  	SAVED_FORMAT_VERSION_NUMBER 	= 0;						// saved format version
-	private List<GenomeWindowListener> 	gwListenerList;			// list of GenomeWindowListener
-	private GenomeWindow				genomeWindow;			// the genome window displayed by the track
-	private int							trackWidth;				// width of the tracks
-	private transient double			xRatio;					// ratio of the track width to the genome window width
+	private List<GenomeWindowLoaderListener> 	gwLoaderListenerList;	// list of GenomeWindowLoaderListener
+	private List<GenomeWindowListener> 			gwListenerList;			// list of GenomeWindowListener
+	private GenomeWindow						genomeWindow;			// the genome window displayed by the track
+	private int									trackWidth;				// width of the tracks
+	private transient double					xRatio;					// ratio of the track width to the genome window width
 
 
 
@@ -55,6 +59,7 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 	 * Constructor of {@link ProjectWindow}
 	 */
 	protected ProjectWindow () {
+		gwLoaderListenerList = new ArrayList<GenomeWindowLoaderListener>();
 		gwListenerList = new ArrayList<GenomeWindowListener>();
 		genomeWindow = null;
 		trackWidth = 0;
@@ -66,6 +71,14 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 	public void addGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
 		if (!gwListenerList.contains(genomeWindowListener)) {
 			gwListenerList.add(genomeWindowListener);
+		}
+	}
+
+
+	@Override
+	public void addGenomeWindowLoaderListener(GenomeWindowLoaderListener genomeWindowLoaderListener) {
+		if (!gwLoaderListenerList.contains(genomeWindowLoaderListener)) {
+			gwLoaderListenerList.add(genomeWindowLoaderListener);
 		}
 	}
 
@@ -122,6 +135,13 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 	}
 
 
+	@Override
+	public GenomeWindowLoaderListener[] getGenomeWindowLoaderListeners() {
+		GenomeWindowLoaderListener[] genomeWindowLoaderListeners = new GenomeWindowLoaderListener[gwLoaderListenerList.size()];
+		return gwLoaderListenerList.toArray(genomeWindowLoaderListeners);
+	}
+
+
 	/**
 	 * @return the width of the tracks in pixel (all tracks have the same width)
 	 */
@@ -149,6 +169,7 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 		setGenomeWindow((GenomeWindow) in.readObject());
 		setTrackWidth(in.readInt());
 		updateXRatio();
+		gwLoaderListenerList = new ArrayList<GenomeWindowLoaderListener>();
 		gwListenerList = new ArrayList<GenomeWindowListener>();
 	}
 
@@ -157,6 +178,7 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 	 * Removes all registered {@link GenomeWindowListener}
 	 */
 	public void removeAllListeners () {
+		gwLoaderListenerList.clear();
 		gwListenerList.clear();
 	}
 
@@ -164,6 +186,12 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 	@Override
 	public void removeGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
 		gwListenerList.remove(genomeWindowListener);
+	}
+
+
+	@Override
+	public void removeGenomeWindowLoaderListener(GenomeWindowLoaderListener genomeWindowLoaderListener) {
+		gwLoaderListenerList.remove(genomeWindowLoaderListener);
 	}
 
 
@@ -197,16 +225,28 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 		if (!genomeWindow.equals(this.genomeWindow)) {
 			GenomeWindow oldGenomeWindow = this.genomeWindow;
 			this.genomeWindow = genomeWindow;
+
 			// update the xRatio
 			updateXRatio();
-			// we notify the listeners
-			GenomeWindowEvent evt = new GenomeWindowEvent(this, oldGenomeWindow, genomeWindow);
-			if (evt.chromosomeChanged()) {
+
+			// we create the genome window event
+			GenomeWindowEvent gwEvent = new GenomeWindowEvent(this, oldGenomeWindow, genomeWindow);
+			if (gwEvent.chromosomeChanged()) {
 				ProjectManager.getInstance().getProjectChromosome().setCurrentChromosome(genomeWindow.getChromosome());
 			}
+
+			// we notify first the genome window loader listeners
+			if ((gwLoaderListenerList != null) && !gwLoaderListenerList.isEmpty()) {
+				for (GenomeWindowLoaderListener currentListener: gwLoaderListenerList) {
+					GenomeWindowLoaderEvent gwlEvt = new GenomeWindowLoaderEvent(this, gwEvent, currentListener.getGenomeWindowLoaderSettings());
+					currentListener.genomeWindowLoaderChanged(gwlEvt);
+				}
+			}
+
+			// we notify the genome window listeners
 			if ((gwListenerList != null) && !gwListenerList.isEmpty()) {
 				for (GenomeWindowListener currentListener: gwListenerList) {
-					currentListener.genomeWindowChanged(evt);
+					currentListener.genomeWindowChanged(gwEvent);
 				}
 			}
 		}
@@ -273,4 +313,5 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 		out.writeObject(getGenomeWindow());
 		out.writeInt(getTrackWidth());
 	}
+
 }

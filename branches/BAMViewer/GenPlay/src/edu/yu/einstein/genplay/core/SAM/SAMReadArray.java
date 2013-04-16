@@ -107,6 +107,15 @@ public class SAMReadArray {
 
 
 	/**
+	 * Remove all data, empty the array.
+	 */
+	public void removeAllData () {
+		start.removeAllData();
+		stop.removeAllData();
+	}
+
+
+	/**
 	 * @param start
 	 * @return the index of the start value or the index right after if the exact value is not found
 	 */
@@ -121,6 +130,22 @@ public class SAMReadArray {
 	 */
 	public int getStopIndex (int stop) {
 		return this.stop.getIndex(stop);
+	}
+
+
+	/**
+	 * @return the start
+	 */
+	public MGIntegerArray getStart() {
+		return start;
+	}
+
+
+	/**
+	 * @return the stop
+	 */
+	public MGIntegerArray getStop() {
+		return stop;
 	}
 
 }

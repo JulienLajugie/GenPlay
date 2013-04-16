@@ -112,15 +112,20 @@ public class MGIntegerArray implements Serializable {
 	/**
 	 * Resize the array
 	 */
-	@SuppressWarnings("unused")
+	//@SuppressWarnings("unused")
 	private void resize () {
 		if (size >= data.length) {
 			// we multiply the current size by the resize multiplication factor
 			int newLength = data.length * RESIZE_FACTOR;
-			// we make sure we don't add less than RESIZE_MIN elements
-			newLength = Math.max(newLength, data.length + RESIZE_MIN);
-			// we make sure we don't add more than RESIZE_MAX elements
-			newLength = Math.min(newLength, data.length + RESIZE_MAX);
+			// in case the new length is still smaller than the requested size, we adjust it to the size.
+			if (newLength < size) {
+				newLength = size;
+			} else {
+				// we make sure we don't add less than RESIZE_MIN elements
+				newLength = Math.max(newLength, data.length + RESIZE_MIN);
+				// we make sure we don't add more than RESIZE_MAX elements
+				newLength = Math.min(newLength, data.length + RESIZE_MAX);
+			}
 			int[] newData = new int[newLength];
 			for (int i = 0; i < data.length; i++) {
 				newData[i] = data[i];
@@ -145,6 +150,7 @@ public class MGIntegerArray implements Serializable {
 	 * @return the element at the index before the set
 	 */
 	public Integer set(int index, Integer element) {
+		resizeToIndex(index);
 		int old = data[index];
 		data[index] = element;
 		return old;
@@ -156,6 +162,18 @@ public class MGIntegerArray implements Serializable {
 	 */
 	public int size() {
 		return size;
+	}
+
+
+	/**
+	 * Ensure the data will be resized according to the given index IF necessary.
+	 * @param index an index
+	 */
+	private void resizeToIndex (int index) {
+		if (index >= size) {
+			size = index + 1;
+			resize();
+		}
 	}
 
 
@@ -203,6 +221,9 @@ public class MGIntegerArray implements Serializable {
 	 * @return the index where the start value of the window is found or -1 if the value is not found.
 	 */
 	public int getStrictIndex (int value) {
+		if (size == 0) {
+			return 0;
+		}
 		int index = getIndex(value, 0, size - 1);
 		if (data[index] == value) {
 			return index;
@@ -217,6 +238,9 @@ public class MGIntegerArray implements Serializable {
 	 * @return the index where the start value of the window is found or the index right after if the exact value is not found.
 	 */
 	public int getIndex (int value) {
+		if (size == 0) {
+			return 0;
+		}
 		return getIndex(value, 0, size - 1);
 	}
 
@@ -255,4 +279,59 @@ public class MGIntegerArray implements Serializable {
 	}
 
 
+	/**
+	 * Add new array data after existing data
+	 * @param array the array to fetch
+	 */
+	public void fetchArray (MGIntegerArray array) {
+		int newSize = size + array.size;
+		int[] newData = new int[newSize];
+		int index = 0;
+
+		for (int i = 0; i < size; i++) {
+			newData[index] = data[i];
+			index++;
+		}
+
+		for (int i = 0; i < array.size; i++) {
+			newData[index] = array.get(i);
+			index++;
+		}
+
+		data = newData;
+		size = newSize;
+	}
+
+
+	/**
+	 * Add new array data before existing data
+	 * @param array the array to push
+	 */
+	public void pushArray (MGIntegerArray array) {
+		int newSize = size + array.size;
+		int[] newData = new int[newSize];
+		int index = 0;
+
+		for (int i = 0; i < array.size; i++) {
+			newData[index] = array.get(i);
+			index++;
+		}
+
+		for (int i = 0; i < size; i++) {
+			newData[index] = data[i];
+			index++;
+		}
+
+		data = newData;
+		size = newSize;
+	}
+
+
+	/**
+	 * Remove all data, empty the array.
+	 */
+	public void removeAllData () {
+		size = 0;
+		data = new int[size];
+	}
 }

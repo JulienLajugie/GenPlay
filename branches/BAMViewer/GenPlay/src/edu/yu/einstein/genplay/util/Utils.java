@@ -393,7 +393,7 @@ public final class Utils {
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as BinList
 	 */
 	public final static ExtendedFileFilter[] getReadableBinListFileFilters() {
-		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new GTFFilter(), new WiggleFilter(), new PairFilter(), new ElandExtendedFilter(), new PSLFilter(), new SAMFilter(), new SerializedBinListFilter()};
+		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new GTFFilter(), new WiggleFilter(), new PairFilter(), new ElandExtendedFilter(), new PSLFilter(), new SAMFilter(), new SerializedBinListFilter(), new BAMFilter()};
 		return filters;
 	}
 
@@ -420,7 +420,7 @@ public final class Utils {
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as SCWList
 	 */
 	public final static ExtendedFileFilter[] getReadableSCWFileFilters() {
-		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new GTFFilter(), new WiggleFilter(), new PSLFilter()};
+		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new GTFFilter(), new WiggleFilter(), new PSLFilter(), new BAMFilter()};
 		return filters;
 	}
 
@@ -1099,5 +1099,17 @@ public final class Utils {
 			versionNumber = Integer.parseInt("" + version.charAt(2));
 		}
 		return versionNumber;
+	}
+
+
+	/**
+	 * Calculate a random value in the given range.
+	 * Both min and max value are included in the result (the basic random from Math excludes the max value).
+	 * @param min the minimum value
+	 * @param max the maximum value
+	 * @return a random int in the given range
+	 */
+	public static int getRandomValue (int min, int max) {
+		return min + (int)(Math.random() * ((max - min) + 1));
 	}
 }

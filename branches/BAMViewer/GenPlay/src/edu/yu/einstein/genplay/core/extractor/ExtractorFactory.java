@@ -99,6 +99,8 @@ public final class ExtractorFactory {
 			return new PSLExtractor(fileToExtract, logFile);
 		} else if (fileExtension.equalsIgnoreCase("sam")) {
 			return new SAMExtractor(fileToExtract, logFile);
+		} else if (fileExtension.equalsIgnoreCase("bam")) {
+			return new BAMExtractor(fileToExtract, logFile);
 		} else {
 			return null;
 		}
@@ -178,6 +180,8 @@ public final class ExtractorFactory {
 									return new PSLExtractor(fileToExtract, logFile);
 								} else if (type.equalsIgnoreCase("sam")) {
 									return new SAMExtractor(fileToExtract, logFile);
+								} else if (type.equalsIgnoreCase("bam")) {
+									return new BAMExtractor(fileToExtract, logFile);
 								} else {
 									return null;
 								}

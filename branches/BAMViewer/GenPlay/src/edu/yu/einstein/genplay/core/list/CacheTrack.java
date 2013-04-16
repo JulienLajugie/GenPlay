@@ -34,7 +34,6 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
  */
 public class CacheTrack<K> {
 
-
 	Map<Double, K> map;
 
 
