@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.IO.extractor.Options;
+package edu.yu.einstein.genplay.core.IO.utils;
 
 import edu.yu.einstein.genplay.core.IO.extractor.StrandedExtractor;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
@@ -31,7 +31,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.Strand;
  * Allows user to choose which strand to extract, to define a fixed read length and to shift the reads.
  * @author Julien Lajugie
  */
-public class StrandedExtractorOptions {
+public class StrandOptions {
 
 	private final Strand 	selectedStrand;	// strand to extract. Both if null
 	private final int 		strandShift;	// value of the shift to perform on the selected strand
@@ -39,12 +39,12 @@ public class StrandedExtractorOptions {
 
 
 	/**
-	 * Creates an instance of {@link StrandedExtractorOptions}
+	 * Creates an instance of {@link StrandOptions}
 	 * @param strandToExtract strand to extract. Both strand will be extracted if this parameter is null
 	 * @param strandShift value of the shift to perform on the selected strand
 	 * @param readLength length of the reads. 0 to keep the values from the input data file
 	 */
-	public StrandedExtractorOptions(Strand strandToExtract, int strandShift, int readLength) {
+	public StrandOptions(Strand strandToExtract, int strandShift, int readLength) {
 		super();
 		selectedStrand = strandToExtract;
 		this.strandShift = strandShift;

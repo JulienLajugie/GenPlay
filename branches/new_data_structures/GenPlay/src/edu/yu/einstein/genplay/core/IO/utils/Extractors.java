@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.util;
+package edu.yu.einstein.genplay.core.IO.utils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -30,6 +30,7 @@ import java.util.List;
 
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**

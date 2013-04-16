@@ -22,11 +22,14 @@
 package edu.yu.einstein.genplay.core.IO.extractor;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
 import edu.yu.einstein.genplay.core.IO.dataReader.GeneReader;
 import edu.yu.einstein.genplay.core.IO.dataReader.RepeatReader;
 import edu.yu.einstein.genplay.core.IO.dataReader.SCWReader;
 import edu.yu.einstein.genplay.core.IO.utils.DataLineValidator;
+import edu.yu.einstein.genplay.core.IO.utils.Extractors;
+import edu.yu.einstein.genplay.core.IO.utils.StrandOptions;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
@@ -39,7 +42,6 @@ import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
-import edu.yu.einstein.genplay.util.Extractors;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -47,9 +49,10 @@ import edu.yu.einstein.genplay.util.Utils;
  * A BED file extractor
  * @author Julien Lajugie
  */
-public class BedExtractor extends Extractor implements SCWReader, GeneReader, RepeatReader {
+public class BedExtractor extends Extractor implements SCWReader, GeneReader, RepeatReader, StrandedExtractor {
 
 	private final ProjectChromosome 		projectChromosome;	// ProjectChromosome
+	private StrandOptions					strandOptions;		// options on the strand and read length / shift
 	private Chromosome 						chromosome;		 	// chromosome of the last item read
 	private Integer 						start;				// start position of the last item read
 	private Integer 						stop;				// stop position of the last item read
@@ -64,14 +67,16 @@ public class BedExtractor extends Extractor implements SCWReader, GeneReader, Re
 	/**
 	 * Creates an instance of {@link BedExtractor}
 	 * @param dataFile file containing the data
+	 * @throws FileNotFoundException if the specified file is not found
 	 */
-	public BedExtractor(File dataFile) {
+	public BedExtractor(File dataFile) throws FileNotFoundException {
 		super(dataFile);
 		projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 	}
 
 
-	private boolean extractData(String line) {
+	@Override
+	protected int extractDataLine(String line) throws DataLineException {
 		chromosome = null;
 		start = null;
 		stop = null;
@@ -90,14 +95,14 @@ public class BedExtractor extends Extractor implements SCWReader, GeneReader, Re
 
 		String chromosomeName = splitedLine[0];
 
-		if (chromosomeSelector != null) {
+		if (getChromosomeSelector() != null) {
 			// case where last chromosome already extracted, no more data to extract
-			if (chromosomeSelector.isExtractionDone(chromosomeName)) {
-				return false;
+			if (getChromosomeSelector().isExtractionDone(chromosomeName)) {
+				return EXTRACTION_DONE;
 			}
 			// chromosome was not selected for extraction
-			if (!chromosomeSelector.isSelected(chromosomeName)) {
-				return true;
+			if (!getChromosomeSelector().isSelected(chromosomeName)) {
+				return LINE_SKIPPED;
 			}
 		}
 
@@ -105,16 +110,16 @@ public class BedExtractor extends Extractor implements SCWReader, GeneReader, Re
 			chromosome = projectChromosome.get(chromosomeName) ;
 		} catch (InvalidChromosomeException e) {
 			// unknown chromosome
-			return true;
+			return LINE_SKIPPED;
 		}
 
 		if (splitedLine.length > 5) {
 			strand = Strand.get(splitedLine[5].trim().charAt(0));
 		}
 
-		if ((strand != null) && (!isStrandSelected(strand))) {
+		if ((strand != null) && (strandOptions != null) && (!strandOptions.isSelected(strand))) {
 			chromosome = null;
-			return true;
+			return LINE_SKIPPED;
 		}
 		start = Extractors.getInt(splitedLine[1].trim());
 		stop = Extractors.getInt(splitedLine[2].trim());
@@ -124,17 +129,18 @@ public class BedExtractor extends Extractor implements SCWReader, GeneReader, Re
 			throw new DataLineException(errors);
 		}
 
-		// Stop position checking, must not overpass the chromosome length
-		DataLineException stopEndException = null;
+		// Stop position checking, must not be greater than the chromosome length
 		String stopEndErrorMessage = DataLineValidator.getErrors(chromosome, stop);
 		if (!stopEndErrorMessage.isEmpty()) {
-			stopEndException = new DataLineException(stopEndErrorMessage, DataLineException.SHRINK_STOP_PROCESS);
+			DataLineException stopEndException = new DataLineException(stopEndErrorMessage, DataLineException.SHRINK_STOP_PROCESS);
+			// notify the listeners that the stop position needed to be shrunk
+			notifyDataEventListeners(stopEndException, getCurrentLineNumber(), line);
 			stop = chromosome.getLength();
 		}
 
 		// compute the read position with specified strand shift and read length
-		if (readHandler != null) {
-			SimpleChromosomeWindow resultStartStop = readHandler.computeStartStop(chromosome, start, stop, strand);
+		if (strandOptions != null) {
+			SimpleChromosomeWindow resultStartStop = strandOptions.computeStartStop(chromosome, start, stop, strand);
 			start = resultStartStop.getStart();
 			stop = resultStartStop.getStop();
 		}
@@ -143,12 +149,12 @@ public class BedExtractor extends Extractor implements SCWReader, GeneReader, Re
 		start = getMultiGenomePosition(chromosome, start);
 		stop = getMultiGenomePosition(chromosome, stop);
 		if (splitedLine.length <= 3) {
-			return true;
+			return LINE_EXTRACTED;
 		}
 		// retrieve the name field
-		String name = splitedLine[3].trim();
+		name = splitedLine[3].trim();
 		if (splitedLine.length <= 4) {
-			return true;
+			return LINE_EXTRACTED;
 		}
 		// retrieve the score field
 		score = Extractors.getFloat(splitedLine[4].trim(), 0f);
@@ -170,7 +176,7 @@ public class BedExtractor extends Extractor implements SCWReader, GeneReader, Re
 		UTR3Bound = getMultiGenomePosition(chromosome, UTR3Bound);
 
 		if (splitedLine.length <= 11) {
-			return true;
+			return LINE_EXTRACTED;
 		}
 
 		// retrieve exons
@@ -193,6 +199,7 @@ public class BedExtractor extends Extractor implements SCWReader, GeneReader, Re
 			}
 			exons = exonListBuilder.getListView();
 		}
+		return LINE_EXTRACTED;
 	}
 
 
@@ -207,37 +214,42 @@ public class BedExtractor extends Extractor implements SCWReader, GeneReader, Re
 		return exons;
 	}
 
+
 	@Override
 	public String getGeneDBURL() {
-		// TODO Auto-generated method stub
-		return null;
+		return getTrackLineHeader().getGeneDBURL();
 	}
+
 
 	@Override
 	public GeneScoreType getGeneScoreType() {
-		// TODO Auto-generated method stub
-		return null;
+		return getTrackLineHeader().getGeneScoreType();
 	}
+
 
 	@Override
 	public String getName() {
 		return name;
 	}
 
+
 	@Override
 	public Float getScore() {
 		return score;
 	}
+
 
 	@Override
 	public Integer getStart() {
 		return start;
 	}
 
+
 	@Override
 	public Integer getStop() {
 		return stop;
 	}
+
 
 	@Override
 	public Strand getStrand() {
@@ -246,9 +258,16 @@ public class BedExtractor extends Extractor implements SCWReader, GeneReader, Re
 
 
 	@Override
+	public StrandOptions getStrandedExtractorOptions() {
+		return strandOptions;
+	}
+
+
+	@Override
 	public Integer getUTR3Bound() {
 		return UTR3Bound;
 	}
+
 
 	@Override
 	public Integer getUTR5Bound() {
@@ -257,8 +276,7 @@ public class BedExtractor extends Extractor implements SCWReader, GeneReader, Re
 
 
 	@Override
-	public boolean readItem() {
-		// TODO Auto-generated method stub
-		return false;
+	public void setStrandedExtractorOptions(StrandOptions options) {
+		strandOptions = options;
 	}
 }

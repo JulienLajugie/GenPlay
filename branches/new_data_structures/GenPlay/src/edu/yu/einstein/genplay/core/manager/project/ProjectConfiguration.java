@@ -36,7 +36,6 @@ public final class ProjectConfiguration implements Serializable {
 	private static final long serialVersionUID = 5632320102259442205L; 		// generated ID
 
 	private static final String DEFAULT_RECENT_PROJECT_FILE_NAME = "GenPlayProjects.txt"; 	// the default log file name
-	private static final String DEFAULT_LOG_FILE_NAME 			= "GenPlayLog.txt"; 	// the default log file name
 	private static final String DEFAULT_DAS_SERVER_FILE_NAME 	= "DASServerList.xml"; 	// the default log file name
 	private final static String DEFAULT_DAS_SERVER_PATH =
 			"edu/yu/einstein/genplay/resource/DASServerList.xml"; 				// DAS Server List file path
@@ -59,7 +58,6 @@ public final class ProjectConfiguration implements Serializable {
 
 	private static String CONFIG_FILE_NAME = "GenPlay_config.cfg"; 			// the config file
 
-	private String 	logFilePath; 											// log file
 	private String 	defaultDirectory; 										// default directory
 	private String 	lookAndFeel = DEFAULT_LOOK_AND_FEEL; 					// look and feel
 	private String 	dasServerListFile;									 	// DAS Server list
@@ -81,20 +79,34 @@ public final class ProjectConfiguration implements Serializable {
 
 
 	/**
-	 * Restores the default configuration
+	 * @return the absolute path of the configuration file
 	 */
-	public void restoreDefault() {
-		logFilePath = getDefaultLogFileAbsolutePath();
-		defaultDirectory = DEFAULT_DEFAULT_DIRECTORY;
-		dasServerListFile = getDefaultDASServerFileAbsolutePath();
-		new File(dasServerListFile).delete();
-		lookAndFeel = DEFAULT_LOOK_AND_FEEL;
-		trackCount = DEFAULT_TRACK_COUNT;
-		trackHeight = DEFAULT_TRACK_HEIGHT;
-		undoCount = DEFAULT_UNDO_COUNT;
-		resetTrack = DEFAULT_RESET_TRACK;
-		cacheTrack = DEFAULT_CACHE_TRACK;
-		legend = DEFAULT_SHOW_LEGEND;
+	public String getConfigFileAbsolutePath () {
+		return getTemporaryDirectory() + CONFIG_FILE_NAME;
+	}
+
+
+	/**
+	 * @return the dasServerListFile
+	 */
+	public final String getDASServerListFile() {
+		return dasServerListFile;
+	}
+
+
+	/**
+	 * @return the absolute path of the log file
+	 */
+	private String getDefaultDASServerFileAbsolutePath () {
+		return getTemporaryDirectory() + DEFAULT_DAS_SERVER_FILE_NAME;
+	}
+
+
+	/**
+	 * @return the default das server file
+	 */
+	public final String getDefaultDasServerListFile() {
+		return this.getClass().getClassLoader().getResource(DEFAULT_DAS_SERVER_PATH).toString();
 	}
 
 
@@ -107,26 +119,10 @@ public final class ProjectConfiguration implements Serializable {
 
 
 	/**
-	 * @return the absolute path of the configuration file
+	 * @return the lookAndFeel
 	 */
-	public String getConfigFileAbsolutePath () {
-		return getTemporaryDirectory() + CONFIG_FILE_NAME;
-	}
-
-
-	/**
-	 * @return the absolute path of the log file
-	 */
-	private String getDefaultLogFileAbsolutePath () {
-		return getTemporaryDirectory() + DEFAULT_LOG_FILE_NAME;
-	}
-
-
-	/**
-	 * @return the absolute path of the log file
-	 */
-	private String getDefaultDASServerFileAbsolutePath () {
-		return getTemporaryDirectory() + DEFAULT_DAS_SERVER_FILE_NAME;
+	public final String getLookAndFeel() {
+		return lookAndFeel;
 	}
 
 
@@ -149,50 +145,6 @@ public final class ProjectConfiguration implements Serializable {
 			return System.getProperty("java.io.tmpdir");
 		}
 		return System.getProperty("user.home") + "/.genplay/";
-	}
-
-
-	/**
-	 * @return true if the user is working under Windows, false otherwise (-> Unix)
-	 */
-	private boolean isWindowsPlatform () {
-		String osName = System.getProperty("os.name");
-		if ((osName.length() > 7) && osName.substring(0, 7).toUpperCase().equals("WINDOWS")) {
-			return true;
-		}
-		return false;
-	}
-
-
-	/**
-	 * @return the dasServerListFile
-	 */
-	public final String getDASServerListFile() {
-		return dasServerListFile;
-	}
-
-
-	/**
-	 * @return the default das server file
-	 */
-	public final String getDefaultDasServerListFile() {
-		return this.getClass().getClassLoader().getResource(DEFAULT_DAS_SERVER_PATH).toString();
-	}
-
-
-	/**
-	 * @return the logFile
-	 */
-	public final String getLogFile() {
-		return logFilePath;
-	}
-
-
-	/**
-	 * @return the lookAndFeel
-	 */
-	public final String getLookAndFeel() {
-		return lookAndFeel;
 	}
 
 
@@ -221,14 +173,6 @@ public final class ProjectConfiguration implements Serializable {
 
 
 	/**
-	 * @return the resetTrack
-	 */
-	public boolean isResetTrack() {
-		return resetTrack;
-	}
-
-
-	/**
 	 * @return the cacheTrack
 	 */
 	public boolean isCacheTrack() {
@@ -241,6 +185,51 @@ public final class ProjectConfiguration implements Serializable {
 	 */
 	public boolean isLegend() {
 		return legend;
+	}
+
+
+	/**
+	 * @return the resetTrack
+	 */
+	public boolean isResetTrack() {
+		return resetTrack;
+	}
+
+
+	/**
+	 * @return true if the user is working under Windows, false otherwise (-> Unix)
+	 */
+	private boolean isWindowsPlatform () {
+		String osName = System.getProperty("os.name");
+		if ((osName.length() > 7) && osName.substring(0, 7).toUpperCase().equals("WINDOWS")) {
+			return true;
+		}
+		return false;
+	}
+
+
+	/**
+	 * Restores the default configuration
+	 */
+	public void restoreDefault() {
+		defaultDirectory = DEFAULT_DEFAULT_DIRECTORY;
+		dasServerListFile = getDefaultDASServerFileAbsolutePath();
+		new File(dasServerListFile).delete();
+		lookAndFeel = DEFAULT_LOOK_AND_FEEL;
+		trackCount = DEFAULT_TRACK_COUNT;
+		trackHeight = DEFAULT_TRACK_HEIGHT;
+		undoCount = DEFAULT_UNDO_COUNT;
+		resetTrack = DEFAULT_RESET_TRACK;
+		cacheTrack = DEFAULT_CACHE_TRACK;
+		legend = DEFAULT_SHOW_LEGEND;
+	}
+
+
+	/**
+	 * @param cacheTrack the cacheTrack to set
+	 */
+	public void setCacheTrack(boolean cacheTrack) {
+		this.cacheTrack = cacheTrack;
 	}
 
 
@@ -261,10 +250,10 @@ public final class ProjectConfiguration implements Serializable {
 
 
 	/**
-	 * @param logFile the logFile to set
+	 * @param legend the legend to set
 	 */
-	public final void setLogFile(String logFile) {
-		this.logFilePath = logFile;
+	public void setLegend(boolean legend) {
+		this.legend = legend;
 	}
 
 
@@ -273,6 +262,14 @@ public final class ProjectConfiguration implements Serializable {
 	 */
 	public final void setLookAndFeel(String lookAndFeel) {
 		this.lookAndFeel = lookAndFeel;
+	}
+
+
+	/**
+	 * @param resetTrack the resetTrack to set
+	 */
+	public void setResetTrack(boolean resetTrack) {
+		this.resetTrack = resetTrack;
 	}
 
 
@@ -309,30 +306,6 @@ public final class ProjectConfiguration implements Serializable {
 		} else {
 			this.undoCount = undoCount;
 		}
-	}
-
-
-	/**
-	 * @param resetTrack the resetTrack to set
-	 */
-	public void setResetTrack(boolean resetTrack) {
-		this.resetTrack = resetTrack;
-	}
-
-
-	/**
-	 * @param cacheTrack the cacheTrack to set
-	 */
-	public void setCacheTrack(boolean cacheTrack) {
-		this.cacheTrack = cacheTrack;
-	}
-
-
-	/**
-	 * @param legend the legend to set
-	 */
-	public void setLegend(boolean legend) {
-		this.legend = legend;
 	}
 
 }

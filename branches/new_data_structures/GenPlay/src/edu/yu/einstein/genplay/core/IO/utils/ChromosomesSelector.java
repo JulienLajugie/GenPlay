@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.IO.extractor.Options;
+package edu.yu.einstein.genplay.core.IO.utils;
 
 import java.util.HashMap;
 import java.util.Map;

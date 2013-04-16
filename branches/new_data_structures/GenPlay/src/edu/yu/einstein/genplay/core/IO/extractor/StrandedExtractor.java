@@ -21,7 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.IO.extractor;
 
-import edu.yu.einstein.genplay.core.IO.extractor.Options.StrandedExtractorOptions;
+import edu.yu.einstein.genplay.core.IO.utils.StrandOptions;
 
 
 /**
@@ -33,11 +33,11 @@ public interface StrandedExtractor {
 	/**
 	 * @return the options set for the stranded extractor
 	 */
-	public StrandedExtractorOptions getStrandedExtractorOptions();
+	public StrandOptions getStrandedExtractorOptions();
 
 
 	/**
 	 * @param options options to set for the stranded extractor
 	 */
-	public void setStrandedExtractorOptions(StrandedExtractorOptions options);
+	public void setStrandedExtractorOptions(StrandOptions options);
 }
