@@ -26,11 +26,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import edu.yu.einstein.genplay.exception.exceptions.valueOutOfRangeException.Invalid8BitValue;
-
 /**
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class MGByteArray implements Serializable {
 
@@ -50,36 +47,11 @@ public class MGByteArray implements Serializable {
 
 
 	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(data);
-		out.writeInt(size);
-	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		data = (byte[]) in.readObject();
-		size = in.readInt();
-	}
-
-
-	/**
 	 * Creates an instance of {@link MGByteArray}
 	 */
 	public MGByteArray() {
-		this.data = new byte[DEFAULT_SIZE];
-		this.size = DEFAULT_SIZE;
+		data = new byte[DEFAULT_SIZE];
+		size = DEFAULT_SIZE;
 	}
 
 
@@ -88,29 +60,8 @@ public class MGByteArray implements Serializable {
 	 * @param size size of the array
 	 */
 	public MGByteArray(int size) {
-		this.data = new byte[size];
+		data = new byte[size];
 		this.size = size;
-	}
-
-
-	/**
-	 * Resize the array
-	 */
-	@SuppressWarnings("unused")
-	private void resize () {
-		if (size >= data.length) {
-			// we multiply the current size by the resize multiplication factor
-			int newLength = data.length * RESIZE_FACTOR;
-			// we make sure we don't add less than RESIZE_MIN elements
-			newLength = Math.max(newLength, data.length + RESIZE_MIN);
-			// we make sure we don't add more than RESIZE_MAX elements
-			newLength = Math.min(newLength, data.length + RESIZE_MAX);
-			byte[] newData = new byte[newLength];
-			for (int i = 0; i < data.length; i++) {
-				newData[i] = data[i];
-			}
-			data = newData;
-		}
 	}
 
 
@@ -129,57 +80,6 @@ public class MGByteArray implements Serializable {
 	 */
 	public byte getByte(int index) {
 		return data[index];
-	}
-
-
-	/**
-	 * @param index index to set the element
-	 * @param element element to set
-	 * @return the element at the index before the set
-	 */
-	public Integer set(int index, Integer element) {
-		// check if the value is in the range
-		if ((element > MAX_VALUE) || (element < MIN_VALUE)) {
-			throw new Invalid8BitValue(element);
-		}
-
-		int old = data[index];
-		data[index] = element.byteValue();
-		return old;
-	}
-
-
-	/**
-	 * @param index index to set the element
-	 * @param element element to set
-	 * @return the element at the index before the set
-	 */
-	public byte set(int index, byte element) {
-		byte old = data[index];
-		data[index] = element;
-		return old;
-	}
-
-
-	/**
-	 * @return the size of the array
-	 */
-	public int size() {
-		return size;
-	}
-
-
-	/**
-	 * Resize the array copying every value to a new array from the beginning until the new size
-	 * @param newSize the new size
-	 */
-	public void resize (int newSize) {
-		byte[] newData = new byte[newSize];
-		for (int i = 0; i < newSize; i++) {
-			newData[i] = data[i];
-		}
-		data = newData;
-		size = newSize;
 	}
 
 
@@ -220,6 +120,83 @@ public class MGByteArray implements Serializable {
 
 
 	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		data = (byte[]) in.readObject();
+		size = in.readInt();
+	}
+
+
+	/**
+	 * Resize the array
+	 */
+	@SuppressWarnings("unused")
+	private void resize () {
+		if (size >= data.length) {
+			// we multiply the current size by the resize multiplication factor
+			int newLength = data.length * RESIZE_FACTOR;
+			// we make sure we don't add less than RESIZE_MIN elements
+			newLength = Math.max(newLength, data.length + RESIZE_MIN);
+			// we make sure we don't add more than RESIZE_MAX elements
+			newLength = Math.min(newLength, data.length + RESIZE_MAX);
+			byte[] newData = new byte[newLength];
+			for (int i = 0; i < data.length; i++) {
+				newData[i] = data[i];
+			}
+			data = newData;
+		}
+	}
+
+
+	/**
+	 * Resize the array copying every value to a new array from the beginning until the new size
+	 * @param newSize the new size
+	 */
+	public void resize (int newSize) {
+		byte[] newData = new byte[newSize];
+		for (int i = 0; i < newSize; i++) {
+			newData[i] = data[i];
+		}
+		data = newData;
+		size = newSize;
+	}
+
+
+	/**
+	 * @param index index to set the element
+	 * @param element element to set
+	 * @return the element at the index before the set
+	 */
+	public byte set(int index, byte element) {
+		byte old = data[index];
+		data[index] = element;
+		return old;
+	}
+
+
+	/**
+	 * @param index index to set the element
+	 * @param element element to set
+	 * @return the element at the index before the set
+	 */
+	public Integer set(int index, Integer element) {
+		// check if the value is in the range
+		if ((element > MAX_VALUE) || (element < MIN_VALUE)) {
+			throw new Invalid8BitValue(element);
+		}
+
+		int old = data[index];
+		data[index] = element.byteValue();
+		return old;
+	}
+
+
+	/**
 	 * Shows the content of the list
 	 */
 	public void show () {
@@ -228,6 +205,26 @@ public class MGByteArray implements Serializable {
 			info += "(" + i + "; " + data[i] + ") ";
 		}
 		System.out.println(info);
+	}
+
+
+	/**
+	 * @return the size of the array
+	 */
+	public int size() {
+		return size;
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(data);
+		out.writeInt(size);
 	}
 
 

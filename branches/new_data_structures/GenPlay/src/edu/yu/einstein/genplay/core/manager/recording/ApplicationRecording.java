@@ -38,9 +38,44 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
  * It does not store the settings information!
  * 
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class ApplicationRecording {
+
+
+	/**
+	 * Reads a line from the configuration file and extracts the data
+	 * @param line a line from the configuration file
+	 */
+	private void extractLine(String line) {
+		int index = line.indexOf(':');
+		// if we find a character ':'
+		if (index != -1) {
+			ProjectConfiguration projectConfiguration = ProjectManager.getInstance().getProjectConfiguration();
+			String key = line.substring(0, index).trim();
+			String value = line.substring(index + 1).trim();
+			if ((key != null) && (key.length() > 0) && (value != null) && (value.length() > 0)) {
+				if (key.equalsIgnoreCase("DAS Server List file")) {
+					projectConfiguration.setDASServerListFile(value);
+				} else if (key.equalsIgnoreCase("default directory")) {
+					projectConfiguration.setDefaultDirectory(value);
+				} else if (key.equalsIgnoreCase("look and feel")) {
+					projectConfiguration.setLookAndFeel(value);
+				} else if (key.equalsIgnoreCase("track count")) {
+					projectConfiguration.setTrackCount(Integer.parseInt(value));
+				} else if (key.equalsIgnoreCase("track height")) {
+					projectConfiguration.setTrackHeight(Integer.parseInt(value));
+				} else if (key.equalsIgnoreCase("undo count")) {
+					projectConfiguration.setUndoCount(Integer.parseInt(value));
+				} else if (key.equalsIgnoreCase("reset track")) {
+					projectConfiguration.setResetTrack(Boolean.parseBoolean(value));
+				} else if (key.equalsIgnoreCase("cache track")) {
+					projectConfiguration.setCacheTrack(Boolean.parseBoolean(value));
+				} else if (key.equalsIgnoreCase("show legend")) {
+					projectConfiguration.setLegend(Boolean.parseBoolean(value));
+				}
+			}
+		}
+	}
 
 
 	/**
@@ -71,44 +106,6 @@ public class ApplicationRecording {
 
 
 	/**
-	 * Reads a line from the configuration file and extracts the data
-	 * @param line a line from the configuration file
-	 */
-	private void extractLine(String line) {
-		int index = line.indexOf(':');
-		// if we find a character ':'
-		if (index != -1) {
-			ProjectConfiguration projectConfiguration = ProjectManager.getInstance().getProjectConfiguration();
-			String key = line.substring(0, index).trim();
-			String value = line.substring(index + 1).trim();
-			if ((key != null) && (key.length() > 0) && (value != null) && (value.length() > 0)) {
-				if (key.equalsIgnoreCase("log file")) {
-					projectConfiguration.setLogFile(value);
-				} else if (key.equalsIgnoreCase("DAS Server List file")) {
-					projectConfiguration.setDASServerListFile(value);
-				} else if (key.equalsIgnoreCase("default directory")) {
-					projectConfiguration.setDefaultDirectory(value);
-				} else if (key.equalsIgnoreCase("look and feel")) {
-					projectConfiguration.setLookAndFeel(value);
-				} else if (key.equalsIgnoreCase("track count")) {
-					projectConfiguration.setTrackCount(Integer.parseInt(value));
-				} else if (key.equalsIgnoreCase("track height")) {
-					projectConfiguration.setTrackHeight(Integer.parseInt(value));
-				} else if (key.equalsIgnoreCase("undo count")) {
-					projectConfiguration.setUndoCount(Integer.parseInt(value));
-				} else if (key.equalsIgnoreCase("reset track")) {
-					projectConfiguration.setResetTrack(Boolean.parseBoolean(value));
-				} else if (key.equalsIgnoreCase("cache track")) {
-					projectConfiguration.setCacheTrack(Boolean.parseBoolean(value));
-				} else if (key.equalsIgnoreCase("show legend")) {
-					projectConfiguration.setLegend(Boolean.parseBoolean(value));
-				}
-			}
-		}
-	}
-
-
-	/**
 	 * Writes the configuration in a file
 	 * @throws IOException
 	 */
@@ -120,8 +117,6 @@ public class ApplicationRecording {
 			dir.mkdirs();
 			File configFile = new File(projectConfiguration.getConfigFileAbsolutePath());
 			writer = new BufferedWriter(new FileWriter(configFile));
-			writer.write("log file: " + projectConfiguration.getLogFile());
-			writer.newLine();
 			writer.write("DAS Server List file: " + projectConfiguration.getDASServerListFile());
 			writer.newLine();
 			writer.write("default directory: " + projectConfiguration.getDefaultDirectory());

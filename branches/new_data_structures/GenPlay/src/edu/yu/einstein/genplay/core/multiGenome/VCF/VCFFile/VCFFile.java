@@ -37,7 +37,7 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvan
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics.VCFFileFullStatistic;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.VariantType;
-import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.IntArrayAsIntegerList;
+import edu.yu.einstein.genplay.dataStructure.list.arrayList.ListOfIntArraysAsIntegerList;
 
 
 /**
@@ -58,44 +58,8 @@ public class VCFFile implements Serializable {
 	private VCFReader 							reader;				// Reader for the VCF file
 	private VCFFileFullStatistic				statistics;			// VCF file statistics
 	private Map<String, List<VariantType>>		variantTypeList;	// List of the different variant type contained in the VCF file and sorted by genome name
-	private IntArrayAsIntegerList				positionList;		// reference genome position array (indexes match with the boolean list of filters)
+	private ListOfIntArraysAsIntegerList		positionList;		// reference genome position array (indexes match with the boolean list of filters)
 	private Chromosome							chromosomeOfList;
-
-
-	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(file);
-		out.writeObject(header);
-		out.writeObject(statistics);
-		out.writeObject(variantTypeList);
-		out.writeObject(positionList);
-		out.writeObject(chromosomeOfList);
-	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	@SuppressWarnings("unchecked")
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		file = (File) in.readObject();
-		header = (VCFHeader) in.readObject();
-		statistics = (VCFFileFullStatistic) in.readObject();
-		variantTypeList = (Map<String, List<VariantType>>) in.readObject();
-		positionList = (IntArrayAsIntegerList) in.readObject();
-		chromosomeOfList = (Chromosome) in.readObject();
-		indexVCFFile(); // recreate the tabix reader
-		reader.setColumnNames(header.getColumnNames());
-	}
 
 
 	/**
@@ -121,39 +85,141 @@ public class VCFFile implements Serializable {
 
 
 	/**
-	 * This method indexes the VCF file using the Tabix Java API.
-	 * @throws IOException
-	 */
-	private void indexVCFFile () throws IOException {
-		if (!isVCFIndexed ()) {
-			file = ProjectFiles.getInstance().getValidFileOf(file);
-			if (reader == null) {
-				reader = new VCFReader();
-			}
-			reader.indexVCFFile(file);
-		}
-	}
-
-
-	/**
-	 * This method checks if the VCF has been indexed.
-	 * @return true if the VCF is indexed
-	 */
-	private boolean isVCFIndexed () {
-		if ((reader != null) && (reader.getVCFParser() != null)) {
-			return true;
-		}
-		return false;
-	}
-
-
-	/**
 	 * Add a genome name to the list of genome name
 	 * @param genomeName a full genome name
 	 */
 	public void addGenomeName (String genomeName) {
 		header.addGenomeName(genomeName);
 		statistics.addGenomeName(genomeName);
+	}
+
+
+	/**
+	 * Add a type of variant if it is not already present in the list.
+	 * @param genomeName name of the genome
+	 * @param type	variant type to add
+	 */
+	public void addVariantType (String genomeName, VariantType type) {
+		if (!variantTypeList.containsKey(genomeName)) {
+			variantTypeList.put(genomeName, new ArrayList<VariantType>());
+		}
+		if (!variantTypeList.get(genomeName).contains(type)) {
+			variantTypeList.get(genomeName).add(type);
+		}
+	}
+
+
+	/**
+	 * Checks if this VCF contains the information for the given genome and a variation type
+	 * @param genomeName	the name of the genome
+	 * @param variantType	the type of the variation
+	 * @return	true if this VCF can manage the request
+	 */
+	public boolean canManage (String genomeName, VariantType variantType) {
+		if ((getVariantTypes(genomeName) != null) && getVariantTypes(genomeName).contains(variantType)) {
+			return true;
+		}
+		return false;
+	}
+
+
+	private boolean chromosomeHasChanged (Chromosome chromosome) {
+		if (chromosomeOfList == null) {
+			return true;
+		}
+
+		if (!chromosomeOfList.equals(chromosome)){
+			return true;
+		}
+
+		return false;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj){
+			return true;
+		}
+		if((obj == null) || (obj.getClass() != this.getClass())) {
+			return false;
+		}
+
+		// object must be Test at this point
+		VCFFile test = (VCFFile)obj;
+		return file.getAbsolutePath().equals(test.getFile().getAbsoluteFile());
+	}
+
+
+	/**
+	 * @return the vcf
+	 */
+	public File getFile() {
+		return file;
+	}
+
+
+	/**
+	 * Gets the value of the FORMAT field and a specific field
+	 * @param value	the FORMAT string
+	 * @param field the specific field
+	 * @return		the value of the specific field of the FORMAT field
+	 */
+	public Object getFormatValue (String value, String field) {
+		Object result = null;
+		List<VCFHeaderAdvancedType> formatHeader = header.getFormatHeader();
+		int indexInList = getIndex(formatHeader, field);
+		if (indexInList != -1) {
+			Class<?> type = formatHeader.get(indexInList).getType();
+			if (type == Integer.class) {
+				try {
+					result = Integer.parseInt(value);
+				} catch (Exception e) {
+					result = value;
+				}
+
+			} else if (type == Float.class) {
+				result = Float.parseFloat(value);
+			} else if (type == char.class) {
+				result = value.charAt(0);
+			} else if (type == String.class) {
+				result = value;
+			}
+		}
+		return result;
+	}
+
+
+	/**
+	 * @return the header
+	 */
+	public VCFHeader getHeader() {
+		return header;
+	}
+
+	/**
+	 * Gets the index of a specific ID field in a advanced type header list
+	 * @param list	the advanced type header list
+	 * @param id	the specific ID field
+	 * @return		the index
+	 */
+	private int getIndex (List<VCFHeaderAdvancedType> list, String id) {
+		boolean found = false;
+		int index = 0;
+
+		while (!found && (index < list.size())) {
+			if (id.equals(list.get(index).getId())) {
+				found = true;
+			} else {
+				index++;
+			}
+		}
+
+		if (found) {
+			return index;
+		} else {
+			return -1;
+		}
 	}
 
 
@@ -196,183 +262,13 @@ public class VCFFile implements Serializable {
 	}
 
 
-	/**
-	 * Gets the value of the FORMAT field and a specific field
-	 * @param value	the FORMAT string
-	 * @param field the specific field
-	 * @return		the value of the specific field of the FORMAT field
-	 */
-	public Object getFormatValue (String value, String field) {
-		Object result = null;
-		List<VCFHeaderAdvancedType> formatHeader = header.getFormatHeader();
-		int indexInList = getIndex(formatHeader, field);
-		if (indexInList != -1) {
-			Class<?> type = formatHeader.get(indexInList).getType();
-			if (type == Integer.class) {
-				try {
-					result = Integer.parseInt(value);
-				} catch (Exception e) {
-					result = value;
-				}
-
-			} else if (type == Float.class) {
-				result = Float.parseFloat(value);
-			} else if (type == char.class) {
-				result = value.charAt(0);
-			} else if (type == String.class) {
-				result = value;
-			}
-		}
-		return result;
-	}
-
-
-	/**
-	 * Gets the index of a specific ID field in a advanced type header list
-	 * @param list	the advanced type header list
-	 * @param id	the specific ID field
-	 * @return		the index
-	 */
-	private int getIndex (List<VCFHeaderAdvancedType> list, String id) {
-		boolean found = false;
-		int index = 0;
-
-		while (!found && (index < list.size())) {
-			if (id.equals(list.get(index).getId())) {
-				found = true;
-			} else {
-				index++;
-			}
-		}
-
-		if (found) {
-			return index;
-		} else {
-			return -1;
-		}
-	}
-
-	/**
-	 * @return the vcf
-	 */
-	public File getFile() {
-		return file;
-	}
-
-
-	@Override
-	public String toString () {
-		return file.getName();
-	}
-
-
 	/////////////////////////////////////////////////
-
-	/**
-	 * Add a type of variant if it is not already present in the list.
-	 * @param genomeName name of the genome
-	 * @param type	variant type to add
-	 */
-	public void addVariantType (String genomeName, VariantType type) {
-		if (!variantTypeList.containsKey(genomeName)) {
-			variantTypeList.put(genomeName, new ArrayList<VariantType>());
-		}
-		if (!variantTypeList.get(genomeName).contains(type)) {
-			variantTypeList.get(genomeName).add(type);
-		}
-	}
-
-
-	/**
-	 * @param genomeName genome name
-	 * @return the list of variant type present in this vcf for this genome
-	 */
-	public List<VariantType> getVariantTypes (String genomeName) {
-		if (variantTypeList.containsKey(genomeName)) {
-			return variantTypeList.get(genomeName);
-		}
-		return null;
-	}
-
-
-	/**
-	 * Checks if this VCF contains the information for the given genome and a variation type
-	 * @param genomeName	the name of the genome
-	 * @param variantType	the type of the variation
-	 * @return	true if this VCF can manage the request
-	 */
-	public boolean canManage (String genomeName, VariantType variantType) {
-		if ((getVariantTypes(genomeName) != null) && getVariantTypes(genomeName).contains(variantType)) {
-			return true;
-		}
-		return false;
-	}
-
-
-	@Override
-	public boolean equals(Object obj) {
-		if(this == obj){
-			return true;
-		}
-		if((obj == null) || (obj.getClass() != this.getClass())) {
-			return false;
-		}
-
-		// object must be Test at this point
-		VCFFile test = (VCFFile)obj;
-		return file.getAbsolutePath().equals(test.getFile().getAbsoluteFile());
-	}
-
 
 	/**
 	 * @return the positionList
 	 */
-	public IntArrayAsIntegerList getPositionList() {
+	public ListOfIntArraysAsIntegerList getPositionList() {
 		return positionList;
-	}
-
-
-	/**
-	 * Initializes the list of reference genome position for this reader.
-	 * It is required when using VCF Filters.
-	 * @param chromosome the current chromosome
-	 * @param results		the list of result
-	 */
-	public void initializePositionList (Chromosome chromosome, List<VCFLine> results) {
-		if (chromosomeHasChanged(chromosome)) {
-			if (results != null) {
-				positionList = new IntArrayAsIntegerList(results.size());
-				//VCFLine line = new VCFLine(null, null);
-				for (int i = 0; i < results.size(); i++) {
-					//line.initialize(results.get(i), null);
-					positionList.set(i, results.get(i).getReferencePosition());
-				}
-			} else {
-				positionList = new IntArrayAsIntegerList(0);
-			}
-		}
-	}
-
-
-
-	private boolean chromosomeHasChanged (Chromosome chromosome) {
-		if (chromosomeOfList == null) {
-			return true;
-		}
-
-		if (!chromosomeOfList.equals(chromosome)){
-			return true;
-		}
-
-		return false;
-	}
-
-
-	/**
-	 * @return the header
-	 */
-	public VCFHeader getHeader() {
-		return header;
 	}
 
 
@@ -389,6 +285,110 @@ public class VCFFile implements Serializable {
 	 */
 	public VCFFileFullStatistic getStatistics() {
 		return statistics;
+	}
+
+
+	/**
+	 * @param genomeName genome name
+	 * @return the list of variant type present in this vcf for this genome
+	 */
+	public List<VariantType> getVariantTypes (String genomeName) {
+		if (variantTypeList.containsKey(genomeName)) {
+			return variantTypeList.get(genomeName);
+		}
+		return null;
+	}
+
+
+	/**
+	 * This method indexes the VCF file using the Tabix Java API.
+	 * @throws IOException
+	 */
+	private void indexVCFFile () throws IOException {
+		if (!isVCFIndexed ()) {
+			file = ProjectFiles.getInstance().getValidFileOf(file);
+			if (reader == null) {
+				reader = new VCFReader();
+			}
+			reader.indexVCFFile(file);
+		}
+	}
+
+
+	/**
+	 * Initializes the list of reference genome position for this reader.
+	 * It is required when using VCF Filters.
+	 * @param chromosome the current chromosome
+	 * @param results		the list of result
+	 */
+	public void initializePositionList (Chromosome chromosome, List<VCFLine> results) {
+		if (chromosomeHasChanged(chromosome)) {
+			if (results != null) {
+				positionList = new ListOfIntArraysAsIntegerList(results.size());
+				//VCFLine line = new VCFLine(null, null);
+				for (int i = 0; i < results.size(); i++) {
+					//line.initialize(results.get(i), null);
+					positionList.set(i, results.get(i).getReferencePosition());
+				}
+			} else {
+				positionList = new ListOfIntArraysAsIntegerList(0);
+			}
+		}
+	}
+
+
+
+	/**
+	 * This method checks if the VCF has been indexed.
+	 * @return true if the VCF is indexed
+	 */
+	private boolean isVCFIndexed () {
+		if ((reader != null) && (reader.getVCFParser() != null)) {
+			return true;
+		}
+		return false;
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		file = (File) in.readObject();
+		header = (VCFHeader) in.readObject();
+		statistics = (VCFFileFullStatistic) in.readObject();
+		variantTypeList = (Map<String, List<VariantType>>) in.readObject();
+		positionList = (ListOfIntArraysAsIntegerList) in.readObject();
+		chromosomeOfList = (Chromosome) in.readObject();
+		indexVCFFile(); // recreate the tabix reader
+		reader.setColumnNames(header.getColumnNames());
+	}
+
+
+	@Override
+	public String toString () {
+		return file.getName();
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(file);
+		out.writeObject(header);
+		out.writeObject(statistics);
+		out.writeObject(variantTypeList);
+		out.writeObject(positionList);
+		out.writeObject(chromosomeOfList);
 	}
 
 }

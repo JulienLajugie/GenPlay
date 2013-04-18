@@ -21,278 +21,175 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.IO.extractor;
 
-
 import java.io.File;
-import java.io.Serializable;
-import java.util.concurrent.ExecutionException;
+import java.io.FileNotFoundException;
 
+import edu.yu.einstein.genplay.core.IO.dataReader.SCWReader;
 import edu.yu.einstein.genplay.core.IO.utils.DataLineValidator;
-import edu.yu.einstein.genplay.core.generator.BinListGenerator;
-import edu.yu.einstein.genplay.core.generator.ScoredChromosomeWindowListGenerator;
+import edu.yu.einstein.genplay.core.IO.utils.Extractors;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
-import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.DoubleArrayAsDoubleList;
-import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.IntArrayAsIntegerList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.MaskSCWListFactory;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
-import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
  * A Wiggle file extractor
  * @author Julien Lajugie
- * @version 0.1
  */
-public final class WiggleExtractor extends TextFileExtractor
-implements Serializable, ScoredChromosomeWindowListGenerator, BinListGenerator{
+public final class WiggleExtractor extends TextFileExtractor implements SCWReader {
 
-	private static final long serialVersionUID = 3397954112622122744L; // generated ID
-
-	private final GenomicListView<Integer>	startList;		// list of position start
-	private final GenomicListView<Integer>	stopList;		// list of position stop
-	private final GenomicListView<Double>	scoreList;		// list of scores
-
-	private Chromosome 		currentChromo;					// last chromosome specified
-	private int 			currentSpan;					// last span specified
-	private int 			currentStep;					// last step specified
-	private int 			currentPosition;				// current position
-	private boolean 		isFixedStep = false;			// true if we are extrating a fixedStep line
-	//	private int 			binSize = -1;					// size of the bin (only used if constant through the entire file)
-	//
-	//	private Boolean 		isStepUnique = null;			// true if the bin size is constant through the entire file
+	private Chromosome 	chromosome;		 		// chromosome of the last item read
+	private Integer 	start;					// start position of the last item read
+	private Integer 	stop;					// stop position of the last item read
+	private Float 		score;					// score of the last item read
+	private int 		currentSpan;			// last span specified
+	private int 		currentStep;			// last step specified
+	private int 		currentPosition;		// current position
+	private boolean 	isFixedStep = false;	// true if we are extrating a fixedStep line
 
 
 	/**
 	 * Creates an instance of {@link WiggleExtractor}
 	 * @param dataFile file containing the data
-	 * @param logFile file for the log (no log if null)
+	 * @throws FileNotFoundException if the specified file is not found
 	 */
-	public WiggleExtractor(File dataFile, File logFile) {
-		super(dataFile, logFile);
-		startList = new GenomicDataArrayList<Integer>();
-		stopList = new GenomicDataArrayList<Integer>();
-		scoreList = new GenomicDataArrayList<Double>();
-		for (int i = 0; i < getProjectChromosome().size(); i++) {
-			startList.add(new IntArrayAsIntegerList());
-			stopList.add(new IntArrayAsIntegerList());
-			scoreList.add(new DoubleArrayAsDoubleList());
-		}
+	public WiggleExtractor(File dataFile) throws FileNotFoundException {
+		super(dataFile);
 	}
 
 
 	@Override
-	protected boolean extractLine(String line) throws DataLineException {
-		String[] splittedLine = Utils.parseLineTabAndSpace(line);
-
+	protected int extractDataLine(String line) throws DataLineException {
+		start = null;
+		stop = null;
+		score = null;
+		String[] splittedLine = Extractors.parseLineTabAndSpace(line);
 		int i = 0;
 		while (i < splittedLine.length) {
 			String currentField = splittedLine[i].trim();
 			if (currentField.equalsIgnoreCase("variableStep")) {
 				// a variableStep must at least contain 2 elements
 				if (splittedLine.length < 2) {
-					//throw new InvalidDataLineException(line);
 					throw new DataLineException(DataLineException.INVALID_PARAMETER_NUMBER);
 				} else {
 					isFixedStep = false;
 					currentSpan = 1;
-					totalCount--; // not a data line
 				}
 			} else if (currentField.equalsIgnoreCase("fixedStep")) {
 				// a fixedStep must at least contain 4 elements
 				if (splittedLine.length < 4) {
-					//throw new InvalidDataLineException(line);
 					throw new DataLineException(DataLineException.INVALID_PARAMETER_NUMBER);
 				} else {
 					isFixedStep = true;
 					currentSpan = 1;
-					totalCount--; // not a data line
 				}
 			} else if ((currentField.length() > 6) && (currentField.substring(0, 6).equalsIgnoreCase("chrom="))) {
 				// retrieve chromosome
-				String chromStr = splittedLine[i].trim().substring(6);
-				int chromosomeStatus;
-				try {
-					currentChromo = getProjectChromosome().get(chromStr.trim()) ;
-					chromosomeStatus = checkChromosomeStatus(currentChromo);
-				} catch (InvalidChromosomeException e) {
-					currentChromo = null;
-					chromosomeStatus = NEED_TO_BE_SKIPPED;
+				String chromosomeName = splittedLine[i].trim().substring(6).trim();
+				if (getChromosomeSelector() != null) {
+					// case where last chromosome already extracted, no more data to extract
+					if (getChromosomeSelector().isExtractionDone(chromosomeName)) {
+						return EXTRACTION_DONE;
+					}
+					// chromosome was not selected for extraction
+					if (!getChromosomeSelector().isSelected(chromosomeName)) {
+						chromosome = getProjectChromosome().get(chromosomeName);
+						return LINE_SKIPPED;
+					}
 				}
-
-				// check if the extraction is done
-				if (chromosomeStatus == AFTER_LAST_SELECTED) {
-					return true;
+				try {
+					chromosome = getProjectChromosome().get(chromosomeName);
+				} catch (InvalidChromosomeException e) {
+					// unknown chromosome
+					return LINE_SKIPPED;
 				}
 			} else if ((currentField.length() > 6) && (currentField.substring(0, 6).equalsIgnoreCase("start="))) {
 				// retrieve start position
 				String posStr = splittedLine[i].trim().substring(6);
-				currentPosition = getInt(posStr);
+				currentPosition = Extractors.getInt(posStr);
 			} else if ((currentField.length() > 5) && (currentField.substring(0, 5).equalsIgnoreCase("step="))) {
 				// retrieve step position
 				String stepStr = splittedLine[i].trim().substring(5);
-				currentStep = getInt(stepStr);
+				currentStep = Extractors.getInt(stepStr);
 			} else if ((currentField.length() > 5) && (currentField.substring(0, 5).equalsIgnoreCase("span="))) {
 				// retrieve span
 				String spanStr = splittedLine[i].trim().substring(5);
-				currentSpan = getInt(spanStr);
+				currentSpan = Extractors.getInt(spanStr);
 			} else {
-				if (currentChromo != null) {
-					if (isFixedStep) {
-						double score = getDouble(splittedLine[i]);
-						try {
-							if ((score != 0) && (checkChromosomeStatus(currentChromo) == NEED_TO_BE_EXTRACTED)) {
-								int start = getMultiGenomePosition(currentChromo, currentPosition);
-								int stop = getMultiGenomePosition(currentChromo, currentPosition + currentSpan);
-								// Checks errors
-								String errors = DataLineValidator.getErrors(currentChromo, start, stop);
-								if (errors.length() == 0) {
-									startList.add(currentChromo, start);
-									stopList.add(currentChromo, stop);
-									scoreList.add(currentChromo, score);
-								} else {
-									throw new DataLineException(errors);
-								}
-							}
-							lineCount++;
-							currentPosition += currentStep;
-						} catch (Exception e) {
-							throw new DataLineException(e.getMessage());
-						}
-					} else {
-						if (splittedLine.length < 2) {
-							//throw new InvalidDataLineException(line);
-							throw new DataLineException(DataLineException.INVALID_PARAMETER_NUMBER);
-						} else {
-							currentPosition = getInt(splittedLine[i].trim());
-							double score = getDouble(splittedLine[i + 1]);
-							i++;
-							try {
-								if ((score != 0) && (checkChromosomeStatus(currentChromo) == NEED_TO_BE_EXTRACTED)) {
-									int start = getMultiGenomePosition(currentChromo, currentPosition);
-									int stop = getMultiGenomePosition(currentChromo, currentPosition + currentSpan);
-									// Checks errors
-									String errors = DataLineValidator.getErrors(currentChromo, start, stop);
-									if (errors.length() == 0) {
-										// Stop position checking, must not overpass the chromosome length
-										DataLineException stopEndException = null;
-										String stopEndErrorMessage = DataLineValidator.getErrors(currentChromo, stop);
-										if (!stopEndErrorMessage.isEmpty()) {
-											stopEndException = new DataLineException(stopEndErrorMessage, DataLineException.SHRINK_STOP_PROCESS);
-											stop = currentChromo.getLength();
-										}
-
-										startList.add(currentChromo, start);
-										stopList.add(currentChromo, stop);
-										scoreList.add(currentChromo, score);
-
-										if (stopEndException != null) {
-											throw stopEndException;
-										}
-									} else {
-										throw new DataLineException(errors);
-									}
-								}
-								lineCount++;
-							} catch (Exception e) {
-								throw new DataLineException(e.getMessage());
-							}
-						}
-					}
+				if (chromosome == null) {
+					return LINE_SKIPPED;
 				}
+				if (isFixedStep) {
+					score = Extractors.getFloat(splittedLine[i]);
+					if ((score == 0) || !getChromosomeSelector().isSelected(chromosome.getName())) {
+						return LINE_SKIPPED;
+					}
+
+					start = currentPosition;
+					stop = currentPosition + currentSpan;
+				} else {
+					if (splittedLine.length < 2) {
+						throw new DataLineException(DataLineException.INVALID_PARAMETER_NUMBER);
+					}
+					currentPosition = Extractors.getInt(splittedLine[i].trim());
+					float score = Extractors.getFloat(splittedLine[i + 1]);
+					i++;
+					if ((score == 0) || !getChromosomeSelector().isSelected(chromosome.getName())) {
+						return LINE_SKIPPED;
+					}
+
+					start = currentPosition;
+					stop =  currentPosition + currentSpan;
+				}
+				// check for data line errors
+				String errors = DataLineValidator.getErrors(chromosome, start, stop);
+				if (!errors.isEmpty()) {
+					throw new DataLineException(errors);
+				}
+
+				// Stop position checking, must not be greater than the chromosome length
+				String stopEndErrorMessage = DataLineValidator.getErrors(chromosome, stop);
+				if (!stopEndErrorMessage.isEmpty()) {
+					DataLineException stopEndException = new DataLineException(stopEndErrorMessage, DataLineException.SHRINK_STOP_PROCESS);
+					// notify the listeners that the stop position needed to be shrunk
+					notifyDataEventListeners(stopEndException, getCurrentLineNumber(), line);
+					stop = chromosome.getLength();
+				}
+
+				// if we are in a multi-genome project, we compute the position on the meta genome
+				start = getMultiGenomePosition(chromosome, start);
+				stop = getMultiGenomePosition(chromosome, stop);
+
+				currentPosition += currentStep;
+				return ITEM_EXTRACTED;
 			}
 			i++;
 		}
-		return false;
-	}
-
-
-	//	/**
-	//	 * @return if the step is constant through the entire file
-	//	 */
-	//	private boolean checkIfStepIsUnique() {
-	//		for (short i = 0; i < startList.size(); i++) {
-	//			for (int j = 0; j < startList.size(i); j++) {
-	//				if (binSize == -1) {
-	//					binSize = stopList.get(i, j) - startList.get(i, j);
-	//				} else {
-	//					int currentBinsize = stopList.get(i, j) - startList.get(i, j);
-	//					// if the size of a window not always the same
-	//					// or if the start is not a multiple of the bin size
-	//					// the step is not unique
-	//					if (currentBinsize != binSize) {
-	//						return false;
-	//					}
-	//					if (startList.get(i, j) % binSize != 0) {
-	//						return false;
-	//					}
-	//				}
-	//			}
-	//		}
-	//		return true;
-	//	}
-
-
-	@Override
-	public SCWList toScoredChromosomeWindowList(ScoreOperation scm) throws InvalidChromosomeException, InterruptedException, ExecutionException {
-		return new SimpleSCWList(startList, stopList, scoreList, scm);
+		return LINE_EXTRACTED;
 	}
 
 
 	@Override
-	public SCWList toMaskChromosomeWindowList() throws InvalidChromosomeException, InterruptedException,	ExecutionException {
-		return MaskSCWListFactory.createMaskSCWArrayList(startList, stopList);
+	public Chromosome getChromosome() {
+		return chromosome;
 	}
 
 
 	@Override
-	public boolean isBinSizeNeeded() {
-		//		if (isStepUnique == null) {
-		//			isStepUnique = checkIfStepIsUnique();
-		//		}
-		//		return !isStepUnique;
-		return true;
+	public Float getScore() {
+		return score;
 	}
 
 
 	@Override
-	public boolean isCriterionNeeded() {
-		//		if (isStepUnique == null) {
-		//			isStepUnique = checkIfStepIsUnique();
-		//		}
-		//		return !isStepUnique;
-		return true;
+	public Integer getStart() {
+		return start;
 	}
 
 
 	@Override
-	public boolean isPrecisionNeeded() {
-		return true;
-	}
-
-
-	@Override
-	public BinList toBinList(int aBinSize, ScorePrecision precision, ScoreOperation method) throws IllegalArgumentException, InterruptedException, ExecutionException {
-		//		if (isStepUnique == null) {
-		//			isStepUnique = checkIfStepIsUnique();
-		//		}
-		//		if (isStepUnique) {
-		//			return new BinList(binSize, precision, startList, scoreList);
-		//		} else {
-		return new BinList(aBinSize, precision, method, startList, stopList, scoreList);
-		//		}
-	}
-
-
-	@Override
-	public boolean overlapped() {
-		return SimpleSCWList.overLappingExist(startList, stopList);
+	public Integer getStop() {
+		return stop;
 	}
 
 
@@ -304,5 +201,4 @@ implements Serializable, ScoredChromosomeWindowListGenerator, BinListGenerator{
 	public void setRandomLineCount(Integer randomLineCount) throws UnsupportedOperationException {
 		throw new UnsupportedOperationException("Wiggle files need to be entirely extracted");
 	}
-
 }

@@ -25,13 +25,15 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 import edu.yu.einstein.genplay.core.IO.dataReader.GeneReader;
-import edu.yu.einstein.genplay.core.IO.dataReader.RepeatReader;
-import edu.yu.einstein.genplay.core.IO.dataReader.SCWReader;
 import edu.yu.einstein.genplay.core.IO.utils.DataLineValidator;
+import edu.yu.einstein.genplay.core.IO.utils.Extractors;
 import edu.yu.einstein.genplay.core.IO.utils.StrandedExtractorOptions;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
@@ -43,17 +45,14 @@ import edu.yu.einstein.genplay.util.Utils;
  * A GdpGene file extractor
  * @author Julien Lajugie
  */
-public final class GdpGeneExtractor extends TextFileExtractor implements SCWReader, GeneReader, RepeatReader, StrandedExtractor {
+public final class GdpGeneExtractor extends TextFileExtractor implements GeneReader, StrandedExtractor {
 
 	private StrandedExtractorOptions		strandOptions;		// options on the strand and read length / shift
 	private Chromosome 						chromosome;		 	// chromosome of the last item read
 	private Integer 						start;				// start position of the last item read
 	private Integer 						stop;				// stop position of the last item read
 	private String 							name;				// name of the last item read
-	private Float 							score;				// score of the last item read
 	private Strand 							strand;				// strand of the last item read
-	private Integer 						UTR5Bound;			// UTR5' stop position of the last item read
-	private Integer 						UTR3Bound;			// UTR3' start position of the last item read
 	private ListView<ScoredChromosomeWindow>exons;				// exons of the last item read
 
 
@@ -73,96 +72,92 @@ public final class GdpGeneExtractor extends TextFileExtractor implements SCWRead
 		start = null;
 		stop = null;
 		name = null;
-		score = null;
 		strand = null;
-		UTR5Bound = null;
-		UTR3Bound = null;
 		exons = null;
 
-		String[] splitedLine = Utils.parseLineTabOnly(extractedLine);
-		if (splitedLine.length < 3) {
-			//throw new InvalidDataLineException(extractedLine);
+		String[] splitedLine = Extractors.parseLineTabOnly(line);
+		if (splitedLine.length <=7 ) {
 			throw new DataLineException(DataLineException.INVALID_PARAMETER_NUMBER);
 		}
-		try {
-			int chromosomeStatus;
-			Chromosome chromosome = null;
-			try {
-				chromosome = getProjectChromosome().get(splitedLine[1]) ;
-				chromosomeStatus = checkChromosomeStatus(chromosome);
-			} catch (InvalidChromosomeException e) {
-				chromosomeStatus = NEED_TO_BE_SKIPPED;
+
+		// retrieve the chromosome and check if it was selected
+		String chromosomeName = splitedLine[1];
+		if (getChromosomeSelector() != null) {
+			// case where last chromosome already extracted, no more data to extract
+			if (getChromosomeSelector().isExtractionDone(chromosomeName)) {
+				return EXTRACTION_DONE;
 			}
-
-			if (chromosomeStatus == AFTER_LAST_SELECTED) {
-				return true;
-			} else if (chromosomeStatus == NEED_TO_BE_SKIPPED) {
-				return false;
-			} else {
-				// Gets the values
-				String name = splitedLine[0].trim();
-				Strand strand = Strand.get(splitedLine[2].trim().charAt(0));
-				int start = getInt(splitedLine[3].trim());
-				start = getMultiGenomePosition(chromosome, start);
-				int stop = getInt(splitedLine[4].trim());
-				stop = getMultiGenomePosition(chromosome, stop);
-				//String[] exonStartsStr = splitedLine[5].split(",");
-				//String[] exonStopsStr = splitedLine[6].split(",");
-				String[] exonStartsStr = Utils.split(splitedLine[5], ',');
-				String[] exonStopsStr = Utils.split(splitedLine[6], ',');
-				int[] exonStarts = new int[exonStartsStr.length];
-				int[] exonStops = new int[exonStartsStr.length];
-				for (int i = 0; i < exonStartsStr.length; i++) {
-					exonStarts[i] = getInt(exonStartsStr[i].trim());
-					exonStarts[i] = getMultiGenomePosition(chromosome, exonStarts[i]);
-					exonStops[i] = getInt(exonStopsStr[i].trim());
-					exonStops[i] = getMultiGenomePosition(chromosome, exonStops[i]);
-				}
-
-				// Checks errors
-				String errors = DataLineValidator.getErrors(chromosome, start, stop, exonStarts, exonStops, name, strand);
-				if (errors.length() == 0) {
-
-					// Stop position checking, must not overpass the chromosome length
-					DataLineException stopEndException = null;
-					String stopEndErrorMessage = DataLineValidator.getErrors(chromosome, stop);
-					if (!stopEndErrorMessage.isEmpty()) {
-						stopEndException = new DataLineException(stopEndErrorMessage, DataLineException.SHRINK_STOP_PROCESS);
-						stop = chromosome.getLength();
-					}
-
-					// Adds the values
-					nameList.add(chromosome, name);
-					strandList.add(chromosome, strand);
-					startList.add(chromosome, start);
-					stopList.add(chromosome, stop);
-					exonStartsList.add(chromosome, exonStarts);
-					exonStopsList.add(chromosome, exonStops);
-
-					// Gets the scores
-					if (splitedLine.length > 7) {
-						//String[] exonScoresStr = splitedLine[7].split(",");
-						String[] exonScoresStr = Utils.split(splitedLine[7], ',');
-						double[] exonScores = new double[exonScoresStr.length];
-						for (int i = 0; i < exonScoresStr.length; i++) {
-							exonScores[i] = getDouble(exonScoresStr[i]);
-						}
-						exonScoresList.add(chromosome, exonScores);
-					}
-					lineCount++;
-
-					if (stopEndException != null) {
-						throw stopEndException;
-					}
-				} else {
-					throw new DataLineException(errors);
-				}
-				return false;
+			// chromosome was not selected for extraction
+			if (!getChromosomeSelector().isSelected(chromosomeName)) {
+				return LINE_SKIPPED;
 			}
-		} catch (InvalidChromosomeException e) {
-			//throw new InvalidDataLineException(extractedLine);
-			throw new DataLineException(DataLineException.INVALID_FORMAT_NUMBER);
 		}
+		try {
+			chromosome = getProjectChromosome().get(chromosomeName) ;
+		} catch (InvalidChromosomeException e) {
+			// unknown chromosome
+			return LINE_SKIPPED;
+		}
+
+		// retrieve the strand and check if it was selected
+		strand = Strand.get(splitedLine[2].trim().charAt(0));
+		if ((strand != null) && (strandOptions != null) && (!strandOptions.isSelected(strand))) {
+			chromosome = null;
+			return LINE_SKIPPED;
+		}
+
+		// retrieve name
+		name = splitedLine[0].trim();
+
+		// retrieve start and stop positions
+		start = Extractors.getInt(splitedLine[3].trim());
+		stop = Extractors.getInt(splitedLine[4].trim());
+
+		String errors = DataLineValidator.getErrors(chromosome, start, stop);
+		if (!errors.isEmpty()) {
+			throw new DataLineException(errors);
+		}
+
+		// Stop position checking, must not be greater than the chromosome length
+		String stopEndErrorMessage = DataLineValidator.getErrors(chromosome, stop);
+		if (!stopEndErrorMessage.isEmpty()) {
+			DataLineException stopEndException = new DataLineException(stopEndErrorMessage, DataLineException.SHRINK_STOP_PROCESS);
+			// notify the listeners that the stop position needed to be shrunk
+			notifyDataEventListeners(stopEndException, getCurrentLineNumber(), line);
+			stop = chromosome.getLength();
+		}
+
+		// compute the read position with specified strand shift and read length
+		if (strandOptions != null) {
+			SimpleChromosomeWindow resultStartStop = strandOptions.computeStartStop(chromosome, start, stop, strand);
+			start = resultStartStop.getStart();
+			stop = resultStartStop.getStop();
+		}
+
+		// if we are in a multi-genome project, we compute the position on the meta genome
+		start = getMultiGenomePosition(chromosome, start);
+		stop = getMultiGenomePosition(chromosome, stop);
+
+		// retrieve exons
+		String[] exonStartsStr = Utils.split(splitedLine[5], ',');
+		String[] exonStopsStr = Utils.split(splitedLine[6], ',');
+		String[] exonScoresStr = null;
+		// Gets the scores
+		if (splitedLine.length > 7) {
+			exonScoresStr = Utils.split(splitedLine[7], ',');
+		}
+		GenericSCWListViewBuilder exonListBuilder = new GenericSCWListViewBuilder(ScorePrecision.PRECISION_32BIT);
+		for (int i = 0; i < exonStartsStr.length; i++) {
+			int exonStart = Extractors.getInt(exonStartsStr[i]) + start;
+			int exonStop = Extractors.getInt(exonStopsStr[i]);
+			float exonScore = 0;
+			if (exonScoresStr != null) {
+				exonScore = Extractors.getFloat(exonScoresStr[i], 0f);
+			}
+			exonListBuilder.addElementToBuild(exonStart, exonStop, exonScore);
+		}
+		exons = exonListBuilder.getListView();
+		return ITEM_EXTRACTED;
 	}
 
 
@@ -198,7 +193,7 @@ public final class GdpGeneExtractor extends TextFileExtractor implements SCWRead
 
 	@Override
 	public Float getScore() {
-		return score;
+		return 0f;
 	}
 
 
@@ -228,13 +223,13 @@ public final class GdpGeneExtractor extends TextFileExtractor implements SCWRead
 
 	@Override
 	public Integer getUTR3Bound() {
-		return UTR3Bound;
+		return stop;
 	}
 
 
 	@Override
 	public Integer getUTR5Bound() {
-		return UTR5Bound;
+		return start;
 	}
 
 

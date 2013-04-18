@@ -22,18 +22,16 @@
 package edu.yu.einstein.genplay.core.IO.extractor;
 
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Serializable;
-import java.text.NumberFormat;
-import java.util.ArrayList;
+import java.io.FileNotFoundException;
 
+import edu.yu.einstein.genplay.core.IO.dataReader.SCWReader;
+import edu.yu.einstein.genplay.core.IO.utils.DataLineValidator;
+import edu.yu.einstein.genplay.core.IO.utils.Extractors;
+import edu.yu.einstein.genplay.core.IO.utils.StrandedExtractorOptions;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 
@@ -42,35 +40,26 @@ import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
  * A Eland Extended file extractor
  * @author Julien Lajugie
  */
-public final class ElandExtendedExtractor extends TextFileExtractor implements Serializable, StrandedExtractor, BinListGenerator {
+public final class ElandExtendedExtractor extends TextFileExtractor implements SCWReader, StrandedExtractor {
 
-	private static final long serialVersionUID = 8952410963820358882L;	// generated ID
-
-	private final GenomicListView<Integer>	positionList;		// list of position
-	private GenomicListView<Integer>	stopPositionList;	// list of stop position. Only used when a read length is specified
-	private GenomicListView<Double>	scoreList;			// list of score. Only used when a read length is specified
-	private final GenomicListView<Strand>	strandList;			// list of strand
-	private final int[][] 						matchTypeCount; 	// number of lines with 0,1,2 mistakes per chromosome
+	private StrandedExtractorOptions		strandOptions;		// options on the strand and read length / shift
+	private Chromosome 						chromosome;		 	// chromosome of the last item read
+	private Integer 						start;				// start position of the last item read
+	private Integer 						stop;				// stop position of the last item read
+	private Float 							score;				// score of the last item read
+	private final int[][] 					matchTypeCount; 	// number of lines with 0,1,2 mistakes per chromosome
 	private int 							NMCount = 0;		// Non matched line count
 	private int 							QCCount = 0;		// quality control line count
 	private int 							multiMatchCount = 0;// multi-match line count
-	private Strand 							selectedStrand;		// strand to extract, null for both
-	private ReadLengthAndShiftHandler		readHandler;		// handler that computes the position of read by applying the shift
 
 
 	/**
 	 * Creates an instance of {@link ElandExtendedExtractor}
 	 * @param dataFile file containing the data
-	 * @param logFile file for the log (no log if null)
+	 * @throws FileNotFoundException if the specified file is not found
 	 */
-	public ElandExtendedExtractor(File dataFile, File logFile) {
-		super(dataFile, logFile);
-		positionList = new GenomicDataArrayList<Integer>();
-		strandList = new GenomicDataArrayList<Strand>();
-		for (int i = 0; i < getProjectChromosome().size(); i++) {
-			positionList.add(new IntArrayAsIntegerList());
-			strandList.add(new ArrayList<Strand>());
-		}
+	public ElandExtendedExtractor(File dataFile) throws FileNotFoundException {
+		super(dataFile);
 		matchTypeCount = new int[getProjectChromosome().size()][3];
 		for(short i = 0; i < getProjectChromosome().size(); i++) {
 			for(short j = 0; j < 3; j++) {
@@ -81,14 +70,16 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 
 
 	@Override
-	protected boolean extractLine(String extractedLine) throws DataLineException {
+	protected int extractDataLine(String extractedLine) throws DataLineException {
+		chromosome = null;
+		start = null;
+		stop = null;
+		score = null;
 		byte[] line = extractedLine.getBytes();
 		byte[] matchChar = new byte[4];
 		byte[] chromoChar = new byte[64];
 		byte[] positionChar = new byte[10];
 		short match0MNumber, match1MNumber, match2MNumber, chromoNumber;
-		Chromosome chromo;
-		int positionNumber;
 
 		if (line[0] == '\0') {
 			throw new DataLineException("Null character found at the beginning of the line.");
@@ -156,108 +147,144 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 		if (i == line.length) {
 			throw new DataLineException("End of the line reached, no data to extract.");
 		}
-		try {
-			chromo = getProjectChromosome().get(new String(chromoChar, 0, j).trim());
-		} catch (InvalidChromosomeException e) {
-			return false;
-		}
-		// checks if we need to extract the data on the chromosome
-		int chromosomeStatus = checkChromosomeStatus(chromo);
-		if (chromosomeStatus == AFTER_LAST_SELECTED) {
-			return true;
-		} else if (chromosomeStatus == NEED_TO_BE_SKIPPED) {
-			return false;
-		} else {
-			chromoNumber = getProjectChromosome().getIndex(chromo);
 
-			// try to extract the position number
-			i+=4;  // we want to get rid of 'fa:'
-			j = 0;
-			while ((line[i] != 'F') && (line[i] != 'R')) {
-				positionChar[j] = line[i];
-				i++;
-				j++;
+		// chromosome
+		String chromosomeName = new String(chromoChar, 0, j).trim();
+		if (getChromosomeSelector() != null) {
+			// case where last chromosome already extracted, no more data to extract
+			if (getChromosomeSelector().isExtractionDone(chromosomeName)) {
+				return EXTRACTION_DONE;
 			}
-			// retrieve the strand
-			char strandChar = (char) (line[i] & 0xFF); // because byte goes from -128 to 127 and char from 0 to 255
-			Strand strand = Strand.get(strandChar);
-			if (isStrandSelected(strand)) {
-				positionNumber = getInt(new String(positionChar, 0, j));
-				if (positionNumber <= chromo.getLength()) {
-					// add data for the statistics
-					matchTypeCount[chromoNumber][0] += match0MNumber;
-					matchTypeCount[chromoNumber][1] += match1MNumber;
-					matchTypeCount[chromoNumber][2] += match2MNumber;
-					// add the data
-					strandList.add(chromo, strand);
-					// compute the read position with specified strand shift and read length
-					positionNumber = getMultiGenomePosition(chromo, positionNumber);
-					if (readHandler != null) {
-						SimpleChromosomeWindow resultStartStop = readHandler.computeStartStop(chromo, positionNumber, positionNumber, strand);
-						positionNumber = resultStartStop.getStart();
-						// if a read length is specified we need to add a stop position
-						if (readHandler.getReadLength() != 0) {
-							int stop = resultStartStop.getStop();
-							stop = getMultiGenomePosition(chromo, stop);
-							stopPositionList.add(chromo, stop);
-							// TODO: add a BinList constructor that doesn't need
-							// as score list so we don't need the useless next line
-							scoreList.add(chromo, 1.0);
-						}
-					}
-				}
-				positionList.add(chromo, positionNumber);
-				lineCount++;
+			// chromosome was not selected for extraction
+			if (!getChromosomeSelector().isSelected(chromosomeName)) {
+				return LINE_SKIPPED;
 			}
-			return false;
 		}
+		try {
+			chromosome = getProjectChromosome().get(chromosomeName) ;
+		} catch (InvalidChromosomeException e) {
+			// unknown chromosome
+			return LINE_SKIPPED;
+		}
+
+		chromoNumber = getProjectChromosome().getIndex(chromosomeName);
+		// try to extract the position number
+		i+=4;  // we want to get rid of 'fa:'
+		j = 0;
+		while ((line[i] != 'F') && (line[i] != 'R')) {
+			positionChar[j] = line[i];
+			i++;
+			j++;
+		}
+		// retrieve the strand
+		char strandChar = (char) (line[i] & 0xFF); // because byte goes from -128 to 127 and char from 0 to 255
+		Strand strand = Strand.get(strandChar);
+		if ((strand != null) && (strandOptions != null) && (!strandOptions.isSelected(strand))) {
+			chromosome = null;
+			return LINE_SKIPPED;
+		}
+
+		start = Extractors.getInt(new String(positionChar, 0, j));
+		stop = start;
+
+		String errors = DataLineValidator.getErrors(chromosome, start, stop);
+		if (!errors.isEmpty()) {
+			throw new DataLineException(errors);
+		}
+
+		// Stop position checking, must not be greater than the chromosome length
+		String stopEndErrorMessage = DataLineValidator.getErrors(chromosome, stop);
+		if (!stopEndErrorMessage.isEmpty()) {
+			DataLineException stopEndException = new DataLineException(stopEndErrorMessage, DataLineException.SHRINK_STOP_PROCESS);
+			// notify the listeners that the stop position needed to be shrunk
+			notifyDataEventListeners(stopEndException, getCurrentLineNumber(), extractedLine);
+			stop = chromosome.getLength();
+		}
+
+		// compute the read position with specified strand shift and read length
+		if (strandOptions != null) {
+			SimpleChromosomeWindow resultStartStop = strandOptions.computeStartStop(chromosome, start, stop, strand);
+			start = resultStartStop.getStart();
+			stop = resultStartStop.getStop();
+		}
+
+		// if we are in a multi-genome project, we compute the position on the meta genome
+		start = getMultiGenomePosition(chromosome, start);
+		stop = getMultiGenomePosition(chromosome, stop);
+
+		// add data for the statistics
+		matchTypeCount[chromoNumber][0] += match0MNumber;
+		matchTypeCount[chromoNumber][1] += match1MNumber;
+		matchTypeCount[chromoNumber][2] += match2MNumber;
+
+		return ITEM_EXTRACTED;
 	}
 
 
 	@Override
-	protected void logExecutionInfo() {
-		super.logExecutionInfo();
-		// display statistics
-		if(logFile != null) {
-			try {
-				// initialize the number of read per chromosome and the data for statistics
-				int total0M = 0, total1M = 0, total2M = 0;
-				BufferedWriter writer = new BufferedWriter(new FileWriter(logFile, true));
-				NumberFormat nf = NumberFormat.getInstance();
-				writer.write("NM: " + NMCount);
-				writer.newLine();
-				writer.write("Percentage of NM: " + nf.format(((double)NMCount / totalCount) * 100) + "%");
-				writer.newLine();
-				writer.write("QC: " + QCCount);
-				writer.newLine();
-				writer.write("Percentage of QC: " + nf.format(((double)QCCount / totalCount) * 100) + "%");
-				writer.newLine();
-				writer.write("Multi match: " + multiMatchCount);
-				writer.newLine();
-				writer.write("Percentage of multimatch: " + nf.format(((double)multiMatchCount / totalCount) * 100) + "%");
-				writer.newLine();
-				writer.write("Chromosome\t0MM\t1MM\t2MM\tTotal");
-				writer.newLine();
-				for(short i = 0; i < getProjectChromosome().size(); i++) {
-					writer.write(getProjectChromosome().get(i) +
-							"\t\t" + nf.format(((double)matchTypeCount[i][0] / lineCount)*100) +
-							"%\t" + nf.format(((double)matchTypeCount[i][1] / lineCount)*100) +
-							"%\t" + nf.format(((double)matchTypeCount[i][2] / lineCount)*100) +
-							"%\t" + nf.format(((double)(matchTypeCount[i][0] + matchTypeCount[i][1] + matchTypeCount[i][2]) / lineCount)*100) + "%");
-					writer.newLine();
-					total0M+=matchTypeCount[i][0];
-					total1M+=matchTypeCount[i][1];
-					total2M+=matchTypeCount[i][2];
-				}
-				writer.write("Total:\t" + nf.format(((double)total0M/lineCount)*100) +
-						"%\t" + nf.format(((double)total1M/lineCount)*100) +
-						"%\t" + nf.format(((double)total2M/lineCount)*100) +
-						"%\t\t100%");
-				writer.newLine();
-				writer.close();
-			} catch (IOException e) {
+	public Chromosome getChromosome() {
+		return chromosome;
+	}
 
-			}
-		}
+
+	/**
+	 * @return the number of lines with 0,1,2 mistakes per chromosome
+	 */
+	public int[][] getMatchTypeCount() {
+		return matchTypeCount;
+	}
+
+
+	/**
+	 * @return the count of multi-match lines
+	 */
+	public int getMultiMatchCount() {
+		return multiMatchCount;
+	}
+
+
+	/**
+	 * @return the count of non-matched lines
+	 */
+	public int getNMCount() {
+		return NMCount;
+	}
+
+
+	/**
+	 * @return the count of quality control lines
+	 */
+	public int getQCCount() {
+		return QCCount;
+	}
+
+
+	@Override
+	public Float getScore() {
+		return score;
+	}
+
+
+	@Override
+	public Integer getStart() {
+		return start;
+	}
+
+
+	@Override
+	public Integer getStop() {
+		return stop;
+	}
+
+
+	@Override
+	public StrandedExtractorOptions getStrandedExtractorOptions() {
+		return strandOptions;
+	}
+
+
+	@Override
+	public void setStrandedExtractorOptions(StrandedExtractorOptions options) {
+		strandOptions = options;
 	}
 }

@@ -46,6 +46,8 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
  */
 public abstract class Extractor implements InvalidDataEventsGenerator, DataReader, Stoppable {
 
+	// TODO handle 0-base and 1-base extractors
+
 	/** Maximum number of warning that will be reported */
 	private final static int WARNING_LIMIT = 100;
 

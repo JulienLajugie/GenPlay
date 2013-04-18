@@ -23,6 +23,7 @@ package edu.yu.einstein.genplay.core.IO.extractor;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -42,8 +43,9 @@ public final class ExtractorFactory {
 	/**
 	 * @param fileToExtract file containing the data to extract
 	 * @return an {@link Extractor} if the extension of the file is known. null otherwise
+	 * @throws FileNotFoundException
 	 */
-	public static Extractor checkFileExtension(File fileToExtract) {
+	public static Extractor checkFileExtension(File fileToExtract) throws FileNotFoundException {
 		String fileExtension = Utils.getExtension(fileToExtract);
 		if (fileExtension == null) {
 			return null;
@@ -67,8 +69,6 @@ public final class ExtractorFactory {
 			return new PairExtractor(fileToExtract);
 		} else if (fileExtension.equalsIgnoreCase("gdp")) {
 			return new GdpGeneExtractor(fileToExtract);
-		} else if (fileExtension.equalsIgnoreCase("bin")) {
-			return new SerializedBinListExtractor(fileToExtract);
 		} else if (fileExtension.equalsIgnoreCase("elx")) {
 			return new ElandExtendedExtractor(fileToExtract);
 		} else if (fileExtension.equalsIgnoreCase("psl")) {

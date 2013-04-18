@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.chromosome.SimpleChromosome;
 
 
 /**
@@ -49,53 +50,10 @@ public class MetaGenomeSynchroniser implements Serializable {
 
 
 	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(chromosomeLength);
-		out.writeObject(chromosomeList);
-		out.writeLong(genomomeLength);
-	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	@SuppressWarnings("unchecked")
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		chromosomeLength = (Map<String, Integer>) in.readObject();
-		chromosomeList = (List<Chromosome>) in.readObject();
-		genomomeLength = in.readLong();
-	}
-
-
-	/**
 	 * Constructor of {@link MetaGenomeSynchroniser}
 	 */
 	protected MetaGenomeSynchroniser (List<Chromosome> chromosomeList) {
 		initializeMetaGenomeSynchronizer(chromosomeList);
-	}
-
-
-	/**
-	 * Initializes basic meta genome synchronizer parameters.
-	 * The list of chromosome and the list of their length to native value.
-	 * @param chromosomeListTmp
-	 */
-	private void initializeMetaGenomeSynchronizer (List<Chromosome> chromosomeListTmp) {
-		chromosomeList = new ArrayList<Chromosome>();
-		chromosomeLength = new HashMap<String, Integer>();
-		for (Chromosome chromosome: chromosomeListTmp) {
-			chromosomeList.add(new Chromosome(chromosome.getName(), chromosome.getLength()));
-			chromosomeLength.put(chromosome.getName(), chromosome.getLength());
-		}
 	}
 
 
@@ -107,43 +65,6 @@ public class MetaGenomeSynchroniser implements Serializable {
 		for (Integer length: chromosomeLength.values()) {
 			genomomeLength += length;
 		}
-	}
-
-
-	/**
-	 * Updates the chromosome length.
-	 * Only insertion can increase a chromosome length.
-	 * @param chromosome the chromosome
-	 * @param length	the length to add
-	 */
-	protected void updateChromosomeLength(Chromosome chromosome, int length) {
-		chromosomeLength.put(chromosome.getName(), chromosomeLength.get(chromosome) + length);
-	}
-
-
-	/**
-	 * Refreshes chromosome references re-creating list with right chromosomes with right lengths.
-	 */
-	protected void refreshChromosomeReferences () {
-
-		// Initializes temporary lists
-		List<Chromosome> chromosomeListTmp = new ArrayList<Chromosome>();
-		Map<String, Integer> chromosomeLengthTmp = new HashMap<String, Integer>();
-
-		// For every chromosome of the project
-		for (Chromosome chromosome: chromosomeList) {
-
-			// Creates a new chromosome with the right length
-			Chromosome newChromosome = new Chromosome(chromosome.getName(), chromosomeLength.get(chromosome));
-
-			// Adds it to the temporary lists
-			chromosomeListTmp.add(newChromosome);
-			chromosomeLengthTmp.put(newChromosome.getName(), chromosomeLength.get(chromosome));
-		}
-
-		// Replaces previous list using the new ones
-		chromosomeList = chromosomeListTmp;
-		chromosomeLength = chromosomeLengthTmp;
 	}
 
 
@@ -164,6 +85,62 @@ public class MetaGenomeSynchroniser implements Serializable {
 
 
 	/**
+	 * Initializes basic meta genome synchronizer parameters.
+	 * The list of chromosome and the list of their length to native value.
+	 * @param chromosomeListTmp
+	 */
+	private void initializeMetaGenomeSynchronizer (List<Chromosome> chromosomeListTmp) {
+		chromosomeList = new ArrayList<Chromosome>();
+		chromosomeLength = new HashMap<String, Integer>();
+		for (Chromosome chromosome: chromosomeListTmp) {
+			chromosomeList.add(new SimpleChromosome(chromosome.getName(), chromosome.getLength()));
+			chromosomeLength.put(chromosome.getName(), chromosome.getLength());
+		}
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		chromosomeLength = (Map<String, Integer>) in.readObject();
+		chromosomeList = (List<Chromosome>) in.readObject();
+		genomomeLength = in.readLong();
+	}
+
+
+	/**
+	 * Refreshes chromosome references re-creating list with right chromosomes with right lengths.
+	 */
+	protected void refreshChromosomeReferences () {
+
+		// Initializes temporary lists
+		List<Chromosome> chromosomeListTmp = new ArrayList<Chromosome>();
+		Map<String, Integer> chromosomeLengthTmp = new HashMap<String, Integer>();
+
+		// For every chromosome of the project
+		for (Chromosome chromosome: chromosomeList) {
+
+			// Creates a new chromosome with the right length
+			Chromosome newChromosome = new SimpleChromosome(chromosome.getName(), chromosomeLength.get(chromosome));
+
+			// Adds it to the temporary lists
+			chromosomeListTmp.add(newChromosome);
+			chromosomeLengthTmp.put(newChromosome.getName(), chromosomeLength.get(chromosome));
+		}
+
+		// Replaces previous list using the new ones
+		chromosomeList = chromosomeListTmp;
+		chromosomeLength = chromosomeLengthTmp;
+	}
+
+
+	/**
 	 * Shows meta genome mananger information.
 	 */
 	public void showData () {
@@ -175,5 +152,29 @@ public class MetaGenomeSynchroniser implements Serializable {
 		for (Chromosome chromosome: chromosomeList) {
 			System.out.println(chromosome.getName() + ", " + chromosome.getLength());
 		}
+	}
+
+
+	/**
+	 * Updates the chromosome length.
+	 * Only insertion can increase a chromosome length.
+	 * @param chromosome the chromosome
+	 * @param length	the length to add
+	 */
+	protected void updateChromosomeLength(Chromosome chromosome, int length) {
+		chromosomeLength.put(chromosome.getName(), chromosomeLength.get(chromosome) + length);
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(chromosomeLength);
+		out.writeObject(chromosomeList);
+		out.writeLong(genomomeLength);
 	}
 }

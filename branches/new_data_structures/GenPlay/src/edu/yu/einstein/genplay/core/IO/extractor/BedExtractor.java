@@ -89,8 +89,8 @@ public class BedExtractor extends TextFileExtractor implements SCWReader, GeneRe
 			throw new DataLineException(DataLineException.INVALID_PARAMETER_NUMBER);
 		}
 
+		// chromosome
 		String chromosomeName = splitedLine[0];
-
 		if (getChromosomeSelector() != null) {
 			// case where last chromosome already extracted, no more data to extract
 			if (getChromosomeSelector().isExtractionDone(chromosomeName)) {
@@ -101,7 +101,6 @@ public class BedExtractor extends TextFileExtractor implements SCWReader, GeneRe
 				return LINE_SKIPPED;
 			}
 		}
-
 		try {
 			chromosome = getProjectChromosome().get(chromosomeName) ;
 		} catch (InvalidChromosomeException e) {
@@ -109,14 +108,16 @@ public class BedExtractor extends TextFileExtractor implements SCWReader, GeneRe
 			return LINE_SKIPPED;
 		}
 
+		// strand
 		if (splitedLine.length > 5) {
 			strand = Strand.get(splitedLine[5].trim().charAt(0));
 		}
-
 		if ((strand != null) && (strandOptions != null) && (!strandOptions.isSelected(strand))) {
 			chromosome = null;
 			return LINE_SKIPPED;
 		}
+
+		// start and stop
 		start = Extractors.getInt(splitedLine[1].trim());
 		stop = Extractors.getInt(splitedLine[2].trim());
 
@@ -144,6 +145,7 @@ public class BedExtractor extends TextFileExtractor implements SCWReader, GeneRe
 		// if we are in a multi-genome project, we compute the position on the meta genome
 		start = getMultiGenomePosition(chromosome, start);
 		stop = getMultiGenomePosition(chromosome, stop);
+
 		if (splitedLine.length <= 3) {
 			return ITEM_EXTRACTED;
 		}
