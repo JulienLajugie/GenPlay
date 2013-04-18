@@ -72,23 +72,6 @@ public final class BLAFindPeaks extends TrackListActionOperationWorker<BinList[]
 
 
 	@Override
-	public Operation<BinList[]> initializeOperation() throws InterruptedException, ExecutionException {
-		selectedLayer = (BinLayer) getValue("Layer");
-		if (selectedLayer != null) {
-			BinList binList = selectedLayer.getData();
-			BLOFindPeaksDensity bloDensity = new BLOFindPeaksDensity(binList);
-			BLOFindPeaksStDev bloStdev = new BLOFindPeaksStDev(binList);
-			BLOFindIslands bloIsland = new BLOFindIslands(binList);
-			PeakFinderDialog peakFinderDialog = new PeakFinderDialog(bloDensity, bloStdev, bloIsland);
-			if (peakFinderDialog.showFilterDialog(getRootPane()) == PeakFinderDialog.APPROVE_OPTION) {
-				return peakFinderDialog.getOperation();
-			}
-		}
-		return null;
-	}
-
-
-	@Override
 	protected void doAtTheEnd(BinList[] actionResult) {
 		if (actionResult != null) {
 			if (operation instanceof BLOFindIslands) {
@@ -96,6 +79,22 @@ public final class BLAFindPeaks extends TrackListActionOperationWorker<BinList[]
 			} else {
 				doAtTheEndDefaultFinder(actionResult[0]);
 			}
+		}
+	}
+
+
+	/**
+	 * Action done at the end of all the peak finders that are not Island finders
+	 * @param actionResult the output BinList from the operation
+	 */
+	private void doAtTheEndDefaultFinder(BinList actionResult) {
+		Track resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackListPanel().getModel().getTracks());	// purposes tracks
+		if (resultTrack != null) {
+			BinLayer newLayer = new BinLayer(resultTrack, actionResult, "Peaks of " + selectedLayer.getName());
+			newLayer.getHistory().add(operation.getDescription(), Colors.GREY);
+			newLayer.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getScorePrecision(), Color.GRAY);
+			resultTrack.getLayers().add(newLayer);
+			resultTrack.setActiveLayer(newLayer);
 		}
 	}
 
@@ -115,7 +114,7 @@ public final class BLAFindPeaks extends TrackListActionOperationWorker<BinList[]
 				if (resultTrack != null) {
 					BinLayer newLayer = new BinLayer(resultTrack, actionResult[i], "Islands of " + selectedLayer.getName());
 					newLayer.getHistory().add(operation.getDescription() + ", Result Type: " + bloFindIslands.getResultTypes()[i].toString(), Colors.GREY);
-					newLayer.getHistory().add("Window Size = " + actionResult[i].getBinSize() + "bp, Precision = " + actionResult[i].getPrecision(), Colors.GREY);
+					newLayer.getHistory().add("Window Size = " + actionResult[i].getBinSize() + "bp, Precision = " + actionResult[i].getScorePrecision(), Colors.GREY);
 					resultTrack.getLayers().add(newLayer);
 					resultTrack.setActiveLayer(newLayer);
 				}
@@ -124,18 +123,19 @@ public final class BLAFindPeaks extends TrackListActionOperationWorker<BinList[]
 	}
 
 
-	/**
-	 * Action done at the end of all the peak finders that are not Island finders
-	 * @param actionResult the output BinList from the operation
-	 */
-	private void doAtTheEndDefaultFinder(BinList actionResult) {
-		Track resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackListPanel().getModel().getTracks());	// purposes tracks
-		if (resultTrack != null) {
-			BinLayer newLayer = new BinLayer(resultTrack, actionResult, "Peaks of " + selectedLayer.getName());
-			newLayer.getHistory().add(operation.getDescription(), Colors.GREY);
-			newLayer.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Color.GRAY);
-			resultTrack.getLayers().add(newLayer);
-			resultTrack.setActiveLayer(newLayer);
+	@Override
+	public Operation<BinList[]> initializeOperation() throws InterruptedException, ExecutionException {
+		selectedLayer = (BinLayer) getValue("Layer");
+		if (selectedLayer != null) {
+			BinList binList = selectedLayer.getData();
+			BLOFindPeaksDensity bloDensity = new BLOFindPeaksDensity(binList);
+			BLOFindPeaksStDev bloStdev = new BLOFindPeaksStDev(binList);
+			BLOFindIslands bloIsland = new BLOFindIslands(binList);
+			PeakFinderDialog peakFinderDialog = new PeakFinderDialog(bloDensity, bloStdev, bloIsland);
+			if (peakFinderDialog.showFilterDialog(getRootPane()) == PeakFinderDialog.APPROVE_OPTION) {
+				return peakFinderDialog.getOperation();
+			}
 		}
+		return null;
 	}
 }

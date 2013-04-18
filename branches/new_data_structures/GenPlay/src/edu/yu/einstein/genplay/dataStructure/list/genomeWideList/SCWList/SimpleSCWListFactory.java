@@ -21,6 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList;
 
+import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -37,6 +38,8 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ListOfListViewB
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
+import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
 
 /**
  * Factory class for vending {@link SimpleSCWList} objects.
@@ -56,8 +59,11 @@ public class SimpleSCWListFactory {
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 * @throws CloneNotSupportedException
+	 * @throws IOException
+	 * @throws ObjectAlreadyBuiltException
+	 * @throws InvalidChromosomeException
 	 */
-	public static SCWList createDenseSCWArrayList(SCWReader scwReader, ScorePrecision scorePrecision, ScoreOperation scoreOperation) throws InterruptedException, ExecutionException, CloneNotSupportedException {
+	public static SCWList createDenseSCWArrayList(SCWReader scwReader, ScorePrecision scorePrecision, ScoreOperation scoreOperation) throws InterruptedException, ExecutionException, CloneNotSupportedException, InvalidChromosomeException, ObjectAlreadyBuiltException, IOException {
 		ListViewBuilder<ScoredChromosomeWindow> lvBuilderPrototype = new DenseSCWListViewBuilder(scorePrecision);
 		return createSimpleSCWArrayList(scwReader, scorePrecision, lvBuilderPrototype, scoreOperation);
 	}
@@ -74,8 +80,11 @@ public class SimpleSCWListFactory {
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 * @throws CloneNotSupportedException
+	 * @throws IOException
+	 * @throws ObjectAlreadyBuiltException
+	 * @throws InvalidChromosomeException
 	 */
-	public static SCWList createGenericSCWArrayList(SCWReader scwReader, ScorePrecision scorePrecision, ScoreOperation scoreOperation) throws InterruptedException, ExecutionException, CloneNotSupportedException {
+	public static SCWList createGenericSCWArrayList(SCWReader scwReader, ScorePrecision scorePrecision, ScoreOperation scoreOperation) throws InterruptedException, ExecutionException, CloneNotSupportedException, InvalidChromosomeException, ObjectAlreadyBuiltException, IOException {
 		ListViewBuilder<ScoredChromosomeWindow> lvBuilderPrototype = new GenericSCWListViewBuilder(scorePrecision);
 		return createSimpleSCWArrayList(scwReader, scorePrecision, lvBuilderPrototype, scoreOperation);
 	}
@@ -90,8 +99,11 @@ public class SimpleSCWListFactory {
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 * @throws CloneNotSupportedException
+	 * @throws IOException
+	 * @throws ObjectAlreadyBuiltException
+	 * @throws InvalidChromosomeException
 	 */
-	public static SCWList createMaskSCWArrayList(SCWReader scwReader, ScoreOperation scoreOperation) throws InterruptedException, ExecutionException, CloneNotSupportedException {
+	public static SCWList createMaskSCWArrayList(SCWReader scwReader, ScoreOperation scoreOperation) throws InterruptedException, ExecutionException, CloneNotSupportedException, InvalidChromosomeException, ObjectAlreadyBuiltException, IOException {
 		ListViewBuilder<ScoredChromosomeWindow> lvBuilderPrototype = new MaskListViewBuilder();
 		return createSimpleSCWArrayList(scwReader, null, lvBuilderPrototype, scoreOperation);
 	}
@@ -108,8 +120,11 @@ public class SimpleSCWListFactory {
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 * @throws CloneNotSupportedException
+	 * @throws IOException
+	 * @throws ObjectAlreadyBuiltException
+	 * @throws InvalidChromosomeException
 	 */
-	private static SCWList createSimpleSCWArrayList(SCWReader scwReader, ScorePrecision scorePrecision, ListViewBuilder<ScoredChromosomeWindow> lvBuilderPrototype, ScoreOperation scoreOperation) throws InterruptedException, ExecutionException, CloneNotSupportedException {
+	private static SCWList createSimpleSCWArrayList(SCWReader scwReader, ScorePrecision scorePrecision, ListViewBuilder<ScoredChromosomeWindow> lvBuilderPrototype, ScoreOperation scoreOperation) throws InterruptedException, ExecutionException, CloneNotSupportedException, InvalidChromosomeException, ObjectAlreadyBuiltException, IOException {
 		// retrieve the type of the SCWList underlying structure from the type of the builder prototype
 		SCWListType listType = null;
 		if (lvBuilderPrototype instanceof DenseSCWListViewBuilder) {

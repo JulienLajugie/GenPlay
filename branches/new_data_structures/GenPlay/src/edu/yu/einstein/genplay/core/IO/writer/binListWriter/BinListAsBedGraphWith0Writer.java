@@ -25,13 +25,14 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
 
@@ -45,6 +46,7 @@ public final class BinListAsBedGraphWith0Writer extends BinListWriter implements
 
 	private boolean needsToBeStopped = false;	// true if the writer needs to be stopped
 
+	// TODO TRANSFORM ALL BINLIST WRITERS INTO SCWLIST WRITERS
 
 	/**
 	 * Creates an instance of {@link BinListAsBedGraphWith0Writer}.
@@ -54,6 +56,15 @@ public final class BinListAsBedGraphWith0Writer extends BinListWriter implements
 	 */
 	public BinListAsBedGraphWith0Writer(File outputFile, BinList data, String name) {
 		super(outputFile, data, name);
+	}
+
+
+	/**
+	 * Stops the writer while it's writing a file
+	 */
+	@Override
+	public void stop() {
+		needsToBeStopped = true;
 	}
 
 
@@ -72,7 +83,7 @@ public final class BinListAsBedGraphWith0Writer extends BinListWriter implements
 			// print the data
 			for(Chromosome currentChromosome: projectChromosome) {
 				if(data.get(currentChromosome) != null) {
-					List<Double> currentList = data.get(currentChromosome);
+					ListView<ScoredChromosomeWindow> currentList = data.get(currentChromosome);
 					int currentChromosomeSize = currentChromosome.getLength();
 					for (int j = 0; j < currentList.size(); j++) {
 						// if the operation need to be stopped we close the writer and delete the file
@@ -95,7 +106,7 @@ public final class BinListAsBedGraphWith0Writer extends BinListWriter implements
 
 						if ((start > -1) && (stop > -1)) {
 							//writer.write(currentChromosome.getName() + "\t" + (j * binSize) + "\t" + ((j + 1) * binSize) + "\t" + currentList.get(j));
-							writer.write(currentChromosome.getName() + "\t" + start + "\t" + stop + "\t" + currentList.get(j));
+							writer.write(currentChromosome.getName() + "\t" + start + "\t" + stop + "\t" + currentList.get(j).getScore());
 							writer.newLine();
 						}
 					}
@@ -106,14 +117,5 @@ public final class BinListAsBedGraphWith0Writer extends BinListWriter implements
 				writer.close();
 			}
 		}
-	}
-
-
-	/**
-	 * Stops the writer while it's writing a file
-	 */
-	@Override
-	public void stop() {
-		needsToBeStopped = true;
 	}
 }

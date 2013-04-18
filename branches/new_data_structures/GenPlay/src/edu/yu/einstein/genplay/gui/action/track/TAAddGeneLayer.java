@@ -25,9 +25,11 @@ import java.io.File;
 
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.generator.GeneListGenerator;
+import edu.yu.einstein.genplay.core.IO.dataReader.GeneReader;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneListFactory;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection.GenomeSelectionDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -59,10 +61,26 @@ public final class TAAddGeneLayer extends TrackListActionExtractorWorker<GeneLis
 	 * Creates an instance of {@link TAAddGeneLayer}
 	 */
 	public TAAddGeneLayer() {
-		super(GeneListGenerator.class);
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+	}
+
+
+	@Override
+	public void doAtTheEnd(GeneList actionResult) {
+		boolean valid = true;
+		if (ProjectManager.getInstance().isMultiGenomeProject() && (genomeName == null)) {
+			valid = false;
+		}
+		if ((actionResult != null) && valid) {
+			Track selectedTrack = getTrackListPanel().getSelectedTrack();
+			GeneLayer newLayer = new GeneLayer(selectedTrack, actionResult, fileToExtract.getName());
+			newLayer.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Colors.GREY);
+			selectedTrack.getLayers().add(newLayer);
+			selectedTrack.setActiveLayer(newLayer);
+		}
 	}
 
 
@@ -81,6 +99,14 @@ public final class TAAddGeneLayer extends TrackListActionExtractorWorker<GeneLis
 
 
 	@Override
+	protected GeneList generateList() throws Exception {
+		GeneList geneList = GeneListFactory.createGeneList((GeneReader) extractor, ScorePrecision.PRECISION_32BIT);
+		// TODO ask for gene score precision
+		return geneList;
+	}
+
+
+	@Override
 	protected File retrieveFileToExtract() {
 		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
 		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Gene Layer", defaultDirectory, Utils.getReadableGeneFileFilters(), true);
@@ -88,27 +114,5 @@ public final class TAAddGeneLayer extends TrackListActionExtractorWorker<GeneLis
 			return selectedFile;
 		}
 		return null;
-	}
-
-
-	@Override
-	protected GeneList generateList() throws Exception {
-		return ((GeneListGenerator)extractor).toGeneList();
-	}
-
-
-	@Override
-	public void doAtTheEnd(GeneList actionResult) {
-		boolean valid = true;
-		if (ProjectManager.getInstance().isMultiGenomeProject() && (genomeName == null)) {
-			valid = false;
-		}
-		if ((actionResult != null) && valid) {
-			Track selectedTrack = getTrackListPanel().getSelectedTrack();
-			GeneLayer newLayer = new GeneLayer(selectedTrack, actionResult, fileToExtract.getName());
-			newLayer.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Colors.GREY);
-			selectedTrack.getLayers().add(newLayer);
-			selectedTrack.setActiveLayer(newLayer);
-		}
 	}
 }

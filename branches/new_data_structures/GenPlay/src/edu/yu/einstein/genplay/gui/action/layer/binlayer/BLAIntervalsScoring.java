@@ -27,8 +27,8 @@ import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.binList.BLOIntervalsScoring;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
@@ -79,6 +79,18 @@ public class BLAIntervalsScoring extends TrackListActionOperationWorker<BinList>
 
 
 	@Override
+	protected void doAtTheEnd(BinList actionResult) {
+		if (actionResult != null) {
+			BinLayer newLayer = new BinLayer(resultTrack, actionResult, method + " of " + selectedLayer.getName() + " from intervals of  " + intervalLayer.getName());
+			// add info to the history
+			newLayer.getHistory().add("Result of the " + method + " of " + selectedLayer.getName() + " calculated on the intervals defined by " + intervalLayer.getName() + " on the " + percentage + "% greatest values", Color.GRAY);
+			newLayer.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getScorePrecision(), Colors.GREY);
+			resultTrack.getLayers().add(newLayer);
+		}
+	}
+
+
+	@Override
 	public Operation<BinList> initializeOperation() {
 		selectedLayer = (BinLayer) getValue("Layer");
 		if (selectedLayer != null) {
@@ -110,17 +122,5 @@ public class BLAIntervalsScoring extends TrackListActionOperationWorker<BinList>
 			}
 		}
 		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(BinList actionResult) {
-		if (actionResult != null) {
-			BinLayer newLayer = new BinLayer(resultTrack, actionResult, method + " of " + selectedLayer.getName() + " from intervals of  " + intervalLayer.getName());
-			// add info to the history
-			newLayer.getHistory().add("Result of the " + method + " of " + selectedLayer.getName() + " calculated on the intervals defined by " + intervalLayer.getName() + " on the " + percentage + "% greatest values", Color.GRAY);
-			newLayer.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Colors.GREY);
-			resultTrack.getLayers().add(newLayer);
-		}
 	}
 }

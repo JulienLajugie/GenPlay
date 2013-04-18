@@ -27,6 +27,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.TreeSet;
 
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
@@ -70,6 +72,31 @@ public class Extractors {
 				}
 			}
 		}
+	}
+
+
+	/**
+	 * Creates a list of random integers that represents the numbers of the line to extract.
+	 * @param randomCount count of lines to extract
+	 * @param dataFile a file containing data
+	 * @return a {@link TreeSet} containing all the lines to extract
+	 * @throws IOException
+	 */
+	public static final TreeSet<Integer> generateRandomLineNumbers(int randomCount, File dataFile) throws IOException {
+		TreeSet<Integer> randomLineNumbers = new TreeSet<Integer>();
+		// we compute how many lines there is in the file
+		int lineCount = Extractors.countDataLines(dataFile);
+		// if there is less line in the file than the specified number of line to extract
+		// we extract the entire file
+		if (lineCount > randomCount) {
+			randomLineNumbers = new TreeSet<Integer>();
+			Random randomGenerator = new Random();
+			while (randomLineNumbers.size() < randomCount) {
+				// the add function in a set works only if the element to add is not already present
+				randomLineNumbers.add(randomGenerator.nextInt(lineCount) + 1);
+			}
+		}
+		return randomLineNumbers;
 	}
 
 
@@ -259,10 +286,10 @@ public class Extractors {
 
 
 	/**
-	 * @param dataFile path to a data file
+	 * @param dataFile a data file
 	 * @return the name of the data if it is specified in the file. Null otherwise
 	 */
-	public static final String retrieveDataName(String dataFile) {
+	public static final String retrieveDataName(File dataFile) {
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new FileReader(dataFile));

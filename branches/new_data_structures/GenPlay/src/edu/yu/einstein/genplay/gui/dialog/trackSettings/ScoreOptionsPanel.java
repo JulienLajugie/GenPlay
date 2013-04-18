@@ -205,16 +205,16 @@ class ScoreOptionsPanel extends JPanel implements ActionListener, ChangeListener
 	/**
 	 * @return the maximum score
 	 */
-	double getScoreMaximum() {
-		return ((Number) jftfScoreMax.getValue()).doubleValue();
+	float getScoreMaximum() {
+		return ((Number) jftfScoreMax.getValue()).floatValue();
 	}
 
 
 	/**
 	 * @return the minimun score
 	 */
-	double getScoreMinimum() {
-		return ((Number) jftfScoreMin.getValue()).doubleValue();
+	float getScoreMinimum() {
+		return ((Number) jftfScoreMin.getValue()).floatValue();
 	}
 
 

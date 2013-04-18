@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -40,10 +40,8 @@ import javax.swing.UIManager.LookAndFeelInfo;
 /**
  * Panel of the {@link OptionDialog} that allows to <br/>
  * - choose the default directory <br/>
- * - choose the log file <br/>
  * - choose the look and feel
  * @author Julien Lajugie
- * @version 0.1
  */
 final class GeneralOptionPanel extends OptionPanel {
 
@@ -51,13 +49,10 @@ final class GeneralOptionPanel extends OptionPanel {
 	private final JLabel 		jlDefaultDir; 		// label default directory
 	private final JTextField 	jtfDefautlDir; 		// textField default directory
 	private final JButton 		jbDefaultDirBrowse; // button browse default directory
-	private final JLabel 		jlLogFile; 			// label log file
-	private final JTextField 	jtfLogFile; 		// textField log file
-	private final JButton 		jbLogBrowse; 		// button browse log file
 	private final JLabel 		jlLookAndFeel; 		// label look and feel
 	private final JComboBox 	jcbLookAndFeel; 	// comboBox look and feel
 
-	
+
 	/**
 	 * Creates an instance of {@link GeneralOptionPanel}
 	 */
@@ -79,21 +74,6 @@ final class GeneralOptionPanel extends OptionPanel {
 			public void actionPerformed(ActionEvent e) {
 				browse("Default Directory:", new File(projectConfiguration.getDefaultDirectory()), jtfDefautlDir, false);
 				projectConfiguration.setDefaultDirectory(jtfDefautlDir.getText());
-			}
-		});
-
-		jlLogFile = new JLabel("Log file: ");
-
-		jtfLogFile = new JTextField(new File(projectConfiguration.getLogFile()).getAbsolutePath());
-		jtfLogFile.setColumns(30);
-		jtfLogFile.setEditable(false);
-
-		jbLogBrowse = new JButton("Browse");
-		jbLogBrowse.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				browse("Log File:",	new File(projectConfiguration.getLogFile()), jtfLogFile, true);
-				projectConfiguration.setLogFile(jtfLogFile.getText());
 			}
 		});
 
@@ -144,30 +124,11 @@ final class GeneralOptionPanel extends OptionPanel {
 		c.gridx = 0;
 		c.gridy = 3;
 		c.anchor = GridBagConstraints.LINE_START;
-		c.insets = new Insets(10, 0, 0, 0);
-		add(jlLogFile, c);
-
-		c.gridx = 0;
-		c.gridy = 4;
-		c.gridwidth = 2;
-		c.anchor = GridBagConstraints.CENTER;
-		c.insets = new Insets(0, 0, 0, 0);
-		add(jtfLogFile, c);
-
-		c.gridx = 1;
-		c.gridy = 5;
-		c.gridwidth = 1;
-		c.anchor = GridBagConstraints.FIRST_LINE_END;
-		add(jbLogBrowse, c);
-
-		c.gridx = 0;
-		c.gridy = 6;
-		c.anchor = GridBagConstraints.LINE_START;
 		c.insets = new Insets(30, 0, 0, 0);
 		add(jlLookAndFeel, c);
 
 		c.gridx = 1;
-		c.gridy = 6;
+		c.gridy = 3;
 		c.gridwidth = 2;
 		c.anchor = GridBagConstraints.LINE_END;
 		c.insets = new Insets(30, 0, 0, 0);

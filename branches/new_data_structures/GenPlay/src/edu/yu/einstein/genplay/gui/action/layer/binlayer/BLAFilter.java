@@ -22,14 +22,12 @@
 package edu.yu.einstein.genplay.gui.action.layer.binlayer;
 
 import javax.swing.ActionMap;
-import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.binList.BLOFilterBandStop;
 import edu.yu.einstein.genplay.core.operation.binList.BLOFilterCount;
 import edu.yu.einstein.genplay.core.operation.binList.BLOFilterPercentage;
 import edu.yu.einstein.genplay.core.operation.binList.BLOFilterThreshold;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.filterDialog.FilterDialog;
@@ -67,12 +65,17 @@ public class BLAFilter extends TrackListActionOperationWorker<BinList> {
 	}
 
 	@Override
+	protected void doAtTheEnd(BinList actionResult) {
+		if (actionResult != null) {
+			selectedLayer.setData(actionResult, operation.getDescription());
+		}
+	}
+
+
+	@Override
 	public Operation<BinList> initializeOperation() {
 		selectedLayer = (BinLayer) getValue("Layer");
 		if (selectedLayer != null) {
-			if (selectedLayer.getData().getPrecision() == ScorePrecision.PRECISION_1BIT) {
-				JOptionPane.showMessageDialog(getRootPane(), "Error, not filter available for 1-Bit data", "Error", JOptionPane.ERROR_MESSAGE);
-			}
 			FilterDialog filterDialog = new FilterDialog();
 			if (filterDialog.showFilterDialog(getRootPane()) == FilterDialog.APPROVE_OPTION) {
 				BinList binList = selectedLayer.getData();
@@ -95,13 +98,5 @@ public class BLAFilter extends TrackListActionOperationWorker<BinList> {
 
 		}
 		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(BinList actionResult) {
-		if (actionResult != null) {
-			selectedLayer.setData(actionResult, operation.getDescription());
-		}
 	}
 }

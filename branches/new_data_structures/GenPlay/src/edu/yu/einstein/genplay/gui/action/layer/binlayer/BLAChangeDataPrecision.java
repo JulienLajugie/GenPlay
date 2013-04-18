@@ -66,24 +66,24 @@ public class BLAChangeDataPrecision extends TrackListActionOperationWorker<BinLi
 
 
 	@Override
+	protected void doAtTheEnd(BinList actionResult) {
+		if (actionResult != null) {
+			selectedLayer.setData(actionResult, operation.getDescription());
+		}
+	}
+
+
+	@Override
 	public Operation<BinList> initializeOperation() {
 		selectedLayer = (BinLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			BinList binList = selectedLayer.getData();
-			ScorePrecision precision = Utils.choosePrecision(getRootPane(), binList.getPrecision());
+			ScorePrecision precision = Utils.choosePrecision(getRootPane(), binList.getScorePrecision());
 			if (precision != null) {
 				Operation<BinList> operation = new BLOChangeDataPrecision(binList, precision);
 				return operation;
 			}
 		}
 		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(BinList actionResult) {
-		if (actionResult != null) {
-			selectedLayer.setData(actionResult, operation.getDescription());
-		}
 	}
 }

@@ -21,11 +21,14 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.dataStructure.list.genomeWideList.repeatFamilyList;
 
+import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.IO.dataReader.RepeatReader;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
+import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
 
 
 /**
@@ -41,8 +44,11 @@ public class SimpleRepeatFamilyListFactory {
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 * @throws CloneNotSupportedException
+	 * @throws IOException
+	 * @throws ObjectAlreadyBuiltException
+	 * @throws InvalidChromosomeException
 	 */
-	public static RepeatFamilyList createGeneList(RepeatReader repeatReader) throws InterruptedException, ExecutionException, CloneNotSupportedException {
+	public static RepeatFamilyList createRepeatList(RepeatReader repeatReader) throws InterruptedException, ExecutionException, CloneNotSupportedException, InvalidChromosomeException, ObjectAlreadyBuiltException, IOException {
 		RepeatFamilyListBuilder builder = new RepeatFamilyListBuilder();
 		while (repeatReader.readItem()) {
 			ChromosomeWindow currentWindow = new SimpleChromosomeWindow(repeatReader.getStart(), repeatReader.getStop());

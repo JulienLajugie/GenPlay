@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -41,7 +41,44 @@ public class DataLineValidator {
 
 
 	///////////////////////////////////////////////////// Methods for multiple controls
-	
+
+	/**
+	 * Adds an error to other errors and return the full error message.
+	 * The aim of this method is to add easily a message without taking care of:
+	 * - checking the content of the error (no insertion if empty)
+	 * - adding a new line
+	 * 
+	 * Therefore, multiple controls methods code is simplified.
+	 */
+	private static String addError (String errors, String error) {
+		if (error.length() > 0) {
+			if (errors.length() > 0) {
+				errors += "\n";
+			}
+			errors += error;
+		}
+		return errors;
+	}
+
+
+	/**
+	 * @param chromosome
+	 * @param position
+	 * @return the error
+	 */
+	public static String getErrors (Chromosome chromosome, int position){
+		String errors = "";
+
+		if (position < 0) {
+			errors += "Position (" + position + ") lower than 0";
+		} else if (position > chromosome.getLength()) {
+			errors += "Position (" + position + ") higher than the chromosome (" + chromosome.getName() + ") length (" + chromosome.getLength() + ")";
+		}
+
+		return errors;
+	}
+
+
 	/**
 	 * @param chromosome	the chromosome
 	 * @param start			the start position
@@ -66,7 +103,7 @@ public class DataLineValidator {
 	 * @param score			the score
 	 * @return				the errors
 	 */
-	public static String getErrors (Chromosome chromosome, int start, int stop, Double score) {
+	public static String getErrors (Chromosome chromosome, int start, int stop, Float score) {
 		String errors = "";
 
 		errors = addError(errors, getErrors(chromosome, start, stop));
@@ -85,7 +122,7 @@ public class DataLineValidator {
 	 * @param strand 		the strand
 	 * @return				the errors
 	 */
-	public static String getErrors (Chromosome chromosome, int start, int stop, Double score, String name, Strand strand) {
+	public static String getErrors (Chromosome chromosome, int start, int stop, Float score, String name, Strand strand) {
 		String errors = "";
 
 		errors = addError(errors, getErrors(chromosome, start, stop, score));
@@ -95,6 +132,11 @@ public class DataLineValidator {
 		return errors;
 	}
 
+	/////////////////////////////////////////////////////
+
+
+
+	///////////////////////////////////////////////////// Methods for single control
 
 	/**
 	 * @param chromosome	the chromosome
@@ -113,8 +155,8 @@ public class DataLineValidator {
 
 		return errors;
 	}
-	
-	
+
+
 	/**
 	 * @param chromosome	the chromosome
 	 * @param start			the start position
@@ -135,23 +177,17 @@ public class DataLineValidator {
 		return errors;
 	}
 
-	/////////////////////////////////////////////////////
-
-
-
-	///////////////////////////////////////////////////// Methods for single control
 
 	/**
-	 * @param name
+	 * @param chromosome
+	 * @param positions
 	 * @return the error
 	 */
-	private static String getErrors (String name) {
+	private static String getErrors (Chromosome chromosome, int[] positions){
 		String errors = "";
 
-		if (name == null ) {
-			errors += "The name is invalid (null value found)";
-		} else if (name.isEmpty()) {
-			errors += "The name is empty";
+		for (int i = 0; i < positions.length; i++) {
+			errors = addError(errors, getErrors(chromosome, positions[i]));
 		}
 
 		return errors;
@@ -162,7 +198,7 @@ public class DataLineValidator {
 	 * @param score
 	 * @return the error
 	 */
-	private static String getErrors (Double score) {
+	private static String getErrors (Float score) {
 		String errors = "";
 
 		if (score == null) {
@@ -172,21 +208,6 @@ public class DataLineValidator {
 				errors += "Score (" + score + ") is equal to zero";
 			}
 		}*/
-
-		return errors;
-	}
-
-
-	/**
-	 * @param strand
-	 * @return the error
-	 */
-	private static String getErrors (Strand strand) {
-		String errors = "";
-
-		if (strand == null ) {
-			errors += "The strand is invalid (null value found)";
-		}
 
 		return errors;
 	}
@@ -209,33 +230,14 @@ public class DataLineValidator {
 
 
 	/**
-	 * @param chromosome
-	 * @param position
+	 * @param strand
 	 * @return the error
 	 */
-	public static String getErrors (Chromosome chromosome, int position){
+	private static String getErrors (Strand strand) {
 		String errors = "";
 
-		if (position < 0) {
-			errors += "Position (" + position + ") lower than 0";
-		} else if (position > chromosome.getLength()) {
-			errors += "Position (" + position + ") higher than the chromosome (" + chromosome.getName() + ") length (" + chromosome.getLength() + ")";
-		}
-
-		return errors;
-	}
-
-
-	/**
-	 * @param chromosome
-	 * @param positions
-	 * @return the error
-	 */
-	private static String getErrors (Chromosome chromosome, int[] positions){
-		String errors = "";
-
-		for (int i = 0; i < positions.length; i++) {
-			errors = addError(errors, getErrors(chromosome, positions[i]));
+		if (strand == null ) {
+			errors += "The strand is invalid (null value found)";
 		}
 
 		return errors;
@@ -248,20 +250,18 @@ public class DataLineValidator {
 	///////////////////////////////////////////////////// Utils
 
 	/**
-	 * Adds an error to other errors and return the full error message.
-	 * The aim of this method is to add easily a message without taking care of:
-	 * - checking the content of the error (no insertion if empty)
-	 * - adding a new line
-	 * 
-	 * Therefore, multiple controls methods code is simplified.
+	 * @param name
+	 * @return the error
 	 */
-	private static String addError (String errors, String error) {
-		if (error.length() > 0) {
-			if (errors.length() > 0) {
-				errors += "\n";
-			}
-			errors += error;
+	private static String getErrors (String name) {
+		String errors = "";
+
+		if (name == null ) {
+			errors += "The name is invalid (null value found)";
+		} else if (name.isEmpty()) {
+			errors += "The name is empty";
 		}
+
 		return errors;
 	}
 

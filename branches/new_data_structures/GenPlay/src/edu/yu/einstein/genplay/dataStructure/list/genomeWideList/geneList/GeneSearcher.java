@@ -23,6 +23,9 @@ package edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList;
 
 import java.io.Serializable;
 
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 
 
@@ -30,7 +33,6 @@ import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 /**
  * Searches genes from gene names
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class GeneSearcher implements Serializable {
 
@@ -51,6 +53,15 @@ public final class GeneSearcher implements Serializable {
 	public GeneSearcher(GeneList geneList) {
 		super();
 		this.geneList = geneList;
+	}
+
+
+	/**
+	 * @return the chromosome of the last gene found
+	 */
+	public Chromosome getGeneChromosome() {
+		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		return projectChromosome.get(lastFoundChromoIndex);
 	}
 
 
@@ -242,6 +253,7 @@ public final class GeneSearcher implements Serializable {
 	}
 
 
+
 	/**
 	 * @return the previous gene (starting from the last found gene)
 	 * that has a name that correspond to the searched name
@@ -278,7 +290,6 @@ public final class GeneSearcher implements Serializable {
 	}
 
 
-
 	/**
 	 * @param caseSensitive set to true for a case sensitive search
 	 * @return a new result for the search with the new parameter. Null if nothing found
@@ -313,5 +324,4 @@ public final class GeneSearcher implements Serializable {
 			return lastGeneFound;
 		}
 	}
-
 }

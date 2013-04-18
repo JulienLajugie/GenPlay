@@ -21,6 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -45,6 +46,8 @@ import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
+import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
 
 /**
  * Factory class for vending standard {@link GeneList} objects
@@ -61,8 +64,11 @@ public class GeneListFactory {
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 * @throws CloneNotSupportedException
+	 * @throws IOException
+	 * @throws ObjectAlreadyBuiltException
+	 * @throws InvalidChromosomeException
 	 */
-	public static GeneList createGeneList(GeneReader geneReader, ScorePrecision scorePrecision) throws InterruptedException, ExecutionException, CloneNotSupportedException {
+	public static GeneList createGeneList(GeneReader geneReader, ScorePrecision scorePrecision) throws InterruptedException, ExecutionException, CloneNotSupportedException, InvalidChromosomeException, ObjectAlreadyBuiltException, IOException {
 		GeneListViewBuilder lvBuilderPrototype = new GeneListViewBuilder(scorePrecision);
 		ListOfListViewBuilder<Gene> builder = new ListOfListViewBuilder<Gene>(lvBuilderPrototype);
 		while (geneReader.readItem()) {

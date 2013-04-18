@@ -79,7 +79,7 @@ implements Serializable, ScoredChromosomeWindowListGenerator, BinListGenerator{
 		startList = new GenomicDataArrayList<Integer>();
 		stopList = new GenomicDataArrayList<Integer>();
 		scoreList = new GenomicDataArrayList<Double>();
-		for (int i = 0; i < projectChromosome.size(); i++) {
+		for (int i = 0; i < getProjectChromosome().size(); i++) {
 			startList.add(new IntArrayAsIntegerList());
 			stopList.add(new IntArrayAsIntegerList());
 			scoreList.add(new DoubleArrayAsDoubleList());
@@ -119,7 +119,7 @@ implements Serializable, ScoredChromosomeWindowListGenerator, BinListGenerator{
 				String chromStr = splittedLine[i].trim().substring(6);
 				int chromosomeStatus;
 				try {
-					currentChromo = projectChromosome.get(chromStr.trim()) ;
+					currentChromo = getProjectChromosome().get(chromStr.trim()) ;
 					chromosomeStatus = checkChromosomeStatus(currentChromo);
 				} catch (InvalidChromosomeException e) {
 					currentChromo = null;

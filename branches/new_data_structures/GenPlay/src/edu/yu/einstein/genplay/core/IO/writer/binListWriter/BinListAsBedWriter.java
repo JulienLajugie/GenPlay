@@ -25,13 +25,14 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
 
@@ -57,6 +58,15 @@ public final class BinListAsBedWriter extends BinListWriter implements Stoppable
 	}
 
 
+	/**
+	 * Stops the writer while it's writing a file
+	 */
+	@Override
+	public void stop() {
+		needsToBeStopped = true;
+	}
+
+
 	@Override
 	public void write() throws IOException, InterruptedException {
 		BufferedWriter writer = null;
@@ -72,7 +82,7 @@ public final class BinListAsBedWriter extends BinListWriter implements Stoppable
 			// print the data
 			for(Chromosome currentChromosome: projectChromosome) {
 				if(data.get(currentChromosome) != null) {
-					List<Double> currentList = data.get(currentChromosome);
+					ListView<ScoredChromosomeWindow> currentList = data.get(currentChromosome);
 					int currentChromosomeSize = currentChromosome.getLength();
 					for (int j = 0; j < currentList.size(); j++) {
 						// if the operation need to be stopped we close the writer and delete the file
@@ -82,7 +92,7 @@ public final class BinListAsBedWriter extends BinListWriter implements Stoppable
 							throw new InterruptedException();
 						}
 						// we don't print the line if the score is 0
-						if (currentList.get(j) != 0) {
+						if (currentList.get(j).getScore() != 0) {
 							int start = j * binSize;
 							int stop = start + binSize;
 							if (stop > currentChromosomeSize) {
@@ -96,7 +106,7 @@ public final class BinListAsBedWriter extends BinListWriter implements Stoppable
 
 							if ((start > -1) && (stop > -1)) {
 								//writer.write(currentChromosome.getName() + "\t" + (j * binSize) + "\t" + ((j + 1) * binSize) + "\t-\t" + currentList.get(j));
-								writer.write(currentChromosome.getName() + "\t" + start + "\t" + stop + "\t-\t" + currentList.get(j));
+								writer.write(currentChromosome.getName() + "\t" + start + "\t" + stop + "\t-\t" + currentList.get(j).getScore());
 								writer.newLine();
 							}
 						}
@@ -108,14 +118,5 @@ public final class BinListAsBedWriter extends BinListWriter implements Stoppable
 				writer.close();
 			}
 		}
-	}
-
-
-	/**
-	 * Stops the writer while it's writing a file
-	 */
-	@Override
-	public void stop() {
-		needsToBeStopped = true;
 	}
 }

@@ -63,7 +63,7 @@ public class SCWListToGeneList implements Converter {
 
 	@Override
 	public void convert() throws Exception {
-		result = GeneListFactory.createGeneList(list);
+		result = GeneListFactory.createRepeatList(list);
 	}
 
 

@@ -24,16 +24,18 @@ package edu.yu.einstein.genplay.gui.action.track;
 import java.io.File;
 
 import javax.swing.ActionMap;
-import javax.swing.JOptionPane;
 
-import edu.yu.einstein.genplay.core.IO.extractor.ReadLengthAndShiftHandler;
+import edu.yu.einstein.genplay.core.IO.dataReader.SCWReader;
 import edu.yu.einstein.genplay.core.IO.extractor.StrandedExtractor;
-import edu.yu.einstein.genplay.core.generator.ScoredChromosomeWindowListGenerator;
+import edu.yu.einstein.genplay.core.IO.utils.ChromosomesSelector;
+import edu.yu.einstein.genplay.core.IO.utils.StrandedExtractorOptions;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWListFactory;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.newCurveLayerDialog.NewCurveLayerDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -45,15 +47,15 @@ import edu.yu.einstein.genplay.util.colors.Colors;
 /**
  * Adds a {@link SCWLayer} to the selected track
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList> {
 
 	private static final long serialVersionUID = -7836987725953057426L;								// generated ID
 	private static final String ACTION_NAME = "Add Variable Window Layer";							// action name
 	private static final String DESCRIPTION = "Add a layer displaying windows of variable sizes"; 	// tooltip
-	private ScoreOperation 	scoreCalculation = null;										// method of calculation for the score
+	private ScoreOperation 			scoreCalculation = null;										// method of calculation for the score
 	private Strand					strand = null;													// strand to extract
+	private ScorePrecision			scorePrecision = null;											// precision of the score
 	private int						strandShift = 0;												// position shift on a strand
 	private int 					readLength = 0;													// user specified length of the reads (0 to keep the original length)
 
@@ -68,86 +70,10 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 	 * Creates an instance of {@link TAAddSCWLayer}
 	 */
 	public TAAddSCWLayer() {
-		super(ScoredChromosomeWindowListGenerator.class);
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
-	}
-
-
-	@Override
-	protected File retrieveFileToExtract() {
-		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
-		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Variable Window Layer", defaultDirectory, Utils.getReadableSCWFileFilters(), true);
-		if (selectedFile != null) {
-			return selectedFile;
-		}
-		return null;
-	}
-
-
-	@Override
-	protected void doBeforeExtraction() throws InterruptedException {
-		boolean isStrandNeeded = extractor instanceof StrandedExtractor;
-		NewCurveLayerDialog ncld = new NewCurveLayerDialog(null, false, false, false, false, isStrandNeeded, true, true);
-		if (ncld.showDialog(getRootPane()) == NewCurveLayerDialog.APPROVE_OPTION) {
-			selectedChromo = ncld.getSelectedChromosomes();
-			// if not all the chromosomes are selected we need
-			// to ask the user if the file is sorted or not
-			if (!Utils.allChromosomeSelected(selectedChromo)) {
-				int dialogResult = JOptionPane.showConfirmDialog(getRootPane(), "GenPlay can accelerate the loading if you know that your file is sorted by chromosome." +
-						"Press yes only if you know that your file is sorted.\n" +
-						"If you press yes and your file is not sorted, the file may load incompletely, leading to a loss of valuable information.\n" +
-						"The chromosomes must be ordered the same way it is ordered in the chromosome selection combo-box.\n\n" +
-						"Is your file sorted?", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-				if (dialogResult == JOptionPane.YES_OPTION) {
-					extractor.setFileSorted(true);
-				} else if (dialogResult == JOptionPane.NO_OPTION) {
-					extractor.setFileSorted(false);
-				} else if (dialogResult == JOptionPane.CLOSED_OPTION) {
-					throw new InterruptedException();
-				}
-			}
-			extractor.setSelectedChromosomes(selectedChromo);
-			if (isStrandNeeded) {
-				strand = ncld.getStrandToExtract();
-				strandShift = ncld.getStrandShiftValue();
-				readLength = ncld.getReadLengthValue();
-				((StrandedExtractor) extractor).selectStrand(strand);
-				((StrandedExtractor) extractor).setReadLengthAndShiftHandler(new ReadLengthAndShiftHandler(strandShift, readLength));
-			}
-			if (ProjectManager.getInstance().isMultiGenomeProject()) {
-				genomeName = ncld.getGenomeName();
-				alleleType = ncld.getAlleleType();
-				extractor.setGenomeName(genomeName);
-				extractor.setAlleleType(alleleType);
-			}
-		} else {
-			throw new InterruptedException();
-		}
-	}
-
-
-	@Override
-	protected SCWList generateList() throws Exception {
-		notifyActionStop();
-		if (((ScoredChromosomeWindowListGenerator)extractor).overlapped()){
-			NewCurveLayerDialog nctd = new NewCurveLayerDialog(name, true, false, false, true, false, false,  false);
-			if (nctd.showDialog(getRootPane()) == NewCurveLayerDialog.APPROVE_OPTION) {
-				name = nctd.getLayerName();
-				scoreCalculation = nctd.getScoreCalculationMethod();
-				notifyActionStart("Generating Layer", SimpleSCWList.getCreationStepCount(), true);
-				return ((ScoredChromosomeWindowListGenerator)extractor).toScoredChromosomeWindowList(scoreCalculation);
-			}
-		} else {
-			NewCurveLayerDialog nctd = new NewCurveLayerDialog(name, true, false, false, false, false, false,  false);
-			if (nctd.showDialog(getRootPane()) == NewCurveLayerDialog.APPROVE_OPTION) {
-				name = nctd.getLayerName();
-				notifyActionStart("Generating Layer", SimpleSCWList.getCreationStepCount(), true);
-				return ((ScoredChromosomeWindowListGenerator)extractor).toScoredChromosomeWindowList(null);
-			}
-		}
-		throw new InterruptedException();
 	}
 
 
@@ -181,6 +107,61 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 			selectedTrack.getLayers().add(newLayer);
 			selectedTrack.setActiveLayer(newLayer);
 		}
+	}
+
+
+	@Override
+	protected void doBeforeExtraction() throws InterruptedException {
+		boolean isStrandNeeded = extractor instanceof StrandedExtractor;
+		NewCurveLayerDialog ncld = new NewCurveLayerDialog(null, false, false, false, false, isStrandNeeded, true, true);
+		if (ncld.showDialog(getRootPane()) == NewCurveLayerDialog.APPROVE_OPTION) {
+			selectedChromo = ncld.getSelectedChromosomes();
+			// if not all the chromosomes are selected we need
+			// to ask the user if the file is sorted or not
+			extractor.setChromosomeSelector(new ChromosomesSelector(selectedChromo));
+			if (isStrandNeeded) {
+				strand = ncld.getStrandToExtract();
+				strandShift = ncld.getStrandShiftValue();
+				readLength = ncld.getReadLengthValue();
+				StrandedExtractorOptions strandedExtractorOptions = new StrandedExtractorOptions(strand, strandShift, readLength);
+				((StrandedExtractor) extractor).setStrandedExtractorOptions(strandedExtractorOptions);
+			}
+			if (ProjectManager.getInstance().isMultiGenomeProject()) {
+				genomeName = ncld.getGenomeName();
+				alleleType = ncld.getAlleleType();
+				extractor.setGenomeName(genomeName);
+				extractor.setAlleleType(alleleType);
+			}
+		} else {
+			throw new InterruptedException();
+		}
+	}
+
+
+	@Override
+	protected SCWList generateList() throws Exception {
+		notifyActionStop();
+		NewCurveLayerDialog nctd = new NewCurveLayerDialog(name, true, false, true, true, false, false,  false);
+		if (nctd.showDialog(getRootPane()) == NewCurveLayerDialog.APPROVE_OPTION) {
+			name = nctd.getLayerName();
+			scoreCalculation = nctd.getScoreCalculationMethod();
+			scorePrecision = nctd.getDataPrecision();
+			notifyActionStart("Generating Layer", SimpleSCWList.getCreationStepCount(), true);
+			SCWList scwList = SimpleSCWListFactory.createGenericSCWArrayList((SCWReader) extractor, scorePrecision, scoreCalculation);
+			return scwList;
+		}
+		throw new InterruptedException();
+	}
+
+
+	@Override
+	protected File retrieveFileToExtract() {
+		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
+		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Variable Window Layer", defaultDirectory, Utils.getReadableSCWFileFilters(), true);
+		if (selectedFile != null) {
+			return selectedFile;
+		}
+		return null;
 	}
 }
 

@@ -25,9 +25,10 @@ import java.io.File;
 
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.generator.ScoredChromosomeWindowListGenerator;
+import edu.yu.einstein.genplay.core.IO.dataReader.SCWReader;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWListFactory;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection.GenomeSelectionDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -40,14 +41,12 @@ import edu.yu.einstein.genplay.util.colors.Colors;
  * Adds a mask layer to the selected track
  * @author Julien Lajugie
  * @author Nicolas Fourel
- * @version 0.1
  */
 public final class TAAddMask extends TrackListActionExtractorWorker<SCWList> {
 
 	private static final long serialVersionUID = -900140642202561851L; 					// generated ID
 	private static final String ACTION_NAME = "Add Mask Layer"; 						// action name
 	private static final String DESCRIPTION = "Add a mask layer to the selected track"; // tooltip
-
 	private Track 				selectedTrack; 											// selected track
 
 
@@ -61,10 +60,21 @@ public final class TAAddMask extends TrackListActionExtractorWorker<SCWList> {
 	 * Creates an instance of {@link TAAddMask}
 	 */
 	public TAAddMask() {
-		super(ScoredChromosomeWindowListGenerator.class);
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+	}
+
+
+	@Override
+	protected void doAtTheEnd(SCWList actionResult) {
+		if (actionResult != null) {
+			MaskLayer newLayer = new MaskLayer(selectedTrack, actionResult, fileToExtract.getName());
+			newLayer.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Colors.GREY);
+			selectedTrack.getLayers().add(newLayer);
+			selectedTrack.setActiveLayer(newLayer);
+		}
 	}
 
 
@@ -83,6 +93,13 @@ public final class TAAddMask extends TrackListActionExtractorWorker<SCWList> {
 
 
 	@Override
+	public SCWList generateList() throws Exception {
+		SCWList maskList = SimpleSCWListFactory.createMaskSCWArrayList((SCWReader) extractor, null);
+		return maskList;
+	}
+
+
+	@Override
 	protected File retrieveFileToExtract() {
 		selectedTrack = getTrackListPanel().getSelectedTrack();
 		if (selectedTrack != null) {
@@ -93,22 +110,5 @@ public final class TAAddMask extends TrackListActionExtractorWorker<SCWList> {
 			}
 		}
 		return null;
-	}
-
-
-	@Override
-	public SCWList generateList() throws Exception {
-		return ((ScoredChromosomeWindowListGenerator)extractor).toMaskChromosomeWindowList();
-	}
-
-
-	@Override
-	protected void doAtTheEnd(SCWList actionResult) {
-		if (actionResult != null) {
-			MaskLayer newLayer = new MaskLayer(selectedTrack, actionResult, fileToExtract.getName());
-			newLayer.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Colors.GREY);
-			selectedTrack.getLayers().add(newLayer);
-			selectedTrack.setActiveLayer(newLayer);
-		}
 	}
 }

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -22,13 +22,9 @@
 package edu.yu.einstein.genplay.gui.action;
 
 import java.io.File;
-import java.io.IOException;
-
-import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.core.IO.extractor.Extractor;
 import edu.yu.einstein.genplay.core.IO.extractor.ExtractorFactory;
-import edu.yu.einstein.genplay.core.generator.Generator;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
@@ -39,28 +35,22 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 /**
  * Action that starts an extractor in a thread so the GUI doesn't freeze
  * @author Julien Lajugie
- * @version 0.1
  * @param <T> typed of the value returned by the action
  */
 public abstract class TrackListActionExtractorWorker<T> extends TrackListActionWorker<T> implements InvalidDataListener {
 
 	private static final long serialVersionUID = -1626148358656459751L; // generated ID
-	private final Class<? extends Generator>	extractorClass;			// desired class of extractor
-	private File	 							logFile;				// a file we extracts
 	protected File								fileToExtract;  		// file to extract
-	protected String							name;					// a name 
+	protected String							name;					// a name
 	protected Extractor							extractor;				// an extractor
 	protected boolean[]							selectedChromo = null;	// selected chromo
 
-	
+
 	/**
-	 * Public constructor 
-	 * @param extractorClass {@link Class} of the {@link Extractor}
+	 * Public constructor
 	 */
-	public TrackListActionExtractorWorker(Class<? extends Generator> extractorClass) {
+	public TrackListActionExtractorWorker() {
 		super();
-		this.extractorClass = extractorClass;
-		retrieveLogFile();
 	}
 
 
@@ -80,23 +70,25 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 
 
 	@Override
+	public void handleDataError(DataLineException e) {
+		handleError(e);
+	}
+
+
+	@Override
 	protected final T processAction() throws Exception {
-		fileToExtract = retrieveFileToExtract();		
+		fileToExtract = retrieveFileToExtract();
 		if (fileToExtract != null) {
-			extractor = ExtractorFactory.getExtractor(fileToExtract, logFile);
-			if ((extractor != null) && (extractorClass.isAssignableFrom(extractor.getClass()))) {
-				name = extractor.getName();
+			extractor = ExtractorFactory.getExtractor(fileToExtract);
+			if (extractor != null) {
+				name = extractor.getDataName();
 				extractor.addInvalidDataListener(this);
 				doBeforeExtraction();
 				if (ProjectManager.getInstance().isMultiGenomeProject()) {
 					extractor.setGenomeName(genomeName);
 					extractor.setAlleleType(alleleType);
 				}
-				notifyActionStart("Loading File", 1, extractor instanceof Stoppable);
-				extractor.extract();
-				notifyActionStop();
-				System.gc();
-				notifyActionStart("Generating Track", 1, true);
+				notifyActionStart("Generating Layer", 1, true);
 				return generateList();
 			} else {
 				throw new InvalidFileTypeException();
@@ -115,29 +107,6 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 
 
 	/**
-	 * Retrieves the log file from the configuration manager and check if the file is valid / accessible
-	 */
-	private void retrieveLogFile() {
-		logFile = new File(ProjectManager.getInstance().getProjectConfiguration().getLogFile());
-		if (logFile != null) {
-			try {
-				logFile.createNewFile();
-			} catch (IOException e) {
-				logFile = null;
-			} catch (SecurityException e) {
-				logFile = null;
-			}
-			// check if the user has the permission to write the log
-			if ((logFile == null) || (!logFile.canWrite())) {
-				logFile = null;
-				JOptionPane.showMessageDialog(getTrackListPanel(), "Impossible to access or create the log file \"" + 
-						logFile + "\"", "Invalid Log File", JOptionPane.WARNING_MESSAGE, null);
-			}
-		}
-	}
-
-
-	/**
 	 * Override that stops the extractor
 	 */
 	@Override
@@ -146,11 +115,5 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 			((Stoppable) extractor).stop();
 		}
 		super.stop();
-	}
-	
-
-	@Override
-	public void handleDataError(DataLineException e) {
-		handleError(e);
 	}
 }

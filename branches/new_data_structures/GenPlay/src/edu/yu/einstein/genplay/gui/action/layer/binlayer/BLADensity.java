@@ -69,6 +69,18 @@ public class BLADensity extends TrackListActionOperationWorker<BinList> {
 
 
 	@Override
+	protected void doAtTheEnd(BinList actionResult) {
+		if (actionResult != null) {
+			BinLayer newLayer = new BinLayer(resultTrack, actionResult, "Densities of " + selectedLayer.getName());
+			// add info to the history
+			newLayer.getHistory().add("Result of the density calculation of " + selectedLayer.getName() + ", Half Width = " + halfWidth);
+			newLayer.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getScorePrecision(), Colors.GREY);
+			resultTrack.getLayers().add(newLayer);
+		}
+	}
+
+
+	@Override
 	public Operation<BinList> initializeOperation() {
 		selectedLayer = (BinLayer) getValue("Layer");
 		if (selectedLayer != null) {
@@ -83,17 +95,5 @@ public class BLADensity extends TrackListActionOperationWorker<BinList> {
 			}
 		}
 		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(BinList actionResult) {
-		if (actionResult != null) {
-			BinLayer newLayer = new BinLayer(resultTrack, actionResult, "Densities of " + selectedLayer.getName());
-			// add info to the history
-			newLayer.getHistory().add("Result of the density calculation of " + selectedLayer.getName() + ", Half Width = " + halfWidth);
-			newLayer.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Colors.GREY);
-			resultTrack.getLayers().add(newLayer);
-		}
 	}
 }

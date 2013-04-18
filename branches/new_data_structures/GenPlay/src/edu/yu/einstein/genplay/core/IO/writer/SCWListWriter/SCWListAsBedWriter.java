@@ -25,13 +25,13 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
@@ -40,7 +40,6 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 /**
  * Writes a {@link SCWList} as a BedGraph file.
  * @author Julien Lajugie
- * @version 0.1
  */
 public class SCWListAsBedWriter extends SCWListWriter implements Stoppable {
 
@@ -58,6 +57,15 @@ public class SCWListAsBedWriter extends SCWListWriter implements Stoppable {
 	}
 
 
+	/**
+	 * Stops the writer while it's writing a file
+	 */
+	@Override
+	public void stop() {
+		needsToBeStopped = true;
+	}
+
+
 	@Override
 	public void write() throws IOException, InterruptedException {
 		BufferedWriter writer = null;
@@ -71,7 +79,7 @@ public class SCWListAsBedWriter extends SCWListWriter implements Stoppable {
 			writer.newLine();
 			// print the data
 			for(Chromosome currentChromosome: projectChromosome) {
-				List<ScoredChromosomeWindow> currentList = data.getView(currentChromosome);
+				ListView<ScoredChromosomeWindow> currentList = data.get(currentChromosome);
 				int currentChromosomeSize = currentChromosome.getLength();
 				if (currentList != null) {
 					for (ScoredChromosomeWindow currentWindow: currentList){
@@ -108,14 +116,5 @@ public class SCWListAsBedWriter extends SCWListWriter implements Stoppable {
 				writer.close();
 			}
 		}
-	}
-
-
-	/**
-	 * Stops the writer while it's writing a file
-	 */
-	@Override
-	public void stop() {
-		needsToBeStopped = true;
 	}
 }

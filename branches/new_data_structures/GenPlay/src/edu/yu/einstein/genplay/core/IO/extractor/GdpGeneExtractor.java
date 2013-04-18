@@ -22,91 +22,63 @@
 package edu.yu.einstein.genplay.core.IO.extractor;
 
 import java.io.File;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
+import java.io.FileNotFoundException;
 
+import edu.yu.einstein.genplay.core.IO.dataReader.GeneReader;
+import edu.yu.einstein.genplay.core.IO.dataReader.RepeatReader;
+import edu.yu.einstein.genplay.core.IO.dataReader.SCWReader;
 import edu.yu.einstein.genplay.core.IO.utils.DataLineValidator;
-import edu.yu.einstein.genplay.core.IO.utils.TrackLineHeader;
-import edu.yu.einstein.genplay.core.generator.GeneListGenerator;
+import edu.yu.einstein.genplay.core.IO.utils.StrandedExtractorOptions;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
-import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.IntArrayAsIntegerList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneListFactory;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 import edu.yu.einstein.genplay.util.Utils;
 
 
-
 /**
  * A GdpGene file extractor
  * @author Julien Lajugie
- * @version 0.1
  */
-public final class GdpGeneExtractor extends TextFileExtractor implements Serializable, GeneListGenerator {
+public final class GdpGeneExtractor extends TextFileExtractor implements SCWReader, GeneReader, RepeatReader, StrandedExtractor {
 
-	private static final long serialVersionUID = 7967902877674655813L; // generated ID
+	private StrandedExtractorOptions		strandOptions;		// options on the strand and read length / shift
+	private Chromosome 						chromosome;		 	// chromosome of the last item read
+	private Integer 						start;				// start position of the last item read
+	private Integer 						stop;				// stop position of the last item read
+	private String 							name;				// name of the last item read
+	private Float 							score;				// score of the last item read
+	private Strand 							strand;				// strand of the last item read
+	private Integer 						UTR5Bound;			// UTR5' stop position of the last item read
+	private Integer 						UTR3Bound;			// UTR3' start position of the last item read
+	private ListView<ScoredChromosomeWindow>exons;				// exons of the last item read
 
-	private final GenomicListView<Integer>	startList;		// list of position start
-	private final GenomicListView<Integer>	stopList;		// list of position stop
-	private final GenomicListView<String> 	nameList;		// list of name
-	private final GenomicListView<Strand> 	strandList;		// list of strand
-	private final GenomicListView<int[]> 	exonStartsList;	// list of list of exon starts
-	private final GenomicListView<int[]> 	exonStopsList;	// list of list of exon stops
-	private final GenomicListView<double[]>	exonScoresList;	// list of list of exon scores
-	private String							geneDBURL;		// url of the gene database for the search
-	private GeneScoreType					geneScoreType;	// type of gene and exon score (RPKM, max, sum)
 
 	/**
-	 * Creates an instance of a {@link GdpGeneExtractor}
+	 * Creates an instance of {@link GdpGeneExtractor}
 	 * @param dataFile file containing the data
-	 * @param logFile file for the log (no log if null)
+	 * @throws FileNotFoundException if the specified file is not found
 	 */
-	public GdpGeneExtractor(File dataFile, File logFile) {
-		super(dataFile, logFile);
-		// initialize the lists
-		startList = new GenomicDataArrayList<Integer>();
-		stopList = new GenomicDataArrayList<Integer>();
-		nameList = new GenomicDataArrayList<String>();
-		strandList = new GenomicDataArrayList<Strand>();
-		exonStartsList = new GenomicDataArrayList<int[]>();
-		exonStopsList = new GenomicDataArrayList<int[]>();
-		exonScoresList = new GenomicDataArrayList<double[]>();
-		// initialize the sublists
-		for (int i = 0; i < projectChromosome.size(); i++) {
-			startList.add(new IntArrayAsIntegerList());
-			stopList.add(new IntArrayAsIntegerList());
-			nameList.add(new ArrayList<String>());
-			strandList.add(new ArrayList<Strand>());
-			exonStartsList.add(new ArrayList<int[]>());
-			exonStopsList.add(new ArrayList<int[]>());
-			exonScoresList.add(new ArrayList<double[]>());
-		}
+	public GdpGeneExtractor(File dataFile) throws FileNotFoundException {
+		super(dataFile);
 	}
 
 
 	@Override
-	public void extractTrackLineHeader(String line) {
-		TrackLineHeader trackLineHeader = new TrackLineHeader();
-		trackLineHeader.parseTrackLine(line);
-		geneDBURL = trackLineHeader.getGeneDBURL();
-		geneScoreType = trackLineHeader.getGeneScoreType();
-	}
+	protected int extractDataLine(String line) throws DataLineException {
+		chromosome = null;
+		start = null;
+		stop = null;
+		name = null;
+		score = null;
+		strand = null;
+		UTR5Bound = null;
+		UTR3Bound = null;
+		exons = null;
 
-
-	/**
-	 * Receives one line from the input file and extracts and adds the data in the lists
-	 * @param extractedLine line read from the data file
-	 * @return true when the extraction is done
-	 * @throws DataLineException
-	 */
-	@Override
-	protected boolean extractLine(String extractedLine) throws DataLineException {
 		String[] splitedLine = Utils.parseLineTabOnly(extractedLine);
 		if (splitedLine.length < 3) {
 			//throw new InvalidDataLineException(extractedLine);
@@ -116,7 +88,7 @@ public final class GdpGeneExtractor extends TextFileExtractor implements Seriali
 			int chromosomeStatus;
 			Chromosome chromosome = null;
 			try {
-				chromosome = projectChromosome.get(splitedLine[1]) ;
+				chromosome = getProjectChromosome().get(splitedLine[1]) ;
 				chromosomeStatus = checkChromosomeStatus(chromosome);
 			} catch (InvalidChromosomeException e) {
 				chromosomeStatus = NEED_TO_BE_SKIPPED;
@@ -195,8 +167,79 @@ public final class GdpGeneExtractor extends TextFileExtractor implements Seriali
 
 
 	@Override
-	public GeneList toGeneList() throws InvalidChromosomeException, InterruptedException, ExecutionException {
-		return GeneListFactory.createGeneList(nameList, strandList, startList, stopList, null, null, null, exonStartsList, exonStopsList, exonScoresList, geneDBURL, geneScoreType);
+	public Chromosome getChromosome() {
+		return chromosome;
 	}
 
+
+	@Override
+	public ListView<ScoredChromosomeWindow> getExons() {
+		return exons;
+	}
+
+
+	@Override
+	public String getGeneDBURL() {
+		return getTrackLineHeader().getGeneDBURL();
+	}
+
+
+	@Override
+	public GeneScoreType getGeneScoreType() {
+		return getTrackLineHeader().getGeneScoreType();
+	}
+
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+
+	@Override
+	public Float getScore() {
+		return score;
+	}
+
+
+	@Override
+	public Integer getStart() {
+		return start;
+	}
+
+
+	@Override
+	public Integer getStop() {
+		return stop;
+	}
+
+
+	@Override
+	public Strand getStrand() {
+		return strand;
+	}
+
+
+	@Override
+	public StrandedExtractorOptions getStrandedExtractorOptions() {
+		return strandOptions;
+	}
+
+
+	@Override
+	public Integer getUTR3Bound() {
+		return UTR3Bound;
+	}
+
+
+	@Override
+	public Integer getUTR5Bound() {
+		return UTR5Bound;
+	}
+
+
+	@Override
+	public void setStrandedExtractorOptions(StrandedExtractorOptions options) {
+		strandOptions = options;
+	}
 }

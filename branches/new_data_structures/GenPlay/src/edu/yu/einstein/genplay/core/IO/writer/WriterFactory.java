@@ -29,28 +29,17 @@ import edu.yu.einstein.genplay.core.IO.writer.SCWListWriter.SCWListAsBedGraphWri
 import edu.yu.einstein.genplay.core.IO.writer.SCWListWriter.SCWListAsBedWriter;
 import edu.yu.einstein.genplay.core.IO.writer.SCWListWriter.SCWListAsGFFWriter;
 import edu.yu.einstein.genplay.core.IO.writer.SCWListWriter.SCWListWriter;
-import edu.yu.einstein.genplay.core.IO.writer.binListWriter.BinListAsBedGraphWith0Writer;
-import edu.yu.einstein.genplay.core.IO.writer.binListWriter.BinListAsBedGraphWriter;
-import edu.yu.einstein.genplay.core.IO.writer.binListWriter.BinListAsBedWriter;
-import edu.yu.einstein.genplay.core.IO.writer.binListWriter.BinListAsGFFWriter;
-import edu.yu.einstein.genplay.core.IO.writer.binListWriter.BinListAsWiggleWriter;
-import edu.yu.einstein.genplay.core.IO.writer.binListWriter.BinListWriter;
-import edu.yu.einstein.genplay.core.IO.writer.binListWriter.SerializedBinListWriter;
 import edu.yu.einstein.genplay.core.IO.writer.geneListWriter.GeneListAsBedWriter;
 import edu.yu.einstein.genplay.core.IO.writer.geneListWriter.GeneListAsGdpGeneWriter;
 import edu.yu.einstein.genplay.core.IO.writer.geneListWriter.GeneListWriter;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ImmutableGenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
 import edu.yu.einstein.genplay.gui.fileFilter.BedFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.BedGraphFilter;
-import edu.yu.einstein.genplay.gui.fileFilter.BedGraphWith0Filter;
 import edu.yu.einstein.genplay.gui.fileFilter.GFFFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.GdpGeneFilter;
-import edu.yu.einstein.genplay.gui.fileFilter.SerializedBinListFilter;
-import edu.yu.einstein.genplay.gui.fileFilter.WiggleFilter;
 
 
 
@@ -61,6 +50,7 @@ import edu.yu.einstein.genplay.gui.fileFilter.WiggleFilter;
  */
 public final class WriterFactory {
 
+	// TODO transform all writers in SCW writer (wiggle writers should be the only ones different for bin and SCW list because of the fix or variable step)
 
 	/**
 	 * Tries to create and to return a subclass of {@link BinListWriter} depending on the file filter used to save
@@ -70,7 +60,7 @@ public final class WriterFactory {
 	 * @param ff a subclass of {@link FileFilter}
 	 * @return a subclass of {@link BinListWriter} or null if the type can't be figured out
 	 */
-	private static BinListWriter getBinListWriter(File outputFile, BinList data, String name, FileFilter ff) {
+	/*private static BinListWriter getBinListWriter(File outputFile, BinList data, String name, FileFilter ff) {
 		if (ff == null) {
 			return null;
 		} else if (ff instanceof BedFilter) {
@@ -88,7 +78,7 @@ public final class WriterFactory {
 		} else {
 			return null;
 		}
-	}
+	}*/
 
 
 	/**
@@ -144,12 +134,9 @@ public final class WriterFactory {
 	 * @return a class implementing the Writer interface.
 	 * @throws InvalidFileTypeException
 	 */
-	public static Writer getWriter(File outputFile, ImmutableGenomicDataList<?> data, String name, FileFilter ff) throws InvalidFileTypeException {
+	public static Writer getWriter(File outputFile, GenomicListView<?> data, String name, FileFilter ff) throws InvalidFileTypeException {
 		Writer writer = null;
-		if (data instanceof BinList) {
-			BinList binList = (BinList) data;
-			writer = getBinListWriter(outputFile, binList, name, ff);
-		} else if (data instanceof GeneList) {
+		if (data instanceof GeneList) {
 			GeneList geneList = (GeneList) data;
 			writer = getGeneListWriter(outputFile, geneList, name, ff);
 		} else if (data instanceof SCWList) {

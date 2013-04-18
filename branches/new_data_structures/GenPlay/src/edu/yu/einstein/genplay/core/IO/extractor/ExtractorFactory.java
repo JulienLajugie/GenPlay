@@ -40,65 +40,41 @@ public final class ExtractorFactory {
 
 
 	/**
-	 * @param fileToExtract file to extract
-	 * @param logFile file for the log of the extraction
-	 * @return an instance of a subclass of {@link Extractor} if the type has been found.
-	 * Otherwise throw a {@link InvalidFileTypeException}
-	 * @throws IOException
-	 * @throws InvalidFileTypeException
-	 */
-	public static Extractor getExtractor(File fileToExtract, File logFile) throws IOException, InvalidFileTypeException {
-		Extractor extractor = null;
-		extractor = checkHeader(fileToExtract, logFile);
-		if (extractor != null) {
-			return extractor;
-		}
-		extractor = checkFileExtension(fileToExtract, logFile);
-		if (extractor != null) {
-			return extractor;
-		}
-		// if we can't figure out the type of Extractor
-		throw new InvalidFileTypeException();
-	}
-
-
-	/**
-	 * @param fileToExtract
-	 * @param logFile
+	 * @param fileToExtract file containing the data to extract
 	 * @return an {@link Extractor} if the extension of the file is known. null otherwise
 	 */
-	public static Extractor checkFileExtension(File fileToExtract, File logFile) {
+	public static Extractor checkFileExtension(File fileToExtract) {
 		String fileExtension = Utils.getExtension(fileToExtract);
 		if (fileExtension == null) {
 			return null;
 		}
 		if (fileExtension.equalsIgnoreCase("gff")) {
-			return new GFFExtractor(fileToExtract, logFile);
+			return new GFFExtractor(fileToExtract);
 		} else if (fileExtension.equalsIgnoreCase("gtf")) {
-			return new GTFExtractor(fileToExtract, logFile);
+			return new GTFExtractor(fileToExtract);
 		} else if (fileExtension.equalsIgnoreCase("gff3")) {
 			// TODO return gff3 extractor
 			return null;
 		} else if (fileExtension.equalsIgnoreCase("gr")) {
-			return new BedGraphExtractor(fileToExtract, logFile);
+			return new BedGraphExtractor(fileToExtract);
 		} else if (fileExtension.equalsIgnoreCase("bed")) {
-			return new BedExtractor(fileToExtract, logFile);
+			return new BedExtractor(fileToExtract);
 		} else if (fileExtension.equalsIgnoreCase("wig")) {
-			return new WiggleExtractor(fileToExtract, logFile);
+			return new WiggleExtractor(fileToExtract);
 		} else if (fileExtension.equalsIgnoreCase("bgr")) {
-			return new BedGraphExtractor(fileToExtract, logFile);
+			return new BedGraphExtractor(fileToExtract);
 		} else if (fileExtension.equalsIgnoreCase("pair")) {
-			return new PairExtractor(fileToExtract, logFile);
+			return new PairExtractor(fileToExtract);
 		} else if (fileExtension.equalsIgnoreCase("gdp")) {
-			return new GdpGeneExtractor(fileToExtract, logFile);
+			return new GdpGeneExtractor(fileToExtract);
 		} else if (fileExtension.equalsIgnoreCase("bin")) {
-			return new SerializedBinListExtractor(fileToExtract, logFile);
+			return new SerializedBinListExtractor(fileToExtract);
 		} else if (fileExtension.equalsIgnoreCase("elx")) {
-			return new ElandExtendedExtractor(fileToExtract, logFile);
+			return new ElandExtendedExtractor(fileToExtract);
 		} else if (fileExtension.equalsIgnoreCase("psl")) {
-			return new PSLExtractor(fileToExtract, logFile);
+			return new PSLExtractor(fileToExtract);
 		} else if (fileExtension.equalsIgnoreCase("sam")) {
-			return new SAMExtractor(fileToExtract, logFile);
+			return new SAMExtractor(fileToExtract);
 		} else {
 			return null;
 		}
@@ -107,12 +83,11 @@ public final class ExtractorFactory {
 
 	/**
 	 * @param fileToExtract
-	 * @param logFile
 	 * @return an {@link Extractor} if there is some information about
 	 * the type of {@link Extractor} in the header. Null otherwise
 	 * @throws IOException
 	 */
-	public static Extractor checkHeader(File fileToExtract, File logFile) throws IOException {
+	public static Extractor checkHeader(File fileToExtract) throws IOException {
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new FileReader(fileToExtract));
@@ -139,9 +114,9 @@ public final class ExtractorFactory {
 				}
 				if (isHeader) {
 					if (line.substring(0, 5).equalsIgnoreCase("##GFF")) {
-						return new GFFExtractor(fileToExtract, logFile);
+						return new GFFExtractor(fileToExtract);
 					} else if (line.substring(0, 5).equalsIgnoreCase("##GTF")) {
-						return new GTFExtractor(fileToExtract, logFile);
+						return new GTFExtractor(fileToExtract);
 					} else if (line.substring(0, 5).equalsIgnoreCase("track")) {
 						String lineTmp = line.toLowerCase();
 						if (lineTmp.contains("type")) {
@@ -165,19 +140,19 @@ public final class ExtractorFactory {
 								}
 								reader.close();
 								if (type.equalsIgnoreCase("bedgraph")) {
-									return new BedGraphExtractor(fileToExtract, logFile);
+									return new BedGraphExtractor(fileToExtract);
 								} else if (type.equalsIgnoreCase("bed")) {
-									return new BedExtractor(fileToExtract, logFile);
+									return new BedExtractor(fileToExtract);
 								} else if (type.equalsIgnoreCase("gdpGene")) {
-									return new GdpGeneExtractor(fileToExtract, logFile);
+									return new GdpGeneExtractor(fileToExtract);
 								} else if (type.equalsIgnoreCase("wiggle")) {
-									return new WiggleExtractor(fileToExtract, logFile);
+									return new WiggleExtractor(fileToExtract);
 								} else if (type.equalsIgnoreCase("eland_extended")) {
-									return new ElandExtendedExtractor(fileToExtract, logFile);
+									return new ElandExtendedExtractor(fileToExtract);
 								} else if (type.equalsIgnoreCase("psl")) {
-									return new PSLExtractor(fileToExtract, logFile);
+									return new PSLExtractor(fileToExtract);
 								} else if (type.equalsIgnoreCase("sam")) {
-									return new SAMExtractor(fileToExtract, logFile);
+									return new SAMExtractor(fileToExtract);
 								} else {
 									return null;
 								}
@@ -192,5 +167,27 @@ public final class ExtractorFactory {
 			}
 		}
 		return null;
+	}
+
+
+	/**
+	 * @param fileToExtract file to extract
+	 * @return an instance of a subclass of {@link Extractor} if the type has been found.
+	 * Otherwise throw a {@link InvalidFileTypeException}
+	 * @throws IOException
+	 * @throws InvalidFileTypeException
+	 */
+	public static Extractor getExtractor(File fileToExtract) throws IOException, InvalidFileTypeException {
+		Extractor extractor = null;
+		extractor = checkHeader(fileToExtract);
+		if (extractor != null) {
+			return extractor;
+		}
+		extractor = checkFileExtension(fileToExtract);
+		if (extractor != null) {
+			return extractor;
+		}
+		// if we can't figure out the type of Extractor
+		throw new InvalidFileTypeException();
 	}
 }

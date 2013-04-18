@@ -29,6 +29,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.chromosome.SimpleChromosome;
 import edu.yu.einstein.genplay.dataStructure.genome.Assembly;
 import edu.yu.einstein.genplay.dataStructure.genome.Clade;
 import edu.yu.einstein.genplay.dataStructure.genome.Genome;
@@ -54,18 +55,6 @@ public class GenomeListLoader extends DefaultHandler {
 	}
 
 
-	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-		if (qName.equalsIgnoreCase("assembly")) {
-			clade = new Clade(attributes.getValue("clade"));
-			genome = new Genome(attributes.getValue("genome"));
-			assembly = new Assembly(attributes.getValue("name"), attributes.getValue("date"));
-		} else if (qName.equalsIgnoreCase("chromosome")) {
-			chromosomeList.add(new Chromosome(attributes.getValue("name"), Integer.parseInt(attributes.getValue("length").trim())));
-		}
-	}
-
-
 	/**
 	 * This method associates clade information to make a full clade object.
 	 */
@@ -81,5 +70,17 @@ public class GenomeListLoader extends DefaultHandler {
 	 */
 	protected Clade getClade() {
 		return clade;
+	}
+
+
+	@Override
+	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+		if (qName.equalsIgnoreCase("assembly")) {
+			clade = new Clade(attributes.getValue("clade"));
+			genome = new Genome(attributes.getValue("genome"));
+			assembly = new Assembly(attributes.getValue("name"), attributes.getValue("date"));
+		} else if (qName.equalsIgnoreCase("chromosome")) {
+			chromosomeList.add(new SimpleChromosome(attributes.getValue("name"), Integer.parseInt(attributes.getValue("length").trim())));
+		}
 	}
 }

@@ -31,7 +31,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.Strand;
  * Allows user to choose which strand to extract, to define a fixed read length and to shift the reads.
  * @author Julien Lajugie
  */
-public class StrandOptions {
+public class StrandedExtractorOptions {
 
 	private final Strand 	selectedStrand;	// strand to extract. Both if null
 	private final int 		strandShift;	// value of the shift to perform on the selected strand
@@ -39,12 +39,12 @@ public class StrandOptions {
 
 
 	/**
-	 * Creates an instance of {@link StrandOptions}
+	 * Creates an instance of {@link StrandedExtractorOptions}
 	 * @param strandToExtract strand to extract. Both strand will be extracted if this parameter is null
 	 * @param strandShift value of the shift to perform on the selected strand
 	 * @param readLength length of the reads. 0 to keep the values from the input data file
 	 */
-	public StrandOptions(Strand strandToExtract, int strandShift, int readLength) {
+	public StrandedExtractorOptions(Strand strandToExtract, int strandShift, int readLength) {
 		super();
 		selectedStrand = strandToExtract;
 		this.strandShift = strandShift;

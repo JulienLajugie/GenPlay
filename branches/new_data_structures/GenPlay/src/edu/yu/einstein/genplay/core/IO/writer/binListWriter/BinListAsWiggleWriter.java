@@ -25,13 +25,14 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
 
@@ -58,6 +59,15 @@ public final class BinListAsWiggleWriter extends BinListWriter implements Stoppa
 	}
 
 
+	/**
+	 * Stops the writer while it's writing a file
+	 */
+	@Override
+	public void stop() {
+		needsToBeStopped = true;
+	}
+
+
 	@Override
 	public void write() throws IOException, InterruptedException {
 		BufferedWriter writer = null;
@@ -73,10 +83,10 @@ public final class BinListAsWiggleWriter extends BinListWriter implements Stoppa
 			// print the data
 			for(Chromosome currentChromosome: projectChromosome) {
 				if(data.get(currentChromosome) != null) {
-					List<Double> currentList = data.get(currentChromosome);
+					ListView<ScoredChromosomeWindow> currentList = data.get(currentChromosome);
 					int j = 0;
 					// loop until we find a value different from 0
-					while ((j < currentList.size()) && (currentList.get(j) == 0)) {
+					while ((j < currentList.size()) && (currentList.get(j).getScore() == 0)) {
 						j++;
 					}
 					while (j < currentList.size()) {
@@ -91,14 +101,14 @@ public final class BinListAsWiggleWriter extends BinListWriter implements Stoppa
 							writer.newLine();
 							int cpt = 0;
 							// if there is more than ZERO_COUNT 0 values we print a new header
-							while ((j < currentList.size()) && ((cpt < ZERO_COUNT) || (currentList.get(j) == 0))) {
+							while ((j < currentList.size()) && ((cpt < ZERO_COUNT) || (currentList.get(j).getScore() == 0))) {
 								// if the operation need to be stopped we close the writer and delete the file
 								if (needsToBeStopped) {
 									writer.close();
 									outputFile.delete();
 									throw new InterruptedException();
 								}
-								if (currentList.get(j) == 0) {
+								if (currentList.get(j).getScore() == 0) {
 									cpt++;
 								} else {
 									if (cpt != 0) {
@@ -109,7 +119,7 @@ public final class BinListAsWiggleWriter extends BinListWriter implements Stoppa
 										}
 										cpt = 0;
 									}
-									writer.write(Double.toString(currentList.get(j)));
+									writer.write(Float.toString(currentList.get(j).getScore()));
 									writer.newLine();
 								}
 								j++;
@@ -125,14 +135,5 @@ public final class BinListAsWiggleWriter extends BinListWriter implements Stoppa
 				writer.close();
 			}
 		}
-	}
-
-
-	/**
-	 * Stops the writer while it's writing a file
-	 */
-	@Override
-	public void stop() {
-		needsToBeStopped = true;
 	}
 }

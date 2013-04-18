@@ -41,6 +41,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneSearcher;
@@ -74,6 +75,17 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 
 
 	/**
+	 * Creates and shows a {@link SearchGeneDialog}
+	 * @param parent parent component. Can be null
+	 * @param geneSearcher a {@link GeneSearcher}
+	 */
+	public static void showSearchGeneDialog(Component parent, GeneSearcher geneSearcher) {
+		SearchGeneDialog dialog = new SearchGeneDialog(parent, geneSearcher);
+		dialog.setVisible(true);
+	}
+
+
+	/**
 	 * Private constructor. Creates an instance of {@link SearchGeneDialog}
 	 * @param parent parent component. Can be null
 	 * @param geneSearcher a {@link GeneSearcher} that searches the genes
@@ -97,7 +109,8 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 				if (show) {
 					// search a gene when the user type something in the input box
 					Gene geneFound = SearchGeneDialog.geneSearcher.search(jtfSearchGene.getText());
-					showGene(geneFound);
+					Chromosome chromosome = SearchGeneDialog.geneSearcher.getGeneChromosome();
+					showGene(geneFound, chromosome);
 				}
 			}
 		});
@@ -203,17 +216,6 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 	}
 
 
-	/**
-	 * Creates and shows a {@link SearchGeneDialog}
-	 * @param parent parent component. Can be null
-	 * @param geneSearcher a {@link GeneSearcher}
-	 */
-	public static void showSearchGeneDialog(Component parent, GeneSearcher geneSearcher) {
-		SearchGeneDialog dialog = new SearchGeneDialog(parent, geneSearcher);
-		dialog.setVisible(true);
-	}
-
-
 	@Override
 	public void actionPerformed(ActionEvent evt) {
 		Gene geneFound = null;
@@ -228,7 +230,7 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 				JButton source = (JButton) evt.getSource();
 				getRootPane().setDefaultButton(source);
 				if (source == jbValidInput) {							// case where the "go" button is clicked
-					geneFound = SearchGeneDialog.geneSearcher.search(jtfSearchGene.getText());
+					geneFound = geneSearcher.search(jtfSearchGene.getText());
 				} else if (source == jbNextMatch) {						// case where the next match button is clicked
 					geneFound = geneSearcher.searchNextMatch();
 				} else if (source == jbPreviousMatch) {					// case where the previous match button is clicked
@@ -240,41 +242,7 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 				}
 			}
 		}
-		showGene(geneFound);
-	}
-
-
-	/**
-	 * Shows the result of the search on the browser
-	 * @param geneFound result of the search
-	 */
-	private void showGene(Gene geneFound) {
-		if (geneFound != null) {
-			if (canMove(geneFound)) {
-				jbNextMatch.setEnabled(true);
-				jbPreviousMatch.setEnabled(true);
-				jbNextGene.setEnabled(true);
-				jbPreviousGene.setEnabled(true);
-				// we want to see larger than the gene found
-				int windowStart = geneFound.getStart() - ((geneFound.getStop() - geneFound.getStart()) * 3);
-				int minimumDisplayableStart = - geneFound.getChromosome().getLength();
-				// we don't want the start to be smaller than the minimum displayable position
-				windowStart = Math.max(windowStart, minimumDisplayableStart);
-				int windowStop = geneFound.getStop() + ((geneFound.getStop() - geneFound.getStart()) * 3);
-				int maximumDisplayableStop = geneFound.getChromosome().getLength() * 2;
-				// we don't want the stop to be greater than the maximum displayable position
-				windowStop = Math.min(windowStop, maximumDisplayableStop);
-				SimpleGenomeWindow genomeWindow = new SimpleGenomeWindow(geneFound.getChromosome(), windowStart, windowStop);
-				ProjectManager.getInstance().getProjectWindow().setGenomeWindow(genomeWindow);
-				setEditorColor(true);
-			}
-		} else {
-			setEditorColor(false);
-			jbNextMatch.setEnabled(false);
-			jbPreviousMatch.setEnabled(false);
-			jbNextGene.setEnabled(false);
-			jbPreviousGene.setEnabled(false);
-		}
+		showGene(geneFound, geneSearcher.getGeneChromosome());
 	}
 
 
@@ -284,9 +252,9 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 	 * @param geneFound	a match
 	 * @return	true if the user allows (in specific case) to go to found gene, false otherwise
 	 */
-	private boolean canMove (Gene geneFound) {
+	private boolean canMove (Gene geneFound, Chromosome chromosome) {
 		if (jcbChromosome.isSelected()) {
-			if (!geneFound.getChromosome().equals(ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome())) {
+			if (!chromosome.equals(ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome())) {
 				return false;
 			}
 		}
@@ -320,6 +288,40 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 			} else {
 				jtfSearchGene.setBackground(NOTHING_FOUND_COLOR);
 			}
+		}
+	}
+
+
+	/**
+	 * Shows the result of the search on the browser
+	 * @param geneFound result of the search
+	 */
+	private void showGene(Gene geneFound, Chromosome chromosome) {
+		if (geneFound != null) {
+			if (canMove(geneFound, chromosome)) {
+				jbNextMatch.setEnabled(true);
+				jbPreviousMatch.setEnabled(true);
+				jbNextGene.setEnabled(true);
+				jbPreviousGene.setEnabled(true);
+				// we want to see larger than the gene found
+				int windowStart = geneFound.getStart() - ((geneFound.getStop() - geneFound.getStart()) * 3);
+				int minimumDisplayableStart = - chromosome.getLength();
+				// we don't want the start to be smaller than the minimum displayable position
+				windowStart = Math.max(windowStart, minimumDisplayableStart);
+				int windowStop = geneFound.getStop() + ((geneFound.getStop() - geneFound.getStart()) * 3);
+				int maximumDisplayableStop = chromosome.getLength() * 2;
+				// we don't want the stop to be greater than the maximum displayable position
+				windowStop = Math.min(windowStop, maximumDisplayableStop);
+				SimpleGenomeWindow genomeWindow = new SimpleGenomeWindow(chromosome, windowStart, windowStop);
+				ProjectManager.getInstance().getProjectWindow().setGenomeWindow(genomeWindow);
+				setEditorColor(true);
+			}
+		} else {
+			setEditorColor(false);
+			jbNextMatch.setEnabled(false);
+			jbPreviousMatch.setEnabled(false);
+			jbNextGene.setEnabled(false);
+			jbPreviousGene.setEnabled(false);
 		}
 	}
 }

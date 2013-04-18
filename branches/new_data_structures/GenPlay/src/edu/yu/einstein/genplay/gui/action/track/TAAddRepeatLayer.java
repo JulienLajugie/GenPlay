@@ -25,9 +25,10 @@ import java.io.File;
 
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.generator.RepeatFamilyListGenerator;
+import edu.yu.einstein.genplay.core.IO.dataReader.RepeatReader;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.repeatFamilyList.RepeatFamilyList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.repeatFamilyList.SimpleRepeatFamilyListFactory;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection.GenomeSelectionDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -57,10 +58,25 @@ public final class TAAddRepeatLayer extends TrackListActionExtractorWorker<Repea
 	 * Creates an instance of {@link TAAddRepeatLayer}
 	 */
 	public TAAddRepeatLayer() {
-		super(RepeatFamilyListGenerator.class);
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+	}
+
+
+	@Override
+	public void doAtTheEnd(RepeatFamilyList actionResult) {
+		boolean valid = true;
+		if (ProjectManager.getInstance().isMultiGenomeProject() && (genomeName == null)) {
+			valid = false;
+		}
+		if ((actionResult != null) && valid) {
+			Track selectedTrack = getTrackListPanel().getSelectedTrack();
+			RepeatLayer newLayer = new RepeatLayer(selectedTrack, actionResult, fileToExtract.getName());
+			selectedTrack.getLayers().add(newLayer);
+			selectedTrack.setActiveLayer(newLayer);
+		}
 	}
 
 
@@ -79,6 +95,13 @@ public final class TAAddRepeatLayer extends TrackListActionExtractorWorker<Repea
 
 
 	@Override
+	protected RepeatFamilyList generateList() throws Exception {
+		RepeatFamilyList repeatList = SimpleRepeatFamilyListFactory.createRepeatList((RepeatReader) extractor);
+		return repeatList;
+	}
+
+
+	@Override
 	protected File retrieveFileToExtract() {
 		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
 		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Repeat Layer", defaultDirectory, Utils.getReadableRepeatFileFilters(), true);
@@ -86,26 +109,5 @@ public final class TAAddRepeatLayer extends TrackListActionExtractorWorker<Repea
 			return selectedFile;
 		}
 		return null;
-	}
-
-
-	@Override
-	protected RepeatFamilyList generateList() throws Exception {
-		return ((RepeatFamilyListGenerator)extractor).toRepeatFamilyList();
-	}
-
-
-	@Override
-	public void doAtTheEnd(RepeatFamilyList actionResult) {
-		boolean valid = true;
-		if (ProjectManager.getInstance().isMultiGenomeProject() && (genomeName == null)) {
-			valid = false;
-		}
-		if ((actionResult != null) && valid) {
-			Track selectedTrack = getTrackListPanel().getSelectedTrack();
-			RepeatLayer newLayer = new RepeatLayer(selectedTrack, actionResult, fileToExtract.getName());
-			selectedTrack.getLayers().add(newLayer);
-			selectedTrack.setActiveLayer(newLayer);
-		}
 	}
 }

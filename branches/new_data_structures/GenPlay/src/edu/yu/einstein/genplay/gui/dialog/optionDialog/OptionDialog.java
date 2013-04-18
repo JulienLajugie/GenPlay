@@ -72,7 +72,6 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 	private final JButton 				jbOk; 				// Button OK
 	private final JButton 				jbCancel; 			// Button cancel
 	private final JSplitPane 			jspDivider; 		// Divider between the tree and the panel
-	private final String 				logFile; 			// log file
 	private final String 				defaultDirectory; 	// default directory
 	private final String 				lookAndFeel; 		// look and feel
 	private final String 				dasServerListFile; 	// DAS Server List File
@@ -102,7 +101,6 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 	public OptionDialog() {
 		super();
 		cm = ProjectManager.getInstance().getProjectConfiguration();
-		logFile = cm.getLogFile();
 		dasServerListFile = cm.getDASServerListFile();
 		defaultDirectory = cm.getDefaultDirectory();
 		lookAndFeel = cm.getLookAndFeel();
@@ -203,7 +201,6 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 				// if the modification had been canceled we restore
 				// the cm the way it was when the window was opened
 				if (approved == CANCEL_OPTION) {
-					cm.setLogFile(logFile);
 					cm.setDASServerListFile(dasServerListFile);
 					cm.setDefaultDirectory(defaultDirectory);
 					cm.setLookAndFeel(lookAndFeel);
@@ -249,33 +246,34 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 
 
 	/**
-	 * Changes the panel displayed when the node of the tree changes.
+	 * @return true if dasServerListFile changed
 	 */
-	@Override
-	public void valueChanged(TreeSelectionEvent arg0) {
-		DefaultMutableTreeNode node = (DefaultMutableTreeNode) jt.getLastSelectedPathComponent();
-		jpOption.removeAll();
-		if ((node != null) && (node.isLeaf())) {
-			Object nodeInfo = node.getUserObject();
-			if (nodeInfo != null) {
-				jpOption.add((JPanel) nodeInfo);
-				((JPanel) nodeInfo).addPropertyChangeListener(this);
-			}
-		}
-		jpOption.revalidate();
-		jpOption.repaint();
+	public boolean dasServerListFileChanged() {
+		return !dasServerListFile.equals(cm.getDASServerListFile());
 	}
 
 
 	/**
-	 * Shows the component.
-	 * @param parent the parent component of the dialog, can be null; see showDialog for details
-	 * @return APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
+	 * @return true if defaultDirectory changed
 	 */
-	public int showConfigurationDialog(Component parent) {
-		setLocationRelativeTo(parent);
-		setVisible(true);
-		return approved;
+	public boolean defaultDirectoryChanged() {
+		return !defaultDirectory.equals(cm.getDefaultDirectory());
+	}
+
+
+	/**
+	 * @return true if the legend parameter changed
+	 */
+	public boolean legendChanged() {
+		return legend != cm.isLegend();
+	}
+
+
+	/**
+	 * @return true if lookAndFeel changed
+	 */
+	public boolean lookAndFeelChanged() {
+		return !lookAndFeel.equals(cm.getLookAndFeel());
 	}
 
 
@@ -296,34 +294,22 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 
 
 	/**
-	 * @return true if logFile changed
+	 * @return true if the reset track parameter changed
 	 */
-	public boolean logFileChanged() {
-		return !logFile.equals(cm.getLogFile());
+	public boolean resetTrackChanged() {
+		return resetTrack != cm.isResetTrack();
 	}
 
 
 	/**
-	 * @return true if dasServerListFile changed
+	 * Shows the component.
+	 * @param parent the parent component of the dialog, can be null; see showDialog for details
+	 * @return APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
 	 */
-	public boolean dasServerListFileChanged() {
-		return !dasServerListFile.equals(cm.getDASServerListFile());
-	}
-
-
-	/**
-	 * @return true if defaultDirectory changed
-	 */
-	public boolean defaultDirectoryChanged() {
-		return !defaultDirectory.equals(cm.getDefaultDirectory());
-	}
-
-
-	/**
-	 * @return true if lookAndFeel changed
-	 */
-	public boolean lookAndFeelChanged() {
-		return !lookAndFeel.equals(cm.getLookAndFeel());
+	public int showConfigurationDialog(Component parent) {
+		setLocationRelativeTo(parent);
+		setVisible(true);
+		return approved;
 	}
 
 
@@ -352,17 +338,20 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 
 
 	/**
-	 * @return true if the reset track parameter changed
+	 * Changes the panel displayed when the node of the tree changes.
 	 */
-	public boolean resetTrackChanged() {
-		return resetTrack != cm.isResetTrack();
-	}
-
-
-	/**
-	 * @return true if the legend parameter changed
-	 */
-	public boolean legendChanged() {
-		return legend != cm.isLegend();
+	@Override
+	public void valueChanged(TreeSelectionEvent arg0) {
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode) jt.getLastSelectedPathComponent();
+		jpOption.removeAll();
+		if ((node != null) && (node.isLeaf())) {
+			Object nodeInfo = node.getUserObject();
+			if (nodeInfo != null) {
+				jpOption.add((JPanel) nodeInfo);
+				((JPanel) nodeInfo).addPropertyChangeListener(this);
+			}
+		}
+		jpOption.revalidate();
+		jpOption.repaint();
 	}
 }

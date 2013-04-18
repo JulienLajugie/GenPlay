@@ -22,168 +22,118 @@
 package edu.yu.einstein.genplay.core.IO.extractor;
 
 import java.io.File;
-import java.io.Serializable;
-import java.util.concurrent.ExecutionException;
+import java.io.FileNotFoundException;
 
+import edu.yu.einstein.genplay.core.IO.dataReader.SCWReader;
 import edu.yu.einstein.genplay.core.IO.utils.DataLineValidator;
-import edu.yu.einstein.genplay.core.generator.BinListGenerator;
-import edu.yu.einstein.genplay.core.generator.ScoredChromosomeWindowListGenerator;
+import edu.yu.einstein.genplay.core.IO.utils.Extractors;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
-import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.DoubleArrayAsDoubleList;
-import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.IntArrayAsIntegerList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.MaskSCWListFactory;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
-import edu.yu.einstein.genplay.util.Utils;
-
 
 
 /**
  * A bedGraph file extractor
  * @author Julien Lajugie
- * @version 0.1
  */
-public final class BedGraphExtractor extends TextFileExtractor
-implements Serializable, ScoredChromosomeWindowListGenerator, BinListGenerator {
+public final class BedGraphExtractor extends TextFileExtractor implements SCWReader {
 
-	private static final long serialVersionUID = 7106474719716124894L; // generated ID
-	private final GenomicListView<Integer>	startList;		// list of position start
-	private final GenomicListView<Integer>	stopList;		// list of position stop
-	private final GenomicListView<Double>		scoreList;		// list of scores
+	private Chromosome 						chromosome;		 	// chromosome of the last item read
+	private Integer 						start;				// start position of the last item read
+	private Integer 						stop;				// stop position of the last item read
+	private Float 							score;				// score of the last item read
 
 
 	/**
-	 * Creates an instance of a {@link BedGraphExtractor}
+	 * Creates an instance of {@link BedGraphExtractor}
 	 * @param dataFile file containing the data
-	 * @param logFile file for the log (no log if null)
+	 * @throws FileNotFoundException if the specified file is not found
 	 */
-	public BedGraphExtractor(File dataFile, File logFile) {
-		super(dataFile, logFile);
-		// initialize the lists
-		startList = new GenomicDataArrayList<Integer>();
-		stopList = new GenomicDataArrayList<Integer>();
-		scoreList = new GenomicDataArrayList<Double>();
-		// initialize the sublists
-		for (int i = 0; i < projectChromosome.size(); i++) {
-			startList.add(new IntArrayAsIntegerList());
-			stopList.add(new IntArrayAsIntegerList());
-			scoreList.add(new DoubleArrayAsDoubleList());
-		}
+	public BedGraphExtractor(File dataFile) throws FileNotFoundException {
+		super(dataFile);
 	}
 
 
-	/**
-	 * Receives one line from the input file and extracts and adds
-	 * a chromosome, a position start, a position stop and a score to the lists.
-	 * @param extractedLine line read from the data file
-	 * @return true when the extraction is done
-	 * @throws DataLineException
-	 * @throws FileErrorException
-	 */
 	@Override
-	protected boolean extractLine(String extractedLine) throws DataLineException {
-		String[] splitedLine = Utils.parseLineTabOnly(extractedLine);
+	protected int extractDataLine(String line) throws DataLineException {
+		chromosome = null;
+		start = null;
+		stop = null;
+		score = null;
+		String[] splitedLine = Extractors.parseLineTabOnly(line);
 		if (splitedLine.length < 4) {
 			//throw new InvalidDataLineException(extractedLine);
 			throw new DataLineException(DataLineException.INVALID_PARAMETER_NUMBER);
 		}
-		try {
-			int chromosomeStatus;
-			Chromosome chromosome = null;
-			try {
-				chromosome = projectChromosome.get(splitedLine[0]) ;
-				chromosomeStatus = checkChromosomeStatus(chromosome);
-			} catch (InvalidChromosomeException e) {
-				chromosomeStatus = NEED_TO_BE_SKIPPED;
+		String chromosomeName = splitedLine[0];
+
+		if (getChromosomeSelector() != null) {
+			// case where last chromosome already extracted, no more data to extract
+			if (getChromosomeSelector().isExtractionDone(chromosomeName)) {
+				return EXTRACTION_DONE;
 			}
-
-			if (chromosomeStatus == AFTER_LAST_SELECTED) {
-				return true;
-			} else if (chromosomeStatus == NEED_TO_BE_SKIPPED) {
-				return false;
-			} else {
-				int start = getInt(splitedLine[1].trim());
-				start = getMultiGenomePosition(chromosome, start);
-				int stop = getInt(splitedLine[2].trim());
-				stop = getMultiGenomePosition(chromosome, stop);
-				double score = getDouble(splitedLine[3].trim());
-
-				String errors = DataLineValidator.getErrors(chromosome, start, stop, score);
-				if (errors.length() == 0) {
-
-					// Stop position checking, must not overpass the chromosome length
-					DataLineException stopEndException = null;
-					String stopEndErrorMessage = DataLineValidator.getErrors(chromosome, stop);
-					if (!stopEndErrorMessage.isEmpty()) {
-						stopEndException = new DataLineException(stopEndErrorMessage, DataLineException.SHRINK_STOP_PROCESS);
-						stop = chromosome.getLength();
-					}
-					if (score != 0) {
-						startList.add(chromosome, start);
-						stopList.add(chromosome, stop);
-						scoreList.add(chromosome, score);
-						lineCount++;
-					}
-					if (stopEndException != null) {
-						throw stopEndException;
-					}
-				} else {
-					throw new DataLineException(errors);
-				}
-				return false;
+			// chromosome was not selected for extraction
+			if (!getChromosomeSelector().isSelected(chromosomeName)) {
+				return LINE_SKIPPED;
 			}
-		} catch (InvalidChromosomeException e) {
-			//throw new InvalidDataLineException(extractedLine);
-			throw new DataLineException(DataLineException.INVALID_FORMAT_NUMBER);
 		}
+
+		Chromosome chromosome = null;
+		try {
+			chromosome = getProjectChromosome().get(chromosomeName) ;
+		} catch (InvalidChromosomeException e) {
+			// unknown chromosome
+			return LINE_SKIPPED;
+		}
+
+		start = Extractors.getInt(splitedLine[1].trim());
+		start = getMultiGenomePosition(chromosome, start);
+		stop = Extractors.getInt(splitedLine[2].trim());
+		stop = getMultiGenomePosition(chromosome, stop);
+		score = Extractors.getFloat(splitedLine[3].trim());
+
+		if (score == 0) {
+			return LINE_SKIPPED;
+		}
+
+		String errors = DataLineValidator.getErrors(chromosome, start, stop);
+		if (!errors.isEmpty()) {
+			throw new DataLineException(errors);
+		}
+
+		// Stop position checking, must not be greater than the chromosome length
+		String stopEndErrorMessage = DataLineValidator.getErrors(chromosome, stop);
+		if (!stopEndErrorMessage.isEmpty()) {
+			DataLineException stopEndException = new DataLineException(stopEndErrorMessage, DataLineException.SHRINK_STOP_PROCESS);
+			// notify the listeners that the stop position needed to be shrunk
+			notifyDataEventListeners(stopEndException, getCurrentLineNumber(), line);
+			stop = chromosome.getLength();
+		}
+		return ITEM_EXTRACTED;
+	}
+
+
+
+	@Override
+	public Chromosome getChromosome() {
+		return chromosome;
 	}
 
 
 	@Override
-	public BinList toBinList(int binSize, ScorePrecision precision, ScoreOperation method) throws IllegalArgumentException, InterruptedException, ExecutionException {
-		return new BinList(binSize, precision, method, startList, stopList, scoreList);
+	public Float getScore() {
+		return score;
 	}
 
 
 	@Override
-	public SCWList toScoredChromosomeWindowList(ScoreOperation scm) throws InvalidChromosomeException, InterruptedException, ExecutionException {
-		return new SimpleSCWList(startList, stopList, scoreList, scm);
-	}
-
-	@Override
-	public SCWList toMaskChromosomeWindowList() throws InvalidChromosomeException, InterruptedException,	ExecutionException {
-		return MaskSCWListFactory.createMaskSCWArrayList(startList, stopList);
+	public Integer getStart() {
+		return start;
 	}
 
 
 	@Override
-	public boolean isBinSizeNeeded() {
-		return true;
+	public Integer getStop() {
+		return stop;
 	}
-
-
-	@Override
-	public boolean isCriterionNeeded() {
-		return true;
-	}
-
-
-	@Override
-	public boolean isPrecisionNeeded() {
-		return true;
-	}
-
-
-	@Override
-	public boolean overlapped() {
-		return SimpleSCWList.overLappingExist(startList, stopList);
-	}
-
 }

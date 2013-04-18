@@ -29,9 +29,7 @@ import edu.yu.einstein.genplay.core.IO.dataReader.RepeatReader;
 import edu.yu.einstein.genplay.core.IO.dataReader.SCWReader;
 import edu.yu.einstein.genplay.core.IO.utils.DataLineValidator;
 import edu.yu.einstein.genplay.core.IO.utils.Extractors;
-import edu.yu.einstein.genplay.core.IO.utils.StrandOptions;
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.IO.utils.StrandedExtractorOptions;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
@@ -49,10 +47,9 @@ import edu.yu.einstein.genplay.util.Utils;
  * A BED file extractor
  * @author Julien Lajugie
  */
-public class BedExtractor extends Extractor implements SCWReader, GeneReader, RepeatReader, StrandedExtractor {
+public class BedExtractor extends TextFileExtractor implements SCWReader, GeneReader, RepeatReader, StrandedExtractor {
 
-	private final ProjectChromosome 		projectChromosome;	// ProjectChromosome
-	private StrandOptions					strandOptions;		// options on the strand and read length / shift
+	private StrandedExtractorOptions		strandOptions;		// options on the strand and read length / shift
 	private Chromosome 						chromosome;		 	// chromosome of the last item read
 	private Integer 						start;				// start position of the last item read
 	private Integer 						stop;				// stop position of the last item read
@@ -71,7 +68,6 @@ public class BedExtractor extends Extractor implements SCWReader, GeneReader, Re
 	 */
 	public BedExtractor(File dataFile) throws FileNotFoundException {
 		super(dataFile);
-		projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 	}
 
 
@@ -107,7 +103,7 @@ public class BedExtractor extends Extractor implements SCWReader, GeneReader, Re
 		}
 
 		try {
-			chromosome = projectChromosome.get(chromosomeName) ;
+			chromosome = getProjectChromosome().get(chromosomeName) ;
 		} catch (InvalidChromosomeException e) {
 			// unknown chromosome
 			return LINE_SKIPPED;
@@ -149,12 +145,12 @@ public class BedExtractor extends Extractor implements SCWReader, GeneReader, Re
 		start = getMultiGenomePosition(chromosome, start);
 		stop = getMultiGenomePosition(chromosome, stop);
 		if (splitedLine.length <= 3) {
-			return LINE_EXTRACTED;
+			return ITEM_EXTRACTED;
 		}
 		// retrieve the name field
 		name = splitedLine[3].trim();
 		if (splitedLine.length <= 4) {
-			return LINE_EXTRACTED;
+			return ITEM_EXTRACTED;
 		}
 		// retrieve the score field
 		score = Extractors.getFloat(splitedLine[4].trim(), 0f);
@@ -176,7 +172,7 @@ public class BedExtractor extends Extractor implements SCWReader, GeneReader, Re
 		UTR3Bound = getMultiGenomePosition(chromosome, UTR3Bound);
 
 		if (splitedLine.length <= 11) {
-			return LINE_EXTRACTED;
+			return ITEM_EXTRACTED;
 		}
 
 		// retrieve exons
@@ -199,7 +195,7 @@ public class BedExtractor extends Extractor implements SCWReader, GeneReader, Re
 			}
 			exons = exonListBuilder.getListView();
 		}
-		return LINE_EXTRACTED;
+		return ITEM_EXTRACTED;
 	}
 
 
@@ -258,7 +254,7 @@ public class BedExtractor extends Extractor implements SCWReader, GeneReader, Re
 
 
 	@Override
-	public StrandOptions getStrandedExtractorOptions() {
+	public StrandedExtractorOptions getStrandedExtractorOptions() {
 		return strandOptions;
 	}
 
@@ -276,7 +272,7 @@ public class BedExtractor extends Extractor implements SCWReader, GeneReader, Re
 
 
 	@Override
-	public void setStrandedExtractorOptions(StrandOptions options) {
+	public void setStrandedExtractorOptions(StrandedExtractorOptions options) {
 		strandOptions = options;
 	}
 }

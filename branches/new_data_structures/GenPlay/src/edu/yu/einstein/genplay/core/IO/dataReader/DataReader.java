@@ -25,8 +25,6 @@ import java.io.IOException;
 
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
-import edu.yu.einstein.genplay.exception.exceptions.ExtractorNotInitializedException;
 
 /**
  * Interface defining common methods for the different kind of readers that can read data files.
@@ -38,9 +36,7 @@ public interface DataReader {
 	 * Reads a new item (eg: {@link Gene}, {@link ScoredChromosomeWindow}, etc..) in a file.
 	 * Items can be spread on more than one line.
 	 * @return false when EOF is reached. True otherwise
-	 * @throws ExtractorNotInitializedException If this method is called before the extractor has been initialized
 	 * @throws IOException If an I/O error occurs
-	 * @throws DataLineException If there is a problem in the data of the file.
 	 */
-	public boolean readItem() throws ExtractorNotInitializedException, IOException, DataLineException;
+	public boolean readItem() throws IOException;
 }

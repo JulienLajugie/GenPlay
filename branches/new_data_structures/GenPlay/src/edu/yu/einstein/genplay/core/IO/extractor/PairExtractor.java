@@ -23,143 +23,117 @@ package edu.yu.einstein.genplay.core.IO.extractor;
 
 
 import java.io.File;
-import java.io.Serializable;
-import java.util.concurrent.ExecutionException;
+import java.io.FileNotFoundException;
 
+import edu.yu.einstein.genplay.core.IO.dataReader.SCWReader;
 import edu.yu.einstein.genplay.core.IO.utils.DataLineValidator;
-import edu.yu.einstein.genplay.core.generator.BinListGenerator;
+import edu.yu.einstein.genplay.core.IO.utils.Extractors;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
-import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.DoubleArrayAsDoubleList;
-import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.IntArrayAsIntegerList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 import edu.yu.einstein.genplay.util.Utils;
 
 
-
 /**
  * A pair file extractor
  * @author Julien Lajugie
- * @version 0.1
  */
-public final class PairExtractor extends TextFileExtractor
-implements Serializable, BinListGenerator {
+public final class PairExtractor extends TextFileExtractor implements SCWReader {
 
-	private static final long serialVersionUID = -2160273514926102255L; // generated ID
-	private final GenomicListView<Integer>	positionList;		// list of position start
-	private final GenomicListView<Double>	scoreList;			// list of scores
+	private Chromosome 						chromosome;		 	// chromosome of the last item read
+	private Integer 						position;			// position of the last item read
+	private Float 							score;				// score of the last item read
 
 
 	/**
 	 * Creates an instance of {@link PairExtractor}
 	 * @param dataFile file containing the data
-	 * @param logFile file for the log (no log if null)
+	 * @throws FileNotFoundException if the specified file is not found
 	 */
-	public PairExtractor(File dataFile, File logFile) {
-		super(dataFile, logFile);
-		positionList = new GenomicDataArrayList<Integer>();
-		scoreList = new GenomicDataArrayList<Double>();
-		// initialize the sublists
-		for (int i = 0; i < projectChromosome.size(); i++) {
-			positionList.add(new IntArrayAsIntegerList());
-			scoreList.add(new DoubleArrayAsDoubleList());
-		}
+	public PairExtractor(File dataFile) throws FileNotFoundException {
+		super(dataFile);
 	}
 
 
-	/**
-	 * Receives one line from the input file and extracts and adds the data in the lists
-	 * @param extractedLine line read from the data file
-	 * @return true when the extraction is done
-	 * @throws DataLineException
-	 */
 	@Override
-	protected boolean extractLine(String extractedLine) throws DataLineException {
-		if (extractedLine.trim().length() == 0) {
-			return false;
+	protected int extractDataLine(String line) throws DataLineException {
+		chromosome = null;
+		position = null;
+		score = null;
+		if (line.trim().isEmpty()) {
+			return LINE_SKIPPED;
 		}
 		// We don't want to extract the header lines
 		// So we extract only if the line starts with a number
 		try {
-			getInt(extractedLine.substring(0, 1));
+			Extractors.getInt(line.substring(0, 1));
 		} catch (Exception e){
-			return false;
+			return LINE_SKIPPED;
 		}
 
-		String[] splitedLine = Utils.parseLineTabOnly(extractedLine);
+		String[] splitedLine = Extractors.parseLineTabOnly(line);
 		if (splitedLine.length < 10) {
-			//throw new InvalidDataLineException(extractedLine);
 			throw new DataLineException(DataLineException.INVALID_PARAMETER_NUMBER);
 		}
-		//String chromosomeField[] = splitedLine[2].split(":");
 		String chromosomeField[] = Utils.split(splitedLine[2], ':');
 		if (chromosomeField.length != 2) {
-			//throw new InvalidDataLineException(extractedLine);
 			throw new DataLineException(DataLineException.INVALID_PARAMETER_NUMBER);
 		}
+		String chromosomeName = chromosomeField[0];
+
+		if (getChromosomeSelector() != null) {
+			// case where last chromosome already extracted, no more data to extract
+			if (getChromosomeSelector().isExtractionDone(chromosomeName)) {
+				return EXTRACTION_DONE;
+			}
+			// chromosome was not selected for extraction
+			if (!getChromosomeSelector().isSelected(chromosomeName)) {
+				return LINE_SKIPPED;
+			}
+		}
+
 		try {
-			int chromosomeStatus;
-			Chromosome chromosome = null;
-			try {
-				chromosome = projectChromosome.get(chromosomeField[0]) ;
-				chromosomeStatus = checkChromosomeStatus(chromosome);
-			} catch (InvalidChromosomeException e) {
-				chromosomeStatus = NEED_TO_BE_SKIPPED;
-			}
-
-			if (chromosomeStatus == AFTER_LAST_SELECTED) {
-				return true;
-			} else if (chromosomeStatus == NEED_TO_BE_SKIPPED) {
-				return false;
-			} else {
-				int position = getInt(splitedLine[4]);
-				Double score = getDouble(splitedLine[9]);
-
-				// Checks errors
-				String errors = DataLineValidator.getErrors(chromosome, position, position, score);
-				if (errors.length() == 0) {
-					position = getMultiGenomePosition(chromosome, position);
-					positionList.add(chromosome, position);
-					scoreList.add(chromosome, score);
-					lineCount++;
-					return false;
-				} else {
-					throw new DataLineException(errors);
-				}
-			}
+			chromosome = getProjectChromosome().get(chromosomeName) ;
 		} catch (InvalidChromosomeException e) {
-			//throw new InvalidDataLineException(extractedLine);
-			throw new DataLineException(DataLineException.INVALID_FORMAT_NUMBER);
+			// unknown chromosome
+			return LINE_SKIPPED;
+		}
+
+		position = Extractors.getInt(splitedLine[4]);
+		score = Extractors.getFloat(splitedLine[9]);
+
+		// Checks errors
+		String errors = DataLineValidator.getErrors(chromosome, position, position, score);
+		if (errors.length() == 0) {
+			position = getMultiGenomePosition(chromosome, position);
+			return ITEM_EXTRACTED;
+		} else {
+			throw new DataLineException(errors);
 		}
 	}
 
 
 	@Override
-	public boolean isBinSizeNeeded() {
-		return true;
+	public Chromosome getChromosome() {
+		return chromosome;
 	}
 
 
 	@Override
-	public boolean isCriterionNeeded() {
-		return true;
+	public Float getScore() {
+		return score;
 	}
 
 
 	@Override
-	public boolean isPrecisionNeeded() {
-		return true;
+	public Integer getStart() {
+		return position;
 	}
 
 
 	@Override
-	public BinList toBinList(int binSize, ScorePrecision precision, ScoreOperation method) throws IllegalArgumentException, InterruptedException, ExecutionException {
-		return new BinList(binSize, precision, method, positionList, scoreList);
+	public Integer getStop() {
+		return position;
 	}
-
 }
+

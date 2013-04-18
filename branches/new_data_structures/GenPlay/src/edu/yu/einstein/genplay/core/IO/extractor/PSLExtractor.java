@@ -91,7 +91,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 		exonStartsList = new GenomicDataArrayList<int[]>();
 		exonStopsList = new GenomicDataArrayList<int[]>();
 		// initialize the sublists
-		for (int i = 0; i < projectChromosome.size(); i++) {
+		for (int i = 0; i < getProjectChromosome().size(); i++) {
 			startList.add(new IntArrayAsIntegerList());
 			stopList.add(new IntArrayAsIntegerList());
 			nameList.add(new ArrayList<String>());
@@ -119,7 +119,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 			int chromosomeStatus;
 			Chromosome chromosome = null;
 			try {
-				chromosome = projectChromosome.get(splitedLine[13]) ;
+				chromosome = getProjectChromosome().get(splitedLine[13]) ;
 				chromosomeStatus = checkChromosomeStatus(chromosome);
 			} catch (InvalidChromosomeException e) {
 				chromosomeStatus = NEED_TO_BE_SKIPPED;

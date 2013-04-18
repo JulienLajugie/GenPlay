@@ -50,8 +50,37 @@ public class TrackSettingsPanel extends JPanel {
 
 	protected static final int labelWidth = 100;
 
+	/**
+	 * Format a label
+	 * @param label a label
+	 */
+	protected static void formatLabel (JLabel label) {
+		int height = label.getFontMetrics(label.getFont()).getHeight();
+		Dimension dimension = new Dimension(130, height);
+		label.setPreferredSize(dimension);
+	}
+	/**
+	 * Format a field containing a number
+	 * @param field
+	 */
+	protected static void formatNumberField (JTextField field) {
+		field.setColumns(8);
+	}
+	/**
+	 * Format a field containing a text
+	 * @param field
+	 */
+	protected static void formatTextField (JTextField field) {
+		field.setColumns(20);
+	}
+
+
 	private final BasicOptionsPanel 	basicOptionsPanel;			// panel for the basic options
+
+
 	private final AxisOptionsPanel 		axisOptionsPanel;			// panel for the axis options
+
+
 	private final ScoreOptionsPanel 	scoreOptionsPanel;			// panel for the score options
 
 
@@ -88,16 +117,6 @@ public class TrackSettingsPanel extends JPanel {
 
 
 	/**
-	 * @param track		track for the settings
-	 */
-	public void setOptions (Track track) {
-		basicOptionsPanel.initValues(track);
-		axisOptionsPanel.initValues(track);
-		scoreOptionsPanel.initValues(track);
-	}
-
-
-	/**
 	 * @return true if the horizontal lines are set as visible
 	 */
 	public boolean areHorizontalLinesVisibe() {
@@ -122,14 +141,6 @@ public class TrackSettingsPanel extends JPanel {
 
 
 	/**
-	 * @return true if the score is set to be auto-rescaled. False otherwise
-	 */
-	public boolean isScoreAutoRescaled() {
-		return scoreOptionsPanel.isScoreAutoRescaled();
-	}
-
-
-	/**
 	 * @return the color of the score
 	 */
 	public Color getScoreColor() {
@@ -140,7 +151,7 @@ public class TrackSettingsPanel extends JPanel {
 	/**
 	 * @return the maximum score
 	 */
-	public double getScoreMaximum() {
+	public float getScoreMaximum() {
 		return scoreOptionsPanel.getScoreMaximum();
 	}
 
@@ -148,7 +159,7 @@ public class TrackSettingsPanel extends JPanel {
 	/**
 	 * @return the minimun score
 	 */
-	public double getScoreMinimum() {
+	public float getScoreMinimum() {
 		return scoreOptionsPanel.getScoreMinimum();
 	}
 
@@ -186,30 +197,19 @@ public class TrackSettingsPanel extends JPanel {
 
 
 	/**
-	 * Format a label
-	 * @param label a label
+	 * @return true if the score is set to be auto-rescaled. False otherwise
 	 */
-	protected static void formatLabel (JLabel label) {
-		int height = label.getFontMetrics(label.getFont()).getHeight();
-		Dimension dimension = new Dimension(130, height);
-		label.setPreferredSize(dimension);
+	public boolean isScoreAutoRescaled() {
+		return scoreOptionsPanel.isScoreAutoRescaled();
 	}
 
 
 	/**
-	 * Format a field containing a number
-	 * @param field
+	 * @param track		track for the settings
 	 */
-	protected static void formatNumberField (JTextField field) {
-		field.setColumns(8);
-	}
-
-
-	/**
-	 * Format a field containing a text
-	 * @param field
-	 */
-	protected static void formatTextField (JTextField field) {
-		field.setColumns(20);
+	public void setOptions (Track track) {
+		basicOptionsPanel.initValues(track);
+		axisOptionsPanel.initValues(track);
+		scoreOptionsPanel.initValues(track);
 	}
 }

@@ -29,28 +29,18 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.generator.BinListGenerator;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
-import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.DoubleArrayAsDoubleList;
-import edu.yu.einstein.genplay.dataStructure.list.arrayList.old.IntArrayAsIntegerList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
-
 
 
 /**
  * A Eland Extended file extractor
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class ElandExtendedExtractor extends TextFileExtractor implements Serializable, StrandedExtractor, BinListGenerator {
 
@@ -77,62 +67,14 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 		super(dataFile, logFile);
 		positionList = new GenomicDataArrayList<Integer>();
 		strandList = new GenomicDataArrayList<Strand>();
-		for (int i = 0; i < projectChromosome.size(); i++) {
+		for (int i = 0; i < getProjectChromosome().size(); i++) {
 			positionList.add(new IntArrayAsIntegerList());
 			strandList.add(new ArrayList<Strand>());
 		}
-		matchTypeCount = new int[projectChromosome.size()][3];
-		for(short i = 0; i < projectChromosome.size(); i++) {
+		matchTypeCount = new int[getProjectChromosome().size()][3];
+		for(short i = 0; i < getProjectChromosome().size(); i++) {
 			for(short j = 0; j < 3; j++) {
 				matchTypeCount[i][j] = 0;
-			}
-		}
-	}
-
-
-	@Override
-	protected void logExecutionInfo() {
-		super.logExecutionInfo();
-		// display statistics
-		if(logFile != null) {
-			try {
-				// initialize the number of read per chromosome and the data for statistics
-				int total0M = 0, total1M = 0, total2M = 0;
-				BufferedWriter writer = new BufferedWriter(new FileWriter(logFile, true));
-				NumberFormat nf = NumberFormat.getInstance();
-				writer.write("NM: " + NMCount);
-				writer.newLine();
-				writer.write("Percentage of NM: " + nf.format(((double)NMCount / totalCount) * 100) + "%");
-				writer.newLine();
-				writer.write("QC: " + QCCount);
-				writer.newLine();
-				writer.write("Percentage of QC: " + nf.format(((double)QCCount / totalCount) * 100) + "%");
-				writer.newLine();
-				writer.write("Multi match: " + multiMatchCount);
-				writer.newLine();
-				writer.write("Percentage of multimatch: " + nf.format(((double)multiMatchCount / totalCount) * 100) + "%");
-				writer.newLine();
-				writer.write("Chromosome\t0MM\t1MM\t2MM\tTotal");
-				writer.newLine();
-				for(short i = 0; i < projectChromosome.size(); i++) {
-					writer.write(projectChromosome.get(i) +
-							"\t\t" + nf.format(((double)matchTypeCount[i][0] / lineCount)*100) +
-							"%\t" + nf.format(((double)matchTypeCount[i][1] / lineCount)*100) +
-							"%\t" + nf.format(((double)matchTypeCount[i][2] / lineCount)*100) +
-							"%\t" + nf.format(((double)(matchTypeCount[i][0] + matchTypeCount[i][1] + matchTypeCount[i][2]) / lineCount)*100) + "%");
-					writer.newLine();
-					total0M+=matchTypeCount[i][0];
-					total1M+=matchTypeCount[i][1];
-					total2M+=matchTypeCount[i][2];
-				}
-				writer.write("Total:\t" + nf.format(((double)total0M/lineCount)*100) +
-						"%\t" + nf.format(((double)total1M/lineCount)*100) +
-						"%\t" + nf.format(((double)total2M/lineCount)*100) +
-						"%\t\t100%");
-				writer.newLine();
-				writer.close();
-			} catch (IOException e) {
-
 			}
 		}
 	}
@@ -215,7 +157,7 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 			throw new DataLineException("End of the line reached, no data to extract.");
 		}
 		try {
-			chromo = projectChromosome.get(new String(chromoChar, 0, j).trim());
+			chromo = getProjectChromosome().get(new String(chromoChar, 0, j).trim());
 		} catch (InvalidChromosomeException e) {
 			return false;
 		}
@@ -226,7 +168,7 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 		} else if (chromosomeStatus == NEED_TO_BE_SKIPPED) {
 			return false;
 		} else {
-			chromoNumber = projectChromosome.getIndex(chromo);
+			chromoNumber = getProjectChromosome().getIndex(chromo);
 
 			// try to extract the position number
 			i+=4;  // we want to get rid of 'fa:'
@@ -273,68 +215,49 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 
 
 	@Override
-	public boolean isBinSizeNeeded() {
-		return true;
-	}
+	protected void logExecutionInfo() {
+		super.logExecutionInfo();
+		// display statistics
+		if(logFile != null) {
+			try {
+				// initialize the number of read per chromosome and the data for statistics
+				int total0M = 0, total1M = 0, total2M = 0;
+				BufferedWriter writer = new BufferedWriter(new FileWriter(logFile, true));
+				NumberFormat nf = NumberFormat.getInstance();
+				writer.write("NM: " + NMCount);
+				writer.newLine();
+				writer.write("Percentage of NM: " + nf.format(((double)NMCount / totalCount) * 100) + "%");
+				writer.newLine();
+				writer.write("QC: " + QCCount);
+				writer.newLine();
+				writer.write("Percentage of QC: " + nf.format(((double)QCCount / totalCount) * 100) + "%");
+				writer.newLine();
+				writer.write("Multi match: " + multiMatchCount);
+				writer.newLine();
+				writer.write("Percentage of multimatch: " + nf.format(((double)multiMatchCount / totalCount) * 100) + "%");
+				writer.newLine();
+				writer.write("Chromosome\t0MM\t1MM\t2MM\tTotal");
+				writer.newLine();
+				for(short i = 0; i < getProjectChromosome().size(); i++) {
+					writer.write(getProjectChromosome().get(i) +
+							"\t\t" + nf.format(((double)matchTypeCount[i][0] / lineCount)*100) +
+							"%\t" + nf.format(((double)matchTypeCount[i][1] / lineCount)*100) +
+							"%\t" + nf.format(((double)matchTypeCount[i][2] / lineCount)*100) +
+							"%\t" + nf.format(((double)(matchTypeCount[i][0] + matchTypeCount[i][1] + matchTypeCount[i][2]) / lineCount)*100) + "%");
+					writer.newLine();
+					total0M+=matchTypeCount[i][0];
+					total1M+=matchTypeCount[i][1];
+					total2M+=matchTypeCount[i][2];
+				}
+				writer.write("Total:\t" + nf.format(((double)total0M/lineCount)*100) +
+						"%\t" + nf.format(((double)total1M/lineCount)*100) +
+						"%\t" + nf.format(((double)total2M/lineCount)*100) +
+						"%\t\t100%");
+				writer.newLine();
+				writer.close();
+			} catch (IOException e) {
 
-
-	@Override
-	public boolean isCriterionNeeded() {
-		return false;
-	}
-
-
-	@Override
-	public boolean isPrecisionNeeded() {
-		return true;
-	}
-
-
-	@Override
-	public BinList toBinList(int binSize, ScorePrecision precision, ScoreOperation method) throws IllegalArgumentException, InterruptedException, ExecutionException {
-		// case where a read length is specified
-		if ((readHandler != null) && (readHandler.getReadLength() != 0)) {
-			return new BinList(binSize, precision, ScoreOperation.SUM, positionList, stopPositionList, scoreList);
-		} else { // case where there is no specified read length
-			return new BinList(binSize, precision, positionList);
-		}
-	}
-
-
-	@Override
-	public boolean isStrandSelected(Strand aStrand) {
-		if (selectedStrand == null) {
-			return true;
-		} else {
-			return selectedStrand.equals(aStrand);
-		}
-	}
-
-
-	@Override
-	public void selectStrand(Strand strandToSelect) {
-		selectedStrand = strandToSelect;
-	}
-
-
-	@Override
-	public ReadLengthAndShiftHandler getReadLengthAndShiftHandler() {
-		return readHandler;
-	}
-
-
-	@Override
-	public void setReadLengthAndShiftHandler(ReadLengthAndShiftHandler handler) {
-		readHandler = handler;
-		if (readHandler.getReadLength() != 0) {
-			// if a read length is specified we need to have a stop position list
-			stopPositionList = new GenomicDataArrayList<Integer>();
-			scoreList = new GenomicDataArrayList<Double>();
-			for (int i = 0; i < projectChromosome.size(); i++) {
-				stopPositionList.add(new IntArrayAsIntegerList());
-				scoreList.add(new DoubleArrayAsDoubleList());
 			}
 		}
 	}
-
 }

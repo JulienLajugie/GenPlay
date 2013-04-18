@@ -25,7 +25,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 
 import edu.yu.einstein.genplay.core.IO.utils.TrackLineHeader;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
@@ -34,6 +33,8 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
 
@@ -41,7 +42,6 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 /**
  * Allows to write a {@link GeneList} as a GdpGene file.
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class GeneListAsGdpGeneWriter extends GeneListWriter implements Stoppable {
 
@@ -56,6 +56,15 @@ public final class GeneListAsGdpGeneWriter extends GeneListWriter implements Sto
 	 */
 	public GeneListAsGdpGeneWriter(File outputFile, GeneList data, String name) {
 		super(outputFile, data, name);
+	}
+
+
+	/**
+	 * Stops the writer while it's writing a file
+	 */
+	@Override
+	public void stop() {
+		needsToBeStopped = true;
 	}
 
 
@@ -78,7 +87,8 @@ public final class GeneListAsGdpGeneWriter extends GeneListWriter implements Sto
 				writer.newLine();
 			}
 			// print the data
-			for (List<Gene> currentList : data) {
+			for (Chromosome currentChromosome: projectChromosome) {
+				ListView<Gene> currentList = data.get(currentChromosome);
 				for (Gene currentGene : currentList) {
 					// if the operation need to be stopped we close the writer and delete the file
 					if (needsToBeStopped) {
@@ -86,7 +96,6 @@ public final class GeneListAsGdpGeneWriter extends GeneListWriter implements Sto
 						outputFile.delete();
 						throw new InterruptedException();
 					}
-					Chromosome currentChromosome = currentGene.getChromosome();
 					int currentChromosomeSize = currentChromosome.getLength();
 					int start = currentGene.getStart();
 					int stop = currentGene.getStop();
@@ -111,35 +120,36 @@ public final class GeneListAsGdpGeneWriter extends GeneListWriter implements Sto
 						lineToPrint += "\t";
 						lineToPrint += stop;
 						lineToPrint += "\t";
-						if (currentGene.getExonStarts() == null) {
-							lineToPrint += "-";
+						if (currentGene.getExons() == null) {
+							lineToPrint += "-\t-\t-";
 						} else {
-							for (int currentStart : currentGene.getExonStarts()) {
+							for (ScoredChromosomeWindow currentExon: currentGene.getExons()) {
+								int currentStart = currentExon.getStart();
 								lineToPrint += currentStart;
 								lineToPrint += ",";
 							}
 							// remove last comma
 							lineToPrint = lineToPrint.substring(0, lineToPrint.length() - 1);
-						}
-						lineToPrint += "\t";
-						if (currentGene.getExonStops() == null) {
-							lineToPrint += "-";
-						} else {
-							for (int currentStop : currentGene.getExonStops()) {
+							lineToPrint += "\t";
+							for (ScoredChromosomeWindow currentExon: currentGene.getExons()) {
+								int currentStop = currentExon.getStop();
 								lineToPrint += currentStop;
 								lineToPrint += ",";
 							}
 							// remove last comma
 							lineToPrint = lineToPrint.substring(0, lineToPrint.length() - 1);
-						}
-						lineToPrint += "\t";
-						if (currentGene.getExonScores() != null) {
-							for (double currentScore : currentGene.getExonScores()) {
-								lineToPrint += currentScore;
-								lineToPrint += ",";
+							lineToPrint += "\t";
+							for (ScoredChromosomeWindow currentExon: currentGene.getExons()) {
+								float currentScore = currentExon.getScore();
+								if (currentScore == Float.NaN) {
+									currentScore = 0;
+									lineToPrint += currentScore;
+									lineToPrint += ",";
+								}
 							}
 							// remove last comma
 							lineToPrint = lineToPrint.substring(0, lineToPrint.length() - 1);
+
 						}
 						writer.write(lineToPrint);
 						writer.newLine();
@@ -151,14 +161,5 @@ public final class GeneListAsGdpGeneWriter extends GeneListWriter implements Sto
 				writer.close();
 			}
 		}
-	}
-
-
-	/**
-	 * Stops the writer while it's writing a file
-	 */
-	@Override
-	public void stop() {
-		needsToBeStopped = true;
 	}
 }
