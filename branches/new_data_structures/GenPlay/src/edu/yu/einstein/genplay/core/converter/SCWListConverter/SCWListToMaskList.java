@@ -21,31 +21,53 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.converter.SCWListConverter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.yu.einstein.genplay.core.converter.Converter;
+import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.mask.MaskListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.MaskSCWListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
-import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.MaskChromosomeWindow;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
 /**
- * Creates a {@link SCWList} of {@link MaskChromosomeWindow} from the data of the input {@link SCWList}
+ * Creates a {@link SCWList} of masks from the data of the input {@link SCWList}
  * @author Julien Lajugie
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class SCWListToMaskList implements Converter {
 
-	private final SCWList 	list; 		// input list
-	private GenomicListView<?> 					result;		// The output list.
+	private final SCWList 		list; 		// input list
+	private GenomicListView<?> 	result;		// The output list.
 
 
 	/**
-	 * Creates a {@link SCWList} of {@link MaskChromosomeWindow} from the data of the input {@link SCWList}
+	 * Creates a {@link SCWList} of masks from the data of the input {@link SCWList}
 	 * @param scwList input list
 	 */
 	public SCWListToMaskList(SCWList scwList) {
 		list = scwList;
+	}
+
+
+	@Override
+	public void convert() throws Exception {
+		List<ListView<ScoredChromosomeWindow>> resultList = new ArrayList<ListView<ScoredChromosomeWindow>>();
+		for (ListView<ScoredChromosomeWindow> currentLV: list) {
+			ListViewBuilder<ScoredChromosomeWindow> lvBuilder = new MaskListViewBuilder();
+			for (ScoredChromosomeWindow scw: currentLV) {
+				if ((scw.getScore() != Float.NaN) && (scw.getScore() != 0)) {
+					lvBuilder.addElementToBuild(scw);
+				}
+			}
+			resultList.add(lvBuilder.getListView());
+		}
+		result = new SimpleSCWList(resultList, SCWListType.MASK, null);
 	}
 
 
@@ -56,19 +78,13 @@ public class SCWListToMaskList implements Converter {
 
 
 	@Override
-	public String getProcessingDescription() {
-		return "Generating a Mask";
-	}
-
-
-	@Override
-	public void convert() throws Exception {
-		result = MaskSCWListFactory.createMaskSCWArrayList(list);
-	}
-
-
-	@Override
 	public GenomicListView<?> getList() {
 		return result;
+	}
+
+
+	@Override
+	public String getProcessingDescription() {
+		return "Generating a Mask";
 	}
 }

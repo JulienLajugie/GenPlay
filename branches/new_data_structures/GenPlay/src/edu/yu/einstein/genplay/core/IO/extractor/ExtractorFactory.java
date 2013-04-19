@@ -67,8 +67,6 @@ public final class ExtractorFactory {
 			return new BedGraphExtractor(fileToExtract);
 		} else if (fileExtension.equalsIgnoreCase("pair")) {
 			return new PairExtractor(fileToExtract);
-		} else if (fileExtension.equalsIgnoreCase("gdp")) {
-			return new GdpGeneExtractor(fileToExtract);
 		} else if (fileExtension.equalsIgnoreCase("elx")) {
 			return new ElandExtendedExtractor(fileToExtract);
 		} else if (fileExtension.equalsIgnoreCase("psl")) {
@@ -143,8 +141,6 @@ public final class ExtractorFactory {
 									return new BedGraphExtractor(fileToExtract);
 								} else if (type.equalsIgnoreCase("bed")) {
 									return new BedExtractor(fileToExtract);
-								} else if (type.equalsIgnoreCase("gdpGene")) {
-									return new GdpGeneExtractor(fileToExtract);
 								} else if (type.equalsIgnoreCase("wiggle")) {
 									return new WiggleExtractor(fileToExtract);
 								} else if (type.equalsIgnoreCase("eland_extended")) {

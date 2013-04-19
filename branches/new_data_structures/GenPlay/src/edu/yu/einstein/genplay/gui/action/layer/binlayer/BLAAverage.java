@@ -37,14 +37,13 @@ import edu.yu.einstein.genplay.util.Utils;
 /**
  * Computes the average of the scores of the selected {@link BinLayer}.
  * @author Julien Lajugie
- * @version 0.1
  */
-public final class BLAAverage extends TrackListActionOperationWorker<Double> {
+public final class BLAAverage extends TrackListActionOperationWorker<Float> {
 
 	private static final long serialVersionUID = 922723721396065388L;	// generated ID
 	private static final String 	ACTION_NAME = "Average";			// action name
 	private static final String 	DESCRIPTION =
-			"Compute the average of the scores of the selected layer";		// tooltip
+			"Compute the average of the scores of the selected layer";	// tooltip
 
 
 	/**
@@ -65,7 +64,15 @@ public final class BLAAverage extends TrackListActionOperationWorker<Double> {
 
 
 	@Override
-	public Operation<Double> initializeOperation() {
+	protected void doAtTheEnd(Float actionResult) {
+		if (actionResult != null) {
+			JOptionPane.showMessageDialog(getRootPane(), "Average: \n" + NumberFormat.getInstance().format(actionResult), "Average", JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+
+
+	@Override
+	public Operation<Float> initializeOperation() {
 		BinLayer selectedLayer = (BinLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			boolean[] selectedChromo = Utils.chooseChromosomes(getRootPane());
@@ -76,13 +83,5 @@ public final class BLAAverage extends TrackListActionOperationWorker<Double> {
 			}
 		}
 		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(Double actionResult) {
-		if (actionResult != null) {
-			JOptionPane.showMessageDialog(getRootPane(), "Average: \n" + NumberFormat.getInstance().format(actionResult), "Average", JOptionPane.INFORMATION_MESSAGE);
-		}
 	}
 }

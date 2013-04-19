@@ -31,7 +31,7 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
-import edu.yu.einstein.genplay.util.ChromosomeWindowLists;
+import edu.yu.einstein.genplay.util.ListView.ChromosomeWindowListViews;
 
 
 /**
@@ -75,7 +75,7 @@ public class SimpleSCWLScaler implements DataScalerForTrackDisplay<SCWList, List
 		if ((scaledSCWList == null) || (scaledSCWList.size() == 0)) {
 			return null;
 		}
-		return ChromosomeWindowLists.sublist(scaledSCWList, projectWindow.getStart(), projectWindow.getStop());
+		return ChromosomeWindowListViews.sublist(scaledSCWList, projectWindow.getStart(), projectWindow.getStop());
 	}
 
 

@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.util;
+package edu.yu.einstein.genplay.util.ListView;
 
 import java.util.Comparator;
 import java.util.List;
@@ -28,8 +28,7 @@ import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 
 
 /**
- * This class contains various methods for manipulating ListView objects (such as
- * searching).
+ * Provides utilities for {@link ListView} objects.
  * @author Julien Lajugie
  */
 public class ListViews {

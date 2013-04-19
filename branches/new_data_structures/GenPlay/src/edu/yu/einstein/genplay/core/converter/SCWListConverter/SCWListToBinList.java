@@ -21,35 +21,43 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.converter.SCWListConverter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.yu.einstein.genplay.core.converter.Converter;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
+import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.bin.BinListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
 /**
  * Creates a {@link BinList} from the data of the input {@link SCWList}
  * @author Julien Lajugie
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class SCWListToBinList implements Converter {
 
-	private final SCWList 	list; 		// input list
-	private final int 							binSize;		// size of the bin of the result binlist
-	private final ScorePrecision 				precision;		// precision of the result binlist
-	private final ScoreOperation 		method; 		// method for the calculation of the scores of the result binlist
-	private GenomicListView<?> 			result;			// The output list.
+	private final SCWList 			list; 			// input list
+	private final int 				binSize;		// size of the bin of the result binlist
+	private final ScorePrecision 	precision;		// precision of the result binlist
+	private final ScoreOperation 	method; 		// method for the calculation of the scores of the result binlist
+	private GenomicListView<?> 		result;			// The output list.
 
 
 	/**
 	 * Creates a {@link BinList} from the data of the input {@link SCWList}
 	 * @param scwList input list
 	 * @param binSize size of the bins
-	 * @param precision precision of the data (eg: 1/8/16/32/64-BIT)
-	 * @param method method to generate the BinList (eg: AVERAGE, SUM or MAXIMUM)
+	 * @param precision precision of the data
+	 * @param method method to generate the BinList
 	 */
 	public SCWListToBinList(SCWList scwList, int binSize, ScorePrecision precision, ScoreOperation method) {
 		list = scwList;
@@ -60,25 +68,33 @@ public class SCWListToBinList implements Converter {
 
 
 	@Override
+	public void convert() throws Exception {
+		List<ListView<ScoredChromosomeWindow>> resultList = new ArrayList<ListView<ScoredChromosomeWindow>>();
+		for (ListView<ScoredChromosomeWindow> currentLV: list) {
+			ListViewBuilder<ScoredChromosomeWindow> lvBuilder = new BinListViewBuilder(precision, binSize);
+			for (ScoredChromosomeWindow scw: currentLV) {
+				lvBuilder.addElementToBuild(scw);
+			}
+			resultList.add(lvBuilder.getListView());
+		}
+		result = new SimpleSCWList(resultList, SCWListType.GENERIC, precision);
+	}
+
+
+	@Override
 	public String getDescription() {
 		return "Operation: Generate Fixed Window Track";
 	}
 
 
 	@Override
-	public String getProcessingDescription() {
-		return "Generating Fixed Window Track";
-	}
-
-
-	@Override
-	public void convert() throws Exception {
-		result = new BinList(binSize, precision, method, list);
-	}
-
-
-	@Override
 	public GenomicListView<?> getList() {
 		return result;
+	}
+
+
+	@Override
+	public String getProcessingDescription() {
+		return "Generating Fixed Window Track";
 	}
 }

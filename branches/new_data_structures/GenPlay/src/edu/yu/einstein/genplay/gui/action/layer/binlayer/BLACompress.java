@@ -32,15 +32,13 @@ import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
 /**
  * Compresses / uncompresses the data of the selected {@link BinLayer}
  * @author Julien Lajugie
- * @version 0.1
  */
 public class BLACompress extends TrackListActionWorker<BinList> {
 
 	private static final long serialVersionUID = 5156554955152029111L;	// generated ID
 	private static final String 	ACTION_NAME = "Compress";			// action name
 	private static final String 	DESCRIPTION =
-			"Compress the data of the selected layer";						// tooltip
-
+			"Compress the data of the selected layer";					// tooltip
 	private BinLayer	 			selectedLayer;						// selected layer
 
 

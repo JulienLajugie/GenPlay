@@ -21,9 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.DAS;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -33,52 +30,149 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.geneListView.GeneListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 
 
 /**
  * Parse a DNS XML file and extract the list of {@link Gene}
  * <br/>See <a href="http://www.biodas.org/documents/spec.html">http://www.biodas.org/documents/spec.html</a>
  * @author Julien Lajugie
- * @version 0.1
  */
 public class GeneHandler extends DefaultHandler {
 
-	private final	List<Gene>	geneList;	// list of genes
-	private String 	currentMarkup = null;	// current XML markup
-	private	Gene	currentGene = null;		// current gene
-
-	private String previousGroupID = null;
-
-	private	String 	groupID;				// a group define a gene for the different exons
-	private	int 	start;
-	private	int 	end;
-	private	double 	score;
-	private Strand 	orientation;
-	private String  name;
-	private final Chromosome chromosome;	// chromosome being extracted
-	private String genomeName;				// for multi-genome project only.  Name of the genome on which the data were mapped
-	private AlleleType alleleType;			// for multi-genome project only.  Type of allele for synchronization
+	private final ListViewBuilder<Gene>				geneLVBuilder;			// list of genes
+	private final ScorePrecision					scorePrecision;			// precision of the scores
+	private String 									currentMarkup = null;	// current XML markup
+	private String 									previousGroupID = null;
+	private	String 									groupID;				// a group define a gene for the different exons
+	private	int 									start;					// start position
+	private	int 									end;					// stop position
+	private	float 									score;					// score
+	private Strand 									orientation;			// strand
+	private String  								name;					// name
+	private final Chromosome 						chromosome;				// chromosome being extracted
+	private ListViewBuilder<ScoredChromosomeWindow> exonLVBuilder;			// builder for the list view of exon
+	private String 									genomeName;				// for multi-genome project only.  Name of the genome on which the data were mapped
+	private AlleleType 								alleleType;				// for multi-genome project only.  Type of allele for synchronization
 
 
 	/**
 	 * Creates an instance of {@link GeneHandler}
 	 * @param chromosome current {@link Chromosome}
+	 * @param scorePrecision precision of the scores of the genes
 	 */
-	public GeneHandler(Chromosome chromosome) {
+	public GeneHandler(Chromosome chromosome, ScorePrecision scorePrecision) {
 		super();
-		geneList = new ArrayList<Gene>();
+		geneLVBuilder = new GeneListViewBuilder(scorePrecision);
+		this.scorePrecision = scorePrecision;
 		this.chromosome = chromosome;
+	}
+
+
+	@Override
+	public void characters(char[] ch, int start, int length) {
+		if (currentMarkup != null) {
+			String elementValue = new String(ch, start, length);
+			if (currentMarkup.equals("START")) {
+				this.start = Integer.parseInt(elementValue);
+			} else if (currentMarkup.equals("END")) {
+				end = Integer.parseInt(elementValue);
+			} else if (currentMarkup.equals("ORIENTATION")) {
+				orientation = Strand.get(elementValue.charAt(0));
+			} else if (currentMarkup.equals("SCORE")) {
+				// if the score is not specified we set a NaN score value
+				if (elementValue.trim().equals("-")) {
+					score = Float.NaN;
+				} else {
+					score = Float.parseFloat(elementValue);
+				}
+			}
+		}
+	}
+
+
+	@Override
+	public void endElement(String uri, String localName, String qName) throws SAXException {
+		if (qName.equalsIgnoreCase("FEATURE")) {
+			// case where it's the first gene of the document
+			if (previousGroupID == null) {
+				previousGroupID = groupID;
+				exonLVBuilder = new GenericSCWListViewBuilder(scorePrecision);
+			} else if (!groupID.equalsIgnoreCase(previousGroupID)) {	// if we have a new group we add the previous gene to the list
+				ListView<ScoredChromosomeWindow> exonList = exonLVBuilder.getListView();
+				int start = exonList.get(0).getStart();
+				int stop = exonList.get(exonList.size() - 1).getStop();
+				// TODO check if we can retrieve the overall score of the gene
+				Gene gene = new SimpleGene(name, orientation, start, stop, Float.NaN, exonList);
+				geneLVBuilder.addElementToBuild(gene);
+				previousGroupID = groupID;
+				exonLVBuilder = new GenericSCWListViewBuilder(scorePrecision);
+			}
+			ScoredChromosomeWindow exon = new SimpleScoredChromosomeWindow(getMultiGenomePosition(start), getMultiGenomePosition(end), score);
+			exonLVBuilder.addElementToBuild(exon);
+		}
+	}
+
+
+	/**
+	 * @return the alleleType
+	 */
+	public AlleleType getAlleleType() {
+		return alleleType;
 	}
 
 
 	/**
 	 * @return the List of {@link Gene}
 	 */
-	public final List<Gene> getGeneList() {
-		return geneList;
+	public final ListView<Gene> getGeneList() {
+		return geneLVBuilder.getListView();
+	}
+
+
+	/**
+	 * @return the name of the genome on which the data were mapped.  For multi-genome project only
+	 */
+	public String getGenomeName() {
+		return genomeName;
+	}
+
+
+	/**
+	 * @param position		current position
+	 * @return				the associated associated meta genome position
+	 */
+	private int getMultiGenomePosition (int position) {
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			return ShiftCompute.getPosition(genomeName, alleleType, position, chromosome, FormattedMultiGenomeName.META_GENOME_NAME);
+		} else {
+			return position;
+		}
+	}
+
+
+	/**
+	 * @param alleleType the alleleType to set
+	 */
+	public void setAlleleType(AlleleType alleleType) {
+		this.alleleType = alleleType;
+	}
+
+
+	/**
+	 * @param genomeName for multi-genome project only.  Name of the genome on which the data were mapped
+	 */
+	public void setGenomeName(String genomeName) {
+		this.genomeName = genomeName;
 	}
 
 
@@ -104,98 +198,6 @@ public class GeneHandler extends DefaultHandler {
 		} else {
 			currentMarkup = null;
 		}
-	}
-
-
-	@Override
-	public void endElement(String uri, String localName, String qName) throws SAXException {
-		if (qName.equalsIgnoreCase("FEATURE")) {
-			// case where it's the first gene of the document
-			if (previousGroupID == null) {
-				currentGene = new SimpleGene();
-				previousGroupID = groupID;
-			} else if (!groupID.equalsIgnoreCase(previousGroupID)) {	// if we have a new group we add the previous gene to the list
-				// set the gene start
-				currentGene.setStart(getMultiGenomePosition(currentGene.getExonStarts()[0]));
-				// set the gene stop
-				currentGene.setStop(getMultiGenomePosition(currentGene.getExonStops()[currentGene.getExonStops().length - 1]));
-				currentGene.setName(name);
-				currentGene.setStrand(orientation);
-				currentGene.setChromosome(chromosome);
-				geneList.add(currentGene);
-				previousGroupID = groupID;
-				currentGene = new SimpleGene();
-			}
-			currentGene.addExon(getMultiGenomePosition(start), getMultiGenomePosition(end), score);
-		}
-	}
-
-
-	@Override
-	public void characters(char[] ch, int start, int length) {
-		if (currentMarkup != null) {
-			String elementValue = new String(ch, start, length);
-			if (currentMarkup.equals("START")) {
-				this.start = Integer.parseInt(elementValue);
-			} else if (currentMarkup.equals("END")) {
-				end = Integer.parseInt(elementValue);
-			} else if (currentMarkup.equals("ORIENTATION")) {
-				orientation = Strand.get(elementValue.charAt(0));
-			} else if (currentMarkup.equals("SCORE")) {
-				// if the score is not specified we set a 0 score value
-				if (elementValue.trim().equals("-")) {
-					score = 0;
-				} else {
-					score = Double.parseDouble(elementValue);
-				}
-			}
-		}
-	}
-
-
-	/**
-	 * @param position		current position
-	 * @return				the associated associated meta genome position
-	 */
-	private int getMultiGenomePosition (int position) {
-		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			return ShiftCompute.getPosition(genomeName, alleleType, position, chromosome, FormattedMultiGenomeName.META_GENOME_NAME);
-			//return ShiftCompute.computeShift(genomeName, chromosome, alleleType, position);
-		} else {
-			return position;
-		}
-	}
-
-
-	/**
-	 * @param genomeName for multi-genome project only.  Name of the genome on which the data were mapped
-	 */
-	public void setGenomeName(String genomeName) {
-		this.genomeName = genomeName;
-	}
-
-
-	/**
-	 * @return the name of the genome on which the data were mapped.  For multi-genome project only
-	 */
-	public String getGenomeName() {
-		return genomeName;
-	}
-
-
-	/**
-	 * @return the alleleType
-	 */
-	public AlleleType getAlleleType() {
-		return alleleType;
-	}
-
-
-	/**
-	 * @param alleleType the alleleType to set
-	 */
-	public void setAlleleType(AlleleType alleleType) {
-		this.alleleType = alleleType;
 	}
 
 }

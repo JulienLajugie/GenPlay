@@ -49,7 +49,7 @@ public class SCWHandler extends DefaultHandler {
 	private final ListViewBuilder<ScoredChromosomeWindow>	SCWLVBuilder;			// listview builder of SCW
 	private final Chromosome 								chromosome;				// chromosome being extracted
 	private String 											currentMarkup = null;	// current XML markup
-	private final	Integer											currentStart = null;	// current start
+	private Integer											currentStart = null;	// current start
 	private	Integer											currentStop = null;		// current stop
 	private	Float											currentScore = null;	// current score
 	private String 											genomeName;				// for multi-genome project only.  Name of the genome on which the data were mapped
@@ -59,11 +59,11 @@ public class SCWHandler extends DefaultHandler {
 	/**
 	 * Creates an instance of {@link SCWHandler}
 	 * @param chromosome current {@link Chromosome}
+	 * @param scorePrecision precision of the scores of the window list
 	 */
-	public SCWHandler(Chromosome chromosome) {
+	public SCWHandler(Chromosome chromosome, ScorePrecision scorePrecision) {
 		super();
-		// TODO ask for data precision
-		SCWLVBuilder = new GenericSCWListViewBuilder(ScorePrecision.PRECISION_32BIT);
+		SCWLVBuilder = new GenericSCWListViewBuilder(scorePrecision);
 		this.chromosome = chromosome;
 	}
 
@@ -73,7 +73,7 @@ public class SCWHandler extends DefaultHandler {
 		if (currentMarkup != null) {
 			String elementValue = new String(ch, start, length);
 			if (currentMarkup.equals("START")) {
-				start = getMultiGenomePosition(Integer.parseInt(elementValue));
+				currentStart = getMultiGenomePosition(Integer.parseInt(elementValue));
 			} else if (currentMarkup.equals("END")) {
 				currentStop = getMultiGenomePosition(Integer.parseInt(elementValue));
 			} else if (currentMarkup.equals("SCORE")) {

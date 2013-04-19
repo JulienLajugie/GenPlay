@@ -21,32 +21,55 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.converter.geneListConverter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.yu.einstein.genplay.core.converter.Converter;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ImmutableGenomicDataList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.MaskSCWListFactory;
+import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
+import edu.yu.einstein.genplay.dataStructure.gene.Gene;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.mask.MaskListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
-import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.MaskChromosomeWindow;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
 /**
- * Creates a {@link SCWList} of {@link MaskChromosomeWindow} from the data of the input {@link GeneList}
+ * Creates a {@link SCWList} of masks from the data of the input {@link GeneList}
  * @author Julien Lajugie
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class GeneListToMaskList implements Converter {
 
-	private final GeneList 						list; 			// The input list.
-	private ImmutableGenomicDataList<?>			result;			// The output list.
+	private final GeneList 		list; 		// The input list.
+	private GenomicListView<?> 	result;		// The output list.
 
 
 	/**
-	 * Creates a {@link SCWList} of {@link MaskChromosomeWindow} from the data of the input {@link GeneList}
+	 * Creates a {@link SCWList} of masks from the data of the input {@link GeneList}
 	 * @param geneList the BinList
 	 */
 	public GeneListToMaskList(GeneList geneList) {
 		list = geneList;
+	}
+
+
+	@Override
+	public void convert() throws Exception {
+		List<ListView<ScoredChromosomeWindow>> resultList = new ArrayList<ListView<ScoredChromosomeWindow>>();
+		for (ListView<Gene> currentLV: list) {
+			ListViewBuilder<ScoredChromosomeWindow> lvBuilder = new MaskListViewBuilder();
+			for (ScoredChromosomeWindow scw: currentLV) {
+				if ((scw.getScore() != Float.NaN) && (scw.getScore() != 0)) {
+					lvBuilder.addElementToBuild(scw);
+				}
+			}
+			resultList.add(lvBuilder.getListView());
+		}
+		result = new SimpleSCWList(resultList, SCWListType.MASK, null);
 	}
 
 
@@ -57,19 +80,13 @@ public class GeneListToMaskList implements Converter {
 
 
 	@Override
+	public GenomicListView<?> getList() {
+		return result;
+	}
+
+
+	@Override
 	public String getProcessingDescription() {
 		return "Generating a Mask";
-	}
-
-
-	@Override
-	public void convert() throws Exception {
-		result = MaskSCWListFactory.createMaskSCWArrayList(list);
-	}
-
-
-	@Override
-	public ImmutableGenomicDataList<?> getList() {
-		return result;
 	}
 }

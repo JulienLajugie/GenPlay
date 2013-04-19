@@ -36,7 +36,7 @@ import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.SimpleListView.SimpleListViewBuilder;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
-import edu.yu.einstein.genplay.util.ChromosomeWindowLists;
+import edu.yu.einstein.genplay.util.ListView.ChromosomeWindowListViews;
 
 
 /**
@@ -85,7 +85,7 @@ public class RepeatListScaler implements DataScalerForTrackDisplay<RepeatFamilyL
 		for (RepeatFamilyListView currentFamily : scaledRepeatList) {
 			// retrieve the sublist of genes that are located between the start and stop displayed positions
 			RepeatFamilyListViewBuilder builder = new RepeatFamilyListViewBuilder(currentFamily.getName());
-			RepeatFamilyListView familyToAdd = (RepeatFamilyListView) ChromosomeWindowLists.sublist(currentFamily, projectWindow.getStart(), projectWindow.getStop(), builder);
+			RepeatFamilyListView familyToAdd = (RepeatFamilyListView) ChromosomeWindowListViews.sublist(currentFamily, projectWindow.getStart(), projectWindow.getStop(), builder);
 			resultList.add(familyToAdd);
 		}
 		return resultList;

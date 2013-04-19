@@ -42,7 +42,7 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.Simple
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
-import edu.yu.einstein.genplay.util.ListViews;
+import edu.yu.einstein.genplay.util.ListView.ListViews;
 
 
 /**

@@ -118,7 +118,7 @@ public class SCWLayer extends AbstractVersionedLayer<SCWList> implements Layer<S
 			reverseCurveColor = new Color(reverseCurveColor.getRed(), reverseCurveColor.getGreen(), reverseCurveColor.getBlue(), getColor().getAlpha());
 			// check that the data scaler is valid
 			validateDataScaler();
-			// Retrieve the genes to print
+			// Retrieve the scw to print
 			ListView<ScoredChromosomeWindow> listToPrint = dataScaler.getDataScaledForTrackDisplay();
 			if (listToPrint != null) {
 				for (ScoredChromosomeWindow currentWindow: listToPrint) {

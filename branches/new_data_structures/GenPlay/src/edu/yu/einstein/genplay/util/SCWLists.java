@@ -24,14 +24,12 @@ package edu.yu.einstein.genplay.util;
 import java.util.List;
 
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
 /**
  * Provides operation on {@link List} of SCW
- * @author Chirag Gorasia
- * @version 0.1
+ * @author Julien Lajugie
  */
 public class SCWLists {
 
@@ -39,7 +37,7 @@ public class SCWLists {
 	 * @param list {@link List} of Double
 	 * @return the average value of the list
 	 */
-	public static double average(List<ScoredChromosomeWindow> list) {
+	public static final double average(List<ScoredChromosomeWindow> list) {
 		double sum = 0;
 		int n = 0;
 		for (ScoredChromosomeWindow currentValue : list) {
@@ -62,7 +60,7 @@ public class SCWLists {
 	 * @param indexStop index where to stop in the list
 	 * @return the average value of the list between indexStart and indexStop included
 	 */
-	public static double average(List<ScoredChromosomeWindow> list, int indexStart, int indexStop) {
+	public static final double average(List<ScoredChromosomeWindow> list, int indexStart, int indexStop) {
 		if ((indexStart > indexStop) || (indexStop >= list.size())) {
 			return 0;
 		} else if (indexStart == indexStop) {
@@ -88,33 +86,13 @@ public class SCWLists {
 
 
 	/**
-	 * @param scwList a {@link GenomicListView} of Object that extends {@link ScoredChromosomeWindow}
-	 * @return a {@link GenomicListView} containing the scores of the specified list. This list is organized the same way as the input list
-	 */
-	public static GenomicListView<Double> getScoreList(GenomicListView<? extends ScoredChromosomeWindow> scwList) {
-		GenomicListView<Double> list = new GenomicDataArrayList<Double>();
-		for (int i = 0; i < scwList.size(); i++) {
-			list.add(new DoubleArrayAsDoubleList());
-		}
-
-		for (int i = 0; i < scwList.size(); i++) {
-			List<? extends ScoredChromosomeWindow> currentList = scwList.get(i);
-			for (ScoredChromosomeWindow currentChromosomeWindow: currentList) {
-				list.get(i).add(currentChromosomeWindow.getScore());
-			}
-		}
-		return list;
-	}
-
-
-	/**
 	 * Returns the maximum of the list in parameter. Doesn't take the 0 value elements into account.
 	 * @param list input list of ScoredChromosomeWindow
 	 * @param regionStart index of the first {@link SimpleChromosomeWindow}
 	 * @param regionStop index of the last {@link SimpleChromosomeWindow}
 	 * @return the non-zero maximum of the specified list
 	 */
-	public static double maxNoZero(List<ScoredChromosomeWindow> list, int regionStart, int regionStop) {
+	public static final double maxNoZero(List<ScoredChromosomeWindow> list, int regionStart, int regionStop) {
 		double max = Double.NEGATIVE_INFINITY;
 		for (int j = regionStart; j <= regionStop; j++) {
 			if (list.get(j) != null) {
@@ -132,7 +110,7 @@ public class SCWLists {
 	 * @param regionStop index of the last {@link SimpleChromosomeWindow}
 	 * @return the non-zero minimum of the specified list
 	 */
-	public static double minNoZero(List<ScoredChromosomeWindow> list, int regionStart, int regionStop) {
+	public static final double minNoZero(List<ScoredChromosomeWindow> list, int regionStart, int regionStop) {
 		double min = Double.POSITIVE_INFINITY;
 		for (int j = regionStart; j <= regionStop; j++) {
 			if (list.get(j) != null) {
@@ -149,7 +127,7 @@ public class SCWLists {
 	 * @param indexStop index where to stop in the list
 	 * @return the standard deviation of the values of the list between indexStart and indexStop included
 	 */
-	public static double standardDeviation(List<ScoredChromosomeWindow> list, int indexStart, int indexStop) {
+	public static final double standardDeviation(List<ScoredChromosomeWindow> list, int indexStart, int indexStop) {
 		if (indexStart > indexStop) {
 			return 0;
 		} else if (indexStart == indexStop) {
@@ -179,7 +157,7 @@ public class SCWLists {
 	 * @param list {@link List} of Double
 	 * @return the sum of the values of the list
 	 */
-	public static double sum(List<ScoredChromosomeWindow> list) {
+	public static final double sum(List<ScoredChromosomeWindow> list) {
 		double result = 0;
 		for (ScoredChromosomeWindow currentValue : list) {
 			result += currentValue.getScore();
@@ -195,7 +173,7 @@ public class SCWLists {
 	 * @param indexStop stop index
 	 * @return the sum of the values of the list between start index and stop index
 	 */
-	public static double sum(List<ScoredChromosomeWindow> list, int indexStart, int indexStop) {
+	public static final double sum(List<ScoredChromosomeWindow> list, int indexStart, int indexStop) {
 		if (indexStart > indexStop) {
 			return 0;
 		} else if (indexStart == indexStop) {

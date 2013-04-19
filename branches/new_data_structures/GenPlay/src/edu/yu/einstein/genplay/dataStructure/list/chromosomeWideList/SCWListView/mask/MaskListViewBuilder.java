@@ -62,8 +62,15 @@ public final class MaskListViewBuilder implements ListViewBuilder<ScoredChromoso
 	 */
 	public void addElementToBuild(int start, int stop) throws ObjectAlreadyBuiltException {
 		if (maskStarts != null) {
-			maskStarts.add(start);
-			maskStops.add(stop);
+			int lastElementIndex = maskStops.size() -1;
+			int lastStop = maskStops.get(lastElementIndex);
+			// if the current start is smaller than the previous stop we merge the masks
+			if (start < lastStop) {
+				maskStops.set(lastElementIndex, stop);
+			} else {
+				maskStarts.add(start);
+				maskStops.add(stop);
+			}
 		} else {
 			throw new ObjectAlreadyBuiltException();
 		}

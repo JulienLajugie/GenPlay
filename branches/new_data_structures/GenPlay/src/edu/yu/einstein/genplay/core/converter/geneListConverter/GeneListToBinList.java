@@ -21,25 +21,35 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.converter.geneListConverter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.yu.einstein.genplay.core.converter.Converter;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
+import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
+import edu.yu.einstein.genplay.dataStructure.gene.Gene;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.bin.BinListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.PileupFlattener;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
 /**
  * Creates a {@link BinList} from the data of the input {@link GeneList}
  * @author Julien Lajugie
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class GeneListToBinList implements Converter {
 
-	private final GeneList 						list; 			// The input list.
-	private final int 							binSize;		// size of the bin of the result binlist
-	private final ScorePrecision 				precision;		// precision of the result binlist
+	private final GeneList 				list; 			// The input list.
+	private final int 					binSize;		// size of the bin of the result binlist
+	private final ScorePrecision 		precision;		// precision of the scores of the result binlist
 	private final ScoreOperation 		method; 		// method for the calculation of the scores of the result binlist
 	private GenomicListView<?> 			result;			// The output list.
 
@@ -48,7 +58,7 @@ public class GeneListToBinList implements Converter {
 	 * Creates a {@link BinList} from the data of the input {@link GeneList}
 	 * @param geneList the BinList
 	 * @param binSize size of the bins
-	 * @param precision precision of the data (eg: 1/8/16/32/64-BIT)
+	 * @param precision precision of the scores of the result list
 	 * @param method method to generate the BinList (eg: AVERAGE, SUM or MAXIMUM)
 	 */
 	public GeneListToBinList(GeneList geneList, int binSize, ScorePrecision precision, ScoreOperation method) {
@@ -60,25 +70,45 @@ public class GeneListToBinList implements Converter {
 
 
 	@Override
+	public void convert() throws Exception {
+		List<ListView<ScoredChromosomeWindow>> resultList = new ArrayList<ListView<ScoredChromosomeWindow>>();
+		for (ListView<Gene> currentLV: list) {
+			ListViewBuilder<ScoredChromosomeWindow> lvBuilder = new BinListViewBuilder(precision, binSize);
+			PileupFlattener flattener = new PileupFlattener(method);
+			for (ScoredChromosomeWindow scw: currentLV) {
+				List<ScoredChromosomeWindow> flattenedWindows = flattener.addWindow(scw);
+				if (!flattenedWindows.isEmpty()) {
+					for (ScoredChromosomeWindow currentFlattenedWindow: flattenedWindows) {
+						lvBuilder.addElementToBuild(currentFlattenedWindow);
+					}
+				}
+			}
+			List<ScoredChromosomeWindow> flattenedWindows = flattener.flush();
+			if (!flattenedWindows.isEmpty()) {
+				for (ScoredChromosomeWindow currentFlattenedWindow: flattenedWindows) {
+					lvBuilder.addElementToBuild(currentFlattenedWindow);
+				}
+			}
+			resultList.add(lvBuilder.getListView());
+		}
+		result = new SimpleSCWList(resultList, SCWListType.BIN, precision);
+	}
+
+
+	@Override
 	public String getDescription() {
 		return "Operation: Generate Fixed Window Track";
 	}
 
 
 	@Override
-	public String getProcessingDescription() {
-		return "Generating Fixed Window Track";
-	}
-
-
-	@Override
-	public void convert() throws Exception {
-		result = new BinList(binSize, precision, method, list);
-	}
-
-
-	@Override
 	public GenomicListView<?> getList() {
 		return result;
+	}
+
+
+	@Override
+	public String getProcessingDescription() {
+		return "Generating Fixed Window Track";
 	}
 }

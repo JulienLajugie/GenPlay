@@ -31,8 +31,6 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.IO.dataReader.GeneReader;
-import edu.yu.einstein.genplay.core.IO.dataReader.RepeatReader;
-import edu.yu.einstein.genplay.core.IO.dataReader.SCWReader;
 import edu.yu.einstein.genplay.core.IO.utils.DataLineValidator;
 import edu.yu.einstein.genplay.core.IO.utils.Extractors;
 import edu.yu.einstein.genplay.core.IO.utils.StrandedExtractorOptions;
@@ -45,6 +43,7 @@ import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.SimpleGeneList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
@@ -56,16 +55,16 @@ import edu.yu.einstein.genplay.util.Utils;
  * A GTF file extractor
  * @author Julien Lajugie
  */
-public class GTFExtractor extends TextFileExtractor implements SCWReader, GeneReader, RepeatReader, StrandedExtractor {
+public class GTFExtractor extends TextFileExtractor implements GeneReader, StrandedExtractor {
 
-	private StrandedExtractorOptions		strandOptions;		// options on the strand and read length / shift
-	private Chromosome 						chromosome;		 	// chromosome of the last item read
-	private Integer 						start;				// start position of the last item read
-	private Integer 						stop;				// stop position of the last item read
-	private String 							name;				// name of the last item read
-	private Float 							score;				// score of the last item read
-	private Strand 							strand;				// strand of the last item read
-	private ListView<ScoredChromosomeWindow>exons;				// exons of the last item read
+	private StrandedExtractorOptions				strandOptions;		// options on the strand and read length / shift
+	private Chromosome 								chromosome;		 	// chromosome of the last item read
+	private Integer 								start;				// start position of the last item read
+	private Integer 								stop;				// stop position of the last item read
+	private String 									name;				// name of the last item read
+	private Float 									score;				// score of the last item read
+	private Strand 									strand;				// strand of the last item read
+	private ListViewBuilder<ScoredChromosomeWindow> exons;				// exons of the last item read
 
 
 	/**
@@ -130,104 +129,90 @@ public class GTFExtractor extends TextFileExtractor implements SCWReader, GeneRe
 		if (splitedLine.length < 8) {
 			throw new DataLineException(DataLineException.INVALID_PARAMETER_NUMBER);
 		}
-		// we're just interested in exon lines
-		if (splitedLine[2].trim().equalsIgnoreCase("exon")) {
-			// retrieve the chromosome
-			try {
-				int chromosomeStatus;
-				Chromosome chromo = null;
-				try {
-					chromo = getProjectChromosome().get(splitedLine[0]) ;
-					chromosomeStatus = checkChromosomeStatus(chromo);
-				} catch (InvalidChromosomeException e) {
-					chromosomeStatus = NEED_TO_BE_SKIPPED;
-				}
 
-				// check if we extracted all the selected chromosomes
-				if (chromosomeStatus == AFTER_LAST_SELECTED) {
-					// case where we extracted all the selected chromosomes
-					return true;
-				} else if (chromosomeStatus == NEED_TO_BE_SKIPPED) {
-					// case where the current chromosome is not selected
-					return false;
-				} else {
-					// case where we need to extract the current chromosome
-					// retrieve the strand
-					Strand strand = null;
-					String strandStr = splitedLine[6].trim();
-					if (!strandStr.equals(".")) {
-						strand = Strand.get(strandStr.charAt(0));
-					}
-					if ((strand != null) && (isStrandSelected(strand))) {
-						// retrieve the start position
-						int start = getInt(splitedLine[3].trim());
-						// retrieve the stop position
-						int stop = getInt(splitedLine[4].trim());
-						// compute the read position with specified strand shift and read length
-						if (readHandler != null) {
-							SimpleChromosomeWindow resultStartStop = readHandler.computeStartStop(chromo, start, stop, strand);
-							start = resultStartStop.getStart();
-							stop = resultStartStop.getStop();
-						}
-
-						// retrieve the score
-						Double score = getDouble(splitedLine[5].trim(), null);
-						// if there is some attribute informations
-						String name = null;
-						if (splitedLine.length >= 9) {
-							Map<String, String> attributes = parseAttributes(splitedLine[8]);
-							// try to retrieve the gene name
-							if (attributes.containsKey("gene_id")) {
-								name = attributes.get("gene_id");
-							} else {
-								// this is a mandatory attribute for genplay
-								//throw new InvalidDataLineException(line);
-								throw new DataLineException("The attribute 'gene_id' is missing.");
-							}
-							// if there is a FPKM attribute we replace the score by the FPKM
-							if (attributes.containsKey("FPKM")) {
-								score = getDouble(attributes.get("FPKM"));
-							} else if (attributes.containsKey("RPKM")) {
-								// if there is no FPKM but there is a RPKM we replace the score by the RPKM
-								score = getDouble(attributes.get("RPKM"));
-							}
-						}
-
-						// Checks errors
-						String errors = DataLineValidator.getErrors(chromo, start, stop, score, name, strand);
-						if (errors.length() == 0) {
-
-							// Stop position checking, must not overpass the chromosome length
-							DataLineException stopEndException = null;
-							String stopEndErrorMessage = DataLineValidator.getErrors(chromo, stop);
-							if (!stopEndErrorMessage.isEmpty()) {
-								stopEndException = new DataLineException(stopEndErrorMessage, DataLineException.SHRINK_STOP_PROCESS);
-								stop = chromo.getLength();
-							}
-
-							// if we are in a multi-genome project, we compute the position on the meta genome
-							start = getMultiGenomePosition(chromo, start);
-							stop = getMultiGenomePosition(chromo, stop);
-							startList.add(chromo, start);
-							stopList.add(chromo, stop);
-							scoreList.add(chromo, score);
-							strandList.add(chromo, strand);
-							nameList.add(chromo, name);
-
-							if (stopEndException != null) {
-								throw stopEndException;
-							}
-						} else {
-							throw new DataLineException(errors);
-						}
-					}
-				}
-			} catch (InvalidChromosomeException e) {
-				//throw new InvalidDataLineException(line);
-				throw new DataLineException(DataLineException.INVALID_FORMAT_NUMBER);
+		// chromosome
+		String chromosomeName = splitedLine[0];
+		if (getChromosomeSelector() != null) {
+			// case where last chromosome already extracted, no more data to extract
+			if (getChromosomeSelector().isExtractionDone(chromosomeName)) {
+				return EXTRACTION_DONE;
+			}
+			// chromosome was not selected for extraction
+			if (!getChromosomeSelector().isSelected(chromosomeName)) {
+				return LINE_SKIPPED;
 			}
 		}
-		return false;
+		try {
+			chromosome = getProjectChromosome().get(chromosomeName) ;
+		} catch (InvalidChromosomeException e) {
+			// unknown chromosome
+			return LINE_SKIPPED;
+		}
+
+		// case where we need to extract the current chromosome
+		// retrieve the strand
+		Strand strand = null;
+		String strandStr = splitedLine[6].trim();
+		if (!strandStr.equals(".")) {
+			strand = Strand.get(strandStr.charAt(0));
+		}
+
+		if ((strand != null) && (strandOptions != null) && (!strandOptions.isSelected(strand))) {
+			chromosome = null;
+			return LINE_SKIPPED;
+		}
+
+		// start and stop position
+		int start = Extractors.getInt(splitedLine[3].trim());
+		int stop = Extractors.getInt(splitedLine[4].trim());
+
+		String errors = DataLineValidator.getErrors(chromosome, start, stop);
+		if (!errors.isEmpty()) {
+			throw new DataLineException(errors);
+		}
+
+		// Stop position checking, must not be greater than the chromosome length
+		String stopEndErrorMessage = DataLineValidator.getErrors(chromosome, stop);
+		if (!stopEndErrorMessage.isEmpty()) {
+			DataLineException stopEndException = new DataLineException(stopEndErrorMessage, DataLineException.SHRINK_STOP_PROCESS);
+			// notify the listeners that the stop position needed to be shrunk
+			notifyDataEventListeners(stopEndException, getCurrentLineNumber(), line);
+			stop = chromosome.getLength();
+		}
+
+		// compute the read position with specified strand shift and read length
+		if (strandOptions != null) {
+			SimpleChromosomeWindow resultStartStop = strandOptions.computeStartStop(chromosome, start, stop, strand);
+			start = resultStartStop.getStart();
+			stop = resultStartStop.getStop();
+		}
+
+		// if we are in a multi-genome project, we compute the position on the meta genome
+		start = getMultiGenomePosition(chromosome, start);
+		stop = getMultiGenomePosition(chromosome, stop);
+
+		// retrieve the score
+		Float score = Extractors.getFloat(splitedLine[5].trim(), null);
+		// if there is some attribute informations
+		String name = null;
+		if (splitedLine.length >= 9) {
+			Map<String, String> attributes = parseAttributes(splitedLine[8]);
+			// try to retrieve the gene name
+			if (attributes.containsKey("gene_id")) {
+				name = attributes.get("gene_id");
+			} else {
+				// this is a mandatory attribute for genplay
+				//throw new InvalidDataLineException(line);
+				throw new DataLineException("The attribute 'gene_id' is missing.");
+			}
+			// if there is a FPKM attribute we replace the score by the FPKM
+			if (attributes.containsKey("FPKM")) {
+				score = Extractors.getFloat(attributes.get("FPKM"));
+			} else if (attributes.containsKey("RPKM")) {
+				// if there is no FPKM but there is a RPKM we replace the score by the RPKM
+				score = Extractors.getFloat(attributes.get("RPKM"));
+			}
+		}
 	}
 
 

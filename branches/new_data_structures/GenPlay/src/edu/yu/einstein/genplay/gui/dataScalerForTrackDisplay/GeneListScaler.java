@@ -36,7 +36,7 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneLi
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
-import edu.yu.einstein.genplay.util.ChromosomeWindowLists;
+import edu.yu.einstein.genplay.util.ListView.ChromosomeWindowListViews;
 
 
 /**
@@ -98,7 +98,7 @@ public class GeneListScaler implements DataScalerForTrackDisplay<GeneList, List<
 		// search genes for each line
 		for (ListView<Gene> currentLine : scaledGeneList) {
 			// retrieve the sublist of genes that are located between the start and stop displayed positions
-			ListView<Gene> lineToAdd = ChromosomeWindowLists.sublist(currentLine, projectWindow.getStart(), projectWindow.getStop());
+			ListView<Gene> lineToAdd = ChromosomeWindowListViews.sublist(currentLine, projectWindow.getStart(), projectWindow.getStop());
 			resultList.add(lineToAdd);
 		}
 		return resultList;

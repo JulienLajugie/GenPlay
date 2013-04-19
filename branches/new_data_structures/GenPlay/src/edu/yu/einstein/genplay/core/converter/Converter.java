@@ -21,7 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.converter;
 
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ImmutableGenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 
 /**
  * @author Nicolas Fourel
@@ -38,15 +38,15 @@ public interface Converter {
 
 
 	/**
-	 * @return the converted list
-	 */
-	public ImmutableGenomicDataList<?> getList ();
-
-
-	/**
 	 * @return a description of the operation
 	 */
 	public String getDescription();
+
+
+	/**
+	 * @return the converted list
+	 */
+	public GenomicListView<?> getList ();
 
 
 	/**

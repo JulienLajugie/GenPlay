@@ -101,12 +101,9 @@ public final class GFFExtractor extends TextFileExtractor implements SCWReader, 
 			return LINE_SKIPPED;
 		}
 
+		// start and stop
 		start = Extractors.getInt(splitedLine[3]);
 		stop = Extractors.getInt(splitedLine[4]);
-
-		// start and stop
-		start = Extractors.getInt(splitedLine[1].trim());
-		stop = Extractors.getInt(splitedLine[2].trim());
 
 		String errors = DataLineValidator.getErrors(chromosome, start, stop);
 		if (!errors.isEmpty()) {

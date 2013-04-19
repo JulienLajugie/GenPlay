@@ -21,36 +21,74 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.converter.geneListConverter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.yu.einstein.genplay.core.converter.Converter;
-import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOCleanList;
+import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
+import edu.yu.einstein.genplay.dataStructure.gene.Gene;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.PileupFlattener;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
 /**
  * Creates a {@link SCWList} from the data of the input {@link GeneList}
  * @author Julien Lajugie
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class GeneListToSCWList implements Converter {
 
-	private final GeneList 						list; 			// The input list.
+	private final GeneList 				list; 			// The input list.
 	private final ScoreOperation 		method; 		// method for the calculation of the scores of the result binlist
+	private final ScorePrecision 		precision;		// precision of the scores of  the result list
 	private GenomicListView<?> 			result;			// The output list.
 
 
 	/**
 	 * Creates a {@link SCWList} from the data of the input {@link GeneList}
 	 * @param geneList the BinList
+	 * @param precision precision of the scores of the result list
 	 * @param method method to generate the BinList (eg: AVERAGE, SUM or MAXIMUM)
 	 */
-	public GeneListToSCWList(GeneList geneList, ScoreOperation method) {
+	public GeneListToSCWList(GeneList geneList, ScorePrecision precision, ScoreOperation method) {
 		list = geneList;
 		this.method = method;
+		this.precision = precision;
+	}
+
+
+	@Override
+	public void convert() throws Exception {
+		List<ListView<ScoredChromosomeWindow>> resultList = new ArrayList<ListView<ScoredChromosomeWindow>>();
+		for (ListView<Gene> currentLV: list) {
+			ListViewBuilder<ScoredChromosomeWindow> lvBuilder = new GenericSCWListViewBuilder(precision);
+			PileupFlattener flattener = new PileupFlattener(method);
+			for (ScoredChromosomeWindow scw: currentLV) {
+				List<ScoredChromosomeWindow> flattenedWindows = flattener.addWindow(scw);
+				if (!flattenedWindows.isEmpty()) {
+					for (ScoredChromosomeWindow currentFlattenedWindow: flattenedWindows) {
+						lvBuilder.addElementToBuild(currentFlattenedWindow);
+					}
+				}
+			}
+			List<ScoredChromosomeWindow> flattenedWindows = flattener.flush();
+			if (!flattenedWindows.isEmpty()) {
+				for (ScoredChromosomeWindow currentFlattenedWindow: flattenedWindows) {
+					lvBuilder.addElementToBuild(currentFlattenedWindow);
+				}
+			}
+			resultList.add(lvBuilder.getListView());
+		}
+		result = new SimpleSCWList(resultList, SCWListType.GENERIC, precision);
 	}
 
 
@@ -61,21 +99,13 @@ public class GeneListToSCWList implements Converter {
 
 
 	@Override
-	public String getProcessingDescription() {
-		return "Generating Variable Window Track";
-	}
-
-
-	@Override
-	public void convert() throws Exception {
-		result = new SimpleSCWList(list, method);
-		SCWLOCleanList operation = new SCWLOCleanList((SCWList) result);
-		result = operation.compute();
-	}
-
-
-	@Override
 	public GenomicListView<?> getList() {
 		return result;
+	}
+
+
+	@Override
+	public String getProcessingDescription() {
+		return "Generating Variable Window Track";
 	}
 }

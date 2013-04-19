@@ -27,7 +27,6 @@ import java.util.List;
 /**
  * Provides operation on {@link List} of Float elements
  * @author Julien Lajugie
- * @version 0.1
  */
 public class FloatLists {
 

@@ -39,6 +39,8 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.repeatListView.RepeatFamilyListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.repeatFamilyList.RepeatFamilyList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.gui.dataScalerForTrackDisplay.RepeatListScaler;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
@@ -50,14 +52,15 @@ import edu.yu.einstein.genplay.util.colors.Colors;
 public class RepeatLayer extends AbstractLayer<RepeatFamilyList> implements Layer<RepeatFamilyList>, MouseListener, MouseMotionListener, MouseWheelListener {
 
 	private static final long serialVersionUID = 3779631846077486596L; // generated ID
-	private static final short 	REPEAT_HEIGHT = 6;						// height of a repeat in pixel
-	private static final short 	SPACE_HEIGHT = 3;						// height of the space between two families of repeats
-	private int 				firstLineToDisplay = 0;					// number of the first line to be displayed
-	private int 				repeatLinesCount = 0;					// number of lines of repeats
-	private int 				mouseStartDragY = -1;					// position of the mouse when start dragging
-	private List<String> 		familyNames;							// list containing all the families of the repeat track
-	private String 				highlightedFamilyName = null;			// name of the highlighted family (family with cursor over)
-	private String				selectedFamilyName = null;				// name of the selected family (family is selected if right clicked)
+	private static final short 			REPEAT_HEIGHT = 6;						// height of a repeat in pixel
+	private static final short 			SPACE_HEIGHT = 3;						// height of the space between two families of repeats
+	private transient RepeatListScaler	dataScaler;								// object that scales the list of repeat for display
+	private int 						firstLineToDisplay = 0;					// number of the first line to be displayed
+	private int 						repeatLinesCount = 0;					// number of lines of repeats
+	private int 						mouseStartDragY = -1;					// position of the mouse when start dragging
+	private List<String> 				familyNames;							// list containing all the families of the repeat track
+	private String 						highlightedFamilyName = null;			// name of the highlighted family (family with cursor over)
+	private String						selectedFamilyName = null;				// name of the selected family (family is selected if right clicked)
 
 
 	/**
@@ -78,7 +81,10 @@ public class RepeatLayer extends AbstractLayer<RepeatFamilyList> implements Laye
 			int currentHeight = SPACE_HEIGHT;
 			if (getData() != null) {
 				ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-				List<RepeatFamilyListView> repeatFamilyList = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
+				// check that the data scaler is valid
+				validateDataScaler();
+				// Retrieve the repeats to print
+				List<RepeatFamilyListView> repeatFamilyList = dataScaler.getDataScaledForTrackDisplay();
 				if ((repeatFamilyList != null) && (repeatFamilyList.size() > 0)) {
 					// calculate how many lines are displayable
 					int displayedLineCount = ((height - SPACE_HEIGHT) / (REPEAT_HEIGHT + (2 * SPACE_HEIGHT))) + 1;
@@ -116,7 +122,7 @@ public class RepeatLayer extends AbstractLayer<RepeatFamilyList> implements Laye
 							g.setColor(intToColor(currentColor));
 							// loop for each repeat of the current family
 							if (currentFamily != null) {
-								for(ChromosomeWindow currentRepeat : currentFamily.getRepeatList()) {
+								for(ChromosomeWindow currentRepeat : currentFamily) {
 									if (currentRepeat != null) {
 										int x = projectWindow.genomeToScreenPosition(currentRepeat.getStart());
 										int repeatWidth = projectWindow.genomeToScreenPosition(currentRepeat.getStop()) - x;
@@ -170,7 +176,7 @@ public class RepeatLayer extends AbstractLayer<RepeatFamilyList> implements Laye
 	 */
 	private void generateFamilyNameList() {
 		familyNames = new ArrayList<String>();
-		for (List<RepeatFamilyListView> currentChromoList: getData()) {
+		for (ListView<RepeatFamilyListView> currentChromoList: getData()) {
 			for (RepeatFamilyListView currentRepeatFamily: currentChromoList) {
 				String currentRepeatFamilyName = currentRepeatFamily.getName();
 				if (!familyNames.contains(currentRepeatFamilyName)) {
@@ -317,6 +323,17 @@ public class RepeatLayer extends AbstractLayer<RepeatFamilyList> implements Laye
 					getTrack().repaint();
 				}
 			}
+		}
+	}
+
+
+	/**
+	 * Checks that the data scaler is valid. Regenerates the data scaler if it's not valid
+	 */
+	private void validateDataScaler() {
+		// if the data scaler is null or is not set to scale the current data we regenerate it
+		if ((dataScaler == null) || (getData() != dataScaler.getDataToScale())) {
+			dataScaler = new RepeatListScaler(getData());
 		}
 	}
 }

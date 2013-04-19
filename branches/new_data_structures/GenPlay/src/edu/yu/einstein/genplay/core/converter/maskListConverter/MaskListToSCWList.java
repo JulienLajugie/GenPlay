@@ -21,29 +21,55 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.converter.maskListConverter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.yu.einstein.genplay.core.converter.Converter;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ImmutableGenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
-import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.MaskChromosomeWindow;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
 /**
- * Creates a {@link SCWList} from the data of the input {@link SCWList} of {@link MaskChromosomeWindow}
+ * Creates a {@link SCWList} from the data of the input {@link SCWList} of masks
  * @author Julien Lajugie
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class MaskListToSCWList implements Converter {
 
-	private final SCWList 	list; 		// input list
+	private final SCWList 			list; 		// input list
+	private final ScorePrecision 	precision;	// precision of the scores of the result list
+	private GenomicListView<?> 		result;		// The output list
 
 
 	/**
-	 * Creates a {@link SCWList} from the data of the input {@link SCWList} of {@link MaskChromosomeWindow}
+	 * Creates a {@link SCWList} from the data of the input {@link SCWList} of masks
 	 * @param maskList input list
+	 * @param precision precision of the scores of the result list
 	 */
-	public MaskListToSCWList(SCWList maskList) {
+	public MaskListToSCWList(SCWList maskList, ScorePrecision precision) {
 		list = maskList;
+		this.precision = precision;
+	}
+
+
+	@Override
+	public void convert() throws Exception {
+		List<ListView<ScoredChromosomeWindow>> resultList = new ArrayList<ListView<ScoredChromosomeWindow>>();
+		for (ListView<ScoredChromosomeWindow> currentLV: list) {
+			ListViewBuilder<ScoredChromosomeWindow> lvBuilder = new GenericSCWListViewBuilder(precision);
+			for (ScoredChromosomeWindow scw: currentLV) {
+				lvBuilder.addElementToBuild(scw);
+			}
+			resultList.add(lvBuilder.getListView());
+		}
+		result = new SimpleSCWList(resultList, SCWListType.GENERIC, precision);
 	}
 
 
@@ -54,19 +80,13 @@ public class MaskListToSCWList implements Converter {
 
 
 	@Override
+	public GenomicListView<?> getList() {
+		return result;
+	}
+
+
+	@Override
 	public String getProcessingDescription() {
 		return "Generating Variable Window Track";
-	}
-
-
-	@Override
-	public void convert() throws Exception {
-		// There is nothing to convert, the mask IS a variable window track with a score of 1
-	}
-
-
-	@Override
-	public ImmutableGenomicDataList<?> getList() {
-		return list;
 	}
 }

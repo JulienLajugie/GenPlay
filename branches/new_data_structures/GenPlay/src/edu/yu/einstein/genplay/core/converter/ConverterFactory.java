@@ -50,7 +50,6 @@ import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 
 /**
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class ConverterFactory {
 
@@ -68,15 +67,16 @@ public class ConverterFactory {
 	 * Creates a converter in order to convert the data to the new kind of layer.
 	 * @param binList		the bin list
 	 * @param layerType		the new type of layer to convert the data
+	 * @param precision		precision of the scores of the result list
 	 * @return				the appropriate converter
 	 */
-	private static Converter getBinListConverter(BinList binList, LayerType layerType) {
+	private static Converter getBinListConverter(BinList binList, LayerType layerType, ScorePrecision precision) {
 		Converter converter = null;
 
 		if (layerType == LayerType.SCW_LAYER) {
-			converter = new BinListToSCWList(binList);
+			converter = new BinListToSCWList(binList, precision);
 		} else if (layerType == LayerType.GENE_LAYER) {
-			converter = new BinListToGeneList(binList);
+			converter = new BinListToGeneList(binList, precision);
 		} else if (layerType == LayerType.MASK_LAYER) {
 			converter = new BinListToMaskList(binList);
 		}
@@ -88,9 +88,9 @@ public class ConverterFactory {
 	 * Creates a converter in order to convert the data to the new kind of Layer.
 	 * @param data			the data to convert
 	 * @param layerType		the new type of layer to convert the data
-	 * @param binSize 		size of the bins	(can be null if the layer type is not a {@link BinList}
-	 * @param precision 	precision of the data (eg: 1/8/16/32/64-BIT)	(can be null if the layer type is not a {@link BinList}
-	 * @param method method to generate the BinList (eg: AVERAGE, SUM or MAXIMUM)	(can be null if the layer type is not a {@link BinList}
+	 * @param binSize 		size of the bins	(can be null if the layer type is not a {@link BinList})
+	 * @param precision 	precision of the data (can be null if the result list is not scored)
+	 * @param method method to generate the BinList (can be null if the layer type is not a {@link BinList})
 	 * @return				the appropriate converter
 	 */
 	public static Converter getConverter (GenomicListView<?> data, LayerType layerType, int binSize, ScorePrecision precision, ScoreOperation method) {
@@ -98,7 +98,7 @@ public class ConverterFactory {
 		if (data != null) {
 			if (data instanceof BinList) {
 				BinList binList = (BinList) data;
-				converter = getBinListConverter(binList, layerType);
+				converter = getBinListConverter(binList, layerType, precision);
 			} else if (data instanceof GeneList) {
 				GeneList geneList = (GeneList) data;
 				converter = getGeneListConverter(geneList, layerType, binSize, precision, method);
@@ -127,9 +127,9 @@ public class ConverterFactory {
 	 * Creates a converter in order to convert the data to the new kind of layer.
 	 * @param binList		the gene list
 	 * @param layerType		the new type of layer to convert the data
-	 * @param binSize 		size of the bins	(can be null if the layer type is not a {@link BinList}
-	 * @param precision 	precision of the data (eg: 1/8/16/32/64-BIT)	(can be null if the layer type is not a {@link BinList}
-	 * @param method method to generate the BinList (eg: AVERAGE, SUM or MAXIMUM)	(can be null if the layer type is not a {@link BinList}
+	 * @param binSize 		size of the bins	(can be null if the layer type is not a {@link BinList})
+	 * @param precision 	precision of the data (can be null if the result list is not scored)
+	 * @param method method to generate the BinList (can be null if the layer type is not a {@link BinList})
 	 * @return				the appropriate converter
 	 */
 	private static Converter getGeneListConverter (GeneList geneList, LayerType layerType, int binSize, ScorePrecision precision, ScoreOperation method) {
@@ -137,7 +137,7 @@ public class ConverterFactory {
 		if (layerType == LayerType.BIN_LAYER) {
 			converter = new GeneListToBinList(geneList, binSize, precision, method);
 		} else if (layerType == LayerType.SCW_LAYER) {
-			converter = new GeneListToSCWList(geneList, method);
+			converter = new GeneListToSCWList(geneList, precision, method);
 		} else if (layerType == LayerType.MASK_LAYER) {
 			converter = new GeneListToMaskList(geneList);
 		}
@@ -175,9 +175,9 @@ public class ConverterFactory {
 	 * Creates a converter in order to convert the data to the new kind of layer.
 	 * @param binList		the gene list
 	 * @param layerType		the new type of layer to convert the data
-	 * @param binSize 		size of the bins	(can be null if the layer type is not a {@link BinList}
-	 * @param precision 	precision of the data (eg: 1/8/16/32/64-BIT)	(can be null if the layer type is not a {@link BinList}
-	 * @param method method to generate the BinList (eg: AVERAGE, SUM or MAXIMUM)	(can be null if the layer type is not a {@link BinList}
+	 * @param binSize 		size of the bins	(can be null if the layer type is not a {@link BinList})
+	 * @param precision 	precision of the data (can be null if the result list is not scored)
+	 * @param method method to generate the BinList (can be null if the layer type is not a {@link BinList})
 	 * @return				the appropriate converter
 	 */
 	private static Converter getMaskListConverter (SCWList maskList, LayerType layerType, int binSize, ScorePrecision precision, ScoreOperation method) {
@@ -185,9 +185,9 @@ public class ConverterFactory {
 		if (layerType == LayerType.BIN_LAYER) {
 			converter = new MaskListToBinList(maskList, binSize, precision, method);
 		} else if (layerType == LayerType.SCW_LAYER) {
-			converter = new MaskListToSCWList(maskList);
+			converter = new MaskListToSCWList(maskList, precision);
 		} else if (layerType == LayerType.GENE_LAYER) {
-			converter = new MaskListToGeneList(maskList);
+			converter = new MaskListToGeneList(maskList, precision);
 		}
 		return converter;
 	}
@@ -206,9 +206,9 @@ public class ConverterFactory {
 	 * Creates a converter in order to convert the data to the new kind of layer.
 	 * @param binList		the SCW list
 	 * @param layerType		the new type of layer to convert the data
-	 * @param binSize 		size of the bins	(can be null if the layer type is not a {@link BinList}
-	 * @param precision 	precision of the data (eg: 1/8/16/32/64-BIT)	(can be null if the layer type is not a {@link BinList}
-	 * @param method method to generate the BinList (eg: AVERAGE, SUM or MAXIMUM)	(can be null if the layer type is not a {@link BinList}
+	 * @param binSize 		size of the bins	(can be null if the layer type is not a {@link BinList})
+	 * @param precision 	precision of the data (can be null if the result list is not scored)
+	 * @param method method to generate the BinList (can be null if the layer type is not a {@link BinList})
 	 * @return				the appropriate converter
 	 */
 	private static Converter getSCWListConverter (SCWList scwList, LayerType layerType, int binSize, ScorePrecision precision, ScoreOperation method) {
@@ -216,7 +216,7 @@ public class ConverterFactory {
 		if (layerType == LayerType.BIN_LAYER) {
 			converter = new SCWListToBinList(scwList, binSize, precision, method);
 		} else if (layerType == LayerType.GENE_LAYER) {
-			converter = new SCWListToGeneList(scwList);
+			converter = new SCWListToGeneList(scwList, precision);
 		} else if (layerType == LayerType.MASK_LAYER) {
 			converter = new SCWListToMaskList(scwList);
 		}
