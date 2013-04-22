@@ -28,23 +28,25 @@ import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
+import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
-
 
 
 /**
  * Adds a specified constant to the scores of each window of a {@link SimpleScoredChromosomeWindow}
  * @author Julien Lajugie
- * @version 0.1
  */
 public class SCWLOAddConstant implements Operation<SCWList> {
 
-	private final SCWList 	scwList;	// input list
-	private final double 						constant;	// constant to add
-	private boolean				stopped = false;// true if the operation must be stopped
+	private final SCWList 	scwList;		// input list
+	private final float 	constant;		// constant to add
+	private boolean			stopped = false;// true if the operation must be stopped
 
 
 	/**
@@ -52,7 +54,7 @@ public class SCWLOAddConstant implements Operation<SCWList> {
 	 * @param scwList input list
 	 * @param constant constant to add
 	 */
-	public SCWLOAddConstant(SCWList scwList, double constant) {
+	public SCWLOAddConstant(SCWList scwList, float constant) {
 		this.scwList = scwList;
 		this.constant = constant;
 	}
@@ -65,35 +67,35 @@ public class SCWLOAddConstant implements Operation<SCWList> {
 		}
 
 		final OperationPool op = OperationPool.getInstance();
-		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
-
+		final Collection<Callable<ListView<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<ListView<ScoredChromosomeWindow>>>();
+		final ScorePrecision precision = scwList.getScorePrecision();
 		for (short i = 0; i < scwList.size(); i++) {
-			final List<ScoredChromosomeWindow> currentList = scwList.getView(i);
+			final ListView<ScoredChromosomeWindow> currentList = scwList.get(i);
 
-			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
+			Callable<ListView<ScoredChromosomeWindow>> currentThread = new Callable<ListView<ScoredChromosomeWindow>>() {
 				@Override
-				public List<ScoredChromosomeWindow> call() throws Exception {
-					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
+				public ListView<ScoredChromosomeWindow> call() throws Exception {
+					GenericSCWListViewBuilder resultListBuilder = new GenericSCWListViewBuilder(precision);
 					if ((currentList != null) && (currentList.size() != 0)) {
 						// We add a constant to each element
 						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
-							ScoredChromosomeWindow currentWindow = currentList.get(j);
-							ScoredChromosomeWindow resultWindow = new SimpleScoredChromosomeWindow(currentWindow);
-							resultWindow.setScore(currentWindow.getScore() + constant);
-							resultList.add(resultWindow);
+							int start = currentList.get(j).getStart();
+							int stop = currentList.get(j).getStop();
+							float score = currentList.get(j).getScore() + constant;
+							resultListBuilder.addElementToBuild(start, stop, score);
 						}
 					}
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
-					return resultList;
+					return resultListBuilder.getListView();
 				}
 			};
 
 			threadList.add(currentThread);
 		}
-		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
+		List<ListView<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			SCWList resultList = new SimpleSCWList(result);
+			SCWList resultList = new SimpleSCWList(result, SCWListType.GENERIC, precision);
 			return resultList;
 		} else {
 			return null;
@@ -115,7 +117,7 @@ public class SCWLOAddConstant implements Operation<SCWList> {
 
 	@Override
 	public int getStepCount() {
-		return 1 + SimpleSCWList.getCreationStepCount();
+		return 1 + SimpleSCWList.getCreationStepCount(SCWListType.GENERIC);
 	}
 
 

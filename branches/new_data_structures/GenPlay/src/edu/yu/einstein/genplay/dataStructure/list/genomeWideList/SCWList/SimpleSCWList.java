@@ -91,13 +91,13 @@ public final class SimpleSCWList implements SCWList, Iterator<ListView<ScoredChr
 	private final float maximum;
 
 	/** Average of the list */
-	private final float average;
+	private final double average;
 
 	/** Standard deviation of the list */
-	private final float standardDeviation;
+	private final double standardDeviation;
 
 	/** Sum of the scores of all windows */
-	private final float scoreSum;
+	private final double scoreSum;
 
 	/** Count of none-null bins in the BinList */
 	private final long nonNullLength;
@@ -168,7 +168,7 @@ public final class SimpleSCWList implements SCWList, Iterator<ListView<ScoredChr
 
 
 	@Override
-	public float getAverage() {
+	public double getAverage() {
 		return average;
 	}
 
@@ -217,7 +217,7 @@ public final class SimpleSCWList implements SCWList, Iterator<ListView<ScoredChr
 
 
 	@Override
-	public float getScoreSum() {
+	public double getScoreSum() {
 		return scoreSum;
 	}
 
@@ -229,7 +229,7 @@ public final class SimpleSCWList implements SCWList, Iterator<ListView<ScoredChr
 
 
 	@Override
-	public float getStandardDeviation() {
+	public double getStandardDeviation() {
 		return standardDeviation;
 	}
 

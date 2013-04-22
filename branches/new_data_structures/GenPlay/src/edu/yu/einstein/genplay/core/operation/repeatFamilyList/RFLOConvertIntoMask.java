@@ -36,7 +36,7 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleS
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.repeatFamilyList.RepeatFamilyList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.MaskChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-
+ 
 
 /**
  * Converts the selected families of a repeat track into a MaskList

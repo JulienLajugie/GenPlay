@@ -38,7 +38,7 @@ public interface SCWList extends GenomicListView<ScoredChromosomeWindow> {
 	/**
 	 * @return the average score of the windows of the list
 	 */
-	public float getAverage();
+	public double getAverage();
 
 
 	/**
@@ -76,7 +76,7 @@ public interface SCWList extends GenomicListView<ScoredChromosomeWindow> {
 	/**
 	 * @return the sum of the scores of the windows of the list
 	 */
-	public float getScoreSum();
+	public double getScoreSum();
 
 
 	/**
@@ -88,5 +88,5 @@ public interface SCWList extends GenomicListView<ScoredChromosomeWindow> {
 	/**
 	 * @return the standard deviation of the scores of the list
 	 */
-	public float getStandardDeviation();
+	public double getStandardDeviation();
 }

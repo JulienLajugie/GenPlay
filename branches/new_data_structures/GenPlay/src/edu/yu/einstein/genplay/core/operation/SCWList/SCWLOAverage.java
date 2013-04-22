@@ -31,22 +31,22 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.util.Utils;
-
 
 
 /**
  * Computes the average value of the scores of the {@link SimpleSCWList}
  * @author Julien Lajugie
- * @version 0.1
  */
 public class SCWLOAverage implements Operation<Double> {
 
-	private final boolean[] chromoList; // list of the selected chromosomes
-	private final SCWList scwList; // input list
-	private Long length = null; // sum of the lengths of non null windows
-	private boolean				stopped = false;// true if the operation must be stopped
+	private final boolean[] chromoList; 		// list of the selected chromosomes
+	private final SCWList 	scwList; 			// input list
+	private Long 			length = null; 		// sum of the lengths of non null windows
+	private boolean			stopped = false;	// true if the operation must be stopped
+
 
 	/**
 	 * Computes the average of the list defined as:
@@ -97,14 +97,14 @@ public class SCWLOAverage implements Operation<Double> {
 		final Collection<Callable<Double>> threadList = new ArrayList<Callable<Double>>();
 
 		for (int i = 0; i < scwList.size(); i++) {
-			final List<ScoredChromosomeWindow> currentList = scwList.getView(i);
+			final ListView<ScoredChromosomeWindow> currentList = scwList.get(i);
 			final int currentIndex = i;
 
 			Callable<Double> currentThread = new Callable<Double>() {
 				@Override
 				public Double call() throws Exception {
 					double sumScoreByLength = 0;
-					if (((chromoList == null) || ((currentIndex < chromoList.length) && (chromoList[currentIndex]))) && (scwList.getView(currentIndex) != null)) {
+					if (((chromoList == null) || ((currentIndex < chromoList.length) && (chromoList[currentIndex]))) && (scwList.get(currentIndex) != null)) {
 						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 							ScoredChromosomeWindow currentWindow = currentList.get(j);
 							if (currentWindow.getScore() != 0) {

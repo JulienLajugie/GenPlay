@@ -30,6 +30,7 @@ import java.util.concurrent.ExecutionException;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.util.Utils;
 
@@ -71,8 +72,8 @@ public class SCWLOCountNonNullLength implements Operation<Long>{
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Long>> threadList = new ArrayList<Callable<Long>>();
 		for (int i = 0; i < scwList.size(); i++) {
-			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (scwList.getView(i) != null)) {
-				final List<ScoredChromosomeWindow> currentList = scwList.getView(i);
+			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (scwList.get(i) != null)) {
+				final ListView<ScoredChromosomeWindow> currentList = scwList.get(i);
 
 				Callable<Long> currentThread = new Callable<Long>() {
 					@Override

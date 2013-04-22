@@ -30,9 +30,11 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.mask.MaskListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
-import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.MaskChromosomeWindow;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
@@ -40,7 +42,7 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
 /**
  * Reverts a mask reverting mask windows by white spaces and white spaces by mask windows.
  * @author Nicolas Fourel
- * @version 0.1
+ * @author Julien Lajugie
  */
 public class MCWLOInvertMask implements Operation<SCWList> {
 
@@ -60,44 +62,46 @@ public class MCWLOInvertMask implements Operation<SCWList> {
 	@Override
 	public SCWList compute() throws Exception {
 		final OperationPool op = OperationPool.getInstance();
-		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
+		final Collection<Callable<ListView<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<ListView<ScoredChromosomeWindow>>>();
 
 		for (short i = 0; i < scwList.size(); i++) {
-			final List<ScoredChromosomeWindow> currentList = scwList.getView(i);
+			final ListView<ScoredChromosomeWindow> currentList = scwList.get(i);
 			final Chromosome currentChromosome = ProjectManager.getInstance().getProjectChromosome().get(i);
 
-			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
+			Callable<ListView<ScoredChromosomeWindow>> currentThread = new Callable<ListView<ScoredChromosomeWindow>>() {
 				@Override
-				public List<ScoredChromosomeWindow> call() throws Exception {
-					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
+				public ListView<ScoredChromosomeWindow> call() throws Exception {
+					MaskListViewBuilder lvBuilder = new MaskListViewBuilder();
 					if ((currentList != null) && (currentList.size() != 0)) {
 						int currentPosition = 0;
 						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 							ScoredChromosomeWindow currentWindow = currentList.get(j);
-							ScoredChromosomeWindow resultWindow = new MaskChromosomeWindow(currentPosition, currentWindow.getStart());
-							if (resultWindow.getSize() > 0) {
-								resultList.add(resultWindow);
+							int resultStart = currentPosition;
+							int resultStop = currentWindow.getStart();
+							if (resultStart < resultStop) {
+								lvBuilder.addElementToBuild(resultStart, resultStop);
 							}
 							currentPosition = currentWindow.getStop();
 						}
 
 						// Insert the last position
-						ScoredChromosomeWindow resultWindow = new MaskChromosomeWindow(currentPosition, currentChromosome.getLength());
-						if (resultWindow.getSize() > 0) {
-							resultList.add(resultWindow);
+						int resultStart = currentPosition;
+						int resultStop = currentChromosome.getLength();
+						if (resultStart < resultStop) {
+							lvBuilder.addElementToBuild(resultStart, resultStop);
 						}
 					}
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
-					return resultList;
+					return lvBuilder.getListView();
 				}
 			};
 
 			threadList.add(currentThread);
 		}
-		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
+		List<ListView<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			SCWList resultList = new SimpleSCWList(result);
+			SCWList resultList = new SimpleSCWList(result, SCWListType.MASK, null);
 			return resultList;
 		} else {
 			return null;
@@ -119,7 +123,7 @@ public class MCWLOInvertMask implements Operation<SCWList> {
 
 	@Override
 	public int getStepCount() {
-		return 1 + SimpleSCWList.getCreationStepCount();
+		return 1 + SimpleSCWList.getCreationStepCount(SCWListType.MASK);
 	}
 
 
