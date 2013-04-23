@@ -34,7 +34,6 @@ import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 /**
  * Indexes the selected {@link SCWLayer} by chromosome
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class SCWLAIndexByChromosome extends TrackListActionOperationWorker<SCWList> {
 
@@ -63,6 +62,14 @@ public final class SCWLAIndexByChromosome extends TrackListActionOperationWorker
 
 
 	@Override
+	protected void doAtTheEnd(SCWList actionResult) {
+		if (actionResult != null) {
+			selectedLayer.setData(actionResult, operation.getDescription());
+		}
+	}
+
+
+	@Override
 	public Operation<SCWList> initializeOperation() {
 		selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
@@ -71,19 +78,11 @@ public final class SCWLAIndexByChromosome extends TrackListActionOperationWorker
 				Number indexMax = NumberOptionPane.getValue(getRootPane(), "Maximum", "New maximum score:", -1000000, 1000000, 100);
 				if(indexMax != null) {
 					SCWList scwList = selectedLayer.getData();
-					Operation<SCWList> operation = new SCWLOIndexByChromosome(scwList, indexMin.doubleValue(), indexMax.doubleValue());
+					Operation<SCWList> operation = new SCWLOIndexByChromosome(scwList, indexMin.floatValue(), indexMax.floatValue());
 					return operation;
 				}
 			}
 		}
 		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(SCWList actionResult) {
-		if (actionResult != null) {
-			selectedLayer.setData(actionResult, operation.getDescription());
-		}
 	}
 }

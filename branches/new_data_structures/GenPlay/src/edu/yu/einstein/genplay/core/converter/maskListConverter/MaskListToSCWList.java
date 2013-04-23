@@ -25,12 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.converter.Converter;
-import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
@@ -44,18 +42,15 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
 public class MaskListToSCWList implements Converter {
 
 	private final SCWList 			list; 		// input list
-	private final ScorePrecision 	precision;	// precision of the scores of the result list
 	private GenomicListView<?> 		result;		// The output list
 
 
 	/**
 	 * Creates a {@link SCWList} from the data of the input {@link SCWList} of masks
 	 * @param maskList input list
-	 * @param precision precision of the scores of the result list
 	 */
-	public MaskListToSCWList(SCWList maskList, ScorePrecision precision) {
+	public MaskListToSCWList(SCWList maskList) {
 		list = maskList;
-		this.precision = precision;
 	}
 
 
@@ -63,13 +58,13 @@ public class MaskListToSCWList implements Converter {
 	public void convert() throws Exception {
 		List<ListView<ScoredChromosomeWindow>> resultList = new ArrayList<ListView<ScoredChromosomeWindow>>();
 		for (ListView<ScoredChromosomeWindow> currentLV: list) {
-			ListViewBuilder<ScoredChromosomeWindow> lvBuilder = new GenericSCWListViewBuilder(precision);
+			ListViewBuilder<ScoredChromosomeWindow> lvBuilder = new GenericSCWListViewBuilder();
 			for (ScoredChromosomeWindow scw: currentLV) {
 				lvBuilder.addElementToBuild(scw);
 			}
 			resultList.add(lvBuilder.getListView());
 		}
-		result = new SimpleSCWList(resultList, SCWListType.GENERIC, precision);
+		result = new SimpleSCWList(resultList);
 	}
 
 

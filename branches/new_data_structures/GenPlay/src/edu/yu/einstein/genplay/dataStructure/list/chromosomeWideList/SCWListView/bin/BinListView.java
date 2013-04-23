@@ -76,6 +76,14 @@ public final class BinListView implements ListView<ScoredChromosomeWindow>, Iter
 	}
 
 
+	/**
+	 * @return the size of the bins of the {@link ListView}
+	 */
+	public int getBinSize() {
+		return binSize;
+	}
+
+
 	@Override
 	public boolean hasNext() {
 		return iteratorIndex < size();

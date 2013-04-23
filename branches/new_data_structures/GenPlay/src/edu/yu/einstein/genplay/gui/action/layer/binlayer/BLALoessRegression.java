@@ -26,7 +26,7 @@ import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.binList.BLOLoessRegression;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.GenomeWidthChooser;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;

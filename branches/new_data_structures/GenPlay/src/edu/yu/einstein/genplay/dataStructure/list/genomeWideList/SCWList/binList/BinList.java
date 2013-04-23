@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList;
+package edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -34,7 +34,6 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOComputeStats;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.bin.BinListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
@@ -64,9 +63,6 @@ public final class BinList implements Serializable, SCWList, Iterator<ListView<S
 	/** Current index of the iterator */
 	private transient int iteratorIndex = 0;
 
-	/** Precision of the scores of the genes and exons */
-	private final ScorePrecision scorePrecision;
-
 	/** Smallest value of the list */
 	private final float minimum;
 
@@ -74,13 +70,13 @@ public final class BinList implements Serializable, SCWList, Iterator<ListView<S
 	private final float maximum;
 
 	/** Average of the list */
-	private final float average;
+	private final double average;
 
 	/** Standard deviation of the list */
-	private final float standardDeviation;
+	private final double standardDeviation;
 
 	/** Sum of the scores of all windows */
-	private final float scoreSum;
+	private final double scoreSum;
 
 	/** Count of none-null bins in the BinList */
 	private final long nonNullLength;
@@ -90,11 +86,10 @@ public final class BinList implements Serializable, SCWList, Iterator<ListView<S
 	 * Creates an instance of {@link BinList}
 	 * @param data list of {@link BinListView} organized by chromosome
 	 * @param binSize size of the bins
-	 * @param scorePrecision precision of the scores of the data
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
-	public BinList(List<BinListView> data, int binSize, ScorePrecision scorePrecision) throws InterruptedException, ExecutionException {
+	public BinList(List<BinListView> data, int binSize) throws InterruptedException, ExecutionException {
 		super();
 		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		this.binSize = binSize;
@@ -104,7 +99,6 @@ public final class BinList implements Serializable, SCWList, Iterator<ListView<S
 				this.data[i] = data.get(i);
 			}
 		}
-		this.scorePrecision = scorePrecision;
 		// computes some statistic values for this list
 		SCWLOComputeStats operation = new SCWLOComputeStats(this);
 		operation.compute();
@@ -146,7 +140,7 @@ public final class BinList implements Serializable, SCWList, Iterator<ListView<S
 
 
 	@Override
-	public float getAverage() {
+	public double getAverage() {
 		return average;
 	}
 
@@ -185,13 +179,7 @@ public final class BinList implements Serializable, SCWList, Iterator<ListView<S
 
 
 	@Override
-	public ScorePrecision getScorePrecision() {
-		return scorePrecision;
-	}
-
-
-	@Override
-	public float getScoreSum() {
+	public double getScoreSum() {
 		return scoreSum;
 	}
 
@@ -203,7 +191,7 @@ public final class BinList implements Serializable, SCWList, Iterator<ListView<S
 
 
 	@Override
-	public float getStandardDeviation() {
+	public double getStandardDeviation() {
 		return standardDeviation;
 	}
 

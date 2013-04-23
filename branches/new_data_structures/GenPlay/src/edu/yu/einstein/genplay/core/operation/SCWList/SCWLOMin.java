@@ -29,21 +29,20 @@ import java.util.concurrent.Callable;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.util.Utils;
-
 
 
 /**
  * Searches the minimum value of the selected chromosomes of a specified {@link SCWList}
  * @author Julien Lajugie
- * @version 0.1
  */
-public class SCWLOMin implements Operation<Double> {
+public class SCWLOMin implements Operation<Float> {
 
-	private final boolean[] chromoList;	// list of the selected chromosomes
-	private final SCWList scwList; // input list
-	private boolean				stopped = false;// true if the operation must be stopped
+	private final boolean[] chromoList;			// list of the selected chromosomes
+	private final SCWList 	scwList; 			// input list
+	private boolean			stopped = false;	// true if the operation must be stopped
 
 
 	/**
@@ -59,7 +58,7 @@ public class SCWLOMin implements Operation<Double> {
 
 
 	@Override
-	public Double compute() throws Exception {
+	public Float compute() throws Exception {
 		// if the operation has to be calculated on all chromosome
 		// and if it has already been calculated we don't do the calculation again
 		if (Utils.allChromosomeSelected(chromoList)) {
@@ -67,16 +66,16 @@ public class SCWLOMin implements Operation<Double> {
 		}
 
 		final OperationPool op = OperationPool.getInstance();
-		final Collection<Callable<Double>> threadList = new ArrayList<Callable<Double>>();
+		final Collection<Callable<Float>> threadList = new ArrayList<Callable<Float>>();
 		for (int i = 0; i < scwList.size(); i++) {
-			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (scwList.getView(i) != null)) {
-				final List<ScoredChromosomeWindow> currentList = scwList.getView(i);
+			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (scwList.get(i) != null)) {
+				final ListView<ScoredChromosomeWindow> currentList = scwList.get(i);
+				Callable<Float> currentThread = new Callable<Float>() {
 
-				Callable<Double> currentThread = new Callable<Double>() {
 					@Override
-					public Double call() throws Exception {
+					public Float call() throws Exception {
 						// we set the min to the smallest double value
-						double min = Double.POSITIVE_INFINITY;
+						float min = Float.POSITIVE_INFINITY;
 						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 							if (currentList.get(j).getScore() != 0) {
 								min = Math.min(min, currentList.get(j).getScore());
@@ -91,13 +90,13 @@ public class SCWLOMin implements Operation<Double> {
 				threadList.add(currentThread);
 			}
 		}
-		List<Double> result = op.startPool(threadList);
+		List<Float> result = op.startPool(threadList);
 		if (result == null) {
 			return null;
 		}
 		// we search for the min of the chromosome minimums
-		double min = Double.POSITIVE_INFINITY;
-		for (Double currentMin: result) {
+		float min = Float.POSITIVE_INFINITY;
+		for (Float currentMin: result) {
 			min = Math.min(min, currentMin);
 		}
 		return min;

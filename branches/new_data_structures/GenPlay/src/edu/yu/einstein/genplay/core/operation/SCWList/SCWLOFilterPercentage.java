@@ -22,27 +22,25 @@
 package edu.yu.einstein.genplay.core.operation.SCWList;
 
 import java.util.Arrays;
-import java.util.List;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-
 
 
 /**
  * Removes a percentage of the greatest and smallest values
  * @author Julien Lajugie
- * @version 0.1
  */
 public class SCWLOFilterPercentage implements Operation<SCWList> {
 
 	private final SCWList 		inputList;				// list to filter
-	private final double 							lowPercentage;			// percentage of low values to filter
-	private final double 							highPercentage;			// percentage of high values to filter
-	private final boolean							isSaturation;			// true if we saturate, false if we remove the filtered values
-	private boolean									stopped = false;		// true if the operation must be stopped
+	private final float 		lowPercentage;			// percentage of low values to filter
+	private final float 		highPercentage;			// percentage of high values to filter
+	private final boolean		isSaturation;			// true if we saturate, false if we remove the filtered values
+	private boolean				stopped = false;		// true if the operation must be stopped
 	private Operation<SCWList> 	scwloFilterThreshold;	// threshold filter that does the real fitering operation
 
 
@@ -53,7 +51,7 @@ public class SCWLOFilterPercentage implements Operation<SCWList> {
 	 * @param highPercentage percentage of high values to filter
 	 * @param isSaturation true to saturate, false to remove the filtered values
 	 */
-	public SCWLOFilterPercentage(SCWList inputList, double lowPercentage, double highPercentage, boolean isSaturation) {
+	public SCWLOFilterPercentage(SCWList inputList, float lowPercentage, float highPercentage, boolean isSaturation) {
 		this.inputList = inputList;
 		this.lowPercentage = lowPercentage;
 		this.highPercentage = highPercentage;
@@ -71,18 +69,18 @@ public class SCWLOFilterPercentage implements Operation<SCWList> {
 		}
 		// compute the total number of windows
 		int totalLenght = 0;
-		for (List<ScoredChromosomeWindow> currentList: inputList) {
+		for (ListView<ScoredChromosomeWindow> currentList: inputList) {
 			if (currentList != null) {
 				totalLenght += currentList.size();
 			}
 		}
 		// create an array containing all the scores of the input list
-		double[] allScores = new double[totalLenght];
+		float[] allScores = new float[totalLenght];
 		int i = 0;
-		for (List<ScoredChromosomeWindow> currentList: inputList) {
+		for (ListView<ScoredChromosomeWindow> currentList: inputList) {
 			if (currentList != null) {
 				for (int j = 0; (j < currentList.size()) && !stopped; j++) {
-					Double currentScore = currentList.get(j).getScore();
+					float currentScore = currentList.get(j).getScore();
 					allScores[i] = currentScore;
 					i++;
 				}
@@ -92,8 +90,8 @@ public class SCWLOFilterPercentage implements Operation<SCWList> {
 		int highValuesCount = (int)(highPercentage * allScores.length);
 		// sort the array and search the value of the min and of the max corresponding to the thresholds
 		Arrays.sort(allScores);
-		double minValue = lowValuesCount == 0 ? Double.NEGATIVE_INFINITY : allScores[lowValuesCount - 1];
-		double maxValue = highValuesCount == 0 ? Double.POSITIVE_INFINITY : allScores[allScores.length - highValuesCount];
+		float minValue = lowValuesCount == 0 ? Float.NEGATIVE_INFINITY : allScores[lowValuesCount - 1];
+		float maxValue = highValuesCount == 0 ? Float.POSITIVE_INFINITY : allScores[allScores.length - highValuesCount];
 		// start a SCWLOFilterThreshold with the min and max value that we just found
 		scwloFilterThreshold = new SCWLOFilterThreshold(inputList, minValue, maxValue, isSaturation);
 		return scwloFilterThreshold.compute();
@@ -120,13 +118,13 @@ public class SCWLOFilterPercentage implements Operation<SCWList> {
 
 	@Override
 	public int getStepCount() {
-		return 1 + SimpleSCWList.getCreationStepCount();
+		return 1 + SimpleSCWList.getCreationStepCount(inputList.getSCWListType());
 	}
 
 
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 		if (scwloFilterThreshold != null) {
 			scwloFilterThreshold.stop();
 		}

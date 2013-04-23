@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.converter.Converter;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
@@ -48,18 +47,15 @@ import edu.yu.einstein.genplay.util.ListView.SCWListViews;
 public class MaskListToGeneList implements Converter {
 
 	private final SCWList 			list; 		// input list
-	private final ScorePrecision 	precision;	// precision of the scores of the result list
 	private GenomicListView<?> 		result;		// The output list
 
 
 	/**
 	 * Creates a {@link GeneList} from the data of the input {@link SCWList} of masks
 	 * @param maskList input list
-	 * @param precision precision of the scores of the result list
 	 */
-	public MaskListToGeneList(SCWList maskList, ScorePrecision precision) {
+	public MaskListToGeneList(SCWList maskList) {
 		list = maskList;
-		this.precision = precision;
 	}
 
 
@@ -68,19 +64,19 @@ public class MaskListToGeneList implements Converter {
 		List<ListView<Gene>> resultList = new ArrayList<ListView<Gene>>();
 		int geneNumber = 1;
 		for (ListView<ScoredChromosomeWindow> currentLV: list) {
-			ListViewBuilder<Gene> lvBuilder = new GeneListViewBuilder(precision);
+			ListViewBuilder<Gene> lvBuilder = new GeneListViewBuilder();
 			for (ScoredChromosomeWindow scw: currentLV) {
 				int start = scw.getStart();
 				int stop = scw.getStop();
 				float score = scw.getScore();
-				ListView<ScoredChromosomeWindow> exonLV = SCWListViews.createGenericSCWListView(start, stop, score, precision);
+				ListView<ScoredChromosomeWindow> exonLV = SCWListViews.createGenericSCWListView(start, stop, score);
 				Gene geneToAdd = new SimpleGene("Gene#" + geneNumber, Strand.FIVE, start, stop, score, exonLV);
 				lvBuilder.addElementToBuild(geneToAdd);
 				geneNumber++;
 			}
 			resultList.add(lvBuilder.getListView());
 		}
-		result = new SimpleGeneList(resultList, precision, null, null);
+		result = new SimpleGeneList(resultList, null, null);
 	}
 
 

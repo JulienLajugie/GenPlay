@@ -19,11 +19,12 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList;
+package edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -37,7 +38,10 @@ import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOCountNonNullLength;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.dense.DenseSCWListView;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListView;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.mask.MaskListView;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.SimpleGeneList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
@@ -81,9 +85,6 @@ public final class SimpleSCWList implements SCWList, Iterator<ListView<ScoredChr
 	/** Type of the list */
 	private final SCWListType scwListType;
 
-	/** The precision of the scores of the windows */
-	private final ScorePrecision scorePrecision;
-
 	/** Smallest value of the list */
 	private final float minimum;
 
@@ -106,20 +107,19 @@ public final class SimpleSCWList implements SCWList, Iterator<ListView<ScoredChr
 	/**
 	 * Creates an instance of {@link SimpleGeneList}
 	 * @param data {@link ScoredChromosomeWindow} list organized by chromosome
-	 * @param scwListType type of the list (as a {@link SCWListType} element)
-	 * @param scorePrecision precision of the scores of the data
 	 * @throws ExecutionException
 	 * @throws InterruptedException
+	 * @throws InvalidParameterException if the {@link ListView} objects are not valid
 	 */
-	public SimpleSCWList(List<ListView<ScoredChromosomeWindow>> data, SCWListType scwListType, ScorePrecision scorePrecision) throws InterruptedException, ExecutionException {
+	public SimpleSCWList(List<ListView<ScoredChromosomeWindow>> data) throws InterruptedException, ExecutionException, InvalidParameterException {
 		super();
 		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		this.data = new ArrayList<ListView<ScoredChromosomeWindow>>(projectChromosome.size());
-		this.scorePrecision = scorePrecision;
 		for (int i = 0; i < data.size(); i++){
 			data.add(data.get(i));
 		}
-		this.scwListType = scwListType;
+		// check if the listviews are valid and retrieve the type of the list
+		scwListType = retrieveListType(data);
 		// computes some statistic values for this list
 		if (scwListType == SCWListType.MASK) {
 			maximum = 1f;
@@ -211,12 +211,6 @@ public final class SimpleSCWList implements SCWList, Iterator<ListView<ScoredChr
 
 
 	@Override
-	public ScorePrecision getScorePrecision() {
-		return scorePrecision;
-	}
-
-
-	@Override
 	public double getScoreSum() {
 		return scoreSum;
 	}
@@ -275,6 +269,39 @@ public final class SimpleSCWList implements SCWList, Iterator<ListView<ScoredChr
 	@Override
 	public void remove() {
 		throw new UnsupportedOperationException();
+	}
+
+
+	/**
+	 * @param data data
+	 * @return the type of the {@link SimpleSCWList}
+	 * @throws InvalidParameterException if the {@link ListView} objects are not valid
+	 */
+	private SCWListType retrieveListType(List<ListView<ScoredChromosomeWindow>> data) throws InvalidParameterException {
+		if (data == null) {
+			return null;
+		}
+		SCWListType listType = null;
+		for (ListView<ScoredChromosomeWindow> currentLV: data) {
+			SCWListType currentType;
+			if (currentLV instanceof DenseSCWListView) {
+				currentType = SCWListType.DENSE;
+			} else if (currentLV instanceof GenericSCWListView) {
+				currentType = SCWListType.GENERIC;
+			} else if (currentLV instanceof MaskListView) {
+				currentType = SCWListType.MASK;
+			} else {
+				throw new InvalidParameterException("Incompatible ListView objects");
+			}
+			if (listType == null) {
+				listType = currentType;
+			} else if (currentType != listType) {
+				// listview elements need to implement the same class
+				throw new InvalidParameterException("Non-consistent ListView objects");
+			}
+		}
+
+		return null;
 	}
 
 

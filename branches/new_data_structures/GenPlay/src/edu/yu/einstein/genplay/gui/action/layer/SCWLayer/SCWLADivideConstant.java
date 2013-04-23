@@ -34,7 +34,6 @@ import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 /**
  * Divides the scores of the selected {@link SCWLayer} by a constant
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class SCWLADivideConstant extends TrackListActionOperationWorker<SCWList> {
 
@@ -63,24 +62,24 @@ public final class SCWLADivideConstant extends TrackListActionOperationWorker<SC
 
 
 	@Override
-	public Operation<SCWList> initializeOperation() {
-		selectedLayer = (SCWLayer) getValue("Layer");
-		if (selectedLayer != null) {
-			Number constant = NumberOptionPane.getValue(getRootPane(), "Constant", "Divide the scores of the layer by", Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
-			if ((constant != null) && (constant.doubleValue() != 0)) {
-				SCWList scwList = selectedLayer.getData();
-				operation = new SCWLODivideConstant(scwList, constant.doubleValue());
-				return operation;
-			}
-		}
-		return null;
-	}
-
-
-	@Override
 	protected void doAtTheEnd(SCWList actionResult) {
 		if (actionResult != null) {
 			selectedLayer.setData(actionResult, operation.getDescription());
 		}
+	}
+
+
+	@Override
+	public Operation<SCWList> initializeOperation() {
+		selectedLayer = (SCWLayer) getValue("Layer");
+		if (selectedLayer != null) {
+			Number constant = NumberOptionPane.getValue(getRootPane(), "Constant", "Divide the scores of the layer by", Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY, 0);
+			if ((constant != null) && (constant.floatValue() != 0)) {
+				SCWList scwList = selectedLayer.getData();
+				operation = new SCWLODivideConstant(scwList, constant.floatValue());
+				return operation;
+			}
+		}
+		return null;
 	}
 }

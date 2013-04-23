@@ -28,11 +28,9 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
-import edu.yu.einstein.genplay.dataStructure.list.arrayList.ListOfHalfArraysAsFloatList;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
@@ -209,14 +207,7 @@ public final class GeneListView implements Serializable, ListView<Gene>, Iterato
 		} else {
 			lastExonIndex = exonStarts.size() - 1;
 		}
-		ScorePrecision scorePrecision;
-		// retrieve the precision of the data
-		if (exonScores instanceof ListOfHalfArraysAsFloatList) {
-			scorePrecision = ScorePrecision.PRECISION_16BIT;
-		} else {
-			scorePrecision = ScorePrecision.PRECISION_32BIT;
-		}
-		GenericSCWListViewBuilder exonListBuilder = new GenericSCWListViewBuilder(scorePrecision);
+		GenericSCWListViewBuilder exonListBuilder = new GenericSCWListViewBuilder();
 		for (int i = firstExonIndex; i <= lastExonIndex; i++) {
 			ScoredChromosomeWindow exon = new SimpleScoredChromosomeWindow(exonStarts.get(i), exonStops.get(i), exonScores.get(i));
 			exonListBuilder.addElementToBuild(exon);

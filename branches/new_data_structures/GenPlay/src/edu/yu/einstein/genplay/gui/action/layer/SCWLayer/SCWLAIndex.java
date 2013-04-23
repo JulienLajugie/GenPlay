@@ -34,7 +34,6 @@ import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 /**
  * Indexes the selected {@link SCWLayer}
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class SCWLAIndex extends TrackListActionOperationWorker<SCWList> {
 
@@ -62,6 +61,14 @@ public final class SCWLAIndex extends TrackListActionOperationWorker<SCWList> {
 
 
 	@Override
+	protected void doAtTheEnd(SCWList actionResult) {
+		if (actionResult != null) {
+			selectedLayer.setData(actionResult, operation.getDescription());
+		}
+	}
+
+
+	@Override
 	public Operation<SCWList> initializeOperation() {
 		selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
@@ -70,19 +77,11 @@ public final class SCWLAIndex extends TrackListActionOperationWorker<SCWList> {
 				Number indexMax = NumberOptionPane.getValue(getRootPane(), "Maximum", "New maximum score:", -1000000, 1000000, 100);
 				if(indexMax != null) {
 					SCWList scwList = selectedLayer.getData();
-					Operation<SCWList> operation = new SCWLOIndex(scwList, indexMin.doubleValue(), indexMax.doubleValue());
+					Operation<SCWList> operation = new SCWLOIndex(scwList, indexMin.floatValue(), indexMax.floatValue());
 					return operation;
 				}
 			}
 		}
 		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(SCWList actionResult) {
-		if (actionResult != null) {
-			selectedLayer.setData(actionResult, operation.getDescription());
-		}
 	}
 }

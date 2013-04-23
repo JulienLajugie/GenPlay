@@ -64,6 +64,15 @@ public class SCWLAFilter extends TrackListActionOperationWorker<SCWList> {
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 	}
 
+
+	@Override
+	protected void doAtTheEnd(SCWList actionResult) {
+		if (actionResult != null) {
+			selectedLayer.setData(actionResult, operation.getDescription());
+		}
+	}
+
+
 	@Override
 	public Operation<SCWList> initializeOperation() {
 		selectedLayer = (SCWLayer) getValue("Layer");
@@ -78,11 +87,11 @@ public class SCWLAFilter extends TrackListActionOperationWorker<SCWList> {
 				case COUNT:
 					return new SCWLOFilterCount(list, min.intValue(), max.intValue(), isSaturation);
 				case PERCENTAGE:
-					return new SCWLOFilterPercentage(list, min.doubleValue(), max.doubleValue(), isSaturation);
+					return new SCWLOFilterPercentage(list, min.floatValue(), max.floatValue(), isSaturation);
 				case THRESHOLD:
-					return new SCWLOFilterThreshold(list, min.doubleValue(), max.doubleValue(), isSaturation);
+					return new SCWLOFilterThreshold(list, min.floatValue(), max.floatValue(), isSaturation);
 				case BANDSTOP:
-					return new SCWLOFilterBandStop(list, min.doubleValue(), max.doubleValue());
+					return new SCWLOFilterBandStop(list, min.floatValue(), max.floatValue());
 				default:
 					throw new IllegalArgumentException("Invalid Saturation Type");
 				}
@@ -90,13 +99,5 @@ public class SCWLAFilter extends TrackListActionOperationWorker<SCWList> {
 
 		}
 		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(SCWList actionResult) {
-		if (actionResult != null) {
-			selectedLayer.setData(actionResult, operation.getDescription());
-		}
 	}
 }

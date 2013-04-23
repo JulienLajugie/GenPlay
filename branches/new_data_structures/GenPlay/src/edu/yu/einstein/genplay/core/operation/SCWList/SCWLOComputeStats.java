@@ -47,13 +47,13 @@ public class SCWLOComputeStats implements Operation<Void> {
 	private Float maximum = null;
 
 	/** Average of the list */
-	private Float average = null;
+	private Double average = null;
 
 	/** Standard deviation of the list */
-	private Float standardDeviation = null;
+	private Double standardDeviation = null;
 
 	/** Sum of Float scores of all windows */
-	private Float scoreSum = null;
+	private Double scoreSum = null;
 
 	/** Count of none-null bins in the BinList */
 	private Long nonNullLength = null;
@@ -87,16 +87,16 @@ public class SCWLOComputeStats implements Operation<Void> {
 		// set the default value
 		minimum = Float.POSITIVE_INFINITY;
 		maximum = Float.NEGATIVE_INFINITY;
-		average = 0f;
-		standardDeviation = 0f;
-		scoreSum = 0f;
+		average = 0d;
+		standardDeviation = 0d;
+		scoreSum = 0d;
 		nonNullLength = 0l;
 
 		// create arrays so each statics variable can be calculated for each chromosome
 		final float[] mins = new float[projectChromosome.size()];
 		final float[] maxs = new float[projectChromosome.size()];
-		final float[] stDevs = new float[projectChromosome.size()];
-		final float[] scoreSums = new float[projectChromosome.size()];
+		final double[] stDevs = new double[projectChromosome.size()];
+		final double[] scoreSums = new double[projectChromosome.size()];
 		final long[] nonNullLengths = new long[projectChromosome.size()];
 
 		// computes min / max / total score / non null bin count for each chromosome
@@ -141,7 +141,7 @@ public class SCWLOComputeStats implements Operation<Void> {
 
 		if (nonNullLength != 0) {
 			// compute the average
-			average = scoreSum / (float) nonNullLength;
+			average = scoreSum / (double) nonNullLength;
 			threadList.clear();
 
 			// compute the standard deviation for each chromosome
@@ -175,7 +175,7 @@ public class SCWLOComputeStats implements Operation<Void> {
 			for (int i = 0; i < projectChromosome.size(); i++) {
 				standardDeviation += stDevs[i];
 			}
-			standardDeviation = (float) Math.sqrt(standardDeviation / (double) nonNullLength);
+			standardDeviation = Math.sqrt(standardDeviation / (double) nonNullLength);
 		}
 		return null;
 	}
@@ -184,7 +184,7 @@ public class SCWLOComputeStats implements Operation<Void> {
 	/**
 	 * @return the average
 	 */
-	public Float getAverage() {
+	public Double getAverage() {
 		return average;
 	}
 
@@ -236,7 +236,7 @@ public class SCWLOComputeStats implements Operation<Void> {
 	/**
 	 * @return the scoreSum
 	 */
-	public Float getScoreSum() {
+	public Double getScoreSum() {
 		return scoreSum;
 	}
 
@@ -244,7 +244,7 @@ public class SCWLOComputeStats implements Operation<Void> {
 	/**
 	 * @return the standardDeviation
 	 */
-	public Float getStandardDeviation() {
+	public Double getStandardDeviation() {
 		return standardDeviation;
 	}
 

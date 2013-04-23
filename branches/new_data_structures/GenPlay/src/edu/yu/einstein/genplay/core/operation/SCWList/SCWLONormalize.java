@@ -23,30 +23,32 @@ package edu.yu.einstein.genplay.core.operation.SCWList;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWListBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
-
 
 
 /**
  * Normalizes a {@link SCWList} and multiplies the result by a factor
  * @author Julien Lajugie
- * @version 0.1
  */
 public class SCWLONormalize implements Operation<SCWList> {
 
-	private final SCWList 	inputList;		// input ScoredChromosomeWindowList
-	private final double						factor;			// the result of the normalization is multiplied by this factor
-	private Double 								scoreSum;		// sum of the scores
-	private boolean								stopped = false;// true if the operation must be stopped
+	private final SCWList 	inputList;			// input ScoredChromosomeWindowList
+	private final float		factor;				// the result of the normalization is multiplied by this factor
+	private Double 			scoreSum;			// sum of the scores
+	private boolean			stopped = false;	// true if the operation must be stopped
 
 
 	/**
@@ -54,50 +56,48 @@ public class SCWLONormalize implements Operation<SCWList> {
 	 * @param inputList ScoredChromosomeWindowList to normalize
 	 * @param factor factor
 	 */
-	public SCWLONormalize(SCWList inputList, double factor) {
+	public SCWLONormalize(SCWList inputList, float factor) {
 		this.inputList = inputList;
 		this.factor = factor;
 	}
 
 
 	@Override
-	public SCWList compute() throws InterruptedException, ExecutionException {
+	public SCWList compute() throws InterruptedException, ExecutionException, CloneNotSupportedException {
 		scoreSum = new SCWLOSumScore(inputList, null).compute();
 		// we want to multiply each window by the following coefficient
 		final double coef = factor / scoreSum;
 
+		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		final OperationPool op = OperationPool.getInstance();
-		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
-		for (short i = 0; i < inputList.size(); i++)  {
-			final List<ScoredChromosomeWindow> currentList = inputList.getView(i);
+		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
+		final SCWListBuilder resultListBuilder = new SCWListBuilder(inputList);
 
-			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
+		for (final Chromosome chromosome: projectChromosome) {
+			final ListView<ScoredChromosomeWindow> currentList = inputList.get(chromosome);
+			Callable<Void> currentThread = new Callable<Void>() {
+
 				@Override
-				public List<ScoredChromosomeWindow> call() throws Exception {
-					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
-					if ((currentList != null) && (currentList.size() != 0)) {
+				public Void call() throws Exception {
+					if (currentList != null) {
 						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 							// we multiply each window by the coefficient previously computed
-							ScoredChromosomeWindow windowToAdd = new SimpleScoredChromosomeWindow(currentList.get(j));
-							windowToAdd.setScore(currentList.get(j).getScore() * coef);
-							resultList.add(windowToAdd);
+							int start = currentList.get(j).getStart();
+							int stop = currentList.get(j).getStop();
+							float score = (float) (currentList.get(j).getScore() * coef);
+							resultListBuilder.addElementToBuild(chromosome, new SimpleScoredChromosomeWindow(start, stop, score));
 						}
 					}
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
-					return resultList;
+					return null;
 				}
 			};
 
 			threadList.add(currentThread);
 		}
-		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
-		if (result != null) {
-			SCWList resultList = new SimpleSCWList(result);
-			return resultList;
-		} else {
-			return null;
-		}
+		op.startPool(threadList);
+		return resultListBuilder.getSCWList();
 	}
 
 
@@ -108,14 +108,14 @@ public class SCWLONormalize implements Operation<SCWList> {
 
 
 	@Override
-	public int getStepCount() {
-		return SimpleSCWList.getCreationStepCount() + 1;
+	public String getProcessingDescription() {
+		return "Normalizing";
 	}
 
 
 	@Override
-	public String getProcessingDescription() {
-		return "Normalizing";
+	public int getStepCount() {
+		return SimpleSCWList.getCreationStepCount(inputList.getSCWListType()) + 1;
 	}
 
 

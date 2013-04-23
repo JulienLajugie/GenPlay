@@ -23,11 +23,9 @@ package edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListVie
 
 import java.util.List;
 
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
-import edu.yu.einstein.genplay.dataStructure.list.arrayList.ListOfFloatArraysAsFloatList;
-import edu.yu.einstein.genplay.dataStructure.list.arrayList.ListOfHalfArraysAsFloatList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.primitiveList.FloatListFactory;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
 
@@ -38,9 +36,6 @@ import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
  */
 public final class BinListViewBuilder implements ListViewBuilder<ScoredChromosomeWindow> {
 
-	/** Precision of the scores */
-	private final ScorePrecision scorePrecision;
-
 	/** Size of the bins of the list */
 	private final int binSize;
 
@@ -50,20 +45,11 @@ public final class BinListViewBuilder implements ListViewBuilder<ScoredChromosom
 
 	/**
 	 * Creates an instance of {@link BinListViewBuilder}
-	 * @param scorePrecision precision of the scores of the {@link ListView} to build
 	 * @param binSize size of the bins of the {@link ListView}
 	 */
-	public BinListViewBuilder(ScorePrecision scorePrecision, int binSize) {
-		this.scorePrecision = scorePrecision;
+	public BinListViewBuilder( int binSize) {
 		this.binSize = binSize;
-		switch (scorePrecision) {
-		case PRECISION_16BIT:
-			windowScores = new ListOfHalfArraysAsFloatList();
-			break;
-		case PRECISION_32BIT:
-			windowScores = new ListOfFloatArraysAsFloatList();
-			break;
-		}
+		windowScores = FloatListFactory.createFloatList();
 	}
 
 
@@ -79,7 +65,7 @@ public final class BinListViewBuilder implements ListViewBuilder<ScoredChromosom
 
 	@Override
 	public BinListViewBuilder clone() throws CloneNotSupportedException {
-		BinListViewBuilder clone = new BinListViewBuilder(scorePrecision, binSize);
+		BinListViewBuilder clone = new BinListViewBuilder(binSize);
 		return clone;
 	}
 

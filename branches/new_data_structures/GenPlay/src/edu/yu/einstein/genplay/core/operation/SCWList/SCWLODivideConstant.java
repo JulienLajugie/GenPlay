@@ -23,28 +23,30 @@ package edu.yu.einstein.genplay.core.operation.SCWList;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.Callable;
 
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWListBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
-
 
 
 /**
  * Divides the scores of each window of a {@link SimpleScoredChromosomeWindow} by a constant
  * @author Julien Lajugie
- * @version 0.1
  */
 public class SCWLODivideConstant implements Operation<SCWList> {
 
-	private final SCWList 	scwList;	// input list
-	private final double 						constant;	// constant of the division
-	private boolean				stopped = false;// true if the operation must be stopped
+	private final SCWList 	scwList;			// input list
+	private final float 	constant;			// constant of the division
+	private boolean			stopped = false;	// true if the operation must be stopped
 
 
 	/**
@@ -52,7 +54,7 @@ public class SCWLODivideConstant implements Operation<SCWList> {
 	 * @param scwList input list
 	 * @param constant constant to add
 	 */
-	public SCWLODivideConstant(SCWList scwList, double constant) {
+	public SCWLODivideConstant(SCWList scwList, float constant) {
 		this.scwList = scwList;
 		this.constant = constant;
 	}
@@ -66,40 +68,37 @@ public class SCWLODivideConstant implements Operation<SCWList> {
 			throw new ArithmeticException("Division By Zero");
 		}
 
+		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		final OperationPool op = OperationPool.getInstance();
-		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
+		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
+		final SCWListBuilder resultListBuilder = new SCWListBuilder(scwList);
 
-		for (short i = 0; i < scwList.size(); i++) {
-			final List<ScoredChromosomeWindow> currentList = scwList.getView(i);
+		for (final Chromosome chromosome: projectChromosome) {
+			final ListView<ScoredChromosomeWindow> currentList = scwList.get(chromosome);
 
-			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
+			Callable<Void> currentThread = new Callable<Void>() {
 				@Override
-				public List<ScoredChromosomeWindow> call() throws Exception {
-					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
-					if ((currentList != null) && (currentList.size() != 0)) {
+				public Void call() throws Exception {
+					if (currentList != null) {
 						// We divide each element by a constant
 						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 							ScoredChromosomeWindow currentWindow = currentList.get(j);
-							ScoredChromosomeWindow resultWindow = new SimpleScoredChromosomeWindow(currentWindow);
-							resultWindow.setScore(currentWindow.getScore() / constant);
-							resultList.add(resultWindow);
+							int start = currentWindow.getStart();
+							int stop = currentWindow.getStop();
+							float score = currentWindow.getScore() / constant;
+							resultListBuilder.addElementToBuild(chromosome, new SimpleScoredChromosomeWindow(start, stop, score));
 						}
 					}
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
-					return resultList;
+					return null;
 				}
 			};
 
 			threadList.add(currentThread);
 		}
-		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
-		if (result != null) {
-			SCWList resultList = new SimpleSCWList(result);
-			return resultList;
-		} else {
-			return null;
-		}
+		op.startPool(threadList);
+		return resultListBuilder.getSCWList();
 	}
 
 
@@ -117,7 +116,7 @@ public class SCWLODivideConstant implements Operation<SCWList> {
 
 	@Override
 	public int getStepCount() {
-		return 1 + SimpleSCWList.getCreationStepCount();
+		return 1 + SimpleSCWList.getCreationStepCount(scwList.getSCWListType());
 	}
 
 

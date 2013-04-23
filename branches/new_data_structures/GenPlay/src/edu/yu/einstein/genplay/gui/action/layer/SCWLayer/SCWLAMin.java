@@ -35,9 +35,8 @@ import edu.yu.einstein.genplay.util.Utils;
 /**
  * Shows the minimum score of the selected {@link SCWLayer}
  * @author Julien Lajugie
- * @version 0.1
  */
-public final class SCWLAMin extends TrackListActionOperationWorker<Double> {
+public final class SCWLAMin extends TrackListActionOperationWorker<Float> {
 
 	private static final long serialVersionUID = 3523404731226850786L;	// generated ID
 	private static final String 	ACTION_NAME = "Minimum";			// action name
@@ -64,24 +63,24 @@ public final class SCWLAMin extends TrackListActionOperationWorker<Double> {
 
 
 	@Override
-	public Operation<Double> initializeOperation() {
+	protected void doAtTheEnd(Float actionResult) {
+		if (actionResult != null) {
+			JOptionPane.showMessageDialog(getRootPane(), actionResult, "Minimum of \"" + selectedLayer.getName() +"\":", JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+
+
+	@Override
+	public Operation<Float> initializeOperation() {
 		selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			boolean[] selectedChromo = Utils.chooseChromosomes(getRootPane());
 			if (selectedChromo != null) {
 				SCWList scwList = selectedLayer.getData();
-				Operation<Double> operation = new SCWLOMin(scwList, selectedChromo);
+				Operation<Float> operation = new SCWLOMin(scwList, selectedChromo);
 				return operation;
 			}
 		}
 		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(Double actionResult) {
-		if (actionResult != null) {
-			JOptionPane.showMessageDialog(getRootPane(), actionResult, "Minimum of \"" + selectedLayer.getName() +"\":", JOptionPane.INFORMATION_MESSAGE);
-		}
 	}
 }

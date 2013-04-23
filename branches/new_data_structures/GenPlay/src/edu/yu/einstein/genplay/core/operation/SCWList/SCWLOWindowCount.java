@@ -29,22 +29,21 @@ import java.util.concurrent.Callable;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-
 
 
 /**
  * Counts the number of windows in a {@link SCWList}
  * @author Julien Lajugie
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class SCWLOWindowCount implements Operation<Long>{
 
-	private final SCWList scwList;	// input list
-	private final boolean[] chromoList;		// 1 boolean / chromosome.
+	private final SCWList 		scwList;			// input list
+	private final boolean[] 	chromoList;			// 1 boolean / chromosome.
 	// each boolean sets to true means that the corresponding chromosome is selected
-	private boolean				stopped = false;// true if the operation must be stopped
+	private boolean				stopped = false;	// true if the operation must be stopped
 
 
 	/**
@@ -64,14 +63,18 @@ public class SCWLOWindowCount implements Operation<Long>{
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Long>> threadList = new ArrayList<Callable<Long>>();
 		for (int i = 0; i < scwList.size(); i++) {
-			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (scwList.getView(i) != null) && !stopped) {
-				final List<ScoredChromosomeWindow> currentList = scwList.getView(i);
+			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (scwList.get(i) != null) && !stopped) {
+				final ListView<ScoredChromosomeWindow> currentList = scwList.get(i);
 
 				Callable<Long> currentThread = new Callable<Long>() {
 					@Override
 					public Long call() throws Exception {
-						long count = currentList.size();
-
+						long count = 0;
+						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
+							if (currentList.get(j).getScore() != 0) {
+								count++;
+							}
+						}
 						// tell the operation pool that a chromosome is done
 						op.notifyDone();
 						return count;

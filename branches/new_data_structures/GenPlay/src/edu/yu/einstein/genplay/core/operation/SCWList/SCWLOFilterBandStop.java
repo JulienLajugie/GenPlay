@@ -23,29 +23,30 @@ package edu.yu.einstein.genplay.core.operation.SCWList;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.Callable;
 
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWListBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
-
 
 
 /**
  * Removes the values between two specified thresholds
  * @author Julien Lajugie
- * @version 0.1
  */
 public class SCWLOFilterBandStop implements Operation<SCWList> {
 
 	private final SCWList 	inputList;		// input SCW list
-	private final double 						lowThreshold;	// low bound
-	private final double 						highThreshold;	// high bound
-	private boolean								stopped = false;// true if the operation must be stopped
+	private final float 	lowThreshold;	// low bound
+	private final float 	highThreshold;	// high bound
+	private boolean			stopped = false;// true if the operation must be stopped
 
 
 	/**
@@ -54,7 +55,7 @@ public class SCWLOFilterBandStop implements Operation<SCWList> {
 	 * @param lowThreshold low threshold
 	 * @param highThreshold high threshold
 	 */
-	public SCWLOFilterBandStop(SCWList inputList, double lowThreshold, double highThreshold) {
+	public SCWLOFilterBandStop(SCWList inputList, float lowThreshold, float highThreshold) {
 		this.inputList = inputList;
 		this.lowThreshold = lowThreshold;
 		this.highThreshold = highThreshold;
@@ -67,38 +68,35 @@ public class SCWLOFilterBandStop implements Operation<SCWList> {
 			throw new IllegalArgumentException("The high threshold must be greater than the low one");
 		}
 
+		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		final OperationPool op = OperationPool.getInstance();
-		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
-		for (final List<ScoredChromosomeWindow> currentList: inputList) {
+		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
+		final SCWListBuilder resultListBuilder = new SCWListBuilder(inputList);
 
-			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
+		for (final Chromosome chromosome: projectChromosome) {
+			final ListView<ScoredChromosomeWindow> currentList = inputList.get(chromosome);
+			Callable<Void> currentThread = new Callable<Void>() {
+
 				@Override
-				public List<ScoredChromosomeWindow> call() throws Exception {
-					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
+				public Void call() throws Exception {
 					if ((currentList != null) && (currentList.size() != 0)) {
 						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
-							double currentValue = currentList.get(j).getScore();
+							float currentValue = currentList.get(j).getScore();
 							if ((currentValue < lowThreshold) || (currentValue > highThreshold)) {
-								ScoredChromosomeWindow windowToAdd = new SimpleScoredChromosomeWindow(currentList.get(j));
-								resultList.add(windowToAdd);
+								resultListBuilder.addElementToBuild(chromosome, currentList.get(j));
 							}
 						}
 					}
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
-					return resultList;
+					return null;
 				}
 			};
 
 			threadList.add(currentThread);
 		}
-		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
-		if (result != null) {
-			SCWList resultList = new SimpleSCWList(result);
-			return resultList;
-		} else {
-			return null;
-		}
+		op.startPool(threadList);
+		return resultListBuilder.getSCWList();
 	}
 
 
@@ -116,12 +114,12 @@ public class SCWLOFilterBandStop implements Operation<SCWList> {
 
 	@Override
 	public int getStepCount() {
-		return 1 + SimpleSCWList.getCreationStepCount();
+		return 1 + SimpleSCWList.getCreationStepCount(inputList.getSCWListType());
 	}
 
 
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }

@@ -34,7 +34,6 @@ import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 /**
  * Computes a Standard Score normalization on a {@link SCWLayer}
  * @author Julien Lajugie
- * @version 0.1
  */
 public class SCWLANormalize extends TrackListActionOperationWorker<SCWList> {
 
@@ -63,24 +62,24 @@ public class SCWLANormalize extends TrackListActionOperationWorker<SCWList> {
 
 
 	@Override
+	protected void doAtTheEnd(SCWList actionResult) {
+		if (actionResult != null) {
+			selectedLayer.setData(actionResult, operation.getDescription());
+		}
+	}
+
+
+	@Override
 	public Operation<SCWList> initializeOperation() {
 		selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			Number factor = NumberOptionPane.getValue(getRootPane(), "Multiplicative constant", "Enter a factor of X:", 0, 1000000000, 10000000);
 			if(factor != null) {
 				SCWList inputList = selectedLayer.getData();
-				Operation<SCWList> operation = new SCWLONormalize(inputList, factor.doubleValue());
+				Operation<SCWList> operation = new SCWLONormalize(inputList, factor.floatValue());
 				return operation;
 			}
 		}
 		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(SCWList actionResult) {
-		if (actionResult != null) {
-			selectedLayer.setData(actionResult, operation.getDescription());
-		}
 	}
 }

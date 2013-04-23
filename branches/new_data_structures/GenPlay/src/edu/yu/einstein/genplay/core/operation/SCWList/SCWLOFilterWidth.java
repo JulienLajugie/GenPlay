@@ -26,26 +26,29 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWListBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
-
 
 
 /**
  * Filters {@link ScoredChromosomeWindow} according to the length they are separated.
  * @author Julien Lajugie
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class SCWLOFilterWidth implements Operation<SCWList> {
 
-	private final SCWList 	scwList;	// input list
-	private final int 							width;		// minimum width
-	private boolean				stopped = false;// true if the operation must be stopped
+	private final SCWList	scwList;		// input list
+	private final int 		width;			// minimum width
+	private boolean			stopped = false;// true if the operation must be stopped
 
 
 	/**
@@ -65,16 +68,17 @@ public class SCWLOFilterWidth implements Operation<SCWList> {
 			return scwList;
 		}
 
+		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		final OperationPool op = OperationPool.getInstance();
-		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
+		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
+		final SCWListBuilder resultListBuilder = new SCWListBuilder(scwList);
 
-		for (short i = 0; i < scwList.size(); i++) {
-			final List<ScoredChromosomeWindow> currentList = scwList.getView(i);
+		for (final Chromosome chromosome: projectChromosome) {
+			final ListView<ScoredChromosomeWindow> currentList = scwList.get(chromosome);
 
-			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
+			Callable<Void> currentThread = new Callable<Void>() {
 				@Override
-				public List<ScoredChromosomeWindow> call() throws Exception {
-					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
+				public Void call() throws Exception {
 					if ((currentList != null) && (currentList.size() != 0)) {
 						ScoredChromosomeWindow currentWindow = currentList.get(0);
 						ScoredChromosomeWindow previousWindow = currentWindow;
@@ -84,57 +88,47 @@ public class SCWLOFilterWidth implements Operation<SCWList> {
 							currentWindow = currentList.get(j);
 							int diff = currentWindow.getStart() - previousWindow.getStop();
 							if (diff > width) {
-								resultList = insertWindowsFromListToList(resultList, tmpList);
+								ScoredChromosomeWindow windowToAdd = createWindowFromListToList(tmpList);
+								resultListBuilder.addElementToBuild(chromosome, windowToAdd);
 								tmpList = new ArrayList<ScoredChromosomeWindow>();
 							}
 							tmpList.add(currentWindow);
 							previousWindow = currentWindow;
 						}
-						resultList = insertWindowsFromListToList(resultList, tmpList);
+						ScoredChromosomeWindow windowToAdd = createWindowFromListToList(tmpList);
+						resultListBuilder.addElementToBuild(chromosome, windowToAdd);
 					}
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
-					return resultList;
+					return null;
 				}
 			};
 
 			threadList.add(currentThread);
 		}
-		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
-		if (result != null) {
-			SCWList resultList = new SimpleSCWList(result);
-			return resultList;
-		} else {
-			return null;
-		}
+		op.startPool(threadList);
+		return resultListBuilder.getSCWList();
 	}
 
 
 	/**
-	 * Gather the windows of a list to one window and insert it to a main list.
+	 * Gather the windows of a list into one window.
 	 * @param mainList	the main list
 	 * @param tmpList	the windows to group
 	 * @return			the main list
 	 */
-	private List<ScoredChromosomeWindow> insertWindowsFromListToList (List<ScoredChromosomeWindow> mainList, List<ScoredChromosomeWindow> tmpList) {
-		ScoredChromosomeWindow newWindow = null;
+	private ScoredChromosomeWindow createWindowFromListToList (List<ScoredChromosomeWindow> tmpList) {
+		ScoredChromosomeWindow newWindow;
 		if (tmpList.size() == 1) {
 			newWindow = tmpList.get(0);
 		} else {
 			int start = tmpList.get(0).getStart();
 			int stop = tmpList.get(tmpList.size() - 1).getStop();
-			double score = getScore(tmpList);
+			float score = getScore(tmpList);
 			newWindow = new SimpleScoredChromosomeWindow(start, stop, score);
 		}
-		mainList.add(newWindow);
-		return mainList;
+		return newWindow;
 	}
-
-
-	private double getScore (List<ScoredChromosomeWindow> list) {
-		return 1.0;
-	}
-
 
 
 	@Override
@@ -143,15 +137,21 @@ public class SCWLOFilterWidth implements Operation<SCWList> {
 	}
 
 
+
 	@Override
 	public String getProcessingDescription() {
 		return "Filtering";
 	}
 
 
+	private float getScore (List<ScoredChromosomeWindow> list) {
+		return 1f;
+	}
+
+
 	@Override
 	public int getStepCount() {
-		return 1 + SimpleSCWList.getCreationStepCount();
+		return 1 + SimpleSCWList.getCreationStepCount(scwList.getSCWListType());
 	}
 
 

@@ -28,7 +28,7 @@ import edu.yu.einstein.genplay.core.operation.binList.BLOFilterBandStop;
 import edu.yu.einstein.genplay.core.operation.binList.BLOFilterCount;
 import edu.yu.einstein.genplay.core.operation.binList.BLOFilterPercentage;
 import edu.yu.einstein.genplay.core.operation.binList.BLOFilterThreshold;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.filterDialog.FilterDialog;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;

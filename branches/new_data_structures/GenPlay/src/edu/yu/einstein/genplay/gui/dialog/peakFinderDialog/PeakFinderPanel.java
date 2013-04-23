@@ -22,7 +22,7 @@
 package edu.yu.einstein.genplay.gui.dialog.peakFinderDialog;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
 
 
 /**

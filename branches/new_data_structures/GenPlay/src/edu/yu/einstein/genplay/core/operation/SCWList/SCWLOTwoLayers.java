@@ -29,13 +29,11 @@ import java.util.concurrent.Callable;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
-import edu.yu.einstein.genplay.core.operation.SCWList.overlap.SCWLTwoLayersManagement;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationTwoLayersMethod;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ImmutableGenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
@@ -44,25 +42,26 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 /**
  * Realizes operation on two Layers
  * @author Nicolas Fourel
- * @version 0.1
+ * @author Julien Lajugie
  */
-public class SCWLOTwoLayers implements Operation<ImmutableGenomicDataList<?>>, Stoppable {
+public class SCWLOTwoLayers implements Operation<SCWList>, Stoppable {
 
-	private final ScoreCalculationTwoLayersMethod 	scm;
-	private final SCWLTwoLayersManagement 		twoLayers;			// manage the operation between two Layers
+	private final SCWList 			list1;				// fist list
+	private final SCWList 			list2;				// second list
+	private final ScoreOperation 	scoreOperation;		// operation between the 2 layers
+	private boolean					stopped = false;	// true if the operation must be stopped
 
 
 	/**
 	 * Adds a specified constant to the scores of each window of a {@link SimpleScoredChromosomeWindow}
 	 * @param list1 1st input list
 	 * @param list2 2nd input list
-	 * @param scm {@link ScoreCalculationTwoLayersMethod}
+	 * @param scoreOperation {@link ScoreOperation}
 	 */
-	public SCWLOTwoLayers(	ImmutableGenomicDataList<?> list1,
-			ImmutableGenomicDataList<?> list2,
-			ScoreCalculationTwoLayersMethod scm) {
-		this.scm = scm;
-		twoLayers = new SCWLTwoLayersManagement(list1, list2, scm);
+	public SCWLOTwoLayers(SCWList list1, SCWList list2, ScoreOperation scoreOperation) {
+		this.list1 = list1;
+		this.list2 = list2;
+		this.scoreOperation = scoreOperation;
 	}
 
 
@@ -97,7 +96,7 @@ public class SCWLOTwoLayers implements Operation<ImmutableGenomicDataList<?>>, S
 
 	@Override
 	public String getDescription() {
-		return "Operation on two layers: " + scm.toString();
+		return "Operation on two layers: " + scoreOperation.toString();
 	}
 
 
@@ -109,12 +108,12 @@ public class SCWLOTwoLayers implements Operation<ImmutableGenomicDataList<?>>, S
 
 	@Override
 	public int getStepCount() {
-		return 1 + SimpleSCWList.getCreationStepCount();
+		return 1 + SimpleSCWList.getCreationStepCount(list1.getSCWListType());
 	}
 
 
 	@Override
 	public void stop() {
-		twoLayers.stop();
+		stopped = true;
 	}
 }

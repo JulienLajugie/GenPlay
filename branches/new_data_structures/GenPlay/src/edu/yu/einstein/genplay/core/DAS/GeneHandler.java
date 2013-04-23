@@ -30,7 +30,6 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
@@ -50,7 +49,6 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScored
 public class GeneHandler extends DefaultHandler {
 
 	private final ListViewBuilder<Gene>				geneLVBuilder;			// list of genes
-	private final ScorePrecision					scorePrecision;			// precision of the scores
 	private String 									currentMarkup = null;	// current XML markup
 	private String 									previousGroupID = null;
 	private	String 									groupID;				// a group define a gene for the different exons
@@ -68,12 +66,10 @@ public class GeneHandler extends DefaultHandler {
 	/**
 	 * Creates an instance of {@link GeneHandler}
 	 * @param chromosome current {@link Chromosome}
-	 * @param scorePrecision precision of the scores of the genes
 	 */
-	public GeneHandler(Chromosome chromosome, ScorePrecision scorePrecision) {
+	public GeneHandler(Chromosome chromosome) {
 		super();
-		geneLVBuilder = new GeneListViewBuilder(scorePrecision);
-		this.scorePrecision = scorePrecision;
+		geneLVBuilder = new GeneListViewBuilder();
 		this.chromosome = chromosome;
 	}
 
@@ -106,7 +102,7 @@ public class GeneHandler extends DefaultHandler {
 			// case where it's the first gene of the document
 			if (previousGroupID == null) {
 				previousGroupID = groupID;
-				exonLVBuilder = new GenericSCWListViewBuilder(scorePrecision);
+				exonLVBuilder = new GenericSCWListViewBuilder();
 			} else if (!groupID.equalsIgnoreCase(previousGroupID)) {	// if we have a new group we add the previous gene to the list
 				ListView<ScoredChromosomeWindow> exonList = exonLVBuilder.getListView();
 				int start = exonList.get(0).getStart();
@@ -115,7 +111,7 @@ public class GeneHandler extends DefaultHandler {
 				Gene gene = new SimpleGene(name, orientation, start, stop, Float.NaN, exonList);
 				geneLVBuilder.addElementToBuild(gene);
 				previousGroupID = groupID;
-				exonLVBuilder = new GenericSCWListViewBuilder(scorePrecision);
+				exonLVBuilder = new GenericSCWListViewBuilder();
 			}
 			ScoredChromosomeWindow exon = new SimpleScoredChromosomeWindow(getMultiGenomePosition(start), getMultiGenomePosition(end), score);
 			exonLVBuilder.addElementToBuild(exon);

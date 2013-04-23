@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.list.arrayList;
+package edu.yu.einstein.genplay.dataStructure.list.primitiveList;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -33,18 +33,21 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import edu.yu.einstein.genplay.dataStructure.halfFloat.HalfFloat;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.CompressionException;
 
 /**
- * A memory efficient implementation of the {@link List} interface with Byte generic parameter.
- * The data of the list are stored in {@link ArrayList} objects of arrays of byte primitives
+ * A memory efficient implementation of the {@link List} interface with Float generic parameter.
+ * The data of the list are stored in {@link ArrayList} objects of arrays of char primitives.
+ * The char primitives are used to store 16-bit floating-point values. The are converted into
+ * and from float using the tools from the {@link HalfFloat} class.
  * @author Julien Lajugie
  */
-public class ListOfByteArraysAsByteList extends AbstractList<Byte> implements Serializable, List<Byte>, CompressibleList {
+public class ListOfHalfArraysAsFloatList extends AbstractList<Float> implements Serializable, List<Float>, CompressibleList {
 
 	/** Generated serial ID */
-	private static final long serialVersionUID = -630216643765395298L;
+	private static final long serialVersionUID = -4262827816090843034L;
 
 	/** Version number of the class */
 	private static final transient int CLASS_VERSION_NUMBER = 0;
@@ -59,40 +62,40 @@ public class ListOfByteArraysAsByteList extends AbstractList<Byte> implements Se
 	private int currentIndex = 0;
 
 	/** Data of the list */
-	private List<byte[]> data;
+	private List<char[]> data;
 
 	/** True if the list is compressed */
 	private boolean isCompressed = false;
 
 
 	/**
-	 * Creates an instance of {@link ListOfByteArraysAsByteList}
+	 * Creates an instance of {@link ListOfHalfArraysAsFloatList}
 	 */
-	public ListOfByteArraysAsByteList() {
-		data = new ArrayList<byte[]>();
-		data.add(new byte[ARRAY_SIZE]);
+	public ListOfHalfArraysAsFloatList() {
+		data = new ArrayList<char[]>();
+		data.add(new char[ARRAY_SIZE]);
 	}
 
 
 	/**
-	 * Creates an instance of {@link ListOfByteArraysAsByteList}
+	 * Creates an instance of {@link ListOfHalfArraysAsFloatList}
 	 * @param size size of the list
 	 */
-	public ListOfByteArraysAsByteList(int size) {
+	public ListOfHalfArraysAsFloatList(int size) {
 		int listCount = (size / ARRAY_SIZE) + 1;
-		data = new ArrayList<byte[]>(listCount);
+		data = new ArrayList<char[]>(listCount);
 	}
 
 
 	@Override
-	public boolean add(Byte e) {
-		byte[] currentArray = data.get(data.size() - 1);
+	public boolean add(Float e) {
+		char[] currentArray = data.get(data.size() - 1);
 		if (currentIndex < currentArray.length) {
-			currentArray[currentIndex] = e;
+			currentArray[currentIndex] = HalfFloat.fromFloat(e);
 			currentIndex++;
 			return true;
 		} else {
-			data.add(new byte[ARRAY_SIZE]);
+			data.add(new char[ARRAY_SIZE]);
 			currentIndex = 0;
 			return this.add(e);
 		}
@@ -121,10 +124,10 @@ public class ListOfByteArraysAsByteList extends AbstractList<Byte> implements Se
 
 
 	@Override
-	public Byte get(int index) {
-		byte[] currentArray = data.get(index / ARRAY_SIZE);
+	public Float get(int index) {
+		char[] currentArray = data.get(index / ARRAY_SIZE);
 		int currentIndex = index % ARRAY_SIZE;
-		return currentArray[currentIndex];
+		return HalfFloat.toFloat(currentArray[currentIndex]);
 	}
 
 
@@ -146,7 +149,7 @@ public class ListOfByteArraysAsByteList extends AbstractList<Byte> implements Se
 		in.readInt();
 		// read the non-final fields
 		currentIndex = in.readInt();
-		data = (List<byte[]>) in.readObject();
+		data = (List<char[]>) in.readObject();
 		isCompressed = in.readBoolean();
 		// compress the list if it was compressed when serialized
 		if (isCompressed) {
@@ -156,10 +159,10 @@ public class ListOfByteArraysAsByteList extends AbstractList<Byte> implements Se
 
 
 	@Override
-	public Byte set(int index, Byte element) {
-		byte[] currentArray = data.get(index / ARRAY_SIZE);
+	public Float set(int index, Float element) {
+		char[] currentArray = data.get(index / ARRAY_SIZE);
 		int currentIndex = index % ARRAY_SIZE;
-		currentArray[currentIndex] = element;
+		currentArray[currentIndex] = HalfFloat.fromFloat(element);
 		return null;
 	}
 
@@ -179,7 +182,7 @@ public class ListOfByteArraysAsByteList extends AbstractList<Byte> implements Se
 				ByteArrayInputStream bais = new ByteArrayInputStream(compressedData.toByteArray());
 				GZIPInputStream gz = new GZIPInputStream(bais);
 				ObjectInputStream ois = new ObjectInputStream(gz);
-				data = (List<byte[]>) ois.readObject();
+				data = (List<char[]>) ois.readObject();
 				compressedData = null;
 				isCompressed = false;
 			}

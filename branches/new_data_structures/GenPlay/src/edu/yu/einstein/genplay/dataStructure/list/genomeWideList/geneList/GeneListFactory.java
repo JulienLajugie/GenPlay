@@ -34,7 +34,6 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
@@ -59,7 +58,6 @@ public class GeneListFactory {
 	/**
 	 * Creates a {@link GeneList} from the data retrieved by the specified {@link GeneReader}.
 	 * @param geneReader a {@link GeneReader}
-	 * @param scorePrecision precision of the gene and exon scores
 	 * @return a {@link GeneList}
 	 * @throws ExecutionException
 	 * @throws InterruptedException
@@ -68,8 +66,8 @@ public class GeneListFactory {
 	 * @throws ObjectAlreadyBuiltException
 	 * @throws InvalidChromosomeException
 	 */
-	public static GeneList createGeneList(GeneReader geneReader, ScorePrecision scorePrecision) throws InterruptedException, ExecutionException, CloneNotSupportedException, InvalidChromosomeException, ObjectAlreadyBuiltException, IOException {
-		GeneListViewBuilder lvBuilderPrototype = new GeneListViewBuilder(scorePrecision);
+	public static GeneList createGeneList(GeneReader geneReader) throws InterruptedException, ExecutionException, CloneNotSupportedException, InvalidChromosomeException, ObjectAlreadyBuiltException, IOException {
+		GeneListViewBuilder lvBuilderPrototype = new GeneListViewBuilder();
 		ListOfListViewBuilder<Gene> builder = new ListOfListViewBuilder<Gene>(lvBuilderPrototype);
 		while (geneReader.readItem()) {
 			Gene currentGene = new SimpleGene(
@@ -85,7 +83,7 @@ public class GeneListFactory {
 		}
 		String geneDBURL = geneReader.getGeneDBURL();
 		GeneScoreType geneScoreType = geneReader.getGeneScoreType();
-		return new SimpleGeneList(builder.getGenomicList(), scorePrecision, geneScoreType, geneDBURL);
+		return new SimpleGeneList(builder.getGenomicList(), geneScoreType, geneDBURL);
 	}
 
 
@@ -93,12 +91,11 @@ public class GeneListFactory {
 	 * Creates a {@link GeneList} from a {@link SCWList}.
 	 * It creates one gene per window with a single exon having the same start, stop and score as the window.
 	 * @param scoredChromosomeWindowList
-	 * @param scorePrecision precision of the gene and exon scores
 	 * @return a {@link GeneList}
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
-	public static GeneList createGeneList(SCWList scoredChromosomeWindowList, final ScorePrecision scorePrecision) throws InterruptedException, ExecutionException {
+	public static GeneList createGeneList(SCWList scoredChromosomeWindowList) throws InterruptedException, ExecutionException {
 		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<ListView<Gene>>> threadList = new ArrayList<Callable<ListView<Gene>>>();
@@ -109,7 +106,7 @@ public class GeneListFactory {
 			Callable<ListView<Gene>> currentThread = new Callable<ListView<Gene>>() {
 				@Override
 				public ListView<Gene> call() throws Exception {
-					ListViewBuilder<Gene> geneListBuilder = new GeneListViewBuilder(scorePrecision);
+					ListViewBuilder<Gene> geneListBuilder = new GeneListViewBuilder();
 					for (int j = 0; j < currentList.size(); j++) {
 						ScoredChromosomeWindow currentWindow = currentList.get(j);
 						String name = prefixName + (j + 1);
@@ -117,7 +114,7 @@ public class GeneListFactory {
 						int stop = currentWindow.getStop();
 						float score = currentWindow.getScore();
 						Strand strand = Strand.FIVE;
-						ListViewBuilder<ScoredChromosomeWindow> exonListBuilder = new GenericSCWListViewBuilder(scorePrecision);
+						ListViewBuilder<ScoredChromosomeWindow> exonListBuilder = new GenericSCWListViewBuilder();
 						ScoredChromosomeWindow exonToAdd = new SimpleScoredChromosomeWindow(currentWindow.getStart(), currentWindow.getStop(), currentWindow.getScore());
 						exonListBuilder.addElementToBuild(exonToAdd);
 						Gene geneToAdd = new SimpleGene(name, strand, start, stop, score, exonListBuilder.getListView());
@@ -131,6 +128,6 @@ public class GeneListFactory {
 			threadList.add(currentThread);
 		}
 		List<ListView<Gene>> result = op.startPool(threadList);
-		return new SimpleGeneList(result, scorePrecision, null, null);
+		return new SimpleGeneList(result, null, null);
 	}
 }

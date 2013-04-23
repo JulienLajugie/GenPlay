@@ -25,14 +25,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.converter.Converter;
-import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.bin.BinListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
@@ -47,7 +44,6 @@ public class SCWListToBinList implements Converter {
 
 	private final SCWList 			list; 			// input list
 	private final int 				binSize;		// size of the bin of the result binlist
-	private final ScorePrecision 	precision;		// precision of the result binlist
 	private final ScoreOperation 	method; 		// method for the calculation of the scores of the result binlist
 	private GenomicListView<?> 		result;			// The output list.
 
@@ -56,13 +52,11 @@ public class SCWListToBinList implements Converter {
 	 * Creates a {@link BinList} from the data of the input {@link SCWList}
 	 * @param scwList input list
 	 * @param binSize size of the bins
-	 * @param precision precision of the data
 	 * @param method method to generate the BinList
 	 */
-	public SCWListToBinList(SCWList scwList, int binSize, ScorePrecision precision, ScoreOperation method) {
+	public SCWListToBinList(SCWList scwList, int binSize, ScoreOperation method) {
 		list = scwList;
 		this.binSize = binSize;
-		this.precision = precision;
 		this.method = method;
 	}
 
@@ -71,13 +65,13 @@ public class SCWListToBinList implements Converter {
 	public void convert() throws Exception {
 		List<ListView<ScoredChromosomeWindow>> resultList = new ArrayList<ListView<ScoredChromosomeWindow>>();
 		for (ListView<ScoredChromosomeWindow> currentLV: list) {
-			ListViewBuilder<ScoredChromosomeWindow> lvBuilder = new BinListViewBuilder(precision, binSize);
+			ListViewBuilder<ScoredChromosomeWindow> lvBuilder = new BinListViewBuilder(binSize);
 			for (ScoredChromosomeWindow scw: currentLV) {
 				lvBuilder.addElementToBuild(scw);
 			}
 			resultList.add(lvBuilder.getListView());
 		}
-		result = new SimpleSCWList(resultList, SCWListType.GENERIC, precision);
+		result = new BinList(resultList);
 	}
 
 

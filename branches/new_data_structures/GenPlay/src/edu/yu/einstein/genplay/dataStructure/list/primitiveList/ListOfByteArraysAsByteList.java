@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.list.arrayList;
+package edu.yu.einstein.genplay.dataStructure.list.primitiveList;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -37,14 +37,14 @@ import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.CompressionException;
 
 /**
- * A memory efficient implementation of the {@link List} interface with Integer generic parameter.
- * The data of the list are stored in {@link ArrayList} objects of arrays of int primitives
+ * A memory efficient implementation of the {@link List} interface with Byte generic parameter.
+ * The data of the list are stored in {@link ArrayList} objects of arrays of byte primitives
  * @author Julien Lajugie
  */
-public class ListOfIntArraysAsIntegerList extends AbstractList<Integer> implements Serializable, List<Integer>, CompressibleList {
+public class ListOfByteArraysAsByteList extends AbstractList<Byte> implements Serializable, List<Byte>, CompressibleList {
 
 	/** Generated serial ID */
-	private static final long serialVersionUID = 8605012555225930866L;
+	private static final long serialVersionUID = -630216643765395298L;
 
 	/** Version number of the class */
 	private static final transient int CLASS_VERSION_NUMBER = 0;
@@ -59,40 +59,40 @@ public class ListOfIntArraysAsIntegerList extends AbstractList<Integer> implemen
 	private int currentIndex = 0;
 
 	/** Data of the list */
-	private List<int[]> data;
+	private List<byte[]> data;
 
 	/** True if the list is compressed */
 	private boolean isCompressed = false;
 
 
 	/**
-	 * Creates an instance of {@link ListOfIntArraysAsIntegerList}
+	 * Creates an instance of {@link ListOfByteArraysAsByteList}
 	 */
-	public ListOfIntArraysAsIntegerList() {
-		data = new ArrayList<int[]>();
-		data.add(new int[ARRAY_SIZE]);
+	public ListOfByteArraysAsByteList() {
+		data = new ArrayList<byte[]>();
+		data.add(new byte[ARRAY_SIZE]);
 	}
 
 
 	/**
-	 * Creates an instance of {@link ListOfIntArraysAsIntegerList}
+	 * Creates an instance of {@link ListOfByteArraysAsByteList}
 	 * @param size size of the list
 	 */
-	public ListOfIntArraysAsIntegerList(int size) {
+	public ListOfByteArraysAsByteList(int size) {
 		int listCount = (size / ARRAY_SIZE) + 1;
-		data = new ArrayList<int[]>(listCount);
+		data = new ArrayList<byte[]>(listCount);
 	}
 
 
 	@Override
-	public boolean add(Integer e) {
-		int[] currentArray = data.get(data.size() - 1);
+	public boolean add(Byte e) {
+		byte[] currentArray = data.get(data.size() - 1);
 		if (currentIndex < currentArray.length) {
 			currentArray[currentIndex] = e;
 			currentIndex++;
 			return true;
 		} else {
-			data.add(new int[ARRAY_SIZE]);
+			data.add(new byte[ARRAY_SIZE]);
 			currentIndex = 0;
 			return this.add(e);
 		}
@@ -121,8 +121,8 @@ public class ListOfIntArraysAsIntegerList extends AbstractList<Integer> implemen
 
 
 	@Override
-	public Integer get(int index) {
-		int[] currentArray = data.get(index / ARRAY_SIZE);
+	public Byte get(int index) {
+		byte[] currentArray = data.get(index / ARRAY_SIZE);
 		int currentIndex = index % ARRAY_SIZE;
 		return currentArray[currentIndex];
 	}
@@ -146,7 +146,7 @@ public class ListOfIntArraysAsIntegerList extends AbstractList<Integer> implemen
 		in.readInt();
 		// read the non-final fields
 		currentIndex = in.readInt();
-		data = (List<int[]>) in.readObject();
+		data = (List<byte[]>) in.readObject();
 		isCompressed = in.readBoolean();
 		// compress the list if it was compressed when serialized
 		if (isCompressed) {
@@ -156,8 +156,8 @@ public class ListOfIntArraysAsIntegerList extends AbstractList<Integer> implemen
 
 
 	@Override
-	public Integer set(int index, Integer element) {
-		int[] currentArray = data.get(index / ARRAY_SIZE);
+	public Byte set(int index, Byte element) {
+		byte[] currentArray = data.get(index / ARRAY_SIZE);
 		int currentIndex = index % ARRAY_SIZE;
 		currentArray[currentIndex] = element;
 		return null;
@@ -179,7 +179,7 @@ public class ListOfIntArraysAsIntegerList extends AbstractList<Integer> implemen
 				ByteArrayInputStream bais = new ByteArrayInputStream(compressedData.toByteArray());
 				GZIPInputStream gz = new GZIPInputStream(bais);
 				ObjectInputStream ois = new ObjectInputStream(gz);
-				data = (List<int[]>) ois.readObject();
+				data = (List<byte[]>) ois.readObject();
 				compressedData = null;
 				isCompressed = false;
 			}

@@ -34,7 +34,6 @@ import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 /**
  * Adds a constant to the scores of the selected {@link SCWLayer}
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class SCWLAUniqueScore extends TrackListActionOperationWorker<SCWList> {
 
@@ -62,24 +61,24 @@ public final class SCWLAUniqueScore extends TrackListActionOperationWorker<SCWLi
 
 
 	@Override
-	public Operation<SCWList> initializeOperation() {
-		selectedLayer = (SCWLayer) getValue("Layer");
-		if (selectedLayer != null) {
-			Number constant = NumberOptionPane.getValue(getRootPane(), "Unique Score", "Enter a score for all windows", Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
-			if ((constant != null) && (constant.doubleValue() != 0)) {
-				SCWList scwList = selectedLayer.getData();
-				operation = new SCWLOUniqueScore(scwList, constant.doubleValue());
-				return operation;
-			}
-		}
-		return null;
-	}
-
-
-	@Override
 	protected void doAtTheEnd(SCWList actionResult) {
 		if (actionResult != null) {
 			selectedLayer.setData(actionResult, operation.getDescription());
 		}
+	}
+
+
+	@Override
+	public Operation<SCWList> initializeOperation() {
+		selectedLayer = (SCWLayer) getValue("Layer");
+		if (selectedLayer != null) {
+			Number constant = NumberOptionPane.getValue(getRootPane(), "Unique Score", "Enter a score for all windows", Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY, 0);
+			if ((constant != null) && (constant.doubleValue() != 0)) {
+				SCWList scwList = selectedLayer.getData();
+				operation = new SCWLOUniqueScore(scwList, constant.floatValue());
+				return operation;
+			}
+		}
+		return null;
 	}
 }

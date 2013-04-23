@@ -39,18 +39,15 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
-import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.SimpleGeneList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-
 
 
 /**
@@ -248,7 +245,6 @@ public class DASConnector {
 	 * Retrieves a list of genes from a specified Data Source and a specified DAS Type
 	 * @param dataSource a {@link DataSource}
 	 * @param dasType a {@link DASType}
-	 * @param scorePrecision precision of the scores of the result list
 	 * @return a {@link GeneList}
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -256,7 +252,7 @@ public class DASConnector {
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public GeneList getGeneList(DataSource dataSource, DASType dasType, ScorePrecision scorePrecision) throws IOException, ParserConfigurationException, SAXException, InterruptedException, ExecutionException {
+	public GeneList getGeneList(DataSource dataSource, DASType dasType) throws IOException, ParserConfigurationException, SAXException, InterruptedException, ExecutionException {
 		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
 		List<ListView<Gene>> resultList = new ArrayList<ListView<Gene>>();
 		for (Chromosome currentChromo: projectChromosome) {
@@ -270,7 +266,7 @@ public class DASConnector {
 				SAXParserFactory parserFactory = SAXParserFactory.newInstance();
 				parserFactory.setValidating(true);
 				SAXParser parser = parserFactory.newSAXParser();
-				GeneHandler gh = new GeneHandler(currentChromo, scorePrecision);
+				GeneHandler gh = new GeneHandler(currentChromo);
 				// if the current project is a muti genome project we set the
 				// name of the genome that was used for the mapping of the data
 				if (ProjectManager.getInstance().isMultiGenomeProject()) {
@@ -284,7 +280,7 @@ public class DASConnector {
 				resultList.add(null);
 			}
 		}
-		return new SimpleGeneList(resultList, scorePrecision, null, null);
+		return new SimpleGeneList(resultList, null, null);
 	}
 
 
@@ -293,7 +289,6 @@ public class DASConnector {
 	 * @param dataSource a {@link DataSource}
 	 * @param dasType a {@link DASType}
 	 * @param genomeWindow a {@link SimpleGenomeWindow}
-	 * @param scorePrecision precision of the scores of the result list
 	 * @return a {@link GeneList}
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -301,7 +296,7 @@ public class DASConnector {
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public GeneList getGeneList(DataSource dataSource, DASType dasType, SimpleGenomeWindow genomeWindow, ScorePrecision scorePrecision) throws IOException, ParserConfigurationException, SAXException, InterruptedException, ExecutionException
+	public GeneList getGeneList(DataSource dataSource, DASType dasType, SimpleGenomeWindow genomeWindow) throws IOException, ParserConfigurationException, SAXException, InterruptedException, ExecutionException
 	{
 		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
 		List<ListView<Gene>> resultList = new ArrayList<ListView<Gene>>();
@@ -314,7 +309,7 @@ public class DASConnector {
 			SAXParserFactory parserFactory = SAXParserFactory.newInstance();
 			parserFactory.setValidating(true);
 			SAXParser parser = parserFactory.newSAXParser();
-			GeneHandler gh = new GeneHandler(currentChromo, scorePrecision);
+			GeneHandler gh = new GeneHandler(currentChromo);
 			// if the current project is a muti genome project we set the
 			// name of the genome that was used for the mapping of the data
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
@@ -328,7 +323,7 @@ public class DASConnector {
 			resultList.add(null);
 		}
 
-		return new SimpleGeneList(resultList, scorePrecision, null, null);
+		return new SimpleGeneList(resultList, null, null);
 	}
 
 
@@ -344,7 +339,6 @@ public class DASConnector {
 	 * Retrieves a list of ScoredChromosomeWindow from a specified Data Source and a specified DAS Type
 	 * @param dataSource a {@link DataSource}
 	 * @param dasType a {@link DASType}
-	 * @param scorePrecision precision of the scores of the result list
 	 * @return a {@link SCWList}
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -352,7 +346,7 @@ public class DASConnector {
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public SCWList getSCWList(DataSource dataSource, DASType dasType, ScorePrecision scorePrecision) throws IOException, ParserConfigurationException, SAXException, InterruptedException, ExecutionException {
+	public SCWList getSCWList(DataSource dataSource, DASType dasType) throws IOException, ParserConfigurationException, SAXException, InterruptedException, ExecutionException {
 		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
 		List<ListView<ScoredChromosomeWindow>> resultList = new ArrayList<ListView<ScoredChromosomeWindow>>();
 		for (Chromosome currentChromo: projectChromosome) {
@@ -366,7 +360,7 @@ public class DASConnector {
 				SAXParserFactory parserFactory = SAXParserFactory.newInstance();
 				parserFactory.setValidating(true);
 				SAXParser parser = parserFactory.newSAXParser();
-				SCWHandler scwh = new SCWHandler(currentChromo, scorePrecision);
+				SCWHandler scwh = new SCWHandler(currentChromo);
 				// if the current project is a muti genome project we set the
 				// name of the genome that was used for the mapping of the data
 				if (ProjectManager.getInstance().isMultiGenomeProject()) {
@@ -379,7 +373,7 @@ public class DASConnector {
 			}
 			resultList.add(null);
 		}
-		return new SimpleSCWList(resultList, SCWListType.GENERIC, scorePrecision);
+		return new SimpleSCWList(resultList);
 	}
 
 
@@ -388,7 +382,6 @@ public class DASConnector {
 	 * @param dataSource a {@link DataSource}
 	 * @param dasType a {@link DASType}
 	 * @param genomeWindow a {@link SimpleGenomeWindow}
-	 * @param scorePrecision precision of the scores of the result list
 	 * @return a {@link SCWList}
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -397,7 +390,7 @@ public class DASConnector {
 	 * @throws InterruptedException
 	 */
 
-	public SCWList getSCWList(DataSource dataSource, DASType dasType, SimpleGenomeWindow genomeWindow, ScorePrecision scorePrecision) throws IOException, ParserConfigurationException, SAXException, InterruptedException, ExecutionException {
+	public SCWList getSCWList(DataSource dataSource, DASType dasType, SimpleGenomeWindow genomeWindow) throws IOException, ParserConfigurationException, SAXException, InterruptedException, ExecutionException {
 		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
 		List<ListView<ScoredChromosomeWindow>> resultList = new ArrayList<ListView<ScoredChromosomeWindow>>();
 		Chromosome currentChromo = genomeWindow.getChromosome();
@@ -411,7 +404,7 @@ public class DASConnector {
 			SAXParserFactory parserFactory = SAXParserFactory.newInstance();
 			parserFactory.setValidating(true);
 			SAXParser parser = parserFactory.newSAXParser();
-			SCWHandler scwh = new SCWHandler(currentChromo, scorePrecision);
+			SCWHandler scwh = new SCWHandler(currentChromo);
 			// if the current project is a muti genome project we set the
 			// name of the genome that was used for the mapping of the data
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
@@ -425,7 +418,7 @@ public class DASConnector {
 			resultList.add(null);
 		}
 		// Check if the list is scored
-		return new SimpleSCWList(resultList, SCWListType.GENERIC, scorePrecision);
+		return new SimpleSCWList(resultList);
 	}
 
 

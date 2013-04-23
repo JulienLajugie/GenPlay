@@ -23,16 +23,14 @@ package edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.geneListVi
 
 import java.util.List;
 
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
-import edu.yu.einstein.genplay.dataStructure.list.arrayList.ByteArrayAsBooleanList;
-import edu.yu.einstein.genplay.dataStructure.list.arrayList.ListOfByteArraysAsByteList;
-import edu.yu.einstein.genplay.dataStructure.list.arrayList.ListOfFloatArraysAsFloatList;
-import edu.yu.einstein.genplay.dataStructure.list.arrayList.ListOfHalfArraysAsFloatList;
-import edu.yu.einstein.genplay.dataStructure.list.arrayList.ListOfIntArraysAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.primitiveList.ByteArrayAsBooleanList;
+import edu.yu.einstein.genplay.dataStructure.list.primitiveList.FloatListFactory;
+import edu.yu.einstein.genplay.dataStructure.list.primitiveList.ListOfByteArraysAsByteList;
+import edu.yu.einstein.genplay.dataStructure.list.primitiveList.ListOfIntArraysAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
 
@@ -79,16 +77,11 @@ public final class GeneListViewBuilder implements ListViewBuilder<Gene> {
 	/** List of the offsets of the exons inside the exon start, stop and score lists */
 	private List<Integer> exonOffsets;
 
-	/**	Precision of the scores of the genes */
-	private final ScorePrecision scorePrecision;
-
 
 	/**
 	 * Creates an instance of {@link GeneListViewBuilder}
-	 * @param scorePrecision precision of the score of the genes of the {@link ListView} to build
 	 */
-	public GeneListViewBuilder(ScorePrecision scorePrecision) {
-		this.scorePrecision = scorePrecision;
+	public GeneListViewBuilder() {
 		geneNames = new ListOfByteArraysAsByteList();
 		geneNameOffsets = new ListOfIntArraysAsIntegerList();
 		geneStrands = new ByteArrayAsBooleanList();
@@ -99,16 +92,8 @@ public final class GeneListViewBuilder implements ListViewBuilder<Gene> {
 		exonStarts = new ListOfIntArraysAsIntegerList();
 		exonStops = new ListOfIntArraysAsIntegerList();
 		exonOffsets = new ListOfIntArraysAsIntegerList();
-		switch (scorePrecision) {
-		case PRECISION_16BIT:
-			geneScores = new ListOfHalfArraysAsFloatList();
-			exonScores = new ListOfHalfArraysAsFloatList();
-			break;
-		case PRECISION_32BIT:
-			geneScores = new ListOfFloatArraysAsFloatList();
-			exonScores = new ListOfFloatArraysAsFloatList();
-			break;
-		}
+		geneScores = FloatListFactory.createFloatList();
+		exonScores = FloatListFactory.createFloatList();
 	}
 
 
@@ -146,7 +131,7 @@ public final class GeneListViewBuilder implements ListViewBuilder<Gene> {
 
 	@Override
 	public GeneListViewBuilder clone() throws CloneNotSupportedException {
-		GeneListViewBuilder clone = new GeneListViewBuilder(scorePrecision);
+		GeneListViewBuilder clone = new GeneListViewBuilder();
 		return clone;
 	}
 

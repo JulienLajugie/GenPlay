@@ -31,8 +31,8 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList
  */
 public class SCWLOMaxScoreToDisplay implements Operation<Float> {
 
-	private final SCWList 	scwList;		// input list
-	private boolean			stopped = false;// true if the operation must be stopped
+	private final SCWList 	scwList;			// input list
+	private boolean			stopped = false;	// true if the operation must be stopped
 
 
 	/**
@@ -60,7 +60,7 @@ public class SCWLOMaxScoreToDisplay implements Operation<Float> {
 			return realMax;
 		}
 		// otherwise we try to find the closest 10^x value above (average + stdev)
-		float proposedMax = scwList.getAverage() + scwList.getStandardDeviation();
+		float proposedMax = (float) (scwList.getAverage() + scwList.getStandardDeviation());
 		if (proposedMax <= 0) {
 			return 0f;
 		}

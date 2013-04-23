@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.list.arrayList;
+package edu.yu.einstein.genplay.dataStructure.list.primitiveList;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -33,21 +33,18 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import edu.yu.einstein.genplay.dataStructure.halfFloat.HalfFloat;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.CompressionException;
 
 /**
- * A memory efficient implementation of the {@link List} interface with Float generic parameter.
- * The data of the list are stored in {@link ArrayList} objects of arrays of char primitives.
- * The char primitives are used to store 16-bit floating-point values. The are converted into
- * and from float using the tools from the {@link HalfFloat} class.
+ * A memory efficient implementation of the {@link List} interface with Integer generic parameter.
+ * The data of the list are stored in {@link ArrayList} objects of arrays of int primitives
  * @author Julien Lajugie
  */
-public class ListOfHalfArraysAsFloatList extends AbstractList<Float> implements Serializable, List<Float>, CompressibleList {
+public class ListOfIntArraysAsIntegerList extends AbstractList<Integer> implements Serializable, List<Integer>, CompressibleList {
 
 	/** Generated serial ID */
-	private static final long serialVersionUID = -4262827816090843034L;
+	private static final long serialVersionUID = 8605012555225930866L;
 
 	/** Version number of the class */
 	private static final transient int CLASS_VERSION_NUMBER = 0;
@@ -62,40 +59,40 @@ public class ListOfHalfArraysAsFloatList extends AbstractList<Float> implements 
 	private int currentIndex = 0;
 
 	/** Data of the list */
-	private List<char[]> data;
+	private List<int[]> data;
 
 	/** True if the list is compressed */
 	private boolean isCompressed = false;
 
 
 	/**
-	 * Creates an instance of {@link ListOfHalfArraysAsFloatList}
+	 * Creates an instance of {@link ListOfIntArraysAsIntegerList}
 	 */
-	public ListOfHalfArraysAsFloatList() {
-		data = new ArrayList<char[]>();
-		data.add(new char[ARRAY_SIZE]);
+	public ListOfIntArraysAsIntegerList() {
+		data = new ArrayList<int[]>();
+		data.add(new int[ARRAY_SIZE]);
 	}
 
 
 	/**
-	 * Creates an instance of {@link ListOfHalfArraysAsFloatList}
+	 * Creates an instance of {@link ListOfIntArraysAsIntegerList}
 	 * @param size size of the list
 	 */
-	public ListOfHalfArraysAsFloatList(int size) {
+	public ListOfIntArraysAsIntegerList(int size) {
 		int listCount = (size / ARRAY_SIZE) + 1;
-		data = new ArrayList<char[]>(listCount);
+		data = new ArrayList<int[]>(listCount);
 	}
 
 
 	@Override
-	public boolean add(Float e) {
-		char[] currentArray = data.get(data.size() - 1);
+	public boolean add(Integer e) {
+		int[] currentArray = data.get(data.size() - 1);
 		if (currentIndex < currentArray.length) {
-			currentArray[currentIndex] = HalfFloat.fromFloat(e);
+			currentArray[currentIndex] = e;
 			currentIndex++;
 			return true;
 		} else {
-			data.add(new char[ARRAY_SIZE]);
+			data.add(new int[ARRAY_SIZE]);
 			currentIndex = 0;
 			return this.add(e);
 		}
@@ -124,10 +121,10 @@ public class ListOfHalfArraysAsFloatList extends AbstractList<Float> implements 
 
 
 	@Override
-	public Float get(int index) {
-		char[] currentArray = data.get(index / ARRAY_SIZE);
+	public Integer get(int index) {
+		int[] currentArray = data.get(index / ARRAY_SIZE);
 		int currentIndex = index % ARRAY_SIZE;
-		return HalfFloat.toFloat(currentArray[currentIndex]);
+		return currentArray[currentIndex];
 	}
 
 
@@ -149,7 +146,7 @@ public class ListOfHalfArraysAsFloatList extends AbstractList<Float> implements 
 		in.readInt();
 		// read the non-final fields
 		currentIndex = in.readInt();
-		data = (List<char[]>) in.readObject();
+		data = (List<int[]>) in.readObject();
 		isCompressed = in.readBoolean();
 		// compress the list if it was compressed when serialized
 		if (isCompressed) {
@@ -159,10 +156,10 @@ public class ListOfHalfArraysAsFloatList extends AbstractList<Float> implements 
 
 
 	@Override
-	public Float set(int index, Float element) {
-		char[] currentArray = data.get(index / ARRAY_SIZE);
+	public Integer set(int index, Integer element) {
+		int[] currentArray = data.get(index / ARRAY_SIZE);
 		int currentIndex = index % ARRAY_SIZE;
-		currentArray[currentIndex] = HalfFloat.fromFloat(element);
+		currentArray[currentIndex] = element;
 		return null;
 	}
 
@@ -182,7 +179,7 @@ public class ListOfHalfArraysAsFloatList extends AbstractList<Float> implements 
 				ByteArrayInputStream bais = new ByteArrayInputStream(compressedData.toByteArray());
 				GZIPInputStream gz = new GZIPInputStream(bais);
 				ObjectInputStream ois = new ObjectInputStream(gz);
-				data = (List<char[]>) ois.readObject();
+				data = (List<int[]>) ois.readObject();
 				compressedData = null;
 				isCompressed = false;
 			}

@@ -64,28 +64,28 @@ public final class SCWLAInvertConstant extends TrackListActionOperationWorker<SC
 
 
 	@Override
+	protected void doAtTheEnd(SCWList actionResult) {
+		if (actionResult != null) {
+			selectedLayer.setData(actionResult, operation.getDescription());
+		}
+	}
+
+
+	@Override
 	public Operation<SCWList> initializeOperation() {
 		selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
-			Number constant = NumberOptionPane.getValue(getRootPane(), "Constant", "Enter a value C in: f(x)= C / x", Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 1);
-			if ((constant != null) && (constant.doubleValue() != 0)) {
-				if (constant.doubleValue() == 0) {
+			Number constant = NumberOptionPane.getValue(getRootPane(), "Constant", "Enter a value C in: f(x)= C / x", Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY, 1);
+			if ((constant != null) && (constant.floatValue() != 0)) {
+				if (constant.floatValue() == 0) {
 					JOptionPane.showMessageDialog(getRootPane(), "The constant must be different from 0", "Invalid Parameter", JOptionPane.WARNING_MESSAGE);
 				} else {
 					SCWList scwList = selectedLayer.getData();
-					operation = new SCWLOInvertConstant(scwList, constant.doubleValue());
+					operation = new SCWLOInvertConstant(scwList, constant.floatValue());
 					return operation;
 				}
 			}
 		}
 		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(SCWList actionResult) {
-		if (actionResult != null) {
-			selectedLayer.setData(actionResult, operation.getDescription());
-		}
 	}
 }

@@ -29,6 +29,7 @@ import java.util.concurrent.Callable;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.util.Utils;
 
@@ -36,13 +37,12 @@ import edu.yu.einstein.genplay.util.Utils;
 /**
  * Computes the average value of the scores of the {@link SCWList}
  * @author Julien Lajugie
- * @version 0.1
  */
 public class SCWLOStandardDeviation implements Operation<Double> {
 
-	private final boolean[] 					chromoList; 		// list of the selected chromosomes
+	private final boolean[] chromoList; 		// list of the selected chromosomes
 	private final SCWList 	scwList; 			// input list
-	private boolean								stopped = false;	// true if the operation must be stopped
+	private boolean			stopped = false;	// true if the operation must be stopped
 
 
 	/**
@@ -77,14 +77,14 @@ public class SCWLOStandardDeviation implements Operation<Double> {
 		final Collection<Callable<Double>> threadList = new ArrayList<Callable<Double>>();
 
 		for (int i = 0; i < scwList.size(); i++) {
-			final List<ScoredChromosomeWindow> currentList = scwList.getView(i);
+			final ListView<ScoredChromosomeWindow> currentList = scwList.get(i);
 			final int currentIndex = i;
 
 			Callable<Double> currentThread = new Callable<Double>() {
 				@Override
 				public Double call() throws Exception {
 					double stDev = 0;
-					if (((chromoList == null) || ((currentIndex < chromoList.length) && (chromoList[currentIndex]))) && (scwList.getView(currentIndex) != null)) {
+					if (((chromoList == null) || ((currentIndex < chromoList.length) && (chromoList[currentIndex]))) && (scwList.get(currentIndex) != null)) {
 						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 							ScoredChromosomeWindow currentWindow = currentList.get(j);
 							if (currentWindow.getScore() != 0) {

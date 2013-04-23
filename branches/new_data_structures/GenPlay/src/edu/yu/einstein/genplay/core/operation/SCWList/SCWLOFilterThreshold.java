@@ -23,29 +23,31 @@ package edu.yu.einstein.genplay.core.operation.SCWList;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.Callable;
 
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWListBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
-
 
 
 /**
  * Removes the values above and under specified thresholds
  * @author Julien Lajugie
- * @version 0.1
  */
 public class SCWLOFilterThreshold implements Operation<SCWList> {
 	private final SCWList 	inputList; 		// input SCW list
-	private final double 						lowThreshold;	// filters the values under this threshold
-	private final double 						highThreshold;	// filters the values above this threshold
-	private final boolean						isSaturation;	// true if we saturate, false if we remove the filtered values
-	private boolean								stopped = false;// true if the operation must be stopped
+	private final float 	lowThreshold;	// filters the values under this threshold
+	private final float 	highThreshold;	// filters the values above this threshold
+	private final boolean	isSaturation;	// true if we saturate, false if we remove the filtered values
+	private boolean			stopped = false;// true if the operation must be stopped
 
 
 	/**
@@ -55,7 +57,7 @@ public class SCWLOFilterThreshold implements Operation<SCWList> {
 	 * @param highThreshold filters the values above this threshold
 	 * @param isSaturation true to saturate, false to remove the filtered values
 	 */
-	public SCWLOFilterThreshold(SCWList inputList, double lowThreshold, double highThreshold, boolean isSaturation) {
+	public SCWLOFilterThreshold(SCWList inputList, float lowThreshold, float highThreshold, boolean isSaturation) {
 		this.inputList = inputList;
 		this.lowThreshold = lowThreshold;
 		this.highThreshold = highThreshold;
@@ -69,14 +71,17 @@ public class SCWLOFilterThreshold implements Operation<SCWList> {
 			throw new IllegalArgumentException("The high threshold must be greater than the low one");
 		}
 
+		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		final OperationPool op = OperationPool.getInstance();
-		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
-		for (final List<ScoredChromosomeWindow> currentList: inputList) {
+		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
+		final SCWListBuilder resultListBuilder = new SCWListBuilder(inputList);
 
-			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
+		for (final Chromosome chromosome: projectChromosome) {
+			final ListView<ScoredChromosomeWindow> currentList = inputList.get(chromosome);
+			Callable<Void> currentThread = new Callable<Void>() {
+
 				@Override
-				public List<ScoredChromosomeWindow> call() throws Exception {
-					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
+				public Void call() throws Exception {
 					if ((currentList != null) && (currentList.size() != 0)) {
 						for (int i = 0; (i < currentList.size()) && !stopped; i++) {
 							double currentScore = currentList.get(i).getScore();
@@ -85,41 +90,35 @@ public class SCWLOFilterThreshold implements Operation<SCWList> {
 									// if the score is greater than the high threshold
 									if (isSaturation) {
 										// set the value to high threshold (saturation)
-										ScoredChromosomeWindow windowToAdd = new SimpleScoredChromosomeWindow(currentList.get(i));
-										windowToAdd.setScore(highThreshold);
-										resultList.add(windowToAdd);
+										int start = currentList.get(i).getStart();
+										int stop = currentList.get(i).getStop();
+										resultListBuilder.addElementToBuild(chromosome, new SimpleScoredChromosomeWindow(start, stop, highThreshold));
 									}
 								} else if (currentScore < lowThreshold) {
 									// if the score is smaller than the low threshold
 									if (isSaturation) {
 										// set the value to low threshold (saturation)
-										ScoredChromosomeWindow windowToAdd = new SimpleScoredChromosomeWindow(currentList.get(i));
-										windowToAdd.setScore(lowThreshold);
-										resultList.add(windowToAdd);
+										int start = currentList.get(i).getStart();
+										int stop = currentList.get(i).getStop();
+										resultListBuilder.addElementToBuild(chromosome, new SimpleScoredChromosomeWindow(start, stop, lowThreshold));
 									}
 								} else {
 									// if the score is between the two threshold
-									ScoredChromosomeWindow windowToAdd = new SimpleScoredChromosomeWindow(currentList.get(i));
-									resultList.add(windowToAdd);
+									resultListBuilder.addElementToBuild(chromosome, currentList.get(i));
 								}
 							}
 						}
 					}
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
-					return resultList;
+					return null;
 				}
 			};
 
 			threadList.add(currentThread);
 		}
-		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
-		if (result != null) {
-			SCWList resultList = new SimpleSCWList(result);
-			return resultList;
-		} else {
-			return null;
-		}
+		op.startPool(threadList);
+		return resultListBuilder.getSCWList();
 	}
 
 
@@ -143,12 +142,12 @@ public class SCWLOFilterThreshold implements Operation<SCWList> {
 
 	@Override
 	public int getStepCount() {
-		return SimpleSCWList.getCreationStepCount() + 1;
+		return SimpleSCWList.getCreationStepCount(inputList.getSCWListType()) + 1;
 	}
 
 
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }

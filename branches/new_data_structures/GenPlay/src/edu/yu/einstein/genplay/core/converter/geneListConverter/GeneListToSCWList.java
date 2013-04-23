@@ -25,15 +25,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.converter.Converter;
-import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.PileupFlattener;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
@@ -49,20 +47,17 @@ public class GeneListToSCWList implements Converter {
 
 	private final GeneList 				list; 			// The input list.
 	private final ScoreOperation 		method; 		// method for the calculation of the scores of the result binlist
-	private final ScorePrecision 		precision;		// precision of the scores of  the result list
 	private GenomicListView<?> 			result;			// The output list.
 
 
 	/**
 	 * Creates a {@link SCWList} from the data of the input {@link GeneList}
 	 * @param geneList the BinList
-	 * @param precision precision of the scores of the result list
 	 * @param method method to generate the BinList (eg: AVERAGE, SUM or MAXIMUM)
 	 */
-	public GeneListToSCWList(GeneList geneList, ScorePrecision precision, ScoreOperation method) {
+	public GeneListToSCWList(GeneList geneList, ScoreOperation method) {
 		list = geneList;
 		this.method = method;
-		this.precision = precision;
 	}
 
 
@@ -70,7 +65,7 @@ public class GeneListToSCWList implements Converter {
 	public void convert() throws Exception {
 		List<ListView<ScoredChromosomeWindow>> resultList = new ArrayList<ListView<ScoredChromosomeWindow>>();
 		for (ListView<Gene> currentLV: list) {
-			ListViewBuilder<ScoredChromosomeWindow> lvBuilder = new GenericSCWListViewBuilder(precision);
+			ListViewBuilder<ScoredChromosomeWindow> lvBuilder = new GenericSCWListViewBuilder();
 			PileupFlattener flattener = new PileupFlattener(method);
 			for (ScoredChromosomeWindow scw: currentLV) {
 				List<ScoredChromosomeWindow> flattenedWindows = flattener.addWindow(scw);
@@ -88,7 +83,7 @@ public class GeneListToSCWList implements Converter {
 			}
 			resultList.add(lvBuilder.getListView());
 		}
-		result = new SimpleSCWList(resultList, SCWListType.GENERIC, precision);
+		result = new SimpleSCWList(resultList);
 	}
 
 

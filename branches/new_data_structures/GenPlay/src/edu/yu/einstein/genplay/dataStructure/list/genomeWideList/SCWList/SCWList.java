@@ -23,7 +23,6 @@ package edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList;
 
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
@@ -65,12 +64,6 @@ public interface SCWList extends GenomicListView<ScoredChromosomeWindow> {
 	 * @return the score at the specified position
 	 */
 	public float getScore(Chromosome chromosome, int position);
-
-
-	/**
-	 * @return the precision of the scores of the windows
-	 */
-	public ScorePrecision getScorePrecision();
 
 
 	/**

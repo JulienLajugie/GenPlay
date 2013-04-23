@@ -28,7 +28,7 @@ import java.io.ObjectInputStream;
 import java.util.zip.GZIPInputStream;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
 
 
 

@@ -23,12 +23,10 @@ package edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListVie
 
 import java.util.List;
 
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
-import edu.yu.einstein.genplay.dataStructure.list.arrayList.ListOfFloatArraysAsFloatList;
-import edu.yu.einstein.genplay.dataStructure.list.arrayList.ListOfHalfArraysAsFloatList;
-import edu.yu.einstein.genplay.dataStructure.list.arrayList.ListOfIntArraysAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.primitiveList.FloatListFactory;
+import edu.yu.einstein.genplay.dataStructure.list.primitiveList.ListOfIntArraysAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
 
@@ -39,8 +37,6 @@ import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
  */
 public final class GenericSCWListViewBuilder implements ListViewBuilder<ScoredChromosomeWindow> {
 
-	/** Precision of the scores */
-	private final ScorePrecision scorePrecision;
 
 	/** List of the stop positions of the SCWs */
 	private List<Integer> windowStops;
@@ -54,20 +50,11 @@ public final class GenericSCWListViewBuilder implements ListViewBuilder<ScoredCh
 
 	/**
 	 * Creates an instance of {@link GenericSCWListViewBuilder}
-	 * @param scorePrecision precision of the scores of the {@link ListView} to build
 	 */
-	public GenericSCWListViewBuilder(ScorePrecision scorePrecision) {
-		this.scorePrecision = scorePrecision;
+	public GenericSCWListViewBuilder() {
 		windowStarts = new ListOfIntArraysAsIntegerList();
 		windowStops = new ListOfIntArraysAsIntegerList();
-		switch (scorePrecision) {
-		case PRECISION_16BIT:
-			windowScores = new ListOfHalfArraysAsFloatList();
-			break;
-		case PRECISION_32BIT:
-			windowScores = new ListOfFloatArraysAsFloatList();
-			break;
-		}
+		windowScores = FloatListFactory.createFloatList();
 	}
 
 
@@ -103,7 +90,7 @@ public final class GenericSCWListViewBuilder implements ListViewBuilder<ScoredCh
 	 */
 	@Override
 	public GenericSCWListViewBuilder clone() throws CloneNotSupportedException {
-		GenericSCWListViewBuilder clone = new GenericSCWListViewBuilder(scorePrecision);
+		GenericSCWListViewBuilder clone = new GenericSCWListViewBuilder();
 		return clone;
 	}
 

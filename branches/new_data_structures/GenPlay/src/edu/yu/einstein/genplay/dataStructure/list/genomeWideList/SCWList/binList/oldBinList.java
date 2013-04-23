@@ -1,4 +1,4 @@
-package edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList;
+package edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList;
 
 
 public class oldBinList {

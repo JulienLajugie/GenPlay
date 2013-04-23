@@ -30,22 +30,21 @@ import java.util.concurrent.ExecutionException;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.util.Utils;
-
 
 
 /**
  * Computes the sum of the scores of a {@link SCWList}
  * @author Julien Lajugie
- * @version 0.1
  */
 public class SCWLOSumScore  implements Operation<Double> {
 
 	private final SCWList 	inputList;		// input list
-	private final boolean[] 					chromoList;		// 1 boolean / chromosome.
+	private final boolean[] chromoList;		// 1 boolean / chromosome.
 	// each boolean sets to true means that the corresponding chromosome is selected
-	private boolean								stopped = false;// true if the operation must be stopped
+	private boolean			stopped = false;// true if the operation must be stopped
 
 
 	/**
@@ -71,10 +70,10 @@ public class SCWLOSumScore  implements Operation<Double> {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Double>> threadList = new ArrayList<Callable<Double>>();
 		for (int i = 0; i < inputList.size(); i++) {
-			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (inputList.getView(i) != null)) {
-				final List<ScoredChromosomeWindow> currentList = inputList.getView(i);
-
+			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (inputList.get(i) != null)) {
+				final ListView<ScoredChromosomeWindow> currentList = inputList.get(i);
 				Callable<Double> currentThread = new Callable<Double>() {
+
 					@Override
 					public Double call() throws Exception {
 						double sum = 0;
@@ -88,7 +87,6 @@ public class SCWLOSumScore  implements Operation<Double> {
 						return sum;
 					}
 				};
-
 				threadList.add(currentThread);
 			}
 		}
@@ -112,14 +110,14 @@ public class SCWLOSumScore  implements Operation<Double> {
 
 
 	@Override
-	public int getStepCount() {
-		return 1;
+	public String getProcessingDescription() {
+		return "Computing Score Count";
 	}
 
 
 	@Override
-	public String getProcessingDescription() {
-		return "Computing Score Count";
+	public int getStepCount() {
+		return 1;
 	}
 
 

@@ -35,9 +35,8 @@ import edu.yu.einstein.genplay.util.Utils;
 /**
  * Shows the maximum score of the selected {@link SCWLayer}
  * @author Julien Lajugie
- * @version 0.1
  */
-public final class SCWLAMax extends TrackListActionOperationWorker<Double> {
+public final class SCWLAMax extends TrackListActionOperationWorker<Float> {
 
 	private static final long serialVersionUID = -3864460354387970028L;	// generated ID
 	private static final String 	ACTION_NAME = "Maximum";			// action name
@@ -64,24 +63,24 @@ public final class SCWLAMax extends TrackListActionOperationWorker<Double> {
 
 
 	@Override
-	public Operation<Double> initializeOperation() {
+	protected void doAtTheEnd(Float actionResult) {
+		if (actionResult != null) {
+			JOptionPane.showMessageDialog(getRootPane(), actionResult, "Maximum of \"" + selectedLayer.getName() +"\":", JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+
+
+	@Override
+	public Operation<Float> initializeOperation() {
 		selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			boolean[] selectedChromo = Utils.chooseChromosomes(getRootPane());
 			if (selectedChromo != null) {
 				SCWList scwList = selectedLayer.getData();
-				Operation<Double> operation = new SCWLOMax(scwList, selectedChromo);
+				Operation<Float> operation = new SCWLOMax(scwList, selectedChromo);
 				return operation;
 			}
 		}
 		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(Double actionResult) {
-		if (actionResult != null) {
-			JOptionPane.showMessageDialog(getRootPane(), actionResult, "Maximum of \"" + selectedLayer.getName() +"\":", JOptionPane.INFORMATION_MESSAGE);
-		}
 	}
 }

@@ -33,7 +33,6 @@ import edu.yu.einstein.genplay.core.IO.utils.StrandedExtractorOptions;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
@@ -185,7 +184,7 @@ public class BedExtractor extends TextFileExtractor implements SCWReader, GeneRe
 			if (splitedLine.length > 12) {
 				exonScoresStr = Utils.split(splitedLine[12], ',');
 			}
-			GenericSCWListViewBuilder exonListBuilder = new GenericSCWListViewBuilder(ScorePrecision.PRECISION_32BIT);
+			GenericSCWListViewBuilder exonListBuilder = new GenericSCWListViewBuilder();
 			for (int i = 0; i < exonLengthsStr.length; i++) {
 				int exonStart = Extractors.getInt(exonStartsStr[i]) + start;
 				int exonStop = exonStart + Extractors.getInt(exonLengthsStr[i]);

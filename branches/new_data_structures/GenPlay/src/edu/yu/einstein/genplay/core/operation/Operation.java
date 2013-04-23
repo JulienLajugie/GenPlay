@@ -14,14 +14,14 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.operation;
 
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
 
@@ -33,30 +33,30 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
  * @version 0.1
  */
 public interface Operation<T> extends Stoppable {
-	
-	
-	/**
-	 * @return a description of the operation
-	 */
-	public String getDescription();
-	
-	
-	/**
-	 * @return a description of what is done during the process
-	 */
-	public String getProcessingDescription();
-	
-	
+
+
 	/**
 	 * Processes the operation
 	 * @return the result of the operation
 	 * @throws Exception
 	 */
 	public T compute() throws Exception;
-	
-	
+
+
 	/**
-	 * @return the number of steps needed to complete the operation 
+	 * @return a description of the operation
+	 */
+	public String getDescription();
+
+
+	/**
+	 * @return a description of what is done during the process
+	 */
+	public String getProcessingDescription();
+
+
+	/**
+	 * @return the number of steps needed to complete the operation
 	 */
 	public int getStepCount();
 }

@@ -33,7 +33,7 @@ import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.mask.MaskListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
@@ -46,8 +46,8 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
  */
 public class MCWLOInvertMask implements Operation<SCWList> {
 
-	private final SCWList 	scwList;	// input list
-	private boolean				stopped = false;// true if the operation must be stopped
+	private final SCWList 	scwList;		// input list
+	private boolean			stopped = false;// true if the operation must be stopped
 
 
 	/**
@@ -101,7 +101,7 @@ public class MCWLOInvertMask implements Operation<SCWList> {
 		}
 		List<ListView<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			SCWList resultList = new SimpleSCWList(result, SCWListType.MASK, null);
+			SCWList resultList = new SimpleSCWList(result);
 			return resultList;
 		} else {
 			return null;

@@ -60,7 +60,7 @@ public class SCWLOMinScoreToDisplay implements Operation<Float> {
 			return realMin;
 		}
 		// otherwise we try to find the closest 10^x value under (average - stdev)
-		float proposedMin = scwList.getAverage() - scwList.getStandardDeviation();
+		float proposedMin = (float) (scwList.getAverage() - scwList.getStandardDeviation());
 		if (proposedMin >= 0) {
 			return 0f;
 		}

@@ -19,22 +19,21 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList;
+package edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList;
 
 import java.io.IOException;
-import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.IO.dataReader.SCWReader;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.dense.DenseSCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.mask.MaskListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ListOfListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.PileupFlattener;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
@@ -53,7 +52,6 @@ public class SimpleSCWListFactory {
 	 * Dense {@link SCWList} are optimized to minimize the memory usage when most of the windows
 	 * are consecutive (not separated by windows with a score of 0).
 	 * @param scwReader a {@link SCWReader}
-	 * @param scorePrecision precision of the scores of the windows of the {@link SCWList}
 	 * @param scoreOperation {@link ScoreOperation} to compute the score of windows resulting from the "flattening" of a pileup of overlapping windows
 	 * @return a new {@link SCWList}
 	 * @throws InterruptedException
@@ -63,9 +61,9 @@ public class SimpleSCWListFactory {
 	 * @throws ObjectAlreadyBuiltException
 	 * @throws InvalidChromosomeException
 	 */
-	public static SCWList createDenseSCWArrayList(SCWReader scwReader, ScorePrecision scorePrecision, ScoreOperation scoreOperation) throws InterruptedException, ExecutionException, CloneNotSupportedException, InvalidChromosomeException, ObjectAlreadyBuiltException, IOException {
-		ListViewBuilder<ScoredChromosomeWindow> lvBuilderPrototype = new DenseSCWListViewBuilder(scorePrecision);
-		return createSimpleSCWArrayList(scwReader, scorePrecision, lvBuilderPrototype, scoreOperation);
+	public static SCWList createDenseSCWArrayList(SCWReader scwReader, ScoreOperation scoreOperation) throws InterruptedException, ExecutionException, CloneNotSupportedException, InvalidChromosomeException, ObjectAlreadyBuiltException, IOException {
+		ListViewBuilder<ScoredChromosomeWindow> lvBuilderPrototype = new DenseSCWListViewBuilder();
+		return createSimpleSCWArrayList(scwReader, lvBuilderPrototype, scoreOperation);
 	}
 
 
@@ -74,7 +72,6 @@ public class SimpleSCWListFactory {
 	 * Generic {@link SCWList} are optimized to minimize the memory usage when most of the windows
 	 * are not consecutive (separated by windows with a score of 0).
 	 * @param scwReader a {@link SCWReader}
-	 * @param scorePrecision precision of the scores of the windows of the {@link SCWList}
 	 * @param scoreOperation {@link ScoreOperation} to compute the score of windows resulting from the "flattening" of a pileup of overlapping windows
 	 * @return a new {@link SCWList}
 	 * @throws InterruptedException
@@ -84,9 +81,9 @@ public class SimpleSCWListFactory {
 	 * @throws ObjectAlreadyBuiltException
 	 * @throws InvalidChromosomeException
 	 */
-	public static SCWList createGenericSCWArrayList(SCWReader scwReader, ScorePrecision scorePrecision, ScoreOperation scoreOperation) throws InterruptedException, ExecutionException, CloneNotSupportedException, InvalidChromosomeException, ObjectAlreadyBuiltException, IOException {
-		ListViewBuilder<ScoredChromosomeWindow> lvBuilderPrototype = new GenericSCWListViewBuilder(scorePrecision);
-		return createSimpleSCWArrayList(scwReader, scorePrecision, lvBuilderPrototype, scoreOperation);
+	public static SCWList createGenericSCWArrayList(SCWReader scwReader, ScoreOperation scoreOperation) throws InterruptedException, ExecutionException, CloneNotSupportedException, InvalidChromosomeException, ObjectAlreadyBuiltException, IOException {
+		ListViewBuilder<ScoredChromosomeWindow> lvBuilderPrototype = new GenericSCWListViewBuilder();
+		return createSimpleSCWArrayList(scwReader, lvBuilderPrototype, scoreOperation);
 	}
 
 
@@ -105,7 +102,7 @@ public class SimpleSCWListFactory {
 	 */
 	public static SCWList createMaskSCWArrayList(SCWReader scwReader, ScoreOperation scoreOperation) throws InterruptedException, ExecutionException, CloneNotSupportedException, InvalidChromosomeException, ObjectAlreadyBuiltException, IOException {
 		ListViewBuilder<ScoredChromosomeWindow> lvBuilderPrototype = new MaskListViewBuilder();
-		return createSimpleSCWArrayList(scwReader, null, lvBuilderPrototype, scoreOperation);
+		return createSimpleSCWArrayList(scwReader, lvBuilderPrototype, scoreOperation);
 	}
 
 
@@ -124,18 +121,7 @@ public class SimpleSCWListFactory {
 	 * @throws ObjectAlreadyBuiltException
 	 * @throws InvalidChromosomeException
 	 */
-	private static SCWList createSimpleSCWArrayList(SCWReader scwReader, ScorePrecision scorePrecision, ListViewBuilder<ScoredChromosomeWindow> lvBuilderPrototype, ScoreOperation scoreOperation) throws InterruptedException, ExecutionException, CloneNotSupportedException, InvalidChromosomeException, ObjectAlreadyBuiltException, IOException {
-		// retrieve the type of the SCWList underlying structure from the type of the builder prototype
-		SCWListType listType = null;
-		if (lvBuilderPrototype instanceof DenseSCWListViewBuilder) {
-			listType = SCWListType.DENSE;
-		} else if (lvBuilderPrototype instanceof GenericSCWListViewBuilder) {
-			listType = SCWListType.GENERIC;
-		} else if (lvBuilderPrototype instanceof MaskListViewBuilder) {
-			listType = SCWListType.MASK;
-		} else {
-			throw new InvalidParameterException("Invalid ListViewBuilder Prototype");
-		}
+	private static SCWList createSimpleSCWArrayList(SCWReader scwReader, ListViewBuilder<ScoredChromosomeWindow> lvBuilderPrototype, ScoreOperation scoreOperation) throws InterruptedException, ExecutionException, CloneNotSupportedException, InvalidChromosomeException, ObjectAlreadyBuiltException, IOException {
 		ListOfListViewBuilder<ScoredChromosomeWindow> builder = new ListOfListViewBuilder<ScoredChromosomeWindow>(lvBuilderPrototype);
 
 		Chromosome currentChromosome = null;
@@ -162,6 +148,6 @@ public class SimpleSCWListFactory {
 				}
 			}
 		}
-		return new SimpleSCWList(builder.getGenomicList(), listType, scorePrecision);
+		return new SimpleSCWList(builder.getGenomicList());
 	}
 }

@@ -30,13 +30,11 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
-
 
 
 /**
@@ -59,11 +57,10 @@ public class SCWHandler extends DefaultHandler {
 	/**
 	 * Creates an instance of {@link SCWHandler}
 	 * @param chromosome current {@link Chromosome}
-	 * @param scorePrecision precision of the scores of the window list
 	 */
-	public SCWHandler(Chromosome chromosome, ScorePrecision scorePrecision) {
+	public SCWHandler(Chromosome chromosome) {
 		super();
-		SCWLVBuilder = new GenericSCWListViewBuilder(scorePrecision);
+		SCWLVBuilder = new GenericSCWListViewBuilder();
 		this.chromosome = chromosome;
 	}
 

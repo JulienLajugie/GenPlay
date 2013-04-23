@@ -33,7 +33,6 @@ import edu.yu.einstein.genplay.core.IO.utils.StrandedExtractorOptions;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
@@ -143,7 +142,7 @@ public final class PSLExtractor extends TextFileExtractor implements SCWReader, 
 		String[] exonStartsStr = Utils.split(splitedLine[20], '"');
 		String[] exonLengthsStr = Utils.split(splitedLine[18], '"');
 
-		GenericSCWListViewBuilder exonListBuilder = new GenericSCWListViewBuilder(ScorePrecision.PRECISION_32BIT);
+		GenericSCWListViewBuilder exonListBuilder = new GenericSCWListViewBuilder();
 		for (int i = 0; i < exonLengthsStr.length; i++) {
 			// exons are for genes only so we don't need to
 			// worry about the strand shift and the read length

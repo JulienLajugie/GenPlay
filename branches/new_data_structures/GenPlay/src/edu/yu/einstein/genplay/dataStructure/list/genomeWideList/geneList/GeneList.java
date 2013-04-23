@@ -24,7 +24,6 @@ package edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList;
 import java.io.Serializable;
 
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 
@@ -52,10 +51,4 @@ public interface GeneList extends GenomicListView<Gene>, Serializable {
 	 * @return the {@link GeneSearcher} object that handles gene searches
 	 */
 	public GeneSearcher getGeneSearcher();
-
-
-	/**
-	 * @return the precision of the scores of the genes and exons
-	 */
-	public ScorePrecision getScorePrecision();
 }

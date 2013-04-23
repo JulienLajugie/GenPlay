@@ -21,7 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.util.ListView;
 
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListView;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
@@ -41,11 +40,10 @@ public class SCWListViews {
 	 * @param start start position of the only element of the list
 	 * @param stop stop position of the only element of the list
 	 * @param score score of the only element of the list
-	 * @param scorePrecision precision of the score of the element
 	 * @return a {@link GenericSCWListView} with only one element
 	 */
-	public static final ListView<ScoredChromosomeWindow> createGenericSCWListView(int start, int stop, float score, ScorePrecision scorePrecision) {
-		GenericSCWListViewBuilder builder = new GenericSCWListViewBuilder(scorePrecision);
+	public static final ListView<ScoredChromosomeWindow> createGenericSCWListView(int start, int stop, float score) {
+		GenericSCWListViewBuilder builder = new GenericSCWListViewBuilder();
 		builder.addElementToBuild(start, stop, score);
 		return builder.getListView();
 	}
