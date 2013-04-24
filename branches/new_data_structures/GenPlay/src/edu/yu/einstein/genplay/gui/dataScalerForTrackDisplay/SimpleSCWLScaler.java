@@ -107,7 +107,7 @@ public class SimpleSCWLScaler implements DataScalerForTrackDisplay<SCWList, List
 			if (currentChromosomeList.size() > 0) {
 				// compute the width on the genome that takes up 1 pixel on the screen
 				double pixelGenomicWidth = 1 / scaledXRatio;
-				GenericSCWListViewBuilder scaledSCWListBuilder = new GenericSCWListViewBuilder(dataToScale.getScorePrecision());
+				GenericSCWListViewBuilder scaledSCWListBuilder = new GenericSCWListViewBuilder();
 				int i = 0;
 				while (i < currentChromosomeList.size()) {
 					int currentStart = currentChromosomeList.get(i).getStart();

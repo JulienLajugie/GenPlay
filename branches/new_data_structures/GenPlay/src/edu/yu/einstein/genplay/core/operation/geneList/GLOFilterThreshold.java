@@ -28,9 +28,7 @@ import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
-import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.geneListView.GeneListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
@@ -43,14 +41,12 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
 /**
  * Removes the genes with an overall RPKM above and under specified thresholds
  * @author Julien Lajugie
- * @version 0.1
  */
 public class GLOFilterThreshold implements Operation<GeneList> {
 	private final GeneList 			geneList;			// input list
 	private final float 			lowThreshold;		// filters the genes with an overall RPKM under this threshold
 	private final float 			highThreshold;		// filters the genes with an overall RPKM above this threshold
 	private final boolean			isSaturation;		// true if we saturate, false if we remove the filtered values
-	private final ScorePrecision 	scorePrecision;		// precision of the scores of the result list
 	private boolean					stopped = false;	// true if the operation must be stopped
 
 
@@ -60,14 +56,12 @@ public class GLOFilterThreshold implements Operation<GeneList> {
 	 * @param lowThreshold filters the genes with an overall RPKM under this threshold
 	 * @param highThreshold filters the genes with an overall RPKM above this threshold
 	 * @param isSaturation true to saturate, false to remove the filtered values
-	 * @param scorePrecision precision of the scores of the genes of the result list
 	 */
-	public GLOFilterThreshold(GeneList geneList, float	lowThreshold, float highThreshold, boolean isSaturation, ScorePrecision scorePrecision) {
+	public GLOFilterThreshold(GeneList geneList, float	lowThreshold, float highThreshold, boolean isSaturation) {
 		this.geneList = geneList;
 		this.lowThreshold = lowThreshold;
 		this.highThreshold = highThreshold;
 		this.isSaturation = isSaturation;
-		this.scorePrecision = scorePrecision;
 	}
 
 
@@ -86,7 +80,7 @@ public class GLOFilterThreshold implements Operation<GeneList> {
 					if (currentList == null) {
 						return null;
 					}
-					ListViewBuilder<Gene> resultLVBuilder = new GeneListViewBuilder(scorePrecision);
+					ListViewBuilder<Gene> resultLVBuilder = new GeneListViewBuilder();
 					for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 						Gene currentGene = currentList.get(j);
 
@@ -97,7 +91,7 @@ public class GLOFilterThreshold implements Operation<GeneList> {
 								// if the score is greater than the high threshold
 								if (isSaturation) {
 									// set the value to high threshold (saturation)
-									ListViewBuilder<ScoredChromosomeWindow> exonsLVBuilder = new GenericSCWListViewBuilder(scorePrecision);
+									GenericSCWListViewBuilder exonsLVBuilder = new GenericSCWListViewBuilder();
 									for (ScoredChromosomeWindow currentExon: currentGene.getExons()) {
 										exonsLVBuilder.addElementToBuild(currentExon.getStart(), currentExon.getStop(), highThreshold);
 									}
@@ -112,7 +106,7 @@ public class GLOFilterThreshold implements Operation<GeneList> {
 								}
 							} else {
 								// if the score is between the two threshold
-								geneToAdd = new SimpleGene(currentGene);
+								geneToAdd = currentGene;
 							}
 							if (geneToAdd != null) {
 								resultLVBuilder.addElementToBuild(geneToAdd);

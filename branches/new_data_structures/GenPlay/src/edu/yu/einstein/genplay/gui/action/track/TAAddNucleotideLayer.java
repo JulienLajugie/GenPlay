@@ -25,6 +25,7 @@ import java.io.File;
 
 import javax.swing.ActionMap;
 
+import edu.yu.einstein.genplay.core.IO.extractor.TwoBitExtractor;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.nucleotideList.TwoBitSequenceList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
@@ -34,11 +35,9 @@ import edu.yu.einstein.genplay.gui.track.layer.NucleotideLayer;
 import edu.yu.einstein.genplay.util.Utils;
 
 
-
 /**
  * Adds a {@link NucleotideLayer} to the selected {@link Track}
  * @author Julien Lajugie
- * @version 0.1
  */
 public class TAAddNucleotideLayer extends TrackListActionWorker<TwoBitSequenceList> {
 
@@ -46,7 +45,7 @@ public class TAAddNucleotideLayer extends TrackListActionWorker<TwoBitSequenceLi
 	private static final String 	ACTION_NAME = "Load Sequence Track";				// action name
 	private static final String 	DESCRIPTION = "Load a track showing DNA sequences";	// tooltip
 	private File 					selectedFile;										// selected file
-	private TwoBitSequenceList 		tbsl = null;										// list of sequence
+	private TwoBitExtractor 		extractor = null;									// list of sequence
 
 
 	/**
@@ -67,29 +66,6 @@ public class TAAddNucleotideLayer extends TrackListActionWorker<TwoBitSequenceLi
 
 
 	@Override
-	protected TwoBitSequenceList processAction() throws Exception {
-		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
-		selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Sequence Layer", defaultDirectory, Utils.getReadableSequenceFileFilters(), true);
-		if (selectedFile != null) {
-			if (ProjectManager.getInstance().isMultiGenomeProject()) {
-				GenomeSelectionDialog genomeDialog = new GenomeSelectionDialog();
-				if (genomeDialog.showDialog(getRootPane()) == GenomeSelectionDialog.APPROVE_OPTION) {
-					genomeName = genomeDialog.getGenomeName();
-					alleleType = genomeDialog.getAlleleType();
-				} else {
-					throw new InterruptedException();
-				}
-			}
-			notifyActionStart("Loading Sequence File", 1, true);
-			tbsl = new TwoBitSequenceList(genomeName, alleleType);
-			tbsl.extract(selectedFile);
-			return tbsl;
-		}
-		return null;
-	}
-
-
-	@Override
 	protected void doAtTheEnd(TwoBitSequenceList actionResult) {
 		boolean valid = true;
 		if (ProjectManager.getInstance().isMultiGenomeProject() && (genomeName == null)) {
@@ -104,13 +80,36 @@ public class TAAddNucleotideLayer extends TrackListActionWorker<TwoBitSequenceLi
 	}
 
 
+	@Override
+	protected TwoBitSequenceList processAction() throws Exception {
+		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
+		selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Sequence Layer", defaultDirectory, Utils.getReadableSequenceFileFilters(), true);
+		if (selectedFile != null) {
+			if (ProjectManager.getInstance().isMultiGenomeProject()) {
+				GenomeSelectionDialog genomeDialog = new GenomeSelectionDialog();
+				if (genomeDialog.showDialog(getRootPane()) == GenomeSelectionDialog.APPROVE_OPTION) {
+					genomeName = genomeDialog.getGenomeName();
+					alleleType = genomeDialog.getAlleleType();
+				} else {
+					throw new InterruptedException();
+				}
+			}
+			notifyActionStart("Loading Sequence File", 1, true);
+			extractor = new TwoBitExtractor(genomeName, alleleType);
+			extractor.extract(selectedFile);
+			return new TwoBitSequenceList(selectedFile.getAbsolutePath(), extractor.needToReverseBytes(), genomeName, alleleType, extractor.getExtractedData());
+		}
+		return null;
+	}
+
+
 	/**
 	 * Stops the extraction of the list of sequence
 	 */
 	@Override
 	public void stop() {
-		if (tbsl != null) {
-			tbsl.stop();
+		if (extractor != null) {
+			extractor.stop();
 		}
 		super.stop();
 	}

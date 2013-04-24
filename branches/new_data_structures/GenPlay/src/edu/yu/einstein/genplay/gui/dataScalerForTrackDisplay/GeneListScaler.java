@@ -139,7 +139,7 @@ public class GeneListScaler implements DataScalerForTrackDisplay<GeneList, List<
 		ProjectWindow pw = ProjectManager.getInstance().getProjectWindow();
 		// loop until every gene has been organized
 		while (organizedGeneCount < currentList.size()) {
-			GeneListViewBuilder geneLVBuilder = new GeneListViewBuilder(dataToScale.getScorePrecision());
+			GeneListViewBuilder geneLVBuilder = new GeneListViewBuilder();
 			Gene previousGene = null;
 			// we loop on the gene list
 			for (int i = 0; i < currentList.size(); i++) {

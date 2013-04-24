@@ -92,7 +92,7 @@ public final class BLAFindPeaks extends TrackListActionOperationWorker<BinList[]
 		if (resultTrack != null) {
 			BinLayer newLayer = new BinLayer(resultTrack, actionResult, "Peaks of " + selectedLayer.getName());
 			newLayer.getHistory().add(operation.getDescription(), Colors.GREY);
-			newLayer.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getScorePrecision(), Color.GRAY);
+			newLayer.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp", Color.GRAY);
 			resultTrack.getLayers().add(newLayer);
 			resultTrack.setActiveLayer(newLayer);
 		}
@@ -114,7 +114,7 @@ public final class BLAFindPeaks extends TrackListActionOperationWorker<BinList[]
 				if (resultTrack != null) {
 					BinLayer newLayer = new BinLayer(resultTrack, actionResult[i], "Islands of " + selectedLayer.getName());
 					newLayer.getHistory().add(operation.getDescription() + ", Result Type: " + bloFindIslands.getResultTypes()[i].toString(), Colors.GREY);
-					newLayer.getHistory().add("Window Size = " + actionResult[i].getBinSize() + "bp, Precision = " + actionResult[i].getScorePrecision(), Colors.GREY);
+					newLayer.getHistory().add("Window Size = " + actionResult[i].getBinSize() + "bp", Colors.GREY);
 					resultTrack.getLayers().add(newLayer);
 					resultTrack.setActiveLayer(newLayer);
 				}

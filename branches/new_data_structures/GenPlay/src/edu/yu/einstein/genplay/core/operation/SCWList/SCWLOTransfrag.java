@@ -23,17 +23,20 @@ package edu.yu.einstein.genplay.core.operation.SCWList;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.Callable;
 
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWListBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
-import edu.yu.einstein.genplay.util.SCWLists;
+import edu.yu.einstein.genplay.util.ListView.SCWListViews;
 
 
 /**
@@ -42,14 +45,13 @@ import edu.yu.einstein.genplay.util.SCWLists;
  * Computes the average/sum/max on these regions.
  * Returns a new {@link SCWList} with the defined regions having their average/max/sum as a score
  * @author Chirag Gorasia
- * @version 0.1
  */
 public class SCWLOTransfrag implements Operation<SCWList> {
 
-	private final SCWList 	scwList;		// input list
-	private final int 						zeroSCWGap;		// minimum size of the gap separating two intervals
-	private final ScoreOperation 		operation;		// operation to use to compute the score of the intervals
-	private boolean						stopped = false;// true if the operation must be stopped
+	private final SCWList 			scwList;			// input list
+	private final int 				zeroSCWGap;			// minimum size of the gap separating two intervals
+	private final ScoreOperation 	operation;			// operation to use to compute the score of the intervals
+	private boolean					stopped = false;	// true if the operation must be stopped
 
 
 	/**
@@ -67,18 +69,18 @@ public class SCWLOTransfrag implements Operation<SCWList> {
 
 	@Override
 	public SCWList compute() throws Exception {
-
+		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		final OperationPool op = OperationPool.getInstance();
-		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
+		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
+		final SCWListBuilder resultListBuilder = new SCWListBuilder(scwList);
 
-		for (short i = 0; i < scwList.size(); i++) {
-			final List<ScoredChromosomeWindow> currentList = scwList.getView(i);
+		for (final Chromosome chromosome: projectChromosome) {
+			final ListView<ScoredChromosomeWindow> currentList = scwList.get(chromosome);
+			Callable<Void> currentThread = new Callable<Void>() {
 
-			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
 				@Override
-				public List<ScoredChromosomeWindow> call() throws Exception {
-					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
-					if ((currentList != null) && (currentList.size() != 0)) {
+				public Void call() throws Exception {
+					if (currentList != null) {
 						int j = 0;
 						while ((j < currentList.size()) && !stopped) {
 							// skip zero values
@@ -96,36 +98,32 @@ public class SCWLOTransfrag implements Operation<SCWList> {
 								regionStopIndex = currentList.size()-1;
 							}
 							if (regionStopIndex >= regionStartIndex) {
-								double regionScore = 0;
+								float regionScore = 0;
 								if (operation == ScoreOperation.AVERAGE) {
 									// all the windows of the region are set with the average value on the region
-									regionScore = SCWLists.average(currentList, regionStartIndex, regionStopIndex);
+									regionScore = (float) SCWListViews.average(currentList, regionStartIndex, regionStopIndex);
 								} else if (operation == ScoreOperation.MAXIMUM) {
 									// all the windows of the region are set with the max value on the region
-									regionScore = SCWLists.maxNoZero(currentList, regionStartIndex, regionStopIndex);
+									regionScore = SCWListViews.maxNoZero(currentList, regionStartIndex, regionStopIndex);
 								} else {
 									// all the windows of the region are set with the sum value on the region
-									regionScore = SCWLists.sum(currentList, regionStartIndex, regionStopIndex);
+									regionScore = (float) SCWListViews.sum(currentList, regionStartIndex, regionStopIndex);
 								}
-								resultList.add(new SimpleScoredChromosomeWindow(currentList.get(regionStartIndex).getStart(), currentList.get(regionStopIndex).getStop(), regionScore));
+								ScoredChromosomeWindow windowToAdd = new SimpleScoredChromosomeWindow(currentList.get(regionStartIndex).getStart(), currentList.get(regionStopIndex).getStop(), regionScore);
+								resultListBuilder.addElementToBuild(chromosome, windowToAdd);
 							}
 							j++;
 						}
 					}
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
-					return resultList;
+					return null;
 				}
 			};
 			threadList.add(currentThread);
 		}
-		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
-		if (result != null) {
-			SCWList resultList = new SimpleSCWList(result);
-			return resultList;
-		} else {
-			return null;
-		}
+		op.startPool(threadList);
+		return resultListBuilder.getSCWList();
 	}
 
 

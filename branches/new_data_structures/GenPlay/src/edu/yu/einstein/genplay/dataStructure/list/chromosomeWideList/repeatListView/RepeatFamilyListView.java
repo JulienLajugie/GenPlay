@@ -29,8 +29,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 
 
 /**
@@ -40,7 +41,7 @@ import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
  * {@link RepeatFamilyListView} objects are immutable.
  * @author Julien Lajugie
  */
-public final class RepeatFamilyListView implements Serializable, ListView<ChromosomeWindow>, Iterator<ChromosomeWindow> {
+public final class RepeatFamilyListView implements Serializable, ListView<ScoredChromosomeWindow>, Iterator<ScoredChromosomeWindow> {
 
 	/** generated ID */
 	private static final long serialVersionUID = -7691967168795920365L;
@@ -74,8 +75,8 @@ public final class RepeatFamilyListView implements Serializable, ListView<Chromo
 
 
 	@Override
-	public ChromosomeWindow get(int repeatIndex) {
-		return new SimpleChromosomeWindow(repeatStarts.get(repeatIndex), repeatStops.get(repeatIndex));
+	public ScoredChromosomeWindow get(int repeatIndex) {
+		return new SimpleScoredChromosomeWindow(repeatStarts.get(repeatIndex), repeatStops.get(repeatIndex), 1f);
 	}
 
 
@@ -100,13 +101,13 @@ public final class RepeatFamilyListView implements Serializable, ListView<Chromo
 
 
 	@Override
-	public Iterator<ChromosomeWindow> iterator() {
+	public Iterator<ScoredChromosomeWindow> iterator() {
 		return this;
 	}
 
 
 	@Override
-	public ChromosomeWindow next() {
+	public ScoredChromosomeWindow next() {
 		int currentIndex = iteratorIndex;
 		iteratorIndex++;
 		return get(currentIndex);

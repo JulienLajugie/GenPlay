@@ -78,6 +78,18 @@ public class SCWListBuilder {
 
 
 	/**
+	 * Adds each elements of a {@link List} of elements to the {@link SCWList} to be built.
+	 * @param chromosome chromosome of the elements to add
+	 * @param elements list of elements to add to the SCWList to be built
+	 * @throws InvalidChromosomeException if the chromosome is not valid
+	 * @throws ObjectAlreadyBuiltException if the SCWList has already been created
+	 */
+	public void addListOfElementsToBuild(Chromosome chromosome, List<ScoredChromosomeWindow> elements) throws InvalidChromosomeException, ObjectAlreadyBuiltException {
+		builder.addListOfElementsToBuild(chromosome, elements);
+	}
+
+
+	/**
 	 * Creates an instance of {@link SCWList} that can either be an instance of {@link BinList} or of {@link SimpleSCWList} depending
 	 * on the specified {@link ListOfListViewBuilder}
 	 * @return An instance of {@link ScoredChromosomeWindow}

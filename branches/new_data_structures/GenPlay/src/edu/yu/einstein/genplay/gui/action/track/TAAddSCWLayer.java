@@ -30,6 +30,7 @@ import edu.yu.einstein.genplay.core.IO.extractor.StrandedExtractor;
 import edu.yu.einstein.genplay.core.IO.utils.ChromosomesSelector;
 import edu.yu.einstein.genplay.core.IO.utils.StrandedExtractorOptions;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
@@ -146,8 +147,8 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 			name = nctd.getLayerName();
 			scoreCalculation = nctd.getScoreCalculationMethod();
 			scorePrecision = nctd.getDataPrecision();
-			notifyActionStart("Generating Layer", SimpleSCWList.getCreationStepCount(), true);
-			SCWList scwList = SimpleSCWListFactory.createGenericSCWArrayList((SCWReader) extractor, scorePrecision, scoreCalculation);
+			notifyActionStart("Generating Layer", SimpleSCWList.getCreationStepCount(SCWListType.GENERIC), true);
+			SCWList scwList = SimpleSCWListFactory.createGenericSCWArrayList((SCWReader) extractor, scoreCalculation);
 			return scwList;
 		}
 		throw new InterruptedException();

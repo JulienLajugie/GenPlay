@@ -27,6 +27,7 @@ import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.primitiveList.ListOfIntArraysAsIntegerList;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
 
 /**
@@ -34,7 +35,7 @@ import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
  * {@link RepeatFamilyListView} objects.
  * @author Julien Lajugie
  */
-public class RepeatFamilyListViewBuilder implements ListViewBuilder<ChromosomeWindow> {
+public class RepeatFamilyListViewBuilder implements ListViewBuilder<ScoredChromosomeWindow> {
 
 	/** List of the start positions of the repeats */
 	private List<Integer> repeatStarts;
@@ -57,8 +58,25 @@ public class RepeatFamilyListViewBuilder implements ListViewBuilder<ChromosomeWi
 	}
 
 
-	@Override
+	/**
+	 * Adds an element to the {@link ListView} that will be built.
+	 * To assure that {@link ListView} objects are immutable, this method will throw an exception
+	 * if called after the getListView() has been called.
+	 * @param element {@link ChromosomeWindow} to add
+	 * @throws ObjectAlreadyBuiltException if this method is called after the build method was called
+	 */
 	public void addElementToBuild(ChromosomeWindow element) throws ObjectAlreadyBuiltException {
+		if (repeatStarts != null) {
+			repeatStarts.add(element.getStart());
+			repeatStops.add(element.getStop());
+		} else {
+			throw new ObjectAlreadyBuiltException();
+		}
+	}
+
+
+	@Override
+	public void addElementToBuild(ScoredChromosomeWindow element) throws ObjectAlreadyBuiltException {
 		if (repeatStarts != null) {
 			repeatStarts.add(element.getStart());
 			repeatStops.add(element.getStop());
@@ -76,8 +94,8 @@ public class RepeatFamilyListViewBuilder implements ListViewBuilder<ChromosomeWi
 
 
 	@Override
-	public ListView<ChromosomeWindow> getListView() {
-		ListView<ChromosomeWindow> listView = new RepeatFamilyListView(name, repeatStarts, repeatStops);
+	public ListView<ScoredChromosomeWindow> getListView() {
+		ListView<ScoredChromosomeWindow> listView = new RepeatFamilyListView(name, repeatStarts, repeatStops);
 		repeatStarts = null;
 		repeatStops = null;
 		name = null;

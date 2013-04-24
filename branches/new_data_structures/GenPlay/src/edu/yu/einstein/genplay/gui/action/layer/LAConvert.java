@@ -25,10 +25,8 @@ import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.converter.Converter;
 import edu.yu.einstein.genplay.core.converter.ConverterFactory;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ImmutableGenomicDataList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
@@ -38,10 +36,10 @@ import edu.yu.einstein.genplay.gui.dialog.ConvertDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
 import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
+import edu.yu.einstein.genplay.gui.track.layer.GenericSCWLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
 import edu.yu.einstein.genplay.gui.track.layer.MaskLayer;
-import edu.yu.einstein.genplay.gui.track.layer.GenericSCWLayer;
 import edu.yu.einstein.genplay.gui.track.layer.VersionedLayer;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
@@ -49,9 +47,8 @@ import edu.yu.einstein.genplay.util.colors.Colors;
 /**
  * Converts the selected {@link Layer} into another type of {@link Layer}
  * @author Nicolas Fourel
- * @version 0.1
  */
-public class LAConvert extends TrackListActionWorker<ImmutableGenomicDataList<?>> {
+public class LAConvert extends TrackListActionWorker<GenomicListView<?>> {
 
 	private static final long serialVersionUID = 4027173438789911860L; 	// generated ID
 	private static final String 	ACTION_NAME = "Convert Layer";// action name
@@ -60,12 +57,11 @@ public class LAConvert extends TrackListActionWorker<ImmutableGenomicDataList<?>
 	private Track					resultTrack;					// The result track.
 	private Converter				converter;						// The track converter.
 
-	private GenomicListView<?> 	data;
-	private LayerType 					layerType;
-	private String 						layerName;
-	private int 						binSize;
-	private ScorePrecision 				precision;
-	private ScoreOperation 		method;
+	private GenomicListView<?> 		data;
+	private LayerType 				layerType;
+	private String 					layerName;
+	private int 					binSize;
+	private ScoreOperation 			method;
 
 
 	/**
@@ -88,47 +84,12 @@ public class LAConvert extends TrackListActionWorker<ImmutableGenomicDataList<?>
 		layerType = null;
 		layerName = "";
 		binSize = 0;
-		precision = null;
 		method = null;
 	}
 
 
 	@Override
-	public ImmutableGenomicDataList<?> processAction() {
-		selectedLayer = (Layer<?>) getValue("Layer");
-		ConvertDialog dialog = new ConvertDialog(selectedLayer);
-		if (dialog.showDialog(getRootPane()) == ConvertDialog.APPROVE_OPTION) {
-			layerType = dialog.getOutputLayerType();
-			if (layerType == LayerType.BIN_LAYER) {
-				binSize = dialog.getBinSize();
-				precision = dialog.getDataPrecision();
-				method = dialog.getScoreCalculationMethod();
-			}
-			resultTrack = dialog.getOutputTrack();
-			layerName = dialog.getOutputLayerName();
-			data = (GenomicListView<?>) selectedLayer.getData();
-
-			if (data != null) {
-				converter = ConverterFactory.getConverter(data, layerType, binSize, precision, method);
-			}
-
-			if (converter != null) {
-				try {
-					converter.convert();
-					return converter.getList();
-				} catch (Exception e) {
-					ExceptionManager.getInstance().caughtException(e);
-				}
-			} else {
-				System.err.println("No converter found");
-			}
-		}
-		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(ImmutableGenomicDataList<?> actionResult) {
+	protected void doAtTheEnd(GenomicListView<?> actionResult) {
 		if (actionResult != null) {
 			Layer<?> newLayer = null;
 			if (layerType == LayerType.GENE_LAYER) {
@@ -147,6 +108,39 @@ public class LAConvert extends TrackListActionWorker<ImmutableGenomicDataList<?>
 				System.err.println("The track could not be converted");
 			}
 		}
+	}
+
+
+	@Override
+	public GenomicListView<?> processAction() {
+		selectedLayer = (Layer<?>) getValue("Layer");
+		ConvertDialog dialog = new ConvertDialog(selectedLayer);
+		if (dialog.showDialog(getRootPane()) == ConvertDialog.APPROVE_OPTION) {
+			layerType = dialog.getOutputLayerType();
+			if (layerType == LayerType.BIN_LAYER) {
+				binSize = dialog.getBinSize();
+				method = dialog.getScoreCalculationMethod();
+			}
+			resultTrack = dialog.getOutputTrack();
+			layerName = dialog.getOutputLayerName();
+			data = (GenomicListView<?>) selectedLayer.getData();
+
+			if (data != null) {
+				converter = ConverterFactory.getConverter(data, layerType, binSize, method);
+			}
+
+			if (converter != null) {
+				try {
+					converter.convert();
+					return converter.getList();
+				} catch (Exception e) {
+					ExceptionManager.getInstance().caughtException(e);
+				}
+			} else {
+				System.err.println("No converter found");
+			}
+		}
+		return null;
 	}
 
 }

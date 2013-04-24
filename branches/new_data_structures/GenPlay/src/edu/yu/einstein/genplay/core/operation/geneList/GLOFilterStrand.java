@@ -28,7 +28,6 @@ import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.geneListView.GeneListViewBuilder;
@@ -45,7 +44,6 @@ import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 public class GLOFilterStrand implements Operation<GeneList> {
 	private final GeneList 			geneList;			// input list
 	private final Strand			strandToKeep;		// strand with the genes we want to keep
-	private final ScorePrecision 	scorePrecision;		// precision of the scores of the result list
 	private boolean					stopped = false;	// true if the operation must be stopped
 
 
@@ -53,12 +51,10 @@ public class GLOFilterStrand implements Operation<GeneList> {
 	 * Creates an instance of {@link GLOFilterStrand}
 	 * @param geneList input list
 	 * @param strandToKeep strand with the genes we want to keep
-	 * @param scorePrecision precision of the scores of the genes of the result list
 	 */
-	public GLOFilterStrand(GeneList geneList, Strand strandToKeep, ScorePrecision scorePrecision) {
+	public GLOFilterStrand(GeneList geneList, Strand strandToKeep) {
 		this.geneList = geneList;
 		this.strandToKeep = strandToKeep;
-		this.scorePrecision = scorePrecision;
 	}
 
 
@@ -75,7 +71,7 @@ public class GLOFilterStrand implements Operation<GeneList> {
 					if (currentList == null) {
 						return null;
 					}
-					ListViewBuilder<Gene> resultLVBuilder = new GeneListViewBuilder(scorePrecision);
+					ListViewBuilder<Gene> resultLVBuilder = new GeneListViewBuilder();
 					for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 						Gene currentGene = currentList.get(j);
 						if (currentGene.getStrand().equals(strandToKeep)) {

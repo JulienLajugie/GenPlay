@@ -29,7 +29,6 @@ import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
@@ -42,27 +41,22 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 
 
-
 /**
  * Indexes the score values of a {@link GeneList}
  * @author Julien Lajugie
- * @version 0.1
  */
 public class GLOIndexScores implements Operation<GeneList> {
 
 	private final GeneList 			geneList;			// input GeneList
 	private boolean					stopped = false;	// true if the operation must be stopped
-	private final ScorePrecision 	scorePrecision;		// precision of the scores of the result list
 
 
 	/**
 	 * Indexes the score values of a {@link GeneList}
 	 * @param geneList input {@link GeneList}
-	 * @param scorePrecision precision of the scores of the genes of the result list
 	 */
-	public GLOIndexScores(GeneList geneList, ScorePrecision scorePrecision) {
+	public GLOIndexScores(GeneList geneList) {
 		this.geneList = geneList;
-		this.scorePrecision = scorePrecision;
 	}
 
 
@@ -85,7 +79,7 @@ public class GLOIndexScores implements Operation<GeneList> {
 					if (currentList == null) {
 						return null;
 					}
-					ListViewBuilder<Gene> resultLVBuilder = new GeneListViewBuilder(scorePrecision);
+					ListViewBuilder<Gene> resultLVBuilder = new GeneListViewBuilder();
 					for (int i = 0; (i < currentList.size()) && !stopped; i++) {
 						Gene currentGene = currentList.get(i);
 						if (currentGene != null) {
@@ -127,7 +121,7 @@ public class GLOIndexScores implements Operation<GeneList> {
 			geneScore = Math.max(0, geneScore);
 			geneScore = Math.min(1000, geneScore);
 		}
-		ListViewBuilder<ScoredChromosomeWindow> exonLVBuilder = new GenericSCWListViewBuilder(scorePrecision);
+		ListViewBuilder<ScoredChromosomeWindow> exonLVBuilder = new GenericSCWListViewBuilder();
 		if (gene.getExons() != null) {
 			for (ScoredChromosomeWindow exon: gene.getExons()) {
 				float exonScore = Float.NaN;

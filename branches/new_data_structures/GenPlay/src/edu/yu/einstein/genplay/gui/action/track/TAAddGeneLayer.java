@@ -27,7 +27,6 @@ import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.IO.dataReader.GeneReader;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneListFactory;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
@@ -100,7 +99,7 @@ public final class TAAddGeneLayer extends TrackListActionExtractorWorker<GeneLis
 
 	@Override
 	protected GeneList generateList() throws Exception {
-		GeneList geneList = GeneListFactory.createGeneList((GeneReader) extractor, ScorePrecision.PRECISION_32BIT);
+		GeneList geneList = GeneListFactory.createGeneList((GeneReader) extractor);
 		// TODO ask for gene score precision
 		return geneList;
 	}

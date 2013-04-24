@@ -28,7 +28,6 @@ import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
@@ -44,12 +43,10 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScored
 /**
  * Sets a specified value to the scores of each exons of {@link GeneList}
  * @author Julien Lajugie
- * @version 0.1
  */
 public class GLOUniqueScore implements Operation<GeneList> {
 	private final GeneList 			geneList;			// input GeneList
 	private final float 			constant;			// constant to add
-	private final ScorePrecision 	scorePrecision;		// precision of the scores of the result list
 	private boolean 				stopped = false;	// true if the writer needs to be stopped
 
 
@@ -57,12 +54,10 @@ public class GLOUniqueScore implements Operation<GeneList> {
 	 * Creates an instance of {@link GLOUniqueScore}
 	 * @param geneList input GeneList
 	 * @param constant constant to add
-	 * @param scorePrecision precision of the scores of the genes of the result list
 	 */
-	public GLOUniqueScore(GeneList geneList, float constant, ScorePrecision scorePrecision) {
+	public GLOUniqueScore(GeneList geneList, float constant) {
 		this.geneList = geneList;
 		this.constant = constant;
-		this.scorePrecision = scorePrecision;
 	}
 
 
@@ -78,7 +73,7 @@ public class GLOUniqueScore implements Operation<GeneList> {
 					if (currentGeneList == null) {
 						return null;
 					}
-					ListViewBuilder<Gene> resultLVBuilder = new GeneListViewBuilder(scorePrecision);
+					ListViewBuilder<Gene> resultLVBuilder = new GeneListViewBuilder();
 					for (int j = 0; (j < currentGeneList.size()) && !stopped; j++) {
 						Gene currentGene = currentGeneList.get(j);
 						Gene geneToAdd = createGeneCopyWithConstantScore(currentGene);
@@ -107,7 +102,7 @@ public class GLOUniqueScore implements Operation<GeneList> {
 	 * @return a copy of the specified gene with a constant score
 	 */
 	private Gene createGeneCopyWithConstantScore(Gene gene) {
-		ListViewBuilder<ScoredChromosomeWindow> exonLVBuilder = new GenericSCWListViewBuilder(scorePrecision);
+		ListViewBuilder<ScoredChromosomeWindow> exonLVBuilder = new GenericSCWListViewBuilder();
 		if (gene.getExons() != null) {
 			for (ScoredChromosomeWindow currentExon: gene.getExons()) {
 				ScoredChromosomeWindow newExon = new SimpleScoredChromosomeWindow(currentExon.getStart(), currentExon.getStop(), constant);

@@ -84,7 +84,7 @@ public class BLAIntervalsScoring extends TrackListActionOperationWorker<BinList>
 			BinLayer newLayer = new BinLayer(resultTrack, actionResult, method + " of " + selectedLayer.getName() + " from intervals of  " + intervalLayer.getName());
 			// add info to the history
 			newLayer.getHistory().add("Result of the " + method + " of " + selectedLayer.getName() + " calculated on the intervals defined by " + intervalLayer.getName() + " on the " + percentage + "% greatest values", Color.GRAY);
-			newLayer.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getScorePrecision(), Colors.GREY);
+			newLayer.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp", Colors.GREY);
 			resultTrack.getLayers().add(newLayer);
 		}
 	}

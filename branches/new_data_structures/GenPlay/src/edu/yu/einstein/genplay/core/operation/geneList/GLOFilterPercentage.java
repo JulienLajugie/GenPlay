@@ -32,13 +32,12 @@ import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 /**
  * Removes a percentage of genes with the greatest and smallest overall RPKM
  * @author Julien Lajugie
- * @version 0.1
  */
 public class GLOFilterPercentage implements Operation<GeneList> {
 
 	private final GeneList 		geneList;			// {@link GeneList} to filter
-	private final double 		lowPercentage;		// percentage of low values to filter
-	private final double 		highPercentage;		// percentage of high values to filter
+	private final float 		lowPercentage;		// percentage of low values to filter
+	private final float 		highPercentage;		// percentage of high values to filter
 	private final boolean		isSaturation;		// true if we saturate, false if we remove the filtered values
 	private boolean				stopped = false;	// true if the operation must be stopped
 	private Operation<GeneList>	gloFilterThreshold;	// threshold filter that does the real fitering operation
@@ -51,7 +50,7 @@ public class GLOFilterPercentage implements Operation<GeneList> {
 	 * @param highPercentage percentage of high values to filter
 	 * @param isSaturation true to saturate, false to remove the filtered values
 	 */
-	public GLOFilterPercentage(GeneList geneList, double lowPercentage, double highPercentage, boolean isSaturation) {
+	public GLOFilterPercentage(GeneList geneList, float lowPercentage, float highPercentage, boolean isSaturation) {
 		this.geneList = geneList;
 		this.lowPercentage = lowPercentage;
 		this.highPercentage = highPercentage;
@@ -73,13 +72,13 @@ public class GLOFilterPercentage implements Operation<GeneList> {
 		if (totalLenght == 0) {
 			return geneList;
 		}
-		double[] allScores = new double[totalLenght];
+		float[] allScores = new float[totalLenght];
 		int i = 0;
 		for (ListView<Gene> currentList: geneList) {
 			if (currentList != null) {
 				for (int j = 0; (j < currentList.size()) && !stopped; j++) {
-					double currentScore = currentList.get(j).getScore();
-					if ((currentScore != Double.NaN) && (currentScore != 0)) {
+					float currentScore = currentList.get(j).getScore();
+					if ((currentScore != Float.NaN) && (currentScore != 0)) {
 						allScores[i] = currentScore;
 						i++;
 					}
@@ -90,8 +89,8 @@ public class GLOFilterPercentage implements Operation<GeneList> {
 		int highValuesCount = (int)(highPercentage * allScores.length);
 		Arrays.sort(allScores);
 
-		double minValue = lowValuesCount == 0 ? Double.NEGATIVE_INFINITY : allScores[lowValuesCount - 1];
-		double maxValue = highValuesCount == 0 ? Double.POSITIVE_INFINITY : allScores[allScores.length - highValuesCount];
+		float minValue = lowValuesCount == 0 ? Float.NEGATIVE_INFINITY : allScores[lowValuesCount - 1];
+		float maxValue = highValuesCount == 0 ? Float.POSITIVE_INFINITY : allScores[allScores.length - highValuesCount];
 		gloFilterThreshold = new GLOFilterThreshold(geneList, minValue, maxValue, isSaturation);
 		return gloFilterThreshold.compute();
 	}

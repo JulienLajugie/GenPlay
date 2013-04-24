@@ -82,6 +82,20 @@ public class ListOfListViewBuilder<T> {
 
 
 	/**
+	 * Adds each elements of a {@link List} of elements to the list of {@link ListView} to be built.
+	 * @param chromosome chromosome of the elements to add
+	 * @param elements list of elements to add
+	 * @throws InvalidChromosomeException if the chromosome is not valid
+	 * @throws ObjectAlreadyBuiltException if the SCWList has already been created
+	 */
+	public void addListOfElementsToBuild(Chromosome chromosome, List<T> elements) throws InvalidChromosomeException, ObjectAlreadyBuiltException {
+		for (T currentElement: elements) {
+			addElementToBuild(chromosome, currentElement);
+		}
+	}
+
+
+	/**
 	 * @return the list of {@link ListView} elements
 	 */
 	public List<ListView<T>> getGenomicList() {

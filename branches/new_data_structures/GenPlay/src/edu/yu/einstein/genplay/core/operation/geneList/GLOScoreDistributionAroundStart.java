@@ -37,6 +37,7 @@ import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.util.ListView.SCWListViews;
 
 
 /**
@@ -119,10 +120,10 @@ public class GLOScoreDistributionAroundStart implements Operation<double[][]> {
 							for (int j = 0; j < totalBinCount; j++) {
 								double currentScore;
 								if (currentGene.getStrand().equals(Strand.FIVE)) {
-									currentScore = retrieveScore(currentChromo, startPos, startPos + binSize, binList);
+									currentScore = SCWListViews.average(binList.get(currentChromo), startPos, startPos + binSize);
 									startPos += binSize;
 								} else {
-									currentScore = retrieveScore(currentChromo, startPos - binSize, startPos, binList);
+									currentScore = SCWListViews.average(binList.get(currentChromo), startPos - binSize, startPos);
 									startPos -= binSize;
 								}
 								switch (scoreOperation) {
@@ -220,38 +221,6 @@ public class GLOScoreDistributionAroundStart implements Operation<double[][]> {
 		return 1;
 	}
 
-
-	/**
-	 * Retrieves the average score of the bins between a start and a stop position on a specified chromosome
-	 * @param currentChromo chromosome position
-	 * @param start start position
-	 * @param stop stop position
-	 * @param binList list with the scores
-	 * @return the average score of the bins between a start and a stop position on a specified chromosome
-	 */
-	protected double retrieveScore(Chromosome currentChromo, int start, int stop, BinList binList) {
-		//TODO handle the first and last windows when only a small part of the start and stop
-		//are in the window
-
-		int startIndex = (int) Math.floor(start / (double) binList.getBinSize());
-		int stopIndex = (int) Math.ceil(stop / (double) binList.getBinSize());
-		int count = 0;
-		double totalScore = 0;
-		startIndex = Math.max(0, startIndex);
-		stopIndex = Math.min(binList.size(currentChromo) - 1, stopIndex);
-		for (int i = startIndex; i <= stopIndex; i++) {
-			double score = binList.get(currentChromo, i);
-			if (score != 0) {
-				count++;
-				totalScore += score;
-			}
-		}
-		if (count == 0) {
-			return 0;
-		} else {
-			return totalScore / count;
-		}
-	}
 
 
 	@Override

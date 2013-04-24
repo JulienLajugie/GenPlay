@@ -31,19 +31,19 @@ import java.util.concurrent.ExecutionException;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
 /**
  * @author Chirag Gorasia
- * @version 0.1
  */
 public class SCWLOScoreDistribution implements Operation<double [][][]>{
 
-	private final SCWList[] 	scwListArray;	// input list
-	private final double 						scoreBinSize;	// size of the bins of score
-	private final int 							graphType;		// type of the plot (window count or bp count)
-	private boolean								stopped = false;// true if the operation must be stopped
+	private final SCWList[] 	scwListArray;		// input list
+	private final double 		scoreBinSize;		// size of the bins of score
+	private final int 			graphType;			// type of the plot (window count or bp count)
+	private boolean				stopped = false;	// true if the operation must be stopped
 
 	/**
 	 * Window count plot
@@ -82,6 +82,24 @@ public class SCWLOScoreDistribution implements Operation<double [][][]>{
 	}
 
 
+	@Override
+	public String getDescription() {
+		return "Operation: Show Score Distribution Histogram";
+	}
+
+
+	@Override
+	public String getProcessingDescription() {
+		return "Plotting Score Distribution";
+	}
+
+
+	@Override
+	public int getStepCount() {
+		return scwListArray.length;
+	}
+
+
 	/**
 	 * Generates the scatter plot data for the specified list
 	 * @param scwList {@link SCWList}
@@ -112,7 +130,7 @@ public class SCWLOScoreDistribution implements Operation<double [][][]>{
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<double[]>> threadList = new ArrayList<Callable<double[]>>();
 
-		for (final List<ScoredChromosomeWindow> currentList: scwList) {
+		for (final ListView<ScoredChromosomeWindow> currentList: scwList) {
 			Callable<double[]> currentThread = new Callable<double[]>() {
 				@Override
 				public double[] call() throws Exception {
@@ -154,24 +172,6 @@ public class SCWLOScoreDistribution implements Operation<double [][][]>{
 		}
 
 		return result;
-	}
-
-
-	@Override
-	public String getDescription() {
-		return "Operation: Show Score Distribution Histogram";
-	}
-
-
-	@Override
-	public String getProcessingDescription() {
-		return "Plotting Score Distribution";
-	}
-
-
-	@Override
-	public int getStepCount() {
-		return scwListArray.length;
 	}
 
 

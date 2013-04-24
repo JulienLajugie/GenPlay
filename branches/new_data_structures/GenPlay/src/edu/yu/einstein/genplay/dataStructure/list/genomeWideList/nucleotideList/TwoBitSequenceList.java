@@ -21,10 +21,13 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.dataStructure.list.genomeWideList.nucleotideList;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -33,6 +36,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.enums.Nucleotide;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.nucleotideListView.TwoBitListView.TwoBitListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 
@@ -49,9 +53,6 @@ public class TwoBitSequenceList implements Serializable, NucleotideList, Iterato
 
 	/** Version number of the class */
 	private static final transient int CLASS_VERSION_NUMBER = 0;
-
-	/** Signature of a 2bit file */
-	public final static String TWOBIT_SIGNATURE = "1A412743";
 
 	/** Path of the 2bit file  (used for the serialization) */
 	private final String filePath;
@@ -75,14 +76,35 @@ public class TwoBitSequenceList implements Serializable, NucleotideList, Iterato
 	 * @param reverseBytes true if the bytes of multi-byte entities need to be reversed when read
 	 * @param genomeName name of the genome the {@link TwoBitSequenceList} represents
 	 * @param alleleType 	allele type for a multi genome project
+	 * @param data data of the {@link TwoBitSequenceList}
 	 * @throws IOException
 	 */
-	protected TwoBitSequenceList(String filePath, boolean reverseBytes, String genomeName, AlleleType alleleType, List<ListView<Nucleotide>> data) throws IOException {
+	public TwoBitSequenceList(String filePath, boolean reverseBytes, String genomeName, AlleleType alleleType, List<ListView<Nucleotide>> data) throws IOException {
 		super();
 		this.filePath = filePath;
 		this.genomeName = genomeName;
 		this.alleleType = alleleType;
 		this.data = data;
+	}
+
+
+	/**
+	 * Creates a new instance of {@link TwoBitSequenceList} similar to the
+	 * one in parameter but reading the specified file instead. This constructor
+	 * is handy when the file path has been modified.
+	 * @param twoBitSequenceList
+	 * @param file
+	 * @throws FileNotFoundException
+	 */
+	public TwoBitSequenceList(TwoBitSequenceList twoBitSequenceList, File file) throws FileNotFoundException {
+		// note that we can't just modify the file path of a TwoBitSequenceList objects because they are immutable
+		filePath = file.getAbsolutePath();
+		genomeName = twoBitSequenceList.genomeName;
+		alleleType = twoBitSequenceList.alleleType;
+		data = new ArrayList<ListView<Nucleotide>>();
+		for (ListView<Nucleotide> currentLV: twoBitSequenceList.data) {
+			data.add(new TwoBitListView((TwoBitListView) currentLV, file));
+		}
 	}
 
 
@@ -181,6 +203,17 @@ public class TwoBitSequenceList implements Serializable, NucleotideList, Iterato
 		in.readInt();
 		// read the final fields
 		in.defaultReadObject();
+	}
+
+
+	/**
+	 * Reinitializes the reader for each {@link ListView}
+	 * @throws FileNotFoundException
+	 */
+	public void reinitDataFile() throws FileNotFoundException {
+		for (ListView<Nucleotide> currentList: data) {
+			((TwoBitListView) currentList).reinitDataFile();
+		}
 	}
 
 

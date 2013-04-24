@@ -43,6 +43,7 @@ import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLANormalizeStandardS
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAStandardDeviation;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLASubtractConstant;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLASumScore;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLATwoLayersOperation;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAUniqueScore;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAChangeBinSize;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAChangeDataPrecision;
@@ -50,13 +51,13 @@ import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLACompress;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAConcatenate;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLACorrelate;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLADensity;
+import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAFindPeaks;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAGauss;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAIntervalsScoring;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLALoessRegression;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAMovingAverage;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAScoreDistribution;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLATransfrag;
-import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLATwoLayersOperation;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 
@@ -105,7 +106,7 @@ public class BinLayerMenu extends AbstractLayerMenu {
 				new SCWLAInvertConstant(),
 				new SCWLAUniqueScore(),
 				null,
-				new BLATwoLayersOperation(),
+				new SCWLATwoLayersOperation(),
 				null,
 				new BLAMovingAverage(),
 				new BLAGauss(),

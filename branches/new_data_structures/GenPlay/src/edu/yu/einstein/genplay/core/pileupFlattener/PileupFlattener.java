@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList;
+package edu.yu.einstein.genplay.core.pileupFlattener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -194,7 +194,8 @@ public class PileupFlattener {
 			return FloatLists.minNoZero(currentScoreList);
 		case MULTIPLICATION:
 			if (currentScoreList.size() == 1) {
-				return currentScoreList.get(0);
+				// multiplication with a window with a score of 0
+				return 0f;
 			} else if (currentScoreList.size() == 2) {
 				return currentScoreList.get(0) * currentScoreList.get(1);
 			} else {

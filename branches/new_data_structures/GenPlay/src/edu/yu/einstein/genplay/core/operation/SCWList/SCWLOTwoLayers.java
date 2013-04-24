@@ -23,6 +23,7 @@ package edu.yu.einstein.genplay.core.operation.SCWList;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -30,10 +31,14 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
+import edu.yu.einstein.genplay.core.pileupFlattener.ListOfListViewsIterator;
+import edu.yu.einstein.genplay.core.pileupFlattener.PileupFlattener;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWListBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
@@ -67,30 +72,37 @@ public class SCWLOTwoLayers implements Operation<SCWList>, Stoppable {
 
 	@Override
 	public SCWList compute() throws Exception {
-		final OperationPool op = OperationPool.getInstance();
-		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
-
 		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		final OperationPool op = OperationPool.getInstance();
+		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
+		final SCWListBuilder resultListBuilder = new SCWListBuilder(list1);
 
 		for(final Chromosome currentChromosome : projectChromosome) {
-			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
+			Callable<Void> currentThread = new Callable<Void>() {
+
 				@Override
-				public List<ScoredChromosomeWindow> call() throws Exception {
-					twoLayers.run(currentChromosome);
-					// tell the operation pool that a chromosome is done
+				public Void call() throws Exception {
+					List<ListView<ScoredChromosomeWindow>> listOfLV = new ArrayList<ListView<ScoredChromosomeWindow>>();
+					listOfLV.add(list1.get(currentChromosome));
+					listOfLV.add(list2.get(currentChromosome));
+					Iterator<ScoredChromosomeWindow> listOfLVIterator = new ListOfListViewsIterator<ScoredChromosomeWindow>(listOfLV);
+					PileupFlattener pileupFlattener = new PileupFlattener(scoreOperation);
+					while (listOfLVIterator.hasNext() && !stopped) {
+						ScoredChromosomeWindow currentWindow = listOfLVIterator.next();
+						List<ScoredChromosomeWindow> flattenedWindows = pileupFlattener.addWindow(currentWindow);
+						resultListBuilder.addListOfElementsToBuild(currentChromosome, flattenedWindows);
+					}
+					List<ScoredChromosomeWindow> flattenedWindows = pileupFlattener.flush();
+					resultListBuilder.addListOfElementsToBuild(currentChromosome, flattenedWindows);
 					op.notifyDone();
-					return twoLayers.getList(currentChromosome);
+					return null;
 				}
+
 			};
 			threadList.add(currentThread);
 		}
-		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
-		if (result != null) {
-			SCWList resultList = new SimpleSCWList(result);
-			return resultList;
-		} else {
-			return null;
-		}
+		op.startPool(threadList);
+		return resultListBuilder.getSCWList();
 	}
 
 

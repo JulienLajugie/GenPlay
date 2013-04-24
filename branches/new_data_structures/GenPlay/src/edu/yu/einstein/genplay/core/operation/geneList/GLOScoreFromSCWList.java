@@ -42,13 +42,12 @@ import edu.yu.einstein.genplay.util.Utils;
 /**
  * Attributes a score to the exons of a GeneList from the scores of a {@link SCWList}
  * @author Julien Lajugie
- * @version 0.1
  */
 public class GLOScoreFromSCWList implements Operation<GeneList> {
-	private final GeneList 						geneList;		// input GeneList
-	private final SCWList 	scwList;		// BinList with the scores
-	private final GeneScoreType 				geneScoreType;	// the score type of the genes and exons (RPKM, base coverage sum, max coverage)
-	private boolean 							stopped = false;// true if the writer needs to be stopped
+	private final GeneList 			geneList;		// input GeneList
+	private final SCWList 			scwList;		// BinList with the scores
+	private final GeneScoreType 	geneScoreType;	// the score type of the genes and exons (RPKM, base coverage sum, max coverage)
+	private boolean 				stopped = false;// true if the writer needs to be stopped
 
 
 	/**

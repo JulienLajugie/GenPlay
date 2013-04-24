@@ -27,7 +27,6 @@ import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.geneListView.GeneListViewBuilder;
@@ -37,18 +36,15 @@ import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 
 
-
 /**
  * Removes the genes with an overall RPKM between two specified thresholds
  * @author Julien Lajugie
- * @version 0.1
  */
 public class GLOFilterBandStop implements Operation<GeneList> {
 
 	private final GeneList 			geneList;			// input GeneList
-	private final double 			lowThreshold;		// low bound
-	private final double 			highThreshold;		// high bound
-	private final ScorePrecision 	scorePrecision;		// precision of the scores of the result list
+	private final float 			lowThreshold;		// low bound
+	private final float 			highThreshold;		// high bound
 	private boolean					stopped = false;	// true if the operation must be stopped
 
 
@@ -57,13 +53,11 @@ public class GLOFilterBandStop implements Operation<GeneList> {
 	 * @param geneList input {@link GeneList}
 	 * @param lowThreshold low threshold
 	 * @param highThreshold high threshold
-	 * @param scorePrecision precision of the scores of the genes of the result list
 	 */
-	public GLOFilterBandStop(GeneList geneList, double lowThreshold, double highThreshold, ScorePrecision scorePrecision) {
+	public GLOFilterBandStop(GeneList geneList, float lowThreshold, float highThreshold) {
 		this.geneList = geneList;
 		this.lowThreshold = lowThreshold;
 		this.highThreshold = highThreshold;
-		this.scorePrecision = scorePrecision;
 	}
 
 
@@ -80,7 +74,7 @@ public class GLOFilterBandStop implements Operation<GeneList> {
 			Callable<ListView<Gene>> currentThread = new Callable<ListView<Gene>>() {
 				@Override
 				public ListView<Gene> call() throws Exception {
-					ListViewBuilder<Gene> resultLVBuilder = new GeneListViewBuilder(scorePrecision);
+					ListViewBuilder<Gene> resultLVBuilder = new GeneListViewBuilder();
 					if ((currentList != null) && (currentList.size() != 0)) {
 						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 							Float currentValue = currentList.get(j).getScore();

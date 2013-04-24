@@ -32,7 +32,6 @@ import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 /**
  * Removes a specified number of genes with the lowest and greatest values
  * @author Julien Lajugie
- * @version 0.1
  */
 public class GLOFilterCount implements Operation<GeneList> {
 
@@ -71,13 +70,13 @@ public class GLOFilterCount implements Operation<GeneList> {
 		if (totalLenght == 0) {
 			return geneList;
 		}
-		double[] allScores = new double[totalLenght];
+		float[] allScores = new float[totalLenght];
 		int i = 0;
 		for (ListView<Gene> currentList: geneList) {
 			if (currentList != null) {
 				for (int j = 0; (j < currentList.size()) && !stopped; j++) {
-					double currentScore = currentList.get(j).getScore();
-					if ((currentScore != Double.NaN) && (currentScore != 0)) {
+					float currentScore = currentList.get(j).getScore();
+					if ((currentScore != Float.NaN) && (currentScore != 0)) {
 						allScores[i] = currentScore;
 						i++;
 					}
@@ -85,8 +84,8 @@ public class GLOFilterCount implements Operation<GeneList> {
 			}
 		}
 		Arrays.sort(allScores);
-		double minValue = lowValuesCount == 0 ? Double.NEGATIVE_INFINITY : allScores[lowValuesCount - 1];
-		double maxValue = highValuesCount == 0 ? Double.POSITIVE_INFINITY : allScores[allScores.length - highValuesCount];
+		float minValue = lowValuesCount == 0 ? Float.NEGATIVE_INFINITY : allScores[lowValuesCount - 1];
+		float maxValue = highValuesCount == 0 ? Float.POSITIVE_INFINITY : allScores[allScores.length - highValuesCount];
 		gloFilterThreshold = new GLOFilterThreshold(geneList, minValue, maxValue, isSaturation);
 		return gloFilterThreshold.compute();
 	}

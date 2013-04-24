@@ -321,7 +321,8 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 					File selectedFile = Utils.chooseFileToLoad(rootPane, "Load Sequence Track", defaultDirectory, Utils.getReadableSequenceFileFilters(), true);
 					if (selectedFile != null) {
 						try {
-							twoBitData.setSequenceFilePath(selectedFile.getPath());
+							TwoBitSequenceList new2BitData = new TwoBitSequenceList(twoBitData, selectedFile);
+							setData(new2BitData);
 						} catch (FileNotFoundException e1) {
 							twoBitSequenceListUnserialization();
 						}

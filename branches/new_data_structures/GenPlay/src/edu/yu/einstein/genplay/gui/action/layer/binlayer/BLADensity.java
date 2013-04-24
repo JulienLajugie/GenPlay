@@ -74,7 +74,7 @@ public class BLADensity extends TrackListActionOperationWorker<BinList> {
 			BinLayer newLayer = new BinLayer(resultTrack, actionResult, "Densities of " + selectedLayer.getName());
 			// add info to the history
 			newLayer.getHistory().add("Result of the density calculation of " + selectedLayer.getName() + ", Half Width = " + halfWidth);
-			newLayer.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getScorePrecision(), Colors.GREY);
+			newLayer.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp", Colors.GREY);
 			resultTrack.getLayers().add(newLayer);
 		}
 	}

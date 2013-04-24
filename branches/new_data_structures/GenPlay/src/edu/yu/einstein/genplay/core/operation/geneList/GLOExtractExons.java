@@ -29,7 +29,6 @@ import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
@@ -60,24 +59,20 @@ public class GLOExtractExons implements Operation<GeneList> {
 
 	private final GeneList 			geneList;			// input list
 	private final int 				exonOption;			// exon option: first, last or all
-	private final ScorePrecision 	scorePrecision;		// precision of the scores of the result list
 	private boolean					stopped = false;	// true if the operation must be stopped
-
 
 
 	/**
 	 * Creates an instance of {@link GLOExtractExons}
 	 * @param geneList input list
 	 * @param exonOption used to specify to extract only the first exon, the last exon or all the exon
-	 * @param scorePrecision precision of the scores of the genes of the result list
 	 */
-	public GLOExtractExons(GeneList geneList, int exonOption, ScorePrecision scorePrecision) {
+	public GLOExtractExons(GeneList geneList, int exonOption) {
 		if ((exonOption != FIRST_EXON) && (exonOption != LAST_EXON) && (exonOption != ALL_EXONS)) {
 			throw new InvalidParameterException("The exons to extract option is not valid.");
 		}
 		this.geneList = geneList;
 		this.exonOption = exonOption;
-		this.scorePrecision = scorePrecision;
 	}
 
 
@@ -92,7 +87,7 @@ public class GLOExtractExons implements Operation<GeneList> {
 					if (currentList == null) {
 						return null;
 					}
-					ListViewBuilder<Gene> resultLVBuilder = new GeneListViewBuilder(scorePrecision);
+					ListViewBuilder<Gene> resultLVBuilder = new GeneListViewBuilder();
 					for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 						Gene currentGene = currentList.get(j);
 						List<Gene> extractedExons = extractExons(currentGene, exonOption);
@@ -127,7 +122,7 @@ public class GLOExtractExons implements Operation<GeneList> {
 		int start = exonToConvert.getStart();
 		int stop = exonToConvert.getStop();
 		float score = exonToConvert.getScore();
-		ListViewBuilder<ScoredChromosomeWindow> exonLvBuilder = new GenericSCWListViewBuilder(scorePrecision);
+		ListViewBuilder<ScoredChromosomeWindow> exonLvBuilder = new GenericSCWListViewBuilder();
 		exonLvBuilder.addElementToBuild(new SimpleScoredChromosomeWindow(start, stop, score));
 		Strand strand = gene.getStrand();
 		return new SimpleGene(exonName, strand, start, stop, score, exonLvBuilder.getListView());

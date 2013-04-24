@@ -37,7 +37,6 @@ import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
 /**
  * Filter the selected {@link GeneLayer}
  * @author Julien Lajugie
- * @version 0.1
  */
 public class GLAFilter extends TrackListActionOperationWorker<GeneList> {
 
@@ -65,6 +64,14 @@ public class GLAFilter extends TrackListActionOperationWorker<GeneList> {
 
 
 	@Override
+	protected void doAtTheEnd(GeneList actionResult) {
+		if (actionResult != null) {
+			selectedLayer.setData(actionResult, operation.getDescription());
+		}
+	}
+
+
+	@Override
 	public Operation<GeneList> initializeOperation() {
 		selectedLayer = (GeneLayer) getValue("Layer");
 		if (selectedLayer != null) {
@@ -78,24 +85,16 @@ public class GLAFilter extends TrackListActionOperationWorker<GeneList> {
 				case COUNT:
 					return new GLOFilterCount(geneList, min.intValue(), max.intValue(), isSaturation);
 				case PERCENTAGE:
-					return new GLOFilterPercentage(geneList, min.doubleValue(), max.doubleValue(), isSaturation);
+					return new GLOFilterPercentage(geneList, min.floatValue(), max.floatValue(), isSaturation);
 				case THRESHOLD:
-					return new GLOFilterThreshold(geneList, min.doubleValue(), max.doubleValue(), isSaturation);
+					return new GLOFilterThreshold(geneList, min.floatValue(), max.floatValue(), isSaturation);
 				case BANDSTOP:
-					return new GLOFilterBandStop(geneList, min.doubleValue(), max.doubleValue());
+					return new GLOFilterBandStop(geneList, min.floatValue(), max.floatValue());
 				default:
 					throw new IllegalArgumentException("Invalid Saturation Type");
 				}
 			}
 		}
 		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(GeneList actionResult) {
-		if (actionResult != null) {
-			selectedLayer.setData(actionResult, operation.getDescription());
-		}
 	}
 }

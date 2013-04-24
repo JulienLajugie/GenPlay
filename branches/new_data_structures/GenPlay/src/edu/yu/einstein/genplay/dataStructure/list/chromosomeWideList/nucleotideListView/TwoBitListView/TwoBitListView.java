@@ -22,6 +22,7 @@
 package edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.nucleotideListView.TwoBitListView;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -102,7 +103,7 @@ public final class TwoBitListView implements Iterator<Nucleotide>, ListView<Nucl
 	 * @param chromosome the chromosome of the current list
 	 * @param raf {@link RandomAccessFile}
 	 */
-	TwoBitListView(
+	public TwoBitListView(
 			String filePath,
 			int headerSize,
 			int offset,
@@ -125,6 +126,29 @@ public final class TwoBitListView implements Iterator<Nucleotide>, ListView<Nucl
 		this.alleleType = alleleType;
 		this.chromosome = chromosome;
 		this.raf = raf;
+	}
+
+
+	/**
+	 * Creates a new instance of {@link TwoBitListView} similar to the
+	 * one in parameter but reading the specified file instead. This constructor
+	 * is handy when the file path has been modified.
+	 * @param listView
+	 * @param file 2bit file containing the sequences
+	 * @throws FileNotFoundException
+	 */
+	public TwoBitListView(TwoBitListView listView, File file) throws FileNotFoundException {
+		// note that we can't just modify the file path of a TwoBitListView objects because they are immutable
+		filePath = file.getAbsolutePath();
+		headerSize = listView.headerSize;
+		offset = listView.offset;
+		dnaSize = listView.dnaSize;
+		nBlockStarts = listView.nBlockStarts;
+		nBlockSizes = listView.nBlockSizes;
+		genomeName = listView.genomeName;
+		alleleType = listView.alleleType;
+		chromosome = listView.chromosome;
+		reinitDataFile();
 	}
 
 
@@ -248,7 +272,14 @@ public final class TwoBitListView implements Iterator<Nucleotide>, ListView<Nucl
 		in.readInt();
 		// read the final fields
 		in.defaultReadObject();
-		// reinitialize the reader
+	}
+
+
+	/**
+	 * Reinitialize the reader
+	 * @throws FileNotFoundException
+	 */
+	public void reinitDataFile() throws FileNotFoundException {
 		raf = new RandomAccessFile(new File(filePath), "r");
 	}
 
