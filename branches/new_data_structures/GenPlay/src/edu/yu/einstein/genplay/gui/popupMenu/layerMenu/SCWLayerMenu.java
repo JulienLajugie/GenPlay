@@ -49,10 +49,10 @@ import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLATwoLayersOperation
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAUniqueScore;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAWindowCount;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
-import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.GenericSCWLayer;
 
 /**
- * Menu containing all the actions available for a {@link SCWLayer}
+ * Menu containing all the actions available for a {@link GenericSCWLayer}
  * @author Julien Lajugie
  */
 public class SCWLayerMenu extends AbstractLayerMenu {

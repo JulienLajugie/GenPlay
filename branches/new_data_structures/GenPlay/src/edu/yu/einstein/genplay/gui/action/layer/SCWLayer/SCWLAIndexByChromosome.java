@@ -28,11 +28,11 @@ import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOIndexByChromosome;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
-import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.GenericSCWLayer;
 
 
 /**
- * Indexes the selected {@link SCWLayer} by chromosome
+ * Indexes the selected {@link GenericSCWLayer} by chromosome
  * @author Julien Lajugie
  */
 public final class SCWLAIndexByChromosome extends TrackListActionOperationWorker<SCWList> {
@@ -41,7 +41,7 @@ public final class SCWLAIndexByChromosome extends TrackListActionOperationWorker
 	private static final String 	ACTION_NAME = "Indexation per Chromosome";	// action name
 	private static final String 	DESCRIPTION =
 			"Index separately each chromosome of the selected layer";			// tooltip
-	private SCWLayer 				selectedLayer;								// selected layer
+	private GenericSCWLayer 				selectedLayer;								// selected layer
 
 
 	/**
@@ -71,7 +71,7 @@ public final class SCWLAIndexByChromosome extends TrackListActionOperationWorker
 
 	@Override
 	public Operation<SCWList> initializeOperation() {
-		selectedLayer = (SCWLayer) getValue("Layer");
+		selectedLayer = (GenericSCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			Number indexMin = NumberOptionPane.getValue(getRootPane(), "Minimum", "New minimum score:", -1000000, 1000000, 0);
 			if (indexMin != null) {

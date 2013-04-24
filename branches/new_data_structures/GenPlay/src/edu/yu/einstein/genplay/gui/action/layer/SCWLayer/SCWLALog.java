@@ -28,13 +28,13 @@ import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOLog;
 import edu.yu.einstein.genplay.dataStructure.enums.LogBase;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.GenericSCWLayer;
 import edu.yu.einstein.genplay.util.Utils;
 
 
 
 /**
- * Applies a log function to the scores of the selected {@link SCWLayer}
+ * Applies a log function to the scores of the selected {@link GenericSCWLayer}
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -44,7 +44,7 @@ public final class SCWLALog extends TrackListActionOperationWorker<SCWList> {
 	private static final String 	ACTION_NAME = "Log";				// action name
 	private static final String 	DESCRIPTION =
 			"Apply a log function to the scores of the selected layer";	// tooltip
-	private SCWLayer			selectedLayer;							// selected layer
+	private GenericSCWLayer			selectedLayer;							// selected layer
 
 
 	/**
@@ -66,7 +66,7 @@ public final class SCWLALog extends TrackListActionOperationWorker<SCWList> {
 
 	@Override
 	public Operation<SCWList> initializeOperation() {
-		selectedLayer = (SCWLayer) getValue("Layer");
+		selectedLayer = (GenericSCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			LogBase logBase = Utils.chooseLogBase(getRootPane());
 			if (logBase != null) {

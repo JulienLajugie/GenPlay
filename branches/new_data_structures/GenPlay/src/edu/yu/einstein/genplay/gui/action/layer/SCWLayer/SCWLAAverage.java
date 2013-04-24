@@ -31,12 +31,12 @@ import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOAverage;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.track.layer.AbstractVersionedLayer;
-import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.GenericSCWLayer;
 import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
- * Computes the average of the scores of the selected {@link SCWLayer}.
+ * Computes the average of the scores of the selected {@link GenericSCWLayer}.
  * @author Julien Lajugie
  */
 public class SCWLAAverage extends TrackListActionOperationWorker<Double> {

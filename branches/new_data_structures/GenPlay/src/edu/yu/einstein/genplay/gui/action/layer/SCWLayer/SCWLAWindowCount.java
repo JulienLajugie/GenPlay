@@ -30,7 +30,7 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOWindowCount;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.GenericSCWLayer;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -64,7 +64,7 @@ public class SCWLAWindowCount extends TrackListActionOperationWorker<Long> {
 
 	@Override
 	public Operation<Long> initializeOperation() {
-		SCWLayer selectedLayer = (SCWLayer) getValue("Layer");
+		GenericSCWLayer selectedLayer = (GenericSCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			boolean[] selectedChromo = Utils.chooseChromosomes(getRootPane());
 			if (selectedChromo != null) {

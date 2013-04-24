@@ -41,7 +41,7 @@ import edu.yu.einstein.genplay.util.colors.LayerColors;
  * Layer displaying a mask
  * @author Julien Lajugie
  */
-public class MaskLayer extends AbstractVersionedLayer<SCWList> implements Layer<SCWList>, VersionedLayer<SCWList>, ColoredLayer {
+public class MaskLayer extends AbstractVersionedLayer<SCWList> implements Layer<SCWList>, VersionedLayer<SCWList>, ColoredLayer, SCWLayer {
 
 	private static final long serialVersionUID = 3779631846077486596L; // generated ID
 	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// Saved format version

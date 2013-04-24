@@ -29,11 +29,11 @@ import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOInvertConstant;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
-import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.GenericSCWLayer;
 
 
 /**
- * Adds a constant to the scores of the selected {@link SCWLayer}
+ * Adds a constant to the scores of the selected {@link GenericSCWLayer}
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -43,7 +43,7 @@ public final class SCWLAInvertConstant extends TrackListActionOperationWorker<SC
 	private static final String 	ACTION_NAME = "Invert (Constant)";	// action name
 	private static final String 	DESCRIPTION =
 			"Invert the values of the selected layer";					// tooltip
-	private SCWLayer 			selectedLayer;							// selected layer
+	private GenericSCWLayer 			selectedLayer;							// selected layer
 
 
 	/**
@@ -73,7 +73,7 @@ public final class SCWLAInvertConstant extends TrackListActionOperationWorker<SC
 
 	@Override
 	public Operation<SCWList> initializeOperation() {
-		selectedLayer = (SCWLayer) getValue("Layer");
+		selectedLayer = (GenericSCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			Number constant = NumberOptionPane.getValue(getRootPane(), "Constant", "Enter a value C in: f(x)= C / x", Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY, 1);
 			if ((constant != null) && (constant.floatValue() != 0)) {

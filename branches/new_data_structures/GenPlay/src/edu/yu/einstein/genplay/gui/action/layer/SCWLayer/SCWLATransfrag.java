@@ -37,7 +37,7 @@ import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.TransfragDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
-import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.GenericSCWLayer;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -53,7 +53,7 @@ public class SCWLATransfrag extends TrackListAction {
 	private static final String 	DESCRIPTION =
 			"Define regions separated by gaps of a specified length " +
 					"and compute the average/max/sum of these regions";	// tooltip
-	private SCWLayer 				selectedLayer;						// selected layer
+	private GenericSCWLayer 				selectedLayer;						// selected layer
 
 
 	/**
@@ -75,7 +75,7 @@ public class SCWLATransfrag extends TrackListAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		selectedLayer = (SCWLayer) getValue("Layer");
+		selectedLayer = (GenericSCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			final SCWList scwList = selectedLayer.getData();
 			final TransfragDialog tfDialog = new TransfragDialog(TransfragDialog.SCWLIST_TRANSFRAG);

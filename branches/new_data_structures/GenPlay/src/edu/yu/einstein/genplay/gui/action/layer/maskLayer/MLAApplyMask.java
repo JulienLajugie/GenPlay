@@ -37,7 +37,7 @@ import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
 import edu.yu.einstein.genplay.gui.track.layer.MaskLayer;
-import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.GenericSCWLayer;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
@@ -105,7 +105,7 @@ public final class MLAApplyMask extends TrackListActionOperationWorker<Immutable
 	@Override
 	protected void doAtTheEnd(ImmutableGenomicDataList<?> actionResult) {
 		if (actionResult != null) {
-			SCWLayer newLayer = new SCWLayer(resultTrack, (SCWList) actionResult, maskedLayer.getName() + " masked");
+			GenericSCWLayer newLayer = new GenericSCWLayer(resultTrack, (SCWList) actionResult, maskedLayer.getName() + " masked");
 			// add info to the history
 			newLayer.getHistory().add(maskedLayer.getName() + " masked by " + selectedLayer.getName(), Colors.GREY);
 			resultTrack.getLayers().add(newLayer);

@@ -39,7 +39,7 @@ import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
-import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.GenericSCWLayer;
 import edu.yu.einstein.genplay.gui.track.layer.VersionedLayer;
 import edu.yu.einstein.genplay.util.Utils;
 import edu.yu.einstein.genplay.util.colors.Colors;
@@ -122,7 +122,7 @@ public final class BLATwoLayersOperation extends TrackListActionOperationWorker<
 		if (actionResult != null) {
 			Layer<?> newLayer;
 			if (isSCWList()) {
-				newLayer = new SCWLayer(resultTrack, (SCWList) actionResult, selectedLayer.getName() + " & " + otherLayer.getName());
+				newLayer = new GenericSCWLayer(resultTrack, (SCWList) actionResult, selectedLayer.getName() + " & " + otherLayer.getName());
 			} else {
 				newLayer = new BinLayer(resultTrack, (BinList) actionResult, selectedLayer.getName() + " & " + otherLayer.getName());
 			}

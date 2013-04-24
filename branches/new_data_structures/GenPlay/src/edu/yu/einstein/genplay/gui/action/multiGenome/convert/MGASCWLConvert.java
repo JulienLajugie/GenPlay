@@ -39,7 +39,7 @@ import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSe
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.convert.ConvertSCWDialog;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.mainDialog.MultiGenomeTrackActionDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.GenericSCWLayer;
 import edu.yu.einstein.genplay.gui.track.layer.variantLayer.VariantLayer;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
@@ -150,7 +150,7 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 	private void setTrack (Track currentTrack, SCWList list) throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		if ((list!= null) && (currentTrack != null)) {
 			// TODO replace currentTrack.getName per currentLayer.getName
-			SCWLayer newLayer = new SCWLayer(currentTrack, list, currentTrack.getName());
+			GenericSCWLayer newLayer = new GenericSCWLayer(currentTrack, list, currentTrack.getName());
 			newLayer.getHistory().add("Apply mask", Colors.GREY);
 			newLayer.getHistory().add("Track: " + currentTrack.getName(), Colors.GREY);
 			currentTrack.getLayers().add(newLayer);
