@@ -30,7 +30,7 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOCountNonNullLength;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.track.layer.GenericSCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -64,8 +64,16 @@ public class SCWLACountNonNullLength extends TrackListActionOperationWorker<Long
 
 
 	@Override
+	protected void doAtTheEnd(Long actionResult) {
+		if (actionResult != null) {
+			JOptionPane.showMessageDialog(getRootPane(), "Non-Null Length: \n" + NumberFormat.getInstance().format(actionResult) + " bp", "Non-Null Length", JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+
+
+	@Override
 	public Operation<Long> initializeOperation() {
-		GenericSCWLayer selectedLayer = (GenericSCWLayer) getValue("Layer");
+		SCWLayer selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			boolean[] selectedChromo = Utils.chooseChromosomes(getRootPane());
 			if (selectedChromo != null) {
@@ -75,13 +83,5 @@ public class SCWLACountNonNullLength extends TrackListActionOperationWorker<Long
 			}
 		}
 		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(Long actionResult) {
-		if (actionResult != null) {
-			JOptionPane.showMessageDialog(getRootPane(), "Non-Null Length: \n" + NumberFormat.getInstance().format(actionResult) + " bp", "Non-Null Length", JOptionPane.INFORMATION_MESSAGE);
-		}
 	}
 }

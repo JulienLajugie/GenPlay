@@ -28,11 +28,11 @@ import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOSubtractConstant;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
-import edu.yu.einstein.genplay.gui.track.layer.GenericSCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 
 
 /**
- * Subtracts a constant to the scores of the selected {@link GenericSCWLayer}
+ * Subtracts a constant to the scores of the selected {@link SCWLayer}
  * @author Julien Lajugie
  */
 public final class SCWLASubtractConstant extends TrackListActionOperationWorker<SCWList> {
@@ -41,7 +41,7 @@ public final class SCWLASubtractConstant extends TrackListActionOperationWorker<
 	private static final String 	ACTION_NAME = "Subtraction (Constant)";	// action name
 	private static final String 	DESCRIPTION =
 			"Subtract a constant to the scores of the selected layer";		// tooltip
-	private GenericSCWLayer 				selectedLayer;							// selected layer
+	private SCWLayer 				selectedLayer;							// selected layer
 
 
 	/**
@@ -71,7 +71,7 @@ public final class SCWLASubtractConstant extends TrackListActionOperationWorker<
 
 	@Override
 	public Operation<SCWList> initializeOperation() {
-		selectedLayer = (GenericSCWLayer) getValue("Layer");
+		selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			Number constant = NumberOptionPane.getValue(getRootPane(), "Constant", "Enter a value C to subtract: f(x)=x - C", Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY, 0);
 			if ((constant != null) && (constant.doubleValue() != 0)) {

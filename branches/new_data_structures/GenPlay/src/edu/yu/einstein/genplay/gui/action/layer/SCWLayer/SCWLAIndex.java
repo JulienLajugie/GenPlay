@@ -28,11 +28,11 @@ import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOIndex;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
-import edu.yu.einstein.genplay.gui.track.layer.GenericSCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 
 
 /**
- * Indexes the selected {@link GenericSCWLayer}
+ * Indexes the selected {@link SCWLayer}
  * @author Julien Lajugie
  */
 public final class SCWLAIndex extends TrackListActionOperationWorker<SCWList> {
@@ -41,7 +41,7 @@ public final class SCWLAIndex extends TrackListActionOperationWorker<SCWList> {
 	private static final String 	ACTION_NAME = "Indexation";			// action name
 	private static final String 	DESCRIPTION =
 			"Index the selected layer";		 							// tooltip
-	private GenericSCWLayer	 			selectedLayer;						// selected layer
+	private SCWLayer	 			selectedLayer;						// selected layer
 
 	/**
 	 * key of the action in the {@link ActionMap}
@@ -70,7 +70,7 @@ public final class SCWLAIndex extends TrackListActionOperationWorker<SCWList> {
 
 	@Override
 	public Operation<SCWList> initializeOperation() {
-		selectedLayer = (GenericSCWLayer) getValue("Layer");
+		selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			Number indexMin = NumberOptionPane.getValue(getRootPane(), "Minimum", "New minimum score:", -1000000, 1000000, 0);
 			if (indexMin != null) {

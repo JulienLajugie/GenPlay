@@ -28,11 +28,11 @@ import edu.yu.einstein.genplay.core.operation.SCWList.SCWLONormalize;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
-import edu.yu.einstein.genplay.gui.track.layer.GenericSCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 
 
 /**
- * Computes a Standard Score normalization on a {@link GenericSCWLayer}
+ * Computes a Standard Score normalization on a {@link SCWLayer}
  * @author Julien Lajugie
  */
 public class SCWLANormalize extends TrackListActionOperationWorker<SCWList> {
@@ -41,7 +41,7 @@ public class SCWLANormalize extends TrackListActionOperationWorker<SCWList> {
 	private static final String 	ACTION_NAME = "Normalize";			// action name
 	private static final String 	DESCRIPTION =
 			"Normalize the scores of the selected layer";				// tooltip
-	private GenericSCWLayer 				selectedLayer;						// selected layer
+	private SCWLayer 				selectedLayer;						// selected layer
 
 
 	/**
@@ -71,7 +71,7 @@ public class SCWLANormalize extends TrackListActionOperationWorker<SCWList> {
 
 	@Override
 	public Operation<SCWList> initializeOperation() {
-		selectedLayer = (GenericSCWLayer) getValue("Layer");
+		selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			Number factor = NumberOptionPane.getValue(getRootPane(), "Multiplicative constant", "Enter a factor of X:", 0, 1000000000, 10000000);
 			if(factor != null) {

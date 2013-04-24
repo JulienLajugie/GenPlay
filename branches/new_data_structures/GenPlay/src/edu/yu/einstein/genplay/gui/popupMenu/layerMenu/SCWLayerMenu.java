@@ -34,7 +34,6 @@ import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAIndex;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAIndexByChromosome;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAInvertConstant;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLALog;
-import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLALogOnAvgWithDamper;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAMax;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAMin;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAMultiplyConstant;
@@ -48,8 +47,8 @@ import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLATransfrag;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLATwoLayersOperation;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAUniqueScore;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAWindowCount;
-import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.GenericSCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.Layer;
 
 /**
  * Menu containing all the actions available for a {@link GenericSCWLayer}
@@ -84,7 +83,6 @@ public class SCWLayerMenu extends AbstractLayerMenu {
 				new SCWLAIndex(),
 				new SCWLAIndexByChromosome(),
 				new SCWLALog(),
-				new SCWLALogOnAvgWithDamper(),
 				new SCWLANormalize(),
 				new SCWLANormalizeStandardScore(),
 				null,

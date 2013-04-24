@@ -33,7 +33,7 @@ import edu.yu.einstein.genplay.gui.dialog.trackChooser.TrackChooser;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
-import edu.yu.einstein.genplay.gui.track.layer.GenericSCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 import edu.yu.einstein.genplay.util.Utils;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
@@ -74,7 +74,7 @@ public final class SCWLATwoLayersOperation extends TrackListActionOperationWorke
 	@Override
 	protected void doAtTheEnd(SCWList actionResult) {
 		if (actionResult != null) {
-			GenericSCWLayer newLayer = new GenericSCWLayer(resultTrack, actionResult, selectedLayer.getName() + " & " + otherLayer.getName());
+			SCWLayer newLayer = new SCWLayer(resultTrack, actionResult, selectedLayer.getName() + " & " + otherLayer.getName());
 			// add info to the history
 			newLayer.getHistory().add("Operation on two tracks", Colors.GREY);
 			newLayer.getHistory().add("Operation: " + scoreOperation.toString(), Colors.GREY);
@@ -89,7 +89,7 @@ public final class SCWLATwoLayersOperation extends TrackListActionOperationWorke
 	@SuppressWarnings("unchecked")
 	@Override
 	public Operation<SCWList> initializeOperation() {
-		selectedLayer = (GenericSCWLayer) getValue("Layer");
+		selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
 			layerChooserDialog.setLayers(getTrackListPanel().getModel().getAllLayers());

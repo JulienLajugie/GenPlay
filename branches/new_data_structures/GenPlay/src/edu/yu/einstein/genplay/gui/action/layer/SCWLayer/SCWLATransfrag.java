@@ -37,14 +37,13 @@ import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.TransfragDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
-import edu.yu.einstein.genplay.gui.track.layer.GenericSCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
  * Defines regions separated by gaps of a specified length and computes the average/sum/max of these regions
  * @author Chirag Gorasia
- * @version 0.1
  */
 public class SCWLATransfrag extends TrackListAction {
 
@@ -53,7 +52,7 @@ public class SCWLATransfrag extends TrackListAction {
 	private static final String 	DESCRIPTION =
 			"Define regions separated by gaps of a specified length " +
 					"and compute the average/max/sum of these regions";	// tooltip
-	private GenericSCWLayer 				selectedLayer;						// selected layer
+	private SCWLayer 				selectedLayer;						// selected layer
 
 
 	/**
@@ -75,7 +74,7 @@ public class SCWLATransfrag extends TrackListAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		selectedLayer = (GenericSCWLayer) getValue("Layer");
+		selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			final SCWList scwList = selectedLayer.getData();
 			final TransfragDialog tfDialog = new TransfragDialog(TransfragDialog.SCWLIST_TRANSFRAG);
@@ -90,12 +89,6 @@ public class SCWLATransfrag extends TrackListAction {
 
 								private static final long serialVersionUID = 1L;
 								@Override
-								public Operation<GeneList> initializeOperation()
-										throws Exception {
-									// case where the result type is a GeneList
-									return new SCWLOTransfragGeneList(scwList, tfDialog.getGapSize(), operationType);
-								}
-								@Override
 								protected void doAtTheEnd(GeneList actionResult) {
 									if (actionResult != null) {
 										Track selectedTrack = selectedLayer.getTrack();
@@ -105,6 +98,12 @@ public class SCWLATransfrag extends TrackListAction {
 										selectedTrack.getLayers().remove(selectedTrack);
 									}
 								}
+								@Override
+								public Operation<GeneList> initializeOperation()
+										throws Exception {
+									// case where the result type is a GeneList
+									return new SCWLOTransfragGeneList(scwList, tfDialog.getGapSize(), operationType);
+								}
 							}.actionPerformed(null);
 
 
@@ -112,16 +111,16 @@ public class SCWLATransfrag extends TrackListAction {
 							new TrackListActionOperationWorker<SCWList>(){
 								private static final long serialVersionUID = 1L;
 								@Override
-								public Operation<SCWList> initializeOperation()
-										throws Exception {
-									// case where the result type is a GeneList
-									return new SCWLOTransfrag(scwList, tfDialog.getGapSize(), operationType);
-								}
-								@Override
 								protected void doAtTheEnd(SCWList actionResult) {
 									if (actionResult != null) {
 										selectedLayer.setData(actionResult, operation.getDescription());
 									}
+								}
+								@Override
+								public Operation<SCWList> initializeOperation()
+										throws Exception {
+									// case where the result type is a GeneList
+									return new SCWLOTransfrag(scwList, tfDialog.getGapSize(), operationType);
 								}
 							}.actionPerformed(null);
 						}

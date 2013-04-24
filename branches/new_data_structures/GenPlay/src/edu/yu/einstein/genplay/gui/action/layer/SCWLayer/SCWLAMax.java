@@ -28,12 +28,12 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOMax;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.track.layer.GenericSCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
- * Shows the maximum score of the selected {@link GenericSCWLayer}
+ * Shows the maximum score of the selected {@link SCWLayer}
  * @author Julien Lajugie
  */
 public final class SCWLAMax extends TrackListActionOperationWorker<Float> {
@@ -42,7 +42,7 @@ public final class SCWLAMax extends TrackListActionOperationWorker<Float> {
 	private static final String 	ACTION_NAME = "Maximum";			// action name
 	private static final String 	DESCRIPTION =
 			"Show the maximum score of the selected layer";				// tooltip
-	private GenericSCWLayer 				selectedLayer;						// selected layer
+	private SCWLayer 				selectedLayer;						// selected layer
 
 
 	/**
@@ -72,7 +72,7 @@ public final class SCWLAMax extends TrackListActionOperationWorker<Float> {
 
 	@Override
 	public Operation<Float> initializeOperation() {
-		selectedLayer = (GenericSCWLayer) getValue("Layer");
+		selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			boolean[] selectedChromo = Utils.chooseChromosomes(getRootPane());
 			if (selectedChromo != null) {

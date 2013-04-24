@@ -31,11 +31,11 @@ import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOFilterThreshold;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.filterDialog.FilterDialog;
-import edu.yu.einstein.genplay.gui.track.layer.GenericSCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 
 
 /**
- * Filters the {@link GenericSCWLayer}.
+ * Filters the {@link SCWLayer}.
  * Different kind of filters are availables
  * @author Julien Lajugie
  */
@@ -45,7 +45,7 @@ public class SCWLAFilter extends TrackListActionOperationWorker<SCWList> {
 	private static final String 	ACTION_NAME = "Filter";				// action name
 	private static final String 	DESCRIPTION =
 			"Filter the selected layer";								// tooltip
-	private GenericSCWLayer				selectedLayer;						// selected layer
+	private SCWLayer				selectedLayer;						// selected layer
 
 
 	/**
@@ -75,7 +75,7 @@ public class SCWLAFilter extends TrackListActionOperationWorker<SCWList> {
 
 	@Override
 	public Operation<SCWList> initializeOperation() {
-		selectedLayer = (GenericSCWLayer) getValue("Layer");
+		selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			FilterDialog filterDialog = new FilterDialog();
 			if (filterDialog.showFilterDialog(getRootPane()) == FilterDialog.APPROVE_OPTION) {

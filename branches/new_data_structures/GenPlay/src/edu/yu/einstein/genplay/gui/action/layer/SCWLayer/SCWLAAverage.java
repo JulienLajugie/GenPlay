@@ -30,13 +30,12 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOAverage;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.track.layer.AbstractVersionedLayer;
-import edu.yu.einstein.genplay.gui.track.layer.GenericSCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
- * Computes the average of the scores of the selected {@link GenericSCWLayer}.
+ * Computes the average of the scores of the selected {@link SCWLayer}.
  * @author Julien Lajugie
  */
 public class SCWLAAverage extends TrackListActionOperationWorker<Double> {
@@ -74,11 +73,11 @@ public class SCWLAAverage extends TrackListActionOperationWorker<Double> {
 
 	@Override
 	public Operation<Double> initializeOperation() {
-		AbstractVersionedLayer<?> selectedLayer = (AbstractVersionedLayer<?>) getValue("Layer");
+		SCWLayer selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			boolean[] selectedChromo = Utils.chooseChromosomes(getRootPane());
 			if (selectedChromo != null) {
-				SCWList scwList = (SCWList) selectedLayer.getData();
+				SCWList scwList = selectedLayer.getData();
 				operation = new SCWLOAverage(scwList, selectedChromo);
 				return operation;
 			}

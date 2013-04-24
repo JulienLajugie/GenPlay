@@ -76,11 +76,18 @@ public interface VersionedLayer<T extends Serializable> {
 
 
 	/**
+	 * Sets the data and add a description about the new data in the history.
+	 * @param data data to set
+	 * @param historyDescription description of the data
+	 */
+	public void setData(T data, String historyDescription);
+
+
+	/**
 	 * Sets the count of undo available
 	 * @param undoCount the number of actions that can be undone
 	 */
 	public void setUndoCount(int undoCount);
-
 
 	/**
 	 * Undo the last action

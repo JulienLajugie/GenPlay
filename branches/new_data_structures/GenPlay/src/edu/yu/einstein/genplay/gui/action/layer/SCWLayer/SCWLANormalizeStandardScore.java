@@ -27,11 +27,11 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLONormalizeStandardScore;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.track.layer.GenericSCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 
 
 /**
- * Normalizes the scores of the selected {@link GenericSCWLayer}
+ * Normalizes the scores of the selected {@link SCWLayer}
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -41,7 +41,7 @@ public class SCWLANormalizeStandardScore extends TrackListActionOperationWorker<
 	private static final String 	ACTION_NAME = "Standard Score";		// action name
 	private static final String 	DESCRIPTION =
 			"Compute the standard score of the selected layer";			// tooltip
-	private GenericSCWLayer 				selectedLayer;						// selected layer
+	private SCWLayer 				selectedLayer;						// selected layer
 
 
 	/**
@@ -62,21 +62,21 @@ public class SCWLANormalizeStandardScore extends TrackListActionOperationWorker<
 
 
 	@Override
+	protected void doAtTheEnd(SCWList actionResult) {
+		if (actionResult != null) {
+			selectedLayer.setData(actionResult, operation.getDescription());
+		}
+	}
+
+
+	@Override
 	public Operation<SCWList> initializeOperation() {
-		selectedLayer = (GenericSCWLayer) getValue("Layer");
+		selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			SCWList scwList = selectedLayer.getData();
 			Operation<SCWList> operation = new SCWLONormalizeStandardScore(scwList);
 			return operation;
 		}
 		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(SCWList actionResult) {
-		if (actionResult != null) {
-			selectedLayer.setData(actionResult, operation.getDescription());
-		}
 	}
 }

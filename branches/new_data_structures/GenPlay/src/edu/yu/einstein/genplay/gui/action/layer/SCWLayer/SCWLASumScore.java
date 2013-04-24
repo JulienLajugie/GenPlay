@@ -30,14 +30,13 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOSumScore;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.track.layer.GenericSCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
  * Returns the sum of the scores on the selected chromosomes of the selected layer
  * @author Julien Lajugie
- * @version 0.1
  */
 public class SCWLASumScore extends TrackListActionOperationWorker<Double> {
 
@@ -66,8 +65,16 @@ public class SCWLASumScore extends TrackListActionOperationWorker<Double> {
 
 
 	@Override
+	protected void doAtTheEnd(Double actionResult) {
+		if (actionResult != null) {
+			JOptionPane.showMessageDialog(getRootPane(), "Score count: \n" + NumberFormat.getInstance().format(actionResult), "Score Count", JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+
+
+	@Override
 	public Operation<Double> initializeOperation() {
-		GenericSCWLayer selectedLayer = (GenericSCWLayer) getValue("Layer");
+		SCWLayer selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			boolean[] selectedChromo = Utils.chooseChromosomes(getRootPane());
 			if (selectedChromo != null) {
@@ -77,13 +84,5 @@ public class SCWLASumScore extends TrackListActionOperationWorker<Double> {
 			}
 		}
 		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(Double actionResult) {
-		if (actionResult != null) {
-			JOptionPane.showMessageDialog(getRootPane(), "Score count: \n" + NumberFormat.getInstance().format(actionResult), "Score Count", JOptionPane.INFORMATION_MESSAGE);
-		}
 	}
 }

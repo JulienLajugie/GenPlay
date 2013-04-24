@@ -30,7 +30,7 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOWindowCount;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.track.layer.GenericSCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -63,8 +63,16 @@ public class SCWLAWindowCount extends TrackListActionOperationWorker<Long> {
 
 
 	@Override
+	protected void doAtTheEnd(Long actionResult) {
+		if (actionResult != null) {
+			JOptionPane.showMessageDialog(getRootPane(), "Total number of windows: \n" + NumberFormat.getInstance().format(actionResult), "Windows number", JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+
+
+	@Override
 	public Operation<Long> initializeOperation() {
-		GenericSCWLayer selectedLayer = (GenericSCWLayer) getValue("Layer");
+		SCWLayer selectedLayer = (SCWLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			boolean[] selectedChromo = Utils.chooseChromosomes(getRootPane());
 			if (selectedChromo != null) {
@@ -74,13 +82,5 @@ public class SCWLAWindowCount extends TrackListActionOperationWorker<Long> {
 			}
 		}
 		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(Long actionResult) {
-		if (actionResult != null) {
-			JOptionPane.showMessageDialog(getRootPane(), "Total number of windows: \n" + NumberFormat.getInstance().format(actionResult), "Windows number", JOptionPane.INFORMATION_MESSAGE);
-		}
 	}
 }

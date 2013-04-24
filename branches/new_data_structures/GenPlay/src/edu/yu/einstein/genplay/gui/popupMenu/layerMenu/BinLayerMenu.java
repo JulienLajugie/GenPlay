@@ -26,39 +26,37 @@ import javax.swing.JCheckBoxMenuItem;
 
 import edu.yu.einstein.genplay.gui.action.layer.LAConvert;
 import edu.yu.einstein.genplay.gui.action.layer.LASave;
-import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAAddConstant;
-import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAAverage;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAAddConstant;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAAverage;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLACountNonNullLength;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLADivideConstant;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAFilter;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAIndex;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAIndexByChromosome;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAInvertConstant;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLALog;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAMax;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAMin;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAMultiplyConstant;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLANormalize;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLANormalizeStandardScore;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAStandardDeviation;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLASubtractConstant;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLASumScore;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAUniqueScore;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAChangeBinSize;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAChangeDataPrecision;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLACompress;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAConcatenate;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLACorrelate;
-import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLACountNonNullBins;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLADensity;
-import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLADivideConstant;
-import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAFilter;
-import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAFindPeaks;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAGauss;
-import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAIndex;
-import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAIndexByChromosome;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAIntervalsScoring;
-import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAInvertConstant;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLALoessRegression;
-import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLALog;
-import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLALogOnAvgWithDamper;
-import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAMax;
-import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAMin;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAMovingAverage;
-import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAMultiplyConstant;
-import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLANormalize;
-import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLANormalizeStandardScore;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAScoreDistribution;
-import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAStandardDeviation;
-import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLASubtractConstant;
-import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLASumScore;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLATransfrag;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLATwoLayersOperation;
-import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAUniqueScore;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 
@@ -100,12 +98,12 @@ public class BinLayerMenu extends AbstractLayerMenu {
 		Action[] actions = {
 				//TODO new LASave(),
 				//TODO null,
-				new BLAAddConstant(),
-				new BLASubtractConstant(),
-				new BLAMultiplyConstant(),
-				new BLADivideConstant(),
-				new BLAInvertConstant(),
-				new BLAUniqueScore(),
+				new SCWLAAddConstant(),
+				new SCWLASubtractConstant(),
+				new SCWLAMultiplyConstant(),
+				new SCWLADivideConstant(),
+				new SCWLAInvertConstant(),
+				new SCWLAUniqueScore(),
 				null,
 				new BLATwoLayersOperation(),
 				null,
@@ -113,22 +111,21 @@ public class BinLayerMenu extends AbstractLayerMenu {
 				new BLAGauss(),
 				new BLALoessRegression(),
 				null,
-				new BLAIndex(),
-				new BLAIndexByChromosome(),
-				new BLALog(),
-				new BLALogOnAvgWithDamper(),
-				new BLANormalize(),
-				new BLANormalizeStandardScore(),
+				new SCWLAIndex(),
+				new SCWLAIndexByChromosome(),
+				new SCWLALog(),
+				new SCWLANormalize(),
+				new SCWLANormalizeStandardScore(),
 				null,
-				new BLAMin(),
-				new BLAMax(),
-				new BLACountNonNullBins(),
-				new BLASumScore(),
-				new BLAAverage(),
-				new BLAStandardDeviation(),
+				new SCWLAMin(),
+				new SCWLAMax(),
+				new SCWLACountNonNullLength(),
+				new SCWLASumScore(),
+				new SCWLAAverage(),
+				new SCWLAStandardDeviation(),
 				new BLACorrelate(),
 				null,
-				new BLAFilter(),
+				new SCWLAFilter(),
 				new BLAFindPeaks(),
 				new BLATransfrag(),
 				null,
