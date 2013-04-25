@@ -47,38 +47,11 @@ public class VCFFilter extends MGFilter implements Serializable {
 
 
 	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(filter);
-		out.writeObject(vcfFile);
-		out.writeObject(booleanList);
-	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		filter = (FilterInterface) in.readObject();
-		vcfFile = (VCFFile) in.readObject();
-		booleanList = (ByteArrayAsBooleanList) in.readObject();
-	}
-
-
-	/**
 	 * Constructor of {@link VCFFilter}
 	 */
 	public VCFFilter () {
-		this.filter = null;
-		this.vcfFile = null;
+		filter = null;
+		vcfFile = null;
 		booleanList = null;
 	}
 
@@ -92,87 +65,6 @@ public class VCFFilter extends MGFilter implements Serializable {
 		this.filter = filter;
 		this.vcfFile = vcfFile;
 		booleanList = null;
-	}
-
-
-	@Override
-	public int getVariantIndex(Variant variant) {
-		int position = variant.getReferenceGenomePosition();
-		return vcfFile.getPositionList().getIndex(position);
-	}
-
-
-	@Override
-	public boolean isVariantValid (Variant variant) {
-		int index = getVariantIndex(variant);
-		return isVariantValid(index);
-	}
-
-
-	@Override
-	public boolean isVariantValid(int variantIndex) {
-		boolean result = false;
-		if (variantIndex != -1) {
-			result = booleanList.get(variantIndex);
-		}
-		return result;
-	}
-
-
-	/**
-	 * @return the booleanList
-	 */
-	public ByteArrayAsBooleanList getBooleanList() {
-		return booleanList;
-	}
-
-
-	/**
-	 * @return the reader
-	 */
-	public VCFFile getVCFFile() {
-		return vcfFile;
-	}
-
-
-	/**
-	 * @param reader the reader to set
-	 */
-	public void setVCFFile(VCFFile reader) {
-		this.vcfFile = reader;
-	}
-
-
-	/**
-	 * @param booleanList the booleanList to set
-	 */
-	public void setBooleanList(ByteArrayAsBooleanList booleanList) {
-		this.booleanList = booleanList;
-	}
-
-
-	/**
-	 * Analyzes lines from VCF file in order to determine if variation pass the filter.
-	 * @param results list of VCF lines delimited by columns (must contains the column of the filter)
-	 */
-	public void generateFilter (List<VCFLine> results) {
-		vcfFile.initializePositionList(ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome(), results);
-		if (results != null) {
-			booleanList = new ByteArrayAsBooleanList(vcfFile.getPositionList().size());
-			for (int i = 0; i < results.size(); i++) {
-				boolean valid = filter.isValid(results.get(i));
-				booleanList.set(i, valid);
-			}
-		}
-	}
-
-
-	@Override
-	public void show () {
-		String info = "";
-		info += "VCF File: " + vcfFile.getFile().getName() + "\n";
-		info += "Filter display: " + filter.toStringForDisplay() + "\n";
-		System.out.println(info);
 	}
 
 
@@ -192,6 +84,30 @@ public class VCFFilter extends MGFilter implements Serializable {
 	}
 
 
+	/**
+	 * Analyzes lines from VCF file in order to determine if variation pass the filter.
+	 * @param results list of VCF lines delimited by columns (must contains the column of the filter)
+	 */
+	public void generateFilter (List<VCFLine> results) {
+		vcfFile.initializePositionList(ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome(), results);
+		if (results != null) {
+			booleanList = new ByteArrayAsBooleanList(vcfFile.getPositionList().size());
+			for (int i = 0; i < results.size(); i++) {
+				boolean valid = filter.isValid(results.get(i));
+				booleanList.set(i, valid);
+			}
+		}
+	}
+
+
+	/**
+	 * @return the booleanList
+	 */
+	public ByteArrayAsBooleanList getBooleanList() {
+		return booleanList;
+	}
+
+
 	@Override
 	public VCFFilter getDuplicate () {
 		VCFFilter duplicate = new VCFFilter();
@@ -199,6 +115,137 @@ public class VCFFilter extends MGFilter implements Serializable {
 		duplicate.setVCFFile(getVCFFile());
 		duplicate.setBooleanList(getBooleanList());
 		return duplicate;
+	}
+
+
+	/**
+	 * Recursive function. Returns the index where the value is found
+	 * or the index right after if the exact value is not found.
+	 * @param value			value
+	 * @return the index where the start value of the window is found or -1 if the value is not found
+	 */
+	public int getIndex (int value) {
+		List<Integer> data = vcfFile.getPositionList();
+		int index = getIndex(value, 0, data.size() - 1);
+
+		if (data.get(index) == value) {
+			return index;
+		} else {
+			int lengthCurrentIndex = Math.abs(data.get(index) - value);
+			int lengthSecondIndex = -1;
+			int secondIndex = -1;
+			if (value > data.get(index)) {
+				if ((index + 1) < data.size()) {
+					secondIndex = index + 1;
+				}
+			} else {
+				if ((index - 1) > 0) {
+					secondIndex = index -1;
+				}
+			}
+
+			if (secondIndex >= 0) {
+				lengthSecondIndex = Math.abs(data.get(secondIndex) - value);
+				if (lengthSecondIndex < lengthCurrentIndex) {
+					index = secondIndex;
+				}
+			}
+		}
+		return index;
+	}
+
+
+	/**
+	 * Recursive function. Returns the index where the value is found
+	 * or the index right after if the exact value is not found.
+	 * @param value			value
+	 * @param indexStart	start index (in the data array)
+	 * @param indexStop		stop index (in the data array)
+	 * @return the index where the start value of the window is found or the index right after if the exact value is not found
+	 */
+	private int getIndex (int value, int indexStart, int indexStop) {
+		List<Integer> data = vcfFile.getPositionList();
+		int middle = (indexStop - indexStart) / 2;
+		if (indexStart == indexStop) {
+			return indexStart;
+		} else if (value == data.get(indexStart + middle)) {
+			return indexStart + middle;
+		} else if (value > data.get(indexStart + middle)) {
+			return getIndex(value, indexStart + middle + 1, indexStop);
+		} else {
+			return getIndex(value, indexStart, indexStart + middle);
+		}
+	}
+
+
+	@Override
+	public int getVariantIndex(Variant variant) {
+		int position = variant.getReferenceGenomePosition();
+		return getIndex(position);
+	}
+
+
+	/**
+	 * @return the reader
+	 */
+	public VCFFile getVCFFile() {
+		return vcfFile;
+	}
+
+
+	@Override
+	public boolean isVariantValid(int variantIndex) {
+		boolean result = false;
+		if (variantIndex != -1) {
+			result = booleanList.get(variantIndex);
+		}
+		return result;
+	}
+
+
+	@Override
+	public boolean isVariantValid (Variant variant) {
+		int index = getVariantIndex(variant);
+		return isVariantValid(index);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		filter = (FilterInterface) in.readObject();
+		vcfFile = (VCFFile) in.readObject();
+		booleanList = (ByteArrayAsBooleanList) in.readObject();
+	}
+
+
+	/**
+	 * @param booleanList the booleanList to set
+	 */
+	public void setBooleanList(ByteArrayAsBooleanList booleanList) {
+		this.booleanList = booleanList;
+	}
+
+
+	/**
+	 * @param reader the reader to set
+	 */
+	public void setVCFFile(VCFFile reader) {
+		vcfFile = reader;
+	}
+
+
+	@Override
+	public void show () {
+		String info = "";
+		info += "VCF File: " + vcfFile.getFile().getName() + "\n";
+		info += "Filter display: " + filter.toStringForDisplay() + "\n";
+		System.out.println(info);
 	}
 
 
@@ -225,6 +272,19 @@ public class VCFFilter extends MGFilter implements Serializable {
 		}
 
 		System.out.println(info);
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(filter);
+		out.writeObject(vcfFile);
+		out.writeObject(booleanList);
 	}
 
 }

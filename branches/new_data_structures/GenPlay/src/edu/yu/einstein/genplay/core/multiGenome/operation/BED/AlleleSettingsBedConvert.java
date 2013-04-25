@@ -21,48 +21,40 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.operation.BED;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import java.util.List;
+
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.enums.CoordinateSystemType;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ListOfListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
-import edu.yu.einstein.genplay.dataStructure.list.primitiveList.old.DoubleArrayAsDoubleList;
-import edu.yu.einstein.genplay.dataStructure.list.primitiveList.old.IntArrayAsIntegerList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 
 
 /**
  * This class help for the convertion of VCF track to a {@link SCWList} for a specific allele.
  * 
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class AlleleSettingsBedConvert extends AlleleSettingsBed {
 
-	private final GenomicListView<Integer> 	startList;	// List of start position.
-	private final GenomicListView<Integer> 	stopList;	// List of stop position.
-	private final GenomicListView<Double> 	scoreList;	// List of scores.
+	private final ListOfListViewBuilder<ScoredChromosomeWindow> listBuilder;
 
 
 	/**
 	 * Constructor of {@link AlleleSettingsBedConvert}
 	 * @param path
 	 * @param allele
+	 * @throws CloneNotSupportedException
 	 */
-	protected AlleleSettingsBedConvert (AlleleType allele, CoordinateSystemType coordinateSystem) {
+	protected AlleleSettingsBedConvert (AlleleType allele, CoordinateSystemType coordinateSystem) throws CloneNotSupportedException {
 		super(allele, coordinateSystem);
-		startList = new GenomicDataArrayList<Integer>();
-		stopList = new GenomicDataArrayList<Integer>();
-		scoreList = new GenomicDataArrayList<Double>();
-
-		// initialize the sublists
-		int chromosomeListSize = ProjectManager.getInstance().getProjectChromosome().getChromosomeList().size();
-		for (int i = 0; i < chromosomeListSize; i++) {
-			startList.add(new IntArrayAsIntegerList());
-			stopList.add(new IntArrayAsIntegerList());
-			scoreList.add(new DoubleArrayAsDoubleList());
-		}
+		ListViewBuilder<ScoredChromosomeWindow> lvBuilderPrototype = new GenericSCWListViewBuilder();
+		listBuilder = new ListOfListViewBuilder<ScoredChromosomeWindow>(lvBuilderPrototype);
 	}
 
 
@@ -75,7 +67,7 @@ public class AlleleSettingsBedConvert extends AlleleSettingsBed {
 	 */
 	public void addCurrentInformation (Chromosome chromosome, Object score, boolean includeReferences, boolean includeNoCall) {
 		boolean valid = true;
-		Double dbScore = Double.parseDouble(score.toString());
+		Float dbScore = Float.parseFloat(score.toString());
 		if (dbScore == null) {
 			valid = false;
 		}
@@ -85,9 +77,8 @@ public class AlleleSettingsBedConvert extends AlleleSettingsBed {
 		if (valid) {
 			//int start = getCurrentStart();
 			//int stop = getDisplayableCurrentStop();
-			startList.add(chromosome, currentStart);
-			stopList.add(chromosome, currentStop);
-			scoreList.add(chromosome, dbScore);
+			ScoredChromosomeWindow scw = new SimpleScoredChromosomeWindow(currentStart, currentStop, dbScore);
+			listBuilder.addElementToBuild(chromosome, scw);
 		} else {
 			System.err.println("AlleleSettingsBedConvert.addCurrentInformation() Could not convert '" + score + "' into a double.");
 		}
@@ -97,24 +88,7 @@ public class AlleleSettingsBedConvert extends AlleleSettingsBed {
 	/**
 	 * @return the startList
 	 */
-	public GenomicListView<Integer> getStartList() {
-		return startList;
+	public List<ListView<ScoredChromosomeWindow>> getListOfListViews() {
+		return listBuilder.getGenomicList();
 	}
-
-
-	/**
-	 * @return the stopList
-	 */
-	public GenomicListView<Integer> getStopList() {
-		return stopList;
-	}
-
-
-	/**
-	 * @return the scoreList
-	 */
-	public GenomicListView<Double> getScoreList() {
-		return scoreList;
-	}
-
 }

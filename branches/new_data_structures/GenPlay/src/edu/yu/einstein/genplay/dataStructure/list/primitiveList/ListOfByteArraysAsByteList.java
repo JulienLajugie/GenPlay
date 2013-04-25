@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import edu.yu.einstein.genplay.dataStructure.compressible.CompressibleList;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.CompressionException;
 
@@ -41,7 +42,7 @@ import edu.yu.einstein.genplay.exception.exceptions.CompressionException;
  * The data of the list are stored in {@link ArrayList} objects of arrays of byte primitives
  * @author Julien Lajugie
  */
-public class ListOfByteArraysAsByteList extends AbstractList<Byte> implements Serializable, List<Byte>, CompressibleList {
+public class ListOfByteArraysAsByteList extends AbstractList<Byte> implements Serializable, CompressibleList<Byte> {
 
 	/** Generated serial ID */
 	private static final long serialVersionUID = -630216643765395298L;

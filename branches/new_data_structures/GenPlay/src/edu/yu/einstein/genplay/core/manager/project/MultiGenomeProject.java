@@ -39,7 +39,6 @@ import edu.yu.einstein.genplay.core.multiGenome.operation.synchronization.MGSync
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.VariantType;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.gui.action.multiGenome.synchronization.MGASynchronizing;
 
 
@@ -78,110 +77,9 @@ public class MultiGenomeProject implements Serializable {
 
 
 	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(genomeNames);
-		out.writeObject(genomeFileAssociation);
-		out.writeObject(multiGenome);
-		out.writeObject(multiGenomeSynchronizer);
-		out.writeObject(fileContentManager);
-	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	@SuppressWarnings("unchecked")
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		genomeNames = (List<String>) in.readObject();
-		genomeFileAssociation = (Map<String, List<VCFFile>>) in.readObject();
-		multiGenome = (MGSMultiGenome) in.readObject();
-		multiGenomeSynchronizer = (MGSynchronizer) in.readObject();
-		fileContentManager = (MGFileContentManager) in.readObject();
-	}
-
-
-	/**
-	 * Set the current {@link MultiGenomeProject} using another instance of {@link MultiGenomeProject}
-	 * Used for the unserialization.
-	 * @param project the instance of {@link MultiGenomeProject} to use
-	 */
-	protected void setMultiGenomeProject (MultiGenomeProject project) {
-		genomeNames = project.getGenomeNames();
-		genomeFileAssociation = project.getGenomeFileAssociation();
-		multiGenome = project.getMultiGenome();
-		multiGenomeSynchronizer = project.getMultiGenomeSynchronizer();
-		fileContentManager = project.getFileContentManager();
-	}
-
-
-	/**
 	 * Constructor of {@link MultiGenomeProject}
 	 */
 	public MultiGenomeProject () {}
-
-
-	/**
-	 * Initializes synchronizer attributes.
-	 * @param genomeFileAssociation	the genome file association
-	 */
-	public void initializeSynchronization (Map<String, List<VCFFile>> genomeFileAssociation) {
-		this.genomeFileAssociation = genomeFileAssociation;
-		genomeNames = new ArrayList<String>(this.genomeFileAssociation.keySet());
-		Collections.sort(genomeNames);
-
-		for (String genomeName: genomeNames) {
-			List<VCFFile> vcfFiles = genomeFileAssociation.get(genomeName);
-			for (VCFFile vcfFile: vcfFiles) {
-				vcfFile.addGenomeName(genomeName);
-			}
-		}
-
-		multiGenome = new MGSMultiGenome(genomeNames);
-		multiGenomeSynchronizer = new MGSynchronizer(this);
-		fileContentManager = new MGFileContentManager(getAllVCFFiles());
-		initializeFileDependancy();
-	}
-
-
-	/**
-	 * This method notice the file manager of the dependant files.
-	 */
-	private void initializeFileDependancy () {
-		List<VCFFile> vcfFiles = getAllVCFFiles();
-		String[] paths = new String[vcfFiles.size()];
-		for (int i = 0; i < paths.length; i++) {
-			paths[i] = vcfFiles.get(i).getFile().getPath();
-		}
-		ProjectFiles.getInstance().setCurrentFiles(paths);
-	}
-
-
-	/**
-	 * @param genomeFileAssociation the genomeFileAssociation to set
-	 */
-	public void setGenomeFileAssociation(Map<String, List<VCFFile>> genomeFileAssociation) {
-		this.genomeFileAssociation = genomeFileAssociation;
-	}
-
-
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Genome names methods
-
-
-	/**
-	 * @return the genomeNames
-	 */
-	public List<String> getGenomeNames() {
-		return genomeNames;
-	}
 
 
 	/**
@@ -198,6 +96,33 @@ public class MultiGenomeProject implements Serializable {
 
 
 	/**
+	 * Retrieves all the VCF files
+	 * @return the full list of VCF files
+	 */
+	public List<VCFFile> getAllVCFFiles () {
+		List<VCFFile> readerList = new ArrayList<VCFFile>();
+
+		for (List<VCFFile> currentReaderList: genomeFileAssociation.values()) {
+			for (VCFFile currentReader: currentReaderList) {
+				if (!readerList.contains(currentReader)) {
+					readerList.add(currentReader);
+				}
+			}
+		}
+
+		return readerList;
+	}
+
+
+	/**
+	 * @return the fileContentManager
+	 */
+	public MGFileContentManager getFileContentManager() {
+		return fileContentManager;
+	}
+
+
+	/**
 	 * Creates an array with all genome names association (including the reference genome).
 	 * Used for display.
 	 * @return	genome names association array
@@ -205,7 +130,6 @@ public class MultiGenomeProject implements Serializable {
 	public Object[] getFormattedGenomeArray () {
 		return getFormattedGenomeArray(true, true);
 	}
-
 
 
 	/**
@@ -243,48 +167,59 @@ public class MultiGenomeProject implements Serializable {
 	}
 
 
+	/**
+	 * @return the genomeFileAssociation
+	 */
+	public Map<String, List<VCFFile>> getGenomeFileAssociation() {
+		return genomeFileAssociation;
+	}
+
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Genome names methods
+
+
+	/**
+	 * @return the genomeNames
+	 */
+	public List<String> getGenomeNames() {
+		return genomeNames;
+	}
+
+
+	/**
+	 * @return the multiGenome
+	 */
+	public MGSMultiGenome getMultiGenome() {
+		return multiGenome;
+	}
+
+
+	/**
+	 * @return the multiGenomeSynchronizer
+	 */
+	public MGSynchronizer getMultiGenomeSynchronizer() {
+		return multiGenomeSynchronizer;
+	}
+
+
+
+	/**
+	 * Get a vcf file object with a vcf file name.
+	 * @param fileName 	the name of the vcf file
+	 * @return			the reader
+	 */
+	public VCFFile getVCFFileFromName (String fileName) {
+		List<VCFFile> list = getAllVCFFiles();
+		for (VCFFile vcfFile: list) {
+			if (vcfFile.getFile().getName().equals(fileName)) {
+				return vcfFile;
+			}
+		}
+		return null;
+	}
+
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Others
-
-
-	/**
-	 * Update the chromosome list using the new chromosome length
-	 */
-	public void updateChromosomeList () {
-		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
-		List<Chromosome> currentChromosomeList = projectChromosome.getChromosomeList();
-		List<Integer> newChromosomeLengths = new ArrayList<Integer>();
-		GenomicListView<MGSOffset> offsetList = multiGenome.getReferenceGenome().getAllele().getOffsetList();
-
-		for (Chromosome current: currentChromosomeList) {
-			int lastOffsetIndex = offsetList.get(current).size() - 1;
-			int length = current.getLength();
-			if (lastOffsetIndex > -1) {
-				length += offsetList.get(current, lastOffsetIndex).getValue();
-			}
-			newChromosomeLengths.add(length);
-		}
-
-		projectChromosome.updateChromosomeLengths(newChromosomeLengths);
-	}
-
-
-	/**
-	 * Retrieves all the VCF files
-	 * @return the full list of VCF files
-	 */
-	public List<VCFFile> getAllVCFFiles () {
-		List<VCFFile> readerList = new ArrayList<VCFFile>();
-
-		for (List<VCFFile> currentReaderList: genomeFileAssociation.values()) {
-			for (VCFFile currentReader: currentReaderList) {
-				if (!readerList.contains(currentReader)) {
-					readerList.add(currentReader);
-				}
-			}
-		}
-
-		return readerList;
-	}
 
 
 	/**
@@ -309,18 +244,55 @@ public class MultiGenomeProject implements Serializable {
 
 
 	/**
-	 * Get a vcf file object with a vcf file name.
-	 * @param fileName 	the name of the vcf file
-	 * @return			the reader
+	 * This method notice the file manager of the dependant files.
 	 */
-	public VCFFile getVCFFileFromName (String fileName) {
-		List<VCFFile> list = getAllVCFFiles();
-		for (VCFFile vcfFile: list) {
-			if (vcfFile.getFile().getName().equals(fileName)) {
-				return vcfFile;
+	private void initializeFileDependancy () {
+		List<VCFFile> vcfFiles = getAllVCFFiles();
+		String[] paths = new String[vcfFiles.size()];
+		for (int i = 0; i < paths.length; i++) {
+			paths[i] = vcfFiles.get(i).getFile().getPath();
+		}
+		ProjectFiles.getInstance().setCurrentFiles(paths);
+	}
+
+
+	/**
+	 * Initializes synchronizer attributes.
+	 * @param genomeFileAssociation	the genome file association
+	 */
+	public void initializeSynchronization (Map<String, List<VCFFile>> genomeFileAssociation) {
+		this.genomeFileAssociation = genomeFileAssociation;
+		genomeNames = new ArrayList<String>(this.genomeFileAssociation.keySet());
+		Collections.sort(genomeNames);
+
+		for (String genomeName: genomeNames) {
+			List<VCFFile> vcfFiles = genomeFileAssociation.get(genomeName);
+			for (VCFFile vcfFile: vcfFiles) {
+				vcfFile.addGenomeName(genomeName);
 			}
 		}
-		return null;
+
+		multiGenome = new MGSMultiGenome(genomeNames);
+		multiGenomeSynchronizer = new MGSynchronizer(this);
+		fileContentManager = new MGFileContentManager(getAllVCFFiles());
+		initializeFileDependancy();
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		genomeNames = (List<String>) in.readObject();
+		genomeFileAssociation = (Map<String, List<VCFFile>>) in.readObject();
+		multiGenome = (MGSMultiGenome) in.readObject();
+		multiGenomeSynchronizer = (MGSynchronizer) in.readObject();
+		fileContentManager = (MGFileContentManager) in.readObject();
 	}
 
 
@@ -328,34 +300,24 @@ public class MultiGenomeProject implements Serializable {
 
 
 	/**
-	 * @return the multiGenomeSynchronizer
+	 * @param genomeFileAssociation the genomeFileAssociation to set
 	 */
-	public MGSynchronizer getMultiGenomeSynchronizer() {
-		return multiGenomeSynchronizer;
+	public void setGenomeFileAssociation(Map<String, List<VCFFile>> genomeFileAssociation) {
+		this.genomeFileAssociation = genomeFileAssociation;
 	}
 
 
 	/**
-	 * @return the multiGenome
+	 * Set the current {@link MultiGenomeProject} using another instance of {@link MultiGenomeProject}
+	 * Used for the unserialization.
+	 * @param project the instance of {@link MultiGenomeProject} to use
 	 */
-	public MGSMultiGenome getMultiGenome() {
-		return multiGenome;
-	}
-
-
-	/**
-	 * @return the genomeFileAssociation
-	 */
-	public Map<String, List<VCFFile>> getGenomeFileAssociation() {
-		return genomeFileAssociation;
-	}
-
-
-	/**
-	 * @return the fileContentManager
-	 */
-	public MGFileContentManager getFileContentManager() {
-		return fileContentManager;
+	protected void setMultiGenomeProject (MultiGenomeProject project) {
+		genomeNames = project.getGenomeNames();
+		genomeFileAssociation = project.getGenomeFileAssociation();
+		multiGenome = project.getMultiGenome();
+		multiGenomeSynchronizer = project.getMultiGenomeSynchronizer();
+		fileContentManager = project.getFileContentManager();
 	}
 
 
@@ -367,6 +329,44 @@ public class MultiGenomeProject implements Serializable {
 		multiGenome.show();
 		System.out.println("CONTENT");
 		fileContentManager.show();
+	}
+
+
+	/**
+	 * Update the chromosome list using the new chromosome length
+	 */
+	public void updateChromosomeList () {
+		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		List<Chromosome> currentChromosomeList = projectChromosome.getChromosomeList();
+		List<Integer> newChromosomeLengths = new ArrayList<Integer>();
+		List<List<MGSOffset>> offsetList = multiGenome.getReferenceGenome().getAllele().getOffsetList();
+
+		for (Chromosome current: currentChromosomeList) {
+			int index = projectChromosome.getIndex(current);
+			int lastOffsetIndex = offsetList.get(index).size() - 1;
+			int length = current.getLength();
+			if (lastOffsetIndex > -1) {
+				length += offsetList.get(index).get(lastOffsetIndex).getValue();
+			}
+			newChromosomeLengths.add(length);
+		}
+
+		projectChromosome.updateChromosomeLengths(newChromosomeLengths);
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(genomeNames);
+		out.writeObject(genomeFileAssociation);
+		out.writeObject(multiGenome);
+		out.writeObject(multiGenomeSynchronizer);
+		out.writeObject(fileContentManager);
 	}
 
 }

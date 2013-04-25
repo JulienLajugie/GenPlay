@@ -20,12 +20,14 @@
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.utils;
+import java.util.List;
+
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.data.synchronization.MGSAllele;
 import edu.yu.einstein.genplay.core.multiGenome.data.synchronization.MGSOffset;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.primitiveList.IntArrayAsOffsetList;
 
 
@@ -33,9 +35,27 @@ import edu.yu.einstein.genplay.dataStructure.list.primitiveList.IntArrayAsOffset
  * This class manages the shifting process in order to get a meta genome position from a genome position.
  * In a multi genome project, every position must be shifted in order to synchronize tracks.
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class ShiftCompute {
+
+
+	private static List<List<MGSOffset>> getOffsetList (String genome, AlleleType alleleType) {
+		MGSAllele alleleInformation = null;
+
+		if (FormattedMultiGenomeName.isReferenceGenome(genome)) {
+			alleleInformation = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenome().getReferenceGenome().getAllele();
+		} else {
+			alleleInformation = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenome().getGenomeInformation(genome).getAllele(alleleType);
+			if (alleleInformation == null) {
+				System.err.println("Illegal use of the method \"ShiftCompute.computeShift\" with the parameter: " + alleleType + " , genome: " + genome);
+				return null;
+			}
+		}
+
+		List<List<MGSOffset>> offsetList = alleleInformation.getOffsetList();
+
+		return offsetList;
+	}
 
 
 	/**
@@ -52,17 +72,18 @@ public class ShiftCompute {
 		}
 
 		int outputPosition = -1;
-
+		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		int chromosomeIndex = projectChromosome.getIndex(chromosome);
 		if (FormattedMultiGenomeName.isMetaGenome(outputGenomeName)) {
-			GenomicListView<MGSOffset> chromosomeOffsetList = getOffsetList(inputGenomeName, inputAlleleType);
+			List<List<MGSOffset>> chromosomeOffsetList = getOffsetList(inputGenomeName, inputAlleleType);
 			if (chromosomeOffsetList != null) {
-				IntArrayAsOffsetList offsetList = (IntArrayAsOffsetList) chromosomeOffsetList.get(chromosome);
+				IntArrayAsOffsetList offsetList = (IntArrayAsOffsetList) chromosomeOffsetList.get(chromosomeIndex);
 				outputPosition = offsetList.getMetaGenomePosition(inputGenomePosition);
 			}
 		} else if (FormattedMultiGenomeName.isMetaGenome(inputGenomeName)) {
-			GenomicListView<MGSOffset> chromosomeOffsetList = getOffsetList(outputGenomeName, inputAlleleType);
+			List<List<MGSOffset>> chromosomeOffsetList = getOffsetList(outputGenomeName, inputAlleleType);
 			if (chromosomeOffsetList != null) {
-				IntArrayAsOffsetList offsetList = (IntArrayAsOffsetList) chromosomeOffsetList.get(chromosome);
+				IntArrayAsOffsetList offsetList = (IntArrayAsOffsetList) chromosomeOffsetList.get(chromosomeIndex);
 				outputPosition = offsetList.getGenomePosition(inputGenomePosition);
 			}
 		} else {
@@ -71,25 +92,6 @@ public class ShiftCompute {
 		}
 
 		return outputPosition;
-	}
-
-
-	private static GenomicListView<MGSOffset> getOffsetList (String genome, AlleleType alleleType) {
-		MGSAllele alleleInformation = null;
-
-		if (FormattedMultiGenomeName.isReferenceGenome(genome)) {
-			alleleInformation = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenome().getReferenceGenome().getAllele();
-		} else {
-			alleleInformation = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenome().getGenomeInformation(genome).getAllele(alleleType);
-			if (alleleInformation == null) {
-				System.err.println("Illegal use of the method \"ShiftCompute.computeShift\" with the parameter: " + alleleType + " , genome: " + genome);
-				return null;
-			}
-		}
-
-		GenomicListView<MGSOffset> offsetList = alleleInformation.getOffsetList();
-
-		return offsetList;
 	}
 
 }

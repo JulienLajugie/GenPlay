@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import edu.yu.einstein.genplay.dataStructure.compressible.CompressibleList;
 import edu.yu.einstein.genplay.dataStructure.halfFloat.HalfFloat;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.CompressionException;
@@ -44,7 +45,7 @@ import edu.yu.einstein.genplay.exception.exceptions.CompressionException;
  * and from float using the tools from the {@link HalfFloat} class.
  * @author Julien Lajugie
  */
-public class ListOfHalfArraysAsFloatList extends AbstractList<Float> implements Serializable, List<Float>, CompressibleList {
+public class ListOfHalfArraysAsFloatList extends AbstractList<Float> implements Serializable, CompressibleList<Float> {
 
 	/** Generated serial ID */
 	private static final long serialVersionUID = -4262827816090843034L;

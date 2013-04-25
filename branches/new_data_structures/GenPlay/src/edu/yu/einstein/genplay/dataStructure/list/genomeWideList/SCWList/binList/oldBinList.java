@@ -39,7 +39,7 @@ public class oldBinList {
 	//	 */
 	//	private final static int 	ACCELERATOR_FACTOR = 100;	// factor used for the acceleration. Indicates how much bigger is the binSize of the accelerator binlist
 	//	private final static int	ACCELERATOR_MAX_BINSIZE =
-	//			500000000 / ACCELERATOR_FACTOR;						// we don't create accelerator BinList with a window bigger than that
+	//			500,000,000 / ACCELERATOR_FACTOR;						// we don't create accelerator BinList with a window bigger than that
 	//	transient private BinList 			acceleratorBinList = null;	// BinList with a bigger binSize
 	//
 	//	transient private double[]		 	acceleratorCurrentChromo;	// copy of the values of the currently displayed chromosome

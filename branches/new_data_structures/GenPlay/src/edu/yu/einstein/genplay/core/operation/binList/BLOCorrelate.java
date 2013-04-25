@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -23,42 +23,41 @@ package edu.yu.einstein.genplay.core.operation.binList;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.BinListDifferentWindowSizeException;
-
 
 
 /**
  * Computes the correlation coefficients between two {@link BinList} for every chromosome as well as genome wide
  * @author Julien Lajugie
- * @version 0.1
  */
 public class BLOCorrelate implements Operation<Double[]> {
 
 	private final BinList 	binList1;		// input BinList
 	private final BinList	binList2;		// input BinList
-	private int[] 			counters;		// counters for the none-null value 
+	private final int[] 			counters;		// counters for the none-null value
 	private int 			counter = 0;	// counter for the none-null value
-	private double[]		means1;			// chromosome averages of binList1
+	private final double[]		means1;			// chromosome averages of binList1
 	private double			mean1 = 0;		// average of binList1
-	private double[]		means2;			// chromosome averages of binList2
+	private final double[]		means2;			// chromosome averages of binList2
 	private double			mean2 = 0;		// average of binList2
-	private double[]		stdevs1;		// chromosome standard deviations of binList1 based on the chromosome average
+	private final double[]		stdevs1;		// chromosome standard deviations of binList1 based on the chromosome average
 	private double			stdev1 = 0;		// standard deviation of binList1
-	private double[]		stddevtotals1;	// chromosome standard deviations of binList1 based on the total average
-	private double[]		stdevs2;		// chromosome standard deviations of binList2 based on the chromosome average
+	private final double[]		stddevtotals1;	// chromosome standard deviations of binList1 based on the total average
+	private final double[]		stdevs2;		// chromosome standard deviations of binList2 based on the chromosome average
 	private double			stdev2 = 0;		// standard deviation of binList2
-	private double[]		stddevtotals2;	// chromosome standard deviations of binList2 based on the total average
-	private double[]		correlations;	// chromosome correlation coefficients
+	private final double[]		stddevtotals2;	// chromosome standard deviations of binList2 based on the total average
+	private final double[]		correlations;	// chromosome correlation coefficients
 	private double 			correlation = 0;// correlation coefficient
 	private boolean			stopped = false;// true if the operation must be stopped
-	
+
 
 	/**
 	 * Computes the correlation coefficients between two {@link BinList} for every chromosome as well as genome wide
@@ -88,31 +87,33 @@ public class BLOCorrelate implements Operation<Double[]> {
 			return null;
 		}
 		// if there is no none-null value we return null
-		if (counter == 0) { 
+		if (counter == 0) {
 			return null;
-		}		
+		}
 
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
 		for (int i = 0; i < binList1.size(); i++) {
-			final List<Double> currentList1 = binList1.get(i);
-			final List<Double> currentList2 = binList2.get(i);
+			final ListView<ScoredChromosomeWindow> currentList1 = binList1.get(i);
+			final ListView<ScoredChromosomeWindow> currentList2 = binList2.get(i);
 			final int currentIndex = i;
-			Callable<Void> currentThread = new Callable<Void>() {	
+			Callable<Void> currentThread = new Callable<Void>() {
 				@Override
 				public Void call() throws Exception {
 					if ((currentList1 != null) && (currentList2 != null)) {
 						int j = 0;
 						while ((j < currentList1.size()) && (j < currentList2.size())) {
-							if ((currentList1.get(j) != 0) && (currentList2.get(j) != 0)) {
-								stdevs1[currentIndex] += Math.pow(currentList1.get(j) - means1[currentIndex], 2);
-								stdevs2[currentIndex] += Math.pow(currentList2.get(j) - means2[currentIndex], 2);
-								stddevtotals1[currentIndex] += Math.pow(currentList1.get(j) - mean1, 2);
-								stddevtotals2[currentIndex] += Math.pow(currentList2.get(j) - mean2, 2);
-								correlations[currentIndex] += currentList1.get(j) * currentList2.get(j);
+							double scoreList1 = currentList1.get(j).getScore();
+							double scoreList2 = currentList2.get(j).getScore();
+							if ((scoreList1 != 0) && (scoreList2 != 0)) {
+								stdevs1[currentIndex] += Math.pow(scoreList1 - means1[currentIndex], 2);
+								stdevs2[currentIndex] += Math.pow(scoreList2 - means2[currentIndex], 2);
+								stddevtotals1[currentIndex] += Math.pow(scoreList1 - mean1, 2);
+								stddevtotals2[currentIndex] += Math.pow(scoreList2 - mean2, 2);
+								correlations[currentIndex] += scoreList1 * scoreList2;
 							}
 							j++;
-						}	
+						}
 					}
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
@@ -121,7 +122,7 @@ public class BLOCorrelate implements Operation<Double[]> {
 			};
 
 			threadList.add(currentThread);
-		}		
+		}
 		if (op.startPool(threadList) == null) {
 			return null;
 		}
@@ -138,7 +139,7 @@ public class BLOCorrelate implements Operation<Double[]> {
 		// compute the standard deviation
 		stdev1 = Math.sqrt(stdev1 / counter);
 		stdev2 = Math.sqrt(stdev2 / counter);
-		// we compute the correlation 
+		// we compute the correlation
 		Double[] result = new Double[correlations.length + 1];
 		for (int i = 0; i < correlations.length; i++) {
 			if (counters[i] != 0) {
@@ -148,7 +149,7 @@ public class BLOCorrelate implements Operation<Double[]> {
 			}
 		}
 		correlation = (correlation - (counter * mean1 * mean2)) / ((counter - 1) * stdev1 * stdev2);
-		result[result.length - 1] = correlation;		
+		result[result.length - 1] = correlation;
 		return result;
 	}
 
@@ -167,21 +168,23 @@ public class BLOCorrelate implements Operation<Double[]> {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
 		for (int i = 0; i < binList1.size(); i++) {
-			final List<Double> currentList1 = binList1.get(i);
-			final List<Double> currentList2 = binList2.get(i);
+			final ListView<ScoredChromosomeWindow> currentList1 = binList1.get(i);
+			final ListView<ScoredChromosomeWindow> currentList2 = binList2.get(i);
 			final int currentIndex = i;
-			Callable<Void> currentThread = new Callable<Void>() {	
+			Callable<Void> currentThread = new Callable<Void>() {
 				@Override
 				public synchronized Void call() throws Exception {
 					if ((currentList1 != null) && (currentList2 != null)) {
 						int j = 0;
 						// compute the average only when the two scores are not null
 						while ((j < currentList1.size()) && (j < currentList2.size()) && !stopped) {
-							if ((currentList1.get(j) != 0) && (currentList2.get(j) != 0)) {
-								means1[currentIndex] += currentList1.get(j);
-								means2[currentIndex] += currentList2.get(j);
-								counters[currentIndex]++;							
-							}							
+							double scoreList1 = currentList1.get(j).getScore();
+							double scoreList2 = currentList2.get(j).getScore();
+							if ((scoreList1 != 0) && (scoreList2 != 0)) {
+								means1[currentIndex] += scoreList1;
+								means2[currentIndex] += scoreList2;
+								counters[currentIndex]++;
+							}
 							j++;
 						}
 					}
@@ -193,18 +196,18 @@ public class BLOCorrelate implements Operation<Double[]> {
 			};
 
 			threadList.add(currentThread);
-		}		
+		}
 
 		if (op.startPool(threadList) == null) {
 			throw new InterruptedException();
 		}
 		// we sum the chromosome results to have a genome wide result
-		for (int i = 0; i < counters.length && !stopped; i++) {
+		for (int i = 0; (i < counters.length) && !stopped; i++) {
 			counter += counters[i];
 			mean1 += means1[i];
 			mean2 += means2[i];
 			if (counters[i] != 0) {
-				means1[i] /= counters[i]; 
+				means1[i] /= counters[i];
 				means2[i] /= counters[i];
 			}
 		}
@@ -223,19 +226,19 @@ public class BLOCorrelate implements Operation<Double[]> {
 
 
 	@Override
+	public String getProcessingDescription() {
+		return "Computing Correlation";
+	}
+
+
+	@Override
 	public int getStepCount() {
 		return 2;
 	}
 
 
 	@Override
-	public String getProcessingDescription() {
-		return "Computing Correlation";
-	}
-
-	
-	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }

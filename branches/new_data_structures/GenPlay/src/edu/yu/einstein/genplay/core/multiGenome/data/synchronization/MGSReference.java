@@ -25,19 +25,16 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.comparator.MGOffsetComparator;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.primitiveList.IntArrayAsOffsetList;
-
 
 
 /**
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class MGSReference implements Serializable {
 
@@ -48,13 +45,34 @@ public class MGSReference implements Serializable {
 
 
 	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
+	 * Constructor of {@link MGSReference}
 	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(allele);
+	public MGSReference () {
+		allele = new MGSAllele();
+	}
+
+
+	/**
+	 * Compacts the list of {@link MGSOffset}
+	 */
+	public void compact () {
+		allele.compact();
+	}
+
+
+	/**
+	 * @return the allele of the reference genome
+	 */
+	public MGSAllele getAllele() {
+		return allele;
+	}
+
+
+	/**
+	 * @return the name of the reference genome
+	 */
+	public String getName () {
+		return ProjectManager.getInstance().getAssembly().getDisplayName();
 	}
 
 
@@ -71,45 +89,13 @@ public class MGSReference implements Serializable {
 
 
 	/**
-	 * Constructor of {@link MGSReference}
-	 */
-	public MGSReference () {
-		allele = new MGSAllele();
-	}
-
-
-	/**
-	 * @return the name of the reference genome
-	 */
-	public String getName () {
-		return ProjectManager.getInstance().getAssembly().getDisplayName();
-	}
-
-
-	/**
-	 * @return the allele of the reference genome
-	 */
-	public MGSAllele getAllele() {
-		return allele;
-	}
-
-
-	/**
-	 * Sorts the allele according to the position of the variation
-	 */
-	public void sort() {
-		allele.sort();
-	}
-
-
-	/**
 	 * Removes all duplicate from the lists of position in every chromosome.
 	 * This algorithm keeps the last version of a duplicate.
 	 * The last duplicate, according to the {@link MGOffsetComparator} contains the longest length.
 	 */
 	public void removeDuplicate () {
-		GenomicListView<MGSOffset> chromosomeListOfList = allele.getOffsetList();									// get the chromosome list of offset list of the reference genome allele
-		GenomicListView<MGSOffset> chromosomeListOfListTmp = new GenomicDataArrayList<MGSOffset>();			// create a temporary chromosome list of offset list
+		List<List<MGSOffset>> chromosomeListOfList = allele.getOffsetList();									// get the chromosome list of offset list of the reference genome allele
+		List<List<MGSOffset>> chromosomeListOfListTmp = new ArrayList<List<MGSOffset>>();						// create a temporary chromosome list of offset list
 
 		int chromosomeListSize = ProjectManager.getInstance().getProjectChromosome().getChromosomeList().size();		// get the number of chromosome
 		for (int i = 0; i < chromosomeListSize; i++) {																	// loop from 0 to the number of chromosome (loop on the chromosomes)
@@ -142,10 +128,19 @@ public class MGSReference implements Serializable {
 
 
 	/**
-	 * Compacts the list of {@link MGSOffset}
+	 * Show the information of the {@link MGSGenome}
 	 */
-	public void compact () {
-		allele.compact();
+	public void show () {
+		System.out.println("Reference genome: " + getName());
+		allele.show();
+	}
+
+
+	/**
+	 * Sorts the allele according to the position of the variation
+	 */
+	public void sort() {
+		allele.sort();
 	}
 
 
@@ -169,10 +164,12 @@ public class MGSReference implements Serializable {
 
 
 	/**
-	 * Show the information of the {@link MGSGenome}
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
 	 */
-	public void show () {
-		System.out.println("Reference genome: " + getName());
-		allele.show();
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(allele);
 	}
 }

@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import edu.yu.einstein.genplay.dataStructure.compressible.CompressibleList;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.CompressionException;
 
@@ -41,7 +42,7 @@ import edu.yu.einstein.genplay.exception.exceptions.CompressionException;
  * The data of the list are stored in {@link ArrayList} objects of arrays of int primitives
  * @author Julien Lajugie
  */
-public class ListOfIntArraysAsIntegerList extends AbstractList<Integer> implements Serializable, List<Integer>, CompressibleList {
+public class ListOfIntArraysAsIntegerList extends AbstractList<Integer> implements Serializable, CompressibleList<Integer> {
 
 	/** Generated serial ID */
 	private static final long serialVersionUID = 8605012555225930866L;

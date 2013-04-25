@@ -25,15 +25,14 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.comparator.MGOffsetComparator;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.primitiveList.IntArrayAsOffsetList;
+
 
 /**
  * @author Nicolas Fourel
@@ -43,18 +42,38 @@ public class MGSAllele implements Serializable {
 
 	/** Default serial version ID */
 	private static final long serialVersionUID = -3160689645132714945L;
-	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
-	private GenomicListView<MGSOffset> offsetList;					// List of offset organized by chromosome
+	private static final int  		SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
+	private List<List<MGSOffset>> 	offsetList;								// List of offset organized by chromosome
 
 
 	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
+	 * Constructor of {@link MGSAllele}
 	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(offsetList);
+	public MGSAllele () {
+		offsetList = new ArrayList<List<MGSOffset>>();
+		int chromosomeListSize = ProjectManager.getInstance().getProjectChromosome().getChromosomeList().size();
+		for (int i = 0; i < chromosomeListSize; i++) {
+			offsetList.add(new IntArrayAsOffsetList());
+		}
+	}
+
+
+	/**
+	 * Compacts the list of {@link MGSOffset}
+	 */
+	public void compact () {
+		int projectChromosomeSize = ProjectManager.getInstance().getProjectChromosome().size();
+		for (int i = 0; i < projectChromosomeSize; i++) {
+			((IntArrayAsOffsetList)offsetList.get(i)).compact();
+		}
+	}
+
+
+	/**
+	 * @return the offsetList
+	 */
+	public List<List<MGSOffset>> getOffsetList() {
+		return offsetList;
 	}
 
 
@@ -67,35 +86,34 @@ public class MGSAllele implements Serializable {
 	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		offsetList = (GenomicListView<MGSOffset>) in.readObject();
-	}
-
-
-	/**
-	 * Constructor of {@link MGSAllele}
-	 */
-	public MGSAllele () {
-		offsetList = new GenomicDataArrayList<MGSOffset>();
-		int chromosomeListSize = ProjectManager.getInstance().getProjectChromosome().getChromosomeList().size();
-		for (int i = 0; i < chromosomeListSize; i++) {
-			offsetList.add(new IntArrayAsOffsetList());
-		}
+		offsetList = (List<List<MGSOffset>>) in.readObject();
 	}
 
 
 	/**
 	 * @param offsetList the offsetList to set
 	 */
-	public void setOffsetList(GenomicListView<MGSOffset> offsetList) {
+	public void setOffsetList(List<List<MGSOffset>> offsetList) {
 		this.offsetList = offsetList;
 	}
 
 
 	/**
-	 * @return the offsetList
+	 * Show the information of the {@link MGSAllele}
 	 */
-	public GenomicListView<MGSOffset> getOffsetList() {
-		return offsetList;
+	public void show () {
+		int projectChromosomeSize = ProjectManager.getInstance().getProjectChromosome().size();
+		for (int i = 0; i < projectChromosomeSize; i++) {
+			if (offsetList.get(i).size() > 0) {
+				int cpt = 0;
+				for (MGSOffset offset: offsetList.get(i)) {
+					if (cpt < 10) {
+						offset.show();
+						cpt++;
+					}
+				}
+			}
+		}
 	}
 
 
@@ -113,36 +131,12 @@ public class MGSAllele implements Serializable {
 
 
 	/**
-	 * Compacts the list of {@link MGSOffset}
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
 	 */
-	public void compact () {
-		List<Chromosome> chromosomeList = ProjectManager.getInstance().getProjectChromosome().getChromosomeList();
-		for (Chromosome chromosome: chromosomeList) {
-			((IntArrayAsOffsetList)offsetList.get(chromosome)).compact();
-		}
-	}
-
-
-	/**
-	 * Show the information of the {@link MGSAllele}
-	 */
-	public void show () {
-		List<Chromosome> chromosomeList = ProjectManager.getInstance().getProjectChromosome().getChromosomeList();
-		for (Chromosome chromosome: chromosomeList) {
-			if (offsetList.get(chromosome).size() > 0) {
-				System.out.println("Chromosome: " + chromosome.getName());
-				int cpt = 0;
-				for (MGSOffset offset: offsetList.get(chromosome)) {
-					if (cpt < 10) {
-						offset.show();
-						cpt++;
-					}
-				}
-			}
-		}
-		/*System.out.println("Chromosome: " + chromosomeList.get(0).getName());
-		for (MGOffset offset: offsetList.get(chromosomeList.get(0))) {
-			offset.show();
-		}*/
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(offsetList);
 	}
 }

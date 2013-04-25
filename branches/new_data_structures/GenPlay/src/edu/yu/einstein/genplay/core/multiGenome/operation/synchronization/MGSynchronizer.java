@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.yu.einstein.genplay.core.manager.project.MultiGenomeProject;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
@@ -48,8 +49,6 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.VCFLineUtility;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.VariantType;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.primitiveList.IntArrayAsOffsetList;
 
 /**
@@ -71,42 +70,10 @@ public class MGSynchronizer implements VCFScannerReceiver, Serializable {
 
 	// Attributes used for the synchronization
 	private Map<Chromosome, Integer> chromosomeIndexes;
-	private GenomicListView<MGSOffset> referenceOffsetList;
+	private List<List<MGSOffset>> referenceOffsetList;
 	private VCFFile currentFile;
 	private VCFFileStatistics currentStatistics;
 	private List<String> currentGenomes;
-
-
-	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(chromosomeIndexes);
-		out.writeObject(referenceOffsetList);
-		out.writeObject(currentFile);
-		out.writeObject(currentStatistics);
-		out.writeObject(currentGenomes);
-	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	@SuppressWarnings("unchecked")
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		chromosomeIndexes = (Map<Chromosome, Integer>) in.readObject();
-		referenceOffsetList = (GenomicListView<MGSOffset>) in.readObject();
-		currentFile = (VCFFile) in.readObject();
-		currentStatistics = (VCFFileStatistics) in.readObject();
-		currentGenomes = (List<String>) in.readObject();
-	}
 
 
 	/**
@@ -119,8 +86,145 @@ public class MGSynchronizer implements VCFScannerReceiver, Serializable {
 	}
 
 
+	/**
+	 * Creates an offset
+	 * @param offsetList		the full list of offsets
+	 * @param currentOffset		the offset being processed
+	 * @param lastRefPosition	the last reference genome position
+	 * @param additionalLength	the total length of all insertion between two deletion
+	 * @param additionalValue	only in the case where two or more insertion happen at the same position and the one of the actual offset is not the longest one
+	 * @return					a new offset corresponding to the current process
+	 */
+	private MGSOffset getNewOffset (List<MGSOffset> offsetList, MGSOffset currentOffset, int lastRefPosition, int additionalLength, int additionalValue) {
+		MGSOffset offset = null;
+		int newGenomePosition = 0;
+		int newOffsetValue = 0;
+
+		if (offsetList.size() == 0) {
+			newGenomePosition = currentOffset.getPosition();
+		} else {
+			newGenomePosition = (currentOffset.getPosition() - lastRefPosition) + getOffset(offsetList).getPosition() + additionalLength;
+			newOffsetValue = getOffset(offsetList).getValue();
+		}
+		newOffsetValue += Math.abs(currentOffset.getValue());
+		newGenomePosition += additionalValue + 1;
+
+		offset = new MGSOffset(newGenomePosition, newOffsetValue);
+
+		return offset;
+	}
+
+
+	/**
+	 * Look for an offset in an offset list according to an index.
+	 * Checks if the index is valid and return the offset.
+	 * @param offsetList 	the list of offset
+	 * @param index			the index of the offset in the list
+	 * @return				the offset if the index is valid, null otherwise
+	 */
+	private MGSOffset getOffset (List<MGSOffset> offsetList) {
+		if (offsetList.size() > 0) {
+			return offsetList.get(offsetList.size() - 1);
+		}
+		return null;
+	}
+
+
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////	Read files & insert data
+
+	/**
+	 * Look for an offset in an offset list according to an index.
+	 * Checks if the index is valid and return the offset.
+	 * @param offsetList 	the list of offset
+	 * @param index			the index of the offset in the list
+	 * @return				the offset if the index is valid, null otherwise
+	 */
+	private MGSOffset getOffset (List<MGSOffset> offsetList, int index) {
+		if (index < offsetList.size()) {
+			return offsetList.get(index);
+		}
+		return null;
+	}
+
+
+	/**
+	 * Retrieves the name of the genomes required in the project that are present in a VCF file.
+	 * A project does not necessary require all genomes present in a VCF file.
+	 * @param vcfFile	VCF file
+	 * @return			the list of genome names required for the project and present in the VCF file
+	 */
+	private List<String> getRequiredGenomeNamesFromAReader (VCFFile vcfFile) {
+		List<String> requiredGenomeNames = new ArrayList<String>();
+		List<String> allGenomeNames = multiGenomeProject.getGenomeNames();
+		List<String> readerGenomeNames = vcfFile.getHeader().getGenomeNames();
+
+		for (String readerGenomeName: readerGenomeNames) {
+			if (allGenomeNames.contains(readerGenomeName)) {
+				requiredGenomeNames.add(readerGenomeName);
+			}
+		}
+
+		return requiredGenomeNames;
+	}
+
+
+	/**
+	 * @param alternative ALT field (or part of it)
+	 * @return true if the given alternative is coded as an SV
+	 */
+	private boolean isStructuralVariant (String alternative) {
+		if (alternative.charAt(0) == '<') {
+			return true;
+		}
+		return false;
+	}
+
+
+	/**
+	 * Defines if a variant is heterozygote according to its genotype.
+	 * @param firstAlleleNumber		number related to the "first" allele
+	 * @param secondAlleleNumber	number related to the "second" allele
+	 * @return	true if the variant is heterozygote, false otherwise
+	 */
+	private boolean isVariantHeterozygote (int firstAlleleNumber, int secondAlleleNumber) {
+		if (firstAlleleNumber != secondAlleleNumber) {
+			if ((firstAlleleNumber >= 0) || (secondAlleleNumber >= 0)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	/**
+	 * Defines if a variant is homozygote according to its genotype.
+	 * @param firstAlleleNumber		number related to the "first" allele
+	 * @param secondAlleleNumber	number related to the "second" allele
+	 * @return	true if the variant is homozygote, false otherwise
+	 */
+	private boolean isVariantHomozygote (int firstAlleleNumber, int secondAlleleNumber) {
+		if ((firstAlleleNumber == secondAlleleNumber) && (firstAlleleNumber >= 0)) {
+			return true;
+		}
+		return false;
+	}
+
+
+	/**
+	 * Performs the synchronization for every genome of the project.
+	 * The process is separated on 3 levels:
+	 * - genomes
+	 * - alleles
+	 * - chromosomes
+	 * (Makes the reading easier)
+	 */
+	public void performPositionSynchronization () {
+		referenceOffsetList = multiGenomeProject.getMultiGenome().getReferenceGenome().getAllele().getOffsetList();
+		synchronizeToGenomesLevel();
+		multiGenomeProject.getMultiGenome().getReferenceGenome().synchronizePosition();
+	}
+
 
 	/**
 	 * Processes all files and insert required synchronization data into memory.
@@ -183,6 +287,8 @@ public class MGSynchronizer implements VCFScannerReceiver, Serializable {
 					byteGenotypeArray[i] = REFERENCE;
 					break;
 				default:
+					ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+					int chromosomeIndex = projectChromosome.getIndex(chromosome);
 					byteGenotypeArray[i] = (byte) currentAltIndex;
 					int alternativeLength = line.getAlternativesLength()[currentAltIndex];				// we retrieve its length
 					VariantType variantType = line.getAlternativesTypes()[currentAltIndex];				// get the type of variant according to the length of the variation
@@ -190,10 +296,10 @@ public class MGSynchronizer implements VCFScannerReceiver, Serializable {
 					currentFile.addVariantType(genomeName, variantType);								// notice the reader of the variant type
 
 					if (variantType != VariantType.SNPS) {
-						genome.getAllele(i).getOffsetList().get(chromosome).add(new MGSOffset(referencePosition, alternativeLength));
+						genome.getAllele(i).getOffsetList().get(chromosomeIndex).add(new MGSOffset(referencePosition, alternativeLength));
 
 						if (variantType == VariantType.INSERTION) {
-							referenceOffsetList.get(chromosome).add(new MGSOffset(referencePosition, alternativeLength));				// add the offset to the reference genome allele if it is an insertion
+							referenceOffsetList.get(chromosomeIndex).add(new MGSOffset(referencePosition, alternativeLength));				// add the offset to the reference genome allele if it is an insertion
 						}
 					}
 					break;
@@ -216,205 +322,23 @@ public class MGSynchronizer implements VCFScannerReceiver, Serializable {
 
 
 	/**
-	 * Retrieves the name of the genomes required in the project that are present in a VCF file.
-	 * A project does not necessary require all genomes present in a VCF file.
-	 * @param vcfFile	VCF file
-	 * @return			the list of genome names required for the project and present in the VCF file
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
 	 */
-	private List<String> getRequiredGenomeNamesFromAReader (VCFFile vcfFile) {
-		List<String> requiredGenomeNames = new ArrayList<String>();
-		List<String> allGenomeNames = multiGenomeProject.getGenomeNames();
-		List<String> readerGenomeNames = vcfFile.getHeader().getGenomeNames();
-
-		for (String readerGenomeName: readerGenomeNames) {
-			if (allGenomeNames.contains(readerGenomeName)) {
-				requiredGenomeNames.add(readerGenomeName);
-			}
-		}
-
-		return requiredGenomeNames;
-	}
-
-
-	/**
-	 * Updates statistics related to the file
-	 * @param statistic		file statistics
-	 * @param variantTypes	variant type array
-	 * @param alternatives	alternatives array
-	 */
-	private void updateFileStatistics (VCFFileStatistics statistic, VariantType[] variantTypes, String[] alternatives) {
-		statistic.incrementNumberOfLines();
-		for (int i = 0; i < variantTypes.length; i++) {
-			if (variantTypes[i] == VariantType.SNPS) {
-				statistic.incrementNumberOfSNPs();
-			} else if (variantTypes[i] == VariantType.INSERTION) {
-				if (isStructuralVariant(alternatives[i])) {
-					statistic.incrementNumberOfLongInsertions();
-				} else {
-					statistic.incrementNumberOfShortInsertions();
-				}
-			} else if (variantTypes[i] == VariantType.DELETION) {
-				if (isStructuralVariant(alternatives[i])) {
-					statistic.incrementNumberOfLongDeletions();
-				} else {
-					statistic.incrementNumberOfShortDeletions();
-				}
-			}
-		}
-	}
-
-
-	/**
-	 * @param statistic				sample statistics
-	 * @param variantTypes			array of variant types
-	 * @param firstAlleleNumber		number of the first allele
-	 * @param secondAlleleNumber	number of the second allele
-	 */
-	private void updateGenotypeSampleStatistics (VCFSampleStatistics statistic, VariantType[] variantTypes, byte[] alleleIndexes) {
-		boolean hemizygote = false;
-		boolean homozygote = false;
-		boolean heterozygote = false;
-		if (alleleIndexes.length > 0) {
-			if (alleleIndexes.length == 1) {
-				hemizygote = true;
-			} else {
-				homozygote = isVariantHomozygote(alleleIndexes[0], alleleIndexes[1]);
-				heterozygote = isVariantHeterozygote(alleleIndexes[0], alleleIndexes[1]);
-			}
-
-			for (VariantType variantType: variantTypes) {
-				if (homozygote) {
-					if (alleleIndexes[0] > -1) {
-						if (variantType == VariantType.SNPS) {
-							statistic.incrementNumberOfHomozygoteSNPs();
-						} else if (variantType == VariantType.INSERTION) {
-							statistic.incrementNumberOfHomozygoteInsertions();
-						} else if (variantType == VariantType.DELETION) {
-							statistic.incrementNumberOfHomozygoteDeletions();
-						}
-					}
-				} else if (heterozygote) {
-					if (variantType == VariantType.SNPS) {
-						statistic.incrementNumberOfHeterozygoteSNPs();
-					} else if (variantType == VariantType.INSERTION) {
-						statistic.incrementNumberOfHeterozygoteInsertions();
-					} else if (variantType == VariantType.DELETION) {
-						statistic.incrementNumberOfHeterozygoteDeletions();
-					}
-				} else if (hemizygote) {
-					if (variantType == VariantType.SNPS) {
-						statistic.incrementNumberOfHemizygoteSNPs();
-					} else if (variantType == VariantType.INSERTION) {
-						statistic.incrementNumberOfHemizygoteInsertions();
-					} else if (variantType == VariantType.DELETION) {
-						statistic.incrementNumberOfHemizygoteDeletions();
-					}
-				}
-			}
-		}
-	}
-
-
-	/**
-	 * Defines if a variant is homozygote according to its genotype.
-	 * @param firstAlleleNumber		number related to the "first" allele
-	 * @param secondAlleleNumber	number related to the "second" allele
-	 * @return	true if the variant is homozygote, false otherwise
-	 */
-	private boolean isVariantHomozygote (int firstAlleleNumber, int secondAlleleNumber) {
-		if ((firstAlleleNumber == secondAlleleNumber) && (firstAlleleNumber >= 0)) {
-			return true;
-		}
-		return false;
-	}
-
-
-	/**
-	 * Defines if a variant is heterozygote according to its genotype.
-	 * @param firstAlleleNumber		number related to the "first" allele
-	 * @param secondAlleleNumber	number related to the "second" allele
-	 * @return	true if the variant is heterozygote, false otherwise
-	 */
-	private boolean isVariantHeterozygote (int firstAlleleNumber, int secondAlleleNumber) {
-		if (firstAlleleNumber != secondAlleleNumber) {
-			if ((firstAlleleNumber >= 0) || (secondAlleleNumber >= 0)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-
-	/**
-	 * Updates statistics related to the sample
-	 * @param statistic		sample statistics
-	 * @param variantType	variant type
-	 * @param alternative	alternative
-	 */
-	private void updateVariationSampleStatistics (VCFSampleStatistics statistic, VariantType variantType, String alternative) {
-		if (variantType == VariantType.SNPS) {
-			statistic.incrementNumberOfSNPs();
-		} else if (variantType == VariantType.INSERTION) {
-			if (isStructuralVariant(alternative)) {
-				statistic.incrementNumberOfLongInsertions();
-			} else {
-				statistic.incrementNumberOfShortInsertions();
-			}
-		} else if (variantType == VariantType.DELETION) {
-			if (isStructuralVariant(alternative)) {
-				statistic.incrementNumberOfLongDeletions();
-			} else {
-				statistic.incrementNumberOfShortDeletions();
-			}
-		}
-	}
-
-
-	/**
-	 * @param alternative ALT field (or part of it)
-	 * @return true if the given alternative is coded as an SV
-	 */
-	private boolean isStructuralVariant (String alternative) {
-		if (alternative.charAt(0) == '<') {
-			return true;
-		}
-		return false;
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		chromosomeIndexes = (Map<Chromosome, Integer>) in.readObject();
+		referenceOffsetList = (List<List<MGSOffset>>) in.readObject();
+		currentFile = (VCFFile) in.readObject();
+		currentStatistics = (VCFFileStatistics) in.readObject();
+		currentGenomes = (List<String>) in.readObject();
 	}
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////	Synchronizes the data
-
-
-	/**
-	 * Performs the synchronization for every genome of the project.
-	 * The process is separated on 3 levels:
-	 * - genomes
-	 * - alleles
-	 * - chromosomes
-	 * (Makes the reading easier)
-	 */
-	public void performPositionSynchronization () {
-		referenceOffsetList = multiGenomeProject.getMultiGenome().getReferenceGenome().getAllele().getOffsetList();
-		synchronizeToGenomesLevel();
-		multiGenomeProject.getMultiGenome().getReferenceGenome().synchronizePosition();
-	}
-
-
-	/**
-	 * This method manages the position synchronization for every genome.
-	 * It handles the genomes loop in order to process the synchronization for both alleles of each of them.
-	 */
-	private void synchronizeToGenomesLevel () {
-		for (String genomeName: multiGenomeProject.getGenomeNames()) {																// scan on every genome
-			MGSGenome genomeInformation = multiGenomeProject.getMultiGenome().getGenomeInformation(genomeName);						// current genome information
-			List<MGSAllele> alleles = genomeInformation.getAlleles();
-
-			for (MGSAllele allele: alleles) {
-				GenomicListView<MGSOffset> chromosomeAlleleAOffsetList = synchronizeToAlleleLevel(allele.getOffsetList());		// get the synchronized chromosome list of list for the current allele
-				allele.setOffsetList(chromosomeAlleleAOffsetList);																	// set the current chromosome list of list of the current allele with the synchronized one
-			}
-		}
-	}
 
 
 	/**
@@ -423,9 +347,9 @@ public class MGSynchronizer implements VCFScannerReceiver, Serializable {
 	 * @param chromosomeAlleleOffsetList chromosome list of list of an allele
 	 * @return a synchronized chromosome list of list
 	 */
-	private GenomicListView<MGSOffset> synchronizeToAlleleLevel (GenomicListView<MGSOffset> chromosomeAlleleOffsetList) {
+	private List<List<MGSOffset>> synchronizeToAlleleLevel (List<List<MGSOffset>> chromosomeAlleleOffsetList) {
 		int chromosomeListSize = ProjectManager.getInstance().getProjectChromosome().getChromosomeList().size();						// get the number of chromosome
-		GenomicListView<MGSOffset> list = new GenomicDataArrayList<MGSOffset>();												// instantiate a new chromosome list of list (to insert the synchronized list of offset)
+		List<List<MGSOffset>> list = new ArrayList<List<MGSOffset>>();																	// instantiate a new chromosome list of list (to insert the synchronized list of offset)
 
 		for (int i = 0; i < chromosomeListSize; i++) {																					// scan on the number of chromosome (loop on ever chromosome)
 			List<MGSOffset> referenceOffsetList = this.referenceOffsetList.get(i);														// get the list of offset from the reference genome for the current chromosome
@@ -521,61 +445,138 @@ public class MGSynchronizer implements VCFScannerReceiver, Serializable {
 
 
 	/**
-	 * Creates an offset
-	 * @param offsetList		the full list of offsets
-	 * @param currentOffset		the offset being processed
-	 * @param lastRefPosition	the last reference genome position
-	 * @param additionalLength	the total length of all insertion between two deletion
-	 * @param additionalValue	only in the case where two or more insertion happen at the same position and the one of the actual offset is not the longest one
-	 * @return					a new offset corresponding to the current process
+	 * This method manages the position synchronization for every genome.
+	 * It handles the genomes loop in order to process the synchronization for both alleles of each of them.
 	 */
-	private MGSOffset getNewOffset (List<MGSOffset> offsetList, MGSOffset currentOffset, int lastRefPosition, int additionalLength, int additionalValue) {
-		MGSOffset offset = null;
-		int newGenomePosition = 0;
-		int newOffsetValue = 0;
+	private void synchronizeToGenomesLevel () {
+		for (String genomeName: multiGenomeProject.getGenomeNames()) {																// scan on every genome
+			MGSGenome genomeInformation = multiGenomeProject.getMultiGenome().getGenomeInformation(genomeName);						// current genome information
+			List<MGSAllele> alleles = genomeInformation.getAlleles();
 
-		if (offsetList.size() == 0) {
-			newGenomePosition = currentOffset.getPosition();
-		} else {
-			newGenomePosition = (currentOffset.getPosition() - lastRefPosition) + getOffset(offsetList).getPosition() + additionalLength;
-			newOffsetValue = getOffset(offsetList).getValue();
+			for (MGSAllele allele: alleles) {
+				List<List<MGSOffset>> chromosomeAlleleAOffsetList = synchronizeToAlleleLevel(allele.getOffsetList());		// get the synchronized chromosome list of list for the current allele
+				allele.setOffsetList(chromosomeAlleleAOffsetList);															// set the current chromosome list of list of the current allele with the synchronized one
+			}
 		}
-		newOffsetValue += Math.abs(currentOffset.getValue());
-		newGenomePosition += additionalValue + 1;
-
-		offset = new MGSOffset(newGenomePosition, newOffsetValue);
-
-		return offset;
 	}
 
 
 	/**
-	 * Look for an offset in an offset list according to an index.
-	 * Checks if the index is valid and return the offset.
-	 * @param offsetList 	the list of offset
-	 * @param index			the index of the offset in the list
-	 * @return				the offset if the index is valid, null otherwise
+	 * Updates statistics related to the file
+	 * @param statistic		file statistics
+	 * @param variantTypes	variant type array
+	 * @param alternatives	alternatives array
 	 */
-	private MGSOffset getOffset (List<MGSOffset> offsetList) {
-		if (offsetList.size() > 0) {
-			return offsetList.get(offsetList.size() - 1);
+	private void updateFileStatistics (VCFFileStatistics statistic, VariantType[] variantTypes, String[] alternatives) {
+		statistic.incrementNumberOfLines();
+		for (int i = 0; i < variantTypes.length; i++) {
+			if (variantTypes[i] == VariantType.SNPS) {
+				statistic.incrementNumberOfSNPs();
+			} else if (variantTypes[i] == VariantType.INSERTION) {
+				if (isStructuralVariant(alternatives[i])) {
+					statistic.incrementNumberOfLongInsertions();
+				} else {
+					statistic.incrementNumberOfShortInsertions();
+				}
+			} else if (variantTypes[i] == VariantType.DELETION) {
+				if (isStructuralVariant(alternatives[i])) {
+					statistic.incrementNumberOfLongDeletions();
+				} else {
+					statistic.incrementNumberOfShortDeletions();
+				}
+			}
 		}
-		return null;
 	}
 
 
 	/**
-	 * Look for an offset in an offset list according to an index.
-	 * Checks if the index is valid and return the offset.
-	 * @param offsetList 	the list of offset
-	 * @param index			the index of the offset in the list
-	 * @return				the offset if the index is valid, null otherwise
+	 * @param statistic				sample statistics
+	 * @param variantTypes			array of variant types
+	 * @param firstAlleleNumber		number of the first allele
+	 * @param secondAlleleNumber	number of the second allele
 	 */
-	private MGSOffset getOffset (List<MGSOffset> offsetList, int index) {
-		if (index < offsetList.size()) {
-			return offsetList.get(index);
+	private void updateGenotypeSampleStatistics (VCFSampleStatistics statistic, VariantType[] variantTypes, byte[] alleleIndexes) {
+		boolean hemizygote = false;
+		boolean homozygote = false;
+		boolean heterozygote = false;
+		if (alleleIndexes.length > 0) {
+			if (alleleIndexes.length == 1) {
+				hemizygote = true;
+			} else {
+				homozygote = isVariantHomozygote(alleleIndexes[0], alleleIndexes[1]);
+				heterozygote = isVariantHeterozygote(alleleIndexes[0], alleleIndexes[1]);
+			}
+
+			for (VariantType variantType: variantTypes) {
+				if (homozygote) {
+					if (alleleIndexes[0] > -1) {
+						if (variantType == VariantType.SNPS) {
+							statistic.incrementNumberOfHomozygoteSNPs();
+						} else if (variantType == VariantType.INSERTION) {
+							statistic.incrementNumberOfHomozygoteInsertions();
+						} else if (variantType == VariantType.DELETION) {
+							statistic.incrementNumberOfHomozygoteDeletions();
+						}
+					}
+				} else if (heterozygote) {
+					if (variantType == VariantType.SNPS) {
+						statistic.incrementNumberOfHeterozygoteSNPs();
+					} else if (variantType == VariantType.INSERTION) {
+						statistic.incrementNumberOfHeterozygoteInsertions();
+					} else if (variantType == VariantType.DELETION) {
+						statistic.incrementNumberOfHeterozygoteDeletions();
+					}
+				} else if (hemizygote) {
+					if (variantType == VariantType.SNPS) {
+						statistic.incrementNumberOfHemizygoteSNPs();
+					} else if (variantType == VariantType.INSERTION) {
+						statistic.incrementNumberOfHemizygoteInsertions();
+					} else if (variantType == VariantType.DELETION) {
+						statistic.incrementNumberOfHemizygoteDeletions();
+					}
+				}
+			}
 		}
-		return null;
+	}
+
+
+	/**
+	 * Updates statistics related to the sample
+	 * @param statistic		sample statistics
+	 * @param variantType	variant type
+	 * @param alternative	alternative
+	 */
+	private void updateVariationSampleStatistics (VCFSampleStatistics statistic, VariantType variantType, String alternative) {
+		if (variantType == VariantType.SNPS) {
+			statistic.incrementNumberOfSNPs();
+		} else if (variantType == VariantType.INSERTION) {
+			if (isStructuralVariant(alternative)) {
+				statistic.incrementNumberOfLongInsertions();
+			} else {
+				statistic.incrementNumberOfShortInsertions();
+			}
+		} else if (variantType == VariantType.DELETION) {
+			if (isStructuralVariant(alternative)) {
+				statistic.incrementNumberOfLongDeletions();
+			} else {
+				statistic.incrementNumberOfShortDeletions();
+			}
+		}
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(chromosomeIndexes);
+		out.writeObject(referenceOffsetList);
+		out.writeObject(currentFile);
+		out.writeObject(currentStatistics);
+		out.writeObject(currentGenomes);
 	}
 
 }

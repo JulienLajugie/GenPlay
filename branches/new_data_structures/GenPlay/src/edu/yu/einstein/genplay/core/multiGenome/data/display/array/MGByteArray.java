@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.security.InvalidParameterException;
 
 /**
  * @author Nicolas Fourel
@@ -187,7 +188,7 @@ public class MGByteArray implements Serializable {
 	public Integer set(int index, Integer element) {
 		// check if the value is in the range
 		if ((element > MAX_VALUE) || (element < MIN_VALUE)) {
-			throw new Invalid8BitValue(element);
+			throw new InvalidParameterException("The value of the element to set must be smaller than " + MAX_VALUE + " greater than " + MIN_VALUE);
 		}
 
 		int old = data[index];

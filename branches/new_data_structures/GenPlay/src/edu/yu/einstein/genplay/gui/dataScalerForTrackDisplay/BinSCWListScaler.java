@@ -23,9 +23,9 @@ package edu.yu.einstein.genplay.gui.dataScalerForTrackDisplay;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
-import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
@@ -34,10 +34,10 @@ import edu.yu.einstein.genplay.util.ListView.ChromosomeWindowListViews;
 
 
 /**
- * This class scales a {@link SimpleSCWList}to be displayed on a track.
+ * This class scales a {@link BinSCWListScaler} to be displayed on a track.
  * @author Julien Lajugie
  */
-public class SimpleSCWLScaler implements DataScalerForTrackDisplay<SimpleSCWList, ListView<ScoredChromosomeWindow>> {
+public class BinSCWListScaler implements DataScalerForTrackDisplay<BinList, ListView<ScoredChromosomeWindow>> {
 
 	/** Scaled chromosome */
 	private Chromosome scaledChromosome;
@@ -49,14 +49,14 @@ public class SimpleSCWLScaler implements DataScalerForTrackDisplay<SimpleSCWList
 	private ListView<ScoredChromosomeWindow> scaledSCWList;
 
 	/** Data to be scaled for track display */
-	private final SimpleSCWList dataToScale;
+	private final BinList dataToScale;
 
 
 	/**
-	 * Creates an instance of {@link SimpleSCWLScaler}
+	 * Creates an instance of {@link BinSCWListScaler}
 	 * @param dataToScale the data that needs to be scaled
 	 */
-	public SimpleSCWLScaler(SimpleSCWList dataToScale) {
+	public BinSCWListScaler(BinList dataToScale) {
 		this.dataToScale = dataToScale;
 	}
 
@@ -79,15 +79,11 @@ public class SimpleSCWLScaler implements DataScalerForTrackDisplay<SimpleSCWList
 
 
 	@Override
-	public SimpleSCWList getDataToScale() {
+	public BinList getDataToScale() {
 		return dataToScale;
 	}
 
 
-	/**
-	 * Merges two windows together if the gap between the two windows is not visible
-	 * at the current zoom level and if the scores of the windows are identical.
-	 */
 	private void scaleChromosome() {
 		ListView<ScoredChromosomeWindow> currentChromosomeList;
 		scaledSCWList = null;
@@ -103,32 +99,56 @@ public class SimpleSCWLScaler implements DataScalerForTrackDisplay<SimpleSCWList
 		if (scaledXRatio > 1) {
 			scaledSCWList = currentChromosomeList;
 		} else {
-			if (currentChromosomeList.size() > 0) {
-				// compute the width on the genome that takes up 1 pixel on the screen
-				double pixelGenomicWidth = 1 / scaledXRatio;
-				GenericSCWListViewBuilder scaledSCWListBuilder = new GenericSCWListViewBuilder();
-				int i = 0;
-				while (i < currentChromosomeList.size()) {
-					int currentStart = currentChromosomeList.get(i).getStart();
-					int currentStop = currentChromosomeList.get(i).getStop();
-					float currentScore = currentChromosomeList.get(i).getScore();
-					// we merge two windows together if there is a next window
-					// and if the gap between the current window and the next one is smaller than 1 pixel
-					// and if the score of the next window is equal to the score of the current one
-					while (((i + 1) < currentChromosomeList.size())
-							&& ((currentChromosomeList.get(i + 1).getStart() - currentStop) < pixelGenomicWidth)
-							&& (currentChromosomeList.get(i + 1).getScore() == currentScore)) {
 
-						// the new stop position is the max of the current stop and the stop of the new merged interval
-						i++;
-						// the new stop is the one of the next window
-						currentStop = currentChromosomeList.get(i).getStop();
-					}
-					scaledSCWListBuilder.addElementToBuild(currentStart, currentStop, currentScore);
-					i++;
+			// if there is to many bins to print we print the bins of the accelerator BinList
+			// (same list) with bigger binsize
+			if ((fittedXRatio * binSize) < (1 / (double)ACCELERATOR_FACTOR)) {
+				// if the accelerator binlist doesn't exist we create it
+				if (acceleratorBinList == null) {
+					acceleratorBinList = new BinList(binSize * ACCELERATOR_FACTOR, getPrecision(), ScoreOperation.AVERAGE, this, false);
+					acceleratorBinList.fittedChromosome = fittedChromosome;
+					acceleratorBinList.chromosomeChanged();
 				}
-				scaledSCWList = scaledSCWListBuilder.getListView();
+				acceleratorBinList.fittedXRatio = fittedXRatio;
+				acceleratorBinList.fitToScreen();
+				fittedDataList = acceleratorBinList.fittedDataList;
+				fittedBinSize = acceleratorBinList.fittedBinSize;
+				// else even if the binsize of the current binlist is adapted,
+				// we might still need to calculate the average if we have to print
+				//more than one bin per pixel
+			} else {
+				// we calculate how many windows are printable depending on the screen resolution
+				fittedBinSize = binSize * (int)( 1 / (fittedXRatio * binSize));
+				int binSizeRatio  = fittedBinSize / binSize;
+				// if the fitted bin size is smaller than the regular bin size we don't modify the data
+				if (fittedBinSize <= binSize) {
+					fittedDataList = acceleratorCurrentChromo;
+					fittedBinSize = binSize;
+				} else {
+					// otherwise we calculate the average because we have to print more than
+					// one bin per pixel
+					fittedDataList = new double[(acceleratorCurrentChromo.length / binSizeRatio) + 1];
+					int newIndex = 0;
+					for(int i = 0; i < acceleratorCurrentChromo.length; i += binSizeRatio) {
+						double sum = 0;
+						int n = 0;
+						for(int j = 0; j < binSizeRatio; j ++) {
+							if (((i + j) < acceleratorCurrentChromo.length) && (acceleratorCurrentChromo[i + j] != 0)){
+								sum += acceleratorCurrentChromo[i + j];
+								n++;
+							}
+						}
+						if (n > 0) {
+							fittedDataList[newIndex] = sum / n;
+						}
+						else {
+							fittedDataList[newIndex] = 0;
+						}
+						newIndex++;
+					}
+				}
 			}
+
 		}
 	}
 }
