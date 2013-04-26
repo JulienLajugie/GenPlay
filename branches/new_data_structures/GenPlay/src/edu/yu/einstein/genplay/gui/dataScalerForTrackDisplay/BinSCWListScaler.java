@@ -96,59 +96,76 @@ public class BinSCWListScaler implements DataScalerForTrackDisplay<BinList, List
 		if ((currentChromosomeList == null) || currentChromosomeList.isEmpty()) {
 			return;
 		}
-		if (scaledXRatio > 1) {
+		int binSize = dataToScale.getBinSize();
+		if ((scaledXRatio * binSize) >= 1) {
 			scaledSCWList = currentChromosomeList;
-		} else {
+			return;
+		}
+		int i =0;
+		double ratio = 0;
+		while ((i < BinList.AVERAGE_BIN_SIZE_FACTORS.length) && (ratio < 1)) {
+			binSize = dataToScale.getBinSize() * BinList.AVERAGE_BIN_SIZE_FACTORS[i];
+			ratio = scaledXRatio * binSize;
+			scaledSCWList = dataToScale.getAveragedList(i).get(scaledChromosome);
+		}
+		if (ratio == 1) {
+			return;
+		}
 
-			// if there is to many bins to print we print the bins of the accelerator BinList
-			// (same list) with bigger binsize
-			if ((fittedXRatio * binSize) < (1 / (double)ACCELERATOR_FACTOR)) {
-				// if the accelerator binlist doesn't exist we create it
-				if (acceleratorBinList == null) {
-					acceleratorBinList = new BinList(binSize * ACCELERATOR_FACTOR, getPrecision(), ScoreOperation.AVERAGE, this, false);
-					acceleratorBinList.fittedChromosome = fittedChromosome;
-					acceleratorBinList.chromosomeChanged();
-				}
-				acceleratorBinList.fittedXRatio = fittedXRatio;
-				acceleratorBinList.fitToScreen();
-				fittedDataList = acceleratorBinList.fittedDataList;
-				fittedBinSize = acceleratorBinList.fittedBinSize;
-				// else even if the binsize of the current binlist is adapted,
-				// we might still need to calculate the average if we have to print
-				//more than one bin per pixel
-			} else {
-				// we calculate how many windows are printable depending on the screen resolution
-				fittedBinSize = binSize * (int)( 1 / (fittedXRatio * binSize));
-				int binSizeRatio  = fittedBinSize / binSize;
-				// if the fitted bin size is smaller than the regular bin size we don't modify the data
-				if (fittedBinSize <= binSize) {
-					fittedDataList = acceleratorCurrentChromo;
-					fittedBinSize = binSize;
-				} else {
-					// otherwise we calculate the average because we have to print more than
-					// one bin per pixel
-					fittedDataList = new double[(acceleratorCurrentChromo.length / binSizeRatio) + 1];
-					int newIndex = 0;
-					for(int i = 0; i < acceleratorCurrentChromo.length; i += binSizeRatio) {
-						double sum = 0;
-						int n = 0;
-						for(int j = 0; j < binSizeRatio; j ++) {
-							if (((i + j) < acceleratorCurrentChromo.length) && (acceleratorCurrentChromo[i + j] != 0)){
-								sum += acceleratorCurrentChromo[i + j];
-								n++;
-							}
-						}
-						if (n > 0) {
-							fittedDataList[newIndex] = sum / n;
-						}
-						else {
-							fittedDataList[newIndex] = 0;
-						}
-						newIndex++;
+		// we calculate how many windows are printable depending on the screen resolution
+		int fittedBinSize = binSize * (int) ( 1 / (scaledXRatio * binSize));
+		// if the fitted bin size is smaller than the regular bin size we don't modify the data
+		if (fittedBinSize <= binSize) {
+			scaledSCWList = acceleratorCurrentChromo;
+			fittedBinSize = binSize;
+		} else {
+			// otherwise we calculate the average because we have to print more than
+			// one bin per pixel
+			scaledSCWList = new double[(acceleratorCurrentChromo.length / binSizeRatio) + 1];
+			int newIndex = 0;
+			for(int i = 0; i < acceleratorCurrentChromo.length; i += binSizeRatio) {
+				double sum = 0;
+				int n = 0;
+				for(int j = 0; j < binSizeRatio; j ++) {
+					if (((i + j) < acceleratorCurrentChromo.length) && (acceleratorCurrentChromo[i + j] != 0)){
+						sum += acceleratorCurrentChromo[i + j];
+						n++;
 					}
 				}
+				if (n > 0) {
+					fittedDataList[newIndex] = sum / n;
+				}
+				else {
+					fittedDataList[newIndex] = 0;
+				}
+				newIndex++;
 			}
+		}
+
+
+		// if there is to many bins to print we print the bins of the accelerator BinList
+		// (same list) with bigger binsize
+		if ((fittedXRatio * binSize) < (1 / (double)ACCELERATOR_FACTOR)) {
+			// if the accelerator binlist doesn't exist we create it
+			if (acceleratorBinList == null) {
+				acceleratorBinList = new BinList(binSize * ACCELERATOR_FACTOR, getPrecision(), ScoreOperation.AVERAGE, this, false);
+				acceleratorBinList.fittedChromosome = fittedChromosome;
+				acceleratorBinList.chromosomeChanged();
+			}
+			acceleratorBinList.fittedXRatio = fittedXRatio;
+			acceleratorBinList.fitToScreen();
+			fittedDataList = acceleratorBinList.fittedDataList;
+			fittedBinSize = acceleratorBinList.fittedBinSize;
+			// else even if the binsize of the current binlist is adapted,
+			// we might still need to calculate the average if we have to print
+			//more than one bin per pixel
+		} else {
+			// we calculate how many windows are printable depending on the screen resolution
+			fittedBinSize = binSize * (int)( 1 / (fittedXRatio * binSize));
+			int binSizeRatio  = fittedBinSize / binSize;
 
 		}
+
 	}
+
 }

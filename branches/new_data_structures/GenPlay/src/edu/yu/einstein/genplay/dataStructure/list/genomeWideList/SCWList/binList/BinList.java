@@ -54,6 +54,9 @@ public final class BinList implements Serializable, SCWList, Iterator<ListView<S
 	/** Version number of the class */
 	private static final transient int CLASS_VERSION_NUMBER = 0;
 
+	/** Value of the BinSize factors averaged BinList */
+	public static final int[] AVERAGE_BIN_SIZE_FACTORS = {100, 1000};
+
 	/** Size of the bins in bp */
 	private final int binSize;
 
