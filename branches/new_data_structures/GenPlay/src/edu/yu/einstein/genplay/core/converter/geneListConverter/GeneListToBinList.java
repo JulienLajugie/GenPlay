@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.converter.Converter;
-import edu.yu.einstein.genplay.core.pileupFlattener.PileupFlattener;
+import edu.yu.einstein.genplay.core.pileupFlattener.SimpleSCWPileupFlattener;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.bin.BinListViewBuilder;
@@ -68,7 +68,7 @@ public class GeneListToBinList implements Converter {
 		List<ListView<ScoredChromosomeWindow>> resultList = new ArrayList<ListView<ScoredChromosomeWindow>>();
 		for (ListView<Gene> currentLV: list) {
 			ListViewBuilder<ScoredChromosomeWindow> lvBuilder = new BinListViewBuilder(binSize);
-			PileupFlattener flattener = new PileupFlattener(method);
+			SimpleSCWPileupFlattener flattener = new SimpleSCWPileupFlattener(method);
 			for (ScoredChromosomeWindow scw: currentLV) {
 				List<ScoredChromosomeWindow> flattenedWindows = flattener.addWindow(scw);
 				if (!flattenedWindows.isEmpty()) {

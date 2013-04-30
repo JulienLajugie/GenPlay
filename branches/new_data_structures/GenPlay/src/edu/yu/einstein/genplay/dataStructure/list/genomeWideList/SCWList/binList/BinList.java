@@ -93,14 +93,14 @@ public final class BinList implements Serializable, SCWList, Iterator<ListView<S
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
-	public BinList(List<BinListView> data, int binSize) throws InterruptedException, ExecutionException {
+	public BinList(List<ListView<ScoredChromosomeWindow>> data, int binSize) throws InterruptedException, ExecutionException {
 		super();
 		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		this.binSize = binSize;
 		this.data = new BinListView[projectChromosome.size()];
 		for (int i = 0; i < projectChromosome.size(); i++){
 			if (i < data.size()) {
-				this.data[i] = data.get(i);
+				this.data[i] = (BinListView) data.get(i);
 			}
 		}
 		// computes some statistic values for this list

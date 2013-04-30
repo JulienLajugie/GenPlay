@@ -32,7 +32,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.core.pileupFlattener.ListOfListViewsIterator;
-import edu.yu.einstein.genplay.core.pileupFlattener.PileupFlattener;
+import edu.yu.einstein.genplay.core.pileupFlattener.SimpleSCWPileupFlattener;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
@@ -86,7 +86,7 @@ public class SCWLOTwoLayers implements Operation<SCWList>, Stoppable {
 					listOfLV.add(list1.get(currentChromosome));
 					listOfLV.add(list2.get(currentChromosome));
 					Iterator<ScoredChromosomeWindow> listOfLVIterator = new ListOfListViewsIterator<ScoredChromosomeWindow>(listOfLV);
-					PileupFlattener pileupFlattener = new PileupFlattener(scoreOperation);
+					SimpleSCWPileupFlattener pileupFlattener = new SimpleSCWPileupFlattener(scoreOperation);
 					while (listOfLVIterator.hasNext() && !stopped) {
 						ScoredChromosomeWindow currentWindow = listOfLVIterator.next();
 						List<ScoredChromosomeWindow> flattenedWindows = pileupFlattener.addWindow(currentWindow);

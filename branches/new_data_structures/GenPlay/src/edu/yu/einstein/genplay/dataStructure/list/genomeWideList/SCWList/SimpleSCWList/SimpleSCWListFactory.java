@@ -27,6 +27,7 @@ import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.IO.dataReader.SCWReader;
 import edu.yu.einstein.genplay.core.pileupFlattener.PileupFlattener;
+import edu.yu.einstein.genplay.core.pileupFlattener.SimpleSCWPileupFlattener;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.dense.DenseSCWListViewBuilder;
@@ -61,9 +62,9 @@ public class SimpleSCWListFactory {
 	 * @throws ObjectAlreadyBuiltException
 	 * @throws InvalidChromosomeException
 	 */
-	public static SCWList createDenseSCWArrayList(SCWReader scwReader, ScoreOperation scoreOperation) throws InterruptedException, ExecutionException, CloneNotSupportedException, InvalidChromosomeException, ObjectAlreadyBuiltException, IOException {
+	public static SCWList createDenseSCWList(SCWReader scwReader, ScoreOperation scoreOperation) throws InterruptedException, ExecutionException, CloneNotSupportedException, InvalidChromosomeException, ObjectAlreadyBuiltException, IOException {
 		ListViewBuilder<ScoredChromosomeWindow> lvBuilderPrototype = new DenseSCWListViewBuilder();
-		return createSimpleSCWArrayList(scwReader, lvBuilderPrototype, scoreOperation);
+		return createSimpleSCWList(scwReader, lvBuilderPrototype, scoreOperation);
 	}
 
 
@@ -81,9 +82,9 @@ public class SimpleSCWListFactory {
 	 * @throws ObjectAlreadyBuiltException
 	 * @throws InvalidChromosomeException
 	 */
-	public static SCWList createGenericSCWArrayList(SCWReader scwReader, ScoreOperation scoreOperation) throws InterruptedException, ExecutionException, CloneNotSupportedException, InvalidChromosomeException, ObjectAlreadyBuiltException, IOException {
+	public static SCWList createGenericSCWList(SCWReader scwReader, ScoreOperation scoreOperation) throws InterruptedException, ExecutionException, CloneNotSupportedException, InvalidChromosomeException, ObjectAlreadyBuiltException, IOException {
 		ListViewBuilder<ScoredChromosomeWindow> lvBuilderPrototype = new GenericSCWListViewBuilder();
-		return createSimpleSCWArrayList(scwReader, lvBuilderPrototype, scoreOperation);
+		return createSimpleSCWList(scwReader, lvBuilderPrototype, scoreOperation);
 	}
 
 
@@ -100,9 +101,9 @@ public class SimpleSCWListFactory {
 	 * @throws ObjectAlreadyBuiltException
 	 * @throws InvalidChromosomeException
 	 */
-	public static SCWList createMaskSCWArrayList(SCWReader scwReader, ScoreOperation scoreOperation) throws InterruptedException, ExecutionException, CloneNotSupportedException, InvalidChromosomeException, ObjectAlreadyBuiltException, IOException {
+	public static SCWList createMaskSCWList(SCWReader scwReader, ScoreOperation scoreOperation) throws InterruptedException, ExecutionException, CloneNotSupportedException, InvalidChromosomeException, ObjectAlreadyBuiltException, IOException {
 		ListViewBuilder<ScoredChromosomeWindow> lvBuilderPrototype = new MaskListViewBuilder();
-		return createSimpleSCWArrayList(scwReader, lvBuilderPrototype, scoreOperation);
+		return createSimpleSCWList(scwReader, lvBuilderPrototype, scoreOperation);
 	}
 
 
@@ -121,12 +122,12 @@ public class SimpleSCWListFactory {
 	 * @throws ObjectAlreadyBuiltException
 	 * @throws InvalidChromosomeException
 	 */
-	private static SCWList createSimpleSCWArrayList(SCWReader scwReader, ListViewBuilder<ScoredChromosomeWindow> lvBuilderPrototype, ScoreOperation scoreOperation) throws InterruptedException, ExecutionException, CloneNotSupportedException, InvalidChromosomeException, ObjectAlreadyBuiltException, IOException {
+	private static SCWList createSimpleSCWList(SCWReader scwReader, ListViewBuilder<ScoredChromosomeWindow> lvBuilderPrototype, ScoreOperation scoreOperation) throws InterruptedException, ExecutionException, CloneNotSupportedException, InvalidChromosomeException, ObjectAlreadyBuiltException, IOException {
 		ListOfListViewBuilder<ScoredChromosomeWindow> builder = new ListOfListViewBuilder<ScoredChromosomeWindow>(lvBuilderPrototype);
 
 		Chromosome currentChromosome = null;
 		// create object that will "flattened" pileups of overlapping windows
-		PileupFlattener flattener = new PileupFlattener(scoreOperation);
+		PileupFlattener flattener = new SimpleSCWPileupFlattener(scoreOperation);
 		while (scwReader.readItem()) {
 			ScoredChromosomeWindow currentWindow = new SimpleScoredChromosomeWindow(scwReader.getStart(), scwReader.getStop(), scwReader.getScore());
 			if (currentChromosome == null) {

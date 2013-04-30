@@ -94,7 +94,7 @@ public final class TAAddMask extends TrackListActionExtractorWorker<SCWList> {
 
 	@Override
 	public SCWList generateList() throws Exception {
-		SCWList maskList = SimpleSCWListFactory.createMaskSCWArrayList((SCWReader) extractor, null);
+		SCWList maskList = SimpleSCWListFactory.createMaskSCWList((SCWReader) extractor, null);
 		return maskList;
 	}
 

@@ -32,7 +32,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.core.pileupFlattener.ListOfListViewsIterator;
-import edu.yu.einstein.genplay.core.pileupFlattener.PileupFlattener;
+import edu.yu.einstein.genplay.core.pileupFlattener.SimpleSCWPileupFlattener;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.mask.MaskListViewBuilder;
@@ -91,7 +91,7 @@ public class RFLOConvertIntoMask implements Operation<SCWList> {
 							}
 						}
 						Iterator<ScoredChromosomeWindow> listOfLVIterator = new ListOfListViewsIterator<ScoredChromosomeWindow>(listOfLV);
-						PileupFlattener pileupFlattener = new PileupFlattener(ScoreOperation.ADDITION);
+						SimpleSCWPileupFlattener pileupFlattener = new SimpleSCWPileupFlattener(ScoreOperation.ADDITION);
 						while (listOfLVIterator.hasNext() && !stopped) {
 							ScoredChromosomeWindow currentWindow = listOfLVIterator.next();
 							List<ScoredChromosomeWindow> flattenedWindows = pileupFlattener.addWindow(currentWindow);

@@ -148,7 +148,7 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 			scoreCalculation = nctd.getScoreCalculationMethod();
 			scorePrecision = nctd.getDataPrecision();
 			notifyActionStart("Generating Layer", SimpleSCWList.getCreationStepCount(SCWListType.GENERIC), true);
-			SCWList scwList = SimpleSCWListFactory.createGenericSCWArrayList((SCWReader) extractor, scoreCalculation);
+			SCWList scwList = SimpleSCWListFactory.createGenericSCWList((SCWReader) extractor, scoreCalculation);
 			return scwList;
 		}
 		throw new InterruptedException();

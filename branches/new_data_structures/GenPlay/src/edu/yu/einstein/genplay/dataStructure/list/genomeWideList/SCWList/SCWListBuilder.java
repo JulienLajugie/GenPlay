@@ -22,7 +22,6 @@
 package edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -101,12 +100,8 @@ public class SCWListBuilder {
 			return null;
 		}
 		if (data.get(0) instanceof BinListView) {
-			List<BinListView> binListData = new ArrayList<BinListView>();
-			for (ListView<ScoredChromosomeWindow> currentList: data) {
-				binListData.add((BinListView) currentList);
-			}
 			BinListView binListView = (BinListView) data.get(0);
-			return new BinList(binListData, binListView.getBinSize());
+			return new BinList(data, binListView.getBinSize());
 		} else {
 			return new SimpleSCWList(data);
 		}

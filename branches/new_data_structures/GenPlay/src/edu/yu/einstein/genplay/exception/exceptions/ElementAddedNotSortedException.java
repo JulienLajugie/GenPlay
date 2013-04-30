@@ -21,13 +21,13 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.exception.exceptions;
 
-import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.core.pileupFlattener.PileupFlattener;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 
 
 /**
- * Exception thrown by {@link ListViewBuilder} objects when the elements added to
- * the {@link ListView} to be constructed are not ordered
+ * Exception thrown by {@link ListViewBuilder} and {@link PileupFlattener} objects
+ * when the elements added are not ordered
  * @author Julien Lajugie
  */
 public class ElementAddedNotSortedException extends RuntimeException {
