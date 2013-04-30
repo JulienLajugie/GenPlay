@@ -27,6 +27,7 @@ import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.primitiveList.ListOfIntArraysAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.exception.exceptions.ElementAddedNotSortedException;
 import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
 
 /**
@@ -59,26 +60,37 @@ public final class MaskListViewBuilder implements ListViewBuilder<ScoredChromoso
 	 * @param start start position of the mask to add
 	 * @param stop stop position of the mask to add
 	 * @throws ObjectAlreadyBuiltException
+	 * @throws ElementAddedNotSortedException
 	 */
-	public void addElementToBuild(int start, int stop) throws ObjectAlreadyBuiltException {
-		if (maskStarts != null) {
-			int lastElementIndex = maskStops.size() -1;
+	public void addElementToBuild(int start, int stop)
+			throws ObjectAlreadyBuiltException, ElementAddedNotSortedException {
+		if (maskStarts == null) {
+			throw new ObjectAlreadyBuiltException();
+		}
+		if (maskStarts.isEmpty()) {
+			maskStarts.add(start);
+			maskStops.add(stop);
+		} else {
+			int lastElementIndex = maskStarts.size() -1;
+			int lastStart = maskStarts.get(lastElementIndex);
 			int lastStop = maskStops.get(lastElementIndex);
-			// if the current start is smaller than the previous stop we merge the masks
-			if (start < lastStop) {
+			if (start < lastStart) {
+				// case where the element added are not sorted
+				throw new ElementAddedNotSortedException();
+			} else if (start < lastStop) {
+				// if the current start is smaller than the previous stop we merge the masks
 				maskStops.set(lastElementIndex, stop);
 			} else {
 				maskStarts.add(start);
 				maskStops.add(stop);
 			}
-		} else {
-			throw new ObjectAlreadyBuiltException();
 		}
 	}
 
 
 	@Override
-	public void addElementToBuild(ScoredChromosomeWindow element) throws ObjectAlreadyBuiltException {
+	public void addElementToBuild(ScoredChromosomeWindow element)
+			throws ObjectAlreadyBuiltException, ElementAddedNotSortedException {
 		addElementToBuild(element.getStart(), element.getStop());
 	}
 

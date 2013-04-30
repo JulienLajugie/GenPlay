@@ -23,11 +23,13 @@ package edu.yu.einstein.genplay.gui.dataScalerForTrackDisplay;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.bin.BinListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 import edu.yu.einstein.genplay.util.ListView.ChromosomeWindowListViews;
@@ -101,7 +103,7 @@ public class BinSCWListScaler implements DataScalerForTrackDisplay<BinList, List
 			scaledSCWList = currentChromosomeList;
 			return;
 		}
-		int i =0;
+		int i = 0;
 		double ratio = 0;
 		while ((i < BinList.AVERAGE_BIN_SIZE_FACTORS.length) && (ratio < 1)) {
 			binSize = dataToScale.getBinSize() * BinList.AVERAGE_BIN_SIZE_FACTORS[i];
@@ -114,58 +116,35 @@ public class BinSCWListScaler implements DataScalerForTrackDisplay<BinList, List
 
 		// we calculate how many windows are printable depending on the screen resolution
 		int fittedBinSize = binSize * (int) ( 1 / (scaledXRatio * binSize));
+		int binSizeRatio  = fittedBinSize / binSize;
 		// if the fitted bin size is smaller than the regular bin size we don't modify the data
 		if (fittedBinSize <= binSize) {
-			scaledSCWList = acceleratorCurrentChromo;
-			fittedBinSize = binSize;
-		} else {
-			// otherwise we calculate the average because we have to print more than
-			// one bin per pixel
-			scaledSCWList = new double[(acceleratorCurrentChromo.length / binSizeRatio) + 1];
-			int newIndex = 0;
-			for(int i = 0; i < acceleratorCurrentChromo.length; i += binSizeRatio) {
-				double sum = 0;
-				int n = 0;
-				for(int j = 0; j < binSizeRatio; j ++) {
-					if (((i + j) < acceleratorCurrentChromo.length) && (acceleratorCurrentChromo[i + j] != 0)){
-						sum += acceleratorCurrentChromo[i + j];
-						n++;
-					}
-				}
-				if (n > 0) {
-					fittedDataList[newIndex] = sum / n;
-				}
-				else {
-					fittedDataList[newIndex] = 0;
-				}
-				newIndex++;
-			}
+			return;
 		}
 
+		// otherwise we calculate the average because we have to print more than
+		// one bin per pixel
+		ListViewBuilder<ScoredChromosomeWindow> lvBuilder = new BinListViewBuilder(fittedBinSize);
+		//scaledSCWList = new double[(acceleratorCurrentChromo.length / binSizeRatio) + 1];
 
-		// if there is to many bins to print we print the bins of the accelerator BinList
-		// (same list) with bigger binsize
-		if ((fittedXRatio * binSize) < (1 / (double)ACCELERATOR_FACTOR)) {
-			// if the accelerator binlist doesn't exist we create it
-			if (acceleratorBinList == null) {
-				acceleratorBinList = new BinList(binSize * ACCELERATOR_FACTOR, getPrecision(), ScoreOperation.AVERAGE, this, false);
-				acceleratorBinList.fittedChromosome = fittedChromosome;
-				acceleratorBinList.chromosomeChanged();
+		for(int j = 0; j < scaledSCWList.size(); j += binSizeRatio) {
+			float sum = 0;
+			int n = 0;
+			for(int k = 0; k < binSizeRatio; k ++) {
+				if (((j + k) < scaledSCWList.size()) && (scaledSCWList.get(j + k).getScore() != 0)){
+					sum += scaledSCWList.get(j + k).getScore();
+					n++;
+				}
 			}
-			acceleratorBinList.fittedXRatio = fittedXRatio;
-			acceleratorBinList.fitToScreen();
-			fittedDataList = acceleratorBinList.fittedDataList;
-			fittedBinSize = acceleratorBinList.fittedBinSize;
-			// else even if the binsize of the current binlist is adapted,
-			// we might still need to calculate the average if we have to print
-			//more than one bin per pixel
-		} else {
-			// we calculate how many windows are printable depending on the screen resolution
-			fittedBinSize = binSize * (int)( 1 / (fittedXRatio * binSize));
-			int binSizeRatio  = fittedBinSize / binSize;
-
+			int start = j * binSize;
+			int stop = start + fittedBinSize;
+			float score = 0f;
+			if (n > 0) {
+				score = sum / n;
+			}
+			ScoredChromosomeWindow scwToAdd = new SimpleScoredChromosomeWindow(start, stop, score);
+			lvBuilder.addElementToBuild(scwToAdd);
 		}
-
+		scaledSCWList = lvBuilder.getListView();
 	}
-
 }

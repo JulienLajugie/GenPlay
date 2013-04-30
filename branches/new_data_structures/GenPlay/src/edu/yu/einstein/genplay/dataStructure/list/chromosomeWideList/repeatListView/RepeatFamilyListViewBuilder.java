@@ -21,13 +21,11 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.repeatListView;
 
-import java.util.List;
-
-import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.mask.MaskListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
-import edu.yu.einstein.genplay.dataStructure.list.primitiveList.ListOfIntArraysAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.exception.exceptions.ElementAddedNotSortedException;
 import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
 
 /**
@@ -37,11 +35,8 @@ import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
  */
 public class RepeatFamilyListViewBuilder implements ListViewBuilder<ScoredChromosomeWindow> {
 
-	/** List of the start positions of the repeats */
-	private List<Integer> repeatStarts;
-
-	/** List of the stop positions of the repeats */
-	private List<Integer> repeatStops;
+	/** Builders to create the list of repeats */
+	private final MaskListViewBuilder repeatListBuilder;
 
 	/** Name of the family of repeat */
 	private String name;
@@ -53,8 +48,7 @@ public class RepeatFamilyListViewBuilder implements ListViewBuilder<ScoredChromo
 	 */
 	public RepeatFamilyListViewBuilder(String repeatFamilyName) {
 		name = repeatFamilyName;
-		repeatStarts = new ListOfIntArraysAsIntegerList();
-		repeatStops = new ListOfIntArraysAsIntegerList();
+		repeatListBuilder = new MaskListViewBuilder();
 	}
 
 
@@ -62,27 +56,19 @@ public class RepeatFamilyListViewBuilder implements ListViewBuilder<ScoredChromo
 	 * Adds an element to the {@link ListView} that will be built.
 	 * To assure that {@link ListView} objects are immutable, this method will throw an exception
 	 * if called after the getListView() has been called.
-	 * @param element {@link ChromosomeWindow} to add
+	 * @param start start position of the repeat to add
+	 * @param stop stop position of the repeat to add
 	 * @throws ObjectAlreadyBuiltException if this method is called after the build method was called
+	 * @throws ElementAddedNotSortedException
 	 */
-	public void addElementToBuild(ChromosomeWindow element) throws ObjectAlreadyBuiltException {
-		if (repeatStarts != null) {
-			repeatStarts.add(element.getStart());
-			repeatStops.add(element.getStop());
-		} else {
-			throw new ObjectAlreadyBuiltException();
-		}
+	public void addElementToBuild(int start, int stop) throws ObjectAlreadyBuiltException, ElementAddedNotSortedException {
+		repeatListBuilder.addElementToBuild(start, stop);
 	}
 
 
 	@Override
-	public void addElementToBuild(ScoredChromosomeWindow element) throws ObjectAlreadyBuiltException {
-		if (repeatStarts != null) {
-			repeatStarts.add(element.getStart());
-			repeatStops.add(element.getStop());
-		} else {
-			throw new ObjectAlreadyBuiltException();
-		}
+	public void addElementToBuild(ScoredChromosomeWindow element) throws ObjectAlreadyBuiltException, ElementAddedNotSortedException {
+		addElementToBuild(element.getStart(), element.getStop());
 	}
 
 
@@ -95,9 +81,7 @@ public class RepeatFamilyListViewBuilder implements ListViewBuilder<ScoredChromo
 
 	@Override
 	public ListView<ScoredChromosomeWindow> getListView() {
-		ListView<ScoredChromosomeWindow> listView = new RepeatFamilyListView(name, repeatStarts, repeatStops);
-		repeatStarts = null;
-		repeatStops = null;
+		ListView<ScoredChromosomeWindow> listView = new RepeatFamilyListView(name, repeatListBuilder.getListView());
 		name = null;
 		return listView;
 	}

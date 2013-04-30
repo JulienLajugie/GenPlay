@@ -32,6 +32,7 @@ import edu.yu.einstein.genplay.dataStructure.list.primitiveList.FloatListFactory
 import edu.yu.einstein.genplay.dataStructure.list.primitiveList.ListOfByteArraysAsByteList;
 import edu.yu.einstein.genplay.dataStructure.list.primitiveList.ListOfIntArraysAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.exception.exceptions.ElementAddedNotSortedException;
 import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
 
 /**
@@ -98,33 +99,77 @@ public final class GeneListViewBuilder implements ListViewBuilder<Gene> {
 
 
 	@Override
-	public void addElementToBuild(Gene gene) throws ObjectAlreadyBuiltException {
+	public void addElementToBuild(Gene gene) throws ObjectAlreadyBuiltException, ElementAddedNotSortedException {
+		addElementToBuild(
+				gene.getName(),
+				gene.getStrand(),
+				gene.getStart(),
+				gene.getStop(),
+				gene.getScore(),
+				gene.getUTR5Bound(),
+				gene.getUTR3Bound(),
+				gene.getExons()
+				);
+	}
+
+
+	/**
+	 * Adds an element to the ListView that will be built.
+	 * To assure that ListView objects are immutable,
+	 * this method will throw an exception if called after
+	 * the getListView() has been called.
+	 * @param geneName name of the gene to add
+	 * @param geneStrand strand of the gene to add
+	 * @param geneStart start position of the gene to add
+	 * @param geneStop stop position of the gene to add
+	 * @param geneScore score value of the gene to add
+	 * @param geneUTR5Bound UTR 5' boundary of the gene to add
+	 * @param geneUTR3Bound UTR 3' boundary of the gene to add
+	 * @param geneExons exons of the gene to add
+	 * @throws ObjectAlreadyBuiltException
+	 * @throws ElementAddedNotSortedException
+	 */
+	public void addElementToBuild(
+			String geneName,
+			Strand geneStrand,
+			int geneStart,
+			int geneStop,
+			float geneScore,
+			int geneUTR5Bound,
+			int geneUTR3Bound,
+			ListView<ScoredChromosomeWindow> geneExons
+			) throws ObjectAlreadyBuiltException, ElementAddedNotSortedException {
 		if (geneStarts == null) {
 			throw new ObjectAlreadyBuiltException();
-		} else {
-			// add gene name offset
-			geneNameOffsets.add(geneNames.size());
-			// add the gene name
-			byte[] geneName = gene.getName().getBytes();
-			for (int i = 0; i < geneName.length; i++) {
-				geneNames.add(geneName[i]);
-			}
-			// add strand
-			geneStrands.add(gene.getStrand() == Strand.FIVE);
-			// add gene start, stop, score, UTR5 and UTR3
-			geneStarts.add(gene.getStart());
-			geneStops.add(gene.getStop());
-			geneScores.add(gene.getScore());
-			geneUTR5Bounds.add(gene.getUTR5Bound());
-			geneUTR3Bounds.add(gene.getUTR3Bound());
-			// add exon offset
-			exonOffsets.add(exonStarts.size());
-			// add exon
-			for (ScoredChromosomeWindow currentExon: gene.getExons()) {
-				exonStarts.add(currentExon.getStart());
-				exonStops.add(currentExon.getStop());
-				exonScores.add(currentExon.getScore());
-			}
+		}
+		int lastElementIndex = geneStarts.size() -1;
+		int lastStart = geneStarts.get(lastElementIndex);
+		if (geneStart < lastStart) {
+			// case where the element added are not sorted
+			throw new ElementAddedNotSortedException();
+		}
+		// add gene name offset
+		geneNameOffsets.add(geneNames.size());
+		// add the gene name
+		byte[] geneNameBytes = geneName.getBytes();
+		for (int i = 0; i < geneNameBytes.length; i++) {
+			geneNames.add(geneNameBytes[i]);
+		}
+		// add strand
+		geneStrands.add(geneStrand == Strand.FIVE);
+		// add gene start, stop, score, UTR5 and UTR3
+		geneStarts.add(geneStart);
+		geneStops.add(geneStop);
+		geneScores.add(geneScore);
+		geneUTR5Bounds.add(geneUTR5Bound);
+		geneUTR3Bounds.add(geneUTR3Bound);
+		// add exon offset
+		exonOffsets.add(exonStarts.size());
+		// add exon
+		for (ScoredChromosomeWindow currentExon: geneExons) {
+			exonStarts.add(currentExon.getStart());
+			exonStops.add(currentExon.getStop());
+			exonScores.add(currentExon.getScore());
 		}
 	}
 

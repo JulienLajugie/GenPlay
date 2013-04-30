@@ -26,12 +26,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Iterator;
-import java.util.List;
 
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 
 
 /**
@@ -52,31 +50,28 @@ public final class RepeatFamilyListView implements Serializable, ListView<Scored
 	/** Current index of the iterator */
 	private transient int iteratorIndex = 0;
 
-	/** List of the start positions of the repeats */
-	private final List<Integer> repeatStarts;
-
-	/** List of the stop positions of the repeats */
-	private final List<Integer> repeatStops;
+	/** List of the repeats */
+	private final ListView<ScoredChromosomeWindow> repeatListView;
 
 	/** Name of the family of repeat */
 	private final String name;
 
 
+
 	/**
 	 * Creates an instance of {@link RepeatFamilyListView}
 	 * @param name name of the family
-	 * @param repeatList {@link ListView} of {@link ChromosomeWindow} with the start and stop position of the repeats
+	 * @param repeatListView ListView of the repeats
 	 */
-	RepeatFamilyListView(String name, List<Integer> repeatStarts, List<Integer> repeatStops) {
+	public RepeatFamilyListView(String name, ListView<ScoredChromosomeWindow> repeatListView) {
 		this.name = name;
-		this.repeatStarts = repeatStarts;
-		this.repeatStops = repeatStops;
+		this.repeatListView = repeatListView;
 	}
 
 
 	@Override
 	public ScoredChromosomeWindow get(int repeatIndex) {
-		return new SimpleScoredChromosomeWindow(repeatStarts.get(repeatIndex), repeatStops.get(repeatIndex), 1f);
+		return repeatListView.get(repeatIndex);
 	}
 
 
@@ -150,7 +145,7 @@ public final class RepeatFamilyListView implements Serializable, ListView<Scored
 
 	@Override
 	public int size() {
-		return repeatStarts.size();
+		return repeatListView.size();
 	}
 
 

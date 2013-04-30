@@ -28,6 +28,8 @@ import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.primitiveList.FloatListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.primitiveList.ListOfIntArraysAsIntegerList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.exception.exceptions.ElementAddedNotSortedException;
+import edu.yu.einstein.genplay.exception.exceptions.ElementAddedOverlapException;
 import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
 
 /**
@@ -61,27 +63,41 @@ public final class DenseSCWListViewBuilder implements ListViewBuilder<ScoredChro
 	 * @param stop stop position of the SCW to add
 	 * @param score score value of the SCW to add
 	 * @throws ObjectAlreadyBuiltException
+	 * @throws ElementAddedNotSortedException
+	 * @throws ElementAddedOverlapException
 	 */
-	public void addElementToBuild(int start, int stop, float score) throws ObjectAlreadyBuiltException {
-		if (windowStops != null) {
-			int previousStop = 0;
-			if (windowStops.size() > 0) {
-				previousStop = windowStops.get(windowStops.size() - 1);
+	public void addElementToBuild(int start, int stop, float score)
+			throws ObjectAlreadyBuiltException, ElementAddedNotSortedException, ElementAddedOverlapException {
+		if (windowStops == null) {
+			throw new ObjectAlreadyBuiltException();
+		}
+		if (windowStops.size() > 0) {
+			int lastElementIndex = windowStops.size() -1;
+			int lastStart = 0;
+			if (windowStops.size() > 1) {
+				lastStart = windowStops.get(lastElementIndex - 1);
 			}
-			if (previousStop != start) {
+			int lastStop = windowStops.get(lastElementIndex);
+			if (start < lastStart) {
+				// case where the elements added are not sorted
+				throw new ElementAddedNotSortedException();
+			} else if (start < lastStop) {
+				// case where the elements added overlap
+				throw new ElementAddedOverlapException();
+			}
+			if (lastStop != start) {
 				windowStops.add(start);
 				windowScores.add(0f);
 			}
-			windowStops.add(stop);
-			windowScores.add(score);
-		} else {
-			throw new ObjectAlreadyBuiltException();
 		}
+		windowStops.add(stop);
+		windowScores.add(score);
 	}
 
 
 	@Override
-	public void addElementToBuild(ScoredChromosomeWindow element) throws ObjectAlreadyBuiltException {
+	public void addElementToBuild(ScoredChromosomeWindow element)
+			throws ObjectAlreadyBuiltException, ElementAddedNotSortedException, ElementAddedOverlapException {
 		addElementToBuild(element.getStart(), element.getStop(), element.getScore());
 	}
 

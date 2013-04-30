@@ -80,7 +80,7 @@ public class RepeatFamilyListBuilder {
 		if (!builders.get(chromosomeIndex).containsKey(repeatFamilyName)) {
 			builders.get(chromosomeIndex).put(repeatFamilyName, new RepeatFamilyListViewBuilder(repeatFamilyName));
 		}
-		builders.get(chromosomeIndex).get(repeatFamilyName).addElementToBuild(repeat);
+		builders.get(chromosomeIndex).get(repeatFamilyName).addElementToBuild(repeat.getStart(), repeat.getStop());
 	}
 
 

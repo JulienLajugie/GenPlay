@@ -27,6 +27,9 @@ import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.primitiveList.FloatListFactory;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.exception.exceptions.ElementAddedDontFallInBinException;
+import edu.yu.einstein.genplay.exception.exceptions.ElementAddedNotSortedException;
+import edu.yu.einstein.genplay.exception.exceptions.ElementAddedOverlapException;
 import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
 
 /**
@@ -47,19 +50,56 @@ public final class BinListViewBuilder implements ListViewBuilder<ScoredChromosom
 	 * Creates an instance of {@link BinListViewBuilder}
 	 * @param binSize size of the bins of the {@link ListView}
 	 */
-	public BinListViewBuilder( int binSize) {
+	public BinListViewBuilder(int binSize) {
 		this.binSize = binSize;
 		windowScores = FloatListFactory.createFloatList();
 	}
 
 
-	@Override
-	public void addElementToBuild(ScoredChromosomeWindow element) throws ObjectAlreadyBuiltException {
-		if (windowScores != null) {
-			windowScores.add(element.getScore());
-		} else {
+	/**
+	 * Adds an element to the ListView that will be built.
+	 * To assure that ListView objects are immutable, this method
+	 * will throw an exception if called after the getListView() has been called.
+	 * @param start start position of the SCW to add
+	 * @param stop stop position of the SCW to add
+	 * @param score score value of the SCW to add
+	 * @throws ObjectAlreadyBuiltException
+	 * @throws ElementAddedNotSortedException
+	 * @throws ElementAddedOverlapException
+	 * @throws ElementAddedDontFallInBinException
+	 */
+	public void addElementToBuild(int start, int stop, float score)
+			throws ObjectAlreadyBuiltException, ElementAddedNotSortedException, ElementAddedOverlapException, ElementAddedDontFallInBinException {
+		if (windowScores == null) {
 			throw new ObjectAlreadyBuiltException();
 		}
+		if (((start % binSize) != 0) || ((stop % binSize) != 0)) {
+			throw new ElementAddedDontFallInBinException();
+		}
+		if (!windowScores.isEmpty()) {
+			int lastElementIndex = windowScores.size() -1;
+			int lastStart = lastElementIndex * binSize;
+			int lastStop = (lastElementIndex + 1) * binSize;
+			if (start < lastStart) {
+				// case where the elements added are not sorted
+				throw new ElementAddedNotSortedException();
+			} else if (start < lastStop) {
+				// case where the elements added overlap
+				throw new ElementAddedOverlapException();
+			}
+		}
+		int indexWindowToAdd = start / binSize;
+		while (windowScores.size() < indexWindowToAdd) {
+			windowScores.add(0f);
+		}
+		windowScores.add(score);
+	}
+
+
+	@Override
+	public void addElementToBuild(ScoredChromosomeWindow element)
+			throws ObjectAlreadyBuiltException, ElementAddedNotSortedException, ElementAddedOverlapException, ElementAddedDontFallInBinException {
+		addElementToBuild(element.getStart(), element.getStop(), element.getScore());
 	}
 
 

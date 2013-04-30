@@ -35,6 +35,7 @@ import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOComputeStats;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.bin.BinListView;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
@@ -55,7 +56,7 @@ public final class BinList implements Serializable, SCWList, Iterator<ListView<S
 	private static final transient int CLASS_VERSION_NUMBER = 0;
 
 	/** Value of the BinSize factors averaged BinList */
-	public static final int[] AVERAGE_BIN_SIZE_FACTORS = {100, 1000};
+	public static final int[] AVERAGE_BIN_SIZE_FACTORS = {100, 10000};
 
 	/** Size of the bins in bp */
 	private final int binSize;
@@ -145,6 +146,12 @@ public final class BinList implements Serializable, SCWList, Iterator<ListView<S
 	@Override
 	public double getAverage() {
 		return average;
+	}
+
+
+	public GenomicListView<ScoredChromosomeWindow> getAveragedList(int i) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 
