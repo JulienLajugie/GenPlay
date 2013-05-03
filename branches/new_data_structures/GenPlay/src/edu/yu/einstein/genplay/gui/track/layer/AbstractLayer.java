@@ -131,7 +131,7 @@ public abstract class AbstractLayer<T extends Serializable> implements Layer<T> 
 
 
 	@Override
-	public void setData(T data) {
+	public <U extends T> void setData(U data) {
 		this.data = data;
 		if (getTrack() != null) {
 			getTrack().repaint();

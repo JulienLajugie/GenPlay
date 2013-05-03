@@ -27,9 +27,11 @@ import java.io.ObjectOutputStream;
 import java.util.Iterator;
 import java.util.List;
 
+import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewIterator;
+import edu.yu.einstein.genplay.dataStructure.list.listView.subListView.SubListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 
 
 /**
@@ -39,16 +41,63 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScored
  * {@link GenericSCWListView} objects are immutable.
  * @author Julien Lajugie
  */
-public final class GenericSCWListView implements ListView<ScoredChromosomeWindow>, Iterator<ScoredChromosomeWindow> {
+public final class GenericSCWListView implements ListView<ScoredChromosomeWindow> {
+
+	private class SCWFromListView implements ScoredChromosomeWindow {
+
+		private final int windowIndex;
+
+		public SCWFromListView(int windowIndex) {
+			this.windowIndex = windowIndex;
+		}
+
+		@Override
+		public int compareTo(ChromosomeWindow o) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public int containsPosition(int position) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public double getMiddlePosition() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public float getScore() {
+			return windowScores.get(windowIndex);
+		}
+
+		@Override
+		public int getSize() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public int getStart() {
+			return windowStarts.get(windowIndex);
+		}
+
+		@Override
+		public int getStop() {
+			return windowStops.get(windowIndex);
+		}
+
+	}
+
 
 	/** Generated serial ID */
 	private static final long serialVersionUID = -1875439465830656207L;
 
 	/** Version number of the class */
 	private static final transient int CLASS_VERSION_NUMBER = 0;
-
-	/** Current index of the iterator */
-	private transient int iteratorIndex = 0;
 
 	/** List of the start positions of the SCWs */
 	private final List<Integer> windowStarts;
@@ -76,16 +125,7 @@ public final class GenericSCWListView implements ListView<ScoredChromosomeWindow
 
 	@Override
 	public ScoredChromosomeWindow get(int elementIndex) {
-		int start = windowStarts.get(elementIndex);
-		int stop = windowStops.get(elementIndex);
-		float score = windowScores.get(elementIndex);
-		return new SimpleScoredChromosomeWindow(start, stop, score);
-	}
-
-
-	@Override
-	public boolean hasNext() {
-		return iteratorIndex < size();
+		return new SCWFromListView(elementIndex);
 	}
 
 
@@ -97,15 +137,7 @@ public final class GenericSCWListView implements ListView<ScoredChromosomeWindow
 
 	@Override
 	public Iterator<ScoredChromosomeWindow> iterator() {
-		return this;
-	}
-
-
-	@Override
-	public ScoredChromosomeWindow next() {
-		int currentIndex = iteratorIndex;
-		iteratorIndex++;
-		return get(currentIndex);
+		return new ListViewIterator<ScoredChromosomeWindow>(this);
 	}
 
 
@@ -124,14 +156,14 @@ public final class GenericSCWListView implements ListView<ScoredChromosomeWindow
 
 
 	@Override
-	public void remove() {
-		throw new UnsupportedOperationException();
+	public int size() {
+		return windowStops.size();
 	}
 
 
 	@Override
-	public int size() {
-		return windowStops.size();
+	public ListView<ScoredChromosomeWindow> subList(int fromIndex, int toIndex) {
+		return new SubListView<ScoredChromosomeWindow>(this, fromIndex, toIndex);
 	}
 
 
@@ -145,7 +177,5 @@ public final class GenericSCWListView implements ListView<ScoredChromosomeWindow
 		out.writeInt(CLASS_VERSION_NUMBER);
 		// write the final fields
 		out.defaultWriteObject();
-		// reinitialize the index of the iterator
-		iteratorIndex = 0;
 	}
 }

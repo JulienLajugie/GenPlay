@@ -28,19 +28,19 @@ import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOUniqueScore;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
-import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.AbstractSCWLayer;
 
 
 /**
- * Adds a constant to the scores of the selected {@link SCWLayer}
+ * Adds a constant to the scores of the selected {@link AbstractSCWLayer}
  * @author Julien Lajugie
  */
 public final class SCWLAUniqueScore extends TrackListActionOperationWorker<SCWList> {
 
-	private static final long serialVersionUID = 4027173438789911860L; 						// generated ID
-	private static final String 	ACTION_NAME = "Unique Score (Constant)";				// action name
-	private static final String 	DESCRIPTION = "Set a unique score for all windows.";	// tooltip
-	private SCWLayer 				selectedLayer;											// selected layer
+	private static final long serialVersionUID = 4027173438789911860L; 							// generated ID
+	private static final String 		ACTION_NAME = "Unique Score (Constant)";				// action name
+	private static final String 		DESCRIPTION = "Set a unique score for all windows.";	// tooltip
+	private AbstractSCWLayer<SCWList>				selectedLayer;								// selected layer
 
 
 	/**
@@ -68,9 +68,10 @@ public final class SCWLAUniqueScore extends TrackListActionOperationWorker<SCWLi
 	}
 
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Operation<SCWList> initializeOperation() {
-		selectedLayer = (SCWLayer) getValue("Layer");
+		selectedLayer = (AbstractSCWLayer<SCWList>) getValue("Layer");
 		if (selectedLayer != null) {
 			Number constant = NumberOptionPane.getValue(getRootPane(), "Unique Score", "Enter a score for all windows", Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY, 0);
 			if ((constant != null) && (constant.doubleValue() != 0)) {

@@ -35,6 +35,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.geneListView.GeneListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.subListView.SubListView;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 
 
@@ -195,6 +196,12 @@ public final class SimpleGeneList implements GeneList, Iterator<ListView<Gene>> 
 	@Override
 	public int size(int index) {
 		return get(index).size();
+	}
+
+
+	@Override
+	public ListView<ListView<Gene>> subList(int fromIndex, int toIndex) {
+		return new SubListView<ListView<Gene>>(this, fromIndex, toIndex);
 	}
 
 

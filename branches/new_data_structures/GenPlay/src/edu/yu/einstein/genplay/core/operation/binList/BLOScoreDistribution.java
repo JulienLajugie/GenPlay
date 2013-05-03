@@ -34,6 +34,8 @@ import javax.swing.JComponent;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
 
@@ -75,6 +77,24 @@ public class BLOScoreDistribution extends JComponent implements Operation<double
 	}
 
 
+	@Override
+	public String getDescription() {
+		return "Operation: Show Score Distribution Histogram";
+	}
+
+
+	@Override
+	public String getProcessingDescription() {
+		return "Plotting Score Distribution";
+	}
+
+
+	@Override
+	public int getStepCount() {
+		return binListArray.length;
+	}
+
+
 	/**
 	 * Compute the result for one binList
 	 * @param binList input BinList
@@ -84,8 +104,8 @@ public class BLOScoreDistribution extends JComponent implements Operation<double
 	 */
 	public double[][] singleBinListResult (final BinList binList) throws InterruptedException, ExecutionException {
 		// search the greatest and smallest score
-		double max = Math.max(0, binList.getMax());
-		double min = Math.min(0, binList.getMin());
+		float max = Math.max(0, binList.getMaximum());
+		float min = Math.min(0, binList.getMinimum());
 		// search the score of the first bin
 		final double startPoint = Math.floor(min / scoreBinSize) * scoreBinSize;
 		// distance from the max to the first score
@@ -105,7 +125,7 @@ public class BLOScoreDistribution extends JComponent implements Operation<double
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<double[]>> threadList = new ArrayList<Callable<double[]>>();
 
-		for (final List<Double> currentList: binList) {
+		for (final ListView<ScoredChromosomeWindow> currentList: binList) {
 			Callable<double[]> currentThread = new Callable<double[]>() {
 				@Override
 				public double[] call() throws Exception {
@@ -116,7 +136,7 @@ public class BLOScoreDistribution extends JComponent implements Operation<double
 					double[] chromoResult = new double[(int)(distanceMinMax / scoreBinSize) + 2];
 					// count the bins
 					for(int j = 0; (j < currentList.size()) && !stopped; j++) {
-						chromoResult[(int)((currentList.get(j) - startPoint) / scoreBinSize)]++;
+						chromoResult[(int)((currentList.get(j).getScore() - startPoint) / scoreBinSize)]++;
 					}
 					op.notifyDone();
 					return chromoResult;
@@ -139,24 +159,6 @@ public class BLOScoreDistribution extends JComponent implements Operation<double
 		}
 
 		return result;
-	}
-
-
-	@Override
-	public String getDescription() {
-		return "Operation: Show Score Distribution Histogram";
-	}
-
-
-	@Override
-	public int getStepCount() {
-		return binListArray.length;
-	}
-
-
-	@Override
-	public String getProcessingDescription() {
-		return "Plotting Score Distribution";
 	}
 
 

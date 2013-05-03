@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
-import edu.yu.einstein.genplay.core.operation.binList.BLOCountNonNullBins;
-import edu.yu.einstein.genplay.core.operation.binList.BLOSumScore;
+import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOCountNonNullLength;
+import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOSumScore;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
@@ -38,11 +38,9 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneLi
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.SimpleGeneList;
 
 
-
 /**
  * Attributes a score to the exons of a GeneList from the scores of a BinList
  * @author Julien Lajugie
- * @version 0.1
  */
 public class GLOScoreFromBinList implements Operation<GeneList> {
 	private final GeneList 					geneList;			// input GeneList
@@ -69,7 +67,7 @@ public class GLOScoreFromBinList implements Operation<GeneList> {
 		// in the case of RPKM we need to know the score count genome wide
 		final double scoreCount;
 		if (geneScoreType == GeneScoreType.RPKM) {
-			double nonNullBinCount = new BLOCountNonNullBins(binList, null).getStepCount();
+			double nonNullBinCount = new BLOCountNonNullBins(binList, null);
 			scoreCount = new BLOSumScore(binList, null).compute() * nonNullBinCount;
 		} else {
 			scoreCount = 0;
@@ -176,8 +174,8 @@ public class GLOScoreFromBinList implements Operation<GeneList> {
 	public int getStepCount() {
 		int stepCount = 2;
 		if (geneScoreType == GeneScoreType.RPKM) {
-			stepCount += new BLOSumScore(binList, null).getStepCount();
-			stepCount += new BLOCountNonNullBins(binList, null).getStepCount();
+			stepCount += new SCWLOSumScore(binList, null).getStepCount();
+			stepCount += new SCWLOCountNonNullLength(binList, null).getStepCount();
 		}
 		return stepCount;
 	}

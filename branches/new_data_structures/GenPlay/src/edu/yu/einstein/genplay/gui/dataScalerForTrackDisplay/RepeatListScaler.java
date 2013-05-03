@@ -26,7 +26,6 @@ import java.util.List;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.repeatListView.RepeatFamilyListView;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.repeatListView.RepeatFamilyListViewBuilder;
@@ -84,8 +83,7 @@ public class RepeatListScaler implements DataScalerForTrackDisplay<RepeatFamilyL
 		// search repeats for each family
 		for (RepeatFamilyListView currentFamily : scaledRepeatList) {
 			// retrieve the sublist of genes that are located between the start and stop displayed positions
-			RepeatFamilyListViewBuilder builder = new RepeatFamilyListViewBuilder(currentFamily.getName());
-			RepeatFamilyListView familyToAdd = (RepeatFamilyListView) ChromosomeWindowListViews.sublist(currentFamily, projectWindow.getStart(), projectWindow.getStop(), builder);
+			RepeatFamilyListView familyToAdd = (RepeatFamilyListView) ChromosomeWindowListViews.subList(currentFamily, projectWindow.getStart(), projectWindow.getStop());
 			resultList.add(familyToAdd);
 		}
 		return resultList;
@@ -135,7 +133,7 @@ public class RepeatListScaler implements DataScalerForTrackDisplay<RepeatFamilyL
 						// the new stop is the one of the next window
 						currentStop = currentFamily.get(i).getStop();
 					}
-					familyBuilder.addElementToBuild(new SimpleChromosomeWindow(currentStart, currentStop));
+					familyBuilder.addElementToBuild(currentStart, currentStop);
 					i++;
 				}
 				familyListBuilder.addElementToBuild((RepeatFamilyListView) familyBuilder.getListView());

@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.subListView.SubListView;
 
 /**
  * Simple implementation of the {@link ListView} with data stored in a {@link List} implementation
@@ -89,6 +90,12 @@ public final class SimpleListView<T> implements ListView<T> {
 	@Override
 	public int size() {
 		return data.size();
+	}
+
+
+	@Override
+	public ListView<T> subList(int fromIndex, int toIndex) {
+		return new SubListView<T>(this, fromIndex, toIndex);
 	}
 
 

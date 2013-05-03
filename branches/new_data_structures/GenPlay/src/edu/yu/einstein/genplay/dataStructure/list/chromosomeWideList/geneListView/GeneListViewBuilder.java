@@ -25,6 +25,7 @@ import java.util.List;
 
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.primitiveList.ByteArrayAsBooleanList;
@@ -66,14 +67,11 @@ public final class GeneListViewBuilder implements ListViewBuilder<Gene> {
 	/** List of the UTR 3 bounds of the genes */
 	private List<Integer> geneUTR3Bounds;
 
-	/**  List of the exon start positions */
-	private List<Integer> exonStarts;
+	/**  Build the list of exons*/
+	private GenericSCWListViewBuilder exonLVBuilder;
 
-	/** List of the exon stop positions */
-	private List<Integer> exonStops;
-
-	/** List of the exon scores */
-	private List<Float> exonScores;
+	/** Index of the last exon added */
+	private int lastExonAddedIndex = 0;
 
 	/** List of the offsets of the exons inside the exon start, stop and score lists */
 	private List<Integer> exonOffsets;
@@ -90,11 +88,9 @@ public final class GeneListViewBuilder implements ListViewBuilder<Gene> {
 		geneStops = new ListOfIntArraysAsIntegerList();
 		geneUTR5Bounds = new ListOfIntArraysAsIntegerList();
 		geneUTR3Bounds = new ListOfIntArraysAsIntegerList();
-		exonStarts = new ListOfIntArraysAsIntegerList();
-		exonStops = new ListOfIntArraysAsIntegerList();
+		exonLVBuilder = new GenericSCWListViewBuilder();
 		exonOffsets = new ListOfIntArraysAsIntegerList();
 		geneScores = FloatListFactory.createFloatList();
-		exonScores = FloatListFactory.createFloatList();
 	}
 
 
@@ -142,11 +138,13 @@ public final class GeneListViewBuilder implements ListViewBuilder<Gene> {
 		if (geneStarts == null) {
 			throw new ObjectAlreadyBuiltException();
 		}
-		int lastElementIndex = geneStarts.size() -1;
-		int lastStart = geneStarts.get(lastElementIndex);
-		if (geneStart < lastStart) {
-			// case where the element added are not sorted
-			throw new ElementAddedNotSortedException();
+		if (!geneStarts.isEmpty()) {
+			int lastElementIndex = geneStarts.size() -1;
+			int lastStart = geneStarts.get(lastElementIndex);
+			if (geneStart < lastStart) {
+				// case where the element added are not sorted
+				throw new ElementAddedNotSortedException();
+			}
 		}
 		// add gene name offset
 		geneNameOffsets.add(geneNames.size());
@@ -164,12 +162,11 @@ public final class GeneListViewBuilder implements ListViewBuilder<Gene> {
 		geneUTR5Bounds.add(geneUTR5Bound);
 		geneUTR3Bounds.add(geneUTR3Bound);
 		// add exon offset
-		exonOffsets.add(exonStarts.size());
+		exonOffsets.add(lastExonAddedIndex);
 		// add exon
 		for (ScoredChromosomeWindow currentExon: geneExons) {
-			exonStarts.add(currentExon.getStart());
-			exonStops.add(currentExon.getStop());
-			exonScores.add(currentExon.getScore());
+			exonLVBuilder.addElementToBuild(currentExon);
+			lastExonAddedIndex++;
 		}
 	}
 
@@ -192,9 +189,7 @@ public final class GeneListViewBuilder implements ListViewBuilder<Gene> {
 				geneScores,
 				geneUTR5Bounds,
 				geneUTR3Bounds,
-				exonStarts,
-				exonStops,
-				exonScores,
+				exonLVBuilder.getListView(),
 				exonOffsets
 				);
 		geneNames = null;
@@ -205,9 +200,7 @@ public final class GeneListViewBuilder implements ListViewBuilder<Gene> {
 		geneScores = null;
 		geneUTR5Bounds = null;
 		geneUTR3Bounds = null;
-		exonStarts = null;
-		exonStops = null;
-		exonScores = null;
+		exonLVBuilder = null;
 		exonOffsets = null;
 		return listView;
 	}

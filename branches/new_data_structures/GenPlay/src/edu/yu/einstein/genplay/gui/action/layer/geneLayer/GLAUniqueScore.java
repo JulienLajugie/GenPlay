@@ -63,24 +63,24 @@ public class GLAUniqueScore  extends TrackListActionOperationWorker<GeneList> {
 
 
 	@Override
+	protected void doAtTheEnd(GeneList actionResult) {
+		if (actionResult != null) {
+			selectedLayer.setData(actionResult, operation.getDescription());
+		}
+	}
+
+
+	@Override
 	public Operation<GeneList> initializeOperation() throws Exception {
 		selectedLayer = (GeneLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			Number constant = NumberOptionPane.getValue(getRootPane(), "Unique Score", "Enter a score for all exons", Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
 			if (constant != null) {
 				GeneList geneList = selectedLayer.getData();
-				operation = new GLOUniqueScore(geneList, constant.doubleValue());
+				operation = new GLOUniqueScore(geneList, constant.floatValue());
 				return operation;
 			}
 		}
 		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(GeneList actionResult) {
-		if (actionResult != null) {
-			selectedLayer.setData(actionResult, operation.getDescription());
-		}
 	}
 }

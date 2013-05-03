@@ -57,9 +57,9 @@ public class ListOfListViewBuilder<T> {
 		int chromosomeCount = projectChromosome.size();
 		builders = new ArrayList<ListViewBuilder<T>>(chromosomeCount);
 		if (chromosomeCount > 0) {
-			builders.set(0, listViewBuilderPrototype);
+			builders.add(0, listViewBuilderPrototype);
 			for (int i = 1; i < chromosomeCount; i++) {
-				builders.set(i, listViewBuilderPrototype.clone());
+				builders.add(i, listViewBuilderPrototype.clone());
 			}
 		}
 	}

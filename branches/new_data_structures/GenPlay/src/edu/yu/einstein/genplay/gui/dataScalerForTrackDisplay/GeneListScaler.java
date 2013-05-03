@@ -31,9 +31,10 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
-import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.geneListView.GeneListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.subListView.DiscontinuousSubListView;
+import edu.yu.einstein.genplay.dataStructure.list.primitiveList.ListOfIntArraysAsIntegerList;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 import edu.yu.einstein.genplay.util.ListView.ChromosomeWindowListViews;
@@ -98,7 +99,7 @@ public class GeneListScaler implements DataScalerForTrackDisplay<GeneList, List<
 		// search genes for each line
 		for (ListView<Gene> currentLine : scaledGeneList) {
 			// retrieve the sublist of genes that are located between the start and stop displayed positions
-			ListView<Gene> lineToAdd = ChromosomeWindowListViews.sublist(currentLine, projectWindow.getStart(), projectWindow.getStop());
+			ListView<Gene> lineToAdd = ChromosomeWindowListViews.subList(currentLine, projectWindow.getStart(), projectWindow.getStop());
 			resultList.add(lineToAdd);
 		}
 		return resultList;
@@ -139,7 +140,7 @@ public class GeneListScaler implements DataScalerForTrackDisplay<GeneList, List<
 		ProjectWindow pw = ProjectManager.getInstance().getProjectWindow();
 		// loop until every gene has been organized
 		while (organizedGeneCount < currentList.size()) {
-			GeneListViewBuilder geneLVBuilder = new GeneListViewBuilder();
+			List<Integer> indexes = new ListOfIntArraysAsIntegerList();
 			Gene previousGene = null;
 			// we loop on the gene list
 			for (int i = 0; i < currentList.size(); i++) {
@@ -148,7 +149,8 @@ public class GeneListScaler implements DataScalerForTrackDisplay<GeneList, List<
 					// if the current line is empty we add the current gene
 					if (previousGene == null) {
 						previousGene = currentList.get(i);
-						geneLVBuilder.addElementToBuild(currentList.get(i));
+						indexes.add(i);
+						//geneLVBuilder.addElementToBuild(previousGene);
 						organizedGenes[i] = true;
 						organizedGeneCount++;
 					} else {
@@ -166,14 +168,15 @@ public class GeneListScaler implements DataScalerForTrackDisplay<GeneList, List<
 						// if the current gene won't overlap with the previous one we add it to the current line of the list of organized genes
 						if (currentStart > previousStop) {
 							previousGene = currentList.get(i);
-							geneLVBuilder.addElementToBuild(previousGene);
+							indexes.add(i);
+							//geneLVBuilder.addElementToBuild(previousGene);
 							organizedGenes[i] = true;
 							organizedGeneCount++;
 						}
 					}
 				}
 			}
-			scaledGeneList.add(geneLVBuilder.getListView());
+			scaledGeneList.add(new DiscontinuousSubListView<Gene>(currentList, indexes));
 		}
 	}
 }

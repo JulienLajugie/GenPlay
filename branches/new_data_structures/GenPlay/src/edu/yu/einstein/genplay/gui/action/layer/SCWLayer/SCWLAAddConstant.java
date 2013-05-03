@@ -28,11 +28,11 @@ import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOAddConstant;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
-import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.AbstractSCWLayer;
 
 
 /**
- * Adds a constant to the scores of the selected {@link SCWLayer}
+ * Adds a constant to the scores of the selected {@link AbstractSCWLayer}
  * @author Julien Lajugie
  */
 public final class SCWLAAddConstant extends TrackListActionOperationWorker<SCWList> {
@@ -41,7 +41,7 @@ public final class SCWLAAddConstant extends TrackListActionOperationWorker<SCWLi
 	private static final String 	ACTION_NAME = "Addition (Constant)";// action name
 	private static final String 	DESCRIPTION =
 			"Add a constant to the scores of the selected layer";		// tooltip
-	private SCWLayer				selectedLayer;						// selected layer
+	private AbstractSCWLayer<SCWList>				selectedLayer;						// selected layer
 
 
 	/**
@@ -69,9 +69,10 @@ public final class SCWLAAddConstant extends TrackListActionOperationWorker<SCWLi
 	}
 
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Operation<SCWList> initializeOperation() {
-		selectedLayer = (SCWLayer) getValue("Layer");
+		selectedLayer =  (AbstractSCWLayer<SCWList>) getValue("Layer");
 		if (selectedLayer != null) {
 			Number constant = NumberOptionPane.getValue(getRootPane(), "Constant", "Enter a value C to add: f(x)=x + C", Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY, 0);
 			if ((constant != null) && (constant.floatValue() != 0)) {

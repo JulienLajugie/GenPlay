@@ -37,6 +37,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.repeatListView.RepeatFamilyListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.subListView.SubListView;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 
 
@@ -188,6 +189,12 @@ public class SimpleRepeatFamilyList implements Serializable, RepeatFamilyList, I
 	@Override
 	public int size(int chromosomeIndex) {
 		return data.get(chromosomeIndex).size();
+	}
+
+
+	@Override
+	public ListView<ListView<RepeatFamilyListView>> subList(int fromIndex, int toIndex) {
+		return new SubListView<ListView<RepeatFamilyListView>>(this, fromIndex, toIndex);
 	}
 
 

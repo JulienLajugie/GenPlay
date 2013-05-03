@@ -23,16 +23,19 @@ package edu.yu.einstein.genplay.core.operation.binList;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWListBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
-import edu.yu.einstein.genplay.dataStructure.list.primitiveList.old.ListFactory;
-
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 
 
 /**
@@ -64,9 +67,6 @@ public class BLOLoessRegression implements Operation<BinList> {
 
 	@Override
 	public BinList compute() throws InterruptedException, ExecutionException {
-		final OperationPool op = OperationPool.getInstance();
-		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
-		final ScorePrecision precision = binList.getPrecision();
 		final int binSize =  binList.getBinSize();
 		final int halfWidth = movingWindowWidth / 2 / binSize;
 		// we create an array of coefficients. The index correspond to a distance and for each distance we calculate a coefficient
@@ -74,17 +74,22 @@ public class BLOLoessRegression implements Operation<BinList> {
 		for(int i = 0; i <= halfWidth; i++) {
 			weights[i] = Math.pow(1d - Math.pow(i / (double) halfWidth,  3d), 3d);
 		}
-		// we compute the Loess regression
-		for(short i = 0; i < binList.size(); i++) {
-			final List<Double> currentList = binList.get(i);
-			Callable<List<Double>> currentThread = new Callable<List<Double>>() {
+
+		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		final OperationPool op = OperationPool.getInstance();
+		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
+		final SCWListBuilder resultListBuilder = new SCWListBuilder(binList);
+
+		for (final Chromosome chromosome: projectChromosome) {
+			final ListView<ScoredChromosomeWindow> currentList = binList.get(chromosome);
+			Callable<Void> currentThread = new Callable<Void>() {
+
 				@Override
-				public List<Double> call() throws Exception {
-					List<Double> listToAdd = null;
-					if ((currentList != null) && (currentList.size() != 0)) {
-						listToAdd = ListFactory.createList(precision, currentList.size());
+				public Void call() throws Exception {
+					if (currentList != null) {
 						for(int j = 0; (j < currentList.size()) && !stopped; j++) {
-							if ((currentList.get(j) != 0) || (fillNullValues)) {
+							float score = 0f;
+							if ((currentList.get(j).getScore() != 0) || (fillNullValues)) {
 								// apply the array of coefficients centered on the current value to gauss
 								double sumWts = 0;
 								double sumWtX = 0;
@@ -95,42 +100,35 @@ public class BLOLoessRegression implements Operation<BinList> {
 									int movingX = j + k; // x coordinate of the current point in the moving window
 									if((movingX >= 0) && (movingX < currentList.size()))  {
 										int distance = Math.abs(k);
-										if(currentList.get(j + k) != 0)  {
+										if(currentList.get(j + k).getScore() != 0)  {
 											sumWts += weights[distance];
 											sumWtX += movingX * weights[distance];
 											sumWtX2 += (movingX ^ 2) * weights[distance];
-											sumWtY += currentList.get(movingX) * weights[distance];
-											sumWtXY += movingX * currentList.get(movingX) * weights[distance];
+											sumWtY += currentList.get(movingX).getScore() * weights[distance];
+											sumWtXY += movingX * currentList.get(movingX).getScore() * weights[distance];
 										}
 									}
 								}
 								double denom = (sumWts * sumWtX2) - Math.pow(sumWtX, 2);
-								if(denom == 0) {
-									listToAdd.set(j, 0d);
-								} else {
+								if(denom != 0) {
 									double WLRSlope = ((sumWts * sumWtXY) - (sumWtX * sumWtY)) / denom;
 									double WLRIntercept = ((sumWtX2 * sumWtY) - (sumWtX * sumWtXY)) / denom;
 									double yLoess = (WLRSlope * j) + WLRIntercept;
-									listToAdd.set(j, yLoess);
+									score = (float) yLoess;
 								}
-							} else {
-								listToAdd.set(j, 0d);
+								ScoredChromosomeWindow windowToAdd = new SimpleScoredChromosomeWindow(currentList.get(j).getStart(), currentList.get(j).getStop(), score);
+								resultListBuilder.addElementToBuild(chromosome, windowToAdd);
 							}
 						}
 					}
 					op.notifyDone();
-					return listToAdd;
+					return null;
 				}
 			};
 			threadList.add(currentThread);
 		}
-		List<List<Double>> result = op.startPool(threadList);
-		if (result != null) {
-			BinList resultList = new BinList(binSize, precision, result);
-			return resultList;
-		} else {
-			return null;
-		}
+		op.startPool(threadList);
+		return (BinList) resultListBuilder.getSCWList();
 	}
 
 
@@ -141,19 +139,19 @@ public class BLOLoessRegression implements Operation<BinList> {
 
 
 	@Override
-	public int getStepCount() {
-		return BinList.getCreationStepCount(binList.getBinSize()) + 1;
-	}
-
-
-	@Override
 	public String getProcessingDescription() {
 		return "Computing Loess Regression";
 	}
 
 
 	@Override
+	public int getStepCount() {
+		return BinList.getCreationStepCount(binList.getBinSize()) + 1;
+	}
+
+
+	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }

@@ -29,12 +29,12 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.DASDialog.DASDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.gui.track.layer.GenericSCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.SimpleSCWLayer;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 /**
- * Adds a {@link GenericSCWLayer} from data retrieve from a DAS server
+ * Adds a {@link SimpleSCWLayer} from data retrieve from a DAS server
  * @author Julien Lajugie
  * @author Chirag Gorasia
  * @version 0.1
@@ -95,7 +95,7 @@ public class TAAddSCWLayerFromDAS extends TrackListActionWorker<SCWList> {
 	@Override
 	protected void doAtTheEnd(SCWList actionResult) {
 		if (actionResult != null) {
-			GenericSCWLayer newLayer = new GenericSCWLayer(selectedTrack, actionResult, dataSource.getName());
+			SimpleSCWLayer newLayer = new SimpleSCWLayer(selectedTrack, actionResult, dataSource.getName());
 			newLayer.getHistory().add("Load " + dataSource.getName() + " From DAS Server", Colors.GREY);
 			selectedTrack.getLayers().add(newLayer);
 			selectedTrack.setActiveLayer(newLayer);

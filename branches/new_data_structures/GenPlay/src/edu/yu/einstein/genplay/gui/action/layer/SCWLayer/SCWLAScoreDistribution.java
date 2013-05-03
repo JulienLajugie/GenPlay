@@ -37,15 +37,15 @@ import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotData;
 import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotPane;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
 import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
+import edu.yu.einstein.genplay.gui.track.layer.AbstractSCWLayer;
 import edu.yu.einstein.genplay.gui.track.layer.ColoredLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
-import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
- * Generates an array containing the distribution of the score values of the selected {@link SCWLayer}
+ * Generates an array containing the distribution of the score values of the selected {@link AbstractSCWLayer}
  * @author Chirag Gorasia
  */
 public final class SCWLAScoreDistribution extends TrackListActionOperationWorker<double [][][]>{
@@ -54,7 +54,7 @@ public final class SCWLAScoreDistribution extends TrackListActionOperationWorker
 	private static final String 	ACTION_NAME = "Score Distribution Histogram";			// action name
 	private static final String 	DESCRIPTION =
 			"Generate a plot showing the distribution of the scores of the selected layer";	// tooltip
-	private SCWLayer[] 				selectedLayers;
+	private AbstractSCWLayer<?>[]	selectedLayers;
 	private List<ScatterPlotData> 	scatPlotData;
 	private int 					graphIndicator;
 
@@ -102,7 +102,7 @@ public final class SCWLAScoreDistribution extends TrackListActionOperationWorker
 
 	@Override
 	public Operation<double [][][]> initializeOperation() {
-		SCWLayer selectedLayer = (SCWLayer) getValue("Layer");
+		AbstractSCWLayer<?> selectedLayer = (AbstractSCWLayer<?>) getValue("Layer");
 		if (selectedLayer != null) {
 			Object[] graphTypes = {"Score vs Window Count", "Score vs Base Pair Count"};
 			String selectedValue = (String) JOptionPane.showInputDialog(null, "Select the operation", "Graph Operation", JOptionPane.PLAIN_MESSAGE, null, graphTypes, graphTypes[0]);
@@ -124,11 +124,11 @@ public final class SCWLAScoreDistribution extends TrackListActionOperationWorker
 						layerChooserDialog.setSelectableLayerTypes(availableLayerTypes);
 						layerChooserDialog.setMultiselectable(true);
 						if (layerChooserDialog.showDialog(getRootPane(), "Select Layers to Paste") == LayerChooserDialog.APPROVE_OPTION) {
-							selectedLayers = layerChooserDialog.getSelectedLayers().toArray(new SCWLayer[0]);
+							selectedLayers = layerChooserDialog.getSelectedLayers().toArray(new AbstractSCWLayer[0]);
 						}
 					} else {
-						selectedLayers = new SCWLayer[1];
-						selectedLayers[0] =	(SCWLayer) scwLayers[0];
+						selectedLayers = new AbstractSCWLayer[1];
+						selectedLayers[0] =	(AbstractSCWLayer<?>) scwLayers[0];
 					}
 					if ((selectedLayers != null)) {
 						SCWList[] scwListArray = new SimpleSCWList[selectedLayers.length];

@@ -78,7 +78,6 @@ public final class BedGraphExtractor extends TextFileExtractor implements SCWRea
 			}
 		}
 
-		Chromosome chromosome = null;
 		try {
 			chromosome = getProjectChromosome().get(chromosomeName) ;
 		} catch (InvalidChromosomeException e) {

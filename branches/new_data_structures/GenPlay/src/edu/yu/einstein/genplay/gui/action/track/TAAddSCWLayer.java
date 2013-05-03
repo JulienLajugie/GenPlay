@@ -32,7 +32,6 @@ import edu.yu.einstein.genplay.core.IO.utils.StrandedExtractorOptions;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWList;
@@ -40,13 +39,13 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleS
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.newCurveLayerDialog.NewCurveLayerDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.gui.track.layer.GenericSCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.SimpleSCWLayer;
 import edu.yu.einstein.genplay.util.Utils;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 /**
- * Adds a {@link GenericSCWLayer} to the selected track
+ * Adds a {@link SimpleSCWLayer} to the selected track
  * @author Julien Lajugie
  */
 public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList> {
@@ -56,7 +55,6 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 	private static final String DESCRIPTION = "Add a layer displaying windows of variable sizes"; 	// tooltip
 	private ScoreOperation 			scoreCalculation = null;										// method of calculation for the score
 	private Strand					strand = null;													// strand to extract
-	private ScorePrecision			scorePrecision = null;											// precision of the score
 	private int						strandShift = 0;												// position shift on a strand
 	private int 					readLength = 0;													// user specified length of the reads (0 to keep the original length)
 
@@ -82,7 +80,7 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 	public void doAtTheEnd(SCWList actionResult) {
 		if (actionResult != null) {
 			Track selectedTrack = getTrackListPanel().getSelectedTrack();
-			GenericSCWLayer newLayer = new GenericSCWLayer(selectedTrack, actionResult, fileToExtract.getName());
+			SimpleSCWLayer newLayer = new SimpleSCWLayer(selectedTrack, actionResult, fileToExtract.getName());
 			newLayer.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Colors.GREY);
 			String history = new String();
 			if (scoreCalculation != null) {
@@ -142,11 +140,10 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 	@Override
 	protected SCWList generateList() throws Exception {
 		notifyActionStop();
-		NewCurveLayerDialog nctd = new NewCurveLayerDialog(name, true, false, true, true, false, false,  false);
+		NewCurveLayerDialog nctd = new NewCurveLayerDialog(name, true, false, false, true, false, false,  false);
 		if (nctd.showDialog(getRootPane()) == NewCurveLayerDialog.APPROVE_OPTION) {
 			name = nctd.getLayerName();
 			scoreCalculation = nctd.getScoreCalculationMethod();
-			scorePrecision = nctd.getDataPrecision();
 			notifyActionStart("Generating Layer", SimpleSCWList.getCreationStepCount(SCWListType.GENERIC), true);
 			SCWList scwList = SimpleSCWListFactory.createGenericSCWList((SCWReader) extractor, scoreCalculation);
 			return scwList;

@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -32,12 +33,14 @@ import java.util.concurrent.ExecutionException;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOComputeStats;
+import edu.yu.einstein.genplay.core.operation.binList.BLOComputeAverageList;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.bin.BinListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.subListView.SubListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 
@@ -57,6 +60,16 @@ public final class BinList implements Serializable, SCWList, Iterator<ListView<S
 
 	/** Value of the BinSize factors averaged BinList */
 	public static final int[] AVERAGE_BIN_SIZE_FACTORS = {100, 10000};
+
+
+	public static int getCreationStepCount(int binSize) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+	/** List of list of bins with bin sizes equal to {@link #binSize} * {@link #AVERAGE_BIN_SIZE_FACTORS} */
+	private final List<GenomicListView<ScoredChromosomeWindow>> averagedList;
 
 	/** Size of the bins in bp */
 	private final int binSize;
@@ -82,6 +95,7 @@ public final class BinList implements Serializable, SCWList, Iterator<ListView<S
 	/** Sum of the scores of all windows */
 	private final double scoreSum;
 
+
 	/** Count of none-null bins in the BinList */
 	private final long nonNullLength;
 
@@ -90,10 +104,10 @@ public final class BinList implements Serializable, SCWList, Iterator<ListView<S
 	 * Creates an instance of {@link BinList}
 	 * @param data list of {@link BinListView} organized by chromosome
 	 * @param binSize size of the bins
-	 * @throws InterruptedException
 	 * @throws ExecutionException
+	 * @throws InterruptedException
 	 */
-	public BinList(List<ListView<ScoredChromosomeWindow>> data, int binSize) throws InterruptedException, ExecutionException {
+	public BinList(List<ListView<ScoredChromosomeWindow>> data, int binSize) throws InterruptedException, ExecutionException  {
 		super();
 		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		this.binSize = binSize;
@@ -112,6 +126,10 @@ public final class BinList implements Serializable, SCWList, Iterator<ListView<S
 		standardDeviation = operation.getStandardDeviation();
 		nonNullLength = operation.getNonNullLength();
 		scoreSum = operation.getScoreSum();
+		averagedList = new ArrayList<GenomicListView<ScoredChromosomeWindow>>();
+		for (int currentFactor: AVERAGE_BIN_SIZE_FACTORS) {
+			averagedList.add(new BLOComputeAverageList(this, currentFactor).compute());
+		}
 	}
 
 
@@ -149,9 +167,13 @@ public final class BinList implements Serializable, SCWList, Iterator<ListView<S
 	}
 
 
-	public GenomicListView<ScoredChromosomeWindow> getAveragedList(int i) {
-		// TODO Auto-generated method stub
-		return null;
+	/**
+	 * @param index
+	 * @return The averaged list of bins with a bin size equals to ({@link BinList#getBinSize()} * {@link #AVERAGE_BIN_SIZE_FACTORS}[index])
+	 * where index is the specified parameter
+	 */
+	public GenomicListView<ScoredChromosomeWindow> getAveragedList(int index) {
+		return averagedList.get(index);
 	}
 
 
@@ -265,6 +287,12 @@ public final class BinList implements Serializable, SCWList, Iterator<ListView<S
 	@Override
 	public int size(int chromosomeIndex) {
 		return get(chromosomeIndex).size();
+	}
+
+
+	@Override
+	public ListView<ListView<ScoredChromosomeWindow>> subList(int fromIndex, int toIndex) {
+		return new SubListView<ListView<ScoredChromosomeWindow>>(this, fromIndex, toIndex);
 	}
 
 

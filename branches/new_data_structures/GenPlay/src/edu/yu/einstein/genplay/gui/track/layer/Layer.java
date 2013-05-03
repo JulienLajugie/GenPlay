@@ -89,14 +89,7 @@ public interface Layer<T extends Serializable> extends Serializable, Drawer {
 	 * Sets the data of the layer
 	 * @param data data to set
 	 */
-	public abstract void setData(T data);
-
-
-	/**
-	 * Sets if the layer is visible or hidden
-	 * @param isVisible set to true if the layer is visible, false if hidden
-	 */
-	public abstract void setVisible(boolean isVisible);
+	public abstract <U extends T> void setData(U data);
 
 
 	/**
@@ -111,4 +104,11 @@ public interface Layer<T extends Serializable> extends Serializable, Drawer {
 	 * @param track {@link Track} track containing the layer
 	 */
 	public abstract void setTrack(Track track);
+
+
+	/**
+	 * Sets if the layer is visible or hidden
+	 * @param isVisible set to true if the layer is visible, false if hidden
+	 */
+	public abstract void setVisible(boolean isVisible);
 }

@@ -29,14 +29,13 @@ import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLAAverageScore;
 import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLACountAllGenes;
 import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLACountExons;
 import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLACountNonNullGenes;
-import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLADistanceCalculator;
 import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLAExtractExons;
 import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLAExtractInterval;
 import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLAFilter;
 import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLAFilterStrand;
 import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLAGeneRenamer;
-import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLAScoreExons;
 import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLAScoreDistributionAroundStart;
+import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLAScoreExons;
 import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLASearchGene;
 import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLASumScore;
 import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLAUniqueScore;
@@ -80,7 +79,6 @@ public class GeneLayerMenu extends AbstractLayerMenu {
 				new GLAFilterStrand(),
 				null,
 				new GLAGeneRenamer(),
-				new GLADistanceCalculator(),
 				new GLAScoreDistributionAroundStart(),
 				null,
 				new LAConvert(),

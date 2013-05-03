@@ -58,8 +58,8 @@ public class RepeatFamilyListBuilder {
 		projectChromosome =  ProjectManager.getInstance().getProjectChromosome();
 		int chromosomeCount = projectChromosome.size();
 		builders = new ArrayList<Map<String,RepeatFamilyListViewBuilder>>(chromosomeCount);
-		for (int i = 1; i < chromosomeCount; i++) {
-			builders.set(i, new HashMap<String, RepeatFamilyListViewBuilder>());
+		for (int i = 0; i < chromosomeCount; i++) {
+			builders.add(new HashMap<String, RepeatFamilyListViewBuilder>());
 		}
 	}
 

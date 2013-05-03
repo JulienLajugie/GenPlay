@@ -36,7 +36,7 @@ import edu.yu.einstein.genplay.gui.dialog.ConvertDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
 import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
-import edu.yu.einstein.genplay.gui.track.layer.GenericSCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.SimpleSCWLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
 import edu.yu.einstein.genplay.gui.track.layer.MaskLayer;
@@ -97,7 +97,7 @@ public class LAConvert extends TrackListActionWorker<GenomicListView<?>> {
 			} else if (layerType == LayerType.BIN_LAYER) {
 				newLayer = new BinLayer(resultTrack, (BinList) actionResult, layerName);
 			} else if (layerType == LayerType.SCW_LAYER) {
-				newLayer = new GenericSCWLayer(resultTrack, (SCWList) actionResult, layerName);
+				newLayer = new SimpleSCWLayer(resultTrack, (SCWList) actionResult, layerName);
 			} else if (layerType == LayerType.MASK_LAYER) {
 				newLayer = new MaskLayer(resultTrack, (SCWList) actionResult, layerName);
 			}

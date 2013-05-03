@@ -74,7 +74,7 @@ public class MaskSCWLScaler implements DataScalerForTrackDisplay<SCWList, ListVi
 		if ((scaledSCWList == null) || (scaledSCWList.size() == 0)) {
 			return null;
 		}
-		return ChromosomeWindowListViews.sublist(scaledSCWList, projectWindow.getStart(), projectWindow.getStop());
+		return ChromosomeWindowListViews.subList(scaledSCWList, projectWindow.getStart(), projectWindow.getStop());
 	}
 
 

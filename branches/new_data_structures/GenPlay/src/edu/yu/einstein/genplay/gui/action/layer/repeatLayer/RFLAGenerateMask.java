@@ -11,6 +11,7 @@ import edu.yu.einstein.genplay.core.operation.repeatFamilyList.RFLOConvertIntoMa
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.repeatListView.RepeatFamilyListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.repeatFamilyList.RepeatFamilyList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.checkBoxTableChooser.CheckBoxTableChooserDialog;
 import edu.yu.einstein.genplay.gui.dialog.trackChooser.TrackChooser;
@@ -22,7 +23,6 @@ import edu.yu.einstein.genplay.gui.track.layer.RepeatLayer;
 /**
  * Converts the selected families from the selected repeat track into a Mask
  * @author Julien Lajugie
- * @version 0.1
  */
 public class RFLAGenerateMask extends TrackListActionOperationWorker<SCWList> {
 
@@ -50,12 +50,27 @@ public class RFLAGenerateMask extends TrackListActionOperationWorker<SCWList> {
 
 
 	@Override
-	public Operation<SCWList> initializeOperation() throws Exception {		
+	protected void doAtTheEnd(SCWList actionResult) {
+		if (actionResult != null) {
+			String layerName = "Mask from repeats:";
+			for (String currentFamily: selectedFamilies) {
+				layerName += " " + currentFamily;
+			}
+			MaskLayer newLayer = new MaskLayer(resultTrack, actionResult, layerName);
+			newLayer.getHistory().add(layerName, Color.GRAY);
+			resultTrack.getLayers().add(newLayer);
+			resultTrack.setActiveLayer(newLayer);
+		}
+	}
+
+
+	@Override
+	public Operation<SCWList> initializeOperation() throws Exception {
 		selectedLayer = (RepeatLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			RepeatFamilyList selectedTrackData = selectedLayer.getData();
-			List<String> families = new ArrayList<String>(); 
-			for (List<RepeatFamilyListView> currentRepeatList: selectedTrackData) {
+			List<String> families = new ArrayList<String>();
+			for (ListView<RepeatFamilyListView> currentRepeatList: selectedTrackData) {
 				for (RepeatFamilyListView currentFamily: currentRepeatList) {
 					if (!families.contains(currentFamily.getName())) {
 						families.add(currentFamily.getName());
@@ -77,20 +92,5 @@ public class RFLAGenerateMask extends TrackListActionOperationWorker<SCWList> {
 			}
 		}
 		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(SCWList actionResult) {
-		if (actionResult != null) {
-			String layerName = "Mask from repeats:";
-			for (String currentFamily: selectedFamilies) {
-				layerName += " " + currentFamily;
-			}
-			MaskLayer newLayer = new MaskLayer(resultTrack, actionResult, layerName);
-			newLayer.getHistory().add(layerName, Color.GRAY);
-			resultTrack.getLayers().add(newLayer);
-			resultTrack.setActiveLayer(newLayer);
-		}
 	}
 }

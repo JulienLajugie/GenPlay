@@ -21,9 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.IO.dataReader.SCWReader;
 import edu.yu.einstein.genplay.core.pileupFlattener.BinListPileupFlattener;
@@ -36,9 +34,6 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
-import edu.yu.einstein.genplay.exception.exceptions.ElementAddedNotSortedException;
-import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
-import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
 
 
 /**
@@ -55,16 +50,10 @@ public class BinListFactory {
 	 * @param binSize size of the bins of the binlist
 	 * @param scoreOperation {@link ScoreOperation} to compute the score of windows resulting from the "flattening" of a pileup of overlapping windows
 	 * @return A new {@link BinList}
-	 * @throws InvalidChromosomeException
-	 * @throws ObjectAlreadyBuiltException
-	 * @throws ElementAddedNotSortedException
-	 * @throws IOException
-	 * @throws InterruptedException
-	 * @throws ExecutionException
-	 * @throws CloneNotSupportedException
+	 * @throws Exception
 	 */
 	public static BinList createBinList(SCWReader scwReader, int binSize, ScoreOperation scoreOperation)
-			throws InvalidChromosomeException, ObjectAlreadyBuiltException, ElementAddedNotSortedException, IOException, InterruptedException, ExecutionException, CloneNotSupportedException {
+			throws Exception {
 		BinListViewBuilder lvBuilderPrototype = new BinListViewBuilder(binSize);
 		ListOfListViewBuilder<ScoredChromosomeWindow> builder = new ListOfListViewBuilder<ScoredChromosomeWindow>(lvBuilderPrototype);
 		Chromosome currentChromosome = null;

@@ -23,32 +23,32 @@ package edu.yu.einstein.genplay.core.operation.binList;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreCalculationTwoLayersMethod;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ImmutableGenomicDataList;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWListBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
-import edu.yu.einstein.genplay.dataStructure.list.primitiveList.old.ListFactory;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.BinListDifferentWindowSizeException;
-
 
 
 /**
  * Adds the scores of the bins of two specified BinLists
  * @author Julien Lajugie
- * @version 0.1
  */
-public class BLOTwoLayers implements Operation<ImmutableGenomicDataList<?>> {
+public class BLOTwoLayers implements Operation<SCWList> {
 
 	private final BinList 					binList1;		// first binlist to add
 	private final BinList 					binList2; 		// second binlist to add
-	private final ScorePrecision 			precision;		// precision of the result list
-	private final ScoreCalculationTwoLayersMethod 	scm;			// method of calculation for the score
+	private final ScoreOperation 			scm;			// method of calculation for the score
 	private boolean							stopped = false;// true if the operation must be stopped
 
 
@@ -56,60 +56,55 @@ public class BLOTwoLayers implements Operation<ImmutableGenomicDataList<?>> {
 	 * Adds the scores of the bins of the two specified BinLists
 	 * @param binList1
 	 * @param binList2
-	 * @param precision precision of the result {@link BinList}
-	 * @param scm {@link ScoreCalculationTwoLayersMethod} method used to compute the scores
+	 * @param scm {@link ScoreOperation} method used to compute the scores
 	 */
-	public BLOTwoLayers(BinList binList1, BinList binList2, ScorePrecision precision, ScoreCalculationTwoLayersMethod scm) {
+	public BLOTwoLayers(BinList binList1, BinList binList2, ScoreOperation scm) {
 		this.binList1 = binList1;
 		this.binList2 = binList2;
-		this.precision = precision;
 		this.scm = scm;
 	}
 
 
+	private float average(float a, float b) {
+		return sum(a, b) / 2;
+	}
+
+
 	@Override
-	public BinList compute() throws InterruptedException, ExecutionException, BinListDifferentWindowSizeException {
+	public SCWList compute() throws Exception {
 		// make sure that the two binlists have the same size of bins
 		if (binList1.getBinSize() != binList2.getBinSize()) {
 			throw new BinListDifferentWindowSizeException();
 		}
 
+		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		final OperationPool op = OperationPool.getInstance();
-		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
-		for(short i = 0; i < binList1.size(); i++)  {
-			final List<Double> currentList1 = binList1.get(i);
-			final List<Double> currentList2 = binList2.get(i);
+		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
+		final SCWListBuilder resultListBuilder = new SCWListBuilder(binList1);
 
-			final boolean firstLayerIsEmpty;
-			final boolean secondLayerIsEmpty;
-			if ((currentList1 != null) && (currentList1.size() != 0)) {
-				firstLayerIsEmpty = false;
-			} else {
-				firstLayerIsEmpty = true;
-			}
-			if ((currentList2 != null) && (currentList2.size() != 0)) {
-				secondLayerIsEmpty = false;
-			} else {
-				secondLayerIsEmpty = true;
-			}
+		for(final Chromosome currentChromosome : projectChromosome) {
+			final ListView<ScoredChromosomeWindow> currentList1 = binList1.get(currentChromosome);
+			final ListView<ScoredChromosomeWindow> currentList2 = binList2.get(currentChromosome);
+			final boolean firstLayerIsEmpty = (currentList1 == null) || currentList1.isEmpty();
+			final boolean secondLayerIsEmpty = (currentList2 == null) || currentList2.isEmpty();
 
-			Callable<List<Double>> currentThread = new Callable<List<Double>>() {
+			Callable<Void> currentThread = new Callable<Void>() {
 				@Override
-				public List<Double> call() throws Exception {
-					List<Double> resultList = null;
+				public Void call() throws Exception {
 
 					if (!firstLayerIsEmpty && !secondLayerIsEmpty) {
-						resultList = ListFactory.createList(precision, currentList1.size());
 						for (int j = 0; (j < currentList1.size()) && !stopped; j++) {
+							int start = currentList1.get(j).getStart();
+							int stop = currentList2.get(j).getStop();
+							float score = 0f;
 							if (j < currentList2.size()) {
 								// we add the bins of the two binlists
-								resultList.set(j, getScore(currentList1.get(j), currentList2.get(j)));
-							} else {
-								resultList.set(j, 0d);
+								score =  getScore(currentList1.get(j).getScore(), currentList2.get(j).getScore());
 							}
+							resultListBuilder.addElementToBuild(currentChromosome, new SimpleScoredChromosomeWindow(start, stop, score));
 						}
 					} else {
-						List<Double> currentList = null;
+						ListView<ScoredChromosomeWindow> currentList = null;
 						if (!firstLayerIsEmpty & secondLayerIsEmpty) {
 							currentList = currentList1;
 						} else if (firstLayerIsEmpty & !secondLayerIsEmpty) {
@@ -117,45 +112,53 @@ public class BLOTwoLayers implements Operation<ImmutableGenomicDataList<?>> {
 						}
 
 						if (currentList != null) {
-							resultList = ListFactory.createList(precision, currentList.size());
-							if ((scm == ScoreCalculationTwoLayersMethod.ADDITION) || (scm == ScoreCalculationTwoLayersMethod.MAXIMUM)) {
+							if ((scm == ScoreOperation.ADDITION) || (scm == ScoreOperation.MAXIMUM)) {
 								for (int j = 0; (j < currentList.size()) && !stopped; j++) {
-									resultList.set(j, currentList.get(j));
+									resultListBuilder.addElementToBuild(currentChromosome, currentList.get(j));
 								}
-							} else if (scm == ScoreCalculationTwoLayersMethod.SUBTRACTION) {
-								int factor = 1;
-								if (firstLayerIsEmpty) {
-									factor = -1;
-								}
+							} else if (scm == ScoreOperation.SUBTRACTION) {
 								for (int j = 0; (j < currentList.size()) && !stopped; j++) {
-									resultList.set(j, factor*currentList.get(j));
+									if (firstLayerIsEmpty) {
+										ScoredChromosomeWindow currentWindow = currentList.get(j);
+										ScoredChromosomeWindow windowToAdd = new SimpleScoredChromosomeWindow(currentWindow.getStart(), currentWindow.getStop(), -currentWindow.getScore());
+										resultListBuilder.addElementToBuild(currentChromosome, windowToAdd);
+									} else {
+										resultListBuilder.addElementToBuild(currentChromosome, currentList.get(j));
+									}
 								}
-							} else if ((scm == ScoreCalculationTwoLayersMethod.MULTIPLICATION) || (scm == ScoreCalculationTwoLayersMethod.DIVISION) || (scm == ScoreCalculationTwoLayersMethod.MINIMUM)) {
+							} else if ((scm == ScoreOperation.MULTIPLICATION) || (scm == ScoreOperation.DIVISION) || (scm == ScoreOperation.MINIMUM)) {
 								for (int j = 0; (j < currentList.size()) && !stopped; j++) {
-									resultList.set(j, 0d);
+									ScoredChromosomeWindow currentWindow = currentList.get(j);
+									ScoredChromosomeWindow windowToAdd = new SimpleScoredChromosomeWindow(currentWindow.getStart(), currentWindow.getStop(), 0f);
+									resultListBuilder.addElementToBuild(currentChromosome, windowToAdd);
 								}
-							} else if (scm == ScoreCalculationTwoLayersMethod.AVERAGE) {
+							} else if (scm == ScoreOperation.AVERAGE) {
 								for (int j = 0; (j < currentList.size()) && !stopped; j++) {
-									resultList.set(j, currentList.get(j) / 2);
+									ScoredChromosomeWindow currentWindow = currentList.get(j);
+									ScoredChromosomeWindow windowToAdd = new SimpleScoredChromosomeWindow(currentWindow.getStart(), currentWindow.getStop(), currentWindow.getScore() / 2);
+									resultListBuilder.addElementToBuild(currentChromosome, windowToAdd);
 								}
 							}
 						}
 					}
-
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
-					return resultList;
+					return null;
 				}
 			};
 
 			threadList.add(currentThread);
 		}
-		List<List<Double>> result = op.startPool(threadList);
-		if (result != null) {
-			BinList resultList = new BinList(binList1.getBinSize(), precision, result);
-			return resultList;
+		op.startPool(threadList);
+		return resultListBuilder.getSCWList();
+	}
+
+
+	private float division(float a, float b) {
+		if ((a != 0f) && (b != 0f)) {
+			return a / b;
 		} else {
-			return null;
+			return 0f;
 		}
 	}
 
@@ -167,16 +170,12 @@ public class BLOTwoLayers implements Operation<ImmutableGenomicDataList<?>> {
 
 
 	@Override
-	public int getStepCount() {
-		return BinList.getCreationStepCount(binList1.getBinSize()) + 1;
-	}
-
-
-	@Override
 	public String getProcessingDescription() {
 		return "Two Layers Operation";
 	}
 
+
+	///////////////////////////	Calculation methods
 
 	/**
 	 * getScore method
@@ -184,7 +183,7 @@ public class BLOTwoLayers implements Operation<ImmutableGenomicDataList<?>> {
 	 * 
 	 * @return	the score
 	 */
-	private double getScore (double a, double b) {
+	private float getScore (float a, float b) {
 		switch (scm) {
 		case ADDITION:
 			return sum(a, b);
@@ -201,54 +200,44 @@ public class BLOTwoLayers implements Operation<ImmutableGenomicDataList<?>> {
 		case MINIMUM:
 			return minimum(a, b);
 		default:
-			return -1.0;
+			return Float.NaN;
 		}
 	}
 
 
-	///////////////////////////	Calculation methods
-
-	private double sum(double a, double b) {
-		return (a + b);
+	@Override
+	public int getStepCount() {
+		return BinList.getCreationStepCount(binList1.getBinSize()) + 1;
 	}
 
 
-	private double subtraction(double a, double b) {
-		return (a - b);
-	}
-
-
-	private double multiplication(double a, double b) {
-		return (a * b);
-	}
-
-
-	private double division(double a, double b) {
-		if ((a != 0.0) && (b != 0.0)) {
-			return a / b;
-		} else {
-			return 0.0;
-		}
-	}
-
-
-	private double average(double a, double b) {
-		return sum(a, b) / 2;
-	}
-
-
-	private double maximum(double a, double b) {
+	private float maximum(float a, float b) {
 		return Math.max(a, b);
 	}
 
 
-	private double minimum(double a, double b) {
+	private float minimum(float a, float b) {
 		return Math.min(a, b);
+	}
+
+
+	private float multiplication(float a, float b) {
+		return (a * b);
 	}
 
 
 	@Override
 	public void stop() {
 		stopped = true;
+	}
+
+
+	private float subtraction(float a, float b) {
+		return (a - b);
+	}
+
+
+	private float sum(float a, float b) {
+		return (a + b);
 	}
 }

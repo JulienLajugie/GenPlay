@@ -64,6 +64,7 @@ public final class MaskListViewBuilder implements ListViewBuilder<ScoredChromoso
 	 */
 	public void addElementToBuild(int start, int stop)
 			throws ObjectAlreadyBuiltException, ElementAddedNotSortedException {
+		System.out.println(start);
 		if (maskStarts == null) {
 			throw new ObjectAlreadyBuiltException();
 		}

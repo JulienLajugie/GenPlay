@@ -26,14 +26,15 @@ import java.text.NumberFormat;
 
 import javax.swing.ActionMap;
 
+import edu.yu.einstein.genplay.core.IO.dataReader.SCWReader;
 import edu.yu.einstein.genplay.core.IO.extractor.StrandedExtractor;
 import edu.yu.einstein.genplay.core.IO.utils.ChromosomesSelector;
 import edu.yu.einstein.genplay.core.IO.utils.StrandedExtractorOptions;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinListFactory;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.newCurveLayerDialog.NewCurveLayerDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -54,7 +55,6 @@ public final class TAAddBinLayer extends TrackListActionExtractorWorker<BinList>
 	private static final String 	DESCRIPTION = "Add a layer displaying bins with a fixed size"; 	// tooltip
 	private int 					binSize = 0;													// Size of the bins of the BinList
 	private ScoreOperation 			scoreCalculation = null;										// Method of calculation of the score of the BinList
-	private ScorePrecision 			precision = ScorePrecision.PRECISION_32BIT;						// Precision of the Data
 	private Strand					strand = null;													// strand to extract
 	private int						strandShift = 0;												// position shift on a strand
 	private int 					readLength = 0;													// user specified length of the reads (0 to keep the original length)
@@ -82,7 +82,7 @@ public final class TAAddBinLayer extends TrackListActionExtractorWorker<BinList>
 			Track selectedTrack = getTrackListPanel().getSelectedTrack();
 			BinLayer newLayer = new BinLayer(selectedTrack, actionResult, fileToExtract.getName());
 			// add the history to the layer
-			String history = "Bin Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getScorePrecision() + ", Score Count = " + NumberFormat.getInstance().format(actionResult.getScoreSum());
+			String history = "Bin Size = " + actionResult.getBinSize() + "bp, Score Count = " + NumberFormat.getInstance().format(actionResult.getScoreSum());
 			history += ", Method of Calculation = " + scoreCalculation;
 			if (strand != null) {
 				history += ", Strand = ";
@@ -109,12 +109,11 @@ public final class TAAddBinLayer extends TrackListActionExtractorWorker<BinList>
 	@Override
 	protected void doBeforeExtraction() throws InterruptedException {
 		boolean isStrandNeeded = extractor instanceof StrandedExtractor;
-		NewCurveLayerDialog ncld = new NewCurveLayerDialog(name, true, true, true, true, isStrandNeeded, true, true);
+		NewCurveLayerDialog ncld = new NewCurveLayerDialog(name, true, true, false, true, isStrandNeeded, true, true);
 		if (ncld.showDialog(getRootPane()) == NewCurveLayerDialog.APPROVE_OPTION) {
 			name = ncld.getLayerName();
 			binSize = ncld.getBinSize();
 			scoreCalculation = ncld.getScoreCalculationMethod();
-			precision = ncld.getDataPrecision();
 			selectedChromo = ncld.getSelectedChromosomes();
 			// if not all the chromosomes are selected we need
 			// to ask the user if the file is sorted or not
@@ -140,8 +139,8 @@ public final class TAAddBinLayer extends TrackListActionExtractorWorker<BinList>
 		notifyActionStop();
 		// if the binSize is known we can find out how many steps will be used
 		notifyActionStart("Generating Layer", 1 + BinList.getCreationStepCount(binSize), true);
-
-		return ((BinListGenerator) extractor).toBinList(binSize, precision, scoreCalculation);
+		BinList binList = BinListFactory.createBinList((SCWReader) extractor, binSize, scoreCalculation);
+		return binList;
 	}
 
 

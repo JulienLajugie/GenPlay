@@ -28,20 +28,20 @@ import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOIndex;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
-import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.AbstractSCWLayer;
 
 
 /**
- * Indexes the selected {@link SCWLayer}
+ * Indexes the selected {@link AbstractSCWLayer}
  * @author Julien Lajugie
  */
 public final class SCWLAIndex extends TrackListActionOperationWorker<SCWList> {
 
 	private static final long serialVersionUID = -4566157311251154991L; // generated ID
-	private static final String 	ACTION_NAME = "Indexation";			// action name
-	private static final String 	DESCRIPTION =
+	private static final String 		ACTION_NAME = "Indexation";		// action name
+	private static final String 		DESCRIPTION =
 			"Index the selected layer";		 							// tooltip
-	private SCWLayer	 			selectedLayer;						// selected layer
+	private AbstractSCWLayer<SCWList>	selectedLayer;					// selected layer
 
 	/**
 	 * key of the action in the {@link ActionMap}
@@ -68,9 +68,10 @@ public final class SCWLAIndex extends TrackListActionOperationWorker<SCWList> {
 	}
 
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Operation<SCWList> initializeOperation() {
-		selectedLayer = (SCWLayer) getValue("Layer");
+		selectedLayer = (AbstractSCWLayer<SCWList>) getValue("Layer");
 		if (selectedLayer != null) {
 			Number indexMin = NumberOptionPane.getValue(getRootPane(), "Minimum", "New minimum score:", -1000000, 1000000, 0);
 			if (indexMin != null) {

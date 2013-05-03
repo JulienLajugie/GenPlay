@@ -92,10 +92,12 @@ public class SCWListBuilder {
 	 * Creates an instance of {@link SCWList} that can either be an instance of {@link BinList} or of {@link SimpleSCWList} depending
 	 * on the specified {@link ListOfListViewBuilder}
 	 * @return An instance of {@link ScoredChromosomeWindow}
-	 * @throws InterruptedException
 	 * @throws ExecutionException
+	 * @throws InterruptedException
+	 * @throws InvalidParameterException
+	 * @throws Exception
 	 */
-	private final SCWList createSCWList(List<ListView<ScoredChromosomeWindow>> data) throws InterruptedException, ExecutionException {
+	private final SCWList createSCWList(List<ListView<ScoredChromosomeWindow>> data) throws InvalidParameterException, InterruptedException, ExecutionException  {
 		if ((data == null) || data.isEmpty()) {
 			return null;
 		}
@@ -132,10 +134,11 @@ public class SCWListBuilder {
 	/**
 	 * @return A SCWList containing the items added using the {@link #addElementToBuild(Chromosome, ScoredChromosomeWindow)}.<br>
 	 * The type of the SCWList will be the same as the one from the list specified in the {@link #SCWListBuilder(SCWList)} constructor.
-	 * @throws InterruptedException
 	 * @throws ExecutionException
+	 * @throws InterruptedException
+	 * @throws InvalidParameterException
 	 */
-	public SCWList getSCWList() throws InterruptedException, ExecutionException {
+	public SCWList getSCWList() throws InvalidParameterException, InterruptedException, ExecutionException  {
 		SCWList list = createSCWList(builder.getGenomicList());
 		return list;
 	}

@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.converter.Converter;
+import edu.yu.einstein.genplay.core.pileupFlattener.BinListPileupFlattener;
+import edu.yu.einstein.genplay.core.pileupFlattener.PileupFlattener;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.bin.BinListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
@@ -66,12 +68,24 @@ public class MaskListToBinList implements Converter {
 		List<ListView<ScoredChromosomeWindow>> resultList = new ArrayList<ListView<ScoredChromosomeWindow>>();
 		for (ListView<ScoredChromosomeWindow> currentLV: list) {
 			ListViewBuilder<ScoredChromosomeWindow> lvBuilder = new BinListViewBuilder(binSize);
+			PileupFlattener flattener = new BinListPileupFlattener(binSize,method);
 			for (ScoredChromosomeWindow scw: currentLV) {
-				lvBuilder.addElementToBuild(scw);
+				List<ScoredChromosomeWindow> flattenedWindows = flattener.addWindow(scw);
+				if (!flattenedWindows.isEmpty()) {
+					for (ScoredChromosomeWindow currentFlattenedWindow: flattenedWindows) {
+						lvBuilder.addElementToBuild(currentFlattenedWindow);
+					}
+				}
+			}
+			List<ScoredChromosomeWindow> flattenedWindows = flattener.flush();
+			if (!flattenedWindows.isEmpty()) {
+				for (ScoredChromosomeWindow currentFlattenedWindow: flattenedWindows) {
+					lvBuilder.addElementToBuild(currentFlattenedWindow);
+				}
 			}
 			resultList.add(lvBuilder.getListView());
 		}
-		result = new BinList(resultList);
+		result = new BinList(resultList, binSize);
 	}
 
 

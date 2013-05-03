@@ -37,15 +37,16 @@ import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.enums.Nucleotide;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewIterator;
+import edu.yu.einstein.genplay.dataStructure.list.listView.subListView.SubListView;
 
 
 /**
  * This class provides the representation of a sequence from a .2bit file as described
  * in the help file of the UCSC Genome Browser: http://genome.ucsc.edu/FAQ/FAQformat.html#format7
  * @author Julien Lajugie
- * @version 0.1
  */
-public final class TwoBitListView implements Iterator<Nucleotide>, ListView<Nucleotide>, Serializable {
+public final class TwoBitListView implements ListView<Nucleotide>, Serializable {
 
 	/** Generated Serial ID */
 	private static final long serialVersionUID = -4820838292720902481L;
@@ -55,9 +56,6 @@ public final class TwoBitListView implements Iterator<Nucleotide>, ListView<Nucl
 
 	/** Code for a missing genome position (a billion) in multi genome project. */
 	public static final int MISSING_POSITION = -1000000000;
-
-	/** Current index of the iterator */
-	private transient int iteratorIndex = 0;
 
 	/** 2bit random access file */
 	private transient RandomAccessFile raf;
@@ -236,12 +234,6 @@ public final class TwoBitListView implements Iterator<Nucleotide>, ListView<Nucl
 
 
 	@Override
-	public boolean hasNext() {
-		return iteratorIndex < size();
-	}
-
-
-	@Override
 	public boolean isEmpty() {
 		return size() == 0;
 	}
@@ -249,15 +241,7 @@ public final class TwoBitListView implements Iterator<Nucleotide>, ListView<Nucl
 
 	@Override
 	public Iterator<Nucleotide> iterator() {
-		return this;
-	}
-
-
-	@Override
-	public Nucleotide next() {
-		int currentIndex = iteratorIndex;
-		iteratorIndex++;
-		return get(currentIndex);
+		return new ListViewIterator<Nucleotide>(this);
 	}
 
 
@@ -284,18 +268,18 @@ public final class TwoBitListView implements Iterator<Nucleotide>, ListView<Nucl
 	}
 
 
-	@Override
-	public void remove() {
-		throw new UnsupportedOperationException();
-	}
-
-
 	/**
 	 * Returns the number of nucleotides
 	 */
 	@Override
 	public int size() {
 		return dnaSize;
+	}
+
+
+	@Override
+	public ListView<Nucleotide> subList(int fromIndex, int toIndex) {
+		return new SubListView<Nucleotide>(this, fromIndex, toIndex);
 	}
 
 

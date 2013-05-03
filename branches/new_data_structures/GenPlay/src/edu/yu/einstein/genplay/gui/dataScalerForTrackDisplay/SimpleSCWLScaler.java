@@ -25,6 +25,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
@@ -37,7 +38,7 @@ import edu.yu.einstein.genplay.util.ListView.ChromosomeWindowListViews;
  * This class scales a {@link SimpleSCWList}to be displayed on a track.
  * @author Julien Lajugie
  */
-public class SimpleSCWLScaler implements DataScalerForTrackDisplay<SimpleSCWList, ListView<ScoredChromosomeWindow>> {
+public class SimpleSCWLScaler implements DataScalerForTrackDisplay<SCWList, ListView<ScoredChromosomeWindow>> {
 
 	/** Scaled chromosome */
 	private Chromosome scaledChromosome;
@@ -49,14 +50,14 @@ public class SimpleSCWLScaler implements DataScalerForTrackDisplay<SimpleSCWList
 	private ListView<ScoredChromosomeWindow> scaledSCWList;
 
 	/** Data to be scaled for track display */
-	private final SimpleSCWList dataToScale;
+	private final SCWList dataToScale;
 
 
 	/**
 	 * Creates an instance of {@link SimpleSCWLScaler}
 	 * @param dataToScale the data that needs to be scaled
 	 */
-	public SimpleSCWLScaler(SimpleSCWList dataToScale) {
+	public SimpleSCWLScaler(SCWList dataToScale) {
 		this.dataToScale = dataToScale;
 	}
 
@@ -74,12 +75,12 @@ public class SimpleSCWLScaler implements DataScalerForTrackDisplay<SimpleSCWList
 		if ((scaledSCWList == null) || (scaledSCWList.size() == 0)) {
 			return null;
 		}
-		return ChromosomeWindowListViews.sublist(scaledSCWList, projectWindow.getStart(), projectWindow.getStop());
+		return ChromosomeWindowListViews.subList(scaledSCWList, projectWindow.getStart(), projectWindow.getStop());
 	}
 
 
 	@Override
-	public SimpleSCWList getDataToScale() {
+	public SCWList getDataToScale() {
 		return dataToScale;
 	}
 

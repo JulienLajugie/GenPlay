@@ -36,8 +36,8 @@ import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.TransfragDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.track.layer.AbstractSCWLayer;
 import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
-import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -48,11 +48,11 @@ import edu.yu.einstein.genplay.util.Utils;
 public class SCWLATransfrag extends TrackListAction {
 
 	private static final long serialVersionUID = 4913086320948928688L;
-	private static final String 	ACTION_NAME = "Transfrag";			// action name
-	private static final String 	DESCRIPTION =
+	private static final String 		ACTION_NAME = "Transfrag";			// action name
+	private static final String 		DESCRIPTION =
 			"Define regions separated by gaps of a specified length " +
-					"and compute the average/max/sum of these regions";	// tooltip
-	private SCWLayer 				selectedLayer;						// selected layer
+					"and compute the average/max/sum of these regions";		// tooltip
+	private AbstractSCWLayer<SCWList>	selectedLayer;						// selected layer
 
 
 	/**
@@ -72,9 +72,10 @@ public class SCWLATransfrag extends TrackListAction {
 	}
 
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		selectedLayer = (SCWLayer) getValue("Layer");
+		selectedLayer = (AbstractSCWLayer<SCWList>) getValue("Layer");
 		if (selectedLayer != null) {
 			final SCWList scwList = selectedLayer.getData();
 			final TransfragDialog tfDialog = new TransfragDialog(TransfragDialog.SCWLIST_TRANSFRAG);

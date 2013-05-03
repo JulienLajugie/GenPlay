@@ -100,7 +100,6 @@ public final class TAAddGeneLayer extends TrackListActionExtractorWorker<GeneLis
 	@Override
 	protected GeneList generateList() throws Exception {
 		GeneList geneList = GeneListFactory.createGeneList((GeneReader) extractor);
-		// TODO ask for gene score precision
 		return geneList;
 	}
 

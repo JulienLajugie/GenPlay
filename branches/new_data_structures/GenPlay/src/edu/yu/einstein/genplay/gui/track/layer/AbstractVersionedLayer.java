@@ -153,7 +153,7 @@ public abstract class AbstractVersionedLayer<T extends Serializable> extends Abs
 
 
 	@Override
-	public void setData(T data) {
+	public <U extends T> void setData(U data) {
 		if (data != null) {
 			try {
 				urrManager.set(data);
@@ -170,7 +170,8 @@ public abstract class AbstractVersionedLayer<T extends Serializable> extends Abs
 	 * @param data the data showed in the track
 	 * @param description description of the data
 	 */
-	public void setData(T data, String description) {
+	@Override
+	public <U extends T> void setData(U data, String description) {
 		if (data != null) {
 			try {
 				history.add(description);

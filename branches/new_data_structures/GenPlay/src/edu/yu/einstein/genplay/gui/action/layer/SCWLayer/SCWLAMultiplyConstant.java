@@ -28,20 +28,20 @@ import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOMultiplyConstant;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
-import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.AbstractSCWLayer;
 
 
 /**
- * Multiplies the scores of the selected {@link SCWLayer} by a constant
+ * Multiplies the scores of the selected {@link AbstractSCWLayer} by a constant
  * @author Julien Lajugie
  */
 public final class SCWLAMultiplyConstant extends TrackListActionOperationWorker<SCWList> {
 
 	private static final long serialVersionUID = 4027173438789911860L; 			// generated ID
-	private static final String 	ACTION_NAME = "Multiplication (Constant)";	// action name
-	private static final String 	DESCRIPTION =
-			"Multiply the scores of the selected layer by a constant";			// tooltip
-	private SCWLayer	 			selectedLayer;								// selected layer
+	private static final String 		ACTION_NAME = "Multiplication (Constant)";	// action name
+	private static final String 		DESCRIPTION =
+			"Multiply the scores of the selected layer by a constant";				// tooltip
+	private AbstractSCWLayer<SCWList>	selectedLayer;								// selected layer
 
 
 	/**
@@ -69,9 +69,10 @@ public final class SCWLAMultiplyConstant extends TrackListActionOperationWorker<
 	}
 
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Operation<SCWList> initializeOperation() {
-		selectedLayer = (SCWLayer) getValue("Layer");
+		selectedLayer = (AbstractSCWLayer<SCWList>) getValue("Layer");
 		if (selectedLayer != null) {
 			Number constant = NumberOptionPane.getValue(getRootPane(), "Constant", "Multiply the scores of the layer by", Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY, 0);
 			if ((constant != null) && (constant.floatValue() != 0)) {

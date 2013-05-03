@@ -36,10 +36,10 @@ import edu.yu.einstein.genplay.util.ListView.ChromosomeWindowListViews;
 
 
 /**
- * This class scales a {@link BinSCWListScaler} to be displayed on a track.
+ * This class scales a {@link BinListScaler} to be displayed on a track.
  * @author Julien Lajugie
  */
-public class BinSCWListScaler implements DataScalerForTrackDisplay<BinList, ListView<ScoredChromosomeWindow>> {
+public class BinListScaler implements DataScalerForTrackDisplay<BinList, ListView<ScoredChromosomeWindow>> {
 
 	/** Scaled chromosome */
 	private Chromosome scaledChromosome;
@@ -55,10 +55,10 @@ public class BinSCWListScaler implements DataScalerForTrackDisplay<BinList, List
 
 
 	/**
-	 * Creates an instance of {@link BinSCWListScaler}
+	 * Creates an instance of {@link BinListScaler}
 	 * @param dataToScale the data that needs to be scaled
 	 */
-	public BinSCWListScaler(BinList dataToScale) {
+	public BinListScaler(BinList dataToScale) {
 		this.dataToScale = dataToScale;
 	}
 
@@ -76,7 +76,7 @@ public class BinSCWListScaler implements DataScalerForTrackDisplay<BinList, List
 		if ((scaledSCWList == null) || (scaledSCWList.size() == 0)) {
 			return null;
 		}
-		return ChromosomeWindowListViews.sublist(scaledSCWList, projectWindow.getStart(), projectWindow.getStop());
+		return ChromosomeWindowListViews.subList(scaledSCWList, projectWindow.getStart(), projectWindow.getStop());
 	}
 
 

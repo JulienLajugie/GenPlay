@@ -71,21 +71,9 @@ public final class GenericSCWListViewBuilder implements ListViewBuilder<ScoredCh
 	 * @throws ElementAddedOverlapException
 	 */
 	public void addElementToBuild(int start, int stop, float score)
-			throws ObjectAlreadyBuiltException, ElementAddedNotSortedException, ElementAddedOverlapException {
+			throws ObjectAlreadyBuiltException {
 		if (windowStops == null) {
 			throw new ObjectAlreadyBuiltException();
-		}
-		if (!windowStarts.isEmpty()) {
-			int lastElementIndex = windowStarts.size() -1;
-			int lastStart = windowStarts.get(lastElementIndex);
-			int lastStop = windowStops.get(lastElementIndex);
-			if (start < lastStart) {
-				// case where the elements added are not sorted
-				throw new ElementAddedNotSortedException();
-			} else if (start < lastStop) {
-				// case where the elements added overlap
-				throw new ElementAddedOverlapException();
-			}
 		}
 		windowStarts.add(start);
 		windowStops.add(stop);

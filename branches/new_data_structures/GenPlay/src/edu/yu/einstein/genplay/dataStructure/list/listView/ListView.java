@@ -23,6 +23,8 @@ package edu.yu.einstein.genplay.dataStructure.list.listView;
 
 import java.io.Serializable;
 
+import edu.yu.einstein.genplay.dataStructure.list.listView.subListView.SubListView;
+
 
 /**
  * A read-only ordered collection.
@@ -51,4 +53,23 @@ public interface ListView<T> extends Serializable, Iterable<T> {
 	 * @return the number of elements in the {@link ListView}
 	 */
 	public int size();
+
+
+	/**
+	 * Returns a view of the portion of this listview between the specified
+	 * {@code fromIndex}, inclusive, and {@code toIndex}, exclusive.  (If
+	 * {@code fromIndex} and {@code toIndex} are equal, the returned list is
+	 * empty.)
+	 *
+	 * <p>This method eliminates the need for explicit range operations (of
+	 * the sort that commonly exist for arrays).  Any operation that expects
+	 * a list can be used as a range operation by passing a subList view
+	 * instead of a whole list.
+	 * @param fromIndex
+	 * @param toIndex
+	 * @return a {@link SubListView}
+	 * @throws IndexOutOfBoundsException
+	 * @throws IllegalArgumentException
+	 */
+	public ListView<T> subList(int fromIndex, int toIndex);
 }

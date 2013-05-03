@@ -28,11 +28,11 @@ import edu.yu.einstein.genplay.core.operation.SCWList.SCWLODivideConstant;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
-import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.AbstractSCWLayer;
 
 
 /**
- * Divides the scores of the selected {@link SCWLayer} by a constant
+ * Divides the scores of the selected {@link AbstractSCWLayer} by a constant
  * @author Julien Lajugie
  */
 public final class SCWLADivideConstant extends TrackListActionOperationWorker<SCWList> {
@@ -41,7 +41,7 @@ public final class SCWLADivideConstant extends TrackListActionOperationWorker<SC
 	private static final String 	ACTION_NAME = "Division (Constant)";// action name
 	private static final String 	DESCRIPTION =
 			"Divide the scores of the selected layer by a constant";	// tooltip
-	private SCWLayer 				selectedLayer;						// selected layer
+	private AbstractSCWLayer<SCWList>selectedLayer;						// selected layer
 
 
 	/**
@@ -69,9 +69,10 @@ public final class SCWLADivideConstant extends TrackListActionOperationWorker<SC
 	}
 
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Operation<SCWList> initializeOperation() {
-		selectedLayer = (SCWLayer) getValue("Layer");
+		selectedLayer = (AbstractSCWLayer<SCWList>) getValue("Layer");
 		if (selectedLayer != null) {
 			Number constant = NumberOptionPane.getValue(getRootPane(), "Constant", "Divide the scores of the layer by", Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY, 0);
 			if ((constant != null) && (constant.floatValue() != 0)) {

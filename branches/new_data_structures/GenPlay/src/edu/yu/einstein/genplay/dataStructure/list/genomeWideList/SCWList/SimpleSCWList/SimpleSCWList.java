@@ -44,6 +44,7 @@ import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.SimpleGeneList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.subListView.SubListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 import edu.yu.einstein.genplay.util.ListView.ListViews;
@@ -116,7 +117,7 @@ public final class SimpleSCWList implements SCWList, Iterator<ListView<ScoredChr
 		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		this.data = new ArrayList<ListView<ScoredChromosomeWindow>>(projectChromosome.size());
 		for (int i = 0; i < data.size(); i++){
-			data.add(data.get(i));
+			this.data.add(data.get(i));
 		}
 		// check if the listviews are valid and retrieve the type of the list
 		scwListType = retrieveListType(data);
@@ -320,6 +321,12 @@ public final class SimpleSCWList implements SCWList, Iterator<ListView<ScoredChr
 	@Override
 	public int size(int chromosomeIndex) {
 		return get(chromosomeIndex).size();
+	}
+
+
+	@Override
+	public ListView<ListView<ScoredChromosomeWindow>> subList(int fromIndex, int toIndex) {
+		return new SubListView<ListView<ScoredChromosomeWindow>>(this, fromIndex, toIndex);
 	}
 
 

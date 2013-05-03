@@ -14,20 +14,55 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.track.layer;
+package edu.yu.einstein.genplay.dataStructure.list.listView;
 
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
+import java.util.Iterator;
 
 /**
- * Interface that exists to set a common ancestor for the different
- * types of VersionedLayer<SCWList>.
+ * Iterator on a {@link ListView} object.
+ * @param <T> type of the elements of the {@link ListView}.
  * @author Julien Lajugie
  */
-public interface SCWLayer extends Layer<SCWList>, VersionedLayer<SCWList> {
+public class ListViewIterator<T> implements Iterator<T> {
 
+	/** List to iterate */
+	private final ListView<T> listView;
+
+	/** Current index of the iterator */
+	private int iteratorIndex;
+
+
+	/**
+	 * Create an instance of {@link ListViewIterator}
+	 * @param listView {@link ListView} to iterate
+	 */
+	public ListViewIterator(ListView<T> listView) {
+		this.listView = listView;
+		iteratorIndex = 0;
+	}
+
+
+	@Override
+	public boolean hasNext() {
+		return iteratorIndex < listView.size();
+	}
+
+
+	@Override
+	public T next() {
+		int currentIndex = iteratorIndex;
+		iteratorIndex++;
+		return listView.get(currentIndex);
+	}
+
+
+	@Override
+	public void remove() {
+		throw new UnsupportedOperationException();
+	}
 }

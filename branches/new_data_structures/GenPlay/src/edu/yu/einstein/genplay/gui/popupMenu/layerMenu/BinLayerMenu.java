@@ -22,7 +22,6 @@
 package edu.yu.einstein.genplay.gui.popupMenu.layerMenu;
 
 import javax.swing.Action;
-import javax.swing.JCheckBoxMenuItem;
 
 import edu.yu.einstein.genplay.gui.action.layer.LAConvert;
 import edu.yu.einstein.genplay.gui.action.layer.LASave;
@@ -46,8 +45,6 @@ import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLASumScore;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLATwoLayersOperation;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAUniqueScore;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAChangeBinSize;
-import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAChangeDataPrecision;
-import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLACompress;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAConcatenate;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLACorrelate;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLADensity;
@@ -76,21 +73,7 @@ public class BinLayerMenu extends AbstractLayerMenu {
 	 */
 	public BinLayerMenu(Layer<?> layer) {
 		super(layer);
-		BinLayer binLayer = (BinLayer) layer;
-		// check the compression checkbox if the selected list is checked
-		Action action = new BLACompress();
-		action.putValue("Layer", layer);
-		JCheckBoxMenuItem jcbmiCompression = new JCheckBoxMenuItem(action);
-		jcbmiCompression.setState(binLayer.getData().isCompressed());
-		if (jcbmiCompression.getState()) {
-			for (int i = 0; i < getItemCount(); i++) {
-				if (getItem(i) != null) {
-					getItem(i).setEnabled(false);
-				}
-			}
-		}
 		addSeparator();
-		add(jcbmiCompression);
 	}
 
 
@@ -131,7 +114,6 @@ public class BinLayerMenu extends AbstractLayerMenu {
 				new BLATransfrag(),
 				null,
 				new BLAChangeBinSize(),
-				new BLAChangeDataPrecision(),
 				null,
 				new BLADensity(),
 				new BLAIntervalsScoring(),

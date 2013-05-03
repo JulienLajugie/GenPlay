@@ -25,38 +25,38 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
-import edu.yu.einstein.genplay.gui.dataScalerForTrackDisplay.BinListScaler;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
+import edu.yu.einstein.genplay.gui.dataScalerForTrackDisplay.SimpleSCWLScaler;
 import edu.yu.einstein.genplay.gui.track.Track;
 
 
 /**
- * Layer displaying a {@link BinList}
+ * Layer displaying a {@link SCWList}
  * @author Julien Lajugie
  */
-public class BinLayer extends AbstractSCWLayer<BinList> implements Layer<BinList>, VersionedLayer<BinList>, GraphLayer, ColoredLayer {
+public class SimpleSCWLayer extends AbstractSCWLayer<SCWList> implements Layer<SCWList>, VersionedLayer<SCWList>, GraphLayer, ColoredLayer {
 
 	/** Generated ID */
-	private static final long serialVersionUID = -8623513547470952327L;
+	private static final long serialVersionUID = 3779631846077486596L;
 
 	/**  Version number of the class */
 	private static final transient int CLASS_VERSION_NUMBER = 0;
 
 
 	/**
-	 * Creates an instance of a {@link BinLayer}
+	 * Creates an instance of a {@link SimpleSCWLayer}
 	 * @param track track containing the layer
 	 * @param data data of the layer
 	 * @param name name of the layer
 	 */
-	public BinLayer(Track track, BinList data, String name) {
+	public SimpleSCWLayer(Track track, SCWList data, String name) {
 		super(track, data, name);
 	}
 
 
 	@Override
 	public LayerType getType() {
-		return LayerType.BIN_LAYER;
+		return LayerType.SCW_LAYER;
 	}
 
 
@@ -75,7 +75,7 @@ public class BinLayer extends AbstractSCWLayer<BinList> implements Layer<BinList
 	protected void validateDataScaler() {
 		// if the data scaler is null or is not set to scale the current data we regenerate it
 		if ((dataScaler == null) || (getData() != dataScaler.getDataToScale())) {
-			dataScaler = new BinListScaler(getData());
+			dataScaler = new SimpleSCWLScaler(getData());
 		}
 	}
 

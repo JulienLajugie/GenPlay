@@ -150,7 +150,7 @@ public final class SimpleGenomeWindow implements GenomeWindow {
 
 	@Override
 	public String toString() {
-		return chromosome.toString() + ":" + super.toString();
+		return chromosome.toString() + ":" + chromosomeWindow.toString();
 	}
 
 

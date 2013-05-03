@@ -29,6 +29,8 @@ import java.util.Iterator;
 
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewIterator;
+import edu.yu.einstein.genplay.dataStructure.list.listView.subListView.SubListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
@@ -39,16 +41,13 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
  * {@link RepeatFamilyListView} objects are immutable.
  * @author Julien Lajugie
  */
-public final class RepeatFamilyListView implements Serializable, ListView<ScoredChromosomeWindow>, Iterator<ScoredChromosomeWindow> {
+public final class RepeatFamilyListView implements Serializable, ListView<ScoredChromosomeWindow> {
 
 	/** generated ID */
 	private static final long serialVersionUID = -7691967168795920365L;
 
 	/** Version number of the class */
 	private static final transient int CLASS_VERSION_NUMBER = 0;
-
-	/** Current index of the iterator */
-	private transient int iteratorIndex = 0;
 
 	/** List of the repeats */
 	private final ListView<ScoredChromosomeWindow> repeatListView;
@@ -84,12 +83,6 @@ public final class RepeatFamilyListView implements Serializable, ListView<Scored
 
 
 	@Override
-	public boolean hasNext() {
-		return iteratorIndex < size();
-	}
-
-
-	@Override
 	public boolean isEmpty() {
 		return size() == 0;
 	}
@@ -97,15 +90,7 @@ public final class RepeatFamilyListView implements Serializable, ListView<Scored
 
 	@Override
 	public Iterator<ScoredChromosomeWindow> iterator() {
-		return this;
-	}
-
-
-	@Override
-	public ScoredChromosomeWindow next() {
-		int currentIndex = iteratorIndex;
-		iteratorIndex++;
-		return get(currentIndex);
+		return new ListViewIterator<ScoredChromosomeWindow>(this);
 	}
 
 
@@ -138,14 +123,14 @@ public final class RepeatFamilyListView implements Serializable, ListView<Scored
 
 
 	@Override
-	public void remove() {
-		throw new UnsupportedOperationException();
+	public int size() {
+		return repeatListView.size();
 	}
 
 
 	@Override
-	public int size() {
-		return repeatListView.size();
+	public ListView<ScoredChromosomeWindow> subList(int fromIndex, int toIndex) {
+		return new SubListView<ScoredChromosomeWindow>(this, fromIndex, toIndex);
 	}
 
 
@@ -159,7 +144,5 @@ public final class RepeatFamilyListView implements Serializable, ListView<Scored
 		out.writeInt(CLASS_VERSION_NUMBER);
 		// write the final fields
 		out.defaultWriteObject();
-		// reinitialize the index of the iterator
-		iteratorIndex = 0;
 	}
 }

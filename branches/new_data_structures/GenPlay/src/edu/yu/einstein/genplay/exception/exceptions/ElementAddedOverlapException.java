@@ -41,7 +41,7 @@ public class ElementAddedOverlapException extends RuntimeException {
 	 * Creates an instance of {@link ElementAddedOverlapException}
 	 */
 	public ElementAddedOverlapException() {
-		super("Elements added to the ListViewBuilder can't overlap.");
+		super("Elements added to the ListViewBuilder are overlapping.");
 	}
 
 

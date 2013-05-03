@@ -31,9 +31,10 @@ import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
 import edu.yu.einstein.genplay.gui.dialog.trackChooser.TrackChooser;
 import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.track.layer.AbstractSCWLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
-import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.SimpleSCWLayer;
 import edu.yu.einstein.genplay.util.Utils;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
@@ -74,7 +75,7 @@ public final class SCWLATwoLayersOperation extends TrackListActionOperationWorke
 	@Override
 	protected void doAtTheEnd(SCWList actionResult) {
 		if (actionResult != null) {
-			SCWLayer newLayer = new SCWLayer(resultTrack, actionResult, selectedLayer.getName() + " & " + otherLayer.getName());
+			AbstractSCWLayer<SCWList> newLayer = new SimpleSCWLayer(resultTrack, actionResult, selectedLayer.getName() + " & " + otherLayer.getName());
 			// add info to the history
 			newLayer.getHistory().add("Operation on two tracks", Colors.GREY);
 			newLayer.getHistory().add("Operation: " + scoreOperation.toString(), Colors.GREY);
@@ -89,7 +90,7 @@ public final class SCWLATwoLayersOperation extends TrackListActionOperationWorke
 	@SuppressWarnings("unchecked")
 	@Override
 	public Operation<SCWList> initializeOperation() {
-		selectedLayer = (SCWLayer) getValue("Layer");
+		selectedLayer = (AbstractSCWLayer<SCWList>) getValue("Layer");
 		if (selectedLayer != null) {
 			LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
 			layerChooserDialog.setLayers(getTrackListPanel().getModel().getAllLayers());
@@ -101,7 +102,7 @@ public final class SCWLATwoLayersOperation extends TrackListActionOperationWorke
 				if (otherLayer != null) {
 					resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackListPanel().getModel().getTracks());
 					if (resultTrack != null) {
-						scoreOperation = Utils.chooseScoreCalculationTwoLayersMethod(getRootPane());
+						scoreOperation = Utils.chooseScoreCalculation(getRootPane());
 						if (scoreOperation != null) {
 							operation = new SCWLOTwoLayers(selectedLayer.getData(), otherLayer.getData(), scoreOperation);
 							return operation;

@@ -23,6 +23,7 @@ package edu.yu.einstein.genplay.core.pileupFlattener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
@@ -59,15 +60,17 @@ public class SimpleSCWPileupFlattener implements PileupFlattener {
 	@Override
 	public List<ScoredChromosomeWindow> addWindow(ScoredChromosomeWindow window) throws ElementAddedNotSortedException {
 		int newWindowStart = window.getStart();
-		int lastStart = windowQueue.get(windowQueue.size() - 1).getStart();
-		if (newWindowStart < lastStart) {
-			throw new ElementAddedNotSortedException();
+		if (!windowQueue.isEmpty()) {
+			int lastStart = windowQueue.get(windowQueue.size() - 1).getStart();
+			if (newWindowStart < lastStart) {
+				throw new ElementAddedNotSortedException();
+			}
 		}
 		// add the new window at the end of the queue
 		windowQueue.add(window);
 		// retrieve the result of the pileup flattening
 		List<ScoredChromosomeWindow> flattenPileup = getFlattenedPileup(newWindowStart);
-		// remove the ele
+		// remove the element that are not needed anymore
 		removeProcessedElements(newWindowStart);
 		return flattenPileup;
 	}
@@ -82,6 +85,7 @@ public class SimpleSCWPileupFlattener implements PileupFlattener {
 	 * @return a list of score containing one score for each flattened window
 	 */
 	private List<Float> computeScores(List<Integer> nodes) {
+		List<Float> scores = new ArrayList<Float>();
 		if ((nodes != null) && (nodes.size() > 1)) {
 			// creates structure for scores of each flattened window
 			List<List<Float>> scoreLists = new ArrayList<List<Float>>();
@@ -101,14 +105,12 @@ public class SimpleSCWPileupFlattener implements PileupFlattener {
 				}
 			}
 			// compute and return score of each flattened window
-			List<Float> scores = new ArrayList<Float>();
 			for (List<Float> currentScoreList: scoreLists) {
 				scores.add(processScoreList(currentScoreList));
 			}
-			return scores;
-		} else {
-			return null;
+
 		}
+		return scores;
 	}
 
 
@@ -131,7 +133,8 @@ public class SimpleSCWPileupFlattener implements PileupFlattener {
 		ScoredChromosomeWindow currentWindow;
 		// nodes are start and stop positions of the windows resulting from the flattening process
 		List<Integer> nodes = new ArrayList<Integer>();
-		while (windowQueue.iterator().hasNext() && ((currentWindow = windowQueue.iterator().next()).getStart() < position)) {
+		Iterator<ScoredChromosomeWindow> iterator = windowQueue.iterator();
+		while (iterator.hasNext() && ((currentWindow = iterator.next()).getStart() < position)) {
 			nodes.add(currentWindow.getStart());
 			if (currentWindow.getStop() < position) {
 				nodes.add(currentWindow.getStop());

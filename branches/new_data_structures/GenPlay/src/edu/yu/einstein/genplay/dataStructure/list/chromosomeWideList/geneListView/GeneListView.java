@@ -28,13 +28,14 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 
+import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
+import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
-import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
-import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewIterator;
+import edu.yu.einstein.genplay.dataStructure.list.listView.subListView.SubListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 
 
 /**
@@ -43,16 +44,96 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScored
  * {@link GeneListView} objects are immutable.
  * @author Julien Lajugie
  */
-public final class GeneListView implements Serializable, ListView<Gene>, Iterator<Gene> {
+public final class GeneListView implements Serializable, ListView<Gene> {
+
+	private class GeneFromListView implements Gene {
+
+		private final int geneIndex;
+
+		public GeneFromListView(int geneIndex) {
+			this.geneIndex = geneIndex;
+		}
+
+
+		@Override
+		public int compareTo(ChromosomeWindow o) {
+			return new SimpleChromosomeWindow(getStart(), getStop()).compareTo(o);
+		}
+
+
+		@Override
+		public int containsPosition(int position) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+
+		@Override
+		public ListView<ScoredChromosomeWindow> getExons() {
+			return retrieveGeneExons(geneIndex);
+		}
+
+
+		@Override
+		public double getMiddlePosition() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+
+		@Override
+		public String getName() {
+			return retrieveGeneName(geneIndex);
+		}
+
+
+		@Override
+		public float getScore() {
+			return geneScores.get(geneIndex);
+		}
+
+
+		@Override
+		public int getSize() {
+			return getStop() - getStart();
+		}
+
+
+		@Override
+		public int getStart() {
+			return geneStarts.get(geneIndex);
+		}
+
+
+		@Override
+		public int getStop() {
+			return geneStops.get(geneIndex);
+		}
+
+
+		@Override
+		public Strand getStrand() {
+			return geneStrands.get(geneIndex) ? Strand.FIVE : Strand.THREE;
+		}
+
+
+		@Override
+		public int getUTR3Bound() {
+			return geneUTR3Bounds.get(geneIndex);
+		}
+
+
+		@Override
+		public int getUTR5Bound() {
+			return geneUTR5Bounds.get(geneIndex);
+		}
+	}
 
 	/** generated ID */
 	private static final long serialVersionUID = 2250815008426652561L;
 
 	/** Version number of the class */
 	private static final transient int CLASS_VERSION_NUMBER = 0;
-
-	/** Current index of the iterator */
-	private transient int iteratorIndex = 0;
 
 	/** List of the names of the genes */
 	private final List<Byte> geneNames;
@@ -79,13 +160,7 @@ public final class GeneListView implements Serializable, ListView<Gene>, Iterato
 	private final List<Integer> geneUTR3Bounds;
 
 	/**  List of the exon start positions */
-	private final List<Integer> exonStarts;
-
-	/** List of the exon stop positions */
-	private final List<Integer> exonStops;
-
-	/** List of the exon scores */
-	private final List<Float> exonScores;
+	private final ListView<ScoredChromosomeWindow> exons;
 
 	/** List of the offsets of the exons inside the exon start, stop and score lists */
 	private final List<Integer> exonOffsets;
@@ -101,9 +176,7 @@ public final class GeneListView implements Serializable, ListView<Gene>, Iterato
 	 * @param geneScores list of the scores of the genes
 	 * @param geneUTR5Bounds list of the UTR 5 bounds of the genes
 	 * @param geneUTR3Bounds list of the UTR 3 bounds of the genes
-	 * @param exonStarts list of the exon start positions
-	 * @param exonStops list of the exon stop positions
-	 * @param exonScores list of the exon scores
+	 * @param exons list of exons
 	 * @param exonOffsets list of the offsets of the exons inside the exon start, stop and score lists
 	 */
 	GeneListView(
@@ -115,9 +188,7 @@ public final class GeneListView implements Serializable, ListView<Gene>, Iterato
 			List<Float> geneScores,
 			List<Integer> geneUTR5Bounds,
 			List<Integer> geneUTR3Bounds,
-			List<Integer> exonStarts,
-			List<Integer> exonStops,
-			List<Float> exonScores,
+			ListView<ScoredChromosomeWindow> exons,
 			List<Integer> exonOffsets
 			) {
 		this.geneNames = geneNames;
@@ -128,30 +199,14 @@ public final class GeneListView implements Serializable, ListView<Gene>, Iterato
 		this.geneScores = geneScores;
 		this.geneUTR5Bounds = geneUTR5Bounds;
 		this.geneUTR3Bounds = geneUTR3Bounds;
-		this.exonStarts = exonStarts;
-		this.exonStops = exonStops;
-		this.exonScores = exonScores;
+		this.exons = exons;
 		this.exonOffsets = exonOffsets;
 	}
 
 
 	@Override
 	public Gene get(int geneIndex) {
-		String name = retrieveGeneName(geneIndex);
-		Strand geneStrand = geneStrands.get(geneIndex) ? Strand.FIVE : Strand.THREE;
-		int geneStart = geneStarts.get(geneIndex);
-		int geneStop = geneStops.get(geneIndex);
-		float geneScore = geneScores.get(geneIndex);
-		int geneUTR5 = geneUTR5Bounds.get(geneIndex);
-		int geneUTR3 = geneUTR3Bounds.get(geneIndex);
-		ListView<ScoredChromosomeWindow> exons = retrieveGeneExons(geneIndex);
-		return new SimpleGene(name, geneStrand, geneStart, geneStop, geneScore, geneUTR5, geneUTR3, exons);
-	}
-
-
-	@Override
-	public boolean hasNext() {
-		return iteratorIndex < size();
+		return new GeneFromListView(geneIndex);
 	}
 
 
@@ -163,15 +218,7 @@ public final class GeneListView implements Serializable, ListView<Gene>, Iterato
 
 	@Override
 	public Iterator<Gene> iterator() {
-		return this;
-	}
-
-
-	@Override
-	public Gene next() {
-		int currentIndex = iteratorIndex;
-		iteratorIndex++;
-		return get(currentIndex);
+		return new ListViewIterator<Gene>(this);
 	}
 
 
@@ -189,12 +236,6 @@ public final class GeneListView implements Serializable, ListView<Gene>, Iterato
 	}
 
 
-	@Override
-	public void remove() {
-		throw new UnsupportedOperationException();
-	}
-
-
 	/**
 	 * @param geneIndex the index of a gene
 	 * @return the {@link ListView} of exons of the gene
@@ -203,16 +244,11 @@ public final class GeneListView implements Serializable, ListView<Gene>, Iterato
 		int firstExonIndex = exonOffsets.get(geneIndex);
 		int lastExonIndex;
 		if (geneIndex < (exonOffsets.size() - 1)) {
-			lastExonIndex = exonOffsets.get(geneIndex + 1) - 1;
+			lastExonIndex = exonOffsets.get(geneIndex + 1);
 		} else {
-			lastExonIndex = exonStarts.size() - 1;
+			lastExonIndex = exons.size() - 1;
 		}
-		GenericSCWListViewBuilder exonListBuilder = new GenericSCWListViewBuilder();
-		for (int i = firstExonIndex; i <= lastExonIndex; i++) {
-			ScoredChromosomeWindow exon = new SimpleScoredChromosomeWindow(exonStarts.get(i), exonStops.get(i), exonScores.get(i));
-			exonListBuilder.addElementToBuild(exon);
-		}
-		return exonListBuilder.getListView();
+		return exons.subList(firstExonIndex, lastExonIndex);
 	}
 
 
@@ -242,6 +278,12 @@ public final class GeneListView implements Serializable, ListView<Gene>, Iterato
 	}
 
 
+	@Override
+	public ListView<Gene> subList(int fromIndex, int toIndex) {
+		return new SubListView<Gene>(this, fromIndex, toIndex);
+	}
+
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -252,7 +294,5 @@ public final class GeneListView implements Serializable, ListView<Gene>, Iterato
 		out.writeInt(CLASS_VERSION_NUMBER);
 		// write the final fields
 		out.defaultWriteObject();
-		// reinitialize the index of the iterator
-		iteratorIndex = 0;
 	}
 }

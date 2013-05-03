@@ -80,7 +80,7 @@ public interface VersionedLayer<T extends Serializable> {
 	 * @param data data to set
 	 * @param historyDescription description of the data
 	 */
-	public void setData(T data, String historyDescription);
+	public <U extends T> void setData(U data, String historyDescription);
 
 
 	/**

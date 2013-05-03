@@ -44,7 +44,7 @@ import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
 import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
 import edu.yu.einstein.genplay.gui.track.layer.MaskLayer;
-import edu.yu.einstein.genplay.gui.track.layer.GenericSCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.SimpleSCWLayer;
 
 
 /**
@@ -189,7 +189,7 @@ public class ConverterFactory {
 
 
 	/**
-	 * @return the array of {@link LayerType} a {@link GenericSCWLayer} can be converted in.
+	 * @return the array of {@link LayerType} a {@link SimpleSCWLayer} can be converted in.
 	 */
 	public static LayerType[] getSCWLayerType() {
 		LayerType[] array = {LayerType.GENE_LAYER, LayerType.MASK_LAYER, LayerType.BIN_LAYER};

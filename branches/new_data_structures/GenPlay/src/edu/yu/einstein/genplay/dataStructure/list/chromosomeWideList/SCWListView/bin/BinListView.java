@@ -28,6 +28,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewIterator;
+import edu.yu.einstein.genplay.dataStructure.list.listView.subListView.SubListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 
@@ -37,16 +39,13 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScored
  * {@link BinListView} objects are immutable.
  * @author Julien Lajugie
  */
-public final class BinListView implements ListView<ScoredChromosomeWindow>, Iterator<ScoredChromosomeWindow> {
+public final class BinListView implements ListView<ScoredChromosomeWindow> {
 
 	/** Generated serial ID */
 	private static final long serialVersionUID = 304172516803341537L;
 
 	/** Version number of the class */
 	private static final transient int CLASS_VERSION_NUMBER = 0;
-
-	/** Current index of the iterator */
-	private transient int iteratorIndex = 0;
 
 	/** Size of the bins of the list */
 	private final int binSize;
@@ -85,12 +84,6 @@ public final class BinListView implements ListView<ScoredChromosomeWindow>, Iter
 
 
 	@Override
-	public boolean hasNext() {
-		return iteratorIndex < size();
-	}
-
-
-	@Override
 	public boolean isEmpty() {
 		return size() == 0;
 	}
@@ -98,15 +91,7 @@ public final class BinListView implements ListView<ScoredChromosomeWindow>, Iter
 
 	@Override
 	public Iterator<ScoredChromosomeWindow> iterator() {
-		return this;
-	}
-
-
-	@Override
-	public ScoredChromosomeWindow next() {
-		int currentIndex = iteratorIndex;
-		iteratorIndex++;
-		return get(currentIndex);
+		return new ListViewIterator<ScoredChromosomeWindow>(this);
 	}
 
 
@@ -125,14 +110,14 @@ public final class BinListView implements ListView<ScoredChromosomeWindow>, Iter
 
 
 	@Override
-	public void remove() {
-		throw new UnsupportedOperationException();
+	public int size() {
+		return binScores.size();
 	}
 
 
 	@Override
-	public int size() {
-		return binScores.size();
+	public ListView<ScoredChromosomeWindow> subList(int fromIndex, int toIndex) {
+		return new SubListView<ScoredChromosomeWindow>(this, fromIndex, toIndex);
 	}
 
 
@@ -146,7 +131,5 @@ public final class BinListView implements ListView<ScoredChromosomeWindow>, Iter
 		out.writeInt(CLASS_VERSION_NUMBER);
 		// write the final fields
 		out.defaultWriteObject();
-		// reinitialize the index of the iterator
-		iteratorIndex = 0;
 	}
 }

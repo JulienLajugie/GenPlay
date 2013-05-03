@@ -32,10 +32,10 @@ import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
 import edu.yu.einstein.genplay.gui.dialog.trackChooser.TrackChooser;
 import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.gui.track.layer.GenericSCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.AbstractSCWLayer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
 import edu.yu.einstein.genplay.gui.track.layer.MaskLayer;
-import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.SimpleSCWLayer;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
@@ -50,7 +50,7 @@ public final class MLAApplyMask extends TrackListActionOperationWorker<SCWList> 
 	private static final String 			ACTION_NAME = "Apply Mask";						// action name
 	private static final String 			DESCRIPTION = "Apply mask on layer";			// tooltip
 	private MaskLayer 						selectedLayer;									// selected layer
-	private SCWLayer						maskedLayer;									// masked layer
+	private AbstractSCWLayer<SCWList>		maskedLayer;									// masked layer
 	private Track							resultTrack;									// track where the result layer will be added
 
 
@@ -74,7 +74,7 @@ public final class MLAApplyMask extends TrackListActionOperationWorker<SCWList> 
 	@Override
 	protected void doAtTheEnd(SCWList actionResult) {
 		if (actionResult != null) {
-			GenericSCWLayer newLayer = new GenericSCWLayer(resultTrack, actionResult, maskedLayer.getName() + " masked");
+			SimpleSCWLayer newLayer = new SimpleSCWLayer(resultTrack, actionResult, maskedLayer.getName() + " masked");
 			// add info to the history
 			newLayer.getHistory().add(maskedLayer.getName() + " masked by " + selectedLayer.getName(), Colors.GREY);
 			resultTrack.getLayers().add(newLayer);
@@ -83,6 +83,7 @@ public final class MLAApplyMask extends TrackListActionOperationWorker<SCWList> 
 	}
 
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Operation<SCWList> initializeOperation() {
 		selectedLayer = (MaskLayer) getValue("Layer");
@@ -93,7 +94,7 @@ public final class MLAApplyMask extends TrackListActionOperationWorker<SCWList> 
 			layerChooserDialog.setSelectableLayerTypes(selectableLayers);
 			layerChooserDialog.setMultiselectable(false);
 			if (layerChooserDialog.showDialog(getRootPane(), "Select Layer to Mask") == LayerChooserDialog.APPROVE_OPTION) {
-				maskedLayer = (SCWLayer) layerChooserDialog.getSelectedLayer();
+				maskedLayer = (AbstractSCWLayer<SCWList>) layerChooserDialog.getSelectedLayer();
 				if (maskedLayer != null) {
 					SCWList data = maskedLayer.getData();
 					SCWList mask = selectedLayer.getData();

@@ -38,6 +38,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.enums.Nucleotide;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.nucleotideListView.TwoBitListView.TwoBitListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.subListView.SubListView;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 
 
@@ -240,6 +241,12 @@ public class TwoBitSequenceList implements Serializable, NucleotideList, Iterato
 	@Override
 	public int size(int chromosomeIndex) {
 		return data.get(chromosomeIndex).size();
+	}
+
+
+	@Override
+	public ListView<ListView<Nucleotide>> subList(int fromIndex, int toIndex) {
+		return new SubListView<ListView<Nucleotide>>(this, fromIndex, toIndex);
 	}
 
 

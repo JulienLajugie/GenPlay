@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -29,33 +29,29 @@ import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
-import edu.yu.einstein.genplay.dataStructure.list.primitiveList.old.ListFactory;
 import edu.yu.einstein.genplay.util.FloatLists;
 
 
-
 /**
- * Defines regions as "islands" of non zero value bins 
+ * Defines regions as "islands" of non zero value bins
  * separated by more than a specified number of zero value bins.
  * Computes the average on these regions.
  * Returns a new {@link BinList} with the defined regions having their average/max/sum as a score
  * @author Julien Lajugie
  * @author Chirag Gorasia
- * @version 0.1
  */
 public class BLOTransfrag implements Operation<BinList> {
 
 	private final BinList 					binList;	// input binlist
 	private final int 						zeroBinGap; // number of zero value bins defining a gap between two islands
-	private final ScoreOperation	operation;	// max / sum / average 
+	private final ScoreOperation	operation;	// max / sum / average
 	private boolean							stopped = false;// true if the operation must be stopped
-	
+
 
 	/**
-	 * Defines regions as "islands" of non zero value bins 
+	 * Defines regions as "islands" of non zero value bins
 	 * separated by more than a specified number of zero value bins.
 	 * Computes the average on these regions.
 	 * Returns a new {@link BinList} with the defined regions having their average/max/sum as a score
@@ -66,7 +62,7 @@ public class BLOTransfrag implements Operation<BinList> {
 	public BLOTransfrag(BinList binList, int zeroBinGap, ScoreOperation operation) {
 		this.binList = binList;
 		this.zeroBinGap = zeroBinGap;
-		this.operation = operation;		
+		this.operation = operation;
 	}
 
 
@@ -76,19 +72,17 @@ public class BLOTransfrag implements Operation<BinList> {
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
 
 		final int binSize = binList.getBinSize();
-		final ScorePrecision precision = binList.getPrecision();
 
 		for (short i = 0; i < binList.size(); i++) {
-			final List<Double> currentList = binList.get(i);	
+			final List<Double> currentList = binList.get(i);
 
-			Callable<List<Double>> currentThread = new Callable<List<Double>>() {	
+			Callable<List<Double>> currentThread = new Callable<List<Double>>() {
 				@Override
 				public List<Double> call() throws Exception {
 					List<Double> resultList = null;
 					if ((currentList != null) && (currentList.size() != 0)) {
-						resultList = ListFactory.createList(precision, currentList.size());
-						int j = 0;				
-						while (j < currentList.size() && !stopped) {
+						int j = 0;
+						while ((j < currentList.size()) && !stopped) {
 							// skip zero values
 							while ((j < currentList.size()) && (currentList.get(j) == 0) && !stopped) {
 								j++;
@@ -109,7 +103,7 @@ public class BLOTransfrag implements Operation<BinList> {
 							if (regionStop == currentList.size()) {
 								regionStop--;
 							}
-							if (regionStop >= regionStart) { 
+							if (regionStop >= regionStart) {
 								double regionScore = 0;
 								if (operation == ScoreOperation.AVERAGE) {
 									// all the windows of the region are set with the average value on the region
@@ -152,22 +146,22 @@ public class BLOTransfrag implements Operation<BinList> {
 	public String getDescription() {
 		return "Operation: Transfrag, Gap Size = " + zeroBinGap + " Zero Value Successive Bins";
 	}
-	
-	
-	@Override
-	public int getStepCount() {
-		return BinList.getCreationStepCount(binList.getBinSize()) + 1;
-	}
-	
-	
+
+
 	@Override
 	public String getProcessingDescription() {
 		return "Computing Transfrag";
 	}
-	
+
+
+	@Override
+	public int getStepCount() {
+		return BinList.getCreationStepCount(binList.getBinSize()) + 1;
+	}
+
 
 	@Override
 	public void stop() {
-		this.stopped = true;
+		stopped = true;
 	}
 }
