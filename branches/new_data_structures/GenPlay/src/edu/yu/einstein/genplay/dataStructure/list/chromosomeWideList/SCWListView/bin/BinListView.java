@@ -24,14 +24,12 @@ package edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListVie
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Iterator;
 import java.util.List;
 
+import edu.yu.einstein.genplay.dataStructure.list.listView.AbstractListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
-import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewIterator;
-import edu.yu.einstein.genplay.dataStructure.list.listView.subListView.SubListView;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.AbstractScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 
 
 /**
@@ -39,7 +37,47 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScored
  * {@link BinListView} objects are immutable.
  * @author Julien Lajugie
  */
-public final class BinListView implements ListView<ScoredChromosomeWindow> {
+public final class BinListView extends AbstractListView<ScoredChromosomeWindow> implements ListView<ScoredChromosomeWindow> {
+
+	/**
+	 * Implementation of the {@link ScoredChromosomeWindow} interface for windows retrieved from a {@link ListView}
+	 * @author Julien Lajugie
+	 */
+	private class SCWFromListView extends AbstractScoredChromosomeWindow implements ScoredChromosomeWindow {
+
+		/** Generated serial ID */
+		private static final long serialVersionUID = -4636772386393755263L;
+
+		/**  Index of the window in the parent {@link ListView} */
+		private final int windowIndex;
+
+
+		/**
+		 * Creates an instance of {@link SCWFromListView}
+		 * @param windowIndex index of the window in the parent {@link ListView}
+		 */
+		private SCWFromListView(int windowIndex) {
+			this.windowIndex = windowIndex;
+		}
+
+
+		@Override
+		public float getScore() {
+			return binScores.get(windowIndex);
+		}
+
+
+		@Override
+		public int getStart() {
+			return windowIndex * binSize;
+		}
+
+		@Override
+		public int getStop() {
+			return (windowIndex + 1) * binSize;
+		}
+	}
+
 
 	/** Generated serial ID */
 	private static final long serialVersionUID = 304172516803341537L;
@@ -68,10 +106,7 @@ public final class BinListView implements ListView<ScoredChromosomeWindow> {
 
 	@Override
 	public ScoredChromosomeWindow get(int elementIndex) {
-		int start = binSize * elementIndex;
-		int stop = start + binSize;
-		float score = binScores.get(elementIndex);
-		return new SimpleScoredChromosomeWindow(start, stop, score);
+		return new SCWFromListView(elementIndex);
 	}
 
 
@@ -86,12 +121,6 @@ public final class BinListView implements ListView<ScoredChromosomeWindow> {
 	@Override
 	public boolean isEmpty() {
 		return size() == 0;
-	}
-
-
-	@Override
-	public Iterator<ScoredChromosomeWindow> iterator() {
-		return new ListViewIterator<ScoredChromosomeWindow>(this);
 	}
 
 
@@ -112,12 +141,6 @@ public final class BinListView implements ListView<ScoredChromosomeWindow> {
 	@Override
 	public int size() {
 		return binScores.size();
-	}
-
-
-	@Override
-	public ListView<ScoredChromosomeWindow> subList(int fromIndex, int toIndex) {
-		return new SubListView<ScoredChromosomeWindow>(this, fromIndex, toIndex);
 	}
 
 

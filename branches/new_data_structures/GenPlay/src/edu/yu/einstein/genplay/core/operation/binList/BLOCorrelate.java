@@ -42,19 +42,19 @@ public class BLOCorrelate implements Operation<Double[]> {
 
 	private final BinList 	binList1;		// input BinList
 	private final BinList	binList2;		// input BinList
-	private final int[] 			counters;		// counters for the none-null value
+	private final int[] 	counters;		// counters for the none-null value
 	private int 			counter = 0;	// counter for the none-null value
-	private final double[]		means1;			// chromosome averages of binList1
+	private final double[]	means1;			// chromosome averages of binList1
 	private double			mean1 = 0;		// average of binList1
-	private final double[]		means2;			// chromosome averages of binList2
+	private final double[]	means2;			// chromosome averages of binList2
 	private double			mean2 = 0;		// average of binList2
-	private final double[]		stdevs1;		// chromosome standard deviations of binList1 based on the chromosome average
+	private final double[]	stdevs1;		// chromosome standard deviations of binList1 based on the chromosome average
 	private double			stdev1 = 0;		// standard deviation of binList1
-	private final double[]		stddevtotals1;	// chromosome standard deviations of binList1 based on the total average
-	private final double[]		stdevs2;		// chromosome standard deviations of binList2 based on the chromosome average
+	private final double[]	stddevtotals1;	// chromosome standard deviations of binList1 based on the total average
+	private final double[]	stdevs2;		// chromosome standard deviations of binList2 based on the chromosome average
 	private double			stdev2 = 0;		// standard deviation of binList2
-	private final double[]		stddevtotals2;	// chromosome standard deviations of binList2 based on the total average
-	private final double[]		correlations;	// chromosome correlation coefficients
+	private final double[]	stddevtotals2;	// chromosome standard deviations of binList2 based on the total average
+	private final double[]	correlations;	// chromosome correlation coefficients
 	private double 			correlation = 0;// correlation coefficient
 	private boolean			stopped = false;// true if the operation must be stopped
 

@@ -51,7 +51,7 @@ public class ListOfByteArraysAsByteList extends AbstractList<Byte> implements Se
 	private static final transient int CLASS_VERSION_NUMBER = 0;
 
 	/** Size of the sub arrays */
-	private static final int ARRAY_SIZE = 10000;
+	private static final int ARRAY_SIZE = 5000;
 
 	/** List compressed as a ByteArrayOutputStream */
 	private transient ByteArrayOutputStream	compressedData = null;
@@ -71,7 +71,6 @@ public class ListOfByteArraysAsByteList extends AbstractList<Byte> implements Se
 	 */
 	public ListOfByteArraysAsByteList() {
 		data = new ArrayList<byte[]>();
-		data.add(new byte[ARRAY_SIZE]);
 	}
 
 
@@ -87,6 +86,9 @@ public class ListOfByteArraysAsByteList extends AbstractList<Byte> implements Se
 
 	@Override
 	public boolean add(Byte e) {
+		if (data.isEmpty()) {
+			data.add(new byte[ARRAY_SIZE]);
+		}
 		byte[] currentArray = data.get(data.size() - 1);
 		if (currentIndex < currentArray.length) {
 			currentArray[currentIndex] = e;
@@ -167,6 +169,9 @@ public class ListOfByteArraysAsByteList extends AbstractList<Byte> implements Se
 
 	@Override
 	public int size() {
+		if (data.isEmpty()) {
+			return 0;
+		}
 		int size = ((data.size() - 1) * ARRAY_SIZE) + currentIndex;
 		return size;
 	}

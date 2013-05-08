@@ -95,9 +95,10 @@ public class SCWListBuilder {
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 * @throws InvalidParameterException
+	 * @throws CloneNotSupportedException
 	 * @throws Exception
 	 */
-	private final SCWList createSCWList(List<ListView<ScoredChromosomeWindow>> data) throws InvalidParameterException, InterruptedException, ExecutionException  {
+	private final SCWList createSCWList(List<ListView<ScoredChromosomeWindow>> data) throws InvalidParameterException, InterruptedException, ExecutionException, CloneNotSupportedException  {
 		if ((data == null) || data.isEmpty()) {
 			return null;
 		}
@@ -137,8 +138,9 @@ public class SCWListBuilder {
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 * @throws InvalidParameterException
+	 * @throws CloneNotSupportedException
 	 */
-	public SCWList getSCWList() throws InvalidParameterException, InterruptedException, ExecutionException  {
+	public SCWList getSCWList() throws InvalidParameterException, InterruptedException, ExecutionException, CloneNotSupportedException  {
 		SCWList list = createSCWList(builder.getGenomicList());
 		return list;
 	}

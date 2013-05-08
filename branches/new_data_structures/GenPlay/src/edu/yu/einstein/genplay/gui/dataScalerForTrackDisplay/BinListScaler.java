@@ -105,10 +105,11 @@ public class BinListScaler implements DataScalerForTrackDisplay<BinList, ListVie
 		}
 		int i = 0;
 		double ratio = 0;
+		int chromosomeIndex = ProjectManager.getInstance().getProjectChromosome().getIndex(scaledChromosome);
 		while ((i < BinList.AVERAGE_BIN_SIZE_FACTORS.length) && (ratio < 1)) {
 			binSize = dataToScale.getBinSize() * BinList.AVERAGE_BIN_SIZE_FACTORS[i];
 			ratio = scaledXRatio * binSize;
-			scaledSCWList = dataToScale.getAveragedList(i).get(scaledChromosome);
+			scaledSCWList = dataToScale.getAveragedList(i).get(chromosomeIndex);
 		}
 		if (ratio == 1) {
 			return;

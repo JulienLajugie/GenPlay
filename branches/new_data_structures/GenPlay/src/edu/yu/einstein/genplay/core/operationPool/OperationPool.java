@@ -37,12 +37,10 @@ import edu.yu.einstein.genplay.gui.event.operationProgressEvent.OperationProgres
 import edu.yu.einstein.genplay.gui.event.operationProgressEvent.OperationProgressListener;
 
 
-
 /**
  * Pool of threads with tools to start, interrupt and retrieve the result of the execution.
  * Generate progress events and send this events to listeners.
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class OperationPool implements OperationProgressEventsGenerator {
 

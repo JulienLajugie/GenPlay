@@ -19,20 +19,18 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.list.listView.subListView;
+package edu.yu.einstein.genplay.dataStructure.list.listView;
 
 import java.util.Iterator;
 import java.util.List;
 
-import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
-import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewIterator;
 
 /**
  * Sublists of a {@link ListView}
  * @param <T> type of the elements of the SubListView
  * @author Julien Lajugie
  */
-public class DiscontinuousSubListView<T> implements ListView<T> {
+class ContinuousSubListView<T> implements ListView<T> {
 
 	/** Generated serial ID */
 	private static final long serialVersionUID = 8814010349357079420L;
@@ -41,29 +39,42 @@ public class DiscontinuousSubListView<T> implements ListView<T> {
 	private final ListView<T> parent;
 
 	/** Offset of the start of the list view */
-	private final int[] indexes;
+	private final int offset;
+
+	/** Size of the {@link ListView} */
+	private final int size;
 
 
 	/**
-	 * Creates an instance of {@link DiscontinuousSubListView}
+	 * Creates an instance of {@link ContinuousSubListView}
 	 * @param parent parent {@link ListView} of the sublist
-	 * @param indexes List containing the indexes of the elements in the parent list that are present in the
+	 * @param fromIndex first index of the sublist in the parent list
+	 * @param toIndex last index of the sublist in the parent list
 	 */
-	public DiscontinuousSubListView(ListView<T> parent, List<Integer> indexes) {
+	ContinuousSubListView(ListView<T> parent, int fromIndex, int toIndex) {
+		this(parent, 0, fromIndex, toIndex);
+	}
+
+
+	/**
+	 * Creates an instance of {@link ContinuousSubListView}
+	 * @param parent parent {@link ListView} of the sublist
+	 * @param offset offset of the parent {@link ListView} (only if the parent is already a sublist)
+	 * @param fromIndex first index of the sublist in the parent list
+	 * @param toIndex last index of the sublist in the parent list
+	 */
+	private ContinuousSubListView(ListView<T> parent, int offset, int fromIndex, int toIndex) {
+		subListRangeCheck(fromIndex, toIndex, parent.size());
 		this.parent = parent;
-		this.indexes = new int[indexes.size()];
-		for (int i = 0; i < indexes.size(); i++) {
-			int currentIndex = indexes.get(i);
-			subListRangeCheck(currentIndex);
-			this.indexes[i] = currentIndex;
-		}
+		this.offset = offset + fromIndex;
+		this.size = toIndex - fromIndex;
 	}
 
 
 	@Override
 	public T get(int elementIndex) {
 		rangeCheck(elementIndex);
-		return parent.get(indexes[elementIndex]);
+		return parent.get(offset + elementIndex);
 	}
 
 
@@ -84,7 +95,7 @@ public class DiscontinuousSubListView<T> implements ListView<T> {
 	 * @return a message for {@link IndexOutOfBoundsException}
 	 */
 	private String outOfBoundsMsg(int index) {
-		return "Index: " + index + ", Size: " + size();
+		return "Index: " + index + ", Size: " + this.size;
 	}
 
 
@@ -93,20 +104,30 @@ public class DiscontinuousSubListView<T> implements ListView<T> {
 	 * @param index
 	 */
 	private void rangeCheck(int index) {
-		if ((index < 0) || (index >= size())) {
+		if ((index < 0) || (index >= this.size)) {
 			throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
 		}
 	}
 
 	@Override
 	public int size() {
-		return indexes.length;
+		return this.size;
 	}
 
 
 	@Override
 	public ListView<T> subList(int fromIndex, int toIndex) {
-		return new SubListView<T>(this, fromIndex, toIndex);
+		return new ContinuousSubListView<T>(parent, offset, fromIndex, toIndex);
+	}
+
+
+	@Override
+	public ListView<T> subList(List<Integer> indexes) {
+		for (int i = 0; i < indexes.size(); i++) {
+			int newIndex = offset + indexes.get(i);
+			indexes.set(i, newIndex);
+		}
+		return new DiscontinuousSubListView<T>(parent, indexes);
 	}
 
 
@@ -116,12 +137,15 @@ public class DiscontinuousSubListView<T> implements ListView<T> {
 	 * @param toIndex
 	 * @param size
 	 */
-	private void subListRangeCheck(int index) {
-		if (index < 0) {
-			throw new IndexOutOfBoundsException("Index = " + index);
+	private void subListRangeCheck(int fromIndex, int toIndex, int size) {
+		if (fromIndex < 0) {
+			throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
 		}
-		if (index > parent.size()) {
-			throw new IndexOutOfBoundsException("Index = " + index);
+		if (toIndex > size) {
+			throw new IndexOutOfBoundsException("toIndex = " + toIndex);
+		}
+		if (fromIndex > toIndex) {
+			throw new IllegalArgumentException("fromIndex(" + fromIndex + ") > toIndex(" + toIndex + ")");
 		}
 	}
 }

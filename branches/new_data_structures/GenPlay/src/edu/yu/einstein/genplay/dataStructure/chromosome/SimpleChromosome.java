@@ -26,7 +26,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import edu.yu.einstein.genplay.core.comparator.ChromosomeComparator;
-import edu.yu.einstein.genplay.util.HashCodeUtil;
 
 
 /**
@@ -34,16 +33,13 @@ import edu.yu.einstein.genplay.util.HashCodeUtil;
  * {@link Chromosome} objects are immutable.
  * @author Julien Lajugie
  */
-public final class SimpleChromosome implements Chromosome {
+public final class SimpleChromosome extends AbstractChromosome implements Chromosome {
 
 	/**  Generated serial ID */
 	private static final long serialVersionUID = -8339402742378578413L;
 
 	/**  Version number of the class */
 	private static final transient int CLASS_VERSION_NUMBER = 0;
-
-	/** The hash code is computed once at the creation because the class is immutable */
-	private final int hashCode;
 
 	/** Length of the chromosome */
 	private final int length;
@@ -60,7 +56,6 @@ public final class SimpleChromosome implements Chromosome {
 	public SimpleChromosome(String name, int length) {
 		this.name = name;
 		this.length = length;
-		hashCode = computeHashCode();
 	}
 
 
@@ -68,43 +63,6 @@ public final class SimpleChromosome implements Chromosome {
 	public int compareTo(Chromosome otherChromosome) {
 		ChromosomeComparator comp = new ChromosomeComparator();
 		return comp.compare(this, otherChromosome);
-	}
-
-
-	/**
-	 * Computes the hash code. This can be done only once since Chromosome objects are immutable.
-	 */
-	private int computeHashCode() {
-		int result = HashCodeUtil.SEED;
-		result = HashCodeUtil.hash(result, name);
-		result = HashCodeUtil.hash(result, length);
-		return result;
-	}
-
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		SimpleChromosome other = (SimpleChromosome) obj;
-		if (length != other.length) {
-			return false;
-		}
-		if (name == null) {
-			if (other.name != null) {
-				return false;
-			}
-		} else if (!name.equals(other.name)) {
-			return false;
-		}
-		return true;
 	}
 
 
@@ -117,12 +75,6 @@ public final class SimpleChromosome implements Chromosome {
 	@Override
 	public String getName() {
 		return name;
-	}
-
-
-	@Override
-	public int hashCode(){
-		return hashCode;
 	}
 
 
@@ -153,20 +105,6 @@ public final class SimpleChromosome implements Chromosome {
 
 
 	/**
-	 * Method used for deserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		// read the class version number
-		in.readInt();
-		// read the final fields
-		in.defaultReadObject();
-	}
-
-
-	/**
 	 * Prints the chromosome information
 	 */
 	public void print() {
@@ -177,9 +115,17 @@ public final class SimpleChromosome implements Chromosome {
 	}
 
 
-	@Override
-	public String toString() {
-		return name;
+	/**
+	 * Method used for deserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		// read the class version number
+		in.readInt();
+		// read the final fields
+		in.defaultReadObject();
 	}
 
 

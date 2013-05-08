@@ -24,7 +24,6 @@ package edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -34,8 +33,8 @@ import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.geneListView.GeneListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.AbstractListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
-import edu.yu.einstein.genplay.dataStructure.list.listView.subListView.SubListView;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 
 
@@ -43,7 +42,7 @@ import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
  * Simple implementation of the {@link GeneList} interface.
  * @author Julien Lajugie
  */
-public final class SimpleGeneList implements GeneList, Iterator<ListView<Gene>> {
+public final class SimpleGeneList extends AbstractListView<ListView<Gene>> implements GeneList {
 
 	/** Generated serial ID */
 	private static final long serialVersionUID = 2409860942228135092L;
@@ -53,9 +52,6 @@ public final class SimpleGeneList implements GeneList, Iterator<ListView<Gene>> 
 
 	/** {@link GenomicDataArrayList} containing the Genes */
 	private final ListView<Gene>[] data;
-
-	/** Current index of the iterator */
-	private transient int iteratorIndex = 0;
 
 	/** URL to a gene database that can be used to search information about the genes of this list */
 	private final String geneDBURL;
@@ -135,28 +131,8 @@ public final class SimpleGeneList implements GeneList, Iterator<ListView<Gene>> 
 
 
 	@Override
-	public boolean hasNext() {
-		return iteratorIndex < size();
-	}
-
-
-	@Override
 	public boolean isEmpty() {
 		return data.length == 0;
-	}
-
-
-	@Override
-	public Iterator<ListView<Gene>> iterator() {
-		return this;
-	}
-
-
-	@Override
-	public ListView<Gene> next() {
-		int currentIndex = iteratorIndex;
-		iteratorIndex++;
-		return get(currentIndex);
 	}
 
 
@@ -176,12 +152,6 @@ public final class SimpleGeneList implements GeneList, Iterator<ListView<Gene>> 
 
 
 	@Override
-	public void remove() {
-		throw new UnsupportedOperationException();
-	}
-
-
-	@Override
 	public int size() {
 		return data.length;
 	}
@@ -196,12 +166,6 @@ public final class SimpleGeneList implements GeneList, Iterator<ListView<Gene>> 
 	@Override
 	public int size(int index) {
 		return get(index).size();
-	}
-
-
-	@Override
-	public ListView<ListView<Gene>> subList(int fromIndex, int toIndex) {
-		return new SubListView<ListView<Gene>>(this, fromIndex, toIndex);
 	}
 
 

@@ -35,16 +35,14 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
 import edu.yu.einstein.genplay.util.Utils;
 
 
-
 /**
  * Computes the sum of the lengths (in bp) of the non-null (different from 0) windows
  * @author Julien Lajugie
- * @version 0.1
  */
 public class SCWLOCountNonNullLength implements Operation<Long>{
 
-	private final SCWList scwList;	// input list
-	private final boolean[] chromoList;		// 1 boolean / chromosome.
+	private final SCWList scwList;				// input list
+	private final boolean[] chromoList;			// 1 boolean / chromosome.
 	// each boolean sets to true means that the corresponding chromosome is selected
 	private boolean				stopped = false;// true if the operation must be stopped
 

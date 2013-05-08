@@ -33,7 +33,6 @@ import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
-import edu.yu.einstein.genplay.dataStructure.list.listView.subListView.DiscontinuousSubListView;
 import edu.yu.einstein.genplay.dataStructure.list.primitiveList.ListOfIntArraysAsIntegerList;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
@@ -115,7 +114,7 @@ public class GeneListScaler implements DataScalerForTrackDisplay<GeneList, List<
 	/**
 	 * Organizes the list of genes by line so two genes don't overlap on the screen.
 	 */
-	protected void scaleChromosome() {
+	private void scaleChromosome() {
 		ListView<Gene> currentList;
 		scaledGeneList = null;
 		try {
@@ -150,7 +149,6 @@ public class GeneListScaler implements DataScalerForTrackDisplay<GeneList, List<
 					if (previousGene == null) {
 						previousGene = currentList.get(i);
 						indexes.add(i);
-						//geneLVBuilder.addElementToBuild(previousGene);
 						organizedGenes[i] = true;
 						organizedGeneCount++;
 					} else {
@@ -169,14 +167,13 @@ public class GeneListScaler implements DataScalerForTrackDisplay<GeneList, List<
 						if (currentStart > previousStop) {
 							previousGene = currentList.get(i);
 							indexes.add(i);
-							//geneLVBuilder.addElementToBuild(previousGene);
 							organizedGenes[i] = true;
 							organizedGeneCount++;
 						}
 					}
 				}
 			}
-			scaledGeneList.add(new DiscontinuousSubListView<Gene>(currentList, indexes));
+			scaledGeneList.add(currentList.subList(indexes));
 		}
 	}
 }

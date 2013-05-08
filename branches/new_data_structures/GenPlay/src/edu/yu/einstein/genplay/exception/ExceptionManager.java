@@ -159,11 +159,12 @@ public final class ExceptionManager implements UncaughtExceptionHandler {
 	 * @param message error message to display
 	 */
 	private void handleThrowable (Thread thread, Throwable throwable, String message) {
-		this.throwable = throwable;
-		report.initializeReport(thread, throwable, message);
-		processError();
+		if (!isProgressBarException(throwable)) {
+			this.throwable = throwable;
+			report.initializeReport(thread, throwable, message);
+			processError();
+		}
 	}
-
 
 
 	/**
@@ -173,6 +174,22 @@ public final class ExceptionManager implements UncaughtExceptionHandler {
 	private boolean intToBool (int i) {
 		if (i == YES) {
 			return true;
+		}
+		return false;
+	}
+
+
+	/**
+	 * @param throwable
+	 * @return true if the exception is due to
+	 */
+	private boolean isProgressBarException(Throwable throwable) {
+		StackTraceElement[] stackTraceElements = throwable.getStackTrace();
+		if ((stackTraceElements != null) && (stackTraceElements.length > 0)) {
+			String firstStackTraceClass = stackTraceElements[0].getClassName();
+			if (firstStackTraceClass != null) {
+				return firstStackTraceClass.contains("BasicProgressBarUI");
+			}
 		}
 		return false;
 	}

@@ -28,7 +28,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
-import java.util.Iterator;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
@@ -36,9 +35,8 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.enums.Nucleotide;
+import edu.yu.einstein.genplay.dataStructure.list.listView.AbstractListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
-import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewIterator;
-import edu.yu.einstein.genplay.dataStructure.list.listView.subListView.SubListView;
 
 
 /**
@@ -46,7 +44,7 @@ import edu.yu.einstein.genplay.dataStructure.list.listView.subListView.SubListVi
  * in the help file of the UCSC Genome Browser: http://genome.ucsc.edu/FAQ/FAQformat.html#format7
  * @author Julien Lajugie
  */
-public final class TwoBitListView implements ListView<Nucleotide>, Serializable {
+public final class TwoBitListView extends AbstractListView<Nucleotide> implements ListView<Nucleotide>, Serializable {
 
 	/** Generated Serial ID */
 	private static final long serialVersionUID = -4820838292720902481L;
@@ -239,12 +237,6 @@ public final class TwoBitListView implements ListView<Nucleotide>, Serializable 
 	}
 
 
-	@Override
-	public Iterator<Nucleotide> iterator() {
-		return new ListViewIterator<Nucleotide>(this);
-	}
-
-
 	/**
 	 * Method used for unserialization
 	 * @param in
@@ -274,12 +266,6 @@ public final class TwoBitListView implements ListView<Nucleotide>, Serializable 
 	@Override
 	public int size() {
 		return dnaSize;
-	}
-
-
-	@Override
-	public ListView<Nucleotide> subList(int fromIndex, int toIndex) {
-		return new SubListView<Nucleotide>(this, fromIndex, toIndex);
 	}
 
 

@@ -22,6 +22,7 @@
 package edu.yu.einstein.genplay.gui.action;
 
 import java.awt.event.ActionEvent;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CountDownLatch;
 
 import javax.swing.AbstractAction;
@@ -31,8 +32,6 @@ import javax.swing.SwingWorker;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
-import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
-import edu.yu.einstein.genplay.gui.dialog.exceptionDialog.WarningReportDialog;
 import edu.yu.einstein.genplay.gui.event.operationProgressEvent.OperationProgressEvent;
 import edu.yu.einstein.genplay.gui.event.operationProgressEvent.OperationProgressListener;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
@@ -42,11 +41,9 @@ import edu.yu.einstein.genplay.gui.trackList.TrackListPanel;
 import edu.yu.einstein.genplay.util.Utils;
 
 
-
 /**
- * Action that starts a SwingWorker so the GUI doesn't freeze
+ * Action that starts a SwingWorker thread
  * @author Julien Lajugie
- * @version 0.1
  * @param <T> typed of the value returned by the action
  */
 public abstract class TrackListActionWorker<T> extends AbstractAction implements OperationProgressListener, Stoppable {
@@ -55,7 +52,6 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 	 * Private inner class that extends SwingWorker<T, Void>.
 	 * Processes the action.
 	 * @author Julien Lajugie
-	 * @version 0.1
 	 */
 	private class PooledActionWorker extends SwingWorker<T, Void> {
 
@@ -74,7 +70,7 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 				getStatusBar().actionStop("Operation Done");
 				doAtTheEnd(this.get());
 			} catch (Exception e) {
-				if (e.getCause() instanceof InterruptedException) {
+				if ((e.getCause() instanceof InterruptedException) || (e instanceof CancellationException)) {
 					getStatusBar().actionStop("Operation Aborted");
 				} else {
 					getStatusBar().actionStop("Error");
@@ -144,12 +140,6 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 	}
 
 
-	protected void handleError (DataLineException e) {
-		WarningReportDialog.getInstance().addMessage(e.getMessage());
-		WarningReportDialog.getInstance().showDialog(getRootPane());
-	}
-
-
 	/**
 	 * Notifies that an action starts
 	 * Must be called right before the computation starts
@@ -205,6 +195,5 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 		worker.cancel(true);
 		OperationPool.getInstance().stopPool();
 		Utils.garbageCollect();
-		getStatusBar().actionStop("Operation Aborted");
 	}
 }

@@ -27,9 +27,7 @@ import java.io.Serializable;
 import java.text.NumberFormat;
 import java.text.ParseException;
 
-import edu.yu.einstein.genplay.core.comparator.ChromosomeWindowComparator;
 import edu.yu.einstein.genplay.exception.exceptions.ChromosomeWindowException;
-import edu.yu.einstein.genplay.util.HashCodeUtil;
 
 
 /**
@@ -37,7 +35,7 @@ import edu.yu.einstein.genplay.util.HashCodeUtil;
  * {@link SimpleChromosomeWindow} objects are immutable.
  * @author Julien Lajugie
  */
-public final class SimpleChromosomeWindow implements ChromosomeWindow, Serializable, Comparable<ChromosomeWindow> {
+public final class SimpleChromosomeWindow extends AbstractChromosomeWindow implements ChromosomeWindow, Serializable, Comparable<ChromosomeWindow> {
 
 	/**  Generated serial ID */
 	private static final long serialVersionUID = -6548181911063983578L;
@@ -98,78 +96,6 @@ public final class SimpleChromosomeWindow implements ChromosomeWindow, Serializa
 
 
 	/**
-	 * A ChromosomeWindow is greater to another one if its position start is greater
-	 * or if its position start is equal but its position stop is greater.
-	 * A {@link ChromosomeWindow} is equal to another one if both its start and stop positions are equals.
-	 * A ChromosomeWindow is smaller to another one if its position start is smaller
-	 * or if its position start is equal but its position stop is smaller.
-	 */
-	@Override
-	public int compareTo(ChromosomeWindow otherChromosomeWindow) {
-		return new ChromosomeWindowComparator().compare(this, otherChromosomeWindow);
-	}
-
-
-	/**
-	 * Checks if the window contains the given position.
-	 * If the position is located before the window, -1 is returned.
-	 * If the position is located after the window, 1 is returned.
-	 * if the position is included in the window, 0 is returned.
-	 * @param position the position to check
-	 * @return 0 is the position is in the window, -1 if lower, 1 if higher.
-	 */
-	@Override
-	public int containsPosition (int position) {
-		if (position < start) {
-			return -1;
-		} else if (position > stop) {
-			return 1;
-		}
-		return 0;
-	}
-
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		SimpleChromosomeWindow other = (SimpleChromosomeWindow) obj;
-		if (start != other.start) {
-			return false;
-		}
-		if (stop != other.stop) {
-			return false;
-		}
-		return true;
-	}
-
-
-	/**
-	 * @return the position of the middle of the window
-	 */
-	@Override
-	public double getMiddlePosition() {
-		return (start + stop) / (double)2;
-	}
-
-
-	/**
-	 * @return the size of the window in base pair (ie: stop - start)
-	 */
-	@Override
-	public int getSize() {
-		return stop - start;
-	}
-
-
-	/**
 	 * @return the start
 	 */
 	@Override
@@ -187,15 +113,6 @@ public final class SimpleChromosomeWindow implements ChromosomeWindow, Serializa
 	}
 
 
-	@Override
-	public int hashCode() {
-		int hashCode = HashCodeUtil.SEED;
-		hashCode = HashCodeUtil.hash(hashCode, start);
-		hashCode = HashCodeUtil.hash(hashCode, stop);
-		return hashCode;
-	}
-
-
 	/**
 	 * Method used for deserialization
 	 * @param in
@@ -207,14 +124,6 @@ public final class SimpleChromosomeWindow implements ChromosomeWindow, Serializa
 		in.readInt();
 		// read the final fields
 		in.defaultReadObject();
-	}
-
-
-	@Override
-	public String toString() {
-		String startStr = NumberFormat.getInstance().format(start);
-		String stopStr = NumberFormat.getInstance().format(stop);
-		return startStr + "-" + stopStr;
 	}
 
 

@@ -63,17 +63,30 @@ public final class GenericSCWListViewBuilder implements ListViewBuilder<ScoredCh
 	 * Adds an element to the ListView that will be built.
 	 * To assure that ListView objects are immutable, this method
 	 * will throw an exception if called after the getListView() has been called.
+	 * Checks that the elements are added in start position order.
 	 * @param start start position of the SCW to add
 	 * @param stop stop position of the SCW to add
 	 * @param score score value of the SCW to add
 	 * @throws ObjectAlreadyBuiltException
-	 * @throws ElementAddedNotSortedException
-	 * @throws ElementAddedOverlapException
+	 * @throws ElementAddedNotSortedException If elements are not added in sorted order
+	 * @throws ElementAddedOverlapException If elements added overlaps
 	 */
 	public void addElementToBuild(int start, int stop, float score)
-			throws ObjectAlreadyBuiltException {
-		if (windowStops == null) {
+			throws ObjectAlreadyBuiltException, ElementAddedNotSortedException, ElementAddedOverlapException {
+		if (windowStarts == null) {
 			throw new ObjectAlreadyBuiltException();
+		}
+		if (!windowStarts.isEmpty()) {
+			int lastElementIndex = windowStarts.size() -1;
+			int lastStart = windowStarts.get(lastElementIndex);;
+			int lastStop = windowStops.get(lastElementIndex);
+			if (start < lastStart) {
+				// case where the elements added are not sorted
+				throw new ElementAddedNotSortedException();
+			} else if (start < lastStop) {
+				// case where the elements added overlap
+				throw new ElementAddedOverlapException();
+			}
 		}
 		windowStarts.add(start);
 		windowStops.add(stop);
@@ -85,6 +98,22 @@ public final class GenericSCWListViewBuilder implements ListViewBuilder<ScoredCh
 	public void addElementToBuild(ScoredChromosomeWindow element)
 			throws ObjectAlreadyBuiltException, ElementAddedNotSortedException, ElementAddedOverlapException {
 		addElementToBuild(element.getStart(), element.getStop(), element.getScore());
+	}
+
+
+	/**
+	 * Adds a {@link ScoredChromosomeWindow} to the list to be build without checking if the elements are
+	 * added in start position order
+	 * @param scw window to add
+	 * @throws ObjectAlreadyBuiltException
+	 */
+	public void addUnsortedElementToBuild(ScoredChromosomeWindow scw) throws ObjectAlreadyBuiltException {
+		if (windowStops == null) {
+			throw new ObjectAlreadyBuiltException();
+		}
+		windowStarts.add(scw.getStart());
+		windowStops.add(scw.getStop());
+		windowScores.add(scw.getScore());
 	}
 
 

@@ -36,6 +36,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWListFactory;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.newCurveLayerDialog.NewCurveLayerDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -112,12 +113,14 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 	@Override
 	protected void doBeforeExtraction() throws InterruptedException {
 		boolean isStrandNeeded = extractor instanceof StrandedExtractor;
-		NewCurveLayerDialog ncld = new NewCurveLayerDialog(null, false, false, false, false, isStrandNeeded, true, true);
+		NewCurveLayerDialog ncld = new NewCurveLayerDialog(name, true, false, false, true, isStrandNeeded, true, true);
 		if (ncld.showDialog(getRootPane()) == NewCurveLayerDialog.APPROVE_OPTION) {
 			selectedChromo = ncld.getSelectedChromosomes();
 			// if not all the chromosomes are selected we need
 			// to ask the user if the file is sorted or not
 			extractor.setChromosomeSelector(new ChromosomesSelector(selectedChromo));
+			name = ncld.getLayerName();
+			scoreCalculation = ncld.getScoreCalculationMethod();
 			if (isStrandNeeded) {
 				strand = ncld.getStrandToExtract();
 				strandShift = ncld.getStrandShiftValue();
@@ -139,18 +142,14 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 
 	@Override
 	protected SCWList generateList() throws Exception {
-		notifyActionStop();
-		NewCurveLayerDialog nctd = new NewCurveLayerDialog(name, true, false, false, true, false, false,  false);
-		if (nctd.showDialog(getRootPane()) == NewCurveLayerDialog.APPROVE_OPTION) {
-			name = nctd.getLayerName();
-			scoreCalculation = nctd.getScoreCalculationMethod();
-			notifyActionStart("Generating Layer", SimpleSCWList.getCreationStepCount(SCWListType.GENERIC), true);
+		try {
+			notifyActionStart("Generating Variable Window Layer", SimpleSCWList.getCreationStepCount(SCWListType.GENERIC) + 1, true);
 			SCWList scwList = SimpleSCWListFactory.createGenericSCWList((SCWReader) extractor, scoreCalculation);
 			return scwList;
+		} catch (ClassCastException e) {
+			throw new InvalidFileTypeException();
 		}
-		throw new InterruptedException();
 	}
-
 
 	@Override
 	protected File retrieveFileToExtract() {

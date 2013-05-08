@@ -114,6 +114,7 @@ public final class GeneListViewBuilder implements ListViewBuilder<Gene> {
 	 * To assure that ListView objects are immutable,
 	 * this method will throw an exception if called after
 	 * the getListView() has been called.
+	 * Checks that the elements are added in start position order.
 	 * @param geneName name of the gene to add
 	 * @param geneStrand strand of the gene to add
 	 * @param geneStart start position of the gene to add
@@ -123,7 +124,7 @@ public final class GeneListViewBuilder implements ListViewBuilder<Gene> {
 	 * @param geneUTR3Bound UTR 3' boundary of the gene to add
 	 * @param geneExons exons of the gene to add
 	 * @throws ObjectAlreadyBuiltException
-	 * @throws ElementAddedNotSortedException
+	 * @throws ElementAddedNotSortedException If elements are not added in sorted order
 	 */
 	public void addElementToBuild(
 			String geneName,
@@ -164,9 +165,11 @@ public final class GeneListViewBuilder implements ListViewBuilder<Gene> {
 		// add exon offset
 		exonOffsets.add(lastExonAddedIndex);
 		// add exon
-		for (ScoredChromosomeWindow currentExon: geneExons) {
-			exonLVBuilder.addElementToBuild(currentExon);
-			lastExonAddedIndex++;
+		if (geneExons != null) {
+			for (ScoredChromosomeWindow currentExon: geneExons) {
+				exonLVBuilder.addUnsortedElementToBuild(currentExon);
+				lastExonAddedIndex++;
+			}
 		}
 	}
 

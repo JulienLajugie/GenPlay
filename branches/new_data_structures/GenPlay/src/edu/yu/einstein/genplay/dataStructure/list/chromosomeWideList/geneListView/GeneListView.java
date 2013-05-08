@@ -25,16 +25,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.List;
 
-import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
+import edu.yu.einstein.genplay.dataStructure.gene.AbstractGene;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
+import edu.yu.einstein.genplay.dataStructure.list.listView.AbstractListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
-import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewIterator;
-import edu.yu.einstein.genplay.dataStructure.list.listView.subListView.SubListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
@@ -44,40 +41,33 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
  * {@link GeneListView} objects are immutable.
  * @author Julien Lajugie
  */
-public final class GeneListView implements Serializable, ListView<Gene> {
+public final class GeneListView extends AbstractListView<Gene> implements Serializable, ListView<Gene> {
 
-	private class GeneFromListView implements Gene {
+	/**
+	 * Implementation of the {@link Gene} interface for genes retrieved from a {@link GeneListView}
+	 * @author Julien Lajugie
+	 */
+	private class GeneFromListView extends AbstractGene implements Gene {
 
+		/** Generated serial ID */
+		private static final long serialVersionUID = -800372393932775792L;
+
+		/**  Index of the gene in the parent {@link ListView}*/
 		private final int geneIndex;
 
-		public GeneFromListView(int geneIndex) {
+
+		/**
+		 * Creates an instance of {@link GeneFromListView}
+		 * @param geneIndex index of the gene
+		 */
+		private GeneFromListView(int geneIndex) {
 			this.geneIndex = geneIndex;
-		}
-
-
-		@Override
-		public int compareTo(ChromosomeWindow o) {
-			return new SimpleChromosomeWindow(getStart(), getStop()).compareTo(o);
-		}
-
-
-		@Override
-		public int containsPosition(int position) {
-			// TODO Auto-generated method stub
-			return 0;
 		}
 
 
 		@Override
 		public ListView<ScoredChromosomeWindow> getExons() {
 			return retrieveGeneExons(geneIndex);
-		}
-
-
-		@Override
-		public double getMiddlePosition() {
-			// TODO Auto-generated method stub
-			return 0;
 		}
 
 
@@ -128,6 +118,7 @@ public final class GeneListView implements Serializable, ListView<Gene> {
 			return geneUTR5Bounds.get(geneIndex);
 		}
 	}
+
 
 	/** generated ID */
 	private static final long serialVersionUID = 2250815008426652561L;
@@ -216,12 +207,6 @@ public final class GeneListView implements Serializable, ListView<Gene> {
 	}
 
 
-	@Override
-	public Iterator<Gene> iterator() {
-		return new ListViewIterator<Gene>(this);
-	}
-
-
 	/**
 	 * Method used for deserialization
 	 * @param in
@@ -275,12 +260,6 @@ public final class GeneListView implements Serializable, ListView<Gene> {
 	@Override
 	public int size() {
 		return geneStarts.size();
-	}
-
-
-	@Override
-	public ListView<Gene> subList(int fromIndex, int toIndex) {
-		return new SubListView<Gene>(this, fromIndex, toIndex);
 	}
 
 

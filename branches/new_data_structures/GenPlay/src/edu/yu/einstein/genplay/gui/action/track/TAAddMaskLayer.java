@@ -27,8 +27,11 @@ import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.IO.dataReader.SCWReader;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWListFactory;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection.GenomeSelectionDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -42,24 +45,23 @@ import edu.yu.einstein.genplay.util.colors.Colors;
  * @author Julien Lajugie
  * @author Nicolas Fourel
  */
-public final class TAAddMask extends TrackListActionExtractorWorker<SCWList> {
+public final class TAAddMaskLayer extends TrackListActionExtractorWorker<SCWList> {
 
 	private static final long serialVersionUID = -900140642202561851L; 					// generated ID
 	private static final String ACTION_NAME = "Add Mask Layer"; 						// action name
 	private static final String DESCRIPTION = "Add a mask layer to the selected track"; // tooltip
-	private Track 				selectedTrack; 											// selected track
 
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = TAAddMask.class.getName();
+	public static final String ACTION_KEY = TAAddMaskLayer.class.getName();
 
 
 	/**
-	 * Creates an instance of {@link TAAddMask}
+	 * Creates an instance of {@link TAAddMaskLayer}
 	 */
-	public TAAddMask() {
+	public TAAddMaskLayer() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -70,6 +72,7 @@ public final class TAAddMask extends TrackListActionExtractorWorker<SCWList> {
 	@Override
 	protected void doAtTheEnd(SCWList actionResult) {
 		if (actionResult != null) {
+			Track selectedTrack = getTrackListPanel().getSelectedTrack();
 			MaskLayer newLayer = new MaskLayer(selectedTrack, actionResult, fileToExtract.getName());
 			newLayer.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Colors.GREY);
 			selectedTrack.getLayers().add(newLayer);
@@ -94,20 +97,22 @@ public final class TAAddMask extends TrackListActionExtractorWorker<SCWList> {
 
 	@Override
 	public SCWList generateList() throws Exception {
-		SCWList maskList = SimpleSCWListFactory.createMaskSCWList((SCWReader) extractor, null);
-		return maskList;
+		try {
+			notifyActionStart("Generating Mask Layer", 1 + SimpleSCWList.getCreationStepCount(SCWListType.MASK), true);
+			SCWList maskList = SimpleSCWListFactory.createMaskSCWList((SCWReader) extractor);
+			return maskList;
+		} catch (ClassCastException e) {
+			throw new InvalidFileTypeException();
+		}
 	}
 
 
 	@Override
 	protected File retrieveFileToExtract() {
-		selectedTrack = getTrackListPanel().getSelectedTrack();
-		if (selectedTrack != null) {
-			String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
-			File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Mask File", defaultDirectory, Utils.getReadableStripeFileFilters(), true);
-			if (selectedFile != null) {
-				return selectedFile;
-			}
+		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
+		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Mask File", defaultDirectory, Utils.getReadableStripeFileFilters(), true);
+		if (selectedFile != null) {
+			return selectedFile;
 		}
 		return null;
 	}

@@ -21,8 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.dataStructure.gene;
 
-import java.io.Serializable;
-
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
@@ -32,7 +30,7 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
  * The {@link Gene} class provides a representation of a gene.
  * @author Julien Lajugie
  */
-public interface Gene extends Serializable, ScoredChromosomeWindow {
+public interface Gene extends ScoredChromosomeWindow {
 
 
 	/**

@@ -57,14 +57,14 @@ public final class MaskListViewBuilder implements ListViewBuilder<ScoredChromoso
 	 * Adds an element to the ListView that will be built.
 	 * To assure that ListView objects are immutable, this method
 	 * will throw an exception if called after the getListView() has been called.
+	 * Checks that the elements are added in start position order.
 	 * @param start start position of the mask to add
 	 * @param stop stop position of the mask to add
 	 * @throws ObjectAlreadyBuiltException
-	 * @throws ElementAddedNotSortedException
+	 * @throws ElementAddedNotSortedException If elements are not added in sorted order
 	 */
 	public void addElementToBuild(int start, int stop)
 			throws ObjectAlreadyBuiltException, ElementAddedNotSortedException {
-		System.out.println(start);
 		if (maskStarts == null) {
 			throw new ObjectAlreadyBuiltException();
 		}
@@ -80,6 +80,7 @@ public final class MaskListViewBuilder implements ListViewBuilder<ScoredChromoso
 				throw new ElementAddedNotSortedException();
 			} else if (start < lastStop) {
 				// if the current start is smaller than the previous stop we merge the masks
+				stop = Math.max(stop, lastStop);
 				maskStops.set(lastElementIndex, stop);
 			} else {
 				maskStarts.add(start);

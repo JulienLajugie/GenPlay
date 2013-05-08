@@ -54,33 +54,38 @@ public class BinListFactory {
 	 */
 	public static BinList createBinList(SCWReader scwReader, int binSize, ScoreOperation scoreOperation)
 			throws Exception {
-		BinListViewBuilder lvBuilderPrototype = new BinListViewBuilder(binSize);
-		ListOfListViewBuilder<ScoredChromosomeWindow> builder = new ListOfListViewBuilder<ScoredChromosomeWindow>(lvBuilderPrototype);
-		Chromosome currentChromosome = null;
+		try {
+			BinListViewBuilder lvBuilderPrototype = new BinListViewBuilder(binSize);
+			ListOfListViewBuilder<ScoredChromosomeWindow> builder = new ListOfListViewBuilder<ScoredChromosomeWindow>(lvBuilderPrototype);
+			Chromosome currentChromosome = null;
 
-		// create object that will "flattened" pileups of overlapping windows
-		PileupFlattener flattener = new BinListPileupFlattener(binSize, scoreOperation);
-		while (scwReader.readItem()) {
-			ScoredChromosomeWindow currentWindow = new SimpleScoredChromosomeWindow(scwReader.getStart(), scwReader.getStop(), scwReader.getScore());
-			if (currentChromosome == null) {
-				currentChromosome = scwReader.getChromosome();
-			} else if (currentChromosome != scwReader.getChromosome()) {
-				// at the end of a chromosome we flush the flattener and
-				// retrieve the remaining of flattened windows
-				List<ScoredChromosomeWindow> flattenedWindows = flattener.flush();
-				for (ScoredChromosomeWindow scw: flattenedWindows) {
-					builder.addElementToBuild(currentChromosome, scw);
-				}
-				currentChromosome = scwReader.getChromosome();
-			} else {
-				// we add the current window to the flattener and retrieve the list of
-				// flattened windows
-				List<ScoredChromosomeWindow> flattenedWindows = flattener.addWindow(currentWindow);
-				for (ScoredChromosomeWindow scw: flattenedWindows) {
-					builder.addElementToBuild(currentChromosome, scw);
+			// create object that will "flattened" pileups of overlapping windows
+			PileupFlattener flattener = new BinListPileupFlattener(binSize, scoreOperation);
+			while (scwReader.readItem()) {
+				ScoredChromosomeWindow currentWindow = new SimpleScoredChromosomeWindow(scwReader.getStart(), scwReader.getStop(), scwReader.getScore());
+				if (currentChromosome == null) {
+					currentChromosome = scwReader.getChromosome();
+				} else if (currentChromosome != scwReader.getChromosome()) {
+					// at the end of a chromosome we flush the flattener and
+					// retrieve the remaining of flattened windows
+					List<ScoredChromosomeWindow> flattenedWindows = flattener.flush();
+					for (ScoredChromosomeWindow scw: flattenedWindows) {
+						builder.addElementToBuild(currentChromosome, scw);
+					}
+					currentChromosome = scwReader.getChromosome();
+				} else {
+					// we add the current window to the flattener and retrieve the list of
+					// flattened windows
+					List<ScoredChromosomeWindow> flattenedWindows = flattener.addWindow(currentWindow);
+					for (ScoredChromosomeWindow scw: flattenedWindows) {
+						builder.addElementToBuild(currentChromosome, scw);
+					}
 				}
 			}
+			return new BinList(builder.getGenomicList(), binSize);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
 		}
-		return new BinList(builder.getGenomicList(), binSize);
 	}
 }

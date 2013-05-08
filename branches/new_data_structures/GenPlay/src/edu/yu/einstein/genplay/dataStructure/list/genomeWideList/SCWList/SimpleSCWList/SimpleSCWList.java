@@ -26,7 +26,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -42,9 +41,10 @@ import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListView;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.mask.MaskListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.SimpleGeneList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.AbstractListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
-import edu.yu.einstein.genplay.dataStructure.list.listView.subListView.SubListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 import edu.yu.einstein.genplay.util.ListView.ListViews;
@@ -54,7 +54,7 @@ import edu.yu.einstein.genplay.util.ListView.ListViews;
  * Class implementing the {@link SCWList} interface using an {@link ArrayList} based data structure
  * @author Julien Lajugie
  */
-public final class SimpleSCWList implements SCWList, Iterator<ListView<ScoredChromosomeWindow>> {
+public final class SimpleSCWList extends AbstractListView<ListView<ScoredChromosomeWindow>> implements SCWList {
 
 	/** Generated serial ID */
 	private static final long serialVersionUID = 9159412940141151387L;
@@ -64,14 +64,16 @@ public final class SimpleSCWList implements SCWList, Iterator<ListView<ScoredChr
 
 	/**
 	 * @param scwListType a {@link SCWListType}
-	 * @return the number of steps needed to create the list.
+	 * @return the number of steps needed to create a list of the specified type
 	 */
 	public static int getCreationStepCount(SCWListType scwListType) {
 		switch (scwListType) {
 		case GENERIC:
-			return 5;
-		case MASK:
 			return 2;
+		case MASK:
+			return 1;
+		case BIN:
+			return BinList.getCreationStepCount(SCWListType.BIN);
 		default:
 			return 0;
 		}
@@ -79,9 +81,6 @@ public final class SimpleSCWList implements SCWList, Iterator<ListView<ScoredChr
 
 	/** {@link GenomicDataArrayList} containing the ScoredChromosomeWindows */
 	private final List<ListView<ScoredChromosomeWindow>> data;
-
-	/** Current index of the iterator */
-	private transient int iteratorIndex = 0;
 
 	/** Type of the list */
 	private final SCWListType scwListType;
@@ -100,6 +99,7 @@ public final class SimpleSCWList implements SCWList, Iterator<ListView<ScoredChr
 
 	/** Sum of the scores of all windows */
 	private final double scoreSum;
+
 
 	/** Count of none-null bins in the BinList */
 	private final long nonNullLength;
@@ -175,6 +175,12 @@ public final class SimpleSCWList implements SCWList, Iterator<ListView<ScoredChr
 
 
 	@Override
+	public int getCreationStepCount() {
+		return getCreationStepCount(scwListType);
+	}
+
+
+	@Override
 	public float getMaximum() {
 		return maximum;
 	}
@@ -230,28 +236,8 @@ public final class SimpleSCWList implements SCWList, Iterator<ListView<ScoredChr
 
 
 	@Override
-	public boolean hasNext() {
-		return iteratorIndex < size();
-	}
-
-
-	@Override
 	public boolean isEmpty() {
 		return data.isEmpty();
-	}
-
-
-	@Override
-	public Iterator<ListView<ScoredChromosomeWindow>> iterator() {
-		return this;
-	}
-
-
-	@Override
-	public ListView<ScoredChromosomeWindow> next() {
-		int currentIndex = iteratorIndex;
-		iteratorIndex++;
-		return get(currentIndex);
 	}
 
 
@@ -264,12 +250,6 @@ public final class SimpleSCWList implements SCWList, Iterator<ListView<ScoredChr
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		in.defaultReadObject();
-	}
-
-
-	@Override
-	public void remove() {
-		throw new UnsupportedOperationException();
 	}
 
 
@@ -301,8 +281,7 @@ public final class SimpleSCWList implements SCWList, Iterator<ListView<ScoredChr
 				throw new InvalidParameterException("Non-consistent ListView objects");
 			}
 		}
-
-		return null;
+		return listType;
 	}
 
 
@@ -321,12 +300,6 @@ public final class SimpleSCWList implements SCWList, Iterator<ListView<ScoredChr
 	@Override
 	public int size(int chromosomeIndex) {
 		return get(chromosomeIndex).size();
-	}
-
-
-	@Override
-	public ListView<ListView<ScoredChromosomeWindow>> subList(int fromIndex, int toIndex) {
-		return new SubListView<ListView<ScoredChromosomeWindow>>(this, fromIndex, toIndex);
 	}
 
 

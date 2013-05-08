@@ -163,8 +163,10 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 													exonWidth = 1;
 												}
 												// if we have some exon score values
-												if (currentExon.getScore() != Float.NaN) {
+												if (!Float.isNaN(currentExon.getScore())) {
 													g.setColor(Colors.scoreToColor(currentExon.getScore(), min, max));
+												} else {
+													g.setColor(Colors.geneToColor(geneToPrint.getStrand(), isHighlighted));
 												}
 												// case where the exon is not at all in a UTR (untranslated region)
 												if ((currentExon.getStart() >= geneToPrint.getUTR5Bound()) && (currentExon.getStop() <= geneToPrint.getUTR3Bound())) {
@@ -379,7 +381,7 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 					if (geneList.getGeneScoreType() != null) {
 						toolTipText += "Score Type: <i>" + geneList.getGeneScoreType() + "</i><br>";
 					}
-					if (geneUnderMouse.getScore() != Float.NaN) {
+					if (!Float.isNaN(geneUnderMouse.getScore())) {
 						toolTipText += "Gene Score = <i>" + NumberFormat.getInstance().format(geneUnderMouse.getScore()) + "</i><br>";
 					}
 					if (scoreExonUnderMouse != null) {
@@ -481,7 +483,7 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 				for (Gene currentGene: currentList) {
 					if (currentGene.getExons() != null) {
 						for (ScoredChromosomeWindow currentExon: currentGene.getExons()) {
-							if ((currentExon.getScore() != Float.NaN) && (currentExon.getScore() != 0)) {
+							if ((!Float.isNaN(currentExon.getScore())) && (currentExon.getScore() != 0)) {
 								scoreList.add(currentExon.getScore());
 							}
 						}
@@ -506,7 +508,6 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 	private void validateDataScaler() {
 		// if the data scaler is null or is not set to scale the current data we regenerate it
 		if ((dataScaler == null) || (getData() != dataScaler.getDataToScale())) {
-			System.out.println("fdsafsadfasdfas");
 			FontMetrics fontMetrics = getTrack().getGraphicsPanel().getGraphics().getFontMetrics();
 			dataScaler = new GeneListScaler(getData(), fontMetrics);
 		}

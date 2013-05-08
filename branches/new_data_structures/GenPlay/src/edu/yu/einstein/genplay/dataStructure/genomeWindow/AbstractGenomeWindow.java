@@ -19,50 +19,57 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.list.listView;
+package edu.yu.einstein.genplay.dataStructure.genomeWindow;
 
-import java.util.Iterator;
+import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.AbstractChromosomeWindow;
+import edu.yu.einstein.genplay.util.HashCodeUtil;
+
 
 /**
- * Iterator on a {@link ListView} object.
- * @param <T> type of the elements of the {@link ListView}.
+ * This class provides a skeletal implementation of the {@link GenomeWindow} interface
+ * to minimize the effort required to implement this interface.
  * @author Julien Lajugie
  */
-class ListViewIterator<T> implements Iterator<T> {
-
-	/** List to iterate */
-	private final ListView<T> listView;
-
-	/** Current index of the iterator */
-	private int iteratorIndex;
+public abstract class AbstractGenomeWindow extends AbstractChromosomeWindow implements GenomeWindow {
 
 
-	/**
-	 * Create an instance of {@link ListViewIterator}
-	 * @param listView {@link ListView} to iterate
-	 */
-	ListViewIterator(ListView<T> listView) {
-		this.listView = listView;
-		iteratorIndex = 0;
+	/** Generated serial ID */
+	private static final long serialVersionUID = -2347675841211859604L;
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!super.equals(obj)) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		GenomeWindow other = (GenomeWindow) obj;
+		if (getChromosome() == null) {
+			if (other.getChromosome() != null) {
+				return false;
+			}
+		} else if (!getChromosome().equals(other.getChromosome())) {
+			return false;
+		}
+		return true;
 	}
 
 
 	@Override
-	public boolean hasNext() {
-		return iteratorIndex < listView.size();
+	public int hashCode() {
+		int hashCode = super.hashCode();
+		hashCode = HashCodeUtil.hash(hashCode, getChromosome());
+		return hashCode;
 	}
 
 
 	@Override
-	public T next() {
-		int currentIndex = iteratorIndex;
-		iteratorIndex++;
-		return listView.get(currentIndex);
-	}
-
-
-	@Override
-	public void remove() {
-		throw new UnsupportedOperationException();
+	public String toString() {
+		return getChromosome().toString() + ":" + super.toString();
 	}
 }

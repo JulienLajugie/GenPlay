@@ -24,10 +24,8 @@ package edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.text.NumberFormat;
 
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
-import edu.yu.einstein.genplay.util.HashCodeUtil;
 
 
 /**
@@ -35,7 +33,7 @@ import edu.yu.einstein.genplay.util.HashCodeUtil;
  * {@link ScoredChromosomeWindow} objects are immutable.
  * @author Julien Lajugie
  */
-public final class SimpleScoredChromosomeWindow implements ScoredChromosomeWindow, Serializable, Cloneable, Comparable<ChromosomeWindow> {
+public final class SimpleScoredChromosomeWindow extends AbstractScoredChromosomeWindow implements ScoredChromosomeWindow, Serializable, Cloneable, Comparable<ChromosomeWindow> {
 
 	/** Generated serial ID */
 	private static final long serialVersionUID = 8073707507054963197L;
@@ -78,74 +76,8 @@ public final class SimpleScoredChromosomeWindow implements ScoredChromosomeWindo
 
 
 	@Override
-	public int compareTo(ChromosomeWindow otherChromosomeWindow) {
-		if (start > otherChromosomeWindow.getStart()) {
-			return 1;
-		} else if (start < otherChromosomeWindow.getStart()) {
-			return -1;
-		} else {
-			if (stop > otherChromosomeWindow.getStop()) {
-				return 1;
-			} else if (stop < otherChromosomeWindow.getStop()) {
-				return -1;
-			} else {
-				return 0;
-			}
-		}
-	}
-
-
-	@Override
-	public int containsPosition (int position) {
-		if (position < start) {
-			return -1;
-		} else if (position > stop) {
-			return 1;
-		}
-		return 0;
-	}
-
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		SimpleScoredChromosomeWindow other = (SimpleScoredChromosomeWindow) obj;
-		if (start != other.start) {
-			return false;
-		}
-		if (stop != other.stop) {
-			return false;
-		}
-		if (score != other.score) {
-			return false;
-		}
-		return true;
-	}
-
-
-	@Override
-	public double getMiddlePosition() {
-		return (start + stop) / (double)2;
-	}
-
-
-	@Override
 	public float getScore() {
 		return score;
-	}
-
-
-	@Override
-	public int getSize() {
-		return stop - start;
 	}
 
 
@@ -161,16 +93,6 @@ public final class SimpleScoredChromosomeWindow implements ScoredChromosomeWindo
 	}
 
 
-	@Override
-	public int hashCode() {
-		int hashCode = HashCodeUtil.SEED;
-		hashCode = HashCodeUtil.hash(hashCode, start);
-		hashCode = HashCodeUtil.hash(hashCode, stop);
-		hashCode = HashCodeUtil.hash(hashCode, score);
-		return hashCode;
-	}
-
-
 	/**
 	 * Method used for deserialization
 	 * @param in
@@ -182,14 +104,6 @@ public final class SimpleScoredChromosomeWindow implements ScoredChromosomeWindo
 		in.readInt();
 		// read the final fields
 		in.defaultReadObject();
-	}
-
-
-	@Override
-	public String toString() {
-		String startStr = NumberFormat.getInstance().format(start);
-		String stopStr = NumberFormat.getInstance().format(stop);
-		return startStr + "-" + stopStr + " : " + score;
 	}
 
 

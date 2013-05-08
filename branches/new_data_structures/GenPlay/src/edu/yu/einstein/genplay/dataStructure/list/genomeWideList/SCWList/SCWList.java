@@ -41,6 +41,12 @@ public interface SCWList extends GenomicListView<ScoredChromosomeWindow> {
 
 
 	/**
+	 * @return the number of steps needed to create a {@link SCWList} simimlar to this one
+	 */
+	public int getCreationStepCount();
+
+
+	/**
 	 * @return the greatest score of the windows of the list list
 	 */
 	public float getMaximum();

@@ -23,18 +23,18 @@ package edu.yu.einstein.genplay.dataStructure.list.listView.SimpleListView;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.Iterator;
 import java.util.List;
 
+import edu.yu.einstein.genplay.dataStructure.list.listView.AbstractListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
-import edu.yu.einstein.genplay.dataStructure.list.listView.subListView.SubListView;
+
 
 /**
  * Simple implementation of the {@link ListView} with data stored in a {@link List} implementation
  * @param <T> type of the data of the {@link SimpleListView}
  * @author Julien Lajugie
  */
-public final class SimpleListView<T> implements ListView<T> {
+public final class SimpleListView<T> extends AbstractListView<T> implements ListView<T> {
 
 	/** Generated serial ID */
 	private static final long serialVersionUID = 2581587146772942209L;
@@ -67,12 +67,6 @@ public final class SimpleListView<T> implements ListView<T> {
 	}
 
 
-	@Override
-	public Iterator<T> iterator() {
-		return data.iterator();
-	}
-
-
 	/**
 	 * Method used for deserialization
 	 * @param in
@@ -90,12 +84,6 @@ public final class SimpleListView<T> implements ListView<T> {
 	@Override
 	public int size() {
 		return data.size();
-	}
-
-
-	@Override
-	public ListView<T> subList(int fromIndex, int toIndex) {
-		return new SubListView<T>(this, fromIndex, toIndex);
 	}
 
 

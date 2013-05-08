@@ -74,7 +74,6 @@ public class ListOfHalfArraysAsFloatList extends AbstractList<Float> implements 
 	 */
 	public ListOfHalfArraysAsFloatList() {
 		data = new ArrayList<char[]>();
-		data.add(new char[ARRAY_SIZE]);
 	}
 
 
@@ -90,6 +89,9 @@ public class ListOfHalfArraysAsFloatList extends AbstractList<Float> implements 
 
 	@Override
 	public boolean add(Float e) {
+		if (data.isEmpty()) {
+			data.add(new char[ARRAY_SIZE]);
+		}
 		char[] currentArray = data.get(data.size() - 1);
 		if (currentIndex < currentArray.length) {
 			currentArray[currentIndex] = HalfFloat.fromFloat(e);
@@ -170,6 +172,9 @@ public class ListOfHalfArraysAsFloatList extends AbstractList<Float> implements 
 
 	@Override
 	public int size() {
+		if (data.isEmpty()) {
+			return 0;
+		}
 		int size = ((data.size() - 1) * ARRAY_SIZE) + currentIndex;
 		return size;
 	}

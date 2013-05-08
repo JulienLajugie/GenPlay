@@ -59,17 +59,21 @@ public class SimpleSCWPileupFlattener implements PileupFlattener {
 
 	@Override
 	public List<ScoredChromosomeWindow> addWindow(ScoredChromosomeWindow window) throws ElementAddedNotSortedException {
-		int newWindowStart = window.getStart();
-		if (!windowQueue.isEmpty()) {
-			int lastStart = windowQueue.get(windowQueue.size() - 1).getStart();
-			if (newWindowStart < lastStart) {
-				throw new ElementAddedNotSortedException();
-			}
+		if (windowQueue.isEmpty()) {
+			windowQueue.add(window);
+			return new ArrayList<ScoredChromosomeWindow>();
 		}
+
+		int newWindowStart = window.getStart();
+		int lastStart = windowQueue.get(windowQueue.size() - 1).getStart();
+		if (newWindowStart < lastStart) {
+			throw new ElementAddedNotSortedException();
+		}
+
 		// add the new window at the end of the queue
 		windowQueue.add(window);
 		// retrieve the result of the pileup flattening
-		List<ScoredChromosomeWindow> flattenPileup = getFlattenedPileup(newWindowStart);
+		List<ScoredChromosomeWindow> flattenPileup = getFlattenedPileup(lastStart, newWindowStart);
 		// remove the element that are not needed anymore
 		removeProcessedElements(newWindowStart);
 		return flattenPileup;
@@ -116,7 +120,11 @@ public class SimpleSCWPileupFlattener implements PileupFlattener {
 
 	@Override
 	public List<ScoredChromosomeWindow> flush() {
-		List<ScoredChromosomeWindow> flattenedWindows = getFlattenedPileup(Integer.MAX_VALUE);
+		int lastStart = -1;
+		if (!windowQueue.isEmpty()) {
+			lastStart = windowQueue.get(windowQueue.size() - 1).getStart();
+		}
+		List<ScoredChromosomeWindow> flattenedWindows = getFlattenedPileup(lastStart, Integer.MAX_VALUE);
 		windowQueue.clear();
 		return flattenedWindows;
 	}
@@ -124,23 +132,26 @@ public class SimpleSCWPileupFlattener implements PileupFlattener {
 
 	/**
 	 * Flattens the overlapping windows of the queue up to specified positions.
-	 * @param position a position
+	 * @param stopPosition a position
 	 * @return a list of {@link ScoredChromosomeWindow} resulting from the flattening process.
 	 * The score of the windows are computing accordingly to a {@link ScoreOperation} during
 	 * construction of this {@link SimpleSCWPileupFlattener} object.
 	 */
-	private List<ScoredChromosomeWindow> getFlattenedPileup(int position) {
+	private List<ScoredChromosomeWindow> getFlattenedPileup(int startPosition, int stopPosition) {
 		ScoredChromosomeWindow currentWindow;
 		// nodes are start and stop positions of the windows resulting from the flattening process
 		List<Integer> nodes = new ArrayList<Integer>();
 		Iterator<ScoredChromosomeWindow> iterator = windowQueue.iterator();
-		while (iterator.hasNext() && ((currentWindow = iterator.next()).getStart() < position)) {
-			nodes.add(currentWindow.getStart());
-			if (currentWindow.getStop() < position) {
+		nodes.add(startPosition);
+		while (iterator.hasNext() && ((currentWindow = iterator.next()).getStart() < stopPosition)) {
+			if (currentWindow.getStart() > startPosition) {
+				nodes.add(currentWindow.getStart());
+			}
+			if ((currentWindow.getStop() > startPosition) && (currentWindow.getStop() < stopPosition)) {
 				nodes.add(currentWindow.getStop());
 			}
 		}
-		nodes.add(position);
+		nodes.add(stopPosition);
 		// sort the nodes
 		Collections.sort(nodes);
 		// remove duplicate nodes

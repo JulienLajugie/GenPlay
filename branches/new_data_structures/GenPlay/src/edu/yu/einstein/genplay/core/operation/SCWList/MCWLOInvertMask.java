@@ -30,7 +30,6 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.mask.MaskListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWList;
@@ -123,7 +122,7 @@ public class MCWLOInvertMask implements Operation<SCWList> {
 
 	@Override
 	public int getStepCount() {
-		return 1 + SimpleSCWList.getCreationStepCount(SCWListType.MASK);
+		return 1 + scwList.getCreationStepCount();
 	}
 
 

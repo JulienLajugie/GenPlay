@@ -31,10 +31,12 @@ import edu.yu.einstein.genplay.core.IO.extractor.StrandedExtractor;
 import edu.yu.einstein.genplay.core.IO.utils.ChromosomesSelector;
 import edu.yu.einstein.genplay.core.IO.utils.StrandedExtractorOptions;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinListFactory;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.newCurveLayerDialog.NewCurveLayerDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -136,11 +138,15 @@ public final class TAAddBinLayer extends TrackListActionExtractorWorker<BinList>
 
 	@Override
 	protected BinList generateList() throws Exception {
-		notifyActionStop();
-		// if the binSize is known we can find out how many steps will be used
-		notifyActionStart("Generating Layer", 1 + BinList.getCreationStepCount(binSize), true);
-		BinList binList = BinListFactory.createBinList((SCWReader) extractor, binSize, scoreCalculation);
-		return binList;
+		try {
+			notifyActionStop();
+			// if the binSize is known we can find out how many steps will be used
+			notifyActionStart("Generating Layer", 1 + BinList.getCreationStepCount(SCWListType.BIN), true);
+			BinList binList = BinListFactory.createBinList((SCWReader) extractor, binSize, scoreCalculation);
+			return binList;
+		} catch (ClassCastException e) {
+			throw new InvalidFileTypeException();
+		}
 	}
 
 

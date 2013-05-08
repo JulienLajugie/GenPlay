@@ -45,7 +45,7 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
  * This extractor is used to create {@link GenomicListView} nucleotide
  * @author Julien Lajugie
  */
-public class TwoBitExtractor implements Stoppable {
+public class TwoBitExtractor extends Extractor implements Stoppable {
 
 	/** Signature of a 2bit file */
 	private final static String TWOBIT_SIGNATURE = "1A412743";
@@ -54,10 +54,10 @@ public class TwoBitExtractor implements Stoppable {
 	private boolean	isStopped = false;
 
 	/** Genome name for a multi genome project */
-	private final String genomeName;
+	private String genomeName;
 
 	/** Allele type for a multi genome project */
-	private final AlleleType alleleType;
+	private AlleleType alleleType;
 
 	/** Each element of this list read a chromosome in the file */
 	private final List<ListView<Nucleotide>> data;
@@ -74,29 +74,30 @@ public class TwoBitExtractor implements Stoppable {
 
 	/**
 	 * Creates an instance of {@link TwoBitExtractor}
-	 * @param genomeName the genome name for a multi genome project
-	 * @param alleleType the allele type for a multi genome project
+	 * @param dataFile 2Bit file
 	 */
-	public TwoBitExtractor(String genomeName, AlleleType alleleType) {
-		this.genomeName = genomeName;
-		this.alleleType = alleleType;
+	public TwoBitExtractor(File dataFile) {
+		super(dataFile);
 		data = new ArrayList<ListView<Nucleotide>>();
 	}
 
 
 	/**
 	 * Extracts the sequence list from a 2bit file
-	 * @param file 2Bit file
+	 * @param genomeName the genome name for a multi genome project
+	 * @param alleleType the allele type for a multi genome project
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 * @throws InvalidFileTypeException
 	 * @throws InterruptedException
 	 */
-	public void extract(File file) throws FileNotFoundException, IOException, InvalidFileTypeException, InterruptedException  {
+	public void extract(String genomeName, AlleleType alleleType) throws FileNotFoundException, IOException, InvalidFileTypeException, InterruptedException  {
+		this.genomeName = genomeName;
+		this.alleleType = alleleType;
 		// true if the bytes of multi-byte entities need to be reversed when read
 		reverseBytes = false;
-		filePath = file.getAbsolutePath();
-		twoBitFile = new RandomAccessFile(file, "r");
+		filePath = getDataFile().getAbsolutePath();
+		twoBitFile = new RandomAccessFile(getDataFile(), "r");
 		twoBitFile.seek(0);
 		int signature = twoBitFile.readInt();
 		// if the signature is not equal to the signature defined in the 2bit files
@@ -244,6 +245,12 @@ public class TwoBitExtractor implements Stoppable {
 	 */
 	public boolean needToReverseBytes() {
 		return reverseBytes;
+	}
+
+
+	@Override
+	protected String retrieveDataName(File dataFile) {
+		return dataFile.getName();
 	}
 
 

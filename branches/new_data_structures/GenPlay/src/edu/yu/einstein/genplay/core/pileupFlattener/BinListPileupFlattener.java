@@ -60,6 +60,11 @@ public class BinListPileupFlattener implements PileupFlattener {
 
 	@Override
 	public List<ScoredChromosomeWindow> addWindow(ScoredChromosomeWindow window) throws ElementAddedNotSortedException {
+		if (windowQueue.isEmpty()) {
+			windowQueue.add(window);
+			return new ArrayList<ScoredChromosomeWindow>();
+		}
+
 		int newWindowStart = window.getStart();
 		int lastStart = windowQueue.get(windowQueue.size() - 1).getStart();
 		if (newWindowStart < lastStart) {
@@ -69,7 +74,7 @@ public class BinListPileupFlattener implements PileupFlattener {
 		windowQueue.add(window);
 		// retrieve the result of the pileup flattening
 		List<ScoredChromosomeWindow> flattenPileup = getFlattenedPileup(newWindowStart);
-		// remove the ele
+		// remove the element that are already processed
 		removeProcessedElements(newWindowStart);
 		return flattenPileup;
 	}
@@ -146,6 +151,7 @@ public class BinListPileupFlattener implements PileupFlattener {
 			// add the completed bin to the flatten pileup
 			ScoredChromosomeWindow windowToAdd = new SimpleScoredChromosomeWindow(currentBinCompletedStart, currentBinCompletedStop, score);
 			flattenedPileup.add(windowToAdd);
+			currentBinCompletedStart += binSize;
 		}
 		return flattenedPileup;
 	}

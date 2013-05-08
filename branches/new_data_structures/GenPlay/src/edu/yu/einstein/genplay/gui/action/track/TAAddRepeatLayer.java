@@ -29,6 +29,7 @@ import edu.yu.einstein.genplay.core.IO.dataReader.RepeatReader;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.repeatFamilyList.RepeatFamilyList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.repeatFamilyList.SimpleRepeatFamilyListFactory;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection.GenomeSelectionDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -96,8 +97,14 @@ public final class TAAddRepeatLayer extends TrackListActionExtractorWorker<Repea
 
 	@Override
 	protected RepeatFamilyList generateList() throws Exception {
-		RepeatFamilyList repeatList = SimpleRepeatFamilyListFactory.createRepeatList((RepeatReader) extractor);
-		return repeatList;
+		try {
+			RepeatFamilyList repeatList = null;
+			notifyActionStart("Generating Repeat Layer", 1, true);
+			repeatList = SimpleRepeatFamilyListFactory.createRepeatList((RepeatReader) extractor);
+			return repeatList;
+		} catch (ClassCastException e) {
+			throw new InvalidFileTypeException();
+		}
 	}
 
 

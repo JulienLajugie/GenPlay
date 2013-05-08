@@ -56,10 +56,11 @@ public class RepeatFamilyListViewBuilder implements ListViewBuilder<ScoredChromo
 	 * Adds an element to the {@link ListView} that will be built.
 	 * To assure that {@link ListView} objects are immutable, this method will throw an exception
 	 * if called after the getListView() has been called.
+	 * Checks that the elements are added in start position order.
 	 * @param start start position of the repeat to add
 	 * @param stop stop position of the repeat to add
 	 * @throws ObjectAlreadyBuiltException if this method is called after the build method was called
-	 * @throws ElementAddedNotSortedException
+	 * @throws ElementAddedNotSortedException If elements are not added in sorted order
 	 */
 	public void addElementToBuild(int start, int stop) throws ObjectAlreadyBuiltException, ElementAddedNotSortedException {
 		repeatListBuilder.addElementToBuild(start, stop);

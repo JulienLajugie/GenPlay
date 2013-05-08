@@ -28,6 +28,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.TreeSet;
 
+import edu.yu.einstein.genplay.core.IO.dataReader.DataReader;
 import edu.yu.einstein.genplay.core.IO.utils.Extractors;
 import edu.yu.einstein.genplay.core.IO.utils.TrackLineHeader;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
@@ -39,7 +40,7 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
  * This class must be extended by the {@link Extractor} for text files
  * @author Julien Lajugie
  */
-public abstract class TextFileExtractor extends Extractor implements Stoppable {
+public abstract class TextFileExtractor extends Extractor implements Stoppable, DataReader {
 
 	/** Size of the buffer of the reader */
 	private final static int BUFFER_LENGTH = 8192;
@@ -192,7 +193,7 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 		}
 		// roll back to the begining of the read if
 		if (((currentLine = reader.readLine()) != null)
-				&& Extractors.isHeaderLine(currentLine)) {
+				&& !Extractors.isHeaderLine(currentLine)) {
 			reader.reset();
 		}
 	}
@@ -215,28 +216,31 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 		int extractionStatus = LINE_SKIPPED;
 		while (((currentLine = reader.readLine()) != null) && (extractionStatus != EXTRACTION_DONE)) {
 			currentLineNumber++;
-			// we extract a line if either way:
-			// 1. the whole file needs to be extracted (ie: the randomLineNumbers variable is not set)
-			// 2. we extract a random part of the file and the current line was selected as one of the random line to extract
-			// (ie the current line number is present in the randomLineNumbers set)
-			if ((randomLineNumbers == null) || (randomLineNumbers.contains(currentLineNumber))) {
-				try {
-					extractionStatus = extractDataLine(currentLine);
-				} catch (DataLineException e) {
-					notifyDataEventListeners(e, currentLineNumber, currentLine);
-					lineSkipped++;
-				}
-				switch (extractionStatus) {
-				case LINE_EXTRACTED:
-					lineExtracted++;
-					break;
-				case LINE_SKIPPED:
-					lineSkipped++;
-					break;
-				case ITEM_EXTRACTED:
-					lineExtracted++;
-					itemExtractedCount++;
-					return true;
+			currentLine = currentLine.trim();
+			if (!currentLine.isEmpty()) {
+				// we extract a line if either way:
+				// 1. the whole file needs to be extracted (ie: the randomLineNumbers variable is not set)
+				// 2. we extract a random part of the file and the current line was selected as one of the random line to extract
+				// (ie the current line number is present in the randomLineNumbers set)
+				if ((randomLineNumbers == null) || (randomLineNumbers.contains(currentLineNumber))) {
+					try {
+						extractionStatus = extractDataLine(currentLine);
+					} catch (DataLineException e) {
+						notifyDataEventListeners(e, currentLineNumber, currentLine);
+						lineSkipped++;
+					}
+					switch (extractionStatus) {
+					case LINE_EXTRACTED:
+						lineExtracted++;
+						break;
+					case LINE_SKIPPED:
+						lineSkipped++;
+						break;
+					case ITEM_EXTRACTED:
+						lineExtracted++;
+						itemExtractedCount++;
+						return true;
+					}
 				}
 			}
 		}

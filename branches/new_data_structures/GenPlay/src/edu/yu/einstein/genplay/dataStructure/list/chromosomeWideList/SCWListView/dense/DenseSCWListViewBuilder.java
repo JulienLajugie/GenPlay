@@ -59,12 +59,13 @@ public final class DenseSCWListViewBuilder implements ListViewBuilder<ScoredChro
 	 * Adds an element to the ListView that will be built.
 	 * To assure that ListView objects are immutable, this method
 	 * will throw an exception if called after the getListView() has been called.
+	 * Checks that the elements are added in start position order.
 	 * @param start start position of the SCW to add
 	 * @param stop stop position of the SCW to add
 	 * @param score score value of the SCW to add
 	 * @throws ObjectAlreadyBuiltException
-	 * @throws ElementAddedNotSortedException
-	 * @throws ElementAddedOverlapException
+	 * @throws ElementAddedNotSortedException If elements are not added in sorted order
+	 * @throws ElementAddedOverlapException If elements added overlaps
 	 */
 	public void addElementToBuild(int start, int stop, float score)
 			throws ObjectAlreadyBuiltException, ElementAddedNotSortedException, ElementAddedOverlapException {

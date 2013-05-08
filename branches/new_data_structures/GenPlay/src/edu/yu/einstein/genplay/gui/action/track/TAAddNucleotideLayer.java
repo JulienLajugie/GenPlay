@@ -28,7 +28,8 @@ import javax.swing.ActionMap;
 import edu.yu.einstein.genplay.core.IO.extractor.TwoBitExtractor;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.nucleotideList.TwoBitSequenceList;
-import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
+import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection.GenomeSelectionDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.NucleotideLayer;
@@ -39,13 +40,11 @@ import edu.yu.einstein.genplay.util.Utils;
  * Adds a {@link NucleotideLayer} to the selected {@link Track}
  * @author Julien Lajugie
  */
-public class TAAddNucleotideLayer extends TrackListActionWorker<TwoBitSequenceList> {
+public class TAAddNucleotideLayer extends TrackListActionExtractorWorker<TwoBitSequenceList> {
 
 	private static final long serialVersionUID = 5998366494409991822L;					// generated ID
 	private static final String 	ACTION_NAME = "Load Sequence Track";				// action name
 	private static final String 	DESCRIPTION = "Load a track showing DNA sequences";	// tooltip
-	private File 					selectedFile;										// selected file
-	private TwoBitExtractor 		extractor = null;									// list of sequence
 
 
 	/**
@@ -73,7 +72,7 @@ public class TAAddNucleotideLayer extends TrackListActionWorker<TwoBitSequenceLi
 		}
 		if ((actionResult != null) && valid) {
 			Track selectedTrack = getTrackListPanel().getSelectedTrack();
-			NucleotideLayer newLayer = new NucleotideLayer(selectedTrack, actionResult, selectedFile.getName());
+			NucleotideLayer newLayer = new NucleotideLayer(selectedTrack, actionResult, fileToExtract.getName());
 			selectedTrack.getLayers().add(newLayer);
 			selectedTrack.setActiveLayer(newLayer);
 		}
@@ -81,23 +80,38 @@ public class TAAddNucleotideLayer extends TrackListActionWorker<TwoBitSequenceLi
 
 
 	@Override
-	protected TwoBitSequenceList processAction() throws Exception {
-		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
-		selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Sequence Layer", defaultDirectory, Utils.getReadableSequenceFileFilters(), true);
-		if (selectedFile != null) {
-			if (ProjectManager.getInstance().isMultiGenomeProject()) {
-				GenomeSelectionDialog genomeDialog = new GenomeSelectionDialog();
-				if (genomeDialog.showDialog(getRootPane()) == GenomeSelectionDialog.APPROVE_OPTION) {
-					genomeName = genomeDialog.getGenomeName();
-					alleleType = genomeDialog.getAlleleType();
-				} else {
-					throw new InterruptedException();
-				}
+	protected void doBeforeExtraction() throws InterruptedException {
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			GenomeSelectionDialog genomeDialog = new GenomeSelectionDialog();
+			if (genomeDialog.showDialog(getRootPane()) == GenomeSelectionDialog.APPROVE_OPTION) {
+				genomeName = genomeDialog.getGenomeName();
+				alleleType = genomeDialog.getAlleleType();
+			} else {
+				throw new InterruptedException();
 			}
-			notifyActionStart("Loading Sequence File", 1, true);
-			extractor = new TwoBitExtractor(genomeName, alleleType);
-			extractor.extract(selectedFile);
-			return new TwoBitSequenceList(selectedFile.getAbsolutePath(), extractor.needToReverseBytes(), genomeName, alleleType, extractor.getExtractedData());
+		}
+	}
+
+
+	@Override
+	protected TwoBitSequenceList generateList() throws Exception {
+		notifyActionStart("Generating DNA Sequence Layer", 1, true);
+		try {
+			TwoBitExtractor twoBitExtractor = (TwoBitExtractor) extractor;
+			twoBitExtractor.extract(genomeName, alleleType);
+			return new TwoBitSequenceList(fileToExtract.getAbsolutePath(), twoBitExtractor.needToReverseBytes(), genomeName, alleleType, twoBitExtractor.getExtractedData());
+		} catch (ClassCastException e) {
+			throw new InvalidFileTypeException();
+		}
+	}
+
+
+	@Override
+	protected File retrieveFileToExtract() {
+		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
+		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load DNA Sequence File", defaultDirectory, Utils.getReadableStripeFileFilters(), true);
+		if (selectedFile != null) {
+			return selectedFile;
 		}
 		return null;
 	}

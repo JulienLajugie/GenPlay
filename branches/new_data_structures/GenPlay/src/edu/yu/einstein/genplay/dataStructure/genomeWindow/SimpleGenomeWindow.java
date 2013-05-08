@@ -1,3 +1,24 @@
+/*******************************************************************************
+ *     GenPlay, Einstein Genome Analyzer
+ *     Copyright (C) 2009, 2011 Albert Einstein College of Medicine
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
+ *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
+ *     Website: <http://genplay.einstein.yu.edu>
+ *******************************************************************************/
 package edu.yu.einstein.genplay.dataStructure.genomeWindow;
 
 import java.io.IOException;
@@ -9,7 +30,6 @@ import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.ChromosomeWindowException;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
-import edu.yu.einstein.genplay.util.HashCodeUtil;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -18,7 +38,7 @@ import edu.yu.einstein.genplay.util.Utils;
  * {@link SimpleChromosomeWindow} objects are immutable.
  * @author Julien Lajugie
  */
-public final class SimpleGenomeWindow implements GenomeWindow {
+public final class SimpleGenomeWindow extends AbstractGenomeWindow implements GenomeWindow {
 
 	/** Generated serial ID */
 	private static final long serialVersionUID = 8873056842762282328L;
@@ -58,59 +78,12 @@ public final class SimpleGenomeWindow implements GenomeWindow {
 	}
 
 
-	@Override
-	public int compareTo(ChromosomeWindow o) {
-		return chromosomeWindow.compareTo(o);
-	}
-
-
-	@Override
-	public int containsPosition(int position) {
-		return chromosomeWindow.containsPosition(position);
-	}
-
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!super.equals(obj)) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		GenomeWindow other = (GenomeWindow) obj;
-		if (chromosome == null) {
-			if (other.getChromosome() != null) {
-				return false;
-			}
-		} else if (!chromosome.equals(other.getChromosome())) {
-			return false;
-		}
-		return true;
-	}
-
-
 	/**
 	 * @return the chromosome
 	 */
 	@Override
 	public final Chromosome getChromosome() {
 		return chromosome;
-	}
-
-
-	@Override
-	public double getMiddlePosition() {
-		return chromosomeWindow.getMiddlePosition();
-	}
-
-
-	@Override
-	public int getSize() {
-		return chromosomeWindow.getSize();
 	}
 
 
@@ -126,14 +99,6 @@ public final class SimpleGenomeWindow implements GenomeWindow {
 	}
 
 
-	@Override
-	public int hashCode() {
-		int hashCode = super.hashCode();
-		hashCode = HashCodeUtil.hash(hashCode, chromosome);
-		return hashCode;
-	}
-
-
 	/**
 	 * Method used for deserialization
 	 * @param in
@@ -145,12 +110,6 @@ public final class SimpleGenomeWindow implements GenomeWindow {
 		in.readInt();
 		// read the final fields
 		in.defaultReadObject();
-	}
-
-
-	@Override
-	public String toString() {
-		return chromosome.toString() + ":" + chromosomeWindow.toString();
 	}
 
 

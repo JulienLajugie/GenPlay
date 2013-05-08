@@ -25,12 +25,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.util.HashCodeUtil;
 
 
 /**
@@ -38,7 +35,7 @@ import edu.yu.einstein.genplay.util.HashCodeUtil;
  * {@link SimpleGene} objects are immutable.
  * @author Julien Lajugie
  */
-public final class SimpleGene implements Gene {
+public final class SimpleGene extends AbstractGene implements Gene {
 
 	/** Generated serial ID */
 	private static final long serialVersionUID = -9086602517817950291L;
@@ -119,78 +116,8 @@ public final class SimpleGene implements Gene {
 
 
 	@Override
-	public int compareTo(ChromosomeWindow chromosomeWindow) {
-		return new SimpleChromosomeWindow(start, stop).compareTo(chromosomeWindow);
-	}
-
-
-	@Override
-	public int containsPosition(int position) {
-		return new SimpleChromosomeWindow(start, stop).containsPosition(position);
-	}
-
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		SimpleGene other = (SimpleGene) obj;
-		if (name == null) {
-			if (other.name != null) {
-				return false;
-			}
-		} else if (!name.equals(other.name)) {
-			return false;
-		}
-		if (strand == null) {
-			if (other.strand != null) {
-				return false;
-			}
-		} else if (!strand.equals(other.strand)) {
-			return false;
-		}
-		if (start != other.start) {
-			return false;
-		}
-		if (stop != other.stop) {
-			return false;
-		}
-		if (score != other.score) {
-			return false;
-		}
-		if (UTR5Bound != other.UTR5Bound) {
-			return false;
-		}
-		if (UTR3Bound != other.UTR3Bound) {
-			return false;
-		}
-		if (exons == null) {
-			if (other.exons != null) {
-				return false;
-			}
-		} else if (!exons.equals(other.exons)) {
-			return false;
-		}
-		return true;
-	}
-
-
-	@Override
 	public ListView<ScoredChromosomeWindow> getExons() {
 		return exons;
-	}
-
-
-	@Override
-	public double getMiddlePosition() {
-		return (start + stop) / 2d;
 	}
 
 
@@ -203,12 +130,6 @@ public final class SimpleGene implements Gene {
 	@Override
 	public float getScore() {
 		return score;
-	}
-
-
-	@Override
-	public int getSize() {
-		return new SimpleChromosomeWindow(start, stop).getSize();
 	}
 
 
@@ -239,21 +160,6 @@ public final class SimpleGene implements Gene {
 	@Override
 	public int getUTR5Bound() {
 		return UTR5Bound;
-	}
-
-
-	@Override
-	public int hashCode() {
-		int hashCode = HashCodeUtil.SEED;
-		hashCode = HashCodeUtil.hash(hashCode, name);
-		hashCode = HashCodeUtil.hash(hashCode, strand);
-		hashCode = HashCodeUtil.hash(hashCode, start);
-		hashCode = HashCodeUtil.hash(hashCode, stop);
-		hashCode = HashCodeUtil.hash(hashCode, score);
-		hashCode = HashCodeUtil.hash(hashCode, UTR5Bound);
-		hashCode = HashCodeUtil.hash(hashCode, UTR3Bound);
-		hashCode = HashCodeUtil.hash(hashCode, exons);
-		return hashCode;
 	}
 
 

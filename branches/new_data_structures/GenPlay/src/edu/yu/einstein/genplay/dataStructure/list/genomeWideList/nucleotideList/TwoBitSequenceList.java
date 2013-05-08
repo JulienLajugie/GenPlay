@@ -28,7 +28,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
@@ -37,8 +36,8 @@ import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.enums.Nucleotide;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.nucleotideListView.TwoBitListView.TwoBitListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.AbstractListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
-import edu.yu.einstein.genplay.dataStructure.list.listView.subListView.SubListView;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 
 
@@ -47,7 +46,7 @@ import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
  * 2bit files are used to store genome sequences in a random access file
  * @author Julien Lajugie
  */
-public class TwoBitSequenceList implements Serializable, NucleotideList, Iterator<ListView<Nucleotide>> {
+public class TwoBitSequenceList extends AbstractListView<ListView<Nucleotide>> implements Serializable, NucleotideList {
 
 	/** Generated serial ID */
 	private static final long serialVersionUID = -2253030492143151302L;
@@ -66,9 +65,6 @@ public class TwoBitSequenceList implements Serializable, NucleotideList, Iterato
 
 	/** Each element of this list read a chromosome in the file */
 	private final List<ListView<Nucleotide>> data;
-
-	/** Current index of the iterator */
-	private transient int iteratorIndex = 0;
 
 
 	/**
@@ -168,28 +164,8 @@ public class TwoBitSequenceList implements Serializable, NucleotideList, Iterato
 
 
 	@Override
-	public boolean hasNext() {
-		return iteratorIndex < size();
-	}
-
-
-	@Override
 	public boolean isEmpty() {
 		return size() == 0;
-	}
-
-
-	@Override
-	public Iterator<ListView<Nucleotide>> iterator() {
-		return this;
-	}
-
-
-	@Override
-	public ListView<Nucleotide> next() {
-		int currentIndex = iteratorIndex;
-		iteratorIndex++;
-		return get(currentIndex);
 	}
 
 
@@ -219,12 +195,6 @@ public class TwoBitSequenceList implements Serializable, NucleotideList, Iterato
 
 
 	@Override
-	public void remove() {
-		throw new UnsupportedOperationException();
-	}
-
-
-	@Override
 	public int size() {
 		return data.size();
 	}
@@ -241,12 +211,6 @@ public class TwoBitSequenceList implements Serializable, NucleotideList, Iterato
 	@Override
 	public int size(int chromosomeIndex) {
 		return data.get(chromosomeIndex).size();
-	}
-
-
-	@Override
-	public ListView<ListView<Nucleotide>> subList(int fromIndex, int toIndex) {
-		return new SubListView<ListView<Nucleotide>>(this, fromIndex, toIndex);
 	}
 
 

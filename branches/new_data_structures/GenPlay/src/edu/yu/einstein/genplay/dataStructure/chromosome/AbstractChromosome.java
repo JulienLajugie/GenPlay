@@ -19,41 +19,59 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.list.primitiveList;
+package edu.yu.einstein.genplay.dataStructure.chromosome;
 
-import java.security.InvalidParameterException;
-import java.util.List;
+import edu.yu.einstein.genplay.util.HashCodeUtil;
 
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 
 /**
- * Factory class for vending List<Float> objects.
+ * This class provides a skeletal implementation of the {@link Chromosome} interface
+ * to minimize the effort required to implement this interface.
  * @author Julien Lajugie
  */
-public class FloatListFactory {
+public abstract class AbstractChromosome implements Chromosome {
 
-	/** Precision of the data of the project */
-	private static ScorePrecision scorePrecision = ScorePrecision.PRECISION_32BIT;
+	/** Generated serial ID */
+	private static final long serialVersionUID = -1761826757704422452L;
 
-	/**
-	 * @return a List of Float
-	 */
-	public static List<Float> createFloatList() {
-		if (scorePrecision == ScorePrecision.PRECISION_16BIT) {
-			return new ListOfHalfArraysAsFloatList();
-		} else if (scorePrecision == ScorePrecision.PRECISION_32BIT) {
-			return new ListOfFloatArraysAsFloatList();
-		} else {
-			throw new InvalidParameterException("Invalid Score Precision");
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
 		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		Chromosome other = (Chromosome) obj;
+		if (getLength() != other.getLength()) {
+			return false;
+		}
+		if (getName() == null) {
+			if (other.getName() != null) {
+				return false;
+			}
+		} else if (!getName().equals(other.getName())) {
+			return false;
+		}
+		return true;
 	}
 
 
-	/**
-	 * Sets the score precision of the project
-	 * @param scorePrecision
-	 */
-	public static void setScorePrecision(ScorePrecision scorePrecision) {
-		FloatListFactory.scorePrecision = scorePrecision;
+	@Override
+	public int hashCode(){
+		int result = HashCodeUtil.SEED;
+		result = HashCodeUtil.hash(result, getName());
+		result = HashCodeUtil.hash(result, getLength());
+		return result;
+	}
+
+
+	@Override
+	public String toString() {
+		return getName();
 	}
 }

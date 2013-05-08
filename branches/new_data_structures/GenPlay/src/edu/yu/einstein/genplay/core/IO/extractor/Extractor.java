@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.IO.dataReader.DataReader;
 import edu.yu.einstein.genplay.core.IO.utils.ChromosomesSelector;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
@@ -37,6 +36,9 @@ import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
 import edu.yu.einstein.genplay.gui.event.invalidDataEvent.InvalidDataEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.invalidDataEvent.InvalidDataListener;
+import edu.yu.einstein.genplay.gui.event.operationProgressEvent.OperationProgressEvent;
+import edu.yu.einstein.genplay.gui.event.operationProgressEvent.OperationProgressEventsGenerator;
+import edu.yu.einstein.genplay.gui.event.operationProgressEvent.OperationProgressListener;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
 
@@ -44,25 +46,26 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
  * This class must be extended by the file extractors
  * @author Julien Lajugie
  */
-public abstract class Extractor implements InvalidDataEventsGenerator, DataReader, Stoppable {
+public abstract class Extractor implements InvalidDataEventsGenerator, Stoppable, OperationProgressEventsGenerator {
 
 	// TODO handle 0-base and 1-base extractors
 
 	/** Maximum number of warning that will be reported */
 	private final static int WARNING_LIMIT = 100;
 
-	private final ProjectChromosome 		projectChromosome;			// Reference to projectChromosome saved for fast retrieval
-	private final File						dataFile;					// file containing the data
-	private final List<InvalidDataListener> invalidDataListenersList;	// List of invalid data listeners
-	private final String					dataName;					// name of the data
-	private boolean							isStopped = false;			// set to true if the execution of the extractor needs to be stopped
-	private ChromosomesSelector				chromosomeSelector = null; 	// object that defines which chromosomes need to be extracted
-	private long							startTime;					// time when the extraction started
-	private long 							extractionDuration;			// duration of the extraction in seconds
-	private	String							genomeName;					// name of the genome used for the mapping of the data
-	private AlleleType						alleleType;					// type of allele to load the data (multi genome)
-	private int								warningCount;				// number of warning sent to the listeners
-	protected int							itemExtractedCount;			// number of item extracted
+	private final List<OperationProgressListener>	progressListeners; 			// list of progress listeners
+	private final ProjectChromosome 				projectChromosome;			// Reference to projectChromosome saved for fast retrieval
+	private final File								dataFile;					// file containing the data
+	private final List<InvalidDataListener> 		invalidDataListenersList;	// List of invalid data listeners
+	private final String							dataName;					// name of the data
+	private boolean									isStopped = false;			// set to true if the execution of the extractor needs to be stopped
+	private ChromosomesSelector						chromosomeSelector = null; 	// object that defines which chromosomes need to be extracted
+	private long									startTime;					// time when the extraction started
+	private long 									extractionDuration;			// duration of the extraction in seconds
+	private	String									genomeName;					// name of the genome used for the mapping of the data
+	private AlleleType								alleleType;					// type of allele to load the data (multi genome)
+	private int										warningCount;				// number of warning sent to the listeners
+	protected int									itemExtractedCount;			// number of item extracted
 
 
 	/**
@@ -76,6 +79,7 @@ public abstract class Extractor implements InvalidDataEventsGenerator, DataReade
 		warningCount = 0;
 		itemExtractedCount = 0;
 		dataName = retrieveDataName(dataFile);
+		progressListeners = new ArrayList<OperationProgressListener>();
 	}
 
 
@@ -88,11 +92,18 @@ public abstract class Extractor implements InvalidDataEventsGenerator, DataReade
 	}
 
 
+	@Override
+	public void addOperationProgressListener(OperationProgressListener operationProgressListener) {
+		progressListeners.add(operationProgressListener);
+	}
+
+
 	/**
 	 * Finalized the extraction (retrieves the duration of the extraction).
 	 */
 	protected void finalizeExtraction() {
 		extractionDuration = (System.currentTimeMillis() - startTime) / 1000l;
+		notifyProgressListeners(OperationProgressEvent.COMPLETE, 100d);
 	}
 
 
@@ -156,6 +167,13 @@ public abstract class Extractor implements InvalidDataEventsGenerator, DataReade
 	}
 
 
+	@Override
+	public OperationProgressListener[] getOperationProgressListeners() {
+		OperationProgressListener[] listeners = new OperationProgressListener[progressListeners.size()];
+		return progressListeners.toArray(listeners);
+	}
+
+
 	/**
 	 * @return a reference to the {@link ProjectChromosome}.
 	 */
@@ -202,9 +220,28 @@ public abstract class Extractor implements InvalidDataEventsGenerator, DataReade
 	}
 
 
+	/**
+	 * Notifies all the listeners that the progression of an operation changed
+	 * @param progressState state of the progression
+	 * @param completion completion if the state is IN_PROGRESS
+	 */
+	private void notifyProgressListeners(int progressState, double completion) {
+		OperationProgressEvent evt = new OperationProgressEvent(progressState, completion);
+		for (OperationProgressListener listener: progressListeners) {
+			listener.operationProgressChanged(evt);
+		}
+	}
+
+
 	@Override
 	public void removeInvalidDataListener(InvalidDataListener invalidDataListener) {
 		invalidDataListenersList.remove(invalidDataListener);
+	}
+
+
+	@Override
+	public void removeOperationProgressListener(OperationProgressListener operationProgressListener) {
+		progressListeners.remove(operationProgressListener);
 	}
 
 

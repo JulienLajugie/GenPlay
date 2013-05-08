@@ -21,6 +21,9 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.dataScalerForTrackDisplay;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
@@ -31,6 +34,7 @@ import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
+import edu.yu.einstein.genplay.util.FloatLists;
 import edu.yu.einstein.genplay.util.ListView.ChromosomeWindowListViews;
 
 
@@ -101,30 +105,35 @@ public class SimpleSCWLScaler implements DataScalerForTrackDisplay<SCWList, List
 		if ((currentChromosomeList == null) || currentChromosomeList.isEmpty()) {
 			return;
 		}
-		if (scaledXRatio > 1) {
+		if (scaledXRatio >= 1) {
 			scaledSCWList = currentChromosomeList;
 		} else {
 			if (currentChromosomeList.size() > 0) {
 				// compute the width on the genome that takes up 1 pixel on the screen
 				double pixelGenomicWidth = 1 / scaledXRatio;
 				GenericSCWListViewBuilder scaledSCWListBuilder = new GenericSCWListViewBuilder();
+				List<Float> scoreList = new ArrayList<Float>();
 				int i = 0;
 				while (i < currentChromosomeList.size()) {
 					int currentStart = currentChromosomeList.get(i).getStart();
 					int currentStop = currentChromosomeList.get(i).getStop();
 					float currentScore = currentChromosomeList.get(i).getScore();
+					scoreList.add(currentScore);
 					// we merge two windows together if there is a next window
 					// and if the gap between the current window and the next one is smaller than 1 pixel
 					// and if the score of the next window is equal to the score of the current one
 					while (((i + 1) < currentChromosomeList.size())
-							&& ((currentChromosomeList.get(i + 1).getStart() - currentStop) < pixelGenomicWidth)
-							&& (currentChromosomeList.get(i + 1).getScore() == currentScore)) {
+							&& ((((currentChromosomeList.get(i + 1).getStart() - currentStop) < pixelGenomicWidth) && (currentChromosomeList.get(i + 1).getScore() == currentScore))
+									|| ((currentChromosomeList.get(i + 1).getStop() - currentStart) < pixelGenomicWidth)) && (currentChromosomeList.get(i + 1).getScore() != 0)) {
 
-						// the new stop position is the max of the current stop and the stop of the new merged interval
 						i++;
-						// the new stop is the one of the next window
-						currentStop = currentChromosomeList.get(i).getStop();
+						// the new stop position is the max of the current stop and the stop of the new merged interval
+						currentStop = Math.max(currentStop, currentChromosomeList.get(i).getStop());
+						currentScore = currentChromosomeList.get(i).getScore();
+						scoreList.add(currentScore);
 					}
+					currentScore = FloatLists.average(scoreList);
+					scoreList.clear();
 					scaledSCWListBuilder.addElementToBuild(currentStart, currentStop, currentScore);
 					i++;
 				}

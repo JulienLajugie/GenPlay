@@ -19,41 +19,36 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.list.primitiveList;
+package edu.yu.einstein.genplay.dataStructure.list.listView;
 
-import java.security.InvalidParameterException;
+import java.util.Iterator;
 import java.util.List;
 
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
-
 /**
- * Factory class for vending List<Float> objects.
+ * This class provides a skeletal implementation of the {@link ListView} interface
+ * to minimize the effort required to implement this interface.
  * @author Julien Lajugie
+ * @param <T> type of the elements of the {@link ListView}
  */
-public class FloatListFactory {
+public abstract class AbstractListView<T> implements ListView<T>{
 
-	/** Precision of the data of the project */
-	private static ScorePrecision scorePrecision = ScorePrecision.PRECISION_32BIT;
+	/** Generated serial ID */
+	private static final long serialVersionUID = 9010133286271425051L;
 
-	/**
-	 * @return a List of Float
-	 */
-	public static List<Float> createFloatList() {
-		if (scorePrecision == ScorePrecision.PRECISION_16BIT) {
-			return new ListOfHalfArraysAsFloatList();
-		} else if (scorePrecision == ScorePrecision.PRECISION_32BIT) {
-			return new ListOfFloatArraysAsFloatList();
-		} else {
-			throw new InvalidParameterException("Invalid Score Precision");
-		}
+	@Override
+	public Iterator<T> iterator() {
+		return new ListViewIterator<T>(this);
 	}
 
 
-	/**
-	 * Sets the score precision of the project
-	 * @param scorePrecision
-	 */
-	public static void setScorePrecision(ScorePrecision scorePrecision) {
-		FloatListFactory.scorePrecision = scorePrecision;
+	@Override
+	public ListView<T> subList(int fromIndex, int toIndex) {
+		return new ContinuousSubListView<T>(this, fromIndex, toIndex);
+	}
+
+
+	@Override
+	public ListView<T> subList(List<Integer> indexes) {
+		return new DiscontinuousSubListView<T>(this, indexes);
 	}
 }

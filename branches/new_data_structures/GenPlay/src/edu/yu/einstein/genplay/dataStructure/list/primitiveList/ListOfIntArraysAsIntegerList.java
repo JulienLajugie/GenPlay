@@ -71,7 +71,6 @@ public class ListOfIntArraysAsIntegerList extends AbstractList<Integer> implemen
 	 */
 	public ListOfIntArraysAsIntegerList() {
 		data = new ArrayList<int[]>();
-		data.add(new int[ARRAY_SIZE]);
 	}
 
 
@@ -87,6 +86,9 @@ public class ListOfIntArraysAsIntegerList extends AbstractList<Integer> implemen
 
 	@Override
 	public boolean add(Integer e) {
+		if (data.isEmpty()) {
+			data.add(new int[ARRAY_SIZE]);
+		}
 		int[] currentArray = data.get(data.size() - 1);
 		if (currentIndex < currentArray.length) {
 			currentArray[currentIndex] = e;
@@ -167,6 +169,9 @@ public class ListOfIntArraysAsIntegerList extends AbstractList<Integer> implemen
 
 	@Override
 	public int size() {
+		if (data.isEmpty()) {
+			return 0;
+		}
 		int size = ((data.size() - 1) * ARRAY_SIZE) + currentIndex;
 		return size;
 	}

@@ -37,37 +37,46 @@ public class ReportExceptionBuilder {
 	private String report;
 
 	/**
-	 * Initializes the report
-	 * @param thread a thread
-	 * @param throwable a throwable
+	 * @param throwable a trhowable (exception)
+	 * @return the throwable report
 	 */
-	protected void initializeReport (Thread thread, Throwable throwable) {
-		//report = getThreadReport(thread) + "\n";
-		report = getThrowableReport(throwable, 0);
-		report += getLowerLayerThrowableReports(throwable);
+	private String getLowerLayerThrowableReports (Throwable throwable) {
+		String report = null;
+		int count = 0;
+		Throwable cause = throwable.getCause();
+		while (cause != null) {
+			count++;
+			String currenReport = getThrowableReport(cause, count);
+			if (report == null) {
+				report = currenReport;
+			} else {
+				report += "\n" + currenReport;
+			}
+			cause = cause.getCause();
+		}
+		return report;
 	}
 
 
 	/**
-	 * Initializes the report
-	 * @param throwable a throwable
+	 * @param message a message
+	 * @return the message report
 	 */
-	protected void initializeReport (Throwable throwable) {
-		report = getThrowableReport(throwable, 0);
-		report += getLowerLayerThrowableReports(throwable);
+	private String getMessageReport (String message) {
+		String report = "";
+
+		report += ReportBuilder.getTitle("Message");
+		report += ReportBuilder.getInformation("Value", message);
+
+		return report;
 	}
 
 
 	/**
-	 * Initializes the report
-	 * @param component a component
-	 * @param throwable an exception
-	 * @param message error message to display.
+	 * @return the report
 	 */
-	protected void initializeReport (Component component, Throwable throwable, String message) {
-		report += getMessageReport(message) + "\n";
-		report += getThrowableReport(throwable, 0);
-		report += getLowerLayerThrowableReports(throwable);
+	public String getReport() {
+		return report;
 	}
 
 
@@ -127,46 +136,46 @@ public class ReportExceptionBuilder {
 
 
 	/**
-	 * @param throwable a trhowable (exception)
-	 * @return the throwable report
+	 * Initializes the report
+	 * @param component a component
+	 * @param throwable an exception
+	 * @param message error message to display.
 	 */
-	private String getLowerLayerThrowableReports (Throwable throwable) {
-		String report = null;
-		int count = 0;
-		Throwable cause = throwable.getCause();
-		while (cause != null) {
-			count++;
-			String currenReport = getThrowableReport(cause, count);
-			if (report == null) {
-				report = currenReport;
-			} else {
-				report += "\n" + currenReport;
-			}
-			cause = cause.getCause();
+	protected void initializeReport (Component component, Throwable throwable, String message) {
+		report += getMessageReport(message) + "\n";
+		report += getThrowableReport(throwable, 0);
+		String lowerLayerThrowableReports = getLowerLayerThrowableReports(throwable);
+		if (lowerLayerThrowableReports != null) {
+			report += getLowerLayerThrowableReports(throwable);
 		}
-		return report;
 	}
 
 
 	/**
-	 * @param message a message
-	 * @return the message report
+	 * Initializes the report
+	 * @param thread a thread
+	 * @param throwable a throwable
 	 */
-	private String getMessageReport (String message) {
-		String report = "";
-
-		report += ReportBuilder.getTitle("Message");
-		report += ReportBuilder.getInformation("Value", message);
-
-		return report;
+	protected void initializeReport (Thread thread, Throwable throwable) {
+		//report = getThreadReport(thread) + "\n";
+		report = getThrowableReport(throwable, 0);
+		String lowerLayerThrowableReports = getLowerLayerThrowableReports(throwable);
+		if (lowerLayerThrowableReports != null) {
+			report += getLowerLayerThrowableReports(throwable);
+		}
 	}
 
 
 	/**
-	 * @return the report
+	 * Initializes the report
+	 * @param throwable a throwable
 	 */
-	public String getReport() {
-		return report;
+	protected void initializeReport (Throwable throwable) {
+		report = getThrowableReport(throwable, 0);
+		String lowerLayerThrowableReports = getLowerLayerThrowableReports(throwable);
+		if (lowerLayerThrowableReports != null) {
+			report += getLowerLayerThrowableReports(throwable);
+		}
 	}
 
 }

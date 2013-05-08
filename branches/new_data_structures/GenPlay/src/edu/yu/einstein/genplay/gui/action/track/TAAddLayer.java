@@ -110,7 +110,7 @@ public class TAAddLayer extends TrackListAction {
 					new TAAddVariantLayer().actionPerformed(evt);
 					break;
 				case MASK_LAYER:
-					new TAAddMask().actionPerformed(evt);
+					new TAAddMaskLayer().actionPerformed(evt);
 					break;
 				default:
 					// do nothing

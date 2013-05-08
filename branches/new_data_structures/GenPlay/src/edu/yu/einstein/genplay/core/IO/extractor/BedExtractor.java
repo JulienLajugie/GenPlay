@@ -160,6 +160,7 @@ public class BedExtractor extends TextFileExtractor implements SCWReader, GeneRe
 			// if the file doesn't contain information about the UTR sites
 			UTR5Bound = start;
 			UTR3Bound = stop;
+			return ITEM_EXTRACTED;
 		}
 
 		// UTR bounds are for genes only so we don't need to
@@ -188,9 +189,9 @@ public class BedExtractor extends TextFileExtractor implements SCWReader, GeneRe
 			for (int i = 0; i < exonLengthsStr.length; i++) {
 				int exonStart = Extractors.getInt(exonStartsStr[i]) + start;
 				int exonStop = exonStart + Extractors.getInt(exonLengthsStr[i]);
-				float exonScore = 0;
+				float exonScore = Float.NaN;
 				if (exonScoresStr != null) {
-					exonScore = Extractors.getFloat(exonScoresStr[i], 0f);
+					exonScore = Extractors.getFloat(exonScoresStr[i], Float.NaN);
 				}
 				exonListBuilder.addElementToBuild(exonStart, exonStop, exonScore);
 			}

@@ -53,11 +53,11 @@ public class ScrollingManager {
 					SimpleGenomeWindow newWindow = new SimpleGenomeWindow(chromo, start, stop);
 					if (newWindow.getMiddlePosition() < 0) {
 						start = -projectWindow.getGenomeWindow().getSize() / 2;
-						stop = newWindow.getStart() + projectWindow.getGenomeWindow().getSize();
+						stop = start + projectWindow.getGenomeWindow().getSize();
 						newWindow = new SimpleGenomeWindow(chromo, start, stop);
 					} else if (newWindow.getMiddlePosition() > newWindow.getChromosome().getLength()) {
 						stop = newWindow.getChromosome().getLength() + (projectWindow.getGenomeWindow().getSize() / 2);
-						start = newWindow.getStop() - projectWindow.getGenomeWindow().getSize();
+						start = stop - projectWindow.getGenomeWindow().getSize();
 						newWindow = new SimpleGenomeWindow(chromo, start, stop);
 					}
 					projectWindow.setGenomeWindow(newWindow);
@@ -93,10 +93,7 @@ public class ScrollingManager {
 		return instance;
 	}
 
-
 	private ScrollingThread 	scrollingThread; 					// thread executed when the scroll mode is on
-
-
 	private int					scrollingIntensity;					// intensity of the scroll.
 
 

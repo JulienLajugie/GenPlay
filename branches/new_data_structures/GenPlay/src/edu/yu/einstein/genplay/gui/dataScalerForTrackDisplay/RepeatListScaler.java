@@ -83,7 +83,7 @@ public class RepeatListScaler implements DataScalerForTrackDisplay<RepeatFamilyL
 		// search repeats for each family
 		for (RepeatFamilyListView currentFamily : scaledRepeatList) {
 			// retrieve the sublist of genes that are located between the start and stop displayed positions
-			RepeatFamilyListView familyToAdd = (RepeatFamilyListView) ChromosomeWindowListViews.subList(currentFamily, projectWindow.getStart(), projectWindow.getStop());
+			RepeatFamilyListView familyToAdd = new RepeatFamilyListView(currentFamily.getName(), ChromosomeWindowListViews.subList(currentFamily, projectWindow.getStart(), projectWindow.getStop()));
 			resultList.add(familyToAdd);
 		}
 		return resultList;
@@ -122,12 +122,12 @@ public class RepeatListScaler implements DataScalerForTrackDisplay<RepeatFamilyL
 			for (RepeatFamilyListView currentFamily : currentChromosomeList) {
 				RepeatFamilyListViewBuilder familyBuilder = new RepeatFamilyListViewBuilder(currentFamily.getName());
 				int i = 0;
-				while (i < currentChromosomeList.size()) {
+				while (i < currentFamily.size()) {
 					int currentStart = currentFamily.get(i).getStart();
 					int currentStop = currentFamily.get(i).getStop();
 					// we merge two windows together if there is a next window
 					// and if the gap between the current window and the next one is smaller than 1 pixel
-					while (((i + 1) < currentChromosomeList.size())
+					while (((i + 1) < currentFamily.size())
 							&& ((currentFamily.get(i + 1).getStart() - currentStop) < pixelGenomicWidth)) {
 						i++;
 						// the new stop is the one of the next window

@@ -27,7 +27,9 @@ import edu.yu.einstein.genplay.core.IO.extractor.Extractor;
 import edu.yu.einstein.genplay.core.IO.extractor.ExtractorFactory;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
+import edu.yu.einstein.genplay.exception.exceptions.ElementAddedNotSortedException;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
+import edu.yu.einstein.genplay.gui.dialog.exceptionDialog.WarningReportDialog;
 import edu.yu.einstein.genplay.gui.event.invalidDataEvent.InvalidDataListener;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
@@ -71,7 +73,29 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 
 	@Override
 	public void handleDataError(DataLineException e) {
-		handleError(e);
+		showWarningMessage(e.getFormattedMessage());
+	}
+
+
+	/**
+	 * Handles an exception occurring in the {@link #processAction()} method
+	 * @param e exception caught in {@link #processAction()}
+	 * @throws Exception If the exception cannot be handled
+	 */
+	private void handleProcessActionException(Exception e) throws Exception {
+		if (e instanceof ElementAddedNotSortedException) {
+			String message = "File not sorted:  " + fileToExtract.getName()
+					+ "\nThis file cannot be loaded because it is not sorted by chromosome and start position.";
+			showWarningMessage(message);
+			throw new InterruptedException();
+		} else if (e instanceof InvalidFileTypeException) {
+			String message = "Invalid file: " + fileToExtract.getName()
+					+"\nThe file type is not compatible with the selected layer type.";
+			showWarningMessage(message);
+			throw new InterruptedException();
+		} else {
+			throw e;
+		}
 	}
 
 
@@ -79,23 +103,25 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 	protected final T processAction() throws Exception {
 		fileToExtract = retrieveFileToExtract();
 		if (fileToExtract != null) {
-			extractor = ExtractorFactory.getExtractor(fileToExtract);
-			if (extractor != null) {
-				name = extractor.getDataName();
-				extractor.addInvalidDataListener(this);
-				doBeforeExtraction();
-				if (ProjectManager.getInstance().isMultiGenomeProject()) {
-					extractor.setGenomeName(genomeName);
-					extractor.setAlleleType(alleleType);
+			try {
+				extractor = ExtractorFactory.getExtractor(fileToExtract);
+				if (extractor != null) {
+					name = extractor.getDataName();
+					extractor.addInvalidDataListener(this);
+					extractor.addOperationProgressListener(this);
+					doBeforeExtraction();
+					if (ProjectManager.getInstance().isMultiGenomeProject()) {
+						extractor.setGenomeName(genomeName);
+						extractor.setAlleleType(alleleType);
+					}
+					return generateList();
+
 				}
-				notifyActionStart("Generating Layer", 1, true);
-				return generateList();
-			} else {
-				throw new InvalidFileTypeException();
+			} catch (Exception e) {
+				handleProcessActionException(e);
 			}
-		} else {
-			throw new InterruptedException();
 		}
+		throw new InterruptedException();
 	}
 
 
@@ -104,6 +130,16 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 	 * @return the file to load. Null if canceled
 	 */
 	abstract protected File retrieveFileToExtract();
+
+
+	/**
+	 * Shows the warning report dialog displaying a specified message
+	 * @param message message to print in the warning report dialog
+	 */
+	protected void showWarningMessage(String message) {
+		WarningReportDialog.getInstance().addMessage(message);
+		WarningReportDialog.getInstance().showDialog(getRootPane());
+	}
 
 
 	/**

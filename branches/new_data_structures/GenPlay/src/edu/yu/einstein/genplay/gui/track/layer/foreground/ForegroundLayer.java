@@ -95,7 +95,7 @@ public class ForegroundLayer extends AbstractLayer<ForegroundData> implements La
 		TrackScore trackScore = getTrack().getScore();
 		if ((data != null) && (trackScore != null) && (trackScore.getCurrentScore() != null)) {
 			float currentScore = trackScore.getCurrentScore();
-			if (currentScore != Float.NaN) {
+			if (!Float.isNaN(currentScore)) {
 				int scoreYPosition = 0;
 				if (data.getScorePosition() == TrackConstants.BOTTOM_SCORE_POSITION) {
 					scoreYPosition =  getTrack().getHeight() - 2;

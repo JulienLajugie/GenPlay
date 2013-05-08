@@ -92,7 +92,6 @@ public class SimpleSCWListFactory {
 	 * Creates a mask {@link SCWList} from the data retrieved by the specified {@link SCWReader}.
 	 * Mask {@link SCWList} only contains windows with a score of 0 or 1
 	 * @param scwReader a {@link SCWReader}
-	 * @param scoreOperation {@link ScoreOperation} to compute the score of windows resulting from the "flattening" of a pileup of overlapping windows
 	 * @return a new {@link SCWList}
 	 * @throws InterruptedException
 	 * @throws ExecutionException
@@ -101,9 +100,15 @@ public class SimpleSCWListFactory {
 	 * @throws ObjectAlreadyBuiltException
 	 * @throws InvalidChromosomeException
 	 */
-	public static SCWList createMaskSCWList(SCWReader scwReader, ScoreOperation scoreOperation) throws InterruptedException, ExecutionException, CloneNotSupportedException, InvalidChromosomeException, ObjectAlreadyBuiltException, IOException {
+	public static SCWList createMaskSCWList(SCWReader scwReader) throws InterruptedException, ExecutionException, CloneNotSupportedException, InvalidChromosomeException, ObjectAlreadyBuiltException, IOException {
 		ListViewBuilder<ScoredChromosomeWindow> lvBuilderPrototype = new MaskListViewBuilder();
-		return createSimpleSCWList(scwReader, lvBuilderPrototype, scoreOperation);
+		ListOfListViewBuilder<ScoredChromosomeWindow> builder = new ListOfListViewBuilder<ScoredChromosomeWindow>(lvBuilderPrototype);
+		while (scwReader.readItem()) {
+			Chromosome currentChromosome = scwReader.getChromosome();
+			ScoredChromosomeWindow currentWindow = new SimpleScoredChromosomeWindow(scwReader.getStart(), scwReader.getStop(), scwReader.getScore());
+			builder.addElementToBuild(currentChromosome, currentWindow);
+		}
+		return new SimpleSCWList(builder.getGenomicList());
 	}
 
 
@@ -124,7 +129,6 @@ public class SimpleSCWListFactory {
 	 */
 	private static SCWList createSimpleSCWList(SCWReader scwReader, ListViewBuilder<ScoredChromosomeWindow> lvBuilderPrototype, ScoreOperation scoreOperation) throws InterruptedException, ExecutionException, CloneNotSupportedException, InvalidChromosomeException, ObjectAlreadyBuiltException, IOException {
 		ListOfListViewBuilder<ScoredChromosomeWindow> builder = new ListOfListViewBuilder<ScoredChromosomeWindow>(lvBuilderPrototype);
-
 		Chromosome currentChromosome = null;
 		// create object that will "flattened" pileups of overlapping windows
 		PileupFlattener flattener = new SimpleSCWPileupFlattener(scoreOperation);
@@ -132,6 +136,7 @@ public class SimpleSCWListFactory {
 			ScoredChromosomeWindow currentWindow = new SimpleScoredChromosomeWindow(scwReader.getStart(), scwReader.getStop(), scwReader.getScore());
 			if (currentChromosome == null) {
 				currentChromosome = scwReader.getChromosome();
+				flattener.addWindow(currentWindow);
 			} else if (currentChromosome != scwReader.getChromosome()) {
 				// at the end of a chromosome we flush the flattener and
 				// retrieve the remaining of flattened windows
@@ -140,6 +145,7 @@ public class SimpleSCWListFactory {
 					builder.addElementToBuild(currentChromosome, scw);
 				}
 				currentChromosome = scwReader.getChromosome();
+				flattener.addWindow(currentWindow);
 			} else {
 				// we add the current window to the flattener and retrieve the list of
 				// flattened windows
@@ -149,6 +155,7 @@ public class SimpleSCWListFactory {
 				}
 			}
 		}
+
 		return new SimpleSCWList(builder.getGenomicList());
 	}
 }

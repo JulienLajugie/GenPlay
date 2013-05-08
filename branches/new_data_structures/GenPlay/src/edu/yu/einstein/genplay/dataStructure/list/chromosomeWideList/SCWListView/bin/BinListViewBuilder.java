@@ -60,13 +60,14 @@ public final class BinListViewBuilder implements ListViewBuilder<ScoredChromosom
 	 * Adds an element to the ListView that will be built.
 	 * To assure that ListView objects are immutable, this method
 	 * will throw an exception if called after the getListView() has been called.
+	 * Checks that the elements are added in start position order.
 	 * @param start start position of the SCW to add
 	 * @param stop stop position of the SCW to add
 	 * @param score score value of the SCW to add
 	 * @throws ObjectAlreadyBuiltException
-	 * @throws ElementAddedNotSortedException
-	 * @throws ElementAddedOverlapException
-	 * @throws ElementAddedDontFallInBinException
+	 * @throws ElementAddedNotSortedException If elements are not added in sorted order
+	 * @throws ElementAddedOverlapException If elements added overlaps
+	 * @throws ElementAddedDontFallInBinException If the window added doesn't correspond to a bin
 	 */
 	public void addElementToBuild(int start, int stop, float score)
 			throws ObjectAlreadyBuiltException, ElementAddedNotSortedException, ElementAddedOverlapException, ElementAddedDontFallInBinException {
@@ -78,7 +79,7 @@ public final class BinListViewBuilder implements ListViewBuilder<ScoredChromosom
 		}
 		if (!windowScores.isEmpty()) {
 			int lastElementIndex = windowScores.size() -1;
-			int lastStart = lastElementIndex * binSize;
+			/*int lastStart = lastElementIndex * binSize;
 			int lastStop = (lastElementIndex + 1) * binSize;
 			if (start < lastStart) {
 				// case where the elements added are not sorted
@@ -86,7 +87,7 @@ public final class BinListViewBuilder implements ListViewBuilder<ScoredChromosom
 			} else if (start < lastStop) {
 				// case where the elements added overlap
 				throw new ElementAddedOverlapException();
-			}
+			}*/
 		}
 		int indexWindowToAdd = start / binSize;
 		while (windowScores.size() < indexWindowToAdd) {

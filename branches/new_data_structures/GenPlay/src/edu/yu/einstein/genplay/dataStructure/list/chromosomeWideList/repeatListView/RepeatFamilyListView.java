@@ -25,12 +25,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.Iterator;
 
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
+import edu.yu.einstein.genplay.dataStructure.list.listView.AbstractListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
-import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewIterator;
-import edu.yu.einstein.genplay.dataStructure.list.listView.subListView.SubListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
@@ -41,7 +39,7 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
  * {@link RepeatFamilyListView} objects are immutable.
  * @author Julien Lajugie
  */
-public final class RepeatFamilyListView implements Serializable, ListView<ScoredChromosomeWindow> {
+public final class RepeatFamilyListView extends AbstractListView<ScoredChromosomeWindow> implements Serializable, ListView<ScoredChromosomeWindow> {
 
 	/** generated ID */
 	private static final long serialVersionUID = -7691967168795920365L;
@@ -88,12 +86,6 @@ public final class RepeatFamilyListView implements Serializable, ListView<Scored
 	}
 
 
-	@Override
-	public Iterator<ScoredChromosomeWindow> iterator() {
-		return new ListViewIterator<ScoredChromosomeWindow>(this);
-	}
-
-
 	/**
 	 * Prints the name and the repeats of the {@link RepeatFamilyListView}
 	 */
@@ -125,12 +117,6 @@ public final class RepeatFamilyListView implements Serializable, ListView<Scored
 	@Override
 	public int size() {
 		return repeatListView.size();
-	}
-
-
-	@Override
-	public ListView<ScoredChromosomeWindow> subList(int fromIndex, int toIndex) {
-		return new SubListView<ScoredChromosomeWindow>(this, fromIndex, toIndex);
 	}
 
 

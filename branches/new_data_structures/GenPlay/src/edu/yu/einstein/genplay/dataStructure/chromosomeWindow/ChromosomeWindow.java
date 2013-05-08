@@ -21,12 +21,14 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.dataStructure.chromosomeWindow;
 
+import java.io.Serializable;
+
 
 /**
  * A window on a chromosome or a scaffold with a start and stop position (in bp).
  * @author Nicolas Fourel
  */
-public interface ChromosomeWindow extends Comparable<ChromosomeWindow> {
+public interface ChromosomeWindow extends Serializable, Comparable<ChromosomeWindow> {
 
 
 	/**

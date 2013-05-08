@@ -117,7 +117,7 @@ public class GraphicsPanel extends JPanel implements Serializable, ComponentList
 			// compute the corresponding genomic distance
 			int genomeWidth = projectWindow.screenToGenomeWidth(screenWidth);
 			Chromosome chromo = projectWindow.getGenomeWindow().getChromosome();
-			int start = projectWindow.getGenomeWindow().getStart()+ genomeWidth;
+			int start = projectWindow.getGenomeWindow().getStart() + genomeWidth;
 			int stop = projectWindow.getGenomeWindow().getStop() + genomeWidth;
 			SimpleGenomeWindow newWindow = new SimpleGenomeWindow(chromo, start, stop);
 			if (((newWindow.getMiddlePosition()) >= 0) && (newWindow.getMiddlePosition() <= newWindow.getChromosome().getLength())) {
@@ -146,16 +146,16 @@ public class GraphicsPanel extends JPanel implements Serializable, ComponentList
 			double genomeWidth = projectWindow.screenToGenomeWidth(screenWidth);
 			if ((genomeWidth >= 1) || (genomeWidth <= -1)) {
 				Chromosome chromo = projectWindow.getGenomeWindow().getChromosome();
-				int start = projectWindow.getGenomeWindow().getStart()+ (int) genomeWidth;
+				int start = projectWindow.getGenomeWindow().getStart() + (int) genomeWidth;
 				int stop = projectWindow.getGenomeWindow().getStop() + (int) genomeWidth;
 				SimpleGenomeWindow newWindow = new SimpleGenomeWindow(chromo, start, stop);
 				if (newWindow.getMiddlePosition() < 0) {
 					start = -projectWindow.getGenomeWindow().getSize() / 2;
-					stop = newWindow.getStart() + projectWindow.getGenomeWindow().getSize();
+					stop = start + projectWindow.getGenomeWindow().getSize();
 					newWindow = new SimpleGenomeWindow(chromo, start, stop);
 				} else if (newWindow.getMiddlePosition() > newWindow.getChromosome().getLength()) {
 					stop = newWindow.getChromosome().getLength() + (projectWindow.getGenomeWindow().getSize() / 2);
-					start = newWindow.getStop() - projectWindow.getGenomeWindow().getSize();
+					start = stop - projectWindow.getGenomeWindow().getSize();
 					newWindow = new SimpleGenomeWindow(chromo, start, stop);
 				}
 				projectWindow.setGenomeWindow(newWindow);

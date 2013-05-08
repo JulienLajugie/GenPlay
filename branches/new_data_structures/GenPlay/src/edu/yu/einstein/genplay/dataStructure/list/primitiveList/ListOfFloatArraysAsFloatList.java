@@ -71,7 +71,6 @@ public class ListOfFloatArraysAsFloatList extends AbstractList<Float> implements
 	 */
 	public ListOfFloatArraysAsFloatList() {
 		data = new ArrayList<float[]>();
-		data.add(new float[ARRAY_SIZE]);
 	}
 
 
@@ -87,6 +86,9 @@ public class ListOfFloatArraysAsFloatList extends AbstractList<Float> implements
 
 	@Override
 	public boolean add(Float e) {
+		if (data.isEmpty()) {
+			data.add(new float[ARRAY_SIZE]);
+		}
 		float[] currentArray = data.get(data.size() - 1);
 		if (currentIndex < currentArray.length) {
 			currentArray[currentIndex] = e;
@@ -167,6 +169,9 @@ public class ListOfFloatArraysAsFloatList extends AbstractList<Float> implements
 
 	@Override
 	public int size() {
+		if (data.isEmpty()) {
+			return 0;
+		}
 		int size = ((data.size() - 1) * ARRAY_SIZE) + currentIndex;
 		return size;
 	}

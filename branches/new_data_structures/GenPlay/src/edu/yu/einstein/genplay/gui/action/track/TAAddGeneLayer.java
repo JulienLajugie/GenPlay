@@ -29,6 +29,7 @@ import edu.yu.einstein.genplay.core.IO.dataReader.GeneReader;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneListFactory;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection.GenomeSelectionDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -99,15 +100,21 @@ public final class TAAddGeneLayer extends TrackListActionExtractorWorker<GeneLis
 
 	@Override
 	protected GeneList generateList() throws Exception {
-		GeneList geneList = GeneListFactory.createGeneList((GeneReader) extractor);
-		return geneList;
+		notifyActionStart("Generating Gene Layer", 1, true);
+		try {
+			GeneReader geneReader = (GeneReader) extractor;
+			GeneList geneList = GeneListFactory.createGeneList(geneReader);
+			return geneList;
+		} catch (ClassCastException e) {
+			throw new InvalidFileTypeException();
+		}
 	}
 
 
 	@Override
 	protected File retrieveFileToExtract() {
 		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
-		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Gene Layer", defaultDirectory, Utils.getReadableGeneFileFilters(), true);
+		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Gene File", defaultDirectory, Utils.getReadableGeneFileFilters(), true);
 		if (selectedFile != null) {
 			return selectedFile;
 		}

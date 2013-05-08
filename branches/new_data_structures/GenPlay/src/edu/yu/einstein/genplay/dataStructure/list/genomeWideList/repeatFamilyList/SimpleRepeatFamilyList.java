@@ -28,7 +28,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -36,8 +35,8 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.repeatListView.RepeatFamilyListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.AbstractListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
-import edu.yu.einstein.genplay.dataStructure.list.listView.subListView.SubListView;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 
 
@@ -45,7 +44,7 @@ import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
  * Simple implementation of the {@link RepeatFamilyList} interface.
  * @author Julien Lajugie
  */
-public class SimpleRepeatFamilyList implements Serializable, RepeatFamilyList, Iterator<ListView<RepeatFamilyListView>> {
+public class SimpleRepeatFamilyList extends AbstractListView<ListView<RepeatFamilyListView>> implements Serializable, RepeatFamilyList {
 
 	/** Generated serial ID */
 	private static final long serialVersionUID = 5575142659472215610L;
@@ -59,9 +58,6 @@ public class SimpleRepeatFamilyList implements Serializable, RepeatFamilyList, I
 	/** Array containing the names of all the families present in the list in alphabetical order  */
 	private final String[] familyNames;
 
-	/** Current index of the iterator */
-	private transient int iteratorIndex = 0;
-
 
 	/**
 	 * Creates an instance of {@link SimpleRepeatFamilyList}
@@ -72,7 +68,7 @@ public class SimpleRepeatFamilyList implements Serializable, RepeatFamilyList, I
 		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		this.data = new ArrayList<ListView<RepeatFamilyListView>>(projectChromosome.size());
 		for (int i = 0; i < data.size(); i++){
-			data.add(data.get(i));
+			this.data.add(data.get(i));
 		}
 		familyNames = retrieveFamilyNames();
 	}
@@ -112,28 +108,8 @@ public class SimpleRepeatFamilyList implements Serializable, RepeatFamilyList, I
 
 
 	@Override
-	public boolean hasNext() {
-		return iteratorIndex < size();
-	}
-
-
-	@Override
 	public boolean isEmpty() {
 		return data.isEmpty();
-	}
-
-
-	@Override
-	public Iterator<ListView<RepeatFamilyListView>> iterator() {
-		return this;
-	}
-
-
-	@Override
-	public ListView<RepeatFamilyListView> next() {
-		int currentIndex = iteratorIndex;
-		iteratorIndex++;
-		return get(currentIndex);
 	}
 
 
@@ -147,12 +123,6 @@ public class SimpleRepeatFamilyList implements Serializable, RepeatFamilyList, I
 		in.readInt();
 		// read final fields
 		in.defaultReadObject();
-	}
-
-
-	@Override
-	public void remove() {
-		throw new UnsupportedOperationException();
 	}
 
 
@@ -189,12 +159,6 @@ public class SimpleRepeatFamilyList implements Serializable, RepeatFamilyList, I
 	@Override
 	public int size(int chromosomeIndex) {
 		return data.get(chromosomeIndex).size();
-	}
-
-
-	@Override
-	public ListView<ListView<RepeatFamilyListView>> subList(int fromIndex, int toIndex) {
-		return new SubListView<ListView<RepeatFamilyListView>>(this, fromIndex, toIndex);
 	}
 
 
