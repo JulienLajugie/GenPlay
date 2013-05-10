@@ -56,6 +56,42 @@ public class UpdateFileScanner implements FileScannerInterface {
 	}
 
 
+	/**
+	 * Compares positions of two lines according to:
+	 * - CHROM
+	 * - POS
+	 * @param line01 the first line
+	 * @param line02 the second line
+	 * @return -1 if the first line is located before the second line, 0 if they are at the same location, 1 if the first line is after the second one
+	 */
+	private int compareLines (VCFLine line01, VCFLine line02) {
+		int chromIndex01 = ProjectManager.getInstance().getProjectChromosome().getIndex(line01.getCHROM());
+		int chromIndex02 = ProjectManager.getInstance().getProjectChromosome().getIndex(line02.getCHROM());
+
+		if (chromIndex01 == chromIndex02) {
+			int	position01 = line01.getReferencePosition();
+			int position02 = line02.getReferencePosition();
+
+			if (position01 == position02) {
+				return 0;
+			} else if (position01 < position02) {
+				return -1;
+			} else {	// position01 > position02
+				return 1;
+			}
+
+		} else if ((chromIndex01 == 0) &&  line02.getCHROM().equals("chrM")) {
+			return 1;
+		} else if ((chromIndex02 == 0) &&  line01.getCHROM().equals("chrM")) {
+			return -1;
+		} else if (chromIndex01 < chromIndex02) {
+			return -1;
+		} else {		// chromIndex01 > chromIndex02
+			return 1;
+		}
+	}
+
+
 	@Override
 	public void compute() throws Exception {
 		boolean valid = true;
@@ -76,6 +112,31 @@ public class UpdateFileScanner implements FileScannerInterface {
 				valid = false;
 			}
 		}
+	}
+
+
+	private boolean defineSameVariation (VCFLine line01, VCFLine line02) {
+		boolean result = false;
+
+		if (line01.getREF().equals(line02.getREF())) {
+			String[] alternatives01 = line01.getAlternatives();
+			String[] alternatives02 = line02.getAlternatives();
+
+			for (String currentAlternative: alternatives01) {
+				if (hasAlternative(alternatives02, currentAlternative)) {
+					result = true;
+					break;
+				}
+			}
+		}
+
+		return result;
+	}
+
+
+	@Override
+	public VCFLine getCurrentLine() {
+		return null;
 	}
 
 
@@ -133,6 +194,40 @@ public class UpdateFileScanner implements FileScannerInterface {
 	}
 
 
+	@Override
+	public VCFFile getCurrentVCFFile() {
+		return null;
+	}
+
+
+	@Override
+	public ManualVCFReader getCurrentVCFReader() {
+		return null;
+	}
+
+
+	/**
+	 * @return the dest
+	 */
+	public BGZIPReader getDestinationReader() {
+		return dest;
+	}
+
+
+	@Override
+	public List<String> getGenomeList() {
+		return null;
+	}
+
+
+	/**
+	 * @return the src
+	 */
+	public BGZIPReader getSourceReader() {
+		return src.getReader();
+	}
+
+
 	private List<VCFLine> getValidCouplesLines (List<VCFLine> currentSourceLines, List<VCFLine> currentDestinationLines) {
 		List<VCFLine> result = new ArrayList<VCFLine>();
 
@@ -152,25 +247,6 @@ public class UpdateFileScanner implements FileScannerInterface {
 	}
 
 
-	private boolean defineSameVariation (VCFLine line01, VCFLine line02) {
-		boolean result = false;
-
-		if (line01.getREF().equals(line02.getREF())) {
-			String[] alternatives01 = line01.getAlternatives();
-			String[] alternatives02 = line02.getAlternatives();
-
-			for (String currentAlternative: alternatives01) {
-				if (hasAlternative(alternatives02, currentAlternative)) {
-					result = true;
-					break;
-				}
-			}
-		}
-
-		return result;
-	}
-
-
 	private boolean hasAlternative (String[] alternatives, String alternative) {
 		for (String currentAlternative: alternatives) {
 			if (currentAlternative.equals(alternative)) {
@@ -178,82 +254,6 @@ public class UpdateFileScanner implements FileScannerInterface {
 			}
 		}
 		return false;
-	}
-
-
-	/**
-	 * Compares positions of two lines according to:
-	 * - CHROM
-	 * - POS
-	 * @param line01 the first line
-	 * @param line02 the second line
-	 * @return -1 if the first line is located before the second line, 0 if they are at the same location, 1 if the first line is after the second one
-	 */
-	private int compareLines (VCFLine line01, VCFLine line02) {
-		short chromIndex01 = ProjectManager.getInstance().getProjectChromosome().getIndex(line01.getCHROM());
-		short chromIndex02 = ProjectManager.getInstance().getProjectChromosome().getIndex(line02.getCHROM());
-
-		if (chromIndex01 == chromIndex02) {
-			int	position01 = line01.getReferencePosition();
-			int position02 = line02.getReferencePosition();
-
-			if (position01 == position02) {
-				return 0;
-			} else if (position01 < position02) {
-				return -1;
-			} else {	// position01 > position02
-				return 1;
-			}
-
-		} else if ((chromIndex01 == 0) &&  line02.getCHROM().equals("chrM")) {
-			return 1;
-		} else if ((chromIndex02 == 0) &&  line01.getCHROM().equals("chrM")) {
-			return -1;
-		} else if (chromIndex01 < chromIndex02) {
-			return -1;
-		} else {		// chromIndex01 > chromIndex02
-			return 1;
-		}
-	}
-
-
-	@Override
-	public VCFLine getCurrentLine() {
-		return null;
-	}
-
-
-	@Override
-	public VCFFile getCurrentVCFFile() {
-		return null;
-	}
-
-
-	@Override
-	public ManualVCFReader getCurrentVCFReader() {
-		return null;
-	}
-
-
-	@Override
-	public List<String> getGenomeList() {
-		return null;
-	}
-
-
-	/**
-	 * @return the src
-	 */
-	public BGZIPReader getSourceReader() {
-		return src.getReader();
-	}
-
-
-	/**
-	 * @return the dest
-	 */
-	public BGZIPReader getDestinationReader() {
-		return dest;
 	}
 
 }

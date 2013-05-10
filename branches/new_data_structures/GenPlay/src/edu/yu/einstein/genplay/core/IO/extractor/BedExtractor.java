@@ -118,7 +118,7 @@ public class BedExtractor extends TextFileExtractor implements SCWReader, GeneRe
 
 		// start and stop
 		start = Extractors.getInt(splitedLine[1].trim());
-		stop = Extractors.getInt(splitedLine[2].trim());
+		stop = Extractors.getInt(splitedLine[2].trim()) - 1;
 
 		String errors = DataLineValidator.getErrors(chromosome, start, stop);
 		if (!errors.isEmpty()) {

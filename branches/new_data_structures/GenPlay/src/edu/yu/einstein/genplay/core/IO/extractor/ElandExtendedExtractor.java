@@ -167,7 +167,7 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 			return LINE_SKIPPED;
 		}
 
-		chromoNumber = getProjectChromosome().getIndex(chromosomeName);
+		chromoNumber = (short) getProjectChromosome().getIndex(chromosomeName);
 		// try to extract the position number
 		i+=4;  // we want to get rid of 'fa:'
 		j = 0;

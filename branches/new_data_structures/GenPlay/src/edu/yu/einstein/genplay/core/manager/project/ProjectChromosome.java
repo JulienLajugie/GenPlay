@@ -202,7 +202,7 @@ public final class ProjectChromosome implements Serializable, Iterable<Chromosom
 	 * @return the index of the specified chromosome
 	 * @throws InvalidChromosomeException
 	 */
-	public short getIndex(Chromosome chromosome) throws InvalidChromosomeException {
+	public int getIndex(Chromosome chromosome) throws InvalidChromosomeException {
 		return getIndex(chromosome.getName());
 	}
 
@@ -212,18 +212,18 @@ public final class ProjectChromosome implements Serializable, Iterable<Chromosom
 	 * @return the index of the first chromosome having the specified name
 	 * @throws InvalidChromosomeException
 	 */
-	public short getIndex(String chromosomeName) throws InvalidChromosomeException {
+	public int getIndex(String chromosomeName) throws InvalidChromosomeException {
 		// we put the chromosome name in lower case to avoid problems related to case sensitivity
 		chromosomeName = chromosomeName.toLowerCase();
 
 		// we get the index of associated to the chromosome name
-		short index = (short)chromosomeHash.get(chromosomeName).intValue();
+		Integer index = chromosomeHash.get(chromosomeName);
 
 		// throw an exception if nothing found
-		if (index == -1) {
+		if (index == null) {
 			throw new InvalidChromosomeException();
 		} else {
-			return index;	// the index is returned
+			return index.intValue();	// the index is returned
 		}
 	}
 

@@ -39,7 +39,7 @@ import edu.yu.einstein.genplay.exception.exceptions.ElementAddedNotSortedExcepti
  * in order to receive the last "flattened windows".
  * @author Julien Lajugie
  */
-public interface PileupFlattener {
+public interface PileupFlattener <T> {
 
 	/**
 	 * Adds a new window to the {@link PileupFlattener} object.

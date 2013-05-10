@@ -87,11 +87,19 @@ public class BLOComputeAverageList implements Operation<List<ListView<ScoredChro
 						// We divide each element by a constant
 						for (int i = 0; (i < currentList.size()) && !stopped; i += factor) {
 							for (int j = 0; j < factor; j++) {
-								scoreList.add(currentList.get(i + j).getScore());
+								float score = currentList.get(i + j).getScore();
+								if (score != 0) {
+									scoreList.add(score);
+								}
 							}
-							int start = i * averageListBinSize;
-							int stop = (i + 1) * averageListBinSize;
-							float score = FloatLists.average(scoreList);
+							int start = i * binList.getBinSize();
+							int stop = (start + averageListBinSize) - 1;
+							float score;
+							if (scoreList.isEmpty()) {
+								score = 0;
+							} else {
+								score = FloatLists.average(scoreList);
+							}
 							resultListBuilder.addElementToBuild(chromosome, new SimpleScoredChromosomeWindow(start, stop, score));
 							scoreList.clear();
 						}

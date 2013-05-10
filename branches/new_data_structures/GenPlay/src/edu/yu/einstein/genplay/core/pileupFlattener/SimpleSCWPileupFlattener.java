@@ -120,10 +120,11 @@ public class SimpleSCWPileupFlattener implements PileupFlattener {
 
 	@Override
 	public List<ScoredChromosomeWindow> flush() {
-		int lastStart = -1;
-		if (!windowQueue.isEmpty()) {
-			lastStart = windowQueue.get(windowQueue.size() - 1).getStart();
+		if (windowQueue.isEmpty()) {
+			return new ArrayList<ScoredChromosomeWindow>();
 		}
+		int lastStart = 0;
+		lastStart = windowQueue.get(windowQueue.size() - 1).getStart();
 		List<ScoredChromosomeWindow> flattenedWindows = getFlattenedPileup(lastStart, Integer.MAX_VALUE);
 		windowQueue.clear();
 		return flattenedWindows;
@@ -131,8 +132,9 @@ public class SimpleSCWPileupFlattener implements PileupFlattener {
 
 
 	/**
-	 * Flattens the overlapping windows of the queue up to specified positions.
-	 * @param stopPosition a position
+	 * Flattens the overlapping windows of the queue between the specified
+	 * @param startPosition
+	 * @param stopPosition
 	 * @return a list of {@link ScoredChromosomeWindow} resulting from the flattening process.
 	 * The score of the windows are computing accordingly to a {@link ScoreOperation} during
 	 * construction of this {@link SimpleSCWPileupFlattener} object.
