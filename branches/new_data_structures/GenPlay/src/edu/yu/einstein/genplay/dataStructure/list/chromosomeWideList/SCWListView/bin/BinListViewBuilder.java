@@ -56,15 +56,6 @@ public final class BinListViewBuilder implements ListViewBuilder<ScoredChromosom
 	}
 
 
-	public void addElementToBuild(int index, float score)
-			throws ObjectAlreadyBuiltException {
-		while (windowScores.size() < index) {
-			windowScores.add(0f);
-		}
-		windowScores.add(score);
-	}
-
-
 	/**
 	 * Adds an element to the ListView that will be built.
 	 * To assure that ListView objects are immutable, this method
@@ -83,7 +74,7 @@ public final class BinListViewBuilder implements ListViewBuilder<ScoredChromosom
 		if (windowScores == null) {
 			throw new ObjectAlreadyBuiltException();
 		}
-		/*if (((start % binSize) != 0) || (((stop + 1) % binSize) != 0)) {
+		if (((start % binSize) != 0) || (((stop + 1) % binSize) != 0)) {
 			throw new ElementAddedDontFallInBinException();
 		}
 		if (!windowScores.isEmpty()) {
@@ -97,7 +88,7 @@ public final class BinListViewBuilder implements ListViewBuilder<ScoredChromosom
 				// case where the elements added overlap
 				throw new ElementAddedOverlapException();
 			}
-		}*/
+		}
 		int indexWindowToAdd = start / binSize;
 		while (windowScores.size() < indexWindowToAdd) {
 			windowScores.add(0f);

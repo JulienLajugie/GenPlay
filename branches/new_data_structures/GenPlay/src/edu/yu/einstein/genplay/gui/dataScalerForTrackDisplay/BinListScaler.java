@@ -122,11 +122,9 @@ public class BinListScaler implements DataScalerForTrackDisplay<BinList, ListVie
 			return;
 		}
 
-		System.out.println(i);
-
 		// we calculate how many windows are printable depending on the screen resolution
-		int fittedBinSize = binSize * (int) ( 1 / (scaledXRatio * binSize));
-		System.out.println(fittedBinSize);
+		int fittedBinSize = (int) (binSize * ( 1 / (scaledXRatio * binSize)));
+
 		// if the fitted bin size is smaller than the regular bin size we don't modify the data
 		if (fittedBinSize <= binSize) {
 			return;
