@@ -37,6 +37,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.WindowConstants;
 
 import edu.yu.einstein.genplay.core.mail.GenPlayMail;
 import edu.yu.einstein.genplay.util.Images;
@@ -44,26 +45,25 @@ import edu.yu.einstein.genplay.util.Utils;
 
 /**
  * @author Nicolas Fourel
- * @version 0.1
+ * @author Julien Lajugie
  */
 public class ExceptionReportDialog extends JDialog {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 9215524746622426426L;
 
-	private static final int DIALOG_WIDTH 	= 350;	// Dialog width
-	private static final int REPORT_HEIGHT = 200;	// Text area height
+	private static final int 	DIALOG_WIDTH  	= 350;	// Dialog width
+	private static final int 	REPORT_HEIGHT 	= 200;	// Text area height
 
-	private final String 			report;
+	private JTextArea 			textArea;				// Area displaying the text of the exception report
+	private JScrollPane 		contentPane;			// Scrollpane containing the text area dispaying the report
+	private String 				report			= "";	// Exception report showed in the dialog
 
 
 	/**
 	 * Constructor of {@link ExceptionReportDialog}
-	 * @param report the report to show
 	 */
-	public ExceptionReportDialog (String report) {
-		this.report = report;
-
+	public ExceptionReportDialog () {
 		// Dialog layout
 		BorderLayout layout = new BorderLayout();
 		setLayout(layout);
@@ -72,6 +72,9 @@ public class ExceptionReportDialog extends JDialog {
 		add(getMessagePane(), BorderLayout.NORTH);
 		add(getErrorScrollPane(), BorderLayout.CENTER);
 		add(getButtonPanel(), BorderLayout.SOUTH);
+
+		// Default close operation
+		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 
 		// Dialog settings
 		setTitle("Exception report");
@@ -84,13 +87,64 @@ public class ExceptionReportDialog extends JDialog {
 
 
 	/**
-	 * Shows the component.
-	 * @param parent the parent component of the dialog, can be null; see showDialog for details
+	 * Creates the button panel. Two buttons are present:
+	 * - Ok: Close the dialog
+	 * - Send Report: Send report by email
+	 * @return the button panel
 	 */
-	public void showDialog(Component parent) {
-		// Sets dialog display options
-		setLocationRelativeTo(parent);
-		setVisible(true);
+	private JPanel getButtonPanel () {
+		// Creates the Clear button
+		JButton okButton = new JButton("Ok");
+		okButton.setToolTipText("Close the dialog");
+		okButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				setVisible(false);
+			}
+		});
+
+		// Creates the Hide button
+		JButton sendButton = new JButton("Send Report");
+		sendButton.setToolTipText("Send report by email");
+		sendButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				send();
+			}
+		});
+
+		// Creates the panel
+		JPanel panel = new JPanel();
+		panel.add(okButton);
+		panel.add(sendButton);
+
+		// Returns the panel
+		return panel;
+	}
+
+
+	/**
+	 * Creates the scroll pane that will contain the messages
+	 * @return the scroll pane
+	 */
+	private JScrollPane getErrorScrollPane () {
+		// Creates the text area
+		textArea = new JTextArea();
+		Dimension textDimension = new Dimension(DIALOG_WIDTH, REPORT_HEIGHT);
+		textArea.setMinimumSize(textDimension);
+		textArea.setMargin(new Insets(0, 0, 0, 0));
+		textArea.setEditable(false);
+		textArea.setText(report);
+
+		// Creates the scroll pane
+		contentPane = new JScrollPane(textArea);
+		Dimension scrollDimension = new Dimension(DIALOG_WIDTH, REPORT_HEIGHT);
+		contentPane.getVerticalScrollBar().setUnitIncrement(Utils.SCROLL_INCREMENT_UNIT);
+		contentPane.setPreferredSize(scrollDimension);
+		contentPane.setMinimumSize(scrollDimension);
+
+		// Return the scroll pane
+		return contentPane;
 	}
 
 
@@ -119,73 +173,10 @@ public class ExceptionReportDialog extends JDialog {
 
 
 	/**
-	 * Creates the scroll pane that will contain the messages
-	 * @return the scroll pane
+	 * @return The exception report showed in this dialog
 	 */
-	private JScrollPane getErrorScrollPane () {
-		// Creates the text area
-		JTextArea textArea = new JTextArea();
-		Dimension textDimension = new Dimension(DIALOG_WIDTH, REPORT_HEIGHT);
-		textArea.setMinimumSize(textDimension);
-		textArea.setMargin(new Insets(0, 0, 0, 0));
-		textArea.setEditable(false);
-		textArea.setText(report);
-
-		// Creates the scroll pane
-		JScrollPane contentPane = new JScrollPane(textArea);
-		Dimension scrollDimension = new Dimension(DIALOG_WIDTH, REPORT_HEIGHT);
-		contentPane.getVerticalScrollBar().setUnitIncrement(Utils.SCROLL_INCREMENT_UNIT);
-		contentPane.setPreferredSize(scrollDimension);
-		contentPane.setMinimumSize(scrollDimension);
-
-		// Return the scroll pane
-		return contentPane;
-	}
-
-
-	/**
-	 * Creates the button panel. Two buttons are present:
-	 * - Ok: Close the dialog
-	 * - Send Report: Send report by email
-	 * @return the button panel
-	 */
-	private JPanel getButtonPanel () {
-		// Creates the Clear button
-		JButton okButton = new JButton("Ok");
-		okButton.setToolTipText("Close the dialog");
-		okButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				closeDialog();
-			}
-		});
-
-		// Creates the Hide button
-		JButton sendButton = new JButton("Send Report");
-		sendButton.setToolTipText("Send report by email");
-		sendButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				send();
-			}
-		});
-
-		// Creates the panel
-		JPanel panel = new JPanel();
-		panel.add(okButton);
-		panel.add(sendButton);
-
-		// Returns the panel
-		return panel;
-	}
-
-
-	/**
-	 * Close the dialog.
-	 */
-	private void closeDialog () {
-		//setVisible(false);
-		dispose();
+	public String getReport() {
+		return report;
 	}
 
 
@@ -195,9 +186,31 @@ public class ExceptionReportDialog extends JDialog {
 	private void send () {
 		if (GenPlayMail.send("[GenPlay] Error report", report)) {
 			JOptionPane.showMessageDialog(this, "The report has been sent.", "Message", JOptionPane.INFORMATION_MESSAGE);
+			setReport("");
 		} else {
 			JOptionPane.showMessageDialog(this, "The report could not been sent.", "Message Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
+
+	/**
+	 * Sets the report to display in this dialog
+	 * @param report
+	 */
+	public void setReport(String report) {
+		this.report = report;
+		textArea.setText(report);
+		contentPane.getVerticalScrollBar().setValue(0);
+	}
+
+
+	/**
+	 * Shows the component.
+	 * @param parent the parent component of the dialog, can be null; see showDialog for details
+	 */
+	public void showDialog(Component parent) {
+		// Sets dialog display options
+		setLocationRelativeTo(parent);
+		setVisible(true);
+	}
 }

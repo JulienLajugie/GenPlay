@@ -79,16 +79,188 @@ public class VariantDisplayList implements Serializable {
 
 
 	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
+	 * Constructor of {@link VariantDisplayList}
 	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(variants);
-		out.writeObject(display);
-		out.writeObject(genomeName);
-		out.writeObject(types);
+	public VariantDisplayList () {
+		initialize(null, null);
+	}
+
+
+	/**
+	 * Generate the lists of variants
+	 */
+	public void generateLists () {
+		VariantDisplayListBuilder builder = new VariantDisplayListBuilder();
+		variants = builder.getList(genomeName, types);
+		builder = null;
+	}
+
+
+	/**
+	 * @return the display
+	 */
+	public byte[][] getDisplay() {
+		return display;
+	}
+
+
+	/**
+	 * @return the genomeName
+	 */
+	public String getGenomeName() {
+		return genomeName;
+	}
+
+
+	/**
+	 * Recursive function. Returns the index where the value is found or -1 if the exact value is not found.
+	 * @param list
+	 * @param value	a position on the meta genome
+	 * @return the index where the start value of the window is found or -1 if the value is not found
+	 */
+	public int getIndex (List<Variant> list, int value) {
+		int index = getIndex(list, value, 0, list.size() - 1);
+		int start = list.get(index).getStart();
+		int stop = list.get(index).getStop();
+		if ((value >= start) && (value < stop)) {
+			return index;
+		}
+		return -1;
+	}
+
+
+	/**
+	 * Recursive function. Returns the index where the value is found
+	 * or the index right after if the exact value is not found.
+	 * @param value			value
+	 * @param indexStart	start index (in the data array)
+	 * @param indexStop		stop index (in the data array)
+	 * @return the index where the start value of the window is found or the index right after if the exact value is not found
+	 */
+	private int getIndex (List<Variant> list, int value, int indexStart, int indexStop) {
+		int middle = (indexStop - indexStart) / 2;
+		if (indexStart == indexStop) {
+			return indexStart;
+		} else {
+			int start = list.get(indexStart + middle).getStart();
+			int stop = list.get(indexStart + middle).getStop();
+			if ((value >= start) && (value < stop)) {
+				return indexStart + middle;
+			} else if (value > start) {
+				return getIndex(list, value, indexStart + middle + 1, indexStop);
+			} else {
+				return getIndex(list, value, indexStart, indexStart + middle);
+			}
+		}
+	}
+
+
+	/**
+	 * @param alleleIndex the index of the allele to iterate
+	 * @return a specific iterator for {@link VariantDisplayListIterator}
+	 */
+	public VariantDisplayListIterator getIterator (int alleleIndex) {
+		return new VariantDisplayListIterator(this, alleleIndex);
+	}
+
+
+	/**
+	 * @return the variants
+	 */
+	public List<List<Variant>> getVariants() {
+		return variants;
+	}
+
+
+	/**
+	 * @param alleleIndex			the index of an allele
+	 * @param metaGenomePosition	a meta genome position
+	 * @return the list of variants at the given allele including the given meta genome position, null if not found
+	 */
+	public List<Variant> getVariantsInArea (int alleleIndex, int metaGenomePosition) {
+		List<Variant> result = new ArrayList<Variant>();
+		int index = getIndex(variants.get(alleleIndex), metaGenomePosition);
+		if (index > -1) {
+			result.add(variants.get(alleleIndex).get(index));
+			result.addAll(lookAfterIndex(alleleIndex, index, metaGenomePosition));
+			result.addAll(lookBeforeIndex(alleleIndex, index, metaGenomePosition));
+		}
+		return result;
+	}
+
+
+
+	/**
+	 * Initializes the {@link VariantDisplayList} input parameters
+	 * @param genomeName the name of a genome
+	 * @param types a list of {@link VariantType}
+	 */
+	public void initialize (String genomeName, List<VariantType> types) {
+		this.genomeName = genomeName;
+		this.types = types;
+		display = null;
+	}
+
+
+	private void initialyzeDisplay () {
+		display = new byte[variants.size()][];
+		for (int i = 0; i < variants.size(); i++) {
+			List<Variant> currentVariantList = variants.get(i);
+			display[i] = new byte[currentVariantList.size()];
+		}
+	}
+
+
+	/**
+	 * Look for all {@link Variant} after a specific index (within a specific allele) which include a meta genome position.
+	 * @param alleleIndex			the index of the allele
+	 * @param index					the index where to start
+	 * @param metaGenomePosition	the meta genome position to use
+	 * @return	the list of {@link Variant} including the meta genome position after the given index, an empty list otherwise
+	 */
+	private List<Variant> lookAfterIndex (int alleleIndex, int index, int metaGenomePosition) {
+		List<Variant> result = new ArrayList<Variant>();
+		int nextIndex = index + 1;
+		boolean includePosition = true;
+		List<Variant> variantList = variants.get(alleleIndex);
+		int size = variantList.size();
+
+		while (includePosition && (nextIndex < size)) {
+			Variant current = variantList.get(nextIndex);
+			if ((metaGenomePosition >= current.getStart()) && (metaGenomePosition < current.getStop())) {
+				result.add(current);
+				nextIndex++;
+			} else {
+				includePosition = false;
+			}
+		}
+		return result;
+	}
+
+
+	/**
+	 * Look for all {@link Variant} before a specific index (within a specific allele) which include a meta genome position.
+	 * @param alleleIndex			the index of the allele
+	 * @param index					the index where to start
+	 * @param metaGenomePosition	the meta genome position to use
+	 * @return	the list of {@link Variant} including the meta genome position before the given index, an empty list otherwise
+	 */
+	private List<Variant> lookBeforeIndex (int alleleIndex, int index, int metaGenomePosition) {
+		List<Variant> result = new ArrayList<Variant>();
+		int previousIndex = index - 1;
+		boolean includePosition = true;
+		List<Variant> variantList = variants.get(alleleIndex);
+
+		while (includePosition && (previousIndex > -1)) {
+			Variant current = variantList.get(previousIndex);
+			if ((metaGenomePosition >= current.getStart()) && (metaGenomePosition < current.getStop())) {
+				result.add(current);
+				previousIndex--;
+			} else {
+				includePosition = false;
+			}
+		}
+		return result;
 	}
 
 
@@ -109,36 +281,6 @@ public class VariantDisplayList implements Serializable {
 
 
 	/**
-	 * Constructor of {@link VariantDisplayList}
-	 */
-	public VariantDisplayList () {
-		initialize(null, null);
-	}
-
-
-	/**
-	 * Initializes the {@link VariantDisplayList} input parameters
-	 * @param genomeName the name of a genome
-	 * @param types a list of {@link VariantType}
-	 */
-	public void initialize (String genomeName, List<VariantType> types) {
-		this.genomeName = genomeName;
-		this.types = types;
-		display = null;
-	}
-
-
-	/**
-	 * Generate the lists of variants
-	 */
-	public void generateLists () {
-		VariantDisplayListBuilder builder = new VariantDisplayListBuilder();
-		variants = builder.getList(genomeName, types);
-		builder = null;
-	}
-
-
-	/**
 	 * Update the display policy using the list of filters
 	 * @param filters list of {@link MGFilter}
 	 * @param showFilter true if filtered {@link Variant} have to be shown, false otherwise
@@ -149,15 +291,6 @@ public class VariantDisplayList implements Serializable {
 	}
 
 
-	private void initialyzeDisplay () {
-		display = new byte[variants.size()][];
-		for (int i = 0; i < variants.size(); i++) {
-			List<Variant> currentVariantList = variants.get(i);
-			display[i] = new byte[currentVariantList.size()];
-		}
-	}
-
-
 	/**
 	 * Updates the display policy arrays according to the filters and the filter option
 	 * @param filters		the list of {@link MGFilter}
@@ -165,7 +298,7 @@ public class VariantDisplayList implements Serializable {
 	 */
 	private void updateDisplayForFilters (List<MGFilter> filters, boolean showFilter) {
 		MGFileContentManager contentManager = ProjectManager.getInstance().getMultiGenomeProject().getFileContentManager();
-		Chromosome currentChromosome = ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome();
+		Chromosome currentChromosome = ProjectManager.getInstance().getProjectWindow().getGenomeWindow().getChromosome();
 		for (int i = 0; i < variants.size(); i++) {
 			List<Variant> currentVariantList = variants.get(i);
 			for (int j = 0; j < currentVariantList.size(); j++) {
@@ -266,149 +399,16 @@ public class VariantDisplayList implements Serializable {
 	}
 
 
-
 	/**
-	 * @param alleleIndex the index of the allele to iterate
-	 * @return a specific iterator for {@link VariantDisplayListIterator}
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
 	 */
-	public VariantDisplayListIterator getIterator (int alleleIndex) {
-		return new VariantDisplayListIterator(this, alleleIndex);
-	}
-
-
-	/**
-	 * @param alleleIndex			the index of an allele
-	 * @param metaGenomePosition	a meta genome position
-	 * @return the list of variants at the given allele including the given meta genome position, null if not found
-	 */
-	public List<Variant> getVariantsInArea (int alleleIndex, int metaGenomePosition) {
-		List<Variant> result = new ArrayList<Variant>();
-		int index = getIndex(variants.get(alleleIndex), metaGenomePosition);
-		if (index > -1) {
-			result.add(variants.get(alleleIndex).get(index));
-			result.addAll(lookAfterIndex(alleleIndex, index, metaGenomePosition));
-			result.addAll(lookBeforeIndex(alleleIndex, index, metaGenomePosition));
-		}
-		return result;
-	}
-
-
-	/**
-	 * Look for all {@link Variant} after a specific index (within a specific allele) which include a meta genome position.
-	 * @param alleleIndex			the index of the allele
-	 * @param index					the index where to start
-	 * @param metaGenomePosition	the meta genome position to use
-	 * @return	the list of {@link Variant} including the meta genome position after the given index, an empty list otherwise
-	 */
-	private List<Variant> lookAfterIndex (int alleleIndex, int index, int metaGenomePosition) {
-		List<Variant> result = new ArrayList<Variant>();
-		int nextIndex = index + 1;
-		boolean includePosition = true;
-		List<Variant> variantList = variants.get(alleleIndex);
-		int size = variantList.size();
-
-		while (includePosition && (nextIndex < size)) {
-			Variant current = variantList.get(nextIndex);
-			if ((metaGenomePosition >= current.getStart()) && (metaGenomePosition < current.getStop())) {
-				result.add(current);
-				nextIndex++;
-			} else {
-				includePosition = false;
-			}
-		}
-		return result;
-	}
-
-
-	/**
-	 * Look for all {@link Variant} before a specific index (within a specific allele) which include a meta genome position.
-	 * @param alleleIndex			the index of the allele
-	 * @param index					the index where to start
-	 * @param metaGenomePosition	the meta genome position to use
-	 * @return	the list of {@link Variant} including the meta genome position before the given index, an empty list otherwise
-	 */
-	private List<Variant> lookBeforeIndex (int alleleIndex, int index, int metaGenomePosition) {
-		List<Variant> result = new ArrayList<Variant>();
-		int previousIndex = index - 1;
-		boolean includePosition = true;
-		List<Variant> variantList = variants.get(alleleIndex);
-
-		while (includePosition && (previousIndex > -1)) {
-			Variant current = variantList.get(previousIndex);
-			if ((metaGenomePosition >= current.getStart()) && (metaGenomePosition < current.getStop())) {
-				result.add(current);
-				previousIndex--;
-			} else {
-				includePosition = false;
-			}
-		}
-		return result;
-	}
-
-
-	/**
-	 * Recursive function. Returns the index where the value is found or -1 if the exact value is not found.
-	 * @param list
-	 * @param value	a position on the meta genome
-	 * @return the index where the start value of the window is found or -1 if the value is not found
-	 */
-	public int getIndex (List<Variant> list, int value) {
-		int index = getIndex(list, value, 0, list.size() - 1);
-		int start = list.get(index).getStart();
-		int stop = list.get(index).getStop();
-		if ((value >= start) && (value < stop)) {
-			return index;
-		}
-		return -1;
-	}
-
-
-	/**
-	 * Recursive function. Returns the index where the value is found
-	 * or the index right after if the exact value is not found.
-	 * @param value			value
-	 * @param indexStart	start index (in the data array)
-	 * @param indexStop		stop index (in the data array)
-	 * @return the index where the start value of the window is found or the index right after if the exact value is not found
-	 */
-	private int getIndex (List<Variant> list, int value, int indexStart, int indexStop) {
-		int middle = (indexStop - indexStart) / 2;
-		if (indexStart == indexStop) {
-			return indexStart;
-		} else {
-			int start = list.get(indexStart + middle).getStart();
-			int stop = list.get(indexStart + middle).getStop();
-			if ((value >= start) && (value < stop)) {
-				return indexStart + middle;
-			} else if (value > start) {
-				return getIndex(list, value, indexStart + middle + 1, indexStop);
-			} else {
-				return getIndex(list, value, indexStart, indexStart + middle);
-			}
-		}
-	}
-
-
-	/**
-	 * @return the variants
-	 */
-	public List<List<Variant>> getVariants() {
-		return variants;
-	}
-
-
-	/**
-	 * @return the genomeName
-	 */
-	public String getGenomeName() {
-		return genomeName;
-	}
-
-
-	/**
-	 * @return the display
-	 */
-	public byte[][] getDisplay() {
-		return display;
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(variants);
+		out.writeObject(display);
+		out.writeObject(genomeName);
+		out.writeObject(types);
 	}
 }

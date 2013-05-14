@@ -26,7 +26,7 @@ import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
@@ -69,12 +69,12 @@ public class BLOMovingAverage implements Operation<BinList> {
 		final int binSize =  binList.getBinSize();
 		final int halfWidthBin = movingWindowWidth / 2 / binSize;
 
-		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
 		final SCWListBuilder resultListBuilder = new SCWListBuilder(binList);
 
-		for (final Chromosome chromosome: projectChromosome) {
+		for (final Chromosome chromosome: projectChromosomes) {
 			final ListView<ScoredChromosomeWindow> currentList = binList.get(chromosome);
 			Callable<Void> currentThread = new Callable<Void>() {
 

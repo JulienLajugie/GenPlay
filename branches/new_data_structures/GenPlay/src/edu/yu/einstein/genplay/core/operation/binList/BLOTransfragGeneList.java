@@ -26,7 +26,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
@@ -35,10 +35,15 @@ import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.geneListView.GeneListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ListOfListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.SimpleGeneList;
-import edu.yu.einstein.genplay.util.FloatLists;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.util.ListView.SCWListViews;
 
 
 /**
@@ -47,14 +52,12 @@ import edu.yu.einstein.genplay.util.FloatLists;
  * Computes the average on these regions.
  * Returns a new {@link GeneList} with the defined regions having their average/max/sum as a score
  * @author Chirag Gorasia
- * @version 0.1
  */
 public class BLOTransfragGeneList implements Operation<GeneList> {
 
 	private final BinList 					binList;		// input binlist
 	private final int 						zeroBinGap; 	// number of zero value bins defining a gap between two islands
-	private final ScoreOperation 	operation;		//sum / average / max
-	private final ProjectChromosome projectChromosome; // Instance of the Chromosome Manager
+	private final ScoreOperation 			operation;		//sum / average / max
 	private boolean							stopped = false;// true if the operation must be stopped
 
 
@@ -71,43 +74,38 @@ public class BLOTransfragGeneList implements Operation<GeneList> {
 		this.binList = binList;
 		this.zeroBinGap = zeroBinGap;
 		this.operation = operation;
-		projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 	}
 
 
 	@Override
 	public GeneList compute() throws Exception {
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
 		final OperationPool op = OperationPool.getInstance();
-		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();
+		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
+		ListViewBuilder<Gene> lvbPrototype = new GeneListViewBuilder();
+		final ListOfListViewBuilder<Gene> resultListBuilder = new ListOfListViewBuilder<Gene>(lvbPrototype);
 
-		for (short i = 0; i < binList.size(); i++) {
-			final List<Double> currentList = binList.get(i);
-			final String chromosomeName = projectChromosome.get(i).getName();
-			final int chromosomeLength = projectChromosome.get(i).getLength();
-			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {
+		for (final Chromosome chromosome: projectChromosomes) {
+			final ListView<ScoredChromosomeWindow> currentList = binList.get(chromosome);
+			Callable<Void> currentThread = new Callable<Void>() {
+
 				@Override
-				public List<Gene> call() throws Exception {
-
-					List<Gene> resultGeneList = new ArrayList<Gene>();
-					Gene newGene;
-					if ((currentList != null) && (currentList.size() != 0)) {
+				public Void call() throws Exception {
+					if (currentList != null) {
 						int j = 0;
 						int geneCounter = 1;
 						while ((j < currentList.size()) && !stopped) {
 							// skip zero values
-							while ((j < currentList.size()) && (currentList.get(j) == 0) && !stopped) {
+							while ((j < currentList.size()) && (currentList.get(j).getScore() == 0) && !stopped) {
 								j++;
 							}
 							int regionStart = j;
 							int regionStop = regionStart;
 							int zeroWindowCount = 0;
-							int[] exonStart = new int[1];
-							int[] exonStop = new int[1];
-							double[] exonScore = new double[1];
 
 							// a region stops when there is maxZeroWindowGap consecutive zero bins
 							while ((j < currentList.size()) && (zeroWindowCount <= zeroBinGap) && !stopped) {
-								if (currentList.get(j) == 0) {
+								if (currentList.get(j).getScore() == 0) {
 									zeroWindowCount++;
 								} else {
 									zeroWindowCount = 0;
@@ -119,42 +117,36 @@ public class BLOTransfragGeneList implements Operation<GeneList> {
 								regionStop--;
 							}
 							if (regionStop >= regionStart) {
-								double regionScore = 0;
+								float regionScore = 0;
 								if (operation == ScoreOperation.AVERAGE) {
 									// all the windows of the region are set with the average value on the region
-									regionScore = FloatLists.average(currentList, regionStart, regionStop);
-								} else if (operation == ScoreOperation.SUM) {
+									regionScore = (float) SCWListViews.average(currentList, regionStart, regionStop);
+								} else if (operation == ScoreOperation.ADDITION) {
 									// all the windows of the region are set with the sum value on the region
-									regionScore = FloatLists.sum(currentList, regionStart, regionStop);
+									regionScore = (float) SCWListViews.sum(currentList, regionStart, regionStop);
 								} else {
 									// all the windows of the region are set with the max value on the region
-									regionScore = FloatLists.maxNoZero(currentList, regionStart, regionStop);
+									regionScore = SCWListViews.maxNoZero(currentList, regionStart, regionStop);
 								}
 								regionStart *= binList.getBinSize();
 								regionStop++;
 								regionStop *= binList.getBinSize();
-								exonStart[0] = regionStart;
-								exonStop[0] = regionStop;
-								exonScore[0] = regionScore;
-								newGene = new SimpleGene(chromosomeName + "." + Integer.toString(geneCounter++), new Chromosome(chromosomeName, chromosomeLength), Strand.get('+'), regionStart, regionStop, Double.NaN, exonStart, exonStop, exonScore);
-								resultGeneList.add(newGene);
+								ListView<ScoredChromosomeWindow> exon = SCWListViews.createGenericSCWListView(regionStart, regionStop, regionScore);
+								Gene newGene = new SimpleGene(chromosome.getName() + "." + Integer.toString(geneCounter++), Strand.FIVE, regionStart, regionStop, regionScore, exon);
+								resultListBuilder.addElementToBuild(chromosome, newGene);
 							}
 						}
 					}
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
-					return resultGeneList;
+					return null;
 				}
 			};
 			threadList.add(currentThread);
 		}
-		List<List<Gene>> result = op.startPool(threadList);
-		if (result != null) {
-			GeneList resultList = new SimpleGeneList(result, null, null);
-			return resultList;
-		} else {
-			return null;
-		}
+		op.startPool(threadList);
+		List<ListView<Gene>> data = resultListBuilder.getGenomicList();
+		return new SimpleGeneList(data, null, null);
 	}
 
 
@@ -172,7 +164,7 @@ public class BLOTransfragGeneList implements Operation<GeneList> {
 
 	@Override
 	public int getStepCount() {
-		return BinList.getCreationStepCount(binList.getBinSize()) + 1;
+		return binList.getCreationStepCount() + 1;
 	}
 
 

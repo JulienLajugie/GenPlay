@@ -51,7 +51,7 @@ public class MGSAllele implements Serializable {
 	 */
 	public MGSAllele () {
 		offsetList = new ArrayList<List<MGSOffset>>();
-		int chromosomeListSize = ProjectManager.getInstance().getProjectChromosome().getChromosomeList().size();
+		int chromosomeListSize = ProjectManager.getInstance().getProjectChromosomes().getChromosomeList().size();
 		for (int i = 0; i < chromosomeListSize; i++) {
 			offsetList.add(new IntArrayAsOffsetList());
 		}
@@ -62,7 +62,7 @@ public class MGSAllele implements Serializable {
 	 * Compacts the list of {@link MGSOffset}
 	 */
 	public void compact () {
-		int projectChromosomeSize = ProjectManager.getInstance().getProjectChromosome().size();
+		int projectChromosomeSize = ProjectManager.getInstance().getProjectChromosomes().size();
 		for (int i = 0; i < projectChromosomeSize; i++) {
 			((IntArrayAsOffsetList)offsetList.get(i)).compact();
 		}
@@ -102,7 +102,7 @@ public class MGSAllele implements Serializable {
 	 * Show the information of the {@link MGSAllele}
 	 */
 	public void show () {
-		int projectChromosomeSize = ProjectManager.getInstance().getProjectChromosome().size();
+		int projectChromosomeSize = ProjectManager.getInstance().getProjectChromosomes().size();
 		for (int i = 0; i < projectChromosomeSize; i++) {
 			if (offsetList.get(i).size() > 0) {
 				int cpt = 0;
@@ -122,7 +122,7 @@ public class MGSAllele implements Serializable {
 	 * The sorting is done with the {@link MGOffsetComparator} comparator.
 	 */
 	public void sort () {
-		int chromosomeListSize = ProjectManager.getInstance().getProjectChromosome().getChromosomeList().size();
+		int chromosomeListSize = ProjectManager.getInstance().getProjectChromosomes().getChromosomeList().size();
 		MGOffsetComparator comparator = new MGOffsetComparator();
 		for (int i = 0; i < chromosomeListSize; i++) {
 			Collections.sort(offsetList.get(i), comparator);

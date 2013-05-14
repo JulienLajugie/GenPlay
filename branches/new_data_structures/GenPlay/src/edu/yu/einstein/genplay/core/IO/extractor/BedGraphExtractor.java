@@ -87,7 +87,7 @@ public final class BedGraphExtractor extends TextFileExtractor implements SCWRea
 
 		start = Extractors.getInt(splitedLine[1].trim());
 		start = getMultiGenomePosition(chromosome, start);
-		stop = Extractors.getInt(splitedLine[2].trim()) - 1;
+		stop = Extractors.getInt(splitedLine[2].trim());
 		stop = getMultiGenomePosition(chromosome, stop);
 		score = Extractors.getFloat(splitedLine[3].trim());
 

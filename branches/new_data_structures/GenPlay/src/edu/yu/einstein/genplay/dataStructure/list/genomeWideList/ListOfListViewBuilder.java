@@ -24,7 +24,7 @@ package edu.yu.einstein.genplay.dataStructure.list.genomeWideList;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
@@ -43,8 +43,8 @@ public class ListOfListViewBuilder<T> {
 	/** List of the builders that will create the {@link ListView} objects */
 	private List<ListViewBuilder<T>> builders;
 
-	/** We store the {@link ProjectChromosome} to avoid wasting time retrieving it */
-	private final ProjectChromosome projectChromosome;
+	/** We store the {@link ProjectChromosomes} to avoid wasting time retrieving it */
+	private final ProjectChromosomes projectChromosomes;
 
 
 	/**
@@ -53,8 +53,8 @@ public class ListOfListViewBuilder<T> {
 	 * @throws CloneNotSupportedException
 	 */
 	public <U extends ListViewBuilder<T>> ListOfListViewBuilder(U listViewBuilderPrototype) throws CloneNotSupportedException {
-		projectChromosome =  ProjectManager.getInstance().getProjectChromosome();
-		int chromosomeCount = projectChromosome.size();
+		projectChromosomes =  ProjectManager.getInstance().getProjectChromosomes();
+		int chromosomeCount = projectChromosomes.size();
 		builders = new ArrayList<ListViewBuilder<T>>(chromosomeCount);
 		if (chromosomeCount > 0) {
 			builders.add(0, listViewBuilderPrototype);
@@ -76,7 +76,7 @@ public class ListOfListViewBuilder<T> {
 		if (builders == null) {
 			throw new ObjectAlreadyBuiltException();
 		}
-		int chromosomeIndex = projectChromosome.getIndex(chromosome);
+		int chromosomeIndex = projectChromosomes.getIndex(chromosome);
 		builders.get(chromosomeIndex).addElementToBuild(element);
 	}
 

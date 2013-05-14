@@ -27,7 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
@@ -71,12 +71,12 @@ public class SCWLOTwoLayers implements Operation<SCWList>, Stoppable {
 
 	@Override
 	public SCWList compute() throws Exception {
-		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
 		final SCWListBuilder resultListBuilder = new SCWListBuilder(list1);
 
-		for(final Chromosome currentChromosome : projectChromosome) {
+		for(final Chromosome currentChromosome : projectChromosomes) {
 			Callable<Void> currentThread = new Callable<Void>() {
 
 				@Override

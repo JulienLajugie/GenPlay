@@ -52,10 +52,6 @@ public class WarningReportDialog extends JDialog {
 	private static final int CONTENT_HEIGHT = 600;	// Text area height
 
 	private static WarningReportDialog instance = null;				// unique instance of the singleton
-	private	List<String> 	messages = new ArrayList<String>();		// List of messages
-	private JTextArea 		textArea;								// Text area where messages are displayed
-
-
 	/**
 	 * @return an instance of a {@link WarningReportDialog}.
 	 * Makes sure that there is only one unique instance as specified in the singleton pattern
@@ -70,6 +66,10 @@ public class WarningReportDialog extends JDialog {
 		}
 		return instance;
 	}
+	private	List<String> 	messages = new ArrayList<String>();		// List of messages
+
+
+	private JTextArea 		textArea;								// Text area where messages are displayed
 
 
 	/**
@@ -95,22 +95,6 @@ public class WarningReportDialog extends JDialog {
 
 
 	/**
-	 * Shows the component.
-	 * @param parent the parent component of the dialog, can be null; see showDialog for details
-	 */
-	public void showDialog(Component parent) {
-		// Update the text area before showing the dialog
-		updateTextArea();
-
-		if (!isVisible()) {
-			// Sets dialog display options
-			setLocationRelativeTo(parent);
-			setVisible(true);
-		}
-	}
-
-
-	/**
 	 * Add a message to the list of message.
 	 * The first line will contain the message number, the other lines will be tab indented.
 	 * @param message message to add
@@ -121,23 +105,10 @@ public class WarningReportDialog extends JDialog {
 
 
 	/**
-	 * Resets the text area, it deletes all the previous messages.
+	 * Close the dialog.
 	 */
-	private void resetTextArea () {
-		messages = new ArrayList<String>();
-		updateTextArea();
-	}
-
-
-	/**
-	 * Updates the text of the text area adding and formatting all the messages.
-	 */
-	private void updateTextArea () {
-		String text = "";
-		for (String message: messages) {
-			text += message;
-		}
-		textArea.setText(text);
+	private void closeDialog () {
+		setVisible(false);
 	}
 
 
@@ -155,7 +126,6 @@ public class WarningReportDialog extends JDialog {
 		String prefix = messageNumber + ": ";
 		String indent = getIndent(prefix);
 
-		//String[] array = message.split("\n");
 		String[] array = Utils.split(message, '\n');
 		for (int i = 0; i < array.length; i++) {
 			switch (i) {
@@ -170,46 +140,6 @@ public class WarningReportDialog extends JDialog {
 		}
 
 		return text;
-	}
-
-
-	/**
-	 * Creates an indent depending on the prefix of the first line of the message.
-	 * An indent is only a white space adjusted according to the first line.
-	 * @param prefix the prefix of the first line of the message
-	 * @return the indent
-	 */
-	private String getIndent (String prefix) {
-		int prefixLength = prefix.length();
-		String indent = "";
-		for (int i = 0; i < (prefixLength + 10); i++) {
-			indent += " ";
-		}
-		return indent;
-	}
-
-
-	/**
-	 * Creates the scroll pane that will contain the messages
-	 * @return the scroll pane
-	 */
-	private JScrollPane getErrorScrollPane () {
-		// Creates the text area
-		textArea = new JTextArea();
-		Dimension textDimension = new Dimension(DIALOG_WIDTH, CONTENT_HEIGHT);
-		textArea.setMinimumSize(textDimension);
-		textArea.setMargin(new Insets(0, 0, 0, 0));
-		textArea.setEditable(false);
-
-		// Creates the scroll pane
-		JScrollPane contentPane = new JScrollPane(textArea);
-		Dimension scrollDimension = new Dimension(DIALOG_WIDTH, CONTENT_HEIGHT);
-		contentPane.getVerticalScrollBar().setUnitIncrement(Utils.SCROLL_INCREMENT_UNIT);
-		contentPane.setPreferredSize(scrollDimension);
-		contentPane.setMinimumSize(scrollDimension);
-
-		// Return the scroll pane
-		return contentPane;
 	}
 
 
@@ -251,10 +181,79 @@ public class WarningReportDialog extends JDialog {
 
 
 	/**
-	 * Close the dialog.
+	 * Creates the scroll pane that will contain the messages
+	 * @return the scroll pane
 	 */
-	private void closeDialog () {
-		setVisible(false);
+	private JScrollPane getErrorScrollPane () {
+		// Creates the text area
+		textArea = new JTextArea();
+		Dimension textDimension = new Dimension(DIALOG_WIDTH, CONTENT_HEIGHT);
+		textArea.setMinimumSize(textDimension);
+		textArea.setMargin(new Insets(0, 0, 0, 0));
+		textArea.setEditable(false);
+
+		// Creates the scroll pane
+		JScrollPane contentPane = new JScrollPane(textArea);
+		Dimension scrollDimension = new Dimension(DIALOG_WIDTH, CONTENT_HEIGHT);
+		contentPane.getVerticalScrollBar().setUnitIncrement(Utils.SCROLL_INCREMENT_UNIT);
+		contentPane.setPreferredSize(scrollDimension);
+		contentPane.setMinimumSize(scrollDimension);
+
+		// Return the scroll pane
+		return contentPane;
+	}
+
+
+	/**
+	 * Creates an indent depending on the prefix of the first line of the message.
+	 * An indent is only a white space adjusted according to the first line.
+	 * @param prefix the prefix of the first line of the message
+	 * @return the indent
+	 */
+	private String getIndent (String prefix) {
+		int prefixLength = prefix.length();
+		String indent = "";
+		for (int i = 0; i < (prefixLength + 10); i++) {
+			indent += " ";
+		}
+		return indent;
+	}
+
+
+	/**
+	 * Resets the text area, it deletes all the previous messages.
+	 */
+	private void resetTextArea () {
+		messages = new ArrayList<String>();
+		updateTextArea();
+	}
+
+
+	/**
+	 * Shows the component.
+	 * @param parent the parent component of the dialog, can be null; see showDialog for details
+	 */
+	public void showDialog(Component parent) {
+		// Update the text area before showing the dialog
+		updateTextArea();
+
+		if (!isVisible()) {
+			// Sets dialog display options
+			setLocationRelativeTo(parent);
+			setVisible(true);
+		}
+	}
+
+
+	/**
+	 * Updates the text of the text area adding and formatting all the messages.
+	 */
+	private void updateTextArea () {
+		String text = "";
+		for (String message: messages) {
+			text += message;
+		}
+		textArea.setText(text);
 	}
 
 }

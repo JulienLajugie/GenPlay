@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.comparator.ChromosomeWindowStartComparator;
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOComputeStats;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOCountNonNullLength;
@@ -114,8 +114,8 @@ public final class SimpleSCWList extends AbstractListView<ListView<ScoredChromos
 	 */
 	public SimpleSCWList(List<ListView<ScoredChromosomeWindow>> data) throws InterruptedException, ExecutionException, InvalidParameterException {
 		super();
-		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
-		this.data = new ArrayList<ListView<ScoredChromosomeWindow>>(projectChromosome.size());
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
+		this.data = new ArrayList<ListView<ScoredChromosomeWindow>>(projectChromosomes.size());
 		for (int i = 0; i < data.size(); i++){
 			this.data.add(data.get(i));
 		}
@@ -144,8 +144,8 @@ public final class SimpleSCWList extends AbstractListView<ListView<ScoredChromos
 
 	@Override
 	public ListView<ScoredChromosomeWindow> get(Chromosome chromosome) throws InvalidChromosomeException {
-		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
-		int chromosomeIndex = projectChromosome.getIndex(chromosome);
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
+		int chromosomeIndex = projectChromosomes.getIndex(chromosome);
 		return get(chromosomeIndex);
 	}
 

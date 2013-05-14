@@ -29,7 +29,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.IO.dataReader.GeneReader;
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
@@ -96,12 +96,12 @@ public class GeneListFactory {
 	 * @throws ExecutionException
 	 */
 	public static GeneList createGeneList(SCWList scoredChromosomeWindowList) throws InterruptedException, ExecutionException {
-		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<ListView<Gene>>> threadList = new ArrayList<Callable<ListView<Gene>>>();
 		for (int i = 0; i < scoredChromosomeWindowList.size(); i++) {
 			final ListView<ScoredChromosomeWindow> currentList = scoredChromosomeWindowList.get(i);
-			final Chromosome chromosome = projectChromosome.get(i);
+			final Chromosome chromosome = projectChromosomes.get(i);
 			final String prefixName = chromosome.getName() + ".";
 			Callable<ListView<Gene>> currentThread = new Callable<ListView<Gene>>() {
 				@Override

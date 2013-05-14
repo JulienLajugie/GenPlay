@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
@@ -47,16 +47,16 @@ public class RepeatFamilyListBuilder {
 	/** List organised by chromosome of map of family entry associated to {@link RepeatFamilyListViewBuilder} objects */
 	private List<Map<String, RepeatFamilyListViewBuilder>> builders;
 
-	/** We store the {@link ProjectChromosome} to avoid wasting time retrieving it */
-	private final ProjectChromosome projectChromosome;
+	/** We store the {@link ProjectChromosomes} to avoid wasting time retrieving it */
+	private final ProjectChromosomes projectChromosomes;
 
 
 	/**
 	 * Creates an instance of {@link RepeatFamilyListBuilder}
 	 */
 	public RepeatFamilyListBuilder() {
-		projectChromosome =  ProjectManager.getInstance().getProjectChromosome();
-		int chromosomeCount = projectChromosome.size();
+		projectChromosomes =  ProjectManager.getInstance().getProjectChromosomes();
+		int chromosomeCount = projectChromosomes.size();
 		builders = new ArrayList<Map<String,RepeatFamilyListViewBuilder>>(chromosomeCount);
 		for (int i = 0; i < chromosomeCount; i++) {
 			builders.add(new HashMap<String, RepeatFamilyListViewBuilder>());
@@ -76,7 +76,7 @@ public class RepeatFamilyListBuilder {
 		if (builders == null) {
 			throw new ObjectAlreadyBuiltException();
 		}
-		int chromosomeIndex = projectChromosome.getIndex(chromosome);
+		int chromosomeIndex = projectChromosomes.getIndex(chromosome);
 		if (!builders.get(chromosomeIndex).containsKey(repeatFamilyName)) {
 			builders.get(chromosomeIndex).put(repeatFamilyName, new RepeatFamilyListViewBuilder(repeatFamilyName));
 		}

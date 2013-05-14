@@ -336,13 +336,13 @@ public class MultiGenomeProject implements Serializable {
 	 * Update the chromosome list using the new chromosome length
 	 */
 	public void updateChromosomeList () {
-		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
-		List<Chromosome> currentChromosomeList = projectChromosome.getChromosomeList();
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
+		List<Chromosome> currentChromosomeList = projectChromosomes.getChromosomeList();
 		List<Integer> newChromosomeLengths = new ArrayList<Integer>();
 		List<List<MGSOffset>> offsetList = multiGenome.getReferenceGenome().getAllele().getOffsetList();
 
 		for (Chromosome current: currentChromosomeList) {
-			int index = projectChromosome.getIndex(current);
+			int index = projectChromosomes.getIndex(current);
 			int lastOffsetIndex = offsetList.get(index).size() - 1;
 			int length = current.getLength();
 			if (lastOffsetIndex > -1) {
@@ -351,7 +351,7 @@ public class MultiGenomeProject implements Serializable {
 			newChromosomeLengths.add(length);
 		}
 
-		projectChromosome.updateChromosomeLengths(newChromosomeLengths);
+		projectChromosomes.updateChromosomeLengths(newChromosomeLengths);
 	}
 
 

@@ -24,7 +24,7 @@ package edu.yu.einstein.genplay.core.IO.utils;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 
@@ -42,8 +42,8 @@ public class ChromosomesSelector {
 	/** Index of the last selected chromosome */
 	private final int indexLastChromosome;
 
-	/** Save a reference to the {@link ProjectChromosome} for fast retrieval */
-	private final ProjectChromosome projectChromosome;
+	/** Save a reference to the {@link ProjectChromosomes} for fast retrieval */
+	private final ProjectChromosomes projectChromosomes;
 
 
 	/**
@@ -51,14 +51,14 @@ public class ChromosomesSelector {
 	 * @param chromosomeSelection chromosome to extract
 	 */
 	public ChromosomesSelector(boolean[] chromosomeSelection) {
-		projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
 		this.chromosomeSelection = new HashMap<String, Boolean>();
 		int indexLastChromosomeTmp = Integer.MAX_VALUE;
-		for (int i = 0; i < projectChromosome.size(); i++) {
+		for (int i = 0; i < projectChromosomes.size(); i++) {
 			if (chromosomeSelection[i]) {
 				indexLastChromosomeTmp = i;
 			}
-			this.chromosomeSelection.put(projectChromosome.get(i).getName(), chromosomeSelection[i]);
+			this.chromosomeSelection.put(projectChromosomes.get(i).getName(), chromosomeSelection[i]);
 		}
 		indexLastChromosome = indexLastChromosomeTmp;
 	}
@@ -67,11 +67,11 @@ public class ChromosomesSelector {
 	/**
 	 * @param chromosomeName name of a chromosome
 	 * @return true if the specified chromosome is after the last selected has already been extracted.
-	 * The order of chromosomes is defined by the {@link ProjectChromosome}
+	 * The order of chromosomes is defined by the {@link ProjectChromosomes}
 	 */
 	public final boolean isExtractionDone(String chromosomeName) {
 		try {
-			return projectChromosome.getIndex(chromosomeName) > indexLastChromosome;
+			return projectChromosomes.getIndex(chromosomeName) > indexLastChromosome;
 		} catch (InvalidChromosomeException e) {
 			return false;
 		}

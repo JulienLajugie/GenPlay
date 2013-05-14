@@ -50,30 +50,6 @@ public class MGFileContentManager implements Serializable {
 
 
 	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(lists);
-	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	@SuppressWarnings("unchecked")
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		lists = (Map<VCFFile, Map<Chromosome, MGChromosomeContent>>) in.readObject();
-	}
-
-
-	/**
 	 * Constructor of {@link MGFileContentManager}
 	 * @param files list of {@link VCFFile};
 	 */
@@ -81,6 +57,20 @@ public class MGFileContentManager implements Serializable {
 		lists = new HashMap<VCFFile, Map<Chromosome,MGChromosomeContent>>();
 		for (VCFFile file: files) {
 			lists.put(file, new HashMap<Chromosome, MGChromosomeContent>());
+		}
+	}
+
+
+	/**
+	 * Compact all lists resizing arrays for better memory usage
+	 */
+	public void compact () {
+		List<VCFFile> fileList = new ArrayList<VCFFile>(lists.keySet());
+		for (VCFFile file: fileList) {
+			List<Chromosome> chromosomeList = new ArrayList<Chromosome>(lists.get(file).keySet());
+			for (Chromosome chromosome: chromosomeList) {
+				lists.get(file).get(chromosome).compact();
+			}
 		}
 	}
 
@@ -102,14 +92,53 @@ public class MGFileContentManager implements Serializable {
 
 
 	/**
-	 * Compact all lists resizing arrays for better memory usage
+	 * @param chromosome	a {@link Chromosome}
+	 * @param chromosomeContent a {@link MGChromosomeContent}
+	 * @return the {@link VCFFile} related to the given {@link MGChromosomeContent} and {@link Chromosome}, null if not found.
 	 */
-	public void compact () {
+	public VCFFile getFile (Chromosome chromosome, MGChromosomeContent chromosomeContent) {
+		for (VCFFile file: getFileList()) {
+			MGChromosomeContent currentChromosomeContent = lists.get(file).get(chromosome);
+			if ((currentChromosomeContent != null) && currentChromosomeContent.equals(chromosomeContent)) {
+				return file;
+			}
+		}
+		return null;
+	}
+
+
+	/**
+	 * @return the list of {@link VCFFile}
+	 */
+	public List<VCFFile> getFileList () {
+		return new ArrayList<VCFFile>(lists.keySet());
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		lists = (Map<VCFFile, Map<Chromosome, MGChromosomeContent>>) in.readObject();
+	}
+
+
+	/**
+	 * Show files content
+	 */
+	public void show () {
 		List<VCFFile> fileList = new ArrayList<VCFFile>(lists.keySet());
 		for (VCFFile file: fileList) {
+			System.out.println("FILE: " + file.getFile().getName());
 			List<Chromosome> chromosomeList = new ArrayList<Chromosome>(lists.get(file).keySet());
 			for (Chromosome chromosome: chromosomeList) {
-				lists.get(file).get(chromosome).compact();
+				System.out.println("CHROMOSOME: " + chromosome.getName());
+				lists.get(file).get(chromosome).show();
 			}
 		}
 	}
@@ -119,7 +148,7 @@ public class MGFileContentManager implements Serializable {
 	 * Loads {@link Variant} for the current chromosome.
 	 */
 	public void updateCurrentVariants () {
-		Chromosome currentChromosome = ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome();
+		Chromosome currentChromosome = ProjectManager.getInstance().getProjectWindow().getGenomeWindow().getChromosome();
 		List<VCFFile> fileList = new ArrayList<VCFFile>(lists.keySet());
 
 		// Reset variants
@@ -146,42 +175,13 @@ public class MGFileContentManager implements Serializable {
 
 
 	/**
-	 * @return the list of {@link VCFFile}
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
 	 */
-	public List<VCFFile> getFileList () {
-		return new ArrayList<VCFFile>(lists.keySet());
-	}
-
-
-	/**
-	 * @param chromosome	a {@link Chromosome}
-	 * @param chromosomeContent a {@link MGChromosomeContent}
-	 * @return the {@link VCFFile} related to the given {@link MGChromosomeContent} and {@link Chromosome}, null if not found.
-	 */
-	public VCFFile getFile (Chromosome chromosome, MGChromosomeContent chromosomeContent) {
-		for (VCFFile file: getFileList()) {
-			MGChromosomeContent currentChromosomeContent = lists.get(file).get(chromosome);
-			if ((currentChromosomeContent != null) && currentChromosomeContent.equals(chromosomeContent)) {
-				return file;
-			}
-		}
-		return null;
-	}
-
-
-	/**
-	 * Show files content
-	 */
-	public void show () {
-		List<VCFFile> fileList = new ArrayList<VCFFile>(lists.keySet());
-		for (VCFFile file: fileList) {
-			System.out.println("FILE: " + file.getFile().getName());
-			List<Chromosome> chromosomeList = new ArrayList<Chromosome>(lists.get(file).keySet());
-			for (Chromosome chromosome: chromosomeList) {
-				System.out.println("CHROMOSOME: " + chromosome.getName());
-				lists.get(file).get(chromosome).show();
-			}
-		}
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(lists);
 	}
 
 }

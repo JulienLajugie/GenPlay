@@ -122,7 +122,7 @@ public final class GeneListAsBedWriter extends GeneListWriter implements Stoppab
 			}
 
 			// print the data
-			for (Chromosome currentChromosome: projectChromosome) {
+			for (Chromosome currentChromosome: projectChromosomes) {
 				ListView<Gene> currentList = data.get(currentChromosome);
 				if (currentList != null) {
 					for (Gene currentGene : currentList) {

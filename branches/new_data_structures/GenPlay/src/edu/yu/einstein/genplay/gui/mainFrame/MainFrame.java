@@ -42,11 +42,10 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
-import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.action.multiGenome.properties.MGARefresh;
@@ -114,7 +113,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 
 
 	/**
-	 * Reinit the {@link ProjectChromosome} and the chromosome panel of the {@link ControlPanel} if needed
+	 * Reinit the {@link ProjectChromosomes} and the chromosome panel of the {@link ControlPanel} if needed
 	 */
 	public static void reinit() {
 		// if instance is null the mainframe has never been initialized
@@ -132,7 +131,6 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 	}
 
 
-	private final 	ProjectChromosome 	projectChromosome; 	// Instance of the Chromosome Manager
 	private final 	Ruler 				ruler; 				// Ruler component
 	private final 	TrackListPanel 		trackListPanel; 	// TrackList component
 	private final 	ControlPanel		controlPanel; 		// ControlPanel component
@@ -146,12 +144,9 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 	private MainFrame() {
 		super(GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration());
 		setIconImage(Images.getApplicationImage());
-		projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 
 		setTitle();
 
-		Chromosome chromosome = projectChromosome.get(0);
-		projectChromosome.setCurrentChromosome(chromosome);
 		ruler = new Ruler();
 		ruler.getOptionButton().addActionListener(this);
 

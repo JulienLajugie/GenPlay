@@ -21,6 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.track;
 
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
@@ -51,8 +52,8 @@ public class ScrollingManager {
 					int start = projectWindow.getGenomeWindow().getStart() + scrollingIntensity;
 					int stop = projectWindow.getGenomeWindow().getStop() + scrollingIntensity;
 					SimpleGenomeWindow newWindow = new SimpleGenomeWindow(chromo, start, stop);
-					if (newWindow.getMiddlePosition() < 0) {
-						start = -projectWindow.getGenomeWindow().getSize() / 2;
+					if (newWindow.getMiddlePosition() < ProjectChromosomes.FIRST_BASE_POSITION) {
+						start = ProjectChromosomes.FIRST_BASE_POSITION - (projectWindow.getGenomeWindow().getSize() / 2);
 						stop = start + projectWindow.getGenomeWindow().getSize();
 						newWindow = new SimpleGenomeWindow(chromo, start, stop);
 					} else if (newWindow.getMiddlePosition() > newWindow.getChromosome().getLength()) {

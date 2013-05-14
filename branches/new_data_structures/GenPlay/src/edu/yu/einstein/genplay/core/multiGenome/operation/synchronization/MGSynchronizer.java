@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.yu.einstein.genplay.core.manager.project.MultiGenomeProject;
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
@@ -287,8 +287,8 @@ public class MGSynchronizer implements VCFScannerReceiver, Serializable {
 					byteGenotypeArray[i] = REFERENCE;
 					break;
 				default:
-					ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
-					int chromosomeIndex = projectChromosome.getIndex(chromosome);
+					ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
+					int chromosomeIndex = projectChromosomes.getIndex(chromosome);
 					byteGenotypeArray[i] = (byte) currentAltIndex;
 					int alternativeLength = line.getAlternativesLength()[currentAltIndex];				// we retrieve its length
 					VariantType variantType = line.getAlternativesTypes()[currentAltIndex];				// get the type of variant according to the length of the variation
@@ -348,7 +348,7 @@ public class MGSynchronizer implements VCFScannerReceiver, Serializable {
 	 * @return a synchronized chromosome list of list
 	 */
 	private List<List<MGSOffset>> synchronizeToAlleleLevel (List<List<MGSOffset>> chromosomeAlleleOffsetList) {
-		int chromosomeListSize = ProjectManager.getInstance().getProjectChromosome().getChromosomeList().size();						// get the number of chromosome
+		int chromosomeListSize = ProjectManager.getInstance().getProjectChromosomes().getChromosomeList().size();						// get the number of chromosome
 		List<List<MGSOffset>> list = new ArrayList<List<MGSOffset>>();																	// instantiate a new chromosome list of list (to insert the synchronized list of offset)
 
 		for (int i = 0; i < chromosomeListSize; i++) {																					// scan on the number of chromosome (loop on ever chromosome)

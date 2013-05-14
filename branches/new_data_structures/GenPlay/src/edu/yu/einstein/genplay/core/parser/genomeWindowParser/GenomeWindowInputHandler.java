@@ -23,7 +23,7 @@ package edu.yu.einstein.genplay.core.parser.genomeWindowParser;
 
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
@@ -33,7 +33,6 @@ import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
  * It uses the {@link PositionParser} to parse the text and provides advanced methods to retrieve information.
  * 
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class GenomeWindowInputHandler {
 
@@ -47,6 +46,36 @@ public class GenomeWindowInputHandler {
 	public GenomeWindowInputHandler (String s) {
 		parser = new PositionParser();
 		parser.parse(s);
+	}
+
+
+	/**
+	 * Looks for the right chromosome, every text elements from the input will be faced to the chromosomes project list.
+	 * If no chromosome is found, the current chromosome is returned.
+	 * @return	the given chromosome, the current chromosome if not found.
+	 */
+	public Chromosome getChromosome () {
+		Chromosome chromosome = null;
+		List<String> eventualChromosome = parser.getTextElements();
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
+
+		boolean endOfLists = false;
+		while (!endOfLists && (chromosome == null)) {
+			for (String currentEventualChromosome: eventualChromosome) {
+				for (Chromosome currentChromosome: projectChromosomes) {
+					if (currentChromosome.getName().equals(currentEventualChromosome)) {
+						chromosome = currentChromosome;
+					}
+				}
+			}
+			endOfLists = true;
+		}
+
+		if (chromosome == null) {
+			chromosome = ProjectManager.getInstance().getProjectWindow().getGenomeWindow().getChromosome();
+		}
+
+		return chromosome;
 	}
 
 
@@ -95,35 +124,4 @@ public class GenomeWindowInputHandler {
 		}
 		return null;
 	}
-
-
-	/**
-	 * Looks for the right chromosome, every text elements from the input will be faced to the chromosomes project list.
-	 * If no chromosome is found, the current chromosome is returned.
-	 * @return	the given chromosome, the current chromosome if not found.
-	 */
-	public Chromosome getChromosome () {
-		Chromosome chromosome = null;
-		List<String> eventualChromosome = parser.getTextElements();
-		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
-
-		boolean endOfLists = false;
-		while (!endOfLists && (chromosome == null)) {
-			for (String currentEventualChromosome: eventualChromosome) {
-				for (Chromosome currentChromosome: projectChromosome) {
-					if (currentChromosome.getName().equals(currentEventualChromosome)) {
-						chromosome = currentChromosome;
-					}
-				}
-			}
-			endOfLists = true;
-		}
-
-		if (chromosome == null) {
-			chromosome = projectChromosome.getCurrentChromosome();
-		}
-
-		return chromosome;
-	}
-
 }

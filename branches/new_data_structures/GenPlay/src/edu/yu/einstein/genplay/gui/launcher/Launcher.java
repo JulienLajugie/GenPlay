@@ -53,54 +53,39 @@ import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 public class Launcher {
 
 	/**
+	 * This class loads the rest of the project (multigenome manager and the tracks).
+	 * The loading of the Multi Genome manager has to be done before the loading of the tracks.
+	 * This is why both processes are within a same thread managing a waiting time between them.
+	 * 
+	 * @author Nicolas Fourel
+	 * @version 0.1
+	 */
+	private static class LoadingThread extends Thread {
+
+		@Override
+		public void run() {
+			PAInitMGManager initMGAction = new PAInitMGManager();
+			CountDownLatch latch = new CountDownLatch(1);
+			initMGAction.setLatch(latch);
+			initMGAction.actionPerformed(null);
+			try {
+				latch.await();
+			} catch (InterruptedException e) {
+				ExceptionManager.getInstance().caughtException(e);
+			}
+
+			PALoadProject load = new PALoadProject();
+			load.setSkipFileSelection(true);
+			load.actionPerformed(null);
+		}
+	}
+
+
+	/**
 	 * This constant can be set to a project file path in the resource folder of the jar.
 	 * In this case this project will be directly loaded when GenPlay starts.
 	 */
 	private static final String DEMO_PROJECT_PATH = null;
-
-
-	/**
-	 * Starts the application
-	 * @param args a project file path can be specified. In this case the project
-	 * screen will be skipped and the project file will be directly loaded
-	 */
-	public static void main(final String[] args) {
-		// Initialize the exception manager
-		initializeExceptionManagement();
-
-		//SwingUtilities.invokeLater(new Runnable() {
-		/*
-		 * Fix for the exception that starts like:
-		 * Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException
-		 * at javax.swing.plaf.basic.BasicProgressBarUI.updateSizes(Unknown Source)
-		 * at javax.swing.plaf.basic.BasicProgressBarUI.getBox(Unknown Source)
-		 * at javax.swing.plaf.basic.BasicProgressBarUI.paintString(Unknown Source)
-		 * at javax.swing.plaf.basic.BasicProgressBarUI.paintDeterminate(Unknown Source)
-		 * at javax.swing.plaf.metal.MetalProgressBarUI.paintDeterminate(Unknown Source)
-		 * at javax.swing.plaf.basic.BasicProgressBarUI.paint(Unknown Source)
-		 * 
-		 * Found on several website:
-		 * You are probably here, because you searched for the line above in a search engine.
-		 * If you are a Java-Programmer and you get this problem, here is the solution:
-		 * The problem is, that Swing is not thread-safe. You have probably tried to call a method on a Swing-Component from another thread (than the AWT-EventQueue-Thread). You should not do that!
-		 * Methods of Swing-Components should always be called from the EventQueue.
-		 */
-		EventQueue.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				// if the DEMO_PROJECT_PATH constant has been set it means that we're starting a demo project
-				boolean isDemo = (DEMO_PROJECT_PATH != null);
-				if (isDemo) {
-					startDemoProject();
-				} else if (args.length == 1) { // if a project file path has been specified to the main method we load this file
-					File file = new File(args[0]);
-					startProjectFromFile(file);
-				} else { // normal execution of the software
-					startProjectFrame();
-				}
-			}
-		});
-	}
 
 
 	/**
@@ -117,31 +102,47 @@ public class Launcher {
 
 
 	/**
-	 * This method starts a demo project.  The project file needs to be in the resource folder and
-	 * the path to this file must be specified in the DEMO_PROJECT_PATH constant
+	 * This method is used by the ProjectFrame after closing
+	 * to initiate a new project.
 	 */
-	private static void startDemoProject() {
-		InputStream is = MainFrame.getInstance().getClass().getClassLoader().getResourceAsStream(DEMO_PROJECT_PATH);
+	public static void initiateNewProject() {
+		ProjectFrame projectFrame = ProjectFrame.getInstance();
+		Clade clade = projectFrame.getSelectedClade();
+		Genome genome = projectFrame.getSelectedGenome();
+		Assembly assembly = projectFrame.getSelectedAssembly();
+		assembly.setChromosomeList(projectFrame.getSelectedChromosomes());
+		ProjectManager projectManager = ProjectManager.getInstance();
+		projectManager.setProjectName(projectFrame.getProjectName());
+		projectManager.setCladeName(clade.getName());
+		projectManager.setGenomeName(genome.getName());
+		projectManager.setAssembly(assembly);
+		projectManager.updateChromosomeList();
+		projectFrame.setVisible(false);
 
-		try {
-			loadFile(is);
-		} catch (Exception e) {
-			ExceptionManager.getInstance().caughtException(e);
+		// Initializes the genome window manager
+		Chromosome currentChromosome = ProjectManager.getInstance().getProjectChromosomes().get(0);
+		SimpleGenomeWindow genomeWindow = new SimpleGenomeWindow(currentChromosome, 1, currentChromosome.getLength() + 1);
+		ProjectManager.getInstance().getProjectWindow().setGenomeWindow(genomeWindow);
+
+		// Set the project as a multi genome project before any call of the MainFrame (some graphical elements check it out in order to be displayed)
+		if (!projectFrame.isSingleProject()) {
+			ProjectManager.getInstance().setMultiGenomeProject(true);
 		}
-	}
 
+		// reinit the MainFrame if needed (in the case where the user chose the new project option from the mainframe)
+		MainFrame.reinit();
 
-	/**
-	 * This method starts a project from a file.
-	 * @param file project file to load
-	 */
-	public static void startProjectFromFile(File file) {
-		try {
-			loadFile(file);
-		} catch (Exception e) {
-			ExceptionManager.getInstance().caughtException(e);
-			System.out.println("Invalid Project File: The specifed file is not a valid project file");
-			System.out.println(file.getPath());
+		// starts the main frame of the application
+		MainFrame.getInstance().setVisible(true);
+		MainFrame.getInstance().initStatusBarForFirstUse();
+
+		// generate the multi-genome manager if the user starts a multi-genome project
+		if (!projectFrame.isSingleProject()) {
+			MGASynchronizing multiGenome = new MGASynchronizing();
+			multiGenome.setGenomeFileAssociation(projectFrame.getGenomeFileAssociation());
+			multiGenome.actionPerformed(null);
+		} else {
+			projectManager.setMultiGenomeProject(false);
 		}
 	}
 
@@ -191,6 +192,64 @@ public class Launcher {
 	}
 
 
+	/**
+	 * Starts the application
+	 * @param args a project file path can be specified. In this case the project
+	 * screen will be skipped and the project file will be directly loaded
+	 */
+	public static void main(final String[] args) {
+		// Initialize the exception manager
+		initializeExceptionManagement();
+
+		//SwingUtilities.invokeLater(new Runnable() {
+		/*
+		 * Fix for the exception that starts like:
+		 * Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException
+		 * at javax.swing.plaf.basic.BasicProgressBarUI.updateSizes(Unknown Source)
+		 * at javax.swing.plaf.basic.BasicProgressBarUI.getBox(Unknown Source)
+		 * at javax.swing.plaf.basic.BasicProgressBarUI.paintString(Unknown Source)
+		 * at javax.swing.plaf.basic.BasicProgressBarUI.paintDeterminate(Unknown Source)
+		 * at javax.swing.plaf.metal.MetalProgressBarUI.paintDeterminate(Unknown Source)
+		 * at javax.swing.plaf.basic.BasicProgressBarUI.paint(Unknown Source)
+		 * 
+		 * Found on several website:
+		 * You are probably here, because you searched for the line above in a search engine.
+		 * If you are a Java-Programmer and you get this problem, here is the solution:
+		 * The problem is, that Swing is not thread-safe. You have probably tried to call a method on a Swing-Component from another thread (than the AWT-EventQueue-Thread). You should not do that!
+		 * Methods of Swing-Components should always be called from the EventQueue.
+		 */
+		EventQueue.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				// if the DEMO_PROJECT_PATH constant has been set it means that we're starting a demo project
+				boolean isDemo = (DEMO_PROJECT_PATH != null);
+				if (isDemo) {
+					startDemoProject();
+				} else if (args.length == 1) { // if a project file path has been specified to the main method we load this file
+					File file = new File(args[0]);
+					startProjectFromFile(file);
+				} else { // normal execution of the software
+					startProjectFrame();
+				}
+			}
+		});
+	}
+
+
+	/**
+	 * This method starts a demo project.  The project file needs to be in the resource folder and
+	 * the path to this file must be specified in the DEMO_PROJECT_PATH constant
+	 */
+	private static void startDemoProject() {
+		InputStream is = MainFrame.getInstance().getClass().getClassLoader().getResourceAsStream(DEMO_PROJECT_PATH);
+
+		try {
+			loadFile(is);
+		} catch (Exception e) {
+			ExceptionManager.getInstance().caughtException(e);
+		}
+	}
+
 
 	/**
 	 * Displays the project screen manager which is the first screen of GenPlay.
@@ -210,80 +269,16 @@ public class Launcher {
 
 
 	/**
-	 * This method is used by the ProjectFrame after closing
-	 * to initiate a new project.
+	 * This method starts a project from a file.
+	 * @param file project file to load
 	 */
-	public static void initiateNewProject() {
-		ProjectFrame projectFrame = ProjectFrame.getInstance();
-		Clade clade = projectFrame.getSelectedClade();
-		Genome genome = projectFrame.getSelectedGenome();
-		Assembly assembly = projectFrame.getSelectedAssembly();
-		assembly.setChromosomeList(projectFrame.getSelectedChromosomes());
-		ProjectManager projectManager = ProjectManager.getInstance();
-		projectManager.setProjectName(projectFrame.getProjectName());
-		projectManager.setCladeName(clade.getName());
-		projectManager.setGenomeName(genome.getName());
-		projectManager.setAssembly(assembly);
-		projectManager.updateChromosomeList();
-		projectFrame.setVisible(false);
-
-		// Initializes the genome window manager
-		Chromosome currentChromosome = ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome();
-		SimpleGenomeWindow genomeWindow = new SimpleGenomeWindow(currentChromosome, 0, currentChromosome.getLength());
-		ProjectManager.getInstance().getProjectWindow().setGenomeWindow(genomeWindow);
-
-		// Set the project as a multi genome project before any call of the MainFrame (some graphical elements check it out in order to be displayed)
-		if (!projectFrame.isSingleProject()) {
-			ProjectManager.getInstance().setMultiGenomeProject(true);
-		}
-
-		// reinit the MainFrame if needed (in the case where the user chose the new project option from the mainframe)
-		MainFrame.reinit();
-
-		// starts the main frame of the application
-		MainFrame.getInstance().setVisible(true);
-		MainFrame.getInstance().initStatusBarForFirstUse();
-
-		// generate the multi-genome manager if the user starts a multi-genome project
-		if (!projectFrame.isSingleProject()) {
-			MGASynchronizing multiGenome = new MGASynchronizing();
-			multiGenome.setGenomeFileAssociation(projectFrame.getGenomeFileAssociation());
-			multiGenome.actionPerformed(null);
-		} else {
-			projectManager.setMultiGenomeProject(false);
-		}
-	}
-
-
-
-
-	/////////////////////////////////////////////////////////////////////// ExportVCFThread class
-
-	/**
-	 * This class loads the rest of the project (multigenome manager and the tracks).
-	 * The loading of the Multi Genome manager has to be done before the loading of the tracks.
-	 * This is why both processes are within a same thread managing a waiting time between them.
-	 * 
-	 * @author Nicolas Fourel
-	 * @version 0.1
-	 */
-	private static class LoadingThread extends Thread {
-
-		@Override
-		public void run() {
-			PAInitMGManager initMGAction = new PAInitMGManager();
-			CountDownLatch latch = new CountDownLatch(1);
-			initMGAction.setLatch(latch);
-			initMGAction.actionPerformed(null);
-			try {
-				latch.await();
-			} catch (InterruptedException e) {
-				ExceptionManager.getInstance().caughtException(e);
-			}
-
-			PALoadProject load = new PALoadProject();
-			load.setSkipFileSelection(true);
-			load.actionPerformed(null);
+	public static void startProjectFromFile(File file) {
+		try {
+			loadFile(file);
+		} catch (Exception e) {
+			ExceptionManager.getInstance().caughtException(e);
+			System.out.println("Invalid Project File: The specifed file is not a valid project file");
+			System.out.println(file.getPath());
 		}
 	}
 

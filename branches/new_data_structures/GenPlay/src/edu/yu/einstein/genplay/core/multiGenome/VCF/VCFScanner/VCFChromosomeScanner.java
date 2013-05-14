@@ -61,21 +61,10 @@ public class VCFChromosomeScanner extends VCFScanner {
 
 
 	@Override
-	protected VCFLine getFirstLine() {
-		Chromosome chromosome = ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome();
-		try {
-			result = vcfFile.getReader().query(chromosome.getName(), 0, chromosome.getLength());
-		} catch (IOException e) {
-			ExceptionManager.getInstance().caughtException(e);
-		}
-		return getCurrentLine();
-	}
-
-
-	@Override
-	protected VCFLine getNextLine() {
-		index++;
-		return getCurrentLine();
+	protected void endScan() {
+		result = null;
+		line = null;
+		index = 0;
 	}
 
 
@@ -93,10 +82,21 @@ public class VCFChromosomeScanner extends VCFScanner {
 
 
 	@Override
-	protected void endScan() {
-		result = null;
-		line = null;
-		index = 0;
+	protected VCFLine getFirstLine() {
+		Chromosome chromosome = ProjectManager.getInstance().getProjectWindow().getGenomeWindow().getChromosome();
+		try {
+			result = vcfFile.getReader().query(chromosome.getName(), 0, chromosome.getLength());
+		} catch (IOException e) {
+			ExceptionManager.getInstance().caughtException(e);
+		}
+		return getCurrentLine();
+	}
+
+
+	@Override
+	protected VCFLine getNextLine() {
+		index++;
+		return getCurrentLine();
 	}
 
 }

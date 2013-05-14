@@ -224,7 +224,7 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 			JOptionPane.showMessageDialog(getRootPane(), "Invalid position", "Error", JOptionPane.WARNING_MESSAGE, null);
 		} else if (!newGenomeWindow.equals(projectWindow.getGenomeWindow())) {
 			int middlePosition = (int)newGenomeWindow.getMiddlePosition();
-			if ((middlePosition < 0) || (middlePosition > newGenomeWindow.getChromosome().getLength())) {
+			if ((middlePosition < 1) || (middlePosition > newGenomeWindow.getChromosome().getLength())) {
 				JOptionPane.showMessageDialog(getRootPane(), "Invalid position", "Error", JOptionPane.WARNING_MESSAGE, null);
 			} else {
 				projectWindow.setGenomeWindow(newGenomeWindow);

@@ -40,7 +40,6 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 /**
  * Allows to write a BinList as a BedGraph file.
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class BinListAsBedGraphWith0Writer extends BinListWriter implements Stoppable {
 
@@ -81,7 +80,7 @@ public final class BinListAsBedGraphWith0Writer extends BinListWriter implements
 			writer.newLine();
 			int binSize = data.getBinSize();
 			// print the data
-			for(Chromosome currentChromosome: projectChromosome) {
+			for(Chromosome currentChromosome: projectChromosomes) {
 				if(data.get(currentChromosome) != null) {
 					ListView<ScoredChromosomeWindow> currentList = data.get(currentChromosome);
 					int currentChromosomeSize = currentChromosome.getLength();

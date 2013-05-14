@@ -28,7 +28,7 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
@@ -204,7 +204,7 @@ public final class ControlPanel extends JPanel {
 
 	/**
 	 * This method reinitializes the elements of the
-	 * chromosome panel with the values of the {@link ProjectChromosome}.
+	 * chromosome panel with the values of the {@link ProjectChromosomes}.
 	 * This method needs to be called when the chomosome manager changes.
 	 */
 	public void reinitChromosomePanel () {

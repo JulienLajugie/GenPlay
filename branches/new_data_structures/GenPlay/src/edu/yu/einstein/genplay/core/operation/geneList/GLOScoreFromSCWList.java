@@ -26,16 +26,23 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOSumScore;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.geneListView.GeneListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ListOfListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.SimpleGeneList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.util.Utils;
 
@@ -74,90 +81,103 @@ public class GLOScoreFromSCWList implements Operation<GeneList> {
 			scoreCount = 0;
 		}
 
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
 		final OperationPool op = OperationPool.getInstance();
-		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();
-		for(int i = 0; i < geneList.size(); i++) {
-			final ListView<ScoredChromosomeWindow> currentSCWList = scwList.get(i);
-			final ListView<Gene> currentGeneList = geneList.get(i);
-			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {
+		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
+		ListViewBuilder<Gene> lvbPrototype = new GeneListViewBuilder();
+		final ListOfListViewBuilder<Gene> resultListBuilder = new ListOfListViewBuilder<Gene>(lvbPrototype);
+
+		for (final Chromosome chromosome: projectChromosomes) {
+			final ListView<ScoredChromosomeWindow> currentSCWList = scwList.get(chromosome);
+			final ListView<Gene> currentGeneList = geneList.get(chromosome);
+
+			Callable<Void> currentThread = new Callable<Void>() {
+
 				@Override
-				public List<Gene> call() throws Exception {
-					if ((currentGeneList == null) || (currentSCWList == null)) {
-						return null;
-					}
-					List<Gene> resultList = new ArrayList<Gene>();
-					for (int j = 0; (j < currentGeneList.size()) && !stopped; j++) {
-						Gene currentGene = currentGeneList.get(j);
-						if ((currentGene != null) && (currentGene.getExonStarts() != null) && (currentGene.getExonStarts().length != 0))  {
-							double[] scores = new double[currentGene.getExonStarts().length] ; // array for the exon scores (1 score / exon)
-							double score = 0; // gene score
-							// set the score per exon
-							for (int k = 0; (k < currentGene.getExonStarts().length) && !stopped; k++) {
-								List<ScoredChromosomeWindow> currentExonSCW = Utils.searchChromosomeWindowInterval(currentSCWList, currentGene.getExonStarts()[k], currentGene.getExonStops()[k]);
-								if (currentExonSCW != null) {
-									for (int l = 0; (l < currentExonSCW.size()) && !stopped; l++) {
-										if (geneScoreType == GeneScoreType.MAXIMUM_COVERAGE) {
-											scores[k] = Math.max(scores[k], currentExonSCW.get(l).getScore());
-											break;
-										} else { // case RPKM and BASE_COVERAGE_SUM
-											double start = Math.max(currentExonSCW.get(l).getStart(), currentGene.getExonStarts()[k]);
-											double stop = Math.min(currentExonSCW.get(l).getStop(), currentGene.getExonStops()[k]);
-											scores[k] += currentExonSCW.get(l).getScore() * (stop - start);
+				public Void call() throws Exception {
+					if ((currentSCWList != null) && (currentGeneList != null)) {
+						for (int j = 0; (j < currentGeneList.size()) && !stopped; j++) {
+							Gene currentGene = currentGeneList.get(j);
+							if ((currentGene != null) && (currentGene.getExons() != null) && (!currentGene.getExons().isEmpty()))  {
+								double[] scores = new double[currentGene.getExons().size()] ; // array for the exon scores (1 score / exon)
+								double score = 0; // gene score
+								// set the score per exon
+								for (int k = 0; (k < currentGene.getExons().size()) && !stopped; k++) {
+									List<ScoredChromosomeWindow> currentExonSCW = Utils.searchChromosomeWindowInterval(currentSCWList, currentGene.getExons().get(k).getStart(), currentGene.getExons().get(k).getStop());
+									if (currentExonSCW != null) {
+										for (int l = 0; (l < currentExonSCW.size()) && !stopped; l++) {
+											if (geneScoreType == GeneScoreType.MAXIMUM_COVERAGE) {
+												scores[k] = Math.max(scores[k], currentExonSCW.get(l).getScore());
+												break;
+											} else { // case RPKM and BASE_COVERAGE_SUM
+												double start = Math.max(currentExonSCW.get(l).getStart(), currentGene.getExons().get(k).getStart());
+												double stop = Math.min(currentExonSCW.get(l).getStop(), currentGene.getExons().get(k).getStop());
+												scores[k] += currentExonSCW.get(l).getScore() * (stop - start);
+											}
 										}
 									}
 								}
-							}
-							// set the score for the gene
-							switch (geneScoreType) {
-							case BASE_COVERAGE_SUM:
-								for (int i = 0; i < scores.length; i++) {
-									score += scores[i];
-								}
-								break;
-							case MAXIMUM_COVERAGE:
-								if (scores.length > 0) {
-									score = scores[0];
-									for (int i = 1; i < scores.length; i++) {
-										score = Math.max(score, scores[i]);
+								// set the score for the gene
+								switch (geneScoreType) {
+								case BASE_COVERAGE_SUM:
+									for (int i = 0; i < scores.length; i++) {
+										score += scores[i];
 									}
+									break;
+								case MAXIMUM_COVERAGE:
+									if (scores.length > 0) {
+										score = scores[0];
+										for (int i = 1; i < scores.length; i++) {
+											score = Math.max(score, scores[i]);
+										}
+									}
+									break;
+								case RPKM:
+									double length = 0;
+									for (int i = 0; i < scores.length; i++) {
+										double exonLength = (currentGene.getExons().get(i).getSize());
+										score += scores[i];
+										length += exonLength;
+										// compute the RPKM for the current exon
+										// RPKM(Exon) = (Base_coverage_sum(Exon) * 10^9) / (Length(Exon) * Score_Count(SCWL))
+										scores[i] *= Math.pow(10, 9);
+										scores[i] /= exonLength * scoreCount;
+									}
+									// compute the RPKM for the current gene
+									// RPKM(Gene) = (Base_coverage_sum(Gene) * 10^9) / (Length(Exons of genes) * Score_Count(SCWL))
+									score *= Math.pow(10, 9);
+									score /= length * scoreCount;
+									break;
 								}
-								break;
-							case RPKM:
-								double length = 0;
+								GenericSCWListViewBuilder exonLVBuilder = new GenericSCWListViewBuilder();
 								for (int i = 0; i < scores.length; i++) {
-									double exonLength = (currentGene.getExonStops()[i] - currentGene.getExonStarts()[i]);
-									score += scores[i];
-									length += exonLength;
-									// compute the RPKM for the current exon
-									// RPKM(Exon) = (Base_coverage_sum(Exon) * 10^9) / (Length(Exon) * Score_Count(SCWL))
-									scores[i] *= Math.pow(10, 9);
-									scores[i] /= exonLength * scoreCount;
+									int exonStart = currentGene.getExons().get(i).getStart();
+									int exonStop = currentGene.getExons().get(i).getStop();
+									float exonScore = (float) scores[i];
+									exonLVBuilder.addElementToBuild(exonStart, exonStop, exonScore);
 								}
-								// compute the RPKM for the current gene
-								// RPKM(Gene) = (Base_coverage_sum(Gene) * 10^9) / (Length(Exons of genes) * Score_Count(SCWL))
-								score *= Math.pow(10, 9);
-								score /= length * scoreCount;
-								break;
+								Gene geneToAdd = new SimpleGene(currentGene.getName(),
+										currentGene.getStrand(),
+										currentGene.getStart(),
+										currentGene.getStop(),
+										(float) score,
+										currentGene.getUTR5Bound(),
+										currentGene.getUTR3Bound(),
+										exonLVBuilder.getListView());
+								resultListBuilder.addElementToBuild(chromosome, geneToAdd);
 							}
-							Gene geneToAdd = new SimpleGene(currentGeneList.get(j));
-							geneToAdd.setScore(score);
-							geneToAdd.setExonScores(scores);
-							resultList.add(geneToAdd);
 						}
 					}
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
-					return resultList;
+					return null;
 				}
 			};
 			threadList.add(currentThread);
 		}
-		List<List<Gene>> result = op.startPool(threadList);
-		if (result == null) {
-			return null;
-		} else {
-			return new SimpleGeneList(result, geneScoreType, geneList.getGeneDBURL());
-		}
+		op.startPool(threadList);
+		List<ListView<Gene>> data = resultListBuilder.getGenomicList();
+		return new SimpleGeneList(data, geneScoreType, geneList.getGeneDBURL());
 	}
 
 

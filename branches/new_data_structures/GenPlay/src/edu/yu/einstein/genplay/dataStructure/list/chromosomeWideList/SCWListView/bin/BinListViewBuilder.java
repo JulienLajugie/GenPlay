@@ -74,13 +74,13 @@ public final class BinListViewBuilder implements ListViewBuilder<ScoredChromosom
 		if (windowScores == null) {
 			throw new ObjectAlreadyBuiltException();
 		}
-		if (((start % binSize) != 0) || (((stop + 1) % binSize) != 0)) {
+		if (((start % binSize) != 0) || ((stop % binSize) != 0)) {
 			throw new ElementAddedDontFallInBinException();
 		}
 		if (!windowScores.isEmpty()) {
 			int lastElementIndex = windowScores.size() -1;
 			int lastStart = lastElementIndex * binSize;
-			int lastStop = ((lastElementIndex + 1) * binSize) - 1;
+			int lastStop = ((lastElementIndex + 1) * binSize);
 			if (start < lastStart) {
 				// case where the elements added are not sorted
 				throw new ElementAddedNotSortedException();

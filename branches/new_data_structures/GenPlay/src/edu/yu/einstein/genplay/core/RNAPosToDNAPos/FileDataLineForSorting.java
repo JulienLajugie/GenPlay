@@ -59,7 +59,7 @@ public class FileDataLineForSorting implements Comparable<FileDataLineForSorting
 	 */
 	public int getChromosomeNumber() {
 		try {
-			return ProjectManager.getInstance().getProjectChromosome().getIndex(getChromosomeName());
+			return ProjectManager.getInstance().getProjectChromosomes().getIndex(getChromosomeName());
 		} catch (InvalidChromosomeException e) {
 			return 0;
 		}

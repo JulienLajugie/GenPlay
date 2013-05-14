@@ -46,7 +46,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.track.layer.ColoredLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
@@ -264,7 +264,7 @@ public class CorrelationReportDialog extends JDialog {
 	private CorrelationReportDialog(Component parent, Double[] correlations, Layer<?> layer1, Layer<?> layer2) {
 		super();
 		Object[][] tableData = new Object[correlations.length][2];
-		ProjectChromosome cm = ProjectManager.getInstance().getProjectChromosome();
+		ProjectChromosomes cm = ProjectManager.getInstance().getProjectChromosomes();
 		// we fill the correlation for each chromosome
 		for (int i = 0; i < cm.size(); i++) {
 			tableData[i][0] = cm.get(i);

@@ -22,7 +22,7 @@
 package edu.yu.einstein.genplay.core.multiGenome.utils;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.data.synchronization.MGSAllele;
 import edu.yu.einstein.genplay.core.multiGenome.data.synchronization.MGSOffset;
@@ -72,8 +72,8 @@ public class ShiftCompute {
 		}
 
 		int outputPosition = -1;
-		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
-		int chromosomeIndex = projectChromosome.getIndex(chromosome);
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
+		int chromosomeIndex = projectChromosomes.getIndex(chromosome);
 		if (FormattedMultiGenomeName.isMetaGenome(outputGenomeName)) {
 			List<List<MGSOffset>> chromosomeOffsetList = getOffsetList(inputGenomeName, inputAlleleType);
 			if (chromosomeOffsetList != null) {

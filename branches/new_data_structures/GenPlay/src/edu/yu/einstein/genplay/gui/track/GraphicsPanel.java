@@ -34,6 +34,7 @@ import java.io.Serializable;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.core.manager.project.ProjectZoom;
@@ -149,8 +150,8 @@ public class GraphicsPanel extends JPanel implements Serializable, ComponentList
 				int start = projectWindow.getGenomeWindow().getStart() + (int) genomeWidth;
 				int stop = projectWindow.getGenomeWindow().getStop() + (int) genomeWidth;
 				SimpleGenomeWindow newWindow = new SimpleGenomeWindow(chromo, start, stop);
-				if (newWindow.getMiddlePosition() < 0) {
-					start = -projectWindow.getGenomeWindow().getSize() / 2;
+				if (newWindow.getMiddlePosition() < ProjectChromosomes.FIRST_BASE_POSITION) {
+					start = ProjectChromosomes.FIRST_BASE_POSITION - (projectWindow.getGenomeWindow().getSize() / 2);
 					stop = start + projectWindow.getGenomeWindow().getSize();
 					newWindow = new SimpleGenomeWindow(chromo, start, stop);
 				} else if (newWindow.getMiddlePosition() > newWindow.getChromosome().getLength()) {

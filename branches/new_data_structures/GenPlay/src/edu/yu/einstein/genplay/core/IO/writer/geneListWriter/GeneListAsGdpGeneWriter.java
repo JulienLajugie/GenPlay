@@ -87,7 +87,7 @@ public final class GeneListAsGdpGeneWriter extends GeneListWriter implements Sto
 				writer.newLine();
 			}
 			// print the data
-			for (Chromosome currentChromosome: projectChromosome) {
+			for (Chromosome currentChromosome: projectChromosomes) {
 				ListView<Gene> currentList = data.get(currentChromosome);
 				for (Gene currentGene : currentList) {
 					// if the operation need to be stopped we close the writer and delete the file

@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
@@ -77,12 +77,12 @@ public class BLOTwoLayers implements Operation<SCWList> {
 			throw new BinListDifferentWindowSizeException();
 		}
 
-		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
 		final SCWListBuilder resultListBuilder = new SCWListBuilder(binList1);
 
-		for(final Chromosome currentChromosome : projectChromosome) {
+		for(final Chromosome currentChromosome : projectChromosomes) {
 			final ListView<ScoredChromosomeWindow> currentList1 = binList1.get(currentChromosome);
 			final ListView<ScoredChromosomeWindow> currentList2 = binList2.get(currentChromosome);
 			final boolean firstLayerIsEmpty = (currentList1 == null) || currentList1.isEmpty();

@@ -27,7 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
@@ -70,13 +70,13 @@ public class RFLOConvertIntoMask implements Operation<SCWList> {
 
 	@Override
 	public SCWList compute() throws Exception {
-		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
 		ListViewBuilder<ScoredChromosomeWindow> maskLVBuilderPrototype = new MaskListViewBuilder();
 		final ListOfListViewBuilder<ScoredChromosomeWindow> maskListBuilder = new ListOfListViewBuilder<ScoredChromosomeWindow>(maskLVBuilderPrototype);
 
-		for (final Chromosome chromosome: projectChromosome) {
+		for (final Chromosome chromosome: projectChromosomes) {
 			final ListView<RepeatFamilyListView> currentList = repeatFamilyList.get(chromosome);
 			Callable<Void> currentThread = new Callable<Void>() {
 

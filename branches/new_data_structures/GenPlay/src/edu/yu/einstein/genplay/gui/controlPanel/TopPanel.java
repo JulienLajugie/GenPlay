@@ -43,6 +43,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollBar;
 
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
@@ -59,7 +60,6 @@ import edu.yu.einstein.genplay.util.colors.Colors;
  * - the scroll bar
  * 
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class TopPanel extends JPanel implements AdjustmentListener, MouseWheelListener, GenomeWindowListener {
 
@@ -81,11 +81,11 @@ public class TopPanel extends JPanel implements AdjustmentListener, MouseWheelLi
 		FlowLayout layout = new FlowLayout(FlowLayout.LEFT, 0, 0);
 		setLayout(layout);
 
-		this.projectWindow = ProjectManager.getInstance().getProjectWindow();
+		projectWindow = ProjectManager.getInstance().getProjectWindow();
 		int currentPosition = (int)projectWindow.getGenomeWindow().getMiddlePosition();
 		int currentSize = projectWindow.getGenomeWindow().getSize();
 		Chromosome currentChromosome = projectWindow.getGenomeWindow().getChromosome();
-		jsbPosition = new JScrollBar(Adjustable.HORIZONTAL, currentPosition, currentSize, 0, currentChromosome.getLength() + currentSize);
+		jsbPosition = new JScrollBar(Adjustable.HORIZONTAL, currentPosition, currentSize, ProjectChromosomes.FIRST_BASE_POSITION, currentChromosome.getLength() + currentSize);
 		jsbPosition.setBlockIncrement(currentSize / 10);
 		jsbPosition.setUnitIncrement(currentSize / 10);
 		jsbPosition.addAdjustmentListener(this);
@@ -123,6 +123,33 @@ public class TopPanel extends JPanel implements AdjustmentListener, MouseWheelLi
 	}
 
 
+	@Override
+	public void adjustmentValueChanged(AdjustmentEvent arg0) {
+		int halfSize = projectWindow.getGenomeWindow().getSize() / 2;
+		Chromosome chromosome = projectWindow.getGenomeWindow().getChromosome();
+		int start = (jsbPosition.getValue() - halfSize);
+		int stop = start + projectWindow.getGenomeWindow().getSize();
+		SimpleGenomeWindow newGenomeWindow = new SimpleGenomeWindow(chromosome, start, stop);
+		projectWindow.setGenomeWindow(newGenomeWindow);
+	}
+
+
+	@Override
+	public void genomeWindowChanged(GenomeWindowEvent evt) {
+		// we notify the gui
+		if (evt.getNewWindow().getSize() != evt.getOldWindow().getSize()) {
+			setIncrement();
+			setExtent();
+		}
+		if (evt.chromosomeChanged()) {
+			setMaximumPosition();
+		}
+		if ((int)evt.getNewWindow().getMiddlePosition() != (int)evt.getOldWindow().getMiddlePosition()) {
+			jsbPosition.setValue((int)evt.getNewWindow().getMiddlePosition());
+		}
+	}
+
+
 	/**
 	 * Initializes the multi genome button
 	 */
@@ -153,6 +180,12 @@ public class TopPanel extends JPanel implements AdjustmentListener, MouseWheelLi
 
 		// defines the mouse listener
 		jbMultiGenome.addMouseListener(new MouseAdapter() {
+			private void maybeShowPopup(MouseEvent e) {
+				if (e.isPopupTrigger()) {
+					popupMenu.show(e.getComponent(),
+							e.getX(), e.getY());
+				}
+			}
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				jbMultiGenome.setBackground(Colors.GREY);
@@ -172,33 +205,23 @@ public class TopPanel extends JPanel implements AdjustmentListener, MouseWheelLi
 			public void mouseReleased(MouseEvent e) {
 				maybeShowPopup(e);
 			}
-			private void maybeShowPopup(MouseEvent e) {
-				if (e.isPopupTrigger()) {
-					popupMenu.show(e.getComponent(),
-							e.getX(), e.getY());
-				}
-			}
 		});
 	}
 
 
-	/**
-	 * Sets the greatest attainable position
-	 */
-	private void setMaximumPosition() {
-		int extent = projectWindow.getGenomeWindow().getSize();
-		int newMaximum = projectWindow.getGenomeWindow().getChromosome().getLength() + extent;
-		jsbPosition.setMaximum(newMaximum);
-	}
-
-
-	/**
-	 * Sets the value of the increment when the scroll bar is clicked
-	 */
-	private void setIncrement() {
-		int increment = projectWindow.getGenomeWindow().getSize() / 10;
-		jsbPosition.setBlockIncrement(increment);
-		jsbPosition.setUnitIncrement(increment);
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent mwe) {
+		double newPosition = (mwe.getWheelRotation() * jsbPosition.getBlockIncrement()) + jsbPosition.getValue();
+		// newPosition must be >= 0
+		newPosition = Math.max(0, newPosition);
+		// newPosition must be <= than the max position of jsbPosition
+		newPosition = Math.min(projectWindow.getGenomeWindow().getChromosome().getLength(), newPosition);
+		int halfSize = projectWindow.getGenomeWindow().getSize() / 2;
+		Chromosome chromosome = projectWindow.getGenomeWindow().getChromosome();
+		int start = (int)(newPosition - halfSize);
+		int stop = start + projectWindow.getGenomeWindow().getSize();
+		SimpleGenomeWindow newGenomeWindow = new SimpleGenomeWindow(chromosome, start, stop);
+		projectWindow.setGenomeWindow(newGenomeWindow);
 	}
 
 
@@ -219,46 +242,22 @@ public class TopPanel extends JPanel implements AdjustmentListener, MouseWheelLi
 	}
 
 
-	@Override
-	public void adjustmentValueChanged(AdjustmentEvent arg0) {
-		int halfSize = projectWindow.getGenomeWindow().getSize() / 2;
-		Chromosome chromosome = projectWindow.getGenomeWindow().getChromosome();
-		int start = (jsbPosition.getValue() - halfSize);
-		int stop = start + projectWindow.getGenomeWindow().getSize();
-		SimpleGenomeWindow newGenomeWindow = new SimpleGenomeWindow(chromosome, start, stop);
-		projectWindow.setGenomeWindow(newGenomeWindow);
+	/**
+	 * Sets the value of the increment when the scroll bar is clicked
+	 */
+	private void setIncrement() {
+		int increment = projectWindow.getGenomeWindow().getSize() / 10;
+		jsbPosition.setBlockIncrement(increment);
+		jsbPosition.setUnitIncrement(increment);
 	}
 
 
-	@Override
-	public void mouseWheelMoved(MouseWheelEvent mwe) {
-		double newPosition = (mwe.getWheelRotation() * jsbPosition.getBlockIncrement()) + jsbPosition.getValue();
-		// newPosition must be >= 0
-		newPosition = Math.max(0, newPosition);
-		// newPosition must be <= than the max position of jsbPosition
-		newPosition = Math.min(projectWindow.getGenomeWindow().getChromosome().getLength(), newPosition);
-		int halfSize = projectWindow.getGenomeWindow().getSize() / 2;
-		Chromosome chromosome = projectWindow.getGenomeWindow().getChromosome();
-		int start = (int)(newPosition - halfSize);
-		int stop = start + projectWindow.getGenomeWindow().getSize();
-		SimpleGenomeWindow newGenomeWindow = new SimpleGenomeWindow(chromosome, start, stop);
-		projectWindow.setGenomeWindow(newGenomeWindow);
+	/**
+	 * Sets the greatest attainable position
+	 */
+	private void setMaximumPosition() {
+		int extent = projectWindow.getGenomeWindow().getSize();
+		int newMaximum = projectWindow.getGenomeWindow().getChromosome().getLength() + extent;
+		jsbPosition.setMaximum(newMaximum);
 	}
-
-
-	@Override
-	public void genomeWindowChanged(GenomeWindowEvent evt) {
-		// we notify the gui
-		if (evt.getNewWindow().getSize() != evt.getOldWindow().getSize()) {
-			setIncrement();
-			setExtent();
-		}
-		if (evt.chromosomeChanged()) {
-			setMaximumPosition();
-		}
-		if ((int)evt.getNewWindow().getMiddlePosition() != (int)evt.getOldWindow().getMiddlePosition()) {
-			jsbPosition.setValue((int)evt.getNewWindow().getMiddlePosition());
-		}
-	}
-
 }

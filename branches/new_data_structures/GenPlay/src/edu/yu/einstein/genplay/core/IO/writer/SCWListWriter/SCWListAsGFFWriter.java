@@ -80,7 +80,7 @@ public final class SCWListAsGFFWriter extends SCWListWriter implements Stoppable
 			writer.write("##GFF");
 			writer.newLine();
 			// print the data
-			for(Chromosome currentChromosome: projectChromosome) {
+			for(Chromosome currentChromosome: projectChromosomes) {
 				ListView<ScoredChromosomeWindow> currentList = data.get(currentChromosome);
 				int currentChromosomeSize = currentChromosome.getLength();
 				if (currentList != null) {

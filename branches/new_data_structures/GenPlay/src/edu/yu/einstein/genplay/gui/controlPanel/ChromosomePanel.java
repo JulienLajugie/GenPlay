@@ -33,7 +33,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
@@ -59,7 +59,7 @@ final class ChromosomePanel extends JPanel implements MouseWheelListener, ItemLi
 	private static final long serialVersionUID = -7749788921295566004L;	// generated ID
 	private final JLabel 							jlChromosome;		// label chromosome
 	private final JComboBox 						jcbChromosome;		// combo box chromosome
-	private final ProjectChromosome 				projectChromosome; 	// Instance of the Chromosome Manager
+	private final ProjectChromosomes 				projectChromosomes; 	// Instance of the Chromosome Manager
 	private final ProjectWindow						projectWindow;		// Instance of the Genome Window Manager
 
 
@@ -68,11 +68,11 @@ final class ChromosomePanel extends JPanel implements MouseWheelListener, ItemLi
 	 * @param genomeWindow a {@link SimpleGenomeWindow}
 	 */
 	ChromosomePanel() {
-		projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
 		projectWindow = ProjectManager.getInstance().getProjectWindow();
 		jlChromosome = new JLabel(" Chromosome ");
 		// Create ComboBox for the chromosome selection
-		jcbChromosome = new JComboBox(projectChromosome.toArray());
+		jcbChromosome = new JComboBox(projectChromosomes.toArray());
 		// select the first item case currentChromosome is not in the list
 		jcbChromosome.setSelectedIndex(0);
 		jcbChromosome.setSelectedItem(projectWindow.getGenomeWindow().getChromosome());
@@ -126,7 +126,7 @@ final class ChromosomePanel extends JPanel implements MouseWheelListener, ItemLi
 	 */
 	public void updateChromosomePanel () {
 		jcbChromosome.removeAllItems();
-		for (Chromosome currentChromosome: projectChromosome) {
+		for (Chromosome currentChromosome: projectChromosomes) {
 			jcbChromosome.addItem(currentChromosome);
 		}
 	}

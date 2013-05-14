@@ -51,7 +51,7 @@ public class ProjectManager implements Serializable {
 	private final ProjectConfiguration 	projectConfiguration;		// Instance of the Configuration Manager
 	private final ProjectWindow			projectWindow;				// Instance of the Genome Window Manager
 	private final ProjectZoom 			projectZoom;				// Instance of the Zoom Manager
-	private final ProjectChromosome		projectChromosome;			// Instance of the Chromosome Manager
+	private final ProjectChromosomes		projectChromosomes;			// Instance of the Chromosome Manager
 	private MultiGenomeProject			multiGenomeProject;			// Instance of the Multi Genome Project
 
 
@@ -69,7 +69,7 @@ public class ProjectManager implements Serializable {
 		out.writeBoolean(multiGenome);
 
 		out.writeObject(projectWindow);
-		out.writeObject(projectChromosome);
+		out.writeObject(projectChromosomes);
 	}
 
 
@@ -89,7 +89,7 @@ public class ProjectManager implements Serializable {
 		instance.setMultiGenomeProject(in.readBoolean());
 
 		instance.getProjectWindow().setProjectWindow((ProjectWindow) in.readObject());
-		instance.getProjectChromosome().setProjectChromosome((ProjectChromosome) in.readObject());
+		instance.getProjectChromosomes().setProjectChromosome((ProjectChromosomes) in.readObject());
 	}
 
 
@@ -128,7 +128,7 @@ public class ProjectManager implements Serializable {
 		multiGenome = false;
 		projectConfiguration = new ProjectConfiguration();
 		projectZoom = new ProjectZoom();
-		projectChromosome = new ProjectChromosome();
+		projectChromosomes = new ProjectChromosomes();
 		projectWindow = new ProjectWindow();
 	}
 
@@ -139,7 +139,7 @@ public class ProjectManager implements Serializable {
 	public void updateChromosomeList () {
 		List<Chromosome> chromosomeList;
 		chromosomeList = getAssembly().getChromosomeList();
-		projectChromosome.setChromosomeList(chromosomeList);
+		projectChromosomes.setChromosomeList(chromosomeList);
 	}
 
 
@@ -189,8 +189,8 @@ public class ProjectManager implements Serializable {
 	/**
 	 * @return the chromosomeManager
 	 */
-	public ProjectChromosome getProjectChromosome() {
-		return projectChromosome;
+	public ProjectChromosomes getProjectChromosomes() {
+		return projectChromosomes;
 	}
 
 

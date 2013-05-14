@@ -22,6 +22,7 @@
 package edu.yu.einstein.genplay.core.pileupFlattener;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
@@ -46,6 +47,7 @@ public class BinListPileupFlattener implements PileupFlattener {
 	/** Operation to compute the score of the result value of the flattening */
 	private final ScoreOperation scoreOperation;
 
+
 	/**
 	 * 
 	 * @param binSize
@@ -64,18 +66,20 @@ public class BinListPileupFlattener implements PileupFlattener {
 			windowQueue.add(window);
 			return new ArrayList<ScoredChromosomeWindow>();
 		}
-
-		int newWindowStart = window.getStart();
-		int lastStart = windowQueue.get(windowQueue.size() - 1).getStart();
-		if (newWindowStart < lastStart) {
+		int lastWindowStart = windowQueue.get(windowQueue.size() - 1).getStart();
+		int currentWindowStart = window.getStart();
+		if (currentWindowStart < lastWindowStart) {
 			throw new ElementAddedNotSortedException();
 		}
+		int firstBinStart = (lastWindowStart / binSize) * binSize;
+		int lastBinStop = ((currentWindowStart / binSize) * binSize);
+
 		// add the new window at the end of the queue
 		windowQueue.add(window);
 		// retrieve the result of the pileup flattening
-		List<ScoredChromosomeWindow> flattenPileup = getFlattenedPileup(lastStart, newWindowStart);
+		List<ScoredChromosomeWindow> flattenPileup = getFlattenedPileup(firstBinStart, lastBinStop);
 		// remove the element that are already processed
-		removeProcessedElements(newWindowStart);
+		removeProcessedElements(lastBinStop);
 		return flattenPileup;
 	}
 
@@ -104,8 +108,7 @@ public class BinListPileupFlattener implements PileupFlattener {
 		}
 		float partOfReadInsideBin = (currentRead.getSize() - (readLengthBeforeBinStart + readLengthAfterBinStop)) / (float) currentRead.getSize();
 		float score = currentRead.getScore() * partOfReadInsideBin;
-		//return score;
-		return  currentRead.getScore();
+		return score;
 	}
 
 
@@ -114,9 +117,11 @@ public class BinListPileupFlattener implements PileupFlattener {
 		if (windowQueue.isEmpty()) {
 			return new ArrayList<ScoredChromosomeWindow>();
 		}
-		int lastStart = windowQueue.get(windowQueue.size() - 1).getStart();
-		int lastStop = windowQueue.get(windowQueue.size() - 1).getStop();
-		List<ScoredChromosomeWindow> flattenedWindows = getFlattenedPileup(lastStart, lastStop);
+		int lastWindowStart = windowQueue.get(windowQueue.size() - 1).getStart();
+		int lastWindowStop = windowQueue.get(windowQueue.size() - 1).getStop() - 1;
+		int firstBinStart = (lastWindowStart / binSize) * binSize;
+		int lastBinStop = (((lastWindowStop / binSize) + 1 )* binSize);
+		List<ScoredChromosomeWindow> flattenedWindows = getFlattenedPileup(firstBinStart, lastBinStop);
 		windowQueue.clear();
 		return flattenedWindows;
 	}
@@ -124,43 +129,51 @@ public class BinListPileupFlattener implements PileupFlattener {
 
 	/**
 	 * Flattens the overlapping windows of the queue up to specified positions start and stop positions.
-	 * @param stopPosition a position
+	 * @param firstBinStart
+	 * @param lastBinStop
 	 * @return a list of {@link ScoredChromosomeWindow} resulting from the flattening process.
 	 * The score of the windows are computing accordingly to a {@link ScoreOperation} during
 	 * construction of this {@link SimpleSCWPileupFlattener} object.
 	 */
-	private List<ScoredChromosomeWindow> getFlattenedPileup(int startPosition, int stopPosition) {
+	private List<ScoredChromosomeWindow> getFlattenedPileup(int firstBinStart, int lastBinStop) {
 		List<ScoredChromosomeWindow> flattenedPileup = new ArrayList<ScoredChromosomeWindow>();
-		int firstBinCompletedStart = (startPosition / binSize) * binSize;
-		int lastBinCompletedStop = ((stopPosition / binSize) * binSize) - 1;
+
 		// nothing to do this time
-		if (firstBinCompletedStart == lastBinCompletedStop) {
+		if (firstBinStart == lastBinStop) {
 			return flattenedPileup;
 		}
-		int currentBinCompletedStart = firstBinCompletedStart;
+		int binCount = (lastBinStop - firstBinStart) / binSize;
 
-		// loop for each bin before the bin of the item to add
-		while (currentBinCompletedStart < lastBinCompletedStop) {
-			int currentBinCompletedStop = (currentBinCompletedStart + binSize) - 1;
-			int currentIndex = 0;
-			ScoredChromosomeWindow currentRead = windowQueue.get(currentIndex);
-			// list of the scores of the read falling in the bin
-			List<Float> currentScoreList = new ArrayList<Float>();
-			// loop for each read falling in the bin
-			while ((currentRead.getStart() < currentBinCompletedStop) && (currentIndex < windowQueue.size())) {
-				if (currentRead.getStop() > currentBinCompletedStart) {
-					currentScoreList.add(computeNormalizedScore(currentBinCompletedStart, currentBinCompletedStop, currentRead));
-				}
-				currentIndex++;
-				if (currentIndex < windowQueue.size()) {
-					currentRead = windowQueue.get(currentIndex);
-				}
+		List<List<Float>> scores = new ArrayList<List<Float>>(binCount);
+		for (int i = 0; i < binCount; i++) {
+			scores.add(new ArrayList<Float>());
+		}
+
+		Iterator<ScoredChromosomeWindow> windowQueueIterator = windowQueue.listIterator();
+		ScoredChromosomeWindow currentRead;
+
+		while (windowQueueIterator.hasNext() &&
+				((currentRead = windowQueueIterator.next()).getStart() < lastBinStop)) {
+			int readFirstBinStart = (currentRead.getStart() / binSize) * binSize;
+			readFirstBinStart = Math.max(readFirstBinStart, firstBinStart);
+			// we subtract one the stop because this position is excluded
+			int readLastBinStart = ((currentRead.getStop() - 1) / binSize) * binSize;
+			readLastBinStart = Math.min(readLastBinStart, lastBinStop - binSize);
+			int i = 0;
+			for (int binStart = readFirstBinStart; binStart <= readLastBinStart; binStart += binSize) {
+				float normalizedScore = computeNormalizedScore(binStart, binStart + binSize, currentRead);
+				scores.get(i++).add(normalizedScore);
 			}
-			float score = processScoreList(currentScoreList);
-			// add the completed bin to the flatten pileup
-			ScoredChromosomeWindow windowToAdd = new SimpleScoredChromosomeWindow(currentBinCompletedStart, currentBinCompletedStop, score);
-			flattenedPileup.add(windowToAdd);
-			currentBinCompletedStart += binSize;
+		}
+
+		int i = 0;
+		for (int binStart = firstBinStart; binStart < lastBinStop; binStart += binSize) {
+			float score = processScoreList(scores.get(i++));
+			if (score != 0) {
+				// add the completed bin to the flatten pileup
+				ScoredChromosomeWindow windowToAdd = new SimpleScoredChromosomeWindow(binStart, binStart + binSize, score);
+				flattenedPileup.add(windowToAdd);
+			}
 		}
 		return flattenedPileup;
 	}
@@ -223,7 +236,7 @@ public class BinListPileupFlattener implements PileupFlattener {
 	private void removeProcessedElements(int position) {
 		int i = 0;
 		while ((i < windowQueue.size()) && (windowQueue.get(i).getStart() <= position)) {
-			if (windowQueue.get(i).getStop() < position) {
+			if (windowQueue.get(i).getStop() <= position) {
 				windowQueue.remove(i);
 			} else {
 				i++;

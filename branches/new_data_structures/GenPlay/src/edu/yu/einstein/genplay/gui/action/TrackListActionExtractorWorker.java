@@ -26,7 +26,6 @@ import java.io.File;
 import edu.yu.einstein.genplay.core.IO.extractor.Extractor;
 import edu.yu.einstein.genplay.core.IO.extractor.ExtractorFactory;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
 import edu.yu.einstein.genplay.exception.exceptions.ElementAddedNotSortedException;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
 import edu.yu.einstein.genplay.gui.dialog.exceptionDialog.WarningReportDialog;
@@ -71,12 +70,6 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 	abstract protected T generateList() throws Exception;
 
 
-	@Override
-	public void handleDataError(DataLineException e) {
-		showWarningMessage(e.getFormattedMessage());
-	}
-
-
 	/**
 	 * Handles an exception occurring in the {@link #processAction()} method
 	 * @param e exception caught in {@link #processAction()}
@@ -94,8 +87,18 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 			showWarningMessage(message);
 			throw new InterruptedException();
 		} else {
-			throw e;
+			String message = "Error in file: " + fileToExtract.getName()
+					+ "\nThe following error occurred: \"" + e.getMessage() + "\""
+					+ "\nPlease check that the file is sorted and that there is no formatting errors.";
+			showWarningMessage(message);
+			throw new InterruptedException();
 		}
+	}
+
+
+	@Override
+	public void invalidDataExtracted(String invalidDataMessage) {
+		showWarningMessage(invalidDataMessage);
 	}
 
 
@@ -115,7 +118,6 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 						extractor.setAlleleType(alleleType);
 					}
 					return generateList();
-
 				}
 			} catch (Exception e) {
 				handleProcessActionException(e);

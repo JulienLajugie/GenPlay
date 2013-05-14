@@ -80,8 +80,6 @@ public class BinLayerMenu extends AbstractLayerMenu {
 	@Override
 	protected Action[] getLayerMenuActions() {
 		Action[] actions = {
-				//TODO new LASave(),
-				//TODO null,
 				new SCWLAAddConstant(),
 				new SCWLASubtractConstant(),
 				new SCWLAMultiplyConstant(),

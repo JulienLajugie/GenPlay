@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.IO.utils.ChromosomesSelector;
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
@@ -54,7 +54,7 @@ public abstract class Extractor implements InvalidDataEventsGenerator, Stoppable
 	private final static int WARNING_LIMIT = 100;
 
 	private final List<OperationProgressListener>	progressListeners; 			// list of progress listeners
-	private final ProjectChromosome 				projectChromosome;			// Reference to projectChromosome saved for fast retrieval
+	private final ProjectChromosomes 				projectChromosomes;			// Reference to projectChromosomes saved for fast retrieval
 	private final File								dataFile;					// file containing the data
 	private final List<InvalidDataListener> 		invalidDataListenersList;	// List of invalid data listeners
 	private final String							dataName;					// name of the data
@@ -74,7 +74,7 @@ public abstract class Extractor implements InvalidDataEventsGenerator, Stoppable
 	 */
 	public Extractor(File dataFile) {
 		this.dataFile = dataFile;
-		projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
 		invalidDataListenersList = new ArrayList<InvalidDataListener>();
 		warningCount = 0;
 		itemExtractedCount = 0;
@@ -175,10 +175,10 @@ public abstract class Extractor implements InvalidDataEventsGenerator, Stoppable
 
 
 	/**
-	 * @return a reference to the {@link ProjectChromosome}.
+	 * @return a reference to the {@link ProjectChromosomes}.
 	 */
-	public ProjectChromosome getProjectChromosome() {
-		return projectChromosome;
+	public ProjectChromosomes getProjectChromosome() {
+		return projectChromosomes;
 	}
 
 
@@ -207,16 +207,18 @@ public abstract class Extractor implements InvalidDataEventsGenerator, Stoppable
 	 */
 	protected void notifyDataEventListeners(DataLineException e, int lineNumber, String line) {
 		if (warningCount < WARNING_LIMIT) {
-			warningCount++;
 			e.setFile(dataFile);
 			e.setLineNumber(lineNumber);
 			e.setLine(line);
 			for (InvalidDataListener listeners: invalidDataListenersList) {
-				listeners.handleDataError(e);
+				listeners.invalidDataExtracted(e.getFormattedMessage());
 			}
-		} else {
-			// TODO send message to tell users that there is more warnings but they are not displayed
+		} else if (warningCount == WARNING_LIMIT) {
+			for (InvalidDataListener listeners: invalidDataListenersList) {
+				listeners.invalidDataExtracted("And more ...");
+			}
 		}
+		warningCount++;
 	}
 
 

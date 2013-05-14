@@ -40,24 +40,15 @@ import edu.yu.einstein.genplay.gui.dialog.exceptionDialog.ExceptionReportDialog;
  * 
  * It can also be used to notify the user of a simple information that doesn't require the regular handling.
  * 
- * @author Julien Lajugie
  * @author Nicolas Fourel
  */
 public final class ExceptionManager implements UncaughtExceptionHandler {
 
 	/** Yes option: enable feature */
 	public static final int NO = 0;
+
 	/** No option: disable feature */
 	public static final int YES = 1;
-
-	/** Print the stack trace into the console */
-	private int printStackTrace = YES;
-	/** Print the report into the console */
-	private int printReport = YES;
-	/** Show the report dialog */
-	private int showReport = YES;
-
-	private static	ExceptionManager	instance = null;		// unique instance of the singleton
 
 	/**
 	 * @return an instance of a {@link ExceptionManager}.
@@ -73,10 +64,19 @@ public final class ExceptionManager implements UncaughtExceptionHandler {
 		}
 		return instance;
 	}
-	private final ReportBuilder report;
 
+	/** Print the stack trace into the console */
+	private int printStackTrace = YES;
 
-	private Throwable throwable;
+	/** Print the report into the console */
+	private int printReport = YES;
+
+	/** Show the report dialog */
+	private int showReport = YES;
+
+	private static	ExceptionManager	instance = null;		// unique instance of the singleton
+	private final ReportBuilder 		report;					// object that creates exception reports
+	private ExceptionReportDialog 		reportDialog = null;	// dialog showing the exception report
 
 
 	/**
@@ -160,9 +160,8 @@ public final class ExceptionManager implements UncaughtExceptionHandler {
 	 */
 	private void handleThrowable (Thread thread, Throwable throwable, String message) {
 		if (!isProgressBarException(throwable)) {
-			this.throwable = throwable;
 			report.initializeReport(thread, throwable, message);
-			processError();
+			processError(throwable);
 		}
 	}
 
@@ -250,7 +249,7 @@ public final class ExceptionManager implements UncaughtExceptionHandler {
 	/**
 	 * Process the error workflow
 	 */
-	private void processError () {
+	private void processError (Throwable throwable) {
 		if (printReport()) {
 			System.out.println(report.getReport());
 		}
@@ -260,8 +259,13 @@ public final class ExceptionManager implements UncaughtExceptionHandler {
 		}
 
 		if (showReport()) {
-			ExceptionReportDialog dialog = new ExceptionReportDialog(report.getReport());
-			dialog.showDialog(null);
+			if (reportDialog == null) {
+				reportDialog = new ExceptionReportDialog();
+			}
+			String currentReport = report.getReport() + "\n\n\n";
+			currentReport += reportDialog.getReport();
+			reportDialog.setReport(currentReport);
+			reportDialog.showDialog(null);
 		}
 	}
 

@@ -26,15 +26,21 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.geneListView.GeneListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ListOfListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.SimpleGeneList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
+import edu.yu.einstein.genplay.util.ListView.SCWListViews;
 
 
 /**
@@ -107,157 +113,155 @@ public class GLOExtractIntervals implements Operation<GeneList> {
 
 	@Override
 	public GeneList compute() throws Exception {
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
 		final OperationPool op = OperationPool.getInstance();
-		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();
+		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
+		ListViewBuilder<Gene> lvbPrototype = new GeneListViewBuilder();
+		final ListOfListViewBuilder<Gene> resultListBuilder = new ListOfListViewBuilder<Gene>(lvbPrototype);
 
-		for(short i = 0; i < geneList.size(); i++) {
-			final ListView<Gene> currentList = geneList.get(i);
-			final int chromoLength = ProjectManager.getInstance().getProjectChromosome().get(i).getLength();
+		for (final Chromosome chromosome: projectChromosomes) {
+			final ListView<Gene> currentList = geneList.get(chromosome);
 
-			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {
+			Callable<Void> currentThread = new Callable<Void>() {
+
 				@Override
-				public List<Gene> call() throws Exception {
-					if (currentList == null) {
-						return null;
-					}
-
-					List<Gene> resultList = new ArrayList<Gene>();
-					for (int j = 0; (j < currentList.size()) && !stopped; j++) {
-						Gene currentGene = currentList.get(j);
-						Gene geneToAdd = new SimpleGene(currentList.get(j));
-						// search the new start
-						int newStart = 0;
-						switch (startFrom) {
-						case BEFORE_START:
-							if (currentGene.getStrand() == Strand.FIVE) {
-								newStart = Math.max(0, currentGene.getStart() - startDistance);
-							} else {
-								newStart = Math.min(chromoLength, currentGene.getStop() + startDistance);
+				public Void call() throws Exception {
+					if (currentList != null) {
+						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
+							Gene currentGene = currentList.get(j);
+							// search the new start
+							int newStart = 0;
+							int chromoLength = chromosome.getLength();
+							switch (startFrom) {
+							case BEFORE_START:
+								if (currentGene.getStrand() == Strand.FIVE) {
+									newStart = Math.max(0, currentGene.getStart() - startDistance);
+								} else {
+									newStart = Math.min(chromosome.getLength(), currentGene.getStop() + startDistance);
+								}
+								break;
+							case AFTER_START:
+								if (currentGene.getStrand() == Strand.FIVE) {
+									newStart = Math.min(chromoLength, currentGene.getStart() + startDistance);
+								} else {
+									newStart = Math.max(0, currentGene.getStop() - startDistance);
+								}
+								break;
+							case BEFORE_MIDDLE:
+								if (currentGene.getStrand() == Strand.FIVE) {
+									newStart = Math.max(0, ((currentGene.getStop() + currentGene.getStart())/2) - startDistance);
+								} else {
+									newStart = Math.min(chromoLength, ((currentGene.getStart() + currentGene.getStop())/2) + startDistance);
+								}
+								break;
+							case AFTER_MIDDLE:
+								if (currentGene.getStrand() == Strand.FIVE) {
+									newStart = Math.min(chromoLength, ((currentGene.getStop() + currentGene.getStart())/2) + startDistance);
+								} else {
+									newStart = Math.max(0, ((currentGene.getStart() + currentGene.getStop())/2) - startDistance);
+								}
+								break;
+							case BEFORE_STOP:
+								if (currentGene.getStrand() == Strand.FIVE) {
+									newStart = Math.max(0, currentGene.getStop() - startDistance);
+								} else {
+									newStart = Math.min(chromoLength, currentGene.getStart() + startDistance);
+								}
+								break;
+							case AFTER_STOP:
+								if (currentGene.getStrand() == Strand.FIVE) {
+									newStart = Math.min(chromoLength, currentGene.getStop() + startDistance);
+								} else {
+									newStart = Math.max(0, currentGene.getStart() - startDistance);
+								}
+								break;
+							default:
+								// invalid argument
+								throw new IllegalArgumentException("Invalid Start Reference");
 							}
-							break;
-						case AFTER_START:
-							if (currentGene.getStrand() == Strand.FIVE) {
-								newStart = Math.min(chromoLength, currentGene.getStart() + startDistance);
-							} else {
-								newStart = Math.max(0, currentGene.getStop() - startDistance);
+							// search the new stop
+							int newStop = 0;
+							switch (stopFrom) {
+							case BEFORE_START:
+								if (currentGene.getStrand() == Strand.FIVE) {
+									newStop = Math.max(0, currentGene.getStart() - stopDistance);
+								} else {
+									newStop =  Math.min(chromoLength, currentGene.getStop() + stopDistance);
+								}
+								break;
+							case AFTER_START:
+								if (currentGene.getStrand() == Strand.FIVE) {
+									newStop = Math.min(chromoLength, currentGene.getStart() + stopDistance);
+								} else {
+									newStop = Math.max(0, currentGene.getStop() - stopDistance);
+								}
+								break;
+							case BEFORE_MIDDLE:
+								if (currentGene.getStrand() == Strand.FIVE) {
+									newStop = Math.max(0, ((currentGene.getStop() + currentGene.getStart())/2) - stopDistance);
+								} else {
+									newStop =  Math.min(chromoLength, ((currentGene.getStart() + currentGene.getStop())/2) + stopDistance);
+								}
+								break;
+							case AFTER_MIDDLE:
+								if (currentGene.getStrand() == Strand.FIVE) {
+									newStop = Math.min(chromoLength, ((currentGene.getStop() + currentGene.getStart())/2) + stopDistance);
+								} else {
+									newStop = Math.max(0, ((currentGene.getStart() + currentGene.getStop())/2) - stopDistance);
+								}
+								break;
+							case BEFORE_STOP:
+								if (currentGene.getStrand() == Strand.FIVE) {
+									newStop = Math.max(0, currentGene.getStop() - stopDistance);
+								} else {
+									newStop =  Math.min(chromoLength, currentGene.getStart() + stopDistance);
+								}
+								break;
+							case AFTER_STOP:
+								if (currentGene.getStrand() == Strand.FIVE) {
+									newStop = Math.min(chromoLength, currentGene.getStop() + stopDistance);
+								} else {
+									newStop = Math.max(0, currentGene.getStart() - stopDistance);
+								}
+								break;
+							default:
+								// invalid argument
+								throw new IllegalArgumentException("Invalid Stop Reference");
 							}
-							break;
-						case BEFORE_MIDDLE:
-							if (currentGene.getStrand() == Strand.FIVE) {
-								newStart = Math.max(0, ((currentGene.getStop() + currentGene.getStart())/2) - startDistance);
-							} else {
-								newStart = Math.min(chromoLength, ((currentGene.getStart() + currentGene.getStop())/2) + startDistance);
+							Gene geneToAdd;
+							// add the new gene
+							if ((newStart < newStop) && (currentGene.getStrand() == Strand.FIVE)) {
+								geneToAdd = new SimpleGene(
+										currentGene.getName(),
+										currentGene.getStrand(),
+										newStart,
+										newStop,
+										currentGene.getScore(),
+										SCWListViews.createGenericSCWListView(newStart, newStop, currentGene.getScore()));
+								resultListBuilder.addElementToBuild(chromosome, geneToAdd);
+							} else if ((newStart > newStop) && (currentGene.getStrand() == Strand.THREE)) {
+								geneToAdd = new SimpleGene(
+										currentGene.getName(),
+										currentGene.getStrand(),
+										newStop,
+										newStart,
+										currentGene.getScore(),
+										SCWListViews.createGenericSCWListView(newStop, newStart, currentGene.getScore()));
+								resultListBuilder.addElementToBuild(chromosome, geneToAdd);
 							}
-							break;
-						case AFTER_MIDDLE:
-							if (currentGene.getStrand() == Strand.FIVE) {
-								newStart = Math.min(chromoLength, ((currentGene.getStop() + currentGene.getStart())/2) + startDistance);
-							} else {
-								newStart = Math.max(0, ((currentGene.getStart() + currentGene.getStop())/2) - startDistance);
-							}
-							break;
-						case BEFORE_STOP:
-							if (currentGene.getStrand() == Strand.FIVE) {
-								newStart = Math.max(0, currentGene.getStop() - startDistance);
-							} else {
-								newStart = Math.min(chromoLength, currentGene.getStart() + startDistance);
-							}
-							break;
-						case AFTER_STOP:
-							if (currentGene.getStrand() == Strand.FIVE) {
-								newStart = Math.min(chromoLength, currentGene.getStop() + startDistance);
-							} else {
-								newStart = Math.max(0, currentGene.getStart() - startDistance);
-							}
-							break;
-						default:
-							// invalid argument
-							throw new IllegalArgumentException("Invalid Start Reference");
-						}
-						// search the new stop
-						int newStop = 0;
-						switch (stopFrom) {
-						case BEFORE_START:
-							if (currentGene.getStrand() == Strand.FIVE) {
-								newStop = Math.max(0, currentGene.getStart() - stopDistance);
-							} else {
-								newStop =  Math.min(chromoLength, currentGene.getStop() + stopDistance);
-							}
-							break;
-						case AFTER_START:
-							if (currentGene.getStrand() == Strand.FIVE) {
-								newStop = Math.min(chromoLength, currentGene.getStart() + stopDistance);
-							} else {
-								newStop = Math.max(0, currentGene.getStop() - stopDistance);
-							}
-							break;
-						case BEFORE_MIDDLE:
-							if (currentGene.getStrand() == Strand.FIVE) {
-								newStop = Math.max(0, ((currentGene.getStop() + currentGene.getStart())/2) - stopDistance);
-							} else {
-								newStop =  Math.min(chromoLength, ((currentGene.getStart() + currentGene.getStop())/2) + stopDistance);
-							}
-							break;
-						case AFTER_MIDDLE:
-							if (currentGene.getStrand() == Strand.FIVE) {
-								newStop = Math.min(chromoLength, ((currentGene.getStop() + currentGene.getStart())/2) + stopDistance);
-							} else {
-								newStop = Math.max(0, ((currentGene.getStart() + currentGene.getStop())/2) - stopDistance);
-							}
-							break;
-						case BEFORE_STOP:
-							if (currentGene.getStrand() == Strand.FIVE) {
-								newStop = Math.max(0, currentGene.getStop() - stopDistance);
-							} else {
-								newStop =  Math.min(chromoLength, currentGene.getStart() + stopDistance);
-							}
-							break;
-						case AFTER_STOP:
-							if (currentGene.getStrand() == Strand.FIVE) {
-								newStop = Math.min(chromoLength, currentGene.getStop() + stopDistance);
-							} else {
-								newStop = Math.max(0, currentGene.getStart() - stopDistance);
-							}
-							break;
-						default:
-							// invalid argument
-							throw new IllegalArgumentException("Invalid Stop Reference");
-						}
-						geneToAdd.setExonScores(null);
-						// add the new gene
-						if ((newStart < newStop) && (currentGene.getStrand() == Strand.FIVE)) {
-							int[] exonStart = {newStart};
-							int[] exonStop = {newStop};
-							geneToAdd.setExonStarts(exonStart);
-							geneToAdd.setExonStops(exonStop);
-							int start = newStart;
-							int stop = newStop;
-
-							resultList.add(geneToAdd);
-						} else if ((newStart > newStop) && (currentGene.getStrand() == Strand.THREE)) {
-							int[] exonStart = {newStop};
-							int[] exonStop = {newStart};
-							geneToAdd.setExonStarts(exonStart);
-							geneToAdd.setExonStops(exonStop);
-							geneToAdd.setStart(newStop);
-							geneToAdd.setStop(newStart);
-							resultList.add(geneToAdd);
 						}
 					}
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
-					return resultList;
+					return null;
 				}
 			};
 
 			threadList.add(currentThread);
 		}
-		List<List<Gene>> result = op.startPool(threadList);
-		if (result == null) {
-			return null;
-		} else {
-			return new SimpleGeneList(result, geneList.getGeneScoreType(), geneList.getGeneDBURL());
-		}
+		op.startPool(threadList);
+		List<ListView<Gene>> data = resultListBuilder.getGenomicList();
+		return new SimpleGeneList(data, geneList.getGeneScoreType(), geneList.getGeneDBURL());
 	}
 
 

@@ -151,6 +151,7 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 		}
 	}
 
+
 	@Override
 	protected File retrieveFileToExtract() {
 		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();

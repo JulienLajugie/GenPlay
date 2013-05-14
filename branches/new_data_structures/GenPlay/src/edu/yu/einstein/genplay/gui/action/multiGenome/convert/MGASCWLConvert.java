@@ -46,7 +46,6 @@ import edu.yu.einstein.genplay.util.colors.Colors;
 
 /**
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 
@@ -76,6 +75,28 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
+	}
+
+
+	@Override
+	protected void doAtTheEnd(Boolean actionResult) {
+		success = actionResult;
+
+		if (success) {
+			try {
+				SCWList list = ((MGOBedConvertSingleFile) exportEngine).getFirstList();
+				setTrack(dialog.getFirstAlleleTrack(), list);
+			} catch (Exception e) {
+				ExceptionManager.getInstance().caughtException(e);
+			}
+
+			try {
+				SCWList list = ((MGOBedConvertSingleFile) exportEngine).getSecondList();
+				setTrack(dialog.getSecondAlleleTrack(), list);
+			} catch (Exception e) {
+				ExceptionManager.getInstance().caughtException(e);
+			}
+		}
 	}
 
 
@@ -122,28 +143,6 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 			}
 		}
 		return false;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(Boolean actionResult) {
-		success = actionResult;
-
-		if (success) {
-			try {
-				SCWList list = ((MGOBedConvertSingleFile) exportEngine).getFirstList();
-				setTrack(dialog.getFirstAlleleTrack(), list);
-			} catch (Exception e) {
-				ExceptionManager.getInstance().caughtException(e);
-			}
-
-			try {
-				SCWList list = ((MGOBedConvertSingleFile) exportEngine).getSecondList();
-				setTrack(dialog.getSecondAlleleTrack(), list);
-			} catch (Exception e) {
-				ExceptionManager.getInstance().caughtException(e);
-			}
-		}
 	}
 
 

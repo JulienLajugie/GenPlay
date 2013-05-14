@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
@@ -70,12 +70,12 @@ public class SCWLOFilterThreshold implements Operation<SCWList> {
 			throw new IllegalArgumentException("The high threshold must be greater than the low one");
 		}
 
-		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
 		final SCWListBuilder resultListBuilder = new SCWListBuilder(inputList);
 
-		for (final Chromosome chromosome: projectChromosome) {
+		for (final Chromosome chromosome: projectChromosomes) {
 			final ListView<ScoredChromosomeWindow> currentList = inputList.get(chromosome);
 			Callable<Void> currentThread = new Callable<Void>() {
 

@@ -95,7 +95,7 @@ public class GLOScoreDistributionAroundStart implements Operation<double[][]> {
 		final Collection<Callable<double[]>> threadList = new ArrayList<Callable<double[]>>();
 
 		for (int i = 0; (i < geneList.size()) && !stopped; i++) {
-			final Chromosome currentChromo = ProjectManager.getInstance().getProjectChromosome().get(i);
+			final Chromosome currentChromo = ProjectManager.getInstance().getProjectChromosomes().get(i);
 			if (((selectedChromosomes == null) || ((i < selectedChromosomes.length) && (selectedChromosomes[i]))) && (geneList.get(i) != null) && (binList.get(i) != null)) {
 				final ListView<Gene> currentGeneList = geneList.get(i);
 				Callable<double[]> currentThread = new Callable<double[]>() {

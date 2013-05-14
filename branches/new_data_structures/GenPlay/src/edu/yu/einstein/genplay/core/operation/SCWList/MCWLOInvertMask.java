@@ -65,7 +65,7 @@ public class MCWLOInvertMask implements Operation<SCWList> {
 
 		for (short i = 0; i < scwList.size(); i++) {
 			final ListView<ScoredChromosomeWindow> currentList = scwList.get(i);
-			final Chromosome currentChromosome = ProjectManager.getInstance().getProjectChromosome().get(i);
+			final Chromosome currentChromosome = ProjectManager.getInstance().getProjectChromosomes().get(i);
 
 			Callable<ListView<ScoredChromosomeWindow>> currentThread = new Callable<ListView<ScoredChromosomeWindow>>() {
 				@Override

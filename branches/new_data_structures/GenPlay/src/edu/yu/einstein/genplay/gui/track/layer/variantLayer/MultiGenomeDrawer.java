@@ -47,9 +47,9 @@ import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.f
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.variantInformation.VariantInformationDialog;
 
+
 /**
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class MultiGenomeDrawer implements Serializable {
 
@@ -76,63 +76,6 @@ public class MultiGenomeDrawer implements Serializable {
 
 
 	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-
-		out.writeObject(variantDrawer);
-		out.writeObject(handler);
-
-		out.writeObject(chromosome);
-		out.writeObject(statistics);
-
-		out.writeObject(variantDataList);
-		out.writeObject(filtersList);
-		out.writeObject(variantDisplayList);
-
-		out.writeBoolean(showReference);
-		out.writeBoolean(showFilter);
-		out.writeBoolean(forceFitToScreen);
-		out.writeBoolean(locked);
-		out.writeObject(variantUnderMouse);
-	}
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	@SuppressWarnings("unchecked")
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-
-		variantDrawer = (MultiGenomeVariantDrawer) in.readObject();
-		handler = (MultiGenomeListHandler) in.readObject();
-
-		variantDialogs = new ArrayList<VariantInformationDialog>();
-		chromosome = (Chromosome) in.readObject();
-		statistics = (VCFFileStatistics) in.readObject();
-
-
-		variantDataList = (List<VariantData>) in.readObject();
-		filtersList = (List<MGFilter>) in.readObject();
-		variantDisplayList = (List<VariantDisplayList>) in.readObject();
-
-		showReference = in.readBoolean();
-		showFilter = in.readBoolean();
-		forceFitToScreen = in.readBoolean();
-		locked = in.readBoolean();
-		variantUnderMouse = (Variant) in.readObject();
-
-		variantDrawer.setDrawer(this);
-	}
-
-
-	/**
 	 * Constructor of {@link MultiGenomeDrawer}
 	 */
 	public MultiGenomeDrawer () {
@@ -149,201 +92,6 @@ public class MultiGenomeDrawer implements Serializable {
 		MGDisplaySettings displaySettings = MGDisplaySettings.getInstance();
 		showFilter = displaySettings.includeFilteredVariants();
 		showReference = displaySettings.includeReferences();
-	}
-
-
-
-	/**
-	 * Update the variant lists
-	 * @param variantDataList	the {@link VariantData} settings
-	 * @param filtersList		the {@link FiltersData} settings
-	 */
-	public void updateMultiGenomeInformation(List<VariantData> variantDataList, List<MGFilter> filtersList) {
-		boolean generateLists = false;
-		boolean filtersHaveChanged = false;
-
-		if (hasToReset(variantDataList)) {
-			this.variantDataList = new ArrayList<VariantData>();
-			variantDisplayList = new ArrayList<VariantDisplayList>();
-			statistics = null;
-			variantUnderMouse = null;
-			handler.initialize(variantDisplayList);
-		} else if (hasChromosomeChanged()) {
-			this.chromosome = getCurrentChromosome();
-			generateLists = true;
-			if (variantDisplayList.size() > 0) {
-				for (VariantDisplayList variantDisplay: variantDisplayList) {
-					variantDisplay.generateLists();
-				}
-			}
-		} else {
-			// Update variants
-			generateLists = updateVariant(variantDataList);
-
-			// Update filters
-			filtersHaveChanged = updateFilter(filtersList);
-		}
-
-		if (generateLists || filtersHaveChanged) {
-			statistics = null;
-			for (VariantDisplayList currentList: variantDisplayList) {
-				currentList.updateDisplay(filtersList, showFilter);
-			}
-			handler.initialize(variantDisplayList);
-			forceFitToScreen = true;
-		}
-
-		boolean haveOptionsChanged = haveOptionsChanged();
-		if (haveOptionsChanged) {
-			forceFitToScreen = true;
-			for (VariantDisplayList currentList: variantDisplayList) {
-				currentList.updateDisplayForOption(showReference, showFilter);
-			}
-		}
-
-		if (generateLists || filtersHaveChanged || haveOptionsChanged) {
-			killStripesDialogs();
-		}
-	}
-
-
-	private boolean hasToReset (List<VariantData> variantDataList) {
-		if ((this.variantDataList.size() > 0) && (variantDataList.size() == 0)) {
-			return true;
-		}
-		return false;
-	}
-
-
-	private boolean updateVariant (List<VariantData> variantDataList) {
-		boolean generateLists = false;
-
-		if ((variantDataList != null) && (variantDataList.size() > 0)) {
-			List<VariantData> newVariantDataList = new ArrayList<VariantData>();
-			List<VariantDisplayList> newVariantDisplayList = new ArrayList<VariantDisplayList>();
-
-			for (int i = 0; i < variantDataList.size(); i++) {
-				VariantData newData = variantDataList.get(i);
-				if (newData != null) {
-					newVariantDataList.add(newData);
-					int dataIndex = this.variantDataList.indexOf(newData);
-					if ((dataIndex > -1) && !newData.hasChanged()) {
-						newVariantDisplayList.add(this.variantDisplayList.get(dataIndex));
-					} else {
-						generateLists = true;
-						newData.setHasChanged(false);
-						VariantDisplayList newList = new VariantDisplayList();
-						newList.initialize(newData.getGenome(), newData.getVariationTypeList());
-						newList.generateLists();
-						newVariantDisplayList.add(newList);
-					}
-				}
-			}
-
-			this.variantDataList = newVariantDataList;
-			this.variantDisplayList = newVariantDisplayList;
-		}
-
-		return generateLists;
-	}
-
-
-
-	private boolean updateFilter (List<MGFilter> filtersList) {
-		boolean filtersHaveChanged = false;
-		if (haveFiltersChanged(filtersList)) {
-			filtersHaveChanged = true;
-			this.filtersList = filtersList;
-		}
-		return filtersHaveChanged;
-	}
-
-
-	///////////////////////////////////////////////////////////////////// Information comparison
-	/**
-	 * Compare given multi genome information with the current ones.
-	 * @param stripesList the new stripes list
-	 * @param filtersList the new filters list
-	 * @return true if new information are different than the current ones
-	 */
-	public boolean hasMultiGenomeInformationChanged(List<VariantData> stripesList, List<MGFilter> filtersList) {
-		if (haveVariantsChanged(stripesList) || haveFiltersChanged(filtersList)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	/**
-	 * Compare given variant information with the current one.
-	 * @param variantDataList the new stripes list
-	 * @return true if new information are different than the current ones
-	 */
-	private boolean haveVariantsChanged(List<VariantData> variantDataList) {
-		ListComparator<VariantData> stripesComparator = new ListComparator<VariantData>();
-		return stripesComparator.areDifferent(this.variantDataList, variantDataList);
-	}
-
-	/**
-	 * Compare given filters information with the current one.
-	 * @param filtersList the new filters list
-	 * @return true if new information are different than the current ones
-	 */
-	private boolean haveFiltersChanged(List<MGFilter> filtersList) {
-		ListComparator<MGFilter> filtersComparator = new ListComparator<MGFilter>();
-		return filtersComparator.areDifferent(this.filtersList, filtersList);
-	}
-
-	/**
-	 * Compare the current chromosome and the chromosome used for the stripes/filter
-	 * @return true if the chromosome has changed, false otherwise
-	 */
-	private boolean hasChromosomeChanged() {
-		if (chromosome == null) {
-			return true;
-		}
-		return !chromosome.equals(getCurrentChromosome());
-	}
-
-	/**
-	 * Check if display major options have changed
-	 * @return true if display major options have changed, false otherwise
-	 */
-	private boolean haveOptionsChanged() {
-		boolean showReference = MGDisplaySettings.getInstance().includeReferences();
-		boolean showFiltered = MGDisplaySettings.DRAW_FILTERED_VARIANT == MGDisplaySettings.YES_MG_OPTION;
-
-		if ((this.showReference != showReference) || (this.showFilter != showFiltered)) {
-			this.showReference = showReference;
-			this.showFilter = showFiltered;
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * @return the current chromosome
-	 */
-	private Chromosome getCurrentChromosome() {
-		return ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome();
-	}
-	/////////////////////////////////////////////////////////////////////
-
-
-	/**
-	 * @return the list of {@link VariantData}
-	 */
-	public List<VariantData> getVariantDataList() {
-		return variantDataList;
-	}
-
-
-	/**
-	 * @return the list of {@link MGFilter}
-	 */
-	public List<MGFilter> getFiltersList() {
-		return filtersList;
 	}
 
 
@@ -382,58 +130,44 @@ public class MultiGenomeDrawer implements Serializable {
 
 
 	/**
-	 * Shows the {@link VariantInformationDialog} is the mouse is on top of a {@link Variant}
-	 * @param height height of the track
-	 * @param e the {@link MouseEvent}
+	 * @return the current chromosome
 	 */
-	public void showVariantInformationDialog(int height, MouseEvent e) {
-		if (ProjectManager.getInstance().isMultiGenomeProject()) { // we must be in a multi genome project
-			//if (isOverVariant(height, e)) {
-			if (variantUnderMouse != null) {
-				VariantInformationDialog toolTip = new VariantInformationDialog(this); // we create the information dialog
-				variantDialogs.add(toolTip);
-				int pos = Math.round(ProjectManager.getInstance().getProjectWindow().screenToGenomePosition(e.getX())); // we translate the position on the screen into a position on the genome
-				VariantDisplayMultiListScanner iterator = new VariantDisplayMultiListScanner(variantDisplayList);
-				iterator.initializeDiploide();
-				iterator.setPosition(pos);
-				iterator.setDisplayDependancy(true);
-				toolTip.show(iterator, e.getXOnScreen(), e.getYOnScreen()); // we show it
-			}
-		}
+	private Chromosome getCurrentChromosome() {
+		return ProjectManager.getInstance().getProjectWindow().getGenomeWindow().getChromosome();
 	}
 
 
 	/**
-	 * Checks if the track has to be repaint when the mouse exit from it. Basically, it has to be repaint if a variant was under the mouse in order to not highlight it.
-	 * @return true if the track has to be repaint, false otherwise
+	 * @return the list of {@link MGFilter}
 	 */
-	public boolean hasToBeRepaintAfterExit() {
-		if (variantUnderMouse != null) {
-			variantUnderMouse = null;
-			return true;
-		}
-		return false;
+	public List<MGFilter> getFiltersList() {
+		return filtersList;
 	}
 
 
 	/**
-	 * Look if the mouse is on top of a {@link Variant}, set the related attribute and return the result.
-	 * @param height height of the track
-	 * @param e the {@link MouseEvent}
-	 * @return	true if the mouse is on top of a {@link Variant}, false otherwise
+	 * @return the {@link VCFFileStatistics} of the track
 	 */
-	public boolean isOverVariant(int height, MouseEvent e) {
-		if (ProjectManager.getInstance().isMultiGenomeProject() && !locked) { // if we are in multi genome project
-			Variant variant = getVariantUnderMouse(height, e.getX(), e.getY()); // we get the variant (Y is needed to know if the variant is on the upper or lower half of the track)
-			if (variant != null) { // if a variant has been found
-				variantUnderMouse = variant; // the mouse is on this variant (we save it)
-				return true; // we return true
-			} else if (variantUnderMouse != null) { // no variant has been found but one was already defined (the mouse is just getting out of the stripe)
-				variantUnderMouse = null; // there is no variant under the mouse anymore
-				return true;
-			}
-		}
-		return false;
+	public VCFFileStatistics getStatistics() {
+		return statistics;
+	}
+
+
+	/**
+	 * @return the list of {@link VariantData}
+	 */
+	public List<VariantData> getVariantDataList() {
+		return variantDataList;
+	}
+
+
+
+	/**
+	 * This method does not process anything, only return the {@link Variant} that has been found earlier!
+	 * @return the {@link Variant} under the mouse.
+	 */
+	public Variant getVariantUnderMouse () {
+		return variantUnderMouse;
 	}
 
 
@@ -512,29 +246,122 @@ public class MultiGenomeDrawer implements Serializable {
 
 
 	/**
-	 * This method does not process anything, only return the {@link Variant} that has been found earlier!
-	 * @return the {@link Variant} under the mouse.
+	 * Compare the current chromosome and the chromosome used for the stripes/filter
+	 * @return true if the chromosome has changed, false otherwise
 	 */
-	public Variant getVariantUnderMouse () {
-		return variantUnderMouse;
+	private boolean hasChromosomeChanged() {
+		if (chromosome == null) {
+			return true;
+		}
+		return !chromosome.equals(getCurrentChromosome());
 	}
 
 
 	/**
-	 * Sets the {@link VariantData} list
-	 * @param variantDataList the new {@link VariantData} list to use
+	 * Compare given multi genome information with the current ones.
+	 * @param stripesList the new stripes list
+	 * @param filtersList the new filters list
+	 * @return true if new information are different than the current ones
 	 */
-	public void setVariantDataList(List<VariantData> variantDataList) {
-		this.variantDataList = variantDataList;
+	public boolean hasMultiGenomeInformationChanged(List<VariantData> stripesList, List<MGFilter> filtersList) {
+		if (haveVariantsChanged(stripesList) || haveFiltersChanged(filtersList)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 
 	/**
-	 * Sets the {@link MGFilter} list
-	 * @param filterList the new {@link MGFilter} list to use
+	 * Checks if the track has to be repaint when the mouse exit from it. Basically, it has to be repaint if a variant was under the mouse in order to not highlight it.
+	 * @return true if the track has to be repaint, false otherwise
 	 */
-	public void setFiltersList(List<MGFilter> filterList) {
-		this.filtersList = filterList;
+	public boolean hasToBeRepaintAfterExit() {
+		if (variantUnderMouse != null) {
+			variantUnderMouse = null;
+			return true;
+		}
+		return false;
+	}
+
+
+	private boolean hasToReset (List<VariantData> variantDataList) {
+		if ((this.variantDataList.size() > 0) && (variantDataList.size() == 0)) {
+			return true;
+		}
+		return false;
+	}
+
+
+	/**
+	 * Compare given filters information with the current one.
+	 * @param filtersList the new filters list
+	 * @return true if new information are different than the current ones
+	 */
+	private boolean haveFiltersChanged(List<MGFilter> filtersList) {
+		ListComparator<MGFilter> filtersComparator = new ListComparator<MGFilter>();
+		return filtersComparator.areDifferent(this.filtersList, filtersList);
+	}
+
+
+	/**
+	 * Check if display major options have changed
+	 * @return true if display major options have changed, false otherwise
+	 */
+	private boolean haveOptionsChanged() {
+		boolean showReference = MGDisplaySettings.getInstance().includeReferences();
+		boolean showFiltered = MGDisplaySettings.DRAW_FILTERED_VARIANT == MGDisplaySettings.YES_MG_OPTION;
+
+		if ((this.showReference != showReference) || (showFilter != showFiltered)) {
+			this.showReference = showReference;
+			showFilter = showFiltered;
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * Compare given variant information with the current one.
+	 * @param variantDataList the new stripes list
+	 * @return true if new information are different than the current ones
+	 */
+	private boolean haveVariantsChanged(List<VariantData> variantDataList) {
+		ListComparator<VariantData> stripesComparator = new ListComparator<VariantData>();
+		return stripesComparator.areDifferent(this.variantDataList, variantDataList);
+	}
+
+
+	/**
+	 * Look if the mouse is on top of a {@link Variant}, set the related attribute and return the result.
+	 * @param height height of the track
+	 * @param e the {@link MouseEvent}
+	 * @return	true if the mouse is on top of a {@link Variant}, false otherwise
+	 */
+	public boolean isOverVariant(int height, MouseEvent e) {
+		if (ProjectManager.getInstance().isMultiGenomeProject() && !locked) { // if we are in multi genome project
+			Variant variant = getVariantUnderMouse(height, e.getX(), e.getY()); // we get the variant (Y is needed to know if the variant is on the upper or lower half of the track)
+			if (variant != null) { // if a variant has been found
+				variantUnderMouse = variant; // the mouse is on this variant (we save it)
+				return true; // we return true
+			} else if (variantUnderMouse != null) { // no variant has been found but one was already defined (the mouse is just getting out of the stripe)
+				variantUnderMouse = null; // there is no variant under the mouse anymore
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	/**
+	 * Disposes all {@link VariantInformationDialog} related to this track
+	 */
+	private void killStripesDialogs() {
+		for (VariantInformationDialog dialog : variantDialogs) {
+			dialog.dispose();
+		}
+		variantDialogs = new ArrayList<VariantInformationDialog>();
 	}
 
 
@@ -547,18 +374,43 @@ public class MultiGenomeDrawer implements Serializable {
 
 
 	/**
-	 * Unlocks the painting in all methods (used once information changed)
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
 	 */
-	public void unlockPainting() {
-		locked = false;
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+
+		variantDrawer = (MultiGenomeVariantDrawer) in.readObject();
+		handler = (MultiGenomeListHandler) in.readObject();
+
+		variantDialogs = new ArrayList<VariantInformationDialog>();
+		chromosome = (Chromosome) in.readObject();
+		statistics = (VCFFileStatistics) in.readObject();
+
+
+		variantDataList = (List<VariantData>) in.readObject();
+		filtersList = (List<MGFilter>) in.readObject();
+		variantDisplayList = (List<VariantDisplayList>) in.readObject();
+
+		showReference = in.readBoolean();
+		showFilter = in.readBoolean();
+		forceFitToScreen = in.readBoolean();
+		locked = in.readBoolean();
+		variantUnderMouse = (Variant) in.readObject();
+
+		variantDrawer.setDrawer(this);
 	}
 
 
 	/**
-	 * @return the {@link VCFFileStatistics} of the track
+	 * Sets the {@link MGFilter} list
+	 * @param filterList the new {@link MGFilter} list to use
 	 */
-	public VCFFileStatistics getStatistics() {
-		return statistics;
+	public void setFiltersList(List<MGFilter> filterList) {
+		filtersList = filterList;
 	}
 
 
@@ -572,13 +424,164 @@ public class MultiGenomeDrawer implements Serializable {
 
 
 	/**
-	 * Disposes all {@link VariantInformationDialog} related to this track
+	 * Sets the {@link VariantData} list
+	 * @param variantDataList the new {@link VariantData} list to use
 	 */
-	private void killStripesDialogs() {
-		for (VariantInformationDialog dialog : variantDialogs) {
-			dialog.dispose();
+	public void setVariantDataList(List<VariantData> variantDataList) {
+		this.variantDataList = variantDataList;
+	}
+
+
+	/**
+	 * Shows the {@link VariantInformationDialog} is the mouse is on top of a {@link Variant}
+	 * @param height height of the track
+	 * @param e the {@link MouseEvent}
+	 */
+	public void showVariantInformationDialog(int height, MouseEvent e) {
+		if (ProjectManager.getInstance().isMultiGenomeProject()) { // we must be in a multi genome project
+			//if (isOverVariant(height, e)) {
+			if (variantUnderMouse != null) {
+				VariantInformationDialog toolTip = new VariantInformationDialog(this); // we create the information dialog
+				variantDialogs.add(toolTip);
+				int pos = Math.round(ProjectManager.getInstance().getProjectWindow().screenToGenomePosition(e.getX())); // we translate the position on the screen into a position on the genome
+				VariantDisplayMultiListScanner iterator = new VariantDisplayMultiListScanner(variantDisplayList);
+				iterator.initializeDiploide();
+				iterator.setPosition(pos);
+				iterator.setDisplayDependancy(true);
+				toolTip.show(iterator, e.getXOnScreen(), e.getYOnScreen()); // we show it
+			}
 		}
-		variantDialogs = new ArrayList<VariantInformationDialog>();
+	}
+
+
+	/**
+	 * Unlocks the painting in all methods (used once information changed)
+	 */
+	public void unlockPainting() {
+		locked = false;
+	}
+
+
+	private boolean updateFilter (List<MGFilter> filtersList) {
+		boolean filtersHaveChanged = false;
+		if (haveFiltersChanged(filtersList)) {
+			filtersHaveChanged = true;
+			this.filtersList = filtersList;
+		}
+		return filtersHaveChanged;
+	}
+
+
+	/**
+	 * Update the variant lists
+	 * @param variantDataList	the {@link VariantData} settings
+	 * @param filtersList		the {@link FiltersData} settings
+	 */
+	public void updateMultiGenomeInformation(List<VariantData> variantDataList, List<MGFilter> filtersList) {
+		boolean generateLists = false;
+		boolean filtersHaveChanged = false;
+
+		if (hasToReset(variantDataList)) {
+			this.variantDataList = new ArrayList<VariantData>();
+			variantDisplayList = new ArrayList<VariantDisplayList>();
+			statistics = null;
+			variantUnderMouse = null;
+			handler.initialize(variantDisplayList);
+		} else if (hasChromosomeChanged()) {
+			chromosome = getCurrentChromosome();
+			generateLists = true;
+			if (variantDisplayList.size() > 0) {
+				for (VariantDisplayList variantDisplay: variantDisplayList) {
+					variantDisplay.generateLists();
+				}
+			}
+		} else {
+			// Update variants
+			generateLists = updateVariant(variantDataList);
+
+			// Update filters
+			filtersHaveChanged = updateFilter(filtersList);
+		}
+
+		if (generateLists || filtersHaveChanged) {
+			statistics = null;
+			for (VariantDisplayList currentList: variantDisplayList) {
+				currentList.updateDisplay(filtersList, showFilter);
+			}
+			handler.initialize(variantDisplayList);
+			forceFitToScreen = true;
+		}
+
+		boolean haveOptionsChanged = haveOptionsChanged();
+		if (haveOptionsChanged) {
+			forceFitToScreen = true;
+			for (VariantDisplayList currentList: variantDisplayList) {
+				currentList.updateDisplayForOption(showReference, showFilter);
+			}
+		}
+
+		if (generateLists || filtersHaveChanged || haveOptionsChanged) {
+			killStripesDialogs();
+		}
+	}
+
+
+	private boolean updateVariant (List<VariantData> variantDataList) {
+		boolean generateLists = false;
+
+		if ((variantDataList != null) && (variantDataList.size() > 0)) {
+			List<VariantData> newVariantDataList = new ArrayList<VariantData>();
+			List<VariantDisplayList> newVariantDisplayList = new ArrayList<VariantDisplayList>();
+
+			for (int i = 0; i < variantDataList.size(); i++) {
+				VariantData newData = variantDataList.get(i);
+				if (newData != null) {
+					newVariantDataList.add(newData);
+					int dataIndex = this.variantDataList.indexOf(newData);
+					if ((dataIndex > -1) && !newData.hasChanged()) {
+						newVariantDisplayList.add(variantDisplayList.get(dataIndex));
+					} else {
+						generateLists = true;
+						newData.setHasChanged(false);
+						VariantDisplayList newList = new VariantDisplayList();
+						newList.initialize(newData.getGenome(), newData.getVariationTypeList());
+						newList.generateLists();
+						newVariantDisplayList.add(newList);
+					}
+				}
+			}
+
+			this.variantDataList = newVariantDataList;
+			variantDisplayList = newVariantDisplayList;
+		}
+
+		return generateLists;
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+
+		out.writeObject(variantDrawer);
+		out.writeObject(handler);
+
+		out.writeObject(chromosome);
+		out.writeObject(statistics);
+
+		out.writeObject(variantDataList);
+		out.writeObject(filtersList);
+		out.writeObject(variantDisplayList);
+
+		out.writeBoolean(showReference);
+		out.writeBoolean(showFilter);
+		out.writeBoolean(forceFitToScreen);
+		out.writeBoolean(locked);
+		out.writeObject(variantUnderMouse);
 	}
 
 }

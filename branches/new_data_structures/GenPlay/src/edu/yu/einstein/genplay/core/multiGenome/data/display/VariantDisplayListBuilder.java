@@ -74,12 +74,243 @@ public class VariantDisplayListBuilder {
 
 
 	/**
+	 * Adds a list to another one
+	 * @param list01 list receiving the other list
+	 * @param list02 list containing the elements to add
+	 */
+	private void addFromListToList (List<List<Variant>> list01, List<List<Variant>> list02) {
+		// Add missing lists
+		int add = list02.size() - list01.size();
+		for (int i = 0; i < add; i++) {
+			list01.add(new ArrayList<Variant>());
+		}
+		for (int i = 0; i < list02.size(); i++) {
+			list01.get(i).addAll(list02.get(i));
+		}
+	}
+
+
+	/**
+	 * Adjust the size of the {@link ReferenceVariant}.
+	 * They have been added earlier but they have to be shrinked in case of overlaps.
+	 * @param list a list of {@link Variant}
+	 * @return a list of {@link Variant} without overlap of {@link ReferenceVariant}
+	 */
+	private List<List<Variant>> adjustVariants (List<List<Variant>> list) {
+		List<List<Variant>> newList = new ArrayList<List<Variant>>();
+		for (List<Variant> current: list) {
+			List<Variant> newCurrent = new ArrayList<Variant>();
+			if (current.size() == 1) {
+				newCurrent.add(current.get(0));
+			} else if (current.size() > 1) {
+				Collections.sort(current, new VariantComparator());
+				int currentIndex = 1;
+				Variant previousVariant = current.get(0);
+				Variant currentVariant = current.get(currentIndex);
+				newCurrent.add(previousVariant);
+				while (currentVariant != null) {
+
+					if (currentVariant instanceof ReferenceVariant) {
+						if (!(previousVariant instanceof ReferenceVariant)) {
+							currentVariant.setStart(previousVariant.getStop());
+							if (currentVariant.getLength() > 0) {
+								newCurrent.add(currentVariant);
+							}
+						}
+					} else {
+						newCurrent.add(currentVariant);
+					}
+
+					currentIndex++;
+					if (currentIndex < current.size()) {
+						previousVariant = current.get(currentIndex - 1);
+						currentVariant = current.get(currentIndex);
+					} else {
+						previousVariant = null;
+						currentVariant = null;
+					}
+				}
+			}
+			newList.add(newCurrent);
+		}
+		return newList;
+	}
+
+
+	/**
+	 * @param line a {@link MGLineContent}
+	 * @return true if the given line defines for at least one of the required variation
+	 */
+	private boolean defineVariantType (MGLineContent line) {
+		int[] alternatives = line.getAlternatives();
+		for (int alternative: alternatives) {
+			if (alternative > 0) {
+				if (types.contains(VariantType.INSERTION)) {
+					return true;
+				}
+			} else if (alternative < 0) {
+				if (types.contains(VariantType.DELETION)) {
+					return true;
+				}
+			} else {
+				if (types.contains(VariantType.SNPS)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+
+	/**
+	 * Add the necessary references of all {@link Variant} of the list
+	 * @param list list of {@link Variant}
+	 * @return a list of {@link Variant} including references
+	 */
+	private List<List<Variant>> fillWithReferences (List<List<Variant>> list) {
+		List<List<Variant>> newList = getEmptyList(list.size());
+		for (int i = 0; i < list.size(); i++) {
+			List<Variant> currentList = list.get(i);
+			for (Variant variant: currentList) {
+				newList.get(i).add(variant);
+				Variant reference = new ReferenceVariant(currentContent, variant.getReferencePositionIndex(), variant.getStart(), variant.getStop(), getReferenceType(variant));
+				for (int j = 0; j < list.size(); j++) {
+					if (j != i) {
+						newList.get(j).add(reference);
+					}
+				}
+			}
+		}
+		return newList;
+	}
+
+
+	/**
+	 * Create a new genotype based on the native one.
+	 * All alternative indexes not required in the original genotype are replaced by reference indexes in the new genotype.
+	 * Examples:
+	 *  - A genotype REF/INS where insertions are requested will be corrected as REF/INS.
+	 *  - A genotype REF/INS where deletions are requested will be corrected as REF/REF, meaning there is nothing to process here.
+	 *  - A genotype REF/INS/DEL where insertions are requested will be corrected as REF/INS/REF.
+	 * @param line the {@link MGLineContent}
+	 * @return the corrected genotype
+	 */
+	private byte[] getAdjustedGenotype (MGLineContent line) {
+		byte[] genotype = line.getGenotypes().get(genomeName);
+		byte[] newGenotype = new byte[genotype.length];
+		int[] alternatives = line.getAlternatives();
+		for (int i = 0; i < genotype.length; i++) {
+
+			if (genotype[i] == MGSynchronizer.NO_CALL) {
+				if (types.contains(VariantType.NO_CALL)) {
+					newGenotype[i] = MGSynchronizer.NO_CALL;
+				}
+			} else if (genotype[i] == MGSynchronizer.REFERENCE) {
+				newGenotype[i] = MGSynchronizer.REFERENCE;
+			} else {
+				boolean insert = false;
+				int alternative = alternatives[genotype[i]];
+				if (alternative > 0) {
+					if (types.contains(VariantType.INSERTION)) {
+						insert = true;
+					}
+				} else if (alternative < 0) {
+					if (types.contains(VariantType.DELETION)) {
+						insert = true;
+					}
+				} else {
+					if (types.contains(VariantType.SNPS)) {
+						insert = true;
+					}
+				}
+				if (insert) {
+					newGenotype[i] = genotype[i];
+				} else {
+					newGenotype[i] = MGSynchronizer.REFERENCE;
+				}
+			}
+		}
+		return newGenotype;
+	}
+
+
+	/**
+	 * Retrieves all {@link Variant} at one specific index and return the dominant one
+	 * @param positionindex	the index of the position
+	 * @return the dominant {@link Variant}, null if no {@link Variant}
+	 */
+	private Variant getCurrentDominantVariant (int positionindex) {
+		List<Variant> variants = currentContent.getVariants().getVariants(positionindex);
+		List<Variant> eligibleVariants = new ArrayList<Variant>();
+		for (Variant current: variants) {
+			if (types.contains(current.getType())) {
+				eligibleVariants.add(current);
+			}
+		}
+		return getDominantVariant(eligibleVariants);
+	}
+
+
+	/**
+	 * @param variants a list of {@link Variant}
+	 * @return the dominant {@link Variant} among a list of {@link Variant}, null if not found
+	 */
+	private Variant getDominantVariant (List<Variant> variants) {
+		if ((variants == null) || (variants.size() == 0)) {
+			return null;
+		}
+
+		if (variants.size() == 1) {
+			return variants.get(0);
+		}
+
+		Variant variant = variants.get(0);
+		for (int i = 1; i < variants.size(); i++) {
+			if (variants.get(i).isDominant(variant)) {
+				variant = variants.get(i);
+			}
+		}
+		return variant;
+	}
+
+
+	/**
+	 * @param size size of the list
+	 * @return an empty list of list with the given size
+	 */
+	private List<List<Variant>> getEmptyList (int size) {
+		List<List<Variant>> result = new ArrayList<List<Variant>>();
+		for (int i = 0; i < size; i++) {
+			result.add(new ArrayList<Variant>());
+		}
+		return result;
+	}
+
+
+	/**
+	 * @param chromosomeContent the {@link MGChromosomeContent} giving the maximum number of alleles
+	 * @return an empty list of {@link Variant} according to the maximum number of alleles
+	 */
+	private List<List<Variant>> getEmptyVariantList (MGChromosomeContent chromosomeContent) {
+		int size = chromosomeContent.getMaxGenotypeNumber();
+		if (size < 2) {
+			size = 2;
+		}
+		List<List<Variant>> list = new ArrayList<List<Variant>>();
+		for (int i = 0; i < size; i++) {
+			list.add(new ArrayList<Variant>());
+		}
+		return list;
+	}
+
+
+	/**
 	 * @param genomeName the name of a genome
 	 * @param types a list of {@link VariantType}
 	 * @return the list of {@link Variant} for the current chromosome
 	 */
 	public List<List<Variant>> getList (String genomeName, List<VariantType> types) {
-		return getList(genomeName, types, ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome());
+		return getList(genomeName, types, ProjectManager.getInstance().getProjectWindow().getGenomeWindow().getChromosome());
 	}
 
 
@@ -106,6 +337,25 @@ public class VariantDisplayListBuilder {
 		}
 
 		return variants;
+	}
+
+
+
+	/**
+	 * @param variant a {@link Variant}
+	 * @return the {@link VariantType} related to a {@link Variant}
+	 */
+	private VariantType getReferenceType (Variant variant) {
+		if (variant instanceof InsertionVariant) {
+			return VariantType.REFERENCE_INSERTION;
+		} else if (variant instanceof DeletionVariant) {
+			return VariantType.REFERENCE_DELETION;
+		} else if (variant instanceof SNPVariant) {
+			return VariantType.REFERENCE_SNP;
+		} else if (variant instanceof NoCallVariant) {
+			return VariantType.REFERENCE_NO_CALL;
+		}
+		return null;
 	}
 
 
@@ -180,184 +430,6 @@ public class VariantDisplayListBuilder {
 
 
 	/**
-	 * Retrieves all {@link Variant} at one specific index and return the dominant one
-	 * @param positionindex	the index of the position
-	 * @return the dominant {@link Variant}, null if no {@link Variant}
-	 */
-	private Variant getCurrentDominantVariant (int positionindex) {
-		List<Variant> variants = currentContent.getVariants().getVariants(positionindex);
-		List<Variant> eligibleVariants = new ArrayList<Variant>();
-		for (Variant current: variants) {
-			if (types.contains(current.getType())) {
-				eligibleVariants.add(current);
-			}
-		}
-		return getDominantVariant(eligibleVariants);
-	}
-
-
-	/**
-	 * @param variants a list of {@link Variant}
-	 * @return the dominant {@link Variant} among a list of {@link Variant}, null if not found
-	 */
-	private Variant getDominantVariant (List<Variant> variants) {
-		if ((variants == null) || (variants.size() == 0)) {
-			return null;
-		}
-
-		if (variants.size() == 1) {
-			return variants.get(0);
-		}
-
-		Variant variant = variants.get(0);
-		for (int i = 1; i < variants.size(); i++) {
-			if (variants.get(i).isDominant(variant)) {
-				variant = variants.get(i);
-			}
-		}
-		return variant;
-	}
-
-
-	/**
-	 * @param size size of the list
-	 * @return an empty list of list with the given size
-	 */
-	private List<List<Variant>> getEmptyList (int size) {
-		List<List<Variant>> result = new ArrayList<List<Variant>>();
-		for (int i = 0; i < size; i++) {
-			result.add(new ArrayList<Variant>());
-		}
-		return result;
-	}
-
-
-	/**
-	 * Add the necessary references of all {@link Variant} of the list
-	 * @param list list of {@link Variant}
-	 * @return a list of {@link Variant} including references
-	 */
-	private List<List<Variant>> fillWithReferences (List<List<Variant>> list) {
-		List<List<Variant>> newList = getEmptyList(list.size());
-		for (int i = 0; i < list.size(); i++) {
-			List<Variant> currentList = list.get(i);
-			for (Variant variant: currentList) {
-				newList.get(i).add(variant);
-				Variant reference = new ReferenceVariant(currentContent, variant.getReferencePositionIndex(), variant.getStart(), variant.getStop(), getReferenceType(variant));
-				for (int j = 0; j < list.size(); j++) {
-					if (j != i) {
-						newList.get(j).add(reference);
-					}
-				}
-			}
-		}
-		return newList;
-	}
-
-
-	/**
-	 * Adds a list to another one
-	 * @param list01 list receiving the other list
-	 * @param list02 list containing the elements to add
-	 */
-	private void addFromListToList (List<List<Variant>> list01, List<List<Variant>> list02) {
-		// Add missing lists
-		int add = list02.size() - list01.size();
-		for (int i = 0; i < add; i++) {
-			list01.add(new ArrayList<Variant>());
-		}
-		for (int i = 0; i < list02.size(); i++) {
-			list01.get(i).addAll(list02.get(i));
-		}
-	}
-
-
-	/**
-	 * @param variant a {@link Variant}
-	 * @return the {@link VariantType} related to a {@link Variant}
-	 */
-	private VariantType getReferenceType (Variant variant) {
-		if (variant instanceof InsertionVariant) {
-			return VariantType.REFERENCE_INSERTION;
-		} else if (variant instanceof DeletionVariant) {
-			return VariantType.REFERENCE_DELETION;
-		} else if (variant instanceof SNPVariant) {
-			return VariantType.REFERENCE_SNP;
-		} else if (variant instanceof NoCallVariant) {
-			return VariantType.REFERENCE_NO_CALL;
-		}
-		return null;
-	}
-
-
-	/**
-	 * @param chromosomeContent the {@link MGChromosomeContent} giving the maximum number of alleles
-	 * @return an empty list of {@link Variant} according to the maximum number of alleles
-	 */
-	private List<List<Variant>> getEmptyVariantList (MGChromosomeContent chromosomeContent) {
-		int size = chromosomeContent.getMaxGenotypeNumber();
-		if (size < 2) {
-			size = 2;
-		}
-		List<List<Variant>> list = new ArrayList<List<Variant>>();
-		for (int i = 0; i < size; i++) {
-			list.add(new ArrayList<Variant>());
-		}
-		return list;
-	}
-
-
-
-	/**
-	 * Create a new genotype based on the native one.
-	 * All alternative indexes not required in the original genotype are replaced by reference indexes in the new genotype.
-	 * Examples:
-	 *  - A genotype REF/INS where insertions are requested will be corrected as REF/INS.
-	 *  - A genotype REF/INS where deletions are requested will be corrected as REF/REF, meaning there is nothing to process here.
-	 *  - A genotype REF/INS/DEL where insertions are requested will be corrected as REF/INS/REF.
-	 * @param line the {@link MGLineContent}
-	 * @return the corrected genotype
-	 */
-	private byte[] getAdjustedGenotype (MGLineContent line) {
-		byte[] genotype = line.getGenotypes().get(genomeName);
-		byte[] newGenotype = new byte[genotype.length];
-		int[] alternatives = line.getAlternatives();
-		for (int i = 0; i < genotype.length; i++) {
-
-			if (genotype[i] == MGSynchronizer.NO_CALL) {
-				if (types.contains(VariantType.NO_CALL)) {
-					newGenotype[i] = MGSynchronizer.NO_CALL;
-				}
-			} else if (genotype[i] == MGSynchronizer.REFERENCE) {
-				newGenotype[i] = MGSynchronizer.REFERENCE;
-			} else {
-				boolean insert = false;
-				int alternative = alternatives[genotype[i]];
-				if (alternative > 0) {
-					if (types.contains(VariantType.INSERTION)) {
-						insert = true;
-					}
-				} else if (alternative < 0) {
-					if (types.contains(VariantType.DELETION)) {
-						insert = true;
-					}
-				} else {
-					if (types.contains(VariantType.SNPS)) {
-						insert = true;
-					}
-				}
-				if (insert) {
-					newGenotype[i] = genotype[i];
-				} else {
-					newGenotype[i] = MGSynchronizer.REFERENCE;
-				}
-			}
-		}
-		return newGenotype;
-	}
-
-
-	/**
 	 * @param genotype a full genotype as an array of bytes
 	 * @return true if all alleles define the exact same variation, false otherwise
 	 */
@@ -391,78 +463,6 @@ public class VariantDisplayListBuilder {
 			return (genotype[0] == MGSynchronizer.REFERENCE);
 		}
 		return false;
-	}
-
-
-	/**
-	 * @param line a {@link MGLineContent}
-	 * @return true if the given line defines for at least one of the required variation
-	 */
-	private boolean defineVariantType (MGLineContent line) {
-		int[] alternatives = line.getAlternatives();
-		for (int alternative: alternatives) {
-			if (alternative > 0) {
-				if (types.contains(VariantType.INSERTION)) {
-					return true;
-				}
-			} else if (alternative < 0) {
-				if (types.contains(VariantType.DELETION)) {
-					return true;
-				}
-			} else {
-				if (types.contains(VariantType.SNPS)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-
-	/**
-	 * Adjust the size of the {@link ReferenceVariant}.
-	 * They have been added earlier but they have to be shrinked in case of overlaps.
-	 * @param list a list of {@link Variant}
-	 * @return a list of {@link Variant} without overlap of {@link ReferenceVariant}
-	 */
-	private List<List<Variant>> adjustVariants (List<List<Variant>> list) {
-		List<List<Variant>> newList = new ArrayList<List<Variant>>();
-		for (List<Variant> current: list) {
-			List<Variant> newCurrent = new ArrayList<Variant>();
-			if (current.size() == 1) {
-				newCurrent.add(current.get(0));
-			} else if (current.size() > 1) {
-				Collections.sort(current, new VariantComparator());
-				int currentIndex = 1;
-				Variant previousVariant = current.get(0);
-				Variant currentVariant = current.get(currentIndex);
-				newCurrent.add(previousVariant);
-				while (currentVariant != null) {
-
-					if (currentVariant instanceof ReferenceVariant) {
-						if (!(previousVariant instanceof ReferenceVariant)) {
-							currentVariant.setStart(previousVariant.getStop());
-							if (currentVariant.getLength() > 0) {
-								newCurrent.add(currentVariant);
-							}
-						}
-					} else {
-						newCurrent.add(currentVariant);
-					}
-
-					currentIndex++;
-					if (currentIndex < current.size()) {
-						previousVariant = current.get(currentIndex - 1);
-						currentVariant = current.get(currentIndex);
-					} else {
-						previousVariant = null;
-						currentVariant = null;
-					}
-				}
-			}
-			newList.add(newCurrent);
-		}
-		return newList;
 	}
 
 

@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOComputeStats;
 import edu.yu.einstein.genplay.core.operation.binList.BLOComputeAverageList;
@@ -71,7 +71,7 @@ public final class BinList extends AbstractListView<ListView<ScoredChromosomeWin
 		case MASK:
 			return SimpleSCWList.getCreationStepCount(SCWListType.MASK);
 		case BIN:
-			return 4;
+			return AVERAGE_BIN_SIZE_FACTORS.length + 2;
 		default:
 			return 0;
 		}
@@ -116,10 +116,10 @@ public final class BinList extends AbstractListView<ListView<ScoredChromosomeWin
 	 */
 	public BinList(List<ListView<ScoredChromosomeWindow>> data, int binSize) throws InterruptedException, ExecutionException, CloneNotSupportedException  {
 		super();
-		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
 		this.binSize = binSize;
-		this.data = new BinListView[projectChromosome.size()];
-		for (int i = 0; i < projectChromosome.size(); i++){
+		this.data = new BinListView[projectChromosomes.size()];
+		for (int i = 0; i < projectChromosomes.size(); i++){
 			if (i < data.size()) {
 				this.data[i] = (BinListView) data.get(i);
 			}
@@ -142,16 +142,16 @@ public final class BinList extends AbstractListView<ListView<ScoredChromosomeWin
 
 	@Override
 	public ListView<ScoredChromosomeWindow> get(Chromosome chromosome) throws InvalidChromosomeException {
-		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
-		int chromosomeIndex = projectChromosome.getIndex(chromosome);
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
+		int chromosomeIndex = projectChromosomes.getIndex(chromosome);
 		return get(chromosomeIndex);
 	}
 
 
 	@Override
 	public ScoredChromosomeWindow get(Chromosome chromosome, int index) throws InvalidChromosomeException {
-		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
-		int chromosomeIndex = projectChromosome.getIndex(chromosome);
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
+		int chromosomeIndex = projectChromosomes.getIndex(chromosome);
 		return get(chromosomeIndex, index);
 	}
 
@@ -219,7 +219,11 @@ public final class BinList extends AbstractListView<ListView<ScoredChromosomeWin
 	@Override
 	public float getScore(Chromosome chromosome, int position) {
 		int binIndex = position / binSize;
-		return get(chromosome).get(binIndex).getScore();
+		if (binIndex < size(chromosome)) {
+			return get(chromosome).get(binIndex).getScore();
+		} else {
+			return 0f;
+		}
 	}
 
 

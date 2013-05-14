@@ -116,7 +116,7 @@ public class ConcatenateBinListWriter implements Writer, Stoppable {
 				}
 				writer.newLine();
 
-				for (Chromosome currentChromosome: ProjectManager.getInstance().getProjectChromosome()) {
+				for (Chromosome currentChromosome: ProjectManager.getInstance().getProjectChromosomes()) {
 					int currentChromosomeSize = currentChromosome.getLength();
 					int binCount = (currentChromosomeSize / binSize) + 1;
 					int j = 0;

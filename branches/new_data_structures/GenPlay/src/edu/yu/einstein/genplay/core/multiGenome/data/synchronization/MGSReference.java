@@ -97,7 +97,7 @@ public class MGSReference implements Serializable {
 		List<List<MGSOffset>> chromosomeListOfList = allele.getOffsetList();									// get the chromosome list of offset list of the reference genome allele
 		List<List<MGSOffset>> chromosomeListOfListTmp = new ArrayList<List<MGSOffset>>();						// create a temporary chromosome list of offset list
 
-		int chromosomeListSize = ProjectManager.getInstance().getProjectChromosome().getChromosomeList().size();		// get the number of chromosome
+		int chromosomeListSize = ProjectManager.getInstance().getProjectChromosomes().getChromosomeList().size();		// get the number of chromosome
 		for (int i = 0; i < chromosomeListSize; i++) {																	// loop from 0 to the number of chromosome (loop on the chromosomes)
 			List<MGSOffset> listOfMGOffset = chromosomeListOfList.get(i);												// get the offset list of the current chromosome
 			List<MGSOffset> listOfMGOffsetTmp = new IntArrayAsOffsetList();												// create a temporary offset list
@@ -148,7 +148,7 @@ public class MGSReference implements Serializable {
 	 * Synchronizes the position of the reference genome.
 	 */
 	public void synchronizePosition () {
-		int chromosomeListSize = ProjectManager.getInstance().getProjectChromosome().getChromosomeList().size();		// get the number of chromosome
+		int chromosomeListSize = ProjectManager.getInstance().getProjectChromosomes().getChromosomeList().size();		// get the number of chromosome
 		for (int i = 0; i < chromosomeListSize; i++) {																	// loop from 0 to the number of chromosome (loop on the chromosomes)
 			List<MGSOffset> offsetList = allele.getOffsetList().get(i);
 			int value = 0;

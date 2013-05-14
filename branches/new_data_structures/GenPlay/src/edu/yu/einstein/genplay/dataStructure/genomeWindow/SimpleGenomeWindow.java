@@ -24,7 +24,7 @@ package edu.yu.einstein.genplay.dataStructure.genomeWindow;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
@@ -68,12 +68,12 @@ public final class SimpleGenomeWindow extends AbstractGenomeWindow implements Ge
 	/**
 	 * Creates an instance of {@link GenomeWindow} from a String.
 	 * @param genomeWindowStr String following the format "chr:start-stop" (ex: "chr1:100-120")
-	 * @param projectChromosome a {@link ProjectChromosome}
+	 * @param projectChromosomes a {@link ProjectChromosomes}
 	 * @throws ChromosomeWindowException
 	 * @throws InvalidChromosomeException
 	 */
-	public SimpleGenomeWindow(String genomeWindowStr, ProjectChromosome projectChromosome) throws ChromosomeWindowException, InvalidChromosomeException {
-		chromosome = projectChromosome.get(Utils.split(genomeWindowStr, ':')[0].trim());
+	public SimpleGenomeWindow(String genomeWindowStr, ProjectChromosomes projectChromosomes) throws ChromosomeWindowException, InvalidChromosomeException {
+		chromosome = projectChromosomes.get(Utils.split(genomeWindowStr, ':')[0].trim());
 		chromosomeWindow = new SimpleChromosomeWindow(Utils.split(genomeWindowStr, ':')[1].trim());
 	}
 

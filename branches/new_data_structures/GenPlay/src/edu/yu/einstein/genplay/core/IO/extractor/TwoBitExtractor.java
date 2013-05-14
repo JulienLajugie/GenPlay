@@ -28,7 +28,7 @@ import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
@@ -148,15 +148,15 @@ public class TwoBitExtractor extends Extractor implements Stoppable {
 		for (int i = 0; i < sequenceCount; i++) {
 			short k = 0;
 			boolean found = false;
-			ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
-			while ((k < projectChromosome.size()) && (!found)) {
-				if (projectChromosome.get(k).getName().equalsIgnoreCase(sequenceNames[i])) {
+			ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
+			while ((k < projectChromosomes.size()) && (!found)) {
+				if (projectChromosomes.get(k).getName().equalsIgnoreCase(sequenceNames[i])) {
 					// if the execution need to be stopped we generate an InterruptedException
 					if (isStopped) {
 						throw new InterruptedException();
 					}
 					long currentPosition = twoBitFile.getFilePointer();
-					Chromosome chromosome = projectChromosome.get(k);
+					Chromosome chromosome = projectChromosomes.get(k);
 					data.add(extractChromosome(chromosome, offsets[i]));
 					twoBitFile.seek(currentPosition);
 					found = true;

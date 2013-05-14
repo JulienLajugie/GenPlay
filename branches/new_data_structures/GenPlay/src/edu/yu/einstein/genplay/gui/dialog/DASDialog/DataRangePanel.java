@@ -115,7 +115,7 @@ public class DataRangePanel extends JPanel {
 		});
 
 		// combo box for the chromosome
-		jcbChromosomeNumber= new JComboBox(ProjectManager.getInstance().getProjectChromosome().toArray());
+		jcbChromosomeNumber= new JComboBox(ProjectManager.getInstance().getProjectChromosomes().toArray());
 		jcbChromosomeNumber.setEnabled(false);
 		jcbChromosomeNumber.addItemListener(new ItemListener() {
 			@Override

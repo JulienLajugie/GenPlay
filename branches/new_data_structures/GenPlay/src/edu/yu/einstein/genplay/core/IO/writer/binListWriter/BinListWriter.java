@@ -24,7 +24,7 @@ package edu.yu.einstein.genplay.core.IO.writer.binListWriter;
 import java.io.File;
 
 import edu.yu.einstein.genplay.core.IO.writer.Writer;
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
@@ -38,7 +38,7 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList
  */
 public abstract class BinListWriter implements Writer {
 
-	protected final ProjectChromosome	projectChromosome;	// ChromosomeManager
+	protected final ProjectChromosomes	projectChromosomes;	// ChromosomeManager
 	protected final File 				outputFile;			// output file
 	protected final BinList				data;				// data to print
 	protected final String				name;				// name of the BinList
@@ -54,7 +54,7 @@ public abstract class BinListWriter implements Writer {
 	 * @param name a name for the {@link BinList}
 	 */
 	public BinListWriter(File outputFile, BinList data, String name) {
-		this.projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		this.projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
 		this.outputFile = outputFile;
 		this.data = data;
 		this.name = name;

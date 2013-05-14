@@ -33,7 +33,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileFilter;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
@@ -46,6 +46,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.LogBase;
 import edu.yu.einstein.genplay.dataStructure.enums.SaturationType;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.gui.dialog.chromosomeChooser.ChromosomeChooserDialog;
 import edu.yu.einstein.genplay.gui.fileFilter.BedFilter;
@@ -160,8 +161,8 @@ public final class Utils {
 	 * The elements of the array are set to true if selected or false otherwise.
 	 */
 	public final static boolean[] chooseChromosomes(Component parentComponent) {
-		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
-		List<Chromosome> chromosomeList = projectChromosome.getChromosomeList();
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
+		List<Chromosome> chromosomeList = projectChromosomes.getChromosomeList();
 		Collections.sort(chromosomeList);
 		ChromosomeChooserDialog chromoChooser = new ChromosomeChooserDialog();
 		chromoChooser.setFullChromosomeList(chromosomeList);
@@ -401,7 +402,7 @@ public final class Utils {
 	 * @param indexStop		index of the list to stop the scan
 	 * @return				the index where the value of the window is found or the index right after if the exact value is not found
 	 */
-	private static <T extends ChromosomeWindow> int findChromosomePosition(List<T> list, int value, int indexStart, int indexStop) {
+	private static <T extends ChromosomeWindow> int findChromosomePosition(ListView<T> list, int value, int indexStart, int indexStop) {
 		if (indexStart == indexStop) {
 			return indexStart;
 		} else {
@@ -836,7 +837,7 @@ public final class Utils {
 	 * @param positionStop
 	 * @return a sublist of the input list
 	 */
-	public final static <T extends ChromosomeWindow> List<T> searchChromosomeWindowInterval(List<T> list, int positionStart, int positionStop) {
+	public final static <T extends ChromosomeWindow> List<T> searchChromosomeWindowInterval(ListView<T> list, int positionStart, int positionStop) {
 		if ((list == null) || (list.size() == 0)) {
 			return null;
 		}

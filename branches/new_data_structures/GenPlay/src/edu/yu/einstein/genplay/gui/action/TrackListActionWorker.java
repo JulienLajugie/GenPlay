@@ -102,8 +102,12 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 
 	@Override
 	public final void actionPerformed(ActionEvent arg0) {
-		worker = new PooledActionWorker();
-		worker.execute();
+		try {
+			worker = new PooledActionWorker();
+			worker.execute();
+		} catch (Exception e) {
+			ExceptionManager.getInstance().caughtException(e);
+		}
 	}
 
 
@@ -187,7 +191,7 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 	 * @return the result of the action
 	 * @throws Exception
 	 */
-	protected abstract T processAction() throws Exception;;
+	protected abstract T processAction() throws Exception;
 
 
 	@Override

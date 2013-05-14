@@ -148,6 +148,19 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 
 
 	/**
+	 * Show {@link ProjectWindow} content
+	 */
+	public void print() {
+		String info = "";
+		info += "Factor: " + xRatio + "\n";
+		info += "Window: " + genomeWindow.getStart() + " to " + genomeWindow.getStop() + ", size: " + genomeWindow.getSize() + "\n";
+		info += "Factor / Window size: " + (xRatio / genomeWindow.getSize()) + "\n";
+		info += "Window size / Factor: " + (genomeWindow.getSize() / xRatio);
+		System.out.println(info);
+	}
+
+
+	/**
 	 * Method used for unserialization
 	 * @param in
 	 * @throws IOException
@@ -210,9 +223,6 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 			updateXRatio();
 			// we notify the listeners
 			GenomeWindowEvent evt = new GenomeWindowEvent(this, oldGenomeWindow, genomeWindow);
-			if (evt.chromosomeChanged()) {
-				ProjectManager.getInstance().getProjectChromosome().setCurrentChromosome(genomeWindow.getChromosome());
-			}
 			if ((gwListenerList != null) && !gwListenerList.isEmpty()) {
 				for (GenomeWindowListener currentListener: gwListenerList) {
 					currentListener.genomeWindowChanged(evt);
@@ -243,19 +253,6 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 			// update the xRatio
 			updateXRatio();
 		}
-	}
-
-
-	/**
-	 * Show {@link ProjectWindow} content
-	 */
-	public void show() {
-		String info = "";
-		info += "Factor: " + xRatio + "\n";
-		info += "Window: " + genomeWindow.getStart() + " to " + genomeWindow.getStop() + ", size: " + genomeWindow.getSize() + "\n";
-		info += "Factor / Window size: " + (xRatio / genomeWindow.getSize()) + "\n";
-		info += "Window size / Factor: " + (genomeWindow.getSize() / xRatio);
-		System.out.println(info);
 	}
 
 

@@ -36,7 +36,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.gui.dialog.chromosomeChooser.ChromosomeChooserDialog;
@@ -52,7 +52,7 @@ import edu.yu.einstein.genplay.util.Utils;
 class ChromoSelectionPanel extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = -8940594564630580785L; // generated ID
-	private final ProjectChromosome cm; 					// chromosome manager
+	private final ProjectChromosomes cm; 					// chromosome manager
 	private final JList 			jlSelectedChromo;		// list showing the selected chromosomes
 	private final JScrollPane 		jcpSelectedChromo;		// scroll pane containing the list
 	private final JButton 			jbModifySelection;		// button to modify the selection
@@ -68,7 +68,7 @@ class ChromoSelectionPanel extends JPanel implements ActionListener {
 		jlSelectedChromo = new JList(new DefaultListModel());
 		fullChromosomeList = new ArrayList<Chromosome>();
 		selectedChromosomes = new ArrayList<Chromosome>();
-		cm = ProjectManager.getInstance().getProjectChromosome();
+		cm = ProjectManager.getInstance().getProjectChromosomes();
 		for (int i = 0; i < cm.size(); i++) {
 			fullChromosomeList.add(cm.get(i));
 			if ((defaultSelection == null) || (defaultSelection[i])) {

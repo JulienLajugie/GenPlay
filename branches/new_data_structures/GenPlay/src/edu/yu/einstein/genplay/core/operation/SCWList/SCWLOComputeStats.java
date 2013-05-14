@@ -26,7 +26,7 @@ import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
@@ -77,7 +77,7 @@ public class SCWLOComputeStats implements Operation<Void> {
 	@Override
 	public Void compute() throws InterruptedException, ExecutionException {
 		// retrieve the project manager
-		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
 
 		// retrieve the instance of the OperationPool singleton
 		final OperationPool op = OperationPool.getInstance();
@@ -93,11 +93,11 @@ public class SCWLOComputeStats implements Operation<Void> {
 		nonNullLength = 0l;
 
 		// create arrays so each statics variable can be calculated for each chromosome
-		final float[] mins = new float[projectChromosome.size()];
-		final float[] maxs = new float[projectChromosome.size()];
-		final double[] stDevs = new double[projectChromosome.size()];
-		final double[] scoreSums = new double[projectChromosome.size()];
-		final long[] nonNullLengths = new long[projectChromosome.size()];
+		final float[] mins = new float[projectChromosomes.size()];
+		final float[] maxs = new float[projectChromosomes.size()];
+		final double[] stDevs = new double[projectChromosomes.size()];
+		final double[] scoreSums = new double[projectChromosomes.size()];
+		final long[] nonNullLengths = new long[projectChromosomes.size()];
 
 		// computes min / max / total score / non null bin count for each chromosome
 		for(short i = 0; i < inputList.size(); i++)  {
@@ -132,7 +132,7 @@ public class SCWLOComputeStats implements Operation<Void> {
 		op.startPool(threadList);
 
 		// compute the genome wide result from the chromosomes results
-		for (int i = 0; i < projectChromosome.size(); i++) {
+		for (int i = 0; i < projectChromosomes.size(); i++) {
 			minimum = Math.min(minimum, mins[i]);
 			maximum = Math.max(maximum, maxs[i]);
 			scoreSum += scoreSums[i];
@@ -172,7 +172,7 @@ public class SCWLOComputeStats implements Operation<Void> {
 			op.startPool(threadList);
 
 			// compute the genome wide standard deviation
-			for (int i = 0; i < projectChromosome.size(); i++) {
+			for (int i = 0; i < projectChromosomes.size(); i++) {
 				standardDeviation += stDevs[i];
 			}
 			standardDeviation = Math.sqrt(standardDeviation / (double) nonNullLength);

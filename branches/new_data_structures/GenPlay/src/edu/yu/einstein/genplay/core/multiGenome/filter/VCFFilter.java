@@ -89,7 +89,7 @@ public class VCFFilter extends MGFilter implements Serializable {
 	 * @param results list of VCF lines delimited by columns (must contains the column of the filter)
 	 */
 	public void generateFilter (List<VCFLine> results) {
-		vcfFile.initializePositionList(ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome(), results);
+		vcfFile.initializePositionList(ProjectManager.getInstance().getProjectWindow().getGenomeWindow().getChromosome(), results);
 		if (results != null) {
 			booleanList = new ByteArrayAsBooleanList(vcfFile.getPositionList().size());
 			for (int i = 0; i < results.size(); i++) {

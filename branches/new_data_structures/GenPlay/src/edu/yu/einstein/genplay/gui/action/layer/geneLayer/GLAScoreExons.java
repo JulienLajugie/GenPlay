@@ -25,11 +25,9 @@ import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
-import edu.yu.einstein.genplay.core.operation.geneList.GLOScoreFromBinList;
 import edu.yu.einstein.genplay.core.operation.geneList.GLOScoreFromSCWList;
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
@@ -72,6 +70,14 @@ public class GLAScoreExons  extends TrackListActionOperationWorker<GeneList> {
 
 
 	@Override
+	protected void doAtTheEnd(GeneList actionResult) {
+		if (actionResult != null) {
+			selectedLayer.setData(actionResult, operation.getDescription() + otherLayer.getName());
+		}
+	}
+
+
+	@Override
 	public Operation<GeneList> initializeOperation() throws Exception {
 		selectedLayer = (GeneLayer) getValue("Layer");
 		if (selectedLayer != null) {
@@ -91,23 +97,11 @@ public class GLAScoreExons  extends TrackListActionOperationWorker<GeneList> {
 			if (otherLayer != null) {
 				GeneScoreType geneScore = Utils.chooseGeneScoreCalculation(getRootPane());
 				if (geneScore != null) {
-					if (otherLayer.getData() instanceof BinList) {
-						operation = new GLOScoreFromBinList(selectedLayer.getData(), (BinList) otherLayer.getData(), geneScore);
-					} else if (otherLayer.getData() instanceof SCWList) {
-						operation = new GLOScoreFromSCWList(selectedLayer.getData(), (SCWList) otherLayer.getData(), geneScore);
-					}
+					operation = new GLOScoreFromSCWList(selectedLayer.getData(), (SCWList) otherLayer.getData(), geneScore);
 					return operation;
 				}
 			}
 		}
 		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(GeneList actionResult) {
-		if (actionResult != null) {
-			selectedLayer.setData(actionResult, operation.getDescription() + otherLayer.getName());
-		}
 	}
 }

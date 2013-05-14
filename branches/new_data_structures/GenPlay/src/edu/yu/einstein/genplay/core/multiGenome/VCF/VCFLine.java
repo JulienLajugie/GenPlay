@@ -355,7 +355,7 @@ public class VCFLine implements Serializable {
 			chromosome = chromosomeNamesMap.get(getCHROM());
 		} else {
 			String shortLineName = getShortChromosomeName(getCHROM());
-			List<Chromosome> chromosomeList = ProjectManager.getInstance().getProjectChromosome().getChromosomeList();
+			List<Chromosome> chromosomeList = ProjectManager.getInstance().getProjectChromosomes().getChromosomeList();
 			for (Chromosome current: chromosomeList) {
 				String shortProjectChromosomeName = getShortChromosomeName(current.getName());
 				if (shortLineName.equals(shortProjectChromosomeName)) {

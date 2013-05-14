@@ -23,7 +23,7 @@ package edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList;
 
 import java.io.Serializable;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
@@ -60,8 +60,8 @@ public final class GeneSearcher implements Serializable {
 	 * @return the chromosome of the last gene found
 	 */
 	public Chromosome getGeneChromosome() {
-		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
-		return projectChromosome.get(lastFoundChromoIndex);
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
+		return projectChromosomes.get(lastFoundChromoIndex);
 	}
 
 

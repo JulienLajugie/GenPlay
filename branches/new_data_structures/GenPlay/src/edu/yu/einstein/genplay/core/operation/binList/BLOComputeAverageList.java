@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
@@ -70,13 +70,13 @@ public class BLOComputeAverageList implements Operation<List<ListView<ScoredChro
 		// size of the bins of the average list
 		final int averageListBinSize = binList.getBinSize() * factor;
 
-		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
 		final ListViewBuilder<ScoredChromosomeWindow> builderPrototype = new BinListViewBuilder(averageListBinSize);
 		final ListOfListViewBuilder<ScoredChromosomeWindow> resultListBuilder = new ListOfListViewBuilder<ScoredChromosomeWindow>(builderPrototype);
 
-		for (final Chromosome chromosome: projectChromosome) {
+		for (final Chromosome chromosome: projectChromosomes) {
 			final ListView<ScoredChromosomeWindow> currentList = binList.get(chromosome);
 
 			Callable<Void> currentThread = new Callable<Void>() {
@@ -93,7 +93,7 @@ public class BLOComputeAverageList implements Operation<List<ListView<ScoredChro
 								}
 							}
 							int start = i * binList.getBinSize();
-							int stop = (start + averageListBinSize) - 1;
+							int stop = start + averageListBinSize;
 							float score;
 							if (scoreList.isEmpty()) {
 								score = 0;

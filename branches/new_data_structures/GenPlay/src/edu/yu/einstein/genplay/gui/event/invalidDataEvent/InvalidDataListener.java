@@ -14,29 +14,29 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.event.invalidDataEvent;
 
-import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
-
 
 /**
- * Classes implementing this class are warned from {@link InvalidDataEventsGenerator} and have to handle the error
- * 
+ * The listener interface for receiving invalid data events from a file extractor.
+ *
  * @author Nicolas Fourel
  * @author Julien Lajugie
- * @version 0.1
  */
 public interface InvalidDataListener {
 
-	
+
 	/**
-	 * Invoked when an error happens in a file.
-	 * @param e	invalid data line exception
+	 * Invoked when invalid data is extracted from a file
+	 * @param invalidDataMessage message describing the invalid data
 	 */
-	public abstract void handleDataError(DataLineException e);
+	public abstract void invalidDataExtracted(String invalidDataMessage);
+
+
+
 }

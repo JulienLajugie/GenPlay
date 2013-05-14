@@ -27,7 +27,7 @@ import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
@@ -73,9 +73,9 @@ public final class SimpleGeneList extends AbstractListView<ListView<Gene>> imple
 	 */
 	public SimpleGeneList(List<ListView<Gene>> data, GeneScoreType geneScoreType, String geneDBURL) throws InterruptedException, ExecutionException {
 		super();
-		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
-		this.data = new GeneListView[projectChromosome.size()];
-		for (int i = 0; i < projectChromosome.size(); i++){
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
+		this.data = new GeneListView[projectChromosomes.size()];
+		for (int i = 0; i < projectChromosomes.size(); i++){
 			if (i < data.size()) {
 				this.data[i] = data.get(i);
 			}
@@ -88,8 +88,8 @@ public final class SimpleGeneList extends AbstractListView<ListView<Gene>> imple
 
 	@Override
 	public ListView<Gene> get(Chromosome chromosome) throws InvalidChromosomeException {
-		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
-		int index = projectChromosome.getIndex(chromosome);
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
+		int index = projectChromosomes.getIndex(chromosome);
 		return get(index);
 	}
 

@@ -31,7 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.repeatListView.RepeatFamilyListView;
@@ -65,8 +65,8 @@ public class SimpleRepeatFamilyList extends AbstractListView<ListView<RepeatFami
 	 */
 	public SimpleRepeatFamilyList(List<ListView<RepeatFamilyListView>> data) {
 		super();
-		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
-		this.data = new ArrayList<ListView<RepeatFamilyListView>>(projectChromosome.size());
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
+		this.data = new ArrayList<ListView<RepeatFamilyListView>>(projectChromosomes.size());
 		for (int i = 0; i < data.size(); i++){
 			this.data.add(data.get(i));
 		}
@@ -76,16 +76,16 @@ public class SimpleRepeatFamilyList extends AbstractListView<ListView<RepeatFami
 
 	@Override
 	public ListView<RepeatFamilyListView> get(Chromosome chromosome) throws InvalidChromosomeException {
-		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
-		int chromosomeIndex = projectChromosome.getIndex(chromosome);
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
+		int chromosomeIndex = projectChromosomes.getIndex(chromosome);
 		return get(chromosomeIndex);
 	}
 
 
 	@Override
 	public RepeatFamilyListView get(Chromosome chromosome, int index) throws InvalidChromosomeException {
-		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
-		int chromosomeIndex = projectChromosome.getIndex(chromosome);
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
+		int chromosomeIndex = projectChromosomes.getIndex(chromosome);
 		return get(chromosomeIndex, index);
 	}
 
@@ -150,8 +150,8 @@ public class SimpleRepeatFamilyList extends AbstractListView<ListView<RepeatFami
 
 	@Override
 	public int size(Chromosome chromosome) throws InvalidChromosomeException {
-		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
-		int index = projectChromosome.getIndex(chromosome);
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
+		int index = projectChromosomes.getIndex(chromosome);
 		return size(index);
 	}
 

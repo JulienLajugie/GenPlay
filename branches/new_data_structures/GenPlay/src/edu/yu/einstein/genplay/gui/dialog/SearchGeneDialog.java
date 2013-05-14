@@ -254,7 +254,7 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 	 */
 	private boolean canMove (Gene geneFound, Chromosome chromosome) {
 		if (jcbChromosome.isSelected()) {
-			if (!chromosome.equals(ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome())) {
+			if (!chromosome.equals(ProjectManager.getInstance().getProjectWindow().getGenomeWindow().getChromosome())) {
 				return false;
 			}
 		}

@@ -80,7 +80,7 @@ public final class BinListAsBedGraphWriter extends BinListWriter implements Stop
 			writer.newLine();
 			int binSize = data.getBinSize();
 			// print the data
-			for(Chromosome currentChromosome: projectChromosome) {
+			for(Chromosome currentChromosome: projectChromosomes) {
 				if(data.get(currentChromosome) != null) {
 					ListView<ScoredChromosomeWindow> currentList = data.get(currentChromosome);
 					int currentChromosomeSize = currentChromosome.getLength();

@@ -30,7 +30,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
@@ -107,16 +107,16 @@ public class TwoBitSequenceList extends AbstractListView<ListView<Nucleotide>> i
 
 	@Override
 	public ListView<Nucleotide> get(Chromosome chromosome) throws InvalidChromosomeException {
-		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
-		int chromosomeIndex = projectChromosome.getIndex(chromosome);
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
+		int chromosomeIndex = projectChromosomes.getIndex(chromosome);
 		return get(chromosomeIndex);
 	}
 
 
 	@Override
 	public Nucleotide get(Chromosome chromosome, int index) throws InvalidChromosomeException {
-		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
-		int chromosomeIndex = projectChromosome.getIndex(chromosome);
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
+		int chromosomeIndex = projectChromosomes.getIndex(chromosome);
 		return get(chromosomeIndex, index);
 	}
 
@@ -202,8 +202,8 @@ public class TwoBitSequenceList extends AbstractListView<ListView<Nucleotide>> i
 
 	@Override
 	public int size(Chromosome chromosome) throws InvalidChromosomeException {
-		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
-		int chromosomeIndex = projectChromosome.getIndex(chromosome);
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
+		int chromosomeIndex = projectChromosomes.getIndex(chromosome);
 		return size(chromosomeIndex);
 	}
 

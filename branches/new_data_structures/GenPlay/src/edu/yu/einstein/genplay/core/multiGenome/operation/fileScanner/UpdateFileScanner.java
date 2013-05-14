@@ -65,8 +65,8 @@ public class UpdateFileScanner implements FileScannerInterface {
 	 * @return -1 if the first line is located before the second line, 0 if they are at the same location, 1 if the first line is after the second one
 	 */
 	private int compareLines (VCFLine line01, VCFLine line02) {
-		int chromIndex01 = ProjectManager.getInstance().getProjectChromosome().getIndex(line01.getCHROM());
-		int chromIndex02 = ProjectManager.getInstance().getProjectChromosome().getIndex(line02.getCHROM());
+		int chromIndex01 = ProjectManager.getInstance().getProjectChromosomes().getIndex(line01.getCHROM());
+		int chromIndex02 = ProjectManager.getInstance().getProjectChromosomes().getIndex(line02.getCHROM());
 
 		if (chromIndex01 == chromIndex02) {
 			int	position01 = line01.getReferencePosition();

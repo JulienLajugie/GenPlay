@@ -42,9 +42,8 @@ import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
  * This class follows the design pattern <i>Singleton</i>
  * @author Julien Lajugie
  * @author Nicolas Fourel
- * @version 0.1
  */
-public final class ProjectChromosome implements Serializable, Iterable<Chromosome> {
+public final class ProjectChromosomes implements Serializable, Iterable<Chromosome> {
 
 	/**
 	 * Iterator for chromosome manager.
@@ -83,22 +82,21 @@ public final class ProjectChromosome implements Serializable, Iterable<Chromosom
 			throw new UnsupportedOperationException();
 		}
 	}
-	private static final long serialVersionUID = 8781043776370540275L;	// generated ID
 
+	/** Defines the value of the chromosome first base (likely to be 0 or 1) */
+	public static final int FIRST_BASE_POSITION = 1;
+
+	private static final long serialVersionUID = 8781043776370540275L;	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private		 	Map<String, Integer> 		chromosomeHash;			// Hashtable indexed by chromosome name
 	private			List<Chromosome> 			chromosomeList;			// List of chromosome
-	// FIXME replace with projectwindow.getchromosome
-	private			Chromosome					currentChromosome;		// Current chromosome in the genome window (uses for multi genome project)
-
-
 	private			long						genomeLength;			// Total length of the genome
 
 
 	/**
-	 * Constructor of {@link ProjectChromosome}.
+	 * Constructor of {@link ProjectChromosomes}.
 	 */
-	protected ProjectChromosome() {}
+	protected ProjectChromosomes() {}
 
 
 	/**
@@ -179,17 +177,6 @@ public final class ProjectChromosome implements Serializable, Iterable<Chromosom
 
 
 	/**
-	 * @return the currentChromosome
-	 */
-	public Chromosome getCurrentChromosome() {
-		if (currentChromosome == null) {
-			return get(0);
-		}
-		return currentChromosome;
-	}
-
-
-	/**
 	 * @return the length of the genome in bp
 	 */
 	public long getGenomeLength() {
@@ -248,7 +235,6 @@ public final class ProjectChromosome implements Serializable, Iterable<Chromosom
 		in.readInt();
 		chromosomeHash = (Map<String, Integer>) in.readObject();
 		chromosomeList = (List<Chromosome>) in.readObject();
-		currentChromosome = (Chromosome) in.readObject();
 		genomeLength = in.readLong();
 	}
 
@@ -264,21 +250,12 @@ public final class ProjectChromosome implements Serializable, Iterable<Chromosom
 
 
 	/**
-	 * @param currentChromosome the currentChromosome to set
-	 */
-	public void setCurrentChromosome(Chromosome currentChromosome) {
-		this.currentChromosome = currentChromosome;
-	}
-
-
-	/**
-	 * Set the current {@link ProjectChromosome} using another instance of {@link ProjectChromosome}
+	 * Set the current {@link ProjectChromosomes} using another instance of {@link ProjectChromosomes}
 	 * Used for the unserialization.
-	 * @param project the instance of {@link ProjectChromosome} to use
+	 * @param project the instance of {@link ProjectChromosomes} to use
 	 */
-	protected void setProjectChromosome (ProjectChromosome project) {
+	protected void setProjectChromosome (ProjectChromosomes project) {
 		setChromosomeList(project.getChromosomeList());
-		setCurrentChromosome(project.getCurrentChromosome());
 	}
 
 
@@ -326,7 +303,6 @@ public final class ProjectChromosome implements Serializable, Iterable<Chromosom
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeObject(chromosomeHash);
 		out.writeObject(chromosomeList);
-		out.writeObject(currentChromosome);
 		out.writeLong(genomeLength);
 	}
 }
