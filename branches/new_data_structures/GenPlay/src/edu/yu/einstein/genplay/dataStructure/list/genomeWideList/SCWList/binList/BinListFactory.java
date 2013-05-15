@@ -71,6 +71,7 @@ public class BinListFactory {
 		Chromosome currentChromosome = null;
 
 		// create object that will "flattened" pileups of overlapping windows
+		// TODO optimize with a bin list builder that doesn't require to create SCW
 		PileupFlattener flattener = new BinListPileupFlattener(binSize, scoreOperation);
 		while (scwReader.readItem()) {
 			ScoredChromosomeWindow currentWindow = new SimpleScoredChromosomeWindow(scwReader.getStart(), scwReader.getStop(), scwReader.getScore());

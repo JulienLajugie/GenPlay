@@ -28,7 +28,6 @@ import java.util.concurrent.Callable;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
-import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.geneListView.GeneListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.SimpleGeneList;
@@ -79,7 +78,7 @@ public class GLOFilterBandStop implements Operation<GeneList> {
 						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 							Float currentValue = currentList.get(j).getScore();
 							if ((currentValue == null) || ((currentValue < lowThreshold) && (currentValue > highThreshold))) {
-								Gene geneToAdd = new SimpleGene(currentList.get(j));
+								Gene geneToAdd = currentList.get(j);
 								resultLVBuilder.addElementToBuild(geneToAdd);
 							}
 						}

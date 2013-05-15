@@ -106,6 +106,7 @@ public class BLOGauss implements Operation<BinList> {
 									score = (float) (SumNormSignalCoef / SumCoef);
 								}
 							}
+							// TODO optimize with a bin list builder that doesn't require to create SCW
 							ScoredChromosomeWindow windowToAdd = new SimpleScoredChromosomeWindow(currentList.get(j).getStart(), currentList.get(j).getStop(), score);
 							resultListBuilder.addElementToBuild(chromosome, windowToAdd);
 						}
@@ -135,7 +136,7 @@ public class BLOGauss implements Operation<BinList> {
 
 	@Override
 	public int getStepCount() {
-		return BinList.getCreationStepCount(binList.getBinSize()) + 1;
+		return binList.getCreationStepCount() + 1;
 	}
 
 

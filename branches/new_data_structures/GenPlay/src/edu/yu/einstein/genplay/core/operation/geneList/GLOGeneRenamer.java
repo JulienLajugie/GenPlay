@@ -24,24 +24,27 @@ package edu.yu.einstein.genplay.core.operation.geneList;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicDataArrayList;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.geneListView.GeneListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ListOfListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.SimpleGeneList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
  * Renames the genes of a list with new names specified in a file with the following format:
  * oldName \t newName
- * @author Chirag Gorasia
- * @version 0.1
+ * @author Julien Lajugie
  */
 public class GLOGeneRenamer implements Operation<GeneList> {
 
@@ -77,20 +80,32 @@ public class GLOGeneRenamer implements Operation<GeneList> {
 				}
 			}
 
-			GenomicDataArrayList<Gene> renamedList = new GenomicDataArrayList<Gene>();
-			for (int i = 0; (i < geneList.size()) && !stopped; i++) {
-				renamedList.add(new ArrayList<Gene>());
-				for (int j = 0; (j < geneList.size(i)) && !stopped; j++) {
-					Gene currentGene = new SimpleGene(geneList.get(i,  j));
+			ListViewBuilder<Gene> lvbPrototype = new GeneListViewBuilder();
+			final ListOfListViewBuilder<Gene> resultListBuilder = new ListOfListViewBuilder<Gene>(lvbPrototype);
+			ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
+			for (final Chromosome chromosome: projectChromosomes) {
+				for (int j = 0; (j < geneList.size(chromosome)) && !stopped; j++) {
+					Gene currentGene = geneList.get(chromosome,  j);
 					String newName = null;
-					if ((newName = nameMap.get(renamedList.get(i,
-							j).getName())) != null) {
-						currentGene.setName(newName);
+					Gene geneToAdd;
+					if ((newName = nameMap.get(currentGene.getName())) != null) {
+						geneToAdd = new SimpleGene(
+								newName,
+								currentGene.getStrand(),
+								currentGene.getStart(),
+								currentGene.getStop(),
+								currentGene.getScore(),
+								currentGene.getUTR5Bound(),
+								currentGene.getUTR3Bound(),
+								currentGene.getExons()
+								);
+					} else {
+						geneToAdd = currentGene;
 					}
-					renamedList.get(i).add(currentGene);
+					resultListBuilder.addElementToBuild(chromosome, geneToAdd);
 				}
 			}
-			return new SimpleGeneList(renamedList, geneList.getGeneScoreType(), geneList.getGeneDBURL());
+			return new SimpleGeneList(resultListBuilder.getGenomicList(), geneList.getGeneScoreType(), geneList.getGeneDBURL());
 		} finally {
 			if (bufReader != null) {
 				bufReader.close();

@@ -98,6 +98,7 @@ public class BLOMovingAverage implements Operation<BinList> {
 									score = (float) (SumNormSignalCoef / count);
 								}
 							}
+							// TODO optimize with a bin list builder that doesn't require to create SCW
 							ScoredChromosomeWindow windowToAdd = new SimpleScoredChromosomeWindow(currentList.get(j).getStart(), currentList.get(j).getStop(), score);
 							resultListBuilder.addElementToBuild(chromosome, windowToAdd);
 						}
@@ -127,7 +128,7 @@ public class BLOMovingAverage implements Operation<BinList> {
 
 	@Override
 	public int getStepCount() {
-		return BinList.getCreationStepCount(binList.getBinSize()) + 1;
+		return binList.getCreationStepCount() + 1;
 	}
 
 

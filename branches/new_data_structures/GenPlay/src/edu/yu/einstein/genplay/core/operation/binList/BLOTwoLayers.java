@@ -121,6 +121,7 @@ public class BLOTwoLayers implements Operation<SCWList> {
 									if (firstLayerIsEmpty) {
 										ScoredChromosomeWindow currentWindow = currentList.get(j);
 										ScoredChromosomeWindow windowToAdd = new SimpleScoredChromosomeWindow(currentWindow.getStart(), currentWindow.getStop(), -currentWindow.getScore());
+										// TODO optimize with a bin list builder that doesn't require to create SCW
 										resultListBuilder.addElementToBuild(currentChromosome, windowToAdd);
 									} else {
 										resultListBuilder.addElementToBuild(currentChromosome, currentList.get(j));
@@ -207,7 +208,7 @@ public class BLOTwoLayers implements Operation<SCWList> {
 
 	@Override
 	public int getStepCount() {
-		return BinList.getCreationStepCount(binList1.getBinSize()) + 1;
+		return binList1.getCreationStepCount() + 1;
 	}
 
 

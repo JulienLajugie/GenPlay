@@ -52,11 +52,11 @@ class DensityFinderPanel extends JPanel implements PeakFinderPanel {
 	private static final long serialVersionUID = 3770930911273486277L;	// generated ID
 	private static final int 			INSET = 10;						// inset border to subcomponents
 	private static final String 		NAME =
-			PeakFinderType.DENSITY.toString(); 								// name of the peak finder
-	private static double 				defaultLowThreshold =
-			Double.NEGATIVE_INFINITY;										// default low threshold
-	private static double 				defaultHighThreshold =
-			Double.POSITIVE_INFINITY;										// default high threshold
+			PeakFinderType.DENSITY.toString(); 							// name of the peak finder
+	private static float 				defaultLowThreshold =
+			Float.NEGATIVE_INFINITY;									// default low threshold
+	private static float 				defaultHighThreshold =
+			Float.POSITIVE_INFINITY;									// default high threshold
 	private static int 					defaultRegionWidth = 10;		// default region width
 	private static double 				defaultPercentage = 1;			// default percentage
 	private final JTextArea 			jtaDescription;					// description of the peak finder
@@ -180,8 +180,8 @@ class DensityFinderPanel extends JPanel implements PeakFinderPanel {
 	/**
 	 * @return the high threshold parameter of the density peak finder
 	 */
-	private double getHighThreshold() {
-		double highThreshold = ((Number) jftfHighThreshold.getValue()).doubleValue();
+	private float getHighThreshold() {
+		float highThreshold = ((Number) jftfHighThreshold.getValue()).floatValue();
 		return highThreshold;
 	}
 
@@ -189,8 +189,8 @@ class DensityFinderPanel extends JPanel implements PeakFinderPanel {
 	/**
 	 * @return the low threshold parameter of the density peak finder
 	 */
-	private double getLowThreshold() {
-		double lowThreshold = ((Number) jftfLowThreshold.getValue()).doubleValue();
+	private float getLowThreshold() {
+		float lowThreshold = ((Number) jftfLowThreshold.getValue()).floatValue();
 		return lowThreshold;
 	}
 

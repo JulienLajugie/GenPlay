@@ -14,32 +14,47 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.operation.binList;
 
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.core.operationPool.OperationPool;
+import edu.yu.einstein.genplay.core.pileupFlattener.BinListPileupFlattener;
+import edu.yu.einstein.genplay.core.pileupFlattener.PileupFlattener;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.bin.BinListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ListOfListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
-
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
 /**
  * Creates a new BinList with a new bin size
  * @author Julien Lajugie
- * @version 0.1
  */
 public class BLOChangeBinSize implements Operation<BinList> {
 
 	private final BinList 					binList;		// input BinList
-	private final int 						binSize;		// new bin size 
-	private final ScoreOperation 	method;			// method for the calculation of the new binlist
-	
+	private final int 						binSize;		// new bin size
+	private final ScoreOperation 			method;			// method for the calculation of the new binlist
+
 
 	/**
 	 * Creates a new BinList with a new bin size
@@ -55,24 +70,56 @@ public class BLOChangeBinSize implements Operation<BinList> {
 
 
 	@Override
-	public BinList compute() throws InterruptedException, ExecutionException {
+	public BinList compute() throws InterruptedException, ExecutionException, InvalidParameterException, CloneNotSupportedException {
 		if (binSize == binList.getBinSize()) {
-			return binList.deepClone();
+			return binList;
 		}
-		BinList resultList = new BinList(binSize, binList.getPrecision(), method, binList, true);
-		return resultList;
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
+		final OperationPool op = OperationPool.getInstance();
+		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
+		ListViewBuilder<ScoredChromosomeWindow> lvbPrototype = new BinListViewBuilder(binSize);
+		final ListOfListViewBuilder<ScoredChromosomeWindow> resultListBuilder = new ListOfListViewBuilder<ScoredChromosomeWindow>(lvbPrototype);
+
+		for (final Chromosome chromosome: projectChromosomes) {
+			final ListView<ScoredChromosomeWindow> currentList = binList.get(chromosome);
+			Callable<Void> currentThread = new Callable<Void>() {
+
+				@Override
+				public Void call() throws Exception {
+					if (currentList != null) {
+						// TODO optimize with a bin list builder that doesn't require to create SCW
+						PileupFlattener flattener = new BinListPileupFlattener(binSize, method);
+						for (ScoredChromosomeWindow currentWindow: currentList) {
+							// we add the current window to the flattener and retrieve the list of
+							// flattened windows
+							List<ScoredChromosomeWindow> flattenedWindows = flattener.addWindow(currentWindow);
+							for (ScoredChromosomeWindow scw: flattenedWindows) {
+								resultListBuilder.addElementToBuild(chromosome, scw);
+							}
+						}
+						// at the end of a chromosome we flush the flattener and
+						// retrieve the remaining of flattened windows
+						List<ScoredChromosomeWindow> flattenedWindows = flattener.flush();
+						for (ScoredChromosomeWindow scw: flattenedWindows) {
+							resultListBuilder.addElementToBuild(chromosome, scw);
+						}
+					}
+					// tell the operation pool that a chromosome is done
+					op.notifyDone();
+					return null;
+				}
+			};
+
+			threadList.add(currentThread);
+		}
+		op.startPool(threadList);
+		return new BinList(resultListBuilder.getGenomicList(), binSize);
 	}
-	
+
 
 	@Override
 	public String getDescription() {
 		return "Bin Size Changes to " + binSize + "bp, Method of Calculation = " + method;
-	}
-	
-	
-	@Override
-	public int getStepCount() {
-		return BinList.getCreationStepCount(binSize) + 1;
 	}
 
 
@@ -81,7 +128,13 @@ public class BLOChangeBinSize implements Operation<BinList> {
 		return "Changing Window Size";
 	}
 
-	
+
+	@Override
+	public int getStepCount() {
+		return BinList.getCreationStepCount(SCWListType.BIN);
+	}
+
+
 	/**
 	 * Does nothing
 	 */

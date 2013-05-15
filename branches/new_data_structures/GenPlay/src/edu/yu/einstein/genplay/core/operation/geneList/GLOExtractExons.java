@@ -27,13 +27,17 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.geneListView.GeneListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ListOfListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.SimpleGeneList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
@@ -78,36 +82,36 @@ public class GLOExtractExons implements Operation<GeneList> {
 
 	@Override
 	public GeneList compute() throws Exception {
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
 		final OperationPool op = OperationPool.getInstance();
-		final Collection<Callable<ListView<Gene>>> threadList = new ArrayList<Callable<ListView<Gene>>>();
-		for(final ListView<Gene> currentList: geneList) {
-			Callable<ListView<Gene>> currentThread = new Callable<ListView<Gene>>() {
+		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
+		ListViewBuilder<Gene> lvbPrototype = new GeneListViewBuilder();
+		final ListOfListViewBuilder<Gene> resultListBuilder = new ListOfListViewBuilder<Gene>(lvbPrototype);
+
+		for (final Chromosome chromosome: projectChromosomes) {
+			final ListView<Gene> currentList = geneList.get(chromosome);
+			Callable<Void> currentThread = new Callable<Void>() {
 				@Override
-				public ListView<Gene> call() throws Exception {
-					if (currentList == null) {
-						return null;
-					}
-					ListViewBuilder<Gene> resultLVBuilder = new GeneListViewBuilder();
-					for (int j = 0; (j < currentList.size()) && !stopped; j++) {
-						Gene currentGene = currentList.get(j);
-						List<Gene> extractedExons = extractExons(currentGene, exonOption);
-						for (Gene extractedExon: extractedExons) {
-							resultLVBuilder.addElementToBuild(extractedExon);
+				public Void call() throws Exception {
+					if (currentList != null) {
+						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
+							Gene currentGene = currentList.get(j);
+							List<Gene> extractedExons = extractExons(currentGene, exonOption);
+							for (Gene extractedExon: extractedExons) {
+								resultListBuilder.addElementToBuild(chromosome, extractedExon);
+							}
 						}
 					}
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
-					return resultLVBuilder.getListView();
+					return null;
 				}
 			};
 			threadList.add(currentThread);
 		}
-		List<ListView<Gene>> result = op.startPool(threadList);
-		if (result == null) {
-			return null;
-		} else {
-			return new SimpleGeneList(result, geneList.getGeneScoreType(), geneList.getGeneDBURL());
-		}
+		op.startPool(threadList);
+		List<ListView<Gene>> data = resultListBuilder.getGenomicList();
+		return new SimpleGeneList(data, geneList.getGeneScoreType(), geneList.getGeneDBURL());
 	}
 
 

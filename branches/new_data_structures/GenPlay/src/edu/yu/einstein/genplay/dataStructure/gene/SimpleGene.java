@@ -69,15 +69,6 @@ public final class SimpleGene extends AbstractGene implements Gene {
 
 
 	/**
-	 * Creates an instance of {@link SimpleGene} having the exact same values as the gene in parameter.
-	 * @param gene a {@link Gene}
-	 */
-	public SimpleGene(Gene gene) {
-		this(gene.getName(), gene.getStrand(), gene.getStart(), gene.getStop(), gene.getScore(), gene.getUTR5Bound(), gene.getUTR3Bound(), gene.getExons());
-	}
-
-
-	/**
 	 * Creates an instance of Gene.
 	 * @param name name of the gene
 	 * @param strand strand of the gene

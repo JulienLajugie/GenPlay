@@ -21,17 +21,24 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.operation.binList;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWListBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
-import edu.yu.einstein.genplay.util.FloatLists;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
+import edu.yu.einstein.genplay.util.ListView.SCWListViews;
 
 
 /**
@@ -46,7 +53,7 @@ public class BLOTransfrag implements Operation<BinList> {
 
 	private final BinList 					binList;	// input binlist
 	private final int 						zeroBinGap; // number of zero value bins defining a gap between two islands
-	private final ScoreOperation	operation;	// max / sum / average
+	private final ScoreOperation			operation;	// max / sum / average
 	private boolean							stopped = false;// true if the operation must be stopped
 
 
@@ -67,24 +74,25 @@ public class BLOTransfrag implements Operation<BinList> {
 
 
 	@Override
-	public BinList compute() throws InterruptedException, ExecutionException {
+	public BinList compute() throws InterruptedException, ExecutionException, InvalidParameterException, CloneNotSupportedException {
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
 		final OperationPool op = OperationPool.getInstance();
-		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
+		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
+		final SCWListBuilder resultListBuilder = new SCWListBuilder(binList);
 
-		final int binSize = binList.getBinSize();
+		for (final Chromosome chromosome: projectChromosomes) {
+			final ListView<ScoredChromosomeWindow> currentList = binList.get(chromosome);
+			Callable<Void> currentThread = new Callable<Void>() {
 
-		for (short i = 0; i < binList.size(); i++) {
-			final List<Double> currentList = binList.get(i);
-
-			Callable<List<Double>> currentThread = new Callable<List<Double>>() {
 				@Override
-				public List<Double> call() throws Exception {
-					List<Double> resultList = null;
-					if ((currentList != null) && (currentList.size() != 0)) {
+				public Void call() throws Exception {
+					if (currentList != null) {
 						int j = 0;
 						while ((j < currentList.size()) && !stopped) {
 							// skip zero values
-							while ((j < currentList.size()) && (currentList.get(j) == 0) && !stopped) {
+							while ((j < currentList.size()) && (currentList.get(j).getScore() == 0) && !stopped) {
+								// TODO optimize with a bin list builder that doesn't require to create SCW
+								resultListBuilder.addElementToBuild(chromosome, currentList.get(j));
 								j++;
 							}
 							int regionStart = j;
@@ -92,7 +100,7 @@ public class BLOTransfrag implements Operation<BinList> {
 							int zeroWindowCount = 0;
 							// a region stops when there is maxZeroWindowGap consecutive zero bins
 							while ((j < currentList.size()) && (zeroWindowCount <= zeroBinGap) && !stopped) {
-								if (currentList.get(j) == 0) {
+								if (currentList.get(j).getScore() == 0) {
 									zeroWindowCount++;
 								} else {
 									zeroWindowCount = 0;
@@ -104,20 +112,24 @@ public class BLOTransfrag implements Operation<BinList> {
 								regionStop--;
 							}
 							if (regionStop >= regionStart) {
-								double regionScore = 0;
+								float regionScore = 0;
 								if (operation == ScoreOperation.AVERAGE) {
 									// all the windows of the region are set with the average value on the region
-									regionScore = FloatLists.average(currentList, regionStart, regionStop);
-								} else if (operation == ScoreOperation.SUM) {
+									regionScore = (float) SCWListViews.average(currentList, regionStart, regionStop);
+								} else if (operation == ScoreOperation.ADDITION) {
 									// all the windows of the region are set with the sum value on the region
-									regionScore = FloatLists.sum(currentList, regionStart, regionStop);
+									regionScore = (float) SCWListViews.sum(currentList, regionStart, regionStop);
 								} else {
 									// all the windows of the region are set with the max value on the region
-									regionScore = FloatLists.maxNoZero(currentList, regionStart, regionStop);
+									regionScore = SCWListViews.maxNoZero(currentList, regionStart, regionStop);
 								}
 								for (j = regionStart; j <= regionStop; j++) {
-									if (j < resultList.size()) {
-										resultList.set(j, regionScore);
+									if (j < currentList.size()) {
+										// TODO optimize with a bin list builder that doesn't require to create SCW
+										int start = currentList.get(j).getStart();
+										int stop = currentList.get(j).getStop();
+										ScoredChromosomeWindow windowToAdd = new SimpleScoredChromosomeWindow(start, stop, regionScore);
+										resultListBuilder.addElementToBuild(chromosome, windowToAdd);
 									}
 								}
 							}
@@ -126,19 +138,14 @@ public class BLOTransfrag implements Operation<BinList> {
 					}
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
-					return resultList;
+					return null;
 				}
 			};
 
 			threadList.add(currentThread);
 		}
-		List<List<Double>> result = op.startPool(threadList);
-		if (result != null) {
-			BinList resultList = new BinList(binSize, precision, result);
-			return resultList;
-		} else {
-			return null;
-		}
+		op.startPool(threadList);
+		return (BinList) resultListBuilder.getSCWList();
 	}
 
 
@@ -156,7 +163,7 @@ public class BLOTransfrag implements Operation<BinList> {
 
 	@Override
 	public int getStepCount() {
-		return BinList.getCreationStepCount(binList.getBinSize()) + 1;
+		return binList.getCreationStepCount() + 1;
 	}
 
 

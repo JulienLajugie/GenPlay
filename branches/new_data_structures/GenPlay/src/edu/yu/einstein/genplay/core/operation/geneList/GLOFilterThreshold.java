@@ -26,16 +26,19 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
-import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.geneListView.GeneListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ListOfListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.SimpleGeneList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
-import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
 /**
@@ -65,67 +68,75 @@ public class GLOFilterThreshold implements Operation<GeneList> {
 	}
 
 
-	// FIXME finish to update this class
-
 	@Override
 	public GeneList compute() throws Exception {
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
 		final OperationPool op = OperationPool.getInstance();
-		final Collection<Callable<ListView<Gene>>> threadList = new ArrayList<Callable<ListView<Gene>>>();
+		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
+		ListViewBuilder<Gene> lvbPrototype = new GeneListViewBuilder();
+		final ListOfListViewBuilder<Gene> resultListBuilder = new ListOfListViewBuilder<Gene>(lvbPrototype);
 
-		for(short i = 0; i < geneList.size(); i++) {
-			final ListView<Gene> currentList = geneList.get(i);
-			Callable<ListView<Gene>> currentThread = new Callable<ListView<Gene>>() {
+		for (final Chromosome chromosome: projectChromosomes) {
+			final ListView<Gene> currentList = geneList.get(chromosome);
+			Callable<Void> currentThread = new Callable<Void>() {
 				@Override
-				public ListView<Gene> call() throws Exception {
-					if (currentList == null) {
-						return null;
-					}
-					ListViewBuilder<Gene> resultLVBuilder = new GeneListViewBuilder();
-					for (int j = 0; (j < currentList.size()) && !stopped; j++) {
-						Gene currentGene = currentList.get(j);
+				public Void call() throws Exception {
+					if (currentList != null) {
+						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
+							Gene currentGene = currentList.get(j);
 
-
-						if ((currentGene.getScore() != Float.NaN)) {
-							Gene geneToAdd = null;
-							if (currentGene.getScore() > highThreshold) {
-								// if the score is greater than the high threshold
-								if (isSaturation) {
-									// set the value to high threshold (saturation)
-									GenericSCWListViewBuilder exonsLVBuilder = new GenericSCWListViewBuilder();
-									for (ScoredChromosomeWindow currentExon: currentGene.getExons()) {
-										exonsLVBuilder.addElementToBuild(currentExon.getStart(), currentExon.getStop(), highThreshold);
+							if ((!Float.isNaN(currentGene.getScore()))) {
+								Gene geneToAdd = null;
+								if (currentGene.getScore() > highThreshold) {
+									// if the score is greater than the high threshold
+									if (isSaturation) {
+										// set the value to high threshold (saturation)
+										geneToAdd = new SimpleGene(
+												currentGene.getName(),
+												currentGene.getStrand(),
+												currentGene.getStart(),
+												currentGene.getStop(),
+												highThreshold,
+												currentGene.getUTR5Bound(),
+												currentGene.getUTR3Bound(),
+												currentGene.getExons()
+												);
 									}
-								}
-							} else if (currentGene.getScore() < lowThreshold) {
-								// if the score is smaller than the low threshold
-								if (isSaturation) {
-									// set the value to low threshold (saturation)
-									for (int k = 0; k < currentGene.getExons().size(); k++) {
-										geneToAdd.getExonScores()[k] = lowThreshold;
+								} else if (currentGene.getScore() < lowThreshold) {
+									// if the score is smaller than the low threshold
+									if (isSaturation) {
+										// set the value to low threshold (saturation)
+										geneToAdd = new SimpleGene(
+												currentGene.getName(),
+												currentGene.getStrand(),
+												currentGene.getStart(),
+												currentGene.getStop(),
+												lowThreshold,
+												currentGene.getUTR5Bound(),
+												currentGene.getUTR3Bound(),
+												currentGene.getExons()
+												);
 									}
+								} else {
+									// if the score is between the two threshold
+									geneToAdd = currentGene;
 								}
-							} else {
-								// if the score is between the two threshold
-								geneToAdd = currentGene;
-							}
-							if (geneToAdd != null) {
-								resultLVBuilder.addElementToBuild(geneToAdd);
+								if (geneToAdd != null) {
+									resultListBuilder.addElementToBuild(chromosome, geneToAdd);
+								}
 							}
 						}
 					}
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
-					return resultLVBuilder.getListView();
+					return null;
 				}
 			};
 			threadList.add(currentThread);
 		}
-		List<ListView<Gene>> result = op.startPool(threadList);
-		if (result == null) {
-			return null;
-		} else {
-			return new SimpleGeneList(result, geneList.getGeneScoreType(), geneList.getGeneDBURL());
-		}
+		op.startPool(threadList);
+		List<ListView<Gene>> data = resultListBuilder.getGenomicList();
+		return new SimpleGeneList(data, geneList.getGeneScoreType(), geneList.getGeneDBURL());
 	}
 
 

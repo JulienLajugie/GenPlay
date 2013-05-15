@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -29,44 +29,42 @@ import edu.yu.einstein.genplay.dataStructure.enums.IslandResultType;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
 
 
-
 /**
  * Use the Island approach to separate data on islands
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class BLOFindIslands implements Operation<BinList[]> {
 
 	private final BinList 		inputBinList;	// input binlist
 	private BinList[]			outputBinList;	// result list
 	private IslandResultType[] 	list;			// the types of result
-	private IslandFinder 		island;			// the island finder object
+	private final IslandFinder 	island;			// the island finder object
 
-	
+
 	/**
 	 * @param binList
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
 	public BLOFindIslands (BinList binList) throws InterruptedException, ExecutionException {
-		this.inputBinList = binList;
-		this.island = new IslandFinder(binList);
-	}
-	
-	
-	@Override
-	public BinList[] compute () throws InterruptedException, ExecutionException {
-		this.outputBinList = new BinList[this.list.length];
-		for (int i=0; i < this.list.length; i++) {
-			if (this.list[i] != null) {
-				this.island.setResultType(this.list[i]);	// at this point, the resultType setting is the last to set
-				this.outputBinList[i] = this.island.findIsland();	// we store the calculated bin list on the output binlist array of bloIsland object
-			}
-		}
-		return this.outputBinList;
+		inputBinList = binList;
+		island = new IslandFinder(binList);
 	}
 
-	
+
+	@Override
+	public BinList[] compute () throws InterruptedException, ExecutionException, CloneNotSupportedException {
+		outputBinList = new BinList[list.length];
+		for (int i=0; i < list.length; i++) {
+			if (list[i] != null) {
+				island.setResultType(list[i]);	// at this point, the resultType setting is the last to set
+				outputBinList[i] = island.findIsland();	// we store the calculated bin list on the output binlist array of bloIsland object
+			}
+		}
+		return outputBinList;
+	}
+
+
 	@Override
 	public String getDescription () {
 		String description = "Operation: Island Finder";
@@ -77,36 +75,8 @@ public class BLOFindIslands implements Operation<BinList[]> {
 		//description += ", Result type: " + getIsland().getResultType();
 		return description;
 	}
-	
-	
-	@Override
-	public int getStepCount() {
-		return (BinList.getCreationStepCount(inputBinList.getBinSize()) + 1) * this.numResult();
-	}
-	
-	
-	@Override
-	public String getProcessingDescription() {
-		return "Searching Islands";
-	}
 
-	
-	/**
-	 * Count the number of valid result type.
-	 * The array size will be always 2 (filtered & island score) but some fields can be null and do not been counted.
-	 * @return	number of valid result type
-	 */
-	private int numResult() {
-		int cpt = 0;
-		for (int i=0; i < this.list.length; i++) {
-			if (this.list[i] != null) {
-				cpt++;
-			}
-		}
-		return cpt;
-	}
-	
-	
+
 	/**
 	 * @return the {@link IslandFinder} object
 	 */
@@ -114,27 +84,55 @@ public class BLOFindIslands implements Operation<BinList[]> {
 		return island;
 	}
 
-	
+
+	@Override
+	public String getProcessingDescription() {
+		return "Searching Islands";
+	}
+
+
 	/**
 	 * @return the result types of the operation
 	 */
 	public IslandResultType[] getResultTypes() {
 		return list;
 	}
-	
-	
+
+
+	@Override
+	public int getStepCount() {
+		return (inputBinList.getCreationStepCount() + 1) * numResult();
+	}
+
+
+	/**
+	 * Count the number of valid result type.
+	 * The array size will be always 2 (filtered & island score) but some fields can be null and do not been counted.
+	 * @return	number of valid result type
+	 */
+	private int numResult() {
+		int cpt = 0;
+		for (int i=0; i < list.length; i++) {
+			if (list[i] != null) {
+				cpt++;
+			}
+		}
+		return cpt;
+	}
+
+
 	/**
 	 * @param list an array containing the result types of the operation
 	 */
 	public void setList(IslandResultType[] list) {
 		this.list = list;
 	}
-	
+
 
 	@Override
 	public void stop() {
-		if (this.island != null) {
-			this.island.stop();
+		if (island != null) {
+			island.stop();
 		}
 	}
 }

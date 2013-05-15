@@ -117,6 +117,7 @@ public final class BinList extends AbstractListView<ListView<ScoredChromosomeWin
 	public BinList(List<ListView<ScoredChromosomeWindow>> data, int binSize) throws InterruptedException, ExecutionException, CloneNotSupportedException  {
 		super();
 		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
+		// TODO retrieve binsize automatically
 		this.binSize = binSize;
 		this.data = new BinListView[projectChromosomes.size()];
 		for (int i = 0; i < projectChromosomes.size(); i++){

@@ -35,8 +35,12 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.core.stat.MathFunctions;
 import edu.yu.einstein.genplay.core.stat.Poisson;
 import edu.yu.einstein.genplay.dataStructure.enums.IslandResultType;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.bin.BinListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidFactorialParameterException;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidLambdaPoissonParameterException;
@@ -51,15 +55,15 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 public class IslandFinder implements Serializable, Stoppable {
 
 	private static final long serialVersionUID = -4661852717981921332L;
-	private final BinList 				binList;			// input binlist
-	private int							gap;				// minimum windows number needed to separate 2 islands
-	private int							islandMinLength;
-	private double 						windowMinValue;		// limit window value to get an eligible windows
-	private double						islandMinScore;		// island score limit to select island
-	private final double						lambda;				// average number of reads in a window
-	private IslandResultType 			resultType;			// type of the result (constant, score, average)
+	private final BinList 					binList;			// input binlist
+	private int								gap;				// minimum windows number needed to separate 2 islands
+	private int								islandMinLength;
+	private double 							windowMinValue;		// limit window value to get an eligible windows
+	private double							islandMinScore;		// island score limit to select island
+	private final double					lambda;				// average number of reads in a window
+	private IslandResultType 				resultType;			// type of the result (constant, score, average)
 	private final HashMap <Double, Double>	readScoreStorage;	// store the score for a read, the read is use as index and the score as value
-	private boolean 					stopped = false;	// true when the action must be stopped
+	private boolean 						stopped = false;	// true when the action must be stopped
 
 
 	/**
@@ -110,17 +114,17 @@ public class IslandFinder implements Serializable, Stoppable {
 	 * @return	a bin list with a specific value to show islands on a track
 	 * @throws 	InterruptedException
 	 * @throws 	ExecutionException
+	 * @throws CloneNotSupportedException
 	 */
-	public BinList findIsland () throws InterruptedException, ExecutionException {
+	public BinList findIsland () throws InterruptedException, ExecutionException, CloneNotSupportedException {
 		final OperationPool op = OperationPool.getInstance();
-		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
-		final ScorePrecision precision = binList.getPrecision();
+		final Collection<Callable<ListView<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<ListView<ScoredChromosomeWindow>>>();
 		for (short i = 0; i < binList.size(); i++) {
-			final List<Double> currentList = binList.get(i);
-			Callable<List<Double>> currentThread = new Callable<List<Double>>() {
+			final ListView<ScoredChromosomeWindow> currentList = binList.get(i);
+			Callable<ListView<ScoredChromosomeWindow>> currentThread = new Callable<ListView<ScoredChromosomeWindow>>() {
 				@Override
-				public List<Double> call() throws Exception {
-					List<Double> resultList;
+				public ListView<ScoredChromosomeWindow> call() throws Exception {
+					ListView<ScoredChromosomeWindow> resultList;
 					if (currentList != null) {
 						List<List<Integer>> islandsPositions;
 						List<Double> scoreIsland;
@@ -133,7 +137,7 @@ public class IslandFinder implements Serializable, Stoppable {
 						// Calculate all islands summit
 						islandSummits = islandSummits(currentList, islandsPositions.get(0), islandsPositions.get(1));
 						// Create the result list
-						resultList = getListIsland(precision, currentList, scoreIsland, islandsPositions.get(0), islandsPositions.get(1), islandSummits);
+						resultList = getListIsland(currentList, scoreIsland, islandsPositions.get(0), islandsPositions.get(1), islandSummits);
 					} else {
 						resultList = null;
 					}
@@ -144,9 +148,9 @@ public class IslandFinder implements Serializable, Stoppable {
 			};
 			threadList.add(currentThread);
 		}
-		List<List<Double>> result = op.startPool(threadList);
+		List<ListView<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			BinList resultList = new BinList(binList.getBinSize(), precision, result);
+			BinList resultList = new BinList(result, binList.getBinSize());
 			return resultList;
 		} else {
 			return null;
@@ -222,20 +226,19 @@ public class IslandFinder implements Serializable, Stoppable {
 	 * This value is the island score if IFSCORE is required else is the original window value (read window number).
 	 * All values out of islands or below the cut off are to 0.
 	 * 
-	 * @param precision			bits precision
 	 * @param currentList		current list of windows value
 	 * @param islandsStart		start positions of all islands
 	 * @param islandsStop		stop positions of all islands
 	 * @param islandSummits		summit values of the islands
 	 * @return					list of windows values
 	 */
-	private List<Double> getListIsland (	ScorePrecision precision,
-			List<Double> currentList,
+	private ListView<ScoredChromosomeWindow> getListIsland (
+			ListView<ScoredChromosomeWindow> currentList,
 			List<Double> scoreIsland,
 			List<Integer> islandsStart,
 			List<Integer> islandsStop,
 			List<Double> islandSummits) {
-		List<Double> resultList = ListFactory.createList(precision, currentList.size());
+		ListViewBuilder<ScoredChromosomeWindow> resultLVBuilder = new BinListViewBuilder(binList.getBinSize());
 		int currentPos = 0;	// position on the island start and stop arrays
 		double value = 0.0;
 		for (int i = 0; (i < currentList.size()) && !stopped; i++) {	// for all window positions
@@ -244,13 +247,13 @@ public class IslandFinder implements Serializable, Stoppable {
 					if (scoreIsland.get(currentPos) >= islandMinScore) {	// the island score must be higher than the cut-off
 						switch (resultType) {	// if the result type is
 						case FILTERED:
-							value = currentList.get(i);	// we keep the original value
+							value = currentList.get(i).getScore();	// we keep the original value
 							break;
 						case IFSCORE:
 							value = scoreIsland.get(currentPos);	// we keep the island score value
 							break;
 						case SUMMIT:
-							if (currentList.get(i) < islandSummits.get(currentPos)) {
+							if (currentList.get(i).getScore() < islandSummits.get(currentPos)) {
 								value = 0d;
 							} else {
 								value = islandSummits.get(currentPos);
@@ -268,9 +271,13 @@ public class IslandFinder implements Serializable, Stoppable {
 			} else {
 				value = 0.0;
 			}
-			resultList.set(i, value);	// the result list is set with the right value
+			int start = i * binList.getBinSize();
+			int stop = start + binList.getBinSize();
+			// TODO optimize with a bin list builder that doesn't require to create SCW
+			ScoredChromosomeWindow windowToAdd = new SimpleScoredChromosomeWindow(start, stop, (float) value);
+			resultLVBuilder.addElementToBuild(windowToAdd);
 		}
-		return resultList;
+		return resultLVBuilder.getListView();
 	}
 
 	/**
@@ -307,7 +314,7 @@ public class IslandFinder implements Serializable, Stoppable {
 	 * @param islandsStop		stop positions of all islands
 	 * @return					list of score islands
 	 */
-	private List<Double> islandScore (List<Double> currentList,
+	private List<Double> islandScore (ListView<ScoredChromosomeWindow> currentList,
 			List<Integer> islandsStart,
 			List<Integer> islandsStop) {
 		List<Double> scoreIsland = new ArrayList<Double> ();
@@ -317,8 +324,8 @@ public class IslandFinder implements Serializable, Stoppable {
 			sumScore = 0.0;
 			int i = islandsStart.get(currentPos);
 			while ((i <= islandsStop.get(currentPos)) && !stopped) {	// Loop for the sum
-				if (currentList.get(i) >= windowMinValue) {	// the window reads must be highter than the readCountLimit
-					sumScore += windowScore(currentList.get(i));
+				if (currentList.get(i).getScore() >= windowMinValue) {	// the window reads must be highter than the readCountLimit
+					sumScore += windowScore(currentList.get(i).getScore());
 				}
 				i++;
 			}
@@ -338,7 +345,7 @@ public class IslandFinder implements Serializable, Stoppable {
 	 * @param islandsStop		stop positions of all islands
 	 * @return					list of score islands
 	 */
-	private List<Double> islandSummits (List<Double> currentList,
+	private List<Double> islandSummits (ListView<ScoredChromosomeWindow> currentList,
 			List<Integer> islandsStart,
 			List<Integer> islandsStop) {
 		List<Double> scoreIsland = new ArrayList<Double> ();
@@ -348,7 +355,7 @@ public class IslandFinder implements Serializable, Stoppable {
 			summitScore = Double.NEGATIVE_INFINITY; // the summit is the smallest double value
 			int i = islandsStart.get(currentPos);
 			while ((i <= islandsStop.get(currentPos)) && !stopped) {	// Loop for the sum
-				summitScore = Math.max(summitScore, currentList.get(i));
+				summitScore = Math.max(summitScore, currentList.get(i).getScore());
 				i++;
 			}
 			scoreIsland.add(summitScore);
@@ -389,7 +396,7 @@ public class IslandFinder implements Serializable, Stoppable {
 	 * @param currentList	current list of the bin list
 	 * @return				array list with start position on index 0 and stop position on index 1
 	 */
-	private List<List<Integer>> searchIslandPosition (List<Double> currentList) {
+	private List<List<Integer>> searchIslandPosition (ListView<ScoredChromosomeWindow> currentList) {
 		List<List<Integer>> islandsPositions = new ArrayList<List<Integer>>();
 		List<Integer> islandsStart = new ArrayList<Integer>();	// stores all start islands position
 		List<Integer> islandsStop = new ArrayList<Integer>();		// stores all stop islands position
@@ -398,12 +405,12 @@ public class IslandFinder implements Serializable, Stoppable {
 			int islandStartPos;
 			int islandStopPos;
 			while ((j < currentList.size()) && !stopped) {	// while we are below the current list size,
-				if (currentList.get(j) >= windowMinValue) {	// the current window score must be higher than readCountLimit
+				if (currentList.get(j).getScore() >= windowMinValue) {	// the current window score must be higher than readCountLimit
 					islandStartPos = j;
 					int gapFound = 0;	// there are no gap found
 					int jTmp = j + 1;	// we prepared the research on the next window
 					while ((gapFound <= gap) && (jTmp < currentList.size()) && !stopped) {	// while we are below the gap number authorized and below the list size
-						if (currentList.get(jTmp) >= windowMinValue) {	// if the next window score is higher than the readCountLimit
+						if (currentList.get(jTmp).getScore() >= windowMinValue) {	// if the next window score is higher than the readCountLimit
 							gapFound = 0;	// gap number found must be 0
 						} else {	// if the next window score is smaller than the readCountLimit
 							gapFound++;	// one gap is found
