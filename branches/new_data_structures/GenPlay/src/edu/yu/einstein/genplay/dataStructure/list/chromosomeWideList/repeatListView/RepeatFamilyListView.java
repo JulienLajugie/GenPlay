@@ -80,12 +80,6 @@ public final class RepeatFamilyListView extends AbstractListView<ScoredChromosom
 	}
 
 
-	@Override
-	public boolean isEmpty() {
-		return size() == 0;
-	}
-
-
 	/**
 	 * Prints the name and the repeats of the {@link RepeatFamilyListView}
 	 */

@@ -23,6 +23,7 @@ package edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListVie
 
 import java.util.List;
 
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.SCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.primitiveList.ListOfIntArraysAsIntegerList;
@@ -35,7 +36,7 @@ import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
  * {@link MaskListView} objects.
  * @author Julien Lajugie
  */
-public final class MaskListViewBuilder implements ListViewBuilder<ScoredChromosomeWindow> {
+public final class MaskListViewBuilder implements ListViewBuilder<ScoredChromosomeWindow>, SCWListViewBuilder {
 
 	/** List of the start positions of the masks */
 	private List<Integer> maskStarts;
@@ -90,6 +91,16 @@ public final class MaskListViewBuilder implements ListViewBuilder<ScoredChromoso
 	}
 
 
+	/**
+	 * {@inheritDoc}
+	 * The score parameter is not used.
+	 */
+	@Override
+	public void addElementToBuild(int start, int stop, float score) throws ObjectAlreadyBuiltException {
+		addElementToBuild(start, stop);
+	}
+
+
 	@Override
 	public void addElementToBuild(ScoredChromosomeWindow element)
 			throws ObjectAlreadyBuiltException, ElementAddedNotSortedException {
@@ -102,7 +113,7 @@ public final class MaskListViewBuilder implements ListViewBuilder<ScoredChromoso
 	 * containing no elements.
 	 */
 	@Override
-	public MaskListViewBuilder clone() throws CloneNotSupportedException {
+	public MaskListViewBuilder clone() {
 		MaskListViewBuilder clone = new MaskListViewBuilder();
 		return clone;
 	}

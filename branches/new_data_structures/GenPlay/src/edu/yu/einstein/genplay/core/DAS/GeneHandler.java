@@ -33,12 +33,12 @@ import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.SCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.geneListView.GeneListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 
 
 /**
@@ -58,7 +58,7 @@ public class GeneHandler extends DefaultHandler {
 	private Strand 									orientation;			// strand
 	private String  								name;					// name
 	private final Chromosome 						chromosome;				// chromosome being extracted
-	private ListViewBuilder<ScoredChromosomeWindow> exonLVBuilder;			// builder for the list view of exon
+	private SCWListViewBuilder 						exonLVBuilder;			// builders for the list view of exon
 	private String 									genomeName;				// for multi-genome project only.  Name of the genome on which the data were mapped
 	private AlleleType 								alleleType;				// for multi-genome project only.  Type of allele for synchronization
 
@@ -113,8 +113,7 @@ public class GeneHandler extends DefaultHandler {
 				previousGroupID = groupID;
 				exonLVBuilder = new GenericSCWListViewBuilder();
 			}
-			ScoredChromosomeWindow exon = new SimpleScoredChromosomeWindow(getMultiGenomePosition(start), getMultiGenomePosition(end), score);
-			exonLVBuilder.addElementToBuild(exon);
+			exonLVBuilder.addElementToBuild(getMultiGenomePosition(start), getMultiGenomePosition(end), score);
 		}
 	}
 

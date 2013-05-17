@@ -33,7 +33,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 public class FloatListFactory {
 
 	/** Precision of the data of the project */
-	private static ScorePrecision scorePrecision = ScorePrecision.PRECISION_32BIT;
+	private static ScorePrecision scorePrecision = ScorePrecision.PRECISION_16BIT;
 
 	/**
 	 * @return a List of Float

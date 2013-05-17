@@ -22,20 +22,14 @@
 package edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.IO.dataReader.SCWReader;
 import edu.yu.einstein.genplay.core.pileupFlattener.BinListPileupFlattener;
-import edu.yu.einstein.genplay.core.pileupFlattener.PileupFlattener;
-import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.pileupFlattener.GenomeWideFlattener;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
-import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.bin.BinListViewBuilder;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ListOfListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWList;
-import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.ElementAddedNotSortedException;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
@@ -66,36 +60,12 @@ public class BinListFactory {
 	public static BinList createBinList(SCWReader scwReader, int binSize, ScoreOperation scoreOperation)
 			throws CloneNotSupportedException, ElementAddedNotSortedException, InvalidChromosomeException,
 			ObjectAlreadyBuiltException, IOException, InterruptedException, ExecutionException {
-		BinListViewBuilder lvBuilderPrototype = new BinListViewBuilder(binSize);
-		ListOfListViewBuilder<ScoredChromosomeWindow> builder = new ListOfListViewBuilder<ScoredChromosomeWindow>(lvBuilderPrototype);
-		Chromosome currentChromosome = null;
-
 		// create object that will "flattened" pileups of overlapping windows
-		// TODO optimize with a bin list builder that doesn't require to create SCW
-		PileupFlattener flattener = new BinListPileupFlattener(binSize, scoreOperation);
+		BinListPileupFlattener flattenerPrototype = new BinListPileupFlattener(binSize, scoreOperation);
+		GenomeWideFlattener genomeWideFlattener = new GenomeWideFlattener(flattenerPrototype);
 		while (scwReader.readItem()) {
-			ScoredChromosomeWindow currentWindow = new SimpleScoredChromosomeWindow(scwReader.getStart(), scwReader.getStop(), scwReader.getScore());
-			if (currentChromosome == null) {
-				currentChromosome = scwReader.getChromosome();
-				flattener.addWindow(currentWindow);
-			} else if (currentChromosome != scwReader.getChromosome()) {
-				// at the end of a chromosome we flush the flattener and
-				// retrieve the remaining of flattened windows
-				List<ScoredChromosomeWindow> flattenedWindows = flattener.flush();
-				for (ScoredChromosomeWindow scw: flattenedWindows) {
-					builder.addElementToBuild(currentChromosome, scw);
-				}
-				currentChromosome = scwReader.getChromosome();
-				flattener.addWindow(currentWindow);
-			} else {
-				// we add the current window to the flattener and retrieve the list of
-				// flattened windows
-				List<ScoredChromosomeWindow> flattenedWindows = flattener.addWindow(currentWindow);
-				for (ScoredChromosomeWindow scw: flattenedWindows) {
-					builder.addElementToBuild(currentChromosome, scw);
-				}
-			}
+			genomeWideFlattener.addElementToBuild(scwReader.getChromosome(), scwReader.getStart(), scwReader.getStop(), scwReader.getScore());
 		}
-		return new BinList(builder.getGenomicList(), binSize);
+		return new BinList(genomeWideFlattener.getGenomicList(), binSize);
 	}
 }

@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.SCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.bin.BinListView;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.bin.BinListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.dense.DenseSCWListViewBuilder;
@@ -41,13 +42,13 @@ import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
 
 /**
- * Creates {@link SCWList} objects.
+ * Builder that creates {@link SCWList} objects.
  * @author Julien Lajugie
  */
 public class SCWListBuilder {
 
 	/** Builder used to build the data of the SCWList */
-	private final ListOfListViewBuilder<ScoredChromosomeWindow> builder;
+	protected final ListOfListViewBuilder<ScoredChromosomeWindow> builders;
 
 
 	/**
@@ -60,7 +61,33 @@ public class SCWListBuilder {
 	public SCWListBuilder(SCWList list) throws CloneNotSupportedException {
 		super();
 		ListViewBuilder<ScoredChromosomeWindow> prototypeLVBuilder = createSCWLVBuilderPrototype(list);
-		builder = new ListOfListViewBuilder<ScoredChromosomeWindow>(prototypeLVBuilder);
+		builders = new ListOfListViewBuilder<ScoredChromosomeWindow>(prototypeLVBuilder);
+	}
+
+
+	/**
+	 * Creates an instance of {@link SCWListBuilder}
+	 * @param builderPrototype prototype of the builder that will create the {@link ListView} objects.
+	 * @throws CloneNotSupportedException
+	 */
+	public SCWListBuilder(SCWListViewBuilder builderPrototype) throws CloneNotSupportedException {
+		super();
+		builders = new ListOfListViewBuilder<ScoredChromosomeWindow>(builderPrototype);
+	}
+
+
+	/**
+	 * Adds an element to the {@link SCWList} to be built.
+	 * @param chromosome chromosome of the element to add
+	 * @param start start position of the window to add
+	 * @param stop stop position of the window to add
+	 * @param score score of the window to add
+	 * @throws InvalidChromosomeException if the chromosome is not valid
+	 * @throws ObjectAlreadyBuiltException if the SCWList has already been created
+	 */
+	public void addElementToBuild(Chromosome chromosome, int start, int stop, float score) throws InvalidChromosomeException, ObjectAlreadyBuiltException {
+		SCWListViewBuilder scwLVB = (SCWListViewBuilder) builders.getBuilder(chromosome);
+		scwLVB.addElementToBuild(start, stop, score);
 	}
 
 
@@ -72,19 +99,7 @@ public class SCWListBuilder {
 	 * @throws ObjectAlreadyBuiltException if the SCWList has already been created
 	 */
 	public void addElementToBuild(Chromosome chromosome, ScoredChromosomeWindow element) throws InvalidChromosomeException, ObjectAlreadyBuiltException {
-		builder.addElementToBuild(chromosome, element);
-	}
-
-
-	/**
-	 * Adds each elements of a {@link List} of elements to the {@link SCWList} to be built.
-	 * @param chromosome chromosome of the elements to add
-	 * @param elements list of elements to add to the SCWList to be built
-	 * @throws InvalidChromosomeException if the chromosome is not valid
-	 * @throws ObjectAlreadyBuiltException if the SCWList has already been created
-	 */
-	public void addListOfElementsToBuild(Chromosome chromosome, List<ScoredChromosomeWindow> elements) throws InvalidChromosomeException, ObjectAlreadyBuiltException {
-		builder.addListOfElementsToBuild(chromosome, elements);
+		builders.addElementToBuild(chromosome, element);
 	}
 
 
@@ -110,7 +125,6 @@ public class SCWListBuilder {
 		}
 	}
 
-
 	/**
 	 * @param list an object instance of {@link SCWList}.
 	 * @return A {@link ListViewBuilder} that creates ListView objects the same kind of the ones from the specified list
@@ -133,6 +147,16 @@ public class SCWListBuilder {
 
 
 	/**
+	 * @return the list of {@link ListView} objects created by this builder
+	 * Note: the {@link #getSCWList()} method can be used to retrieve a {@link SCWList}
+	 * object instead.
+	 */
+	public List<ListView<ScoredChromosomeWindow>> getListOfListViews() {
+		return builders.getGenomicList();
+	}
+
+
+	/**
 	 * @return A SCWList containing the items added using the {@link #addElementToBuild(Chromosome, ScoredChromosomeWindow)}.<br>
 	 * The type of the SCWList will be the same as the one from the list specified in the {@link #SCWListBuilder(SCWList)} constructor.
 	 * @throws ExecutionException
@@ -141,7 +165,7 @@ public class SCWListBuilder {
 	 * @throws CloneNotSupportedException
 	 */
 	public SCWList getSCWList() throws InvalidParameterException, InterruptedException, ExecutionException, CloneNotSupportedException  {
-		SCWList list = createSCWList(builder.getGenomicList());
+		SCWList list = createSCWList(builders.getGenomicList());
 		return list;
 	}
 }

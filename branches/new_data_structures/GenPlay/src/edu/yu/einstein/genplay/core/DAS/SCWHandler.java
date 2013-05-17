@@ -30,9 +30,9 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.SCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
-import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 
@@ -44,7 +44,7 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScored
  */
 public class SCWHandler extends DefaultHandler {
 
-	private final ListViewBuilder<ScoredChromosomeWindow>	SCWLVBuilder;			// listview builder of SCW
+	private final SCWListViewBuilder						SCWLVBuilder;			// listview builders of SCW
 	private final Chromosome 								chromosome;				// chromosome being extracted
 	private String 											currentMarkup = null;	// current XML markup
 	private Integer											currentStart = null;	// current start
@@ -91,7 +91,7 @@ public class SCWHandler extends DefaultHandler {
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		if (qName.equalsIgnoreCase("FEATURE")) {
-			SCWLVBuilder.addElementToBuild(new SimpleScoredChromosomeWindow(currentStart, currentStop, currentScore));
+			SCWLVBuilder.addElementToBuild(currentStart, currentStop, currentScore);
 		}
 	}
 

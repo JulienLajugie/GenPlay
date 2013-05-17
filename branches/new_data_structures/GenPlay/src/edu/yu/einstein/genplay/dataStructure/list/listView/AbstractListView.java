@@ -51,4 +51,10 @@ public abstract class AbstractListView<T> implements ListView<T>{
 	public ListView<T> subList(List<Integer> indexes) {
 		return new DiscontinuousSubListView<T>(this, indexes);
 	}
+	
+	
+	@Override
+	public boolean isEmpty() {
+		return size() == 0;
+	}
 }

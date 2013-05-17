@@ -130,12 +130,6 @@ public final class SimpleGeneList extends AbstractListView<ListView<Gene>> imple
 	}
 
 
-	@Override
-	public boolean isEmpty() {
-		return data.length == 0;
-	}
-
-
 	/**
 	 * Method used for deserialization
 	 * @param in

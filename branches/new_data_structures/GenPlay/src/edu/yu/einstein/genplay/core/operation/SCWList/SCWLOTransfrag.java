@@ -35,7 +35,6 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWListBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.util.ListView.SCWListViews;
 
 
@@ -109,8 +108,7 @@ public class SCWLOTransfrag implements Operation<SCWList> {
 									// all the windows of the region are set with the sum value on the region
 									regionScore = (float) SCWListViews.sum(currentList, regionStartIndex, regionStopIndex);
 								}
-								ScoredChromosomeWindow windowToAdd = new SimpleScoredChromosomeWindow(currentList.get(regionStartIndex).getStart(), currentList.get(regionStopIndex).getStop(), regionScore);
-								resultListBuilder.addElementToBuild(chromosome, windowToAdd);
+								resultListBuilder.addElementToBuild(chromosome, currentList.get(regionStartIndex).getStart(), currentList.get(regionStopIndex).getStop(), regionScore);
 							}
 							j++;
 						}

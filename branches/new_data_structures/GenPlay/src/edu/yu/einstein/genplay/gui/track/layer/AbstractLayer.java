@@ -36,7 +36,7 @@ import edu.yu.einstein.genplay.gui.track.Track;
  * @author Julien Lajugie
  * @param <T> type of the data displayed in the layer
  */
-public abstract class AbstractLayer<T extends Serializable> implements Layer<T> {
+public abstract class AbstractLayer<T extends Serializable> implements Cloneable, Layer<T> {
 
 	private static final long 	serialVersionUID = 5294712647479393706L;// generated ID
 	private static final int  	SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
@@ -51,7 +51,16 @@ public abstract class AbstractLayer<T extends Serializable> implements Layer<T> 
 	 * Default constructor
 	 */
 	public AbstractLayer() {
-		this(null, null, null);
+		this(null, null, null, true);
+	}
+
+
+	/**
+	 * Creates an instance of {@link AbstractLayer} with the same properties as the specified {@link AbstractLayer}
+	 * @param abstractLayer
+	 */
+	protected AbstractLayer(AbstractLayer<T> abstractLayer) {
+		this(abstractLayer.track, abstractLayer.data, abstractLayer.name, abstractLayer.isVisible);
 	}
 
 
@@ -61,7 +70,7 @@ public abstract class AbstractLayer<T extends Serializable> implements Layer<T> 
 	 * @param data data displayed by the layer
 	 */
 	public AbstractLayer(Track track, T data) {
-		this(track, data, null);
+		this(track, data, null, true);
 	}
 
 
@@ -72,11 +81,27 @@ public abstract class AbstractLayer<T extends Serializable> implements Layer<T> 
 	 * @param name name of the layer
 	 */
 	public AbstractLayer(Track track, T data, String name) {
+		this(track, data, name, true);
+	}
+
+
+	/**
+	 * Creates an instance of {@link AbstractLayer}
+	 * @param track track displaying the layer
+	 * @param data data displayed by the layer
+	 * @param name name of the layer
+	 * @param isVisible true if the layer is visible
+	 */
+	public AbstractLayer(Track track, T data, String name, boolean isVisible) {
 		this.data = data;
 		this.track = track;
 		this.name = name;
-		isVisible = true;
+		this.isVisible = isVisible;
 	}
+
+
+	@Override
+	public abstract AbstractLayer<T> clone();
 
 
 	@Override

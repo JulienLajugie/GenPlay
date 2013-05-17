@@ -34,7 +34,6 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWListBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 
 
 /**
@@ -84,7 +83,7 @@ public class SCWLONormalizeStandardScore implements Operation<SCWList> {
 							int stop = currentList.get(j).getStop();
 							// apply the standard score formula: (x - avg) / stdev
 							float score = (float) ((currentList.get(j).getScore() - avg) / stdev);
-							resultListBuilder.addElementToBuild(chromosome, new SimpleScoredChromosomeWindow(start, stop, score));
+							resultListBuilder.addElementToBuild(chromosome, start, stop, score);
 						}
 					}
 					// tell the operation pool that a chromosome is done

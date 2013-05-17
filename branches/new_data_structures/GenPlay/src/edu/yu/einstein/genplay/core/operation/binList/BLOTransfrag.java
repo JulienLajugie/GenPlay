@@ -33,11 +33,10 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWListBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinListBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.util.ListView.SCWListViews;
 
 
@@ -78,7 +77,7 @@ public class BLOTransfrag implements Operation<BinList> {
 		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
-		final SCWListBuilder resultListBuilder = new SCWListBuilder(binList);
+		final BinListBuilder resultListBuilder = new BinListBuilder(binList.getBinSize());
 
 		for (final Chromosome chromosome: projectChromosomes) {
 			final ListView<ScoredChromosomeWindow> currentList = binList.get(chromosome);
@@ -91,8 +90,7 @@ public class BLOTransfrag implements Operation<BinList> {
 						while ((j < currentList.size()) && !stopped) {
 							// skip zero values
 							while ((j < currentList.size()) && (currentList.get(j).getScore() == 0) && !stopped) {
-								// TODO optimize with a bin list builder that doesn't require to create SCW
-								resultListBuilder.addElementToBuild(chromosome, currentList.get(j));
+								resultListBuilder.addElementToBuild(chromosome, currentList.get(j).getScore());
 								j++;
 							}
 							int regionStart = j;
@@ -125,11 +123,7 @@ public class BLOTransfrag implements Operation<BinList> {
 								}
 								for (j = regionStart; j <= regionStop; j++) {
 									if (j < currentList.size()) {
-										// TODO optimize with a bin list builder that doesn't require to create SCW
-										int start = currentList.get(j).getStart();
-										int stop = currentList.get(j).getStop();
-										ScoredChromosomeWindow windowToAdd = new SimpleScoredChromosomeWindow(start, stop, regionScore);
-										resultListBuilder.addElementToBuild(chromosome, windowToAdd);
+										resultListBuilder.addElementToBuild(chromosome, regionScore);
 									}
 								}
 							}

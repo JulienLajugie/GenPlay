@@ -175,7 +175,7 @@ public final class GeneListViewBuilder implements ListViewBuilder<Gene> {
 
 
 	@Override
-	public GeneListViewBuilder clone() throws CloneNotSupportedException {
+	public GeneListViewBuilder clone() {
 		GeneListViewBuilder clone = new GeneListViewBuilder();
 		return clone;
 	}

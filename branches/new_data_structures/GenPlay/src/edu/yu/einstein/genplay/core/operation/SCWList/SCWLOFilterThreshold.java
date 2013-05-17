@@ -34,7 +34,6 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWListBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 
 
 /**
@@ -91,7 +90,7 @@ public class SCWLOFilterThreshold implements Operation<SCWList> {
 										// set the value to high threshold (saturation)
 										int start = currentList.get(i).getStart();
 										int stop = currentList.get(i).getStop();
-										resultListBuilder.addElementToBuild(chromosome, new SimpleScoredChromosomeWindow(start, stop, highThreshold));
+										resultListBuilder.addElementToBuild(chromosome, start, stop, highThreshold);
 									}
 								} else if (currentScore < lowThreshold) {
 									// if the score is smaller than the low threshold
@@ -99,7 +98,7 @@ public class SCWLOFilterThreshold implements Operation<SCWList> {
 										// set the value to low threshold (saturation)
 										int start = currentList.get(i).getStart();
 										int stop = currentList.get(i).getStop();
-										resultListBuilder.addElementToBuild(chromosome, new SimpleScoredChromosomeWindow(start, stop, lowThreshold));
+										resultListBuilder.addElementToBuild(chromosome, start, stop, lowThreshold);
 									}
 								} else {
 									// if the score is between the two threshold

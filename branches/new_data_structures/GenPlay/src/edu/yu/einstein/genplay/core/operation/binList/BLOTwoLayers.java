@@ -32,11 +32,10 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWListBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinListBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.BinListDifferentWindowSizeException;
 
 
@@ -80,7 +79,7 @@ public class BLOTwoLayers implements Operation<SCWList> {
 		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
-		final SCWListBuilder resultListBuilder = new SCWListBuilder(binList1);
+		final BinListBuilder resultListBuilder = new BinListBuilder(binList1.getBinSize());
 
 		for(final Chromosome currentChromosome : projectChromosomes) {
 			final ListView<ScoredChromosomeWindow> currentList1 = binList1.get(currentChromosome);
@@ -94,14 +93,12 @@ public class BLOTwoLayers implements Operation<SCWList> {
 
 					if (!firstLayerIsEmpty && !secondLayerIsEmpty) {
 						for (int j = 0; (j < currentList1.size()) && !stopped; j++) {
-							int start = currentList1.get(j).getStart();
-							int stop = currentList2.get(j).getStop();
 							float score = 0f;
 							if (j < currentList2.size()) {
 								// we add the bins of the two binlists
 								score =  getScore(currentList1.get(j).getScore(), currentList2.get(j).getScore());
 							}
-							resultListBuilder.addElementToBuild(currentChromosome, new SimpleScoredChromosomeWindow(start, stop, score));
+							resultListBuilder.addElementToBuild(currentChromosome, score);
 						}
 					} else {
 						ListView<ScoredChromosomeWindow> currentList = null;
@@ -120,24 +117,19 @@ public class BLOTwoLayers implements Operation<SCWList> {
 								for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 									if (firstLayerIsEmpty) {
 										ScoredChromosomeWindow currentWindow = currentList.get(j);
-										ScoredChromosomeWindow windowToAdd = new SimpleScoredChromosomeWindow(currentWindow.getStart(), currentWindow.getStop(), -currentWindow.getScore());
-										// TODO optimize with a bin list builder that doesn't require to create SCW
-										resultListBuilder.addElementToBuild(currentChromosome, windowToAdd);
+										resultListBuilder.addElementToBuild(currentChromosome, -currentWindow.getScore());
 									} else {
 										resultListBuilder.addElementToBuild(currentChromosome, currentList.get(j));
 									}
 								}
 							} else if ((scm == ScoreOperation.MULTIPLICATION) || (scm == ScoreOperation.DIVISION) || (scm == ScoreOperation.MINIMUM)) {
 								for (int j = 0; (j < currentList.size()) && !stopped; j++) {
-									ScoredChromosomeWindow currentWindow = currentList.get(j);
-									ScoredChromosomeWindow windowToAdd = new SimpleScoredChromosomeWindow(currentWindow.getStart(), currentWindow.getStop(), 0f);
-									resultListBuilder.addElementToBuild(currentChromosome, windowToAdd);
+									resultListBuilder.addElementToBuild(currentChromosome, 0f);
 								}
 							} else if (scm == ScoreOperation.AVERAGE) {
 								for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 									ScoredChromosomeWindow currentWindow = currentList.get(j);
-									ScoredChromosomeWindow windowToAdd = new SimpleScoredChromosomeWindow(currentWindow.getStart(), currentWindow.getStop(), currentWindow.getScore() / 2);
-									resultListBuilder.addElementToBuild(currentChromosome, windowToAdd);
+									resultListBuilder.addElementToBuild(currentChromosome, currentWindow.getScore() / 2);
 								}
 							}
 						}

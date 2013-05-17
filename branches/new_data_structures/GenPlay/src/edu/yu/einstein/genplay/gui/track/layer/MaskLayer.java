@@ -26,6 +26,7 @@ import java.awt.Graphics;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
@@ -41,12 +42,24 @@ import edu.yu.einstein.genplay.util.colors.LayerColors;
  * Layer displaying a mask
  * @author Julien Lajugie
  */
-public class MaskLayer extends AbstractVersionedLayer<SCWList> implements Layer<SCWList>, VersionedLayer<SCWList>, ColoredLayer {
+public class MaskLayer extends AbstractVersionedLayer<SCWList> implements Serializable, Cloneable, Layer<SCWList>, VersionedLayer<SCWList>, ColoredLayer {
 
 	private static final long serialVersionUID = 3779631846077486596L; // generated ID
 	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// Saved format version
 	private transient MaskSCWLScaler	dataScaler;	// object that scales the list of masks for display
 	private Color 						color;		// color of the layer
+
+
+	/**
+	 * Creates an instance of {@link MaskLayer} with the same properties as the specified {@link MaskLayer}.
+	 * The copy of the data is shallow.
+	 * @param binLayer
+	 */
+	private MaskLayer(MaskLayer maskLayer) {
+		super(maskLayer);
+		dataScaler = maskLayer.dataScaler;
+		color = maskLayer.color;
+	}
 
 
 	/**
@@ -58,6 +71,12 @@ public class MaskLayer extends AbstractVersionedLayer<SCWList> implements Layer<
 	public MaskLayer(Track track, SCWList data, String name) {
 		super(track, data, name);
 		color = LayerColors.getLayerColor();
+	}
+
+
+	@Override
+	public MaskLayer clone() {
+		return new MaskLayer(this);
 	}
 
 

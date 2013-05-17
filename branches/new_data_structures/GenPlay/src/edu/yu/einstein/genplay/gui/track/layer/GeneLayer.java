@@ -75,6 +75,22 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 
 
 	/**
+	 * Creates an instance of {@link GeneLayer} with the same properties as the specified {@link GeneLayer}.
+	 * The copy of the data is shallow.
+	 * @param binLayer
+	 */
+	private GeneLayer(GeneLayer geneLayer) {
+		super(geneLayer);
+		firstLineToDisplay = geneLayer.firstLineToDisplay;
+		geneLinesCount = geneLayer.geneLinesCount;
+		mouseStartDragY = -1;
+		geneUnderMouse = null;
+		min = geneLayer.min;
+		max = geneLayer.max;
+	}
+
+
+	/**
 	 * Creates an instance of a {@link GeneLayer}
 	 * @param track track containing the layer
 	 * @param data data of the layer
@@ -87,6 +103,15 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 		mouseStartDragY = -1;
 		geneUnderMouse = null;
 		setSaturatedMinMax();
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public GeneLayer clone() {
+		return new GeneLayer(this);
 	}
 
 
@@ -413,9 +438,9 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 	}
 
 
+
 	@Override
 	public void mouseReleased(MouseEvent e) {}
-
 
 
 	/**

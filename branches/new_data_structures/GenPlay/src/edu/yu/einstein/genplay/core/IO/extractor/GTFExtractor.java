@@ -34,11 +34,10 @@ import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.SCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
-import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 import edu.yu.einstein.genplay.util.Utils;
@@ -57,7 +56,7 @@ public class GTFExtractor extends TextFileExtractor implements GeneReader, Stran
 	private String 									previousName;		// name of the last item read
 	private Strand 									currentStrand;		// strand of the current item
 	private Strand									previousStrand;		// strand of the last item read
-	private ListViewBuilder<ScoredChromosomeWindow> exonBuilder;		// exons builder of the last item read
+	private SCWListViewBuilder 						exonBuilder;		// exons builders of the last item read
 	private ListView<ScoredChromosomeWindow> 		previousExons;		// exons of the previous item read
 
 
@@ -169,14 +168,12 @@ public class GTFExtractor extends TextFileExtractor implements GeneReader, Stran
 				score = Float.NaN;
 			}
 			if (currentName.equals(previousName)) {
-				ScoredChromosomeWindow scw = new SimpleScoredChromosomeWindow(start, stop, score);
-				exonBuilder.addElementToBuild(scw);
+				exonBuilder.addElementToBuild(start, stop, score);
 				return LINE_EXTRACTED;
 			} else {
 				previousExons = exonBuilder.getListView();
 				exonBuilder = new GenericSCWListViewBuilder();
-				ScoredChromosomeWindow scw = new SimpleScoredChromosomeWindow(start, stop, score);
-				exonBuilder.addElementToBuild(scw);
+				exonBuilder.addElementToBuild(start, stop, score);
 				return ITEM_EXTRACTED;
 			}
 		}

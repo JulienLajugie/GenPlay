@@ -21,16 +21,24 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.pileupFlattener;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.SCWListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.dense.DenseSCWListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.mask.MaskListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.ElementAddedNotSortedException;
+import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
 import edu.yu.einstein.genplay.util.FloatLists;
 
 
@@ -41,7 +49,10 @@ import edu.yu.einstein.genplay.util.FloatLists;
 public class SimpleSCWPileupFlattener implements PileupFlattener {
 
 	/** Queue containing the windows of the pileup */
-	private final List<ScoredChromosomeWindow> windowQueue;
+	private final SCWQueue windowQueue;
+
+	/** Builder to create the result {@link ListView} */
+	private final SCWListViewBuilder resultLVBuilder;
 
 	/** Operation to compute the score of the result value of the flattening */
 	private final ScoreOperation scoreOperation;
@@ -50,33 +61,71 @@ public class SimpleSCWPileupFlattener implements PileupFlattener {
 	/**
 	 * Creates an instance of {@link SimpleSCWPileupFlattener}
 	 * @param scoreOperation {@link ScoreOperation} to compute the score of the result value of the flattening
+	 * @param scwListType type of the list that this flattener will create
 	 */
-	public SimpleSCWPileupFlattener(ScoreOperation scoreOperation) {
-		windowQueue = new ArrayList<ScoredChromosomeWindow>();
+	public SimpleSCWPileupFlattener(ScoreOperation scoreOperation, SCWListType scwListType) {
+		windowQueue = new SCWQueue();
 		this.scoreOperation = scoreOperation;
+		switch (scwListType) {
+		case DENSE:
+			resultLVBuilder = new DenseSCWListViewBuilder();
+			break;
+		case GENERIC:
+			resultLVBuilder = new GenericSCWListViewBuilder();
+			break;
+		case MASK:
+			resultLVBuilder = new MaskListViewBuilder();
+			break;
+		default:
+			throw new InvalidParameterException("Invalid list type: " + scwListType);
+		}
+	}
+
+
+	/**
+	 * Creates an instance of {@link SimpleSCWPileupFlattener}
+	 * @param scoreOperation scoreOperation {@link ScoreOperation} to compute the score of the result value of the flattening
+	 * @param resultLVBuilder {@link ListViewBuilder} to create the result {@link ListView}
+	 */
+	public SimpleSCWPileupFlattener(ScoreOperation scoreOperation, SCWListViewBuilder resultLVBuilder) {
+		windowQueue = new SCWQueue();
+		this.scoreOperation = scoreOperation;
+		this.resultLVBuilder = resultLVBuilder;
 	}
 
 
 	@Override
-	public List<ScoredChromosomeWindow> addWindow(ScoredChromosomeWindow window) throws ElementAddedNotSortedException {
+	public void addWindow(int windowStart, int windowStop, float windowScore) throws ElementAddedNotSortedException {
 		if (windowQueue.isEmpty()) {
-			windowQueue.add(window);
-			return new ArrayList<ScoredChromosomeWindow>();
+			windowQueue.add(windowStart, windowStop, windowScore);
+		} else {
+			int newWindowStart = windowStart;
+			int lastStart = windowQueue.get(windowQueue.size() - 1).getStart();
+			if (newWindowStart < lastStart) {
+				throw new ElementAddedNotSortedException();
+			}
+			// add the new window at the end of the queue
+			windowQueue.add(windowStart, windowStop, windowScore);
+			// retrieve the result of the pileup flattening
+			flattenPileup(lastStart, newWindowStart);
+			// remove the element that are not needed anymore
+			removeProcessedElements(newWindowStart);
 		}
+	}
 
-		int newWindowStart = window.getStart();
-		int lastStart = windowQueue.get(windowQueue.size() - 1).getStart();
-		if (newWindowStart < lastStart) {
-			throw new ElementAddedNotSortedException();
-		}
 
-		// add the new window at the end of the queue
-		windowQueue.add(window);
-		// retrieve the result of the pileup flattening
-		List<ScoredChromosomeWindow> flattenPileup = getFlattenedPileup(lastStart, newWindowStart);
-		// remove the element that are not needed anymore
-		removeProcessedElements(newWindowStart);
-		return flattenPileup;
+	@Override
+	public void addWindow(ScoredChromosomeWindow windowToAdd) throws ElementAddedNotSortedException, ObjectAlreadyBuiltException {
+		addWindow(windowToAdd.getStart(), windowToAdd.getStop(), windowToAdd.getScore());
+	}
+
+
+	/**
+	 * A new instance of {@link SimpleSCWPileupFlattener} containing no element.
+	 */
+	@Override
+	public SimpleSCWPileupFlattener clone() {
+		return new SimpleSCWPileupFlattener(scoreOperation, resultLVBuilder.clone());
 	}
 
 
@@ -112,34 +161,19 @@ public class SimpleSCWPileupFlattener implements PileupFlattener {
 			for (List<Float> currentScoreList: scoreLists) {
 				scores.add(processScoreList(currentScoreList));
 			}
-
 		}
 		return scores;
 	}
 
 
-	@Override
-	public List<ScoredChromosomeWindow> flush() {
-		if (windowQueue.isEmpty()) {
-			return new ArrayList<ScoredChromosomeWindow>();
-		}
-		int lastStart = 0;
-		lastStart = windowQueue.get(windowQueue.size() - 1).getStart();
-		List<ScoredChromosomeWindow> flattenedWindows = getFlattenedPileup(lastStart, Integer.MAX_VALUE);
-		windowQueue.clear();
-		return flattenedWindows;
-	}
-
-
 	/**
-	 * Flattens the overlapping windows of the queue between the specified
+	 * Flattens the overlapping windows of the queue between the specified start and stop positions.
+	 * The score of the windows are computed accordingly to the {@link ScoreOperation} value specified
+	 * during construction of this {@link SimpleSCWPileupFlattener} object.
 	 * @param startPosition
 	 * @param stopPosition
-	 * @return a list of {@link ScoredChromosomeWindow} resulting from the flattening process.
-	 * The score of the windows are computing accordingly to a {@link ScoreOperation} during
-	 * construction of this {@link SimpleSCWPileupFlattener} object.
 	 */
-	private List<ScoredChromosomeWindow> getFlattenedPileup(int startPosition, int stopPosition) {
+	private void flattenPileup(int startPosition, int stopPosition) {
 		ScoredChromosomeWindow currentWindow;
 		// nodes are start and stop positions of the windows resulting from the flattening process
 		List<Integer> nodes = new ArrayList<Integer>();
@@ -161,12 +195,28 @@ public class SimpleSCWPileupFlattener implements PileupFlattener {
 		// compute the score values for each windows from the flattening
 		List<Float> scores = computeScores(nodes);
 		// generate the list of windows from the flattening process
-		List<ScoredChromosomeWindow> flattenedPileup = new ArrayList<ScoredChromosomeWindow>();
 		for (int i = 0; i < scores.size(); i++) {
-			ScoredChromosomeWindow windowToAdd = new SimpleScoredChromosomeWindow(nodes.get(i), nodes.get(i + 1), scores.get(i));
-			flattenedPileup.add(windowToAdd);
+			resultLVBuilder.addElementToBuild(nodes.get(i), nodes.get(i + 1), scores.get(i));
 		}
-		return flattenedPileup;
+	}
+
+
+	/**
+	 * Flattens the remaining elements of the queue
+	 */
+	private void flush() {
+		if (!windowQueue.isEmpty()) {
+			int lastStart = 0;
+			lastStart = windowQueue.get(windowQueue.size() - 1).getStart();
+			flattenPileup(lastStart, Integer.MAX_VALUE);
+		}
+	}
+
+
+	@Override
+	public ListView<ScoredChromosomeWindow> getListView() {
+		flush();
+		return resultLVBuilder.getListView();
 	}
 
 

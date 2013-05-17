@@ -37,7 +37,6 @@ import edu.yu.einstein.genplay.gui.track.layer.LayerType;
 
 /**
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class VariantLayer extends AbstractLayer<VariantData> implements MouseListener, MouseMotionListener {
 
@@ -58,13 +57,99 @@ public class VariantLayer extends AbstractLayer<VariantData> implements MouseLis
 		setData(null, null);
 	}
 
+
+	/**
+	 * Creates an instance of {@link VariantLayer} with the same properties as the specified {@link VariantLayer}.
+	 * The copy of the data is shallow.
+	 * @param variantLayer
+	 */
+	private VariantLayer(VariantLayer variantLayer) {
+		super(variantLayer);
+		genomeDrawer = variantLayer.genomeDrawer;
+		filters = variantLayer.filters;
+	}
+
+
+	@Override
+	public VariantLayer clone() {
+		return new VariantLayer(this);
+	}
+
+	@Override
+	public void draw(Graphics g, int width, int height) {
+		if (isVisible()) {
+			genomeDrawer.drawMultiGenomeInformation(g, width, height);
+		}
+	}
+
+
+	/**
+	 * @return the filters
+	 */
+	public List<MGFilter> getFilters() {
+		return filters;
+	}
+
+
+	/**
+	 * @return the {@link MultiGenomeDrawer}
+	 */
+	public MultiGenomeDrawer getGenomeDrawer () {
+		return genomeDrawer;
+	}
+
+
+	@Override
+	public LayerType getType() {
+		return LayerType.VARIANT_LAYER;
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		if ((e.getButton() == MouseEvent.BUTTON3)) {
+			genomeDrawer.showVariantInformationDialog(getTrack().getHeight(), e);
+		}
+	}
+
+
+	@Override
+	public void mouseDragged(MouseEvent e) {}
+
+
+	@Override
+	public void mouseEntered(MouseEvent e) {}
+
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		if (!ScrollingManager.getInstance().isScrollingEnabled() && (genomeDrawer != null) && genomeDrawer.hasToBeRepaintAfterExit()) {
+			getTrack().repaint();
+		}
+	}
+
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		if (!ScrollingManager.getInstance().isScrollingEnabled() && (genomeDrawer != null) && genomeDrawer.isOverVariant(getTrack().getHeight(), e)) {
+			getTrack().repaint();
+		}
+	}
+
+
+	// MouseListener implementation
+
+	@Override
+	public void mousePressed(MouseEvent e) {}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {}
+
 	/**
 	 * @param filters the list of {@link MGFilter}
 	 */
 	public void setData (List<MGFilter> filters) {
 		setData(getData(), filters);
 	}
-
 
 	/**
 	 * @param data the {@link VariantData}
@@ -80,6 +165,14 @@ public class VariantLayer extends AbstractLayer<VariantData> implements MouseLis
 	}
 
 
+	// MouseMotion implementation
+
+	@Override
+	public void setVisible(boolean isVisible) {
+		super.setVisible(isVisible);
+		updateMultiGenomeInformation();
+	}
+
 	/**
 	 * Updates the multi genome information
 	 */
@@ -88,82 +181,6 @@ public class VariantLayer extends AbstractLayer<VariantData> implements MouseLis
 			List<VariantData> variantDataList = new ArrayList<VariantData>();
 			variantDataList.add(getData());
 			genomeDrawer.updateMultiGenomeInformation(variantDataList, filters);
-		}
-	}
-
-
-	@Override
-	public void draw(Graphics g, int width, int height) {
-		if (isVisible()) {
-			genomeDrawer.drawMultiGenomeInformation(g, width, height);
-		}
-	}
-
-	@Override
-	public LayerType getType() {
-		return LayerType.VARIANT_LAYER;
-	}
-
-
-	/**
-	 * @return the {@link MultiGenomeDrawer}
-	 */
-	public MultiGenomeDrawer getGenomeDrawer () {
-		return genomeDrawer;
-	}
-
-
-	/**
-	 * @return the filters
-	 */
-	public List<MGFilter> getFilters() {
-		return filters;
-	}
-
-
-	@Override
-	public void setVisible(boolean isVisible) {
-		super.setVisible(isVisible);
-		updateMultiGenomeInformation();
-	}
-
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		if ((e.getButton() == MouseEvent.BUTTON3)) {
-			genomeDrawer.showVariantInformationDialog(getTrack().getHeight(), e);
-		}
-	}
-
-
-	// MouseListener implementation
-
-	@Override
-	public void mousePressed(MouseEvent e) {}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		if (!ScrollingManager.getInstance().isScrollingEnabled() && (genomeDrawer != null) && genomeDrawer.hasToBeRepaintAfterExit()) {
-			getTrack().repaint();
-		}
-	}
-
-
-	// MouseMotion implementation
-
-	@Override
-	public void mouseDragged(MouseEvent e) {}
-
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		if (!ScrollingManager.getInstance().isScrollingEnabled() && (genomeDrawer != null) && genomeDrawer.isOverVariant(getTrack().getHeight(), e)) {
-			getTrack().repaint();
 		}
 	}
 }

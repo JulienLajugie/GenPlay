@@ -118,12 +118,6 @@ public final class BinListView extends AbstractListView<ScoredChromosomeWindow> 
 	}
 
 
-	@Override
-	public boolean isEmpty() {
-		return size() == 0;
-	}
-
-
 	/**
 	 * Method used for deserialization
 	 * @param in

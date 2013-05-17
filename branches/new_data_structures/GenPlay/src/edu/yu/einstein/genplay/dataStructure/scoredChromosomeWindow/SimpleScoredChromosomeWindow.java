@@ -64,17 +64,6 @@ public final class SimpleScoredChromosomeWindow extends AbstractScoredChromosome
 	}
 
 
-	/**
-	 * Creates an instance of a {@link SimpleScoredChromosomeWindow}
-	 * @param scw a {@link ScoredChromosomeWindow}
-	 */
-	public SimpleScoredChromosomeWindow(ScoredChromosomeWindow scw) {
-		start = scw.getStart();
-		stop = scw.getStop();
-		score = scw.getScore();
-	}
-
-
 	@Override
 	public float getScore() {
 		return score;

@@ -50,7 +50,7 @@ import edu.yu.einstein.genplay.util.colors.LayerColors;
  * @author Julien Lajugie
  * @param <T> type of the data showed in the layer. The type T must implement {@link SCWList}.
  */
-public abstract class AbstractSCWLayer<T extends SCWList> extends AbstractVersionedLayer<T> implements Layer<T>, VersionedLayer<T>, GraphLayer, ColoredLayer {
+public abstract class AbstractSCWLayer<T extends SCWList> extends AbstractVersionedLayer<T> implements Cloneable, Layer<T>, VersionedLayer<T>, GraphLayer, ColoredLayer {
 
 	/** Generated serial ID */
 	private static final long serialVersionUID = 1612912685829758955L;
@@ -69,6 +69,18 @@ public abstract class AbstractSCWLayer<T extends SCWList> extends AbstractVersio
 
 
 	/**
+	 * Creates an instance of {@link AbstractSCWLayer} with the same properties as the specified {@link AbstractSCWLayer}
+	 * @param abstractLayer
+	 */
+	protected AbstractSCWLayer(AbstractSCWLayer<T> abstractSCWLayer) {
+		super(abstractSCWLayer);
+		this.dataScaler = abstractSCWLayer.dataScaler;
+		this.graphType = abstractSCWLayer.graphType;
+		this.color = abstractSCWLayer.color;
+	}
+
+
+	/**
 	 * Creates an instance of a {@link SimpleSCWLayer}
 	 * @param track track containing the layer
 	 * @param data data of the layer
@@ -79,6 +91,10 @@ public abstract class AbstractSCWLayer<T extends SCWList> extends AbstractVersio
 		setGraphType(TrackConstants.DEFAULT_GRAPH_TYPE);
 		color = LayerColors.getLayerColor();
 	}
+
+
+	@Override
+	public abstract AbstractSCWLayer<T> clone();
 
 
 	@Override

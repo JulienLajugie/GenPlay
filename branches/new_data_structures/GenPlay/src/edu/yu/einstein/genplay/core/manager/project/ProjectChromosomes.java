@@ -27,76 +27,31 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosome.SimpleChromosome;
+import edu.yu.einstein.genplay.dataStructure.list.listView.AbstractListView;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 
 
 /**
- * The ChromosomeManager class provides tools to load and access and list of {@link Chromosome}.
+ * The {@link ProjectChromosomes} class provides tools to load and access and list of {@link Chromosome}.
  * This class follows the design pattern <i>Singleton</i>
  * @author Julien Lajugie
  * @author Nicolas Fourel
  */
-public final class ProjectChromosomes implements Serializable, Iterable<Chromosome> {
-
-	/**
-	 * Iterator for chromosome manager.
-	 * @author Julien Lajugie
-	 * @author Nicolas Fourel
-	 */
-	private class ChromosomeManagerIterator implements Iterator<Chromosome> {
-
-		private int currentIndex = 0;
-
-		@Override
-		public boolean hasNext() {
-			if (currentIndex < chromosomeHash.size()) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-
-
-		@Override
-		public Chromosome next() throws NoSuchElementException {
-			for (Chromosome chromosome: chromosomeList){
-				// we put the chromosome name in lower case to avoid problems related to case sensitivity
-				if (chromosomeHash.get(chromosome.getName().toLowerCase()) == currentIndex) {
-					currentIndex++;
-					return chromosome;
-				}
-			}
-			throw new NoSuchElementException();
-		}
-
-
-		@Override
-		public void remove() throws UnsupportedOperationException {
-			throw new UnsupportedOperationException();
-		}
-	}
+public final class ProjectChromosomes extends AbstractListView<Chromosome> implements Serializable, Iterable<Chromosome>, ListView<Chromosome> {
 
 	/** Defines the value of the chromosome first base (likely to be 0 or 1) */
 	public static final int FIRST_BASE_POSITION = 1;
-
 	private static final long serialVersionUID = 8781043776370540275L;	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private		 	Map<String, Integer> 		chromosomeHash;			// Hashtable indexed by chromosome name
 	private			List<Chromosome> 			chromosomeList;			// List of chromosome
 	private			long						genomeLength;			// Total length of the genome
-
-
-	/**
-	 * Constructor of {@link ProjectChromosomes}.
-	 */
-	protected ProjectChromosomes() {}
 
 
 	/**
@@ -136,11 +91,11 @@ public final class ProjectChromosomes implements Serializable, Iterable<Chromoso
 	 * @return the first chromosome with the specified index
 	 * @throws InvalidChromosomeException
 	 */
+	@Override
 	public Chromosome get(int index) {
 		if (index < chromosomeList.size()) {
 			return chromosomeList.get(index);
 		}
-
 		// throw an exception if nothing found
 		throw new InvalidChromosomeException();
 	}
@@ -215,15 +170,6 @@ public final class ProjectChromosomes implements Serializable, Iterable<Chromoso
 	}
 
 
-	@Override
-	/**
-	 * Constructor for chromosome manager iterator.
-	 */
-	public Iterator<Chromosome> iterator() {
-		return new ChromosomeManagerIterator();
-	}
-
-
 	/**
 	 * Method used for unserialization
 	 * @param in
@@ -254,7 +200,7 @@ public final class ProjectChromosomes implements Serializable, Iterable<Chromoso
 	 * Used for the unserialization.
 	 * @param project the instance of {@link ProjectChromosomes} to use
 	 */
-	protected void setProjectChromosome (ProjectChromosomes project) {
+	protected void setProjectChromosomes(ProjectChromosomes project) {
 		setChromosomeList(project.getChromosomeList());
 	}
 
@@ -262,6 +208,7 @@ public final class ProjectChromosomes implements Serializable, Iterable<Chromoso
 	/**
 	 * @return the size of the list of chromosome (ie: the number of chromosomes)
 	 */
+	@Override
 	public int size() {
 		return chromosomeList.size();
 	}

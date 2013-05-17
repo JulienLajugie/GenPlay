@@ -85,7 +85,6 @@ class DiscontinuousSubListView<T> implements ListView<T> {
 		return "Index: " + index + ", Size: " + size();
 	}
 
-
 	/**
 	 * Checks if the specified index is valid
 	 * @param index
@@ -95,6 +94,7 @@ class DiscontinuousSubListView<T> implements ListView<T> {
 			throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
 		}
 	}
+
 
 	@Override
 	public int size() {

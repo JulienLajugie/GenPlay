@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -22,13 +22,20 @@
 package edu.yu.einstein.genplay.gui.track.layer;
 
 import java.awt.Color;
+import java.io.Serializable;
 
 
 /**
  * Interface that can be implemented by a layer that has a color
  * @author Julien Lajugie
  */
-public interface ColoredLayer {
+public interface ColoredLayer extends Cloneable, Serializable {
+
+	/**
+	 * @return A copy of this layer
+	 */
+	public ColoredLayer clone();
+
 
 	/**
 	 * @return the color of the layer

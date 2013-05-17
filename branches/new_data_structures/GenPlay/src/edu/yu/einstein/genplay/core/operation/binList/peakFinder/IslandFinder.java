@@ -38,9 +38,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.IslandResultType;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.bin.BinListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
-import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidFactorialParameterException;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidLambdaPoissonParameterException;
@@ -238,7 +236,7 @@ public class IslandFinder implements Serializable, Stoppable {
 			List<Integer> islandsStart,
 			List<Integer> islandsStop,
 			List<Double> islandSummits) {
-		ListViewBuilder<ScoredChromosomeWindow> resultLVBuilder = new BinListViewBuilder(binList.getBinSize());
+		BinListViewBuilder resultLVBuilder = new BinListViewBuilder(binList.getBinSize());
 		int currentPos = 0;	// position on the island start and stop arrays
 		double value = 0.0;
 		for (int i = 0; (i < currentList.size()) && !stopped; i++) {	// for all window positions
@@ -271,11 +269,7 @@ public class IslandFinder implements Serializable, Stoppable {
 			} else {
 				value = 0.0;
 			}
-			int start = i * binList.getBinSize();
-			int stop = start + binList.getBinSize();
-			// TODO optimize with a bin list builder that doesn't require to create SCW
-			ScoredChromosomeWindow windowToAdd = new SimpleScoredChromosomeWindow(start, stop, (float) value);
-			resultLVBuilder.addElementToBuild(windowToAdd);
+			resultLVBuilder.addElementToBuild((float) value);
 		}
 		return resultLVBuilder.getListView();
 	}

@@ -31,16 +31,14 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.core.pileupFlattener.ListOfListViewsIterator;
-import edu.yu.einstein.genplay.core.pileupFlattener.SimpleSCWPileupFlattener;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.mask.MaskListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.repeatListView.RepeatFamilyListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ListOfListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.repeatFamilyList.RepeatFamilyList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListOfListViewsIterator;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
@@ -91,14 +89,10 @@ public class RFLOConvertIntoMask implements Operation<SCWList> {
 							}
 						}
 						Iterator<ScoredChromosomeWindow> listOfLVIterator = new ListOfListViewsIterator<ScoredChromosomeWindow>(listOfLV);
-						SimpleSCWPileupFlattener pileupFlattener = new SimpleSCWPileupFlattener(ScoreOperation.ADDITION);
 						while (listOfLVIterator.hasNext() && !stopped) {
 							ScoredChromosomeWindow currentWindow = listOfLVIterator.next();
-							List<ScoredChromosomeWindow> flattenedWindows = pileupFlattener.addWindow(currentWindow);
-							maskListBuilder.addListOfElementsToBuild(chromosome, flattenedWindows);
+							maskListBuilder.addElementToBuild(chromosome, currentWindow);
 						}
-						List<ScoredChromosomeWindow> flattenedWindows = pileupFlattener.flush();
-						maskListBuilder.addListOfElementsToBuild(chromosome, flattenedWindows);
 					}
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();

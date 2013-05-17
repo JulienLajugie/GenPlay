@@ -23,6 +23,7 @@ package edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListVie
 
 import java.util.List;
 
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.SCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.primitiveList.FloatListFactory;
@@ -37,7 +38,7 @@ import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
  * {@link BinListView} objects.
  * @author Julien Lajugie
  */
-public final class BinListViewBuilder implements ListViewBuilder<ScoredChromosomeWindow> {
+public final class BinListViewBuilder implements ListViewBuilder<ScoredChromosomeWindow>, SCWListViewBuilder {
 
 	/** Size of the bins of the list */
 	private final int binSize;
@@ -57,6 +58,17 @@ public final class BinListViewBuilder implements ListViewBuilder<ScoredChromosom
 
 
 	/**
+	 * Adds a new {@link ScoredChromosomeWindow} to the list to be build with the specified score.
+	 * The start value of the window is equal to (bin size) * element added index.
+	 * The stop value of the window is equal to (bin size) * (element added index + 1).
+	 * @param score score of the window to add
+	 */
+	public void addElementToBuild(float score) {
+		windowScores.add(score);
+	}
+
+
+	/**
 	 * Adds an element to the ListView that will be built.
 	 * To assure that ListView objects are immutable, this method
 	 * will throw an exception if called after the getListView() has been called.
@@ -69,6 +81,7 @@ public final class BinListViewBuilder implements ListViewBuilder<ScoredChromosom
 	 * @throws ElementAddedOverlapException If elements added overlaps
 	 * @throws ElementAddedDontFallInBinException If the window added doesn't correspond to a bin
 	 */
+	@Override
 	public void addElementToBuild(int start, int stop, float score)
 			throws ObjectAlreadyBuiltException, ElementAddedNotSortedException, ElementAddedOverlapException, ElementAddedDontFallInBinException {
 		if (windowScores == null) {
@@ -96,6 +109,7 @@ public final class BinListViewBuilder implements ListViewBuilder<ScoredChromosom
 		windowScores.add(score);
 	}
 
+
 	@Override
 	public void addElementToBuild(ScoredChromosomeWindow element)
 			throws ObjectAlreadyBuiltException, ElementAddedNotSortedException, ElementAddedOverlapException, ElementAddedDontFallInBinException {
@@ -104,7 +118,7 @@ public final class BinListViewBuilder implements ListViewBuilder<ScoredChromosom
 
 
 	@Override
-	public BinListViewBuilder clone() throws CloneNotSupportedException {
+	public BinListViewBuilder clone() {
 		BinListViewBuilder clone = new BinListViewBuilder(binSize);
 		return clone;
 	}

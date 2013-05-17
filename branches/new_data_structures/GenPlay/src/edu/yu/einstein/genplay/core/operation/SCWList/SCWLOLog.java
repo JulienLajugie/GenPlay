@@ -35,7 +35,6 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWListBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 
 
 /**
@@ -92,7 +91,7 @@ public class SCWLOLog implements Operation<SCWList> {
 								// can't apply a log function on a negative or null numbers
 								throw new ArithmeticException("Logarithm of a negative value not allowed");
 							}
-							resultListBuilder.addElementToBuild(chromosome, new SimpleScoredChromosomeWindow(start, stop, score));
+							resultListBuilder.addElementToBuild(chromosome, start, stop, score);
 						}
 					}
 					// tell the operation pool that a chromosome is done

@@ -34,7 +34,13 @@ import edu.yu.einstein.genplay.gui.track.Track;
  * @author Julien Lajugie
  * @param <T> type of data of the layer
  */
-public interface Layer<T extends Serializable> extends Serializable, Drawer {
+public interface Layer<T extends Serializable> extends Cloneable, Serializable, Drawer {
+
+
+	/**
+	 * @return A copy of this layer. The data copy is shallow.
+	 */
+	public abstract Layer<T> clone();
 
 
 	/**

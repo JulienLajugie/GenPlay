@@ -23,6 +23,7 @@ package edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListVie
 
 import java.util.List;
 
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.SCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.primitiveList.FloatListFactory;
@@ -37,7 +38,7 @@ import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
  * {@link DenseSCWListView} objects.
  * @author Julien Lajugie
  */
-public final class DenseSCWListViewBuilder implements ListViewBuilder<ScoredChromosomeWindow> {
+public final class DenseSCWListViewBuilder implements ListViewBuilder<ScoredChromosomeWindow>, SCWListViewBuilder {
 
 	/** List of the stop positions of the SCWs */
 	private List<Integer> windowStops;
@@ -67,6 +68,7 @@ public final class DenseSCWListViewBuilder implements ListViewBuilder<ScoredChro
 	 * @throws ElementAddedNotSortedException If elements are not added in sorted order
 	 * @throws ElementAddedOverlapException If elements added overlaps
 	 */
+	@Override
 	public void addElementToBuild(int start, int stop, float score)
 			throws ObjectAlreadyBuiltException, ElementAddedNotSortedException, ElementAddedOverlapException {
 		if (windowStops == null) {
@@ -104,7 +106,7 @@ public final class DenseSCWListViewBuilder implements ListViewBuilder<ScoredChro
 
 
 	@Override
-	public DenseSCWListViewBuilder clone() throws CloneNotSupportedException {
+	public DenseSCWListViewBuilder clone() {
 		DenseSCWListViewBuilder clone = new DenseSCWListViewBuilder();
 		return clone;
 	}

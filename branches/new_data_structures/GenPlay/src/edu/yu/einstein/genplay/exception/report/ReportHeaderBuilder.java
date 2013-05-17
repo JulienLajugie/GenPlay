@@ -25,7 +25,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 
 /**
- * The {@link ReportHeaderBuilder} generates the header report.
+ * The ReportHeaderBuilder generates the header report.
  * For now, the header contains information about:
  * - GenPlay
  * - Java
@@ -33,31 +33,10 @@ import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
  * - System
  * 
  * @author Nicolas Fourel
- * @version 0.1
  */
-@SuppressWarnings("javadoc")
 class ReportHeaderBuilder {
 
 	private String report;
-
-	/**
-	 * Initialize the header report
-	 */
-	protected void initializeReport () {
-		report = getGenPlayReport() + "\n";
-		report += getJavaReport() + "\n";
-		report += getMemoryReport() + "\n";
-		report += getSystemReport();
-	}
-
-
-	/**
-	 * @return the header
-	 */
-	public String getReport() {
-		return report;
-	}
-
 
 	/**
 	 * @return the GenPlay report
@@ -132,6 +111,23 @@ class ReportHeaderBuilder {
 
 
 	/**
+	 * @param property a system property key
+	 * @return a system property
+	 */
+	private String getProperty (String property) {
+		return System.getProperty(property, ReportBuilder.DEFAULT_VALUE);
+	}
+
+
+	/**
+	 * @return the header
+	 */
+	public String getReport() {
+		return report;
+	}
+
+
+	/**
 	 * @return the system report
 	 */
 	private String getSystemReport () {
@@ -152,11 +148,13 @@ class ReportHeaderBuilder {
 
 
 	/**
-	 * @param property a system property key
-	 * @return a system property
+	 * Initialize the header report
 	 */
-	private String getProperty (String property) {
-		return System.getProperty(property, ReportBuilder.DEFAULT_VALUE);
+	protected void initializeReport () {
+		report = getGenPlayReport() + "\n";
+		report += getJavaReport() + "\n";
+		report += getMemoryReport() + "\n";
+		report += getSystemReport();
 	}
 
 

@@ -71,16 +71,25 @@ public class URRManager<T extends Serializable> implements Serializable {
 
 
 	/**
+	 * Delete the initial object
+	 */
+	public void deactivateReset () {
+		setInitialObject(null);
+	}
+
+
+	/**
 	 * @return a deep clone of the current object
 	 */
-	public URRManager<?> deepClone() {
+	@SuppressWarnings("unchecked")
+	public URRManager<T> deepClone() {
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ObjectOutputStream oos = new ObjectOutputStream(baos);
 			oos.writeObject(this);
 			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
 			ObjectInputStream ois = new ObjectInputStream(bais);
-			return (URRManager<?>) ois.readObject();
+			return (URRManager<T>) ois.readObject();
 		} catch (Exception e) {
 			ExceptionManager.getInstance().caughtException(e);
 			return null;
@@ -253,6 +262,18 @@ public class URRManager<T extends Serializable> implements Serializable {
 
 
 	/**
+	 * @param initialObject the initialObject to set
+	 */
+	private void setInitialObject(ByteArrayOutputStream initialObject) {
+		if (initialObject == null) {
+			this.initialObject = null;
+		} else if (ProjectManager.getInstance().getProjectConfiguration().isResetTrack()) {
+			this.initialObject = initialObject;
+		}
+	}
+
+
+	/**
 	 * Sets the number of undo saved
 	 * @param length number of undo saved
 	 */
@@ -299,26 +320,6 @@ public class URRManager<T extends Serializable> implements Serializable {
 			return currentObject;
 		} else {
 			return null;
-		}
-	}
-
-
-	/**
-	 * Delete the initial object
-	 */
-	public void deactivateReset () {
-		setInitialObject(null);
-	}
-
-
-	/**
-	 * @param initialObject the initialObject to set
-	 */
-	private void setInitialObject(ByteArrayOutputStream initialObject) {
-		if (initialObject == null) {
-			this.initialObject = null;
-		} else if (ProjectManager.getInstance().getProjectConfiguration().isResetTrack()) {
-			this.initialObject = initialObject;
 		}
 	}
 

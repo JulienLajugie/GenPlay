@@ -163,12 +163,6 @@ public class TwoBitSequenceList extends AbstractListView<ListView<Nucleotide>> i
 	}
 
 
-	@Override
-	public boolean isEmpty() {
-		return size() == 0;
-	}
-
-
 	/**
 	 * Method used for deserialization
 	 * @param in

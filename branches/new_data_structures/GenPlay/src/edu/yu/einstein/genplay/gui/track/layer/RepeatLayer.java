@@ -64,6 +64,23 @@ public class RepeatLayer extends AbstractLayer<RepeatFamilyList> implements Laye
 
 
 	/**
+	 * Creates an instance of {@link NucleotideLayer} with the same properties as the specified {@link NucleotideLayer}.
+	 * The copy of the data is shallow.
+	 * @param repeatLayer
+	 */
+	private RepeatLayer(RepeatLayer repeatLayer) {
+		super(repeatLayer);
+		dataScaler = repeatLayer.dataScaler;
+		firstLineToDisplay = 0;
+		repeatLinesCount = 0;
+		mouseStartDragY = -1;
+		familyNames = repeatLayer.familyNames;
+		highlightedFamilyName = null;
+		selectedFamilyName = null;
+	}
+
+
+	/**
 	 * Creates an instance of a {@link RepeatLayer}
 	 * @param track track containing the layer
 	 * @param data data of the layer
@@ -72,6 +89,12 @@ public class RepeatLayer extends AbstractLayer<RepeatFamilyList> implements Laye
 	public RepeatLayer(Track track, RepeatFamilyList data, String name) {
 		super(track, data, name);
 		generateFamilyNameList();
+	}
+
+
+	@Override
+	public RepeatLayer clone() {
+		return new RepeatLayer(this);
 	}
 
 

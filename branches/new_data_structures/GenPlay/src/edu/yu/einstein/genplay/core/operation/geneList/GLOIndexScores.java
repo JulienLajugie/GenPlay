@@ -31,6 +31,7 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.SCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.geneListView.GeneListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
@@ -38,7 +39,6 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.Simple
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 
 
 /**
@@ -121,7 +121,7 @@ public class GLOIndexScores implements Operation<GeneList> {
 			geneScore = Math.max(0, geneScore);
 			geneScore = Math.min(1000, geneScore);
 		}
-		ListViewBuilder<ScoredChromosomeWindow> exonLVBuilder = new GenericSCWListViewBuilder();
+		SCWListViewBuilder exonLVBuilder = new GenericSCWListViewBuilder();
 		if (gene.getExons() != null) {
 			for (ScoredChromosomeWindow exon: gene.getExons()) {
 				float exonScore = Float.NaN;
@@ -130,8 +130,7 @@ public class GLOIndexScores implements Operation<GeneList> {
 					exonScore = Math.max(0, exonScore);
 					exonScore = Math.min(1000, exonScore);
 				}
-				ScoredChromosomeWindow exonToAdd = new SimpleScoredChromosomeWindow(exon.getStart(), exon.getStop(), exonScore);
-				exonLVBuilder.addElementToBuild(exonToAdd);
+				exonLVBuilder.addElementToBuild(exon.getStart(), exon.getStop(), exonScore);
 			}
 		}
 		Gene newGene = new SimpleGene(gene.getName(), gene.getStrand(), gene.getStart(), gene.getStop(), geneScore, gene.getUTR5Bound(), gene.getUTR3Bound(), exonLVBuilder.getListView());

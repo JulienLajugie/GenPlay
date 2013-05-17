@@ -26,7 +26,7 @@ import java.io.Serializable;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 
 /**
- * Thrown when an application attempts to add an element to a {@link ListView} builder after the {@link ListView} has been built.
+ * Thrown when an application attempts to add an element to a {@link ListView} builders after the {@link ListView} has been built.
  * @author Julien Lajugie
  */
 public class ObjectAlreadyBuiltException extends RuntimeException implements Serializable {

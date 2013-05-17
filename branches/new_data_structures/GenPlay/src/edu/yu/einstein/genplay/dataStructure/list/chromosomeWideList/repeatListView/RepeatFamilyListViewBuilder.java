@@ -74,7 +74,7 @@ public class RepeatFamilyListViewBuilder implements ListViewBuilder<ScoredChromo
 
 
 	@Override
-	public RepeatFamilyListViewBuilder clone() throws CloneNotSupportedException {
+	public RepeatFamilyListViewBuilder clone() {
 		RepeatFamilyListViewBuilder clone = new RepeatFamilyListViewBuilder(name);
 		return clone;
 	}

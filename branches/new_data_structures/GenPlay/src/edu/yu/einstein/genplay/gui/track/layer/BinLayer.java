@@ -34,13 +34,23 @@ import edu.yu.einstein.genplay.gui.track.Track;
  * Layer displaying a {@link BinList}
  * @author Julien Lajugie
  */
-public class BinLayer extends AbstractSCWLayer<BinList> implements Layer<BinList>, VersionedLayer<BinList>, GraphLayer, ColoredLayer {
+public final class BinLayer extends AbstractSCWLayer<BinList> implements Layer<BinList>, VersionedLayer<BinList>, GraphLayer, ColoredLayer {
 
 	/** Generated ID */
 	private static final long serialVersionUID = -8623513547470952327L;
 
 	/**  Version number of the class */
 	private static final transient int CLASS_VERSION_NUMBER = 0;
+
+
+	/**
+	 * Creates an instance of {@link BinLayer} with the same properties as the specified {@link BinLayer}.
+	 * The copy of the data is shallow.
+	 * @param binLayer
+	 */
+	private BinLayer(BinLayer binLayer) {
+		super(binLayer);
+	}
 
 
 	/**
@@ -51,6 +61,12 @@ public class BinLayer extends AbstractSCWLayer<BinList> implements Layer<BinList
 	 */
 	public BinLayer(Track track, BinList data, String name) {
 		super(track, data, name);
+	}
+
+
+	@Override
+	public BinLayer clone() {
+		return new BinLayer(this);
 	}
 
 

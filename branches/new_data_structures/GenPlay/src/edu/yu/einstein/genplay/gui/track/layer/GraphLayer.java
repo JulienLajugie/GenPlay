@@ -14,12 +14,14 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.track.layer;
+
+import java.io.Serializable;
 
 import edu.yu.einstein.genplay.dataStructure.enums.GraphType;
 
@@ -29,9 +31,14 @@ import edu.yu.einstein.genplay.dataStructure.enums.GraphType;
  * (e.g. BinLayer, SCWLayer)
  * @author Julien Lajugie
  */
-public interface GraphLayer extends ScoredLayer {
+public interface GraphLayer extends Cloneable, Serializable, ScoredLayer {
 
-	
+	/**
+	 * @return A copy of this layer
+	 */
+	public GraphLayer clone();
+
+
 	/**
 	 * @return the type of graph displayed
 	 */
@@ -41,5 +48,5 @@ public interface GraphLayer extends ScoredLayer {
 	/**
 	 * @param graphType graph type to set
 	 */
-	public abstract void setGraphType(GraphType graphType); 
+	public abstract void setGraphType(GraphType graphType);
 }

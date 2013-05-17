@@ -200,7 +200,7 @@ public class ExceptionReportDialog extends JDialog {
 	public void setReport(String report) {
 		this.report = report;
 		textArea.setText(report);
-		contentPane.getVerticalScrollBar().setValue(0);
+		contentPane.getVerticalScrollBar().setValue(contentPane.getVerticalScrollBar().getMaximum());
 	}
 
 

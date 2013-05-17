@@ -64,6 +64,20 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 
 
 	/**
+	 * Creates an instance of {@link NucleotideLayer} with the same properties as the specified {@link NucleotideLayer}.
+	 * The copy of the data is shallow.
+	 * @param nucleotideLayer
+	 */
+	private NucleotideLayer(NucleotideLayer nucleotideLayer) {
+		super(nucleotideLayer);
+		dataScaler = nucleotideLayer.dataScaler;
+		maxBaseWidth = nucleotideLayer.maxBaseWidth;
+		baseUnderMouseIndex = null;
+		nucleotidePrinted = nucleotideLayer.nucleotidePrinted;
+	}
+
+
+	/**
 	 * Creates an instance of a {@link NucleotideLayer}
 	 * @param track track containing the layer
 	 * @param data data of the layer
@@ -72,6 +86,12 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 	public NucleotideLayer(Track track, NucleotideList data, String name) {
 		super(track, data, name);
 		maxBaseWidth = computeMaximumBaseWidth();
+	}
+
+
+	@Override
+	public NucleotideLayer clone() {
+		return new NucleotideLayer(this);
 	}
 
 

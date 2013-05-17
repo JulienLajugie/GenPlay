@@ -22,19 +22,23 @@
 package edu.yu.einstein.genplay.core.converter.geneListConverter;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.converter.Converter;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.core.pileupFlattener.BinListPileupFlattener;
+import edu.yu.einstein.genplay.core.pileupFlattener.GenomeWideFlattener;
 import edu.yu.einstein.genplay.core.pileupFlattener.PileupFlattener;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
-import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.bin.BinListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
-import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
@@ -66,27 +70,35 @@ public class GeneListToBinList implements Converter {
 
 	@Override
 	public void convert() throws Exception {
-		List<ListView<ScoredChromosomeWindow>> resultList = new ArrayList<ListView<ScoredChromosomeWindow>>();
-		for (ListView<Gene> currentLV: list) {
-			ListViewBuilder<ScoredChromosomeWindow> lvBuilder = new BinListViewBuilder(binSize);
-			PileupFlattener flattener = new BinListPileupFlattener(binSize,method);
-			for (ScoredChromosomeWindow scw: currentLV) {
-				List<ScoredChromosomeWindow> flattenedWindows = flattener.addWindow(scw);
-				if (!flattenedWindows.isEmpty()) {
-					for (ScoredChromosomeWindow currentFlattenedWindow: flattenedWindows) {
-						lvBuilder.addElementToBuild(currentFlattenedWindow);
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
+		final OperationPool op = OperationPool.getInstance();
+		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
+		PileupFlattener flattenerPrototype = new BinListPileupFlattener(binSize, method);
+		final GenomeWideFlattener gwflFlattener = new GenomeWideFlattener(flattenerPrototype);
+
+		for (final Chromosome chromosome: projectChromosomes) {
+			final ListView<Gene> currentList = list.get(chromosome);
+			Callable<Void> currentThread = new Callable<Void>() {
+
+				@Override
+				public Void call() throws Exception {
+					if (currentList != null) {
+						for (ScoredChromosomeWindow currentWindow: currentList) {
+							// we add the current window to the flattener and retrieve the list of
+							// flattened windows
+							gwflFlattener.addWindow(chromosome, currentWindow);
+						}
 					}
+					// tell the operation pool that a chromosome is done
+					op.notifyDone();
+					return null;
 				}
-			}
-			List<ScoredChromosomeWindow> flattenedWindows = flattener.flush();
-			if (!flattenedWindows.isEmpty()) {
-				for (ScoredChromosomeWindow currentFlattenedWindow: flattenedWindows) {
-					lvBuilder.addElementToBuild(currentFlattenedWindow);
-				}
-			}
-			resultList.add(lvBuilder.getListView());
+			};
+
+			threadList.add(currentThread);
 		}
-		result = new BinList(resultList, binSize);
+		op.startPool(threadList);
+		result = new BinList(gwflFlattener.getGenomicList(), binSize);
 	}
 
 

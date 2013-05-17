@@ -19,56 +19,35 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.list.listView.SimpleListView;
+package edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
 
-
 /**
- * Implementation of the {@link ListViewBuilder} interface vending {@link SimpleListView} objects.
- * @param <T> type of the data of the {@link ListView} to build
+ * Interface defining {@link ListViewBuilder} for {@link ScoredChromosomeWindow} objects.
+ * Adds an {@link #addElementToBuild(int, int, float)} method to avoid having to create a
+ * temporary {@link ScoredChromosomeWindow} object to pass to the builders.
  * @author Julien Lajugie
  */
-public class SimpleListViewBuilder<T> implements ListViewBuilder<T>{
-
-	/** Data of the list to build */
-	private List<T> data = null;
-
+public interface SCWListViewBuilder extends ListViewBuilder<ScoredChromosomeWindow> {
 
 	/**
-	 * Creates an instance of {@link SimpleListViewBuilder}
+	 * Adds an element to the ListView that will be built.
+	 * To assure that ListView objects are immutable, this method
+	 * will throw an exception if called after the getListView() has been called.
+	 * Checks that the elements are added in start position order.
+	 * @param start start position of the SCW to add
+	 * @param stop stop position of the SCW to add
+	 * @param score score value of the SCW to add
+	 * @throws ObjectAlreadyBuiltException
 	 */
-	public SimpleListViewBuilder() {
-		data = new ArrayList<T>();
-	}
+	public void addElementToBuild(int start, int stop, float score) throws ObjectAlreadyBuiltException;
 
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void addElementToBuild(T element) throws ObjectAlreadyBuiltException {
-		if (data != null) {
-			data.add(element);
-		} else {
-			throw new ObjectAlreadyBuiltException();
-		}
-
-	}
-
-
-	@Override
-	public SimpleListViewBuilder<T> clone() {
-		return new SimpleListViewBuilder<T>();
-	}
-
-
-	@Override
-	public ListView<T> getListView() {
-		ListView<T> newList = new SimpleListView<T>(data);
-		data = null;
-		return newList;
-	}
+	public SCWListViewBuilder clone();
 }

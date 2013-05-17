@@ -21,18 +21,12 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.dataScalerForTrackDisplay;
 
-import java.util.List;
-
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.pileupFlattener.BinListPileupFlattener;
-import edu.yu.einstein.genplay.core.pileupFlattener.PileupFlattener;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.bin.BinListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
-import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
@@ -112,40 +106,44 @@ public class BinListScaler implements DataScalerForTrackDisplay<BinList, ListVie
 		double ratio = scaledXRatio * dataToScale.getBinSize() * BinList.AVERAGE_BIN_SIZE_FACTORS[i];
 		while ((i < BinList.AVERAGE_BIN_SIZE_FACTORS.length) && (ratio < 1)) {
 			scaledSCWList = dataToScale.getAveragedList(i).get(chromosomeIndex);
+			binSize = dataToScale.getBinSize() * BinList.AVERAGE_BIN_SIZE_FACTORS[i];
 			i++;
 			if (i < BinList.AVERAGE_BIN_SIZE_FACTORS.length) {
 				ratio = scaledXRatio * dataToScale.getBinSize() * BinList.AVERAGE_BIN_SIZE_FACTORS[i];
 			}
 		}
 
-		if (ratio == 1) {
+		if ((scaledXRatio * binSize) >= 1) {
 			return;
 		}
 
 		// we calculate how many windows are printable depending on the screen resolution
-		int fittedBinSize = (int) (binSize * ( 1 / (scaledXRatio * binSize)));
+		int binSizeRatio  = (int) (1 / (binSize * scaledXRatio));
+		int fittedBinSize = binSizeRatio * binSize;
 
 		// if the fitted bin size is smaller than the regular bin size we don't modify the data
 		if (fittedBinSize <= binSize) {
 			return;
 		}
 
-		// otherwise we calculate the average because we have to print more than
-		// one bin per pixel
-		ListViewBuilder<ScoredChromosomeWindow> lvBuilder = new BinListViewBuilder(fittedBinSize);
-		PileupFlattener pileupFlattener = new BinListPileupFlattener(fittedBinSize, ScoreOperation.AVERAGE);
-		for(ScoredChromosomeWindow currentWindow: scaledSCWList) {
-			// we add the current window to the flattener and retrieve the list of
-			// flattened windows
-			List<ScoredChromosomeWindow> flattenedWindows = pileupFlattener.addWindow(currentWindow);
-			for (ScoredChromosomeWindow scw: flattenedWindows) {
-				lvBuilder.addElementToBuild(scw);
+		// create a list adapted to the xRatio
+		BinListViewBuilder blvb = new BinListViewBuilder(fittedBinSize);
+		for(int index = 0; index < scaledSCWList.size(); index += binSizeRatio) {
+			float sum = 0;
+			int n = 0;
+			for(int j = 0; j < binSizeRatio; j ++) {
+				if (((index + j) < scaledSCWList.size()) && (scaledSCWList.get(index + j).getScore() != 0)) {
+					sum += scaledSCWList.get(index + j).getScore();
+					n++;
+				}
+			}
+			if (n > 0) {
+				blvb.addElementToBuild(sum / n);
+			}
+			else {
+				blvb.addElementToBuild(0);
 			}
 		}
-		List<ScoredChromosomeWindow> flattenedWindows = pileupFlattener.flush();
-		for (ScoredChromosomeWindow scw: flattenedWindows) {
-			lvBuilder.addElementToBuild(scw);
-		}
-		scaledSCWList = lvBuilder.getListView();
+		scaledSCWList = blvb.getListView();
 	}
 }

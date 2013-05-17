@@ -35,11 +35,10 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWListBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinListBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.BinListDifferentWindowSizeException;
 import edu.yu.einstein.genplay.util.FloatLists;
 
@@ -86,7 +85,7 @@ public class BLOIntervalsScoring implements Operation<BinList> {
 		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
-		final SCWListBuilder resultListBuilder = new SCWListBuilder(valueList);
+		final BinListBuilder resultListBuilder = new BinListBuilder(valueList.getBinSize());
 
 		for (final Chromosome chromosome: projectChromosomes) {
 			final ListView<ScoredChromosomeWindow> currentIntervals = intervalList.get(chromosome);
@@ -99,8 +98,7 @@ public class BLOIntervalsScoring implements Operation<BinList> {
 						int j = 0;
 						while ((j < currentIntervals.size()) && (j < currentValues.size()) && !stopped) {
 							while ((j < currentIntervals.size()) && (j < currentValues.size()) && (currentIntervals.get(j).getScore() == 0) && !stopped) {
-								// TODO optimize with a bin list builder that doesn't require to create SCW
-								resultListBuilder.addElementToBuild(chromosome, currentIntervals.get(j));
+								resultListBuilder.addElementToBuild(chromosome, currentIntervals.get(j).getScore());
 								j++;
 							}
 							int k = j;
@@ -134,11 +132,7 @@ public class BLOIntervalsScoring implements Operation<BinList> {
 
 								for (; k <= j; k++) {
 									if (k < currentIntervals.size()) {
-										// TODO optimize with a bin list builder that doesn't require to create SCW
-										int start = currentIntervals.get(j).getStart();
-										int stop = currentIntervals.get(j).getStop();
-										ScoredChromosomeWindow windowToAdd = new SimpleScoredChromosomeWindow(start, stop, result);
-										resultListBuilder.addElementToBuild(chromosome, windowToAdd);
+										resultListBuilder.addElementToBuild(chromosome, result);
 									}
 								}
 							}

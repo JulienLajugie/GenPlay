@@ -21,11 +21,11 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.pileupFlattener;
 
-import java.util.List;
-
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.ElementAddedNotSortedException;
+import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
 
 /**
  * Flattens a pileup of {@link ScoredChromosomeWindow} objects.
@@ -34,29 +34,44 @@ import edu.yu.einstein.genplay.exception.exceptions.ElementAddedNotSortedExcepti
  * the calculation of the resulting score must be specified during the instantiation
  * of this class.
  * The windows involved in the pileup needs to be added in start position order using
- * the {@link #addWindow(ScoredChromosomeWindow)} method.
- * Once all the windows have been added the {@link #flush()} method needs to be used
- * in order to receive the last "flattened windows".
+ * the {@link #addWindow(int, int, float)} method.
+ * This interface extends the {@link Cloneable} interface so {@link PileupFlattener}
+ * can be created from an prototype object.
  * @author Julien Lajugie
  */
-public interface PileupFlattener {
+public interface PileupFlattener extends Cloneable {
 
 	/**
 	 * Adds a new window to the {@link PileupFlattener} object.
 	 * Windows must be added in start position order.
-	 * @param window a {@link ScoredChromosomeWindow} to add
-	 * @return a list of {@link ScoredChromosomeWindow} resulting from the flattening
-	 * between the start position of the window added in the previous call of this
-	 * function and the start position of the window specified in the current call.
+	 * @param windowStart
+	 * @param windowStop
+	 * @param windowScore
 	 * @throws ElementAddedNotSortedException  If  the elements are not added in sorted order
+	 * @throws ObjectAlreadyBuiltException If an element is added after the {@link #getListView()} had been called
 	 */
-	public List<ScoredChromosomeWindow> addWindow(ScoredChromosomeWindow window)throws ElementAddedNotSortedException;
+	public void addWindow(int windowStart, int windowStop, float windowScore)throws ElementAddedNotSortedException, ObjectAlreadyBuiltException;
 
 
 	/**
-	 * Flushes this {@link PileupFlattener} object and returns the result for the positions located after start position
-	 * of the window specified at the last call of the {@link #addWindow(ScoredChromosomeWindow)} method
+	 * Adds a new window to the {@link PileupFlattener} object.
+	 * Windows must be added in start position order.
+	 * @param windowToAdd
+	 * @throws ElementAddedNotSortedException  If  the elements are not added in sorted order
+	 * @throws ObjectAlreadyBuiltException If an element is added after the {@link #getListView()} had been called
+	 */
+	public void addWindow(ScoredChromosomeWindow windowToAdd)throws ElementAddedNotSortedException, ObjectAlreadyBuiltException;
+
+
+	/**
+	 * @return a copy of this {@link PileupFlattener} object with no element added.
+	 */
+	public PileupFlattener clone();
+
+
+	/**
+	 * Build and retrieves the {@link ListView} resulting from the flattening
 	 * @return the result of the flattening for the position after
 	 */
-	public List<ScoredChromosomeWindow> flush();
+	public ListView<ScoredChromosomeWindow> getListView();
 }

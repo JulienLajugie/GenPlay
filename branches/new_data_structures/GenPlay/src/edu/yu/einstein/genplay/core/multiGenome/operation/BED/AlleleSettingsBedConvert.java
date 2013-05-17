@@ -26,13 +26,12 @@ import java.util.List;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.enums.CoordinateSystemType;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.SCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ListOfListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWListBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
-import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 
 
 /**
@@ -42,7 +41,7 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScored
  */
 public class AlleleSettingsBedConvert extends AlleleSettingsBed {
 
-	private final ListOfListViewBuilder<ScoredChromosomeWindow> listBuilder;
+	private final SCWListBuilder listBuilder;
 
 
 	/**
@@ -53,8 +52,8 @@ public class AlleleSettingsBedConvert extends AlleleSettingsBed {
 	 */
 	protected AlleleSettingsBedConvert (AlleleType allele, CoordinateSystemType coordinateSystem) throws CloneNotSupportedException {
 		super(allele, coordinateSystem);
-		ListViewBuilder<ScoredChromosomeWindow> lvBuilderPrototype = new GenericSCWListViewBuilder();
-		listBuilder = new ListOfListViewBuilder<ScoredChromosomeWindow>(lvBuilderPrototype);
+		SCWListViewBuilder lvBuilderPrototype = new GenericSCWListViewBuilder();
+		listBuilder = new SCWListBuilder(lvBuilderPrototype);
 	}
 
 
@@ -77,8 +76,7 @@ public class AlleleSettingsBedConvert extends AlleleSettingsBed {
 		if (valid) {
 			//int start = getCurrentStart();
 			//int stop = getDisplayableCurrentStop();
-			ScoredChromosomeWindow scw = new SimpleScoredChromosomeWindow(currentStart, currentStop, dbScore);
-			listBuilder.addElementToBuild(chromosome, scw);
+			listBuilder.addElementToBuild(chromosome, currentStart, currentStop, dbScore);
 		} else {
 			System.err.println("AlleleSettingsBedConvert.addCurrentInformation() Could not convert '" + score + "' into a double.");
 		}
@@ -89,6 +87,6 @@ public class AlleleSettingsBedConvert extends AlleleSettingsBed {
 	 * @return the startList
 	 */
 	public List<ListView<ScoredChromosomeWindow>> getListOfListViews() {
-		return listBuilder.getGenomicList();
+		return listBuilder.getListOfListViews();
 	}
 }

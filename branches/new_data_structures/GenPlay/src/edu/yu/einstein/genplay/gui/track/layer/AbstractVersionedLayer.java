@@ -37,7 +37,7 @@ import edu.yu.einstein.genplay.util.History;
  * @param <T> type of the data displayed in the layer
  * @author Julien Lajugie
  */
-public abstract class AbstractVersionedLayer<T extends Serializable> extends AbstractLayer<T> implements Layer<T>, VersionedLayer<T> {
+public abstract class AbstractVersionedLayer<T extends Serializable> extends AbstractLayer<T> implements Cloneable, Serializable, Layer<T>, VersionedLayer<T> {
 
 	private static final long serialVersionUID = -132567654281687511L; // generated serial version ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
@@ -52,6 +52,17 @@ public abstract class AbstractVersionedLayer<T extends Serializable> extends Abs
 	 */
 	public AbstractVersionedLayer() {
 		this(null, null, null);
+	}
+
+
+	/**
+	 * Creates an instance of {@link AbstractVersionedLayer} with the same properties as the specified {@link AbstractVersionedLayer}
+	 * @param abstractLayer
+	 */
+	protected AbstractVersionedLayer(AbstractVersionedLayer<T> astractVersionedLayer) {
+		super(astractVersionedLayer);
+		this.history = astractVersionedLayer.history.deepClone();
+		this.urrManager = astractVersionedLayer.urrManager.deepClone();
 	}
 
 
@@ -76,6 +87,10 @@ public abstract class AbstractVersionedLayer<T extends Serializable> extends Abs
 		this.history = new History();
 		this.urrManager = new URRManager<T>(ProjectManager.getInstance().getProjectConfiguration().getUndoCount(), data);
 	}
+
+
+	@Override
+	public abstract AbstractVersionedLayer<T> clone();
 
 
 	@Override

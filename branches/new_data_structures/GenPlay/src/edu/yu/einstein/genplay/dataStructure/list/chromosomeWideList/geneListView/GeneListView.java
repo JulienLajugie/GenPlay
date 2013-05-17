@@ -201,12 +201,6 @@ public final class GeneListView extends AbstractListView<Gene> implements Serial
 	}
 
 
-	@Override
-	public boolean isEmpty() {
-		return size() == 0;
-	}
-
-
 	/**
 	 * Method used for deserialization
 	 * @param in

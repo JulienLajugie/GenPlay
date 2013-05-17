@@ -85,7 +85,7 @@ public class SCWLODivideConstant implements Operation<SCWList> {
 							int start = currentWindow.getStart();
 							int stop = currentWindow.getStop();
 							float score = currentWindow.getScore() / constant;
-							resultListBuilder.addElementToBuild(chromosome, new SimpleScoredChromosomeWindow(start, stop, score));
+							resultListBuilder.addElementToBuild(chromosome, start, stop, score);
 						}
 					}
 					// tell the operation pool that a chromosome is done

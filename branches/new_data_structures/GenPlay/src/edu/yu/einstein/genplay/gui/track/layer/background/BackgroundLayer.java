@@ -54,6 +54,12 @@ public class BackgroundLayer extends AbstractLayer<BackgroundData> implements La
 
 
 	@Override
+	public BackgroundLayer clone() {
+		return new BackgroundLayer(getTrack());
+	}
+
+
+	@Override
 	public void draw(Graphics g, int width, int height) {
 		if (isVisible()) {
 			drawVerticalLines(g, width, height);

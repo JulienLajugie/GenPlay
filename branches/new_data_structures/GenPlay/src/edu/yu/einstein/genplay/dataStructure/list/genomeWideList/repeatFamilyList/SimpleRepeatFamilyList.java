@@ -107,12 +107,6 @@ public class SimpleRepeatFamilyList extends AbstractListView<ListView<RepeatFami
 	}
 
 
-	@Override
-	public boolean isEmpty() {
-		return data.isEmpty();
-	}
-
-
 	/**
 	 * Method used for deserialization
 	 * @param in

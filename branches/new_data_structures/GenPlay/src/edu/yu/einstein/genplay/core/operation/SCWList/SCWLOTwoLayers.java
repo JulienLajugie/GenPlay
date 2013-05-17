@@ -31,12 +31,12 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.core.pileupFlattener.ListOfListViewsIterator;
 import edu.yu.einstein.genplay.core.pileupFlattener.SimpleSCWPileupFlattener;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWListBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListOfListViewsIterator;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
@@ -85,14 +85,12 @@ public class SCWLOTwoLayers implements Operation<SCWList>, Stoppable {
 					listOfLV.add(list1.get(currentChromosome));
 					listOfLV.add(list2.get(currentChromosome));
 					Iterator<ScoredChromosomeWindow> listOfLVIterator = new ListOfListViewsIterator<ScoredChromosomeWindow>(listOfLV);
-					SimpleSCWPileupFlattener pileupFlattener = new SimpleSCWPileupFlattener(scoreOperation);
+					// TODO male sure that list 1 is not a bin list. otherwise use BLOTowLayers instead
+					SimpleSCWPileupFlattener pileupFlattener = new SimpleSCWPileupFlattener(scoreOperation, list1.getSCWListType());
 					while (listOfLVIterator.hasNext() && !stopped) {
 						ScoredChromosomeWindow currentWindow = listOfLVIterator.next();
-						List<ScoredChromosomeWindow> flattenedWindows = pileupFlattener.addWindow(currentWindow);
-						resultListBuilder.addListOfElementsToBuild(currentChromosome, flattenedWindows);
+						pileupFlattener.addWindow(currentWindow);
 					}
-					List<ScoredChromosomeWindow> flattenedWindows = pileupFlattener.flush();
-					resultListBuilder.addListOfElementsToBuild(currentChromosome, flattenedWindows);
 					op.notifyDone();
 					return null;
 				}

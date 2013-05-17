@@ -89,6 +89,7 @@ public interface VersionedLayer<T extends Serializable> {
 	 */
 	public void setUndoCount(int undoCount);
 
+
 	/**
 	 * Undo the last action
 	 */

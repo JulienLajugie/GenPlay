@@ -37,11 +37,9 @@ import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 
 
-
 /**
  * Pastes the copied/cut track
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class TAPaste extends TrackListActionWorker<Void> {
 
@@ -96,7 +94,7 @@ public final class TAPaste extends TrackListActionWorker<Void> {
 					if ((selectedLayers != null) && (selectedLayers.length > 0)) {
 						notifyActionStart("Pasting Clipboard on Track #" + selectedTrack.getNumber(), 1, false);
 						for (Layer<?> currentLayer: selectedLayers) {
-							Layer<?> layerToAdd = currentLayer.deepCopy();
+							Layer<?> layerToAdd = currentLayer.clone();
 							layerToAdd.setTrack(selectedTrack);
 							selectedTrack.getLayers().add(layerToAdd);
 							selectedTrack.setActiveLayer(layerToAdd);
@@ -105,7 +103,7 @@ public final class TAPaste extends TrackListActionWorker<Void> {
 				}
 			} else if (layers.length == 1) {
 				notifyActionStart("Pasting Clipboard on Track #" + selectedTrack.getNumber(), 1, false);
-				Layer<?> layerToAdd = layers[0].deepCopy();
+				Layer<?> layerToAdd = layers[0].clone();
 				layerToAdd.setTrack(selectedTrack);
 				selectedTrack.getLayers().add(layerToAdd);
 				selectedTrack.setActiveLayer(layerToAdd);

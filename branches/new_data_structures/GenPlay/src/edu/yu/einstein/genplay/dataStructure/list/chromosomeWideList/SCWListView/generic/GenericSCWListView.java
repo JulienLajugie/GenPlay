@@ -117,12 +117,6 @@ public final class GenericSCWListView extends AbstractListView<ScoredChromosomeW
 	}
 
 
-	@Override
-	public boolean isEmpty() {
-		return size() == 0;
-	}
-
-
 	/**
 	 * Method used for deserialization
 	 * @param in

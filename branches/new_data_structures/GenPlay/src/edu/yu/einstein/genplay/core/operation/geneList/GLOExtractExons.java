@@ -35,6 +35,7 @@ import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.SCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.geneListView.GeneListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ListOfListViewBuilder;
@@ -43,7 +44,6 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.Simple
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 
 
 /**
@@ -126,8 +126,8 @@ public class GLOExtractExons implements Operation<GeneList> {
 		int start = exonToConvert.getStart();
 		int stop = exonToConvert.getStop();
 		float score = exonToConvert.getScore();
-		ListViewBuilder<ScoredChromosomeWindow> exonLvBuilder = new GenericSCWListViewBuilder();
-		exonLvBuilder.addElementToBuild(new SimpleScoredChromosomeWindow(start, stop, score));
+		SCWListViewBuilder exonLvBuilder = new GenericSCWListViewBuilder();
+		exonLvBuilder.addElementToBuild(start, stop, score);
 		Strand strand = gene.getStrand();
 		return new SimpleGene(exonName, strand, start, stop, score, exonLvBuilder.getListView());
 	}

@@ -30,6 +30,7 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.SCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.geneListView.GeneListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
@@ -37,7 +38,6 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.Simple
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 
 
 /**
@@ -102,11 +102,10 @@ public class GLOUniqueScore implements Operation<GeneList> {
 	 * @return a copy of the specified gene with a constant score
 	 */
 	private Gene createGeneCopyWithConstantScore(Gene gene) {
-		ListViewBuilder<ScoredChromosomeWindow> exonLVBuilder = new GenericSCWListViewBuilder();
+		SCWListViewBuilder exonLVBuilder = new GenericSCWListViewBuilder();
 		if (gene.getExons() != null) {
 			for (ScoredChromosomeWindow currentExon: gene.getExons()) {
-				ScoredChromosomeWindow newExon = new SimpleScoredChromosomeWindow(currentExon.getStart(), currentExon.getStop(), constant);
-				exonLVBuilder.addElementToBuild(newExon);
+				exonLVBuilder.addElementToBuild(currentExon.getStart(), currentExon.getStop(), constant);
 			}
 		}
 		return new SimpleGene(gene.getName(), gene.getStrand(), gene.getStart(), gene.getStop(), constant, gene.getUTR5Bound(), gene.getUTR3Bound(), exonLVBuilder.getListView());

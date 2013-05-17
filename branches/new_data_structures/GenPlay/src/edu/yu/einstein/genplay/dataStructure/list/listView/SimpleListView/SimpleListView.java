@@ -61,12 +61,6 @@ public final class SimpleListView<T> extends AbstractListView<T> implements List
 	}
 
 
-	@Override
-	public boolean isEmpty() {
-		return size() == 0;
-	}
-
-
 	/**
 	 * Method used for deserialization
 	 * @param in

@@ -32,13 +32,10 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.bin.BinListViewBuilder;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ListOfListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinListBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
-import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.util.FloatLists;
 
 /**
@@ -73,8 +70,7 @@ public class BLOComputeAverageList implements Operation<List<ListView<ScoredChro
 		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
-		final ListViewBuilder<ScoredChromosomeWindow> builderPrototype = new BinListViewBuilder(averageListBinSize);
-		final ListOfListViewBuilder<ScoredChromosomeWindow> resultListBuilder = new ListOfListViewBuilder<ScoredChromosomeWindow>(builderPrototype);
+		final BinListBuilder resultListBuilder = new BinListBuilder(averageListBinSize);
 
 		for (final Chromosome chromosome: projectChromosomes) {
 			final ListView<ScoredChromosomeWindow> currentList = binList.get(chromosome);
@@ -92,15 +88,13 @@ public class BLOComputeAverageList implements Operation<List<ListView<ScoredChro
 									scoreList.add(score);
 								}
 							}
-							int start = i * binList.getBinSize();
-							int stop = start + averageListBinSize;
 							float score;
 							if (scoreList.isEmpty()) {
 								score = 0;
 							} else {
 								score = FloatLists.average(scoreList);
 							}
-							resultListBuilder.addElementToBuild(chromosome, new SimpleScoredChromosomeWindow(start, stop, score));
+							resultListBuilder.addElementToBuild(chromosome, score);
 							scoreList.clear();
 						}
 					}
@@ -113,7 +107,7 @@ public class BLOComputeAverageList implements Operation<List<ListView<ScoredChro
 			threadList.add(currentThread);
 		}
 		op.startPool(threadList);
-		return resultListBuilder.getGenomicList();
+		return resultListBuilder.getListOfListViews();
 	}
 
 

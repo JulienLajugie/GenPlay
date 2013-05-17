@@ -37,6 +37,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.SCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.geneListView.GeneListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.ListOfListViewBuilder;
@@ -44,7 +45,6 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
 
@@ -114,9 +114,8 @@ public class GeneListFactory {
 						int stop = currentWindow.getStop();
 						float score = currentWindow.getScore();
 						Strand strand = Strand.FIVE;
-						ListViewBuilder<ScoredChromosomeWindow> exonListBuilder = new GenericSCWListViewBuilder();
-						ScoredChromosomeWindow exonToAdd = new SimpleScoredChromosomeWindow(currentWindow.getStart(), currentWindow.getStop(), currentWindow.getScore());
-						exonListBuilder.addElementToBuild(exonToAdd);
+						SCWListViewBuilder exonListBuilder = new GenericSCWListViewBuilder();
+						exonListBuilder.addElementToBuild(currentWindow.getStart(), currentWindow.getStop(), currentWindow.getScore());
 						Gene geneToAdd = new SimpleGene(name, strand, start, stop, score, exonListBuilder.getListView());
 						geneListBuilder.addElementToBuild(geneToAdd);
 					}

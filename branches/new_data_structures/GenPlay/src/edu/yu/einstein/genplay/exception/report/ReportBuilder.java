@@ -36,8 +36,8 @@ public class ReportBuilder {
 	protected final static String DEFAULT_VALUE = "unknown";
 	private static int REPORT_COUNT = 0;
 
-	private final ReportHeaderBuilder headerBuilder;			// The header report builder.
-	private final ReportExceptionBuilder exceptionBuilder;		// The exeception report builder.
+	private final ReportHeaderBuilder headerBuilder;			// The header report builders.
+	private final ReportExceptionBuilder exceptionBuilder;		// The exeception report builders.
 
 	private String report;										// The report
 

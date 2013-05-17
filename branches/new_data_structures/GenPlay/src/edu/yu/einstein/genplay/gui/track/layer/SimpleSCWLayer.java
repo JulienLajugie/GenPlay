@@ -44,6 +44,16 @@ public class SimpleSCWLayer extends AbstractSCWLayer<SCWList> implements Layer<S
 
 
 	/**
+	 * Creates an instance of {@link SimpleSCWLayer} with the same properties as the specified {@link SimpleSCWLayer}.
+	 * The copy of the data is shallow.
+	 * @param simpleSCWLayer
+	 */
+	private SimpleSCWLayer(SimpleSCWLayer simpleSCWLayer) {
+		super(simpleSCWLayer);
+	}
+
+
+	/**
 	 * Creates an instance of a {@link SimpleSCWLayer}
 	 * @param track track containing the layer
 	 * @param data data of the layer
@@ -51,6 +61,12 @@ public class SimpleSCWLayer extends AbstractSCWLayer<SCWList> implements Layer<S
 	 */
 	public SimpleSCWLayer(Track track, SCWList data, String name) {
 		super(track, data, name);
+	}
+
+
+	@Override
+	public SimpleSCWLayer clone() {
+		return new SimpleSCWLayer(this);
 	}
 
 

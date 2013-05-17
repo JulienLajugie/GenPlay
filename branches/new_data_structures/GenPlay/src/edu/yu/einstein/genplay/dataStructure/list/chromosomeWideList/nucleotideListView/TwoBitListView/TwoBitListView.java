@@ -231,12 +231,6 @@ public final class TwoBitListView extends AbstractListView<Nucleotide> implement
 	}
 
 
-	@Override
-	public boolean isEmpty() {
-		return size() == 0;
-	}
-
-
 	/**
 	 * Method used for unserialization
 	 * @param in

@@ -19,14 +19,13 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.pileupFlattener;
+package edu.yu.einstein.genplay.dataStructure.list.listView;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 
 /**
  * Iterates in a {@link List} of sorted {@link ListView} of {@link Comparable} objects.

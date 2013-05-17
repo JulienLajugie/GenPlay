@@ -30,7 +30,7 @@ import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
  * This can be done as follow: <br>
  * 1) Set the visibility of constructors of class implementing the {@link ListView}
  * interface to package.<br>
- * 2) Create a builder class in the same package implementing this interface.<br>
+ * 2) Create a builders class in the same package implementing this interface.<br>
  * This interface extends the {@link Cloneable} interface so object implementing this
  * interface can be created following the method specified by the Prototype design pattern.
  * @param <T> type of the elements of the {@link ListView}
@@ -52,9 +52,8 @@ public interface ListViewBuilder<T> extends Cloneable {
 	/**
 	 * @return a new instance of {@link ListViewBuilder} that is a clone of the current prototype instance.
 	 * Potential elements to build added to prototype instance won't be present in the clone.
-	 * @throws CloneNotSupportedException
 	 */
-	public ListViewBuilder<T> clone() throws CloneNotSupportedException;
+	public ListViewBuilder<T> clone();
 
 
 	/**

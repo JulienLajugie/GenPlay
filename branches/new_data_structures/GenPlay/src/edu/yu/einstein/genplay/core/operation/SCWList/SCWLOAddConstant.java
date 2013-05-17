@@ -82,7 +82,7 @@ public class SCWLOAddConstant implements Operation<SCWList> {
 							int start = currentList.get(j).getStart();
 							int stop = currentList.get(j).getStop();
 							float score = currentList.get(j).getScore() + constant;
-							resultListBuilder.addElementToBuild(chromosome, new SimpleScoredChromosomeWindow(start, stop, score));
+							resultListBuilder.addElementToBuild(chromosome, start, stop, score);
 						}
 					}
 					// tell the operation pool that a chromosome is done

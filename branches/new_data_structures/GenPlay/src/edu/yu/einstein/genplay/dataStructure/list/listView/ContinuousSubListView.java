@@ -98,7 +98,6 @@ class ContinuousSubListView<T> implements ListView<T> {
 		return "Index: " + index + ", Size: " + this.size;
 	}
 
-
 	/**
 	 * Checks if the specified index is valid
 	 * @param index
@@ -108,6 +107,7 @@ class ContinuousSubListView<T> implements ListView<T> {
 			throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
 		}
 	}
+
 
 	@Override
 	public int size() {

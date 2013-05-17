@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.list.genomeWideList;
+package edu.yu.einstein.genplay.core.pileupFlattener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,81 +28,77 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
-import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
 
 /**
- * Creates a list of {@link ListView} objects.
- * The list has one {@link ListView} per chromosome of the project genome.
- * @param <T> type of the data stored in the {@link ListView} objects (eg: genes, SCW)
+ * List of {@link PileupFlattener} with one {@link PileupFlattener} per {@link Chromosome}.
  * @author Julien Lajugie
  */
-public class ListOfListViewBuilder<T> {
+public class GenomeWideFlattener {
 
-	/** List of the builders that will create the {@link ListView} objects */
-	private List<ListViewBuilder<T>> builders;
+	/** List of {@link PileupFlattener} with one flattener per chromosome */
+	private final List<PileupFlattener> flatteners;
 
 	/** We store the {@link ProjectChromosomes} to avoid wasting time retrieving it */
 	private final ProjectChromosomes projectChromosomes;
 
 
 	/**
-	 * Creates a new instance of {@link ListOfListViewBuilder}.
-	 * @param listViewBuilderPrototype prototype of {@link ListViewBuilder} to use to creates the {@link ListView} objects
+	 * Creates an instance of {@link GenomeWideFlattener}
+	 * @param flattenerPrototype
 	 * @throws CloneNotSupportedException
 	 */
-	public <U extends ListViewBuilder<T>> ListOfListViewBuilder(U listViewBuilderPrototype) throws CloneNotSupportedException {
+	public GenomeWideFlattener(PileupFlattener flattenerPrototype) throws CloneNotSupportedException {
 		projectChromosomes =  ProjectManager.getInstance().getProjectChromosomes();
 		int chromosomeCount = projectChromosomes.size();
-		builders = new ArrayList<ListViewBuilder<T>>(chromosomeCount);
+		flatteners = new ArrayList<PileupFlattener>(chromosomeCount);
 		if (chromosomeCount > 0) {
-			builders.add(0, listViewBuilderPrototype);
+			flatteners.add(0, flattenerPrototype);
 			for (int i = 1; i < chromosomeCount; i++) {
-				builders.add(i, listViewBuilderPrototype.clone());
+				flatteners.add(i, flattenerPrototype.clone());
 			}
 		}
 	}
 
 
 	/**
-	 * Adds an element to the list of {@link ListView} to be built
+	 * Adds a Scored window to the list of {@link ScoredChromosomeWindow}
 	 * @param chromosome {@link Chromosome} of the element to add
-	 * @param element element to add
+	 * @param start start position of the window to add
+	 * @param stop stop position of the window to add
+	 * @param score score of the window to add
 	 * @throws InvalidChromosomeException
 	 * @throws ObjectAlreadyBuiltException
 	 */
-	public void addElementToBuild(Chromosome chromosome, T element) throws InvalidChromosomeException, ObjectAlreadyBuiltException {
-		if (builders == null) {
-			throw new ObjectAlreadyBuiltException();
-		}
+	public void addElementToBuild(Chromosome chromosome, int start, int stop, float score) throws ObjectAlreadyBuiltException {
 		int chromosomeIndex = projectChromosomes.getIndex(chromosome);
-		builders.get(chromosomeIndex).addElementToBuild(element);
+		flatteners.get(chromosomeIndex).addWindow(start, stop, score);
 	}
 
 
 	/**
-	 * @param chromosome a {@link Chromosome}
-	 * @return the builders for the {@link ListView} of the specified {@link Chromosome}
+	 * Adds a Scored window to the list of {@link ScoredChromosomeWindow}
+	 * @param chromosome {@link Chromosome} of the element to add
+	 * @param currentWindow window to add
+	 * @throws InvalidChromosomeException
+	 * @throws ObjectAlreadyBuiltException
 	 */
-	public ListViewBuilder<T> getBuilder(Chromosome chromosome) {
-		if (builders == null) {
-			throw new ObjectAlreadyBuiltException();
-		}
+	public void addWindow(Chromosome chromosome, ScoredChromosomeWindow currentWindow) {
 		int chromosomeIndex = projectChromosomes.getIndex(chromosome);
-		return builders.get(chromosomeIndex);
+		flatteners.get(chromosomeIndex).addWindow(currentWindow);
 	}
 
 
 	/**
 	 * @return the list of {@link ListView} elements
 	 */
-	public List<ListView<T>> getGenomicList() {
-		List<ListView<T>> genomicList = new ArrayList<ListView<T>>();
-		for (ListViewBuilder<T> currentBuilder: builders) {
-			genomicList.add(currentBuilder.getListView());
+	public List<ListView<ScoredChromosomeWindow>> getGenomicList() {
+		List<ListView<ScoredChromosomeWindow>> genomicList = new ArrayList<ListView<ScoredChromosomeWindow>>();
+		for (PileupFlattener currentFlattener: flatteners) {
+			genomicList.add(currentFlattener.getListView());
 		}
-		builders = null;
 		return genomicList;
 	}
 }

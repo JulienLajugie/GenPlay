@@ -51,16 +51,6 @@ public final class SimpleChromosomeWindow extends AbstractChromosomeWindow imple
 
 
 	/**
-	 * Creates an instance of {@link SimpleChromosomeWindow} having the same value than the specified {@link SimpleChromosomeWindow}
-	 * @param chromosomeWindow
-	 */
-	public SimpleChromosomeWindow(ChromosomeWindow chromosomeWindow) {
-		start = chromosomeWindow.getStart();
-		stop = chromosomeWindow.getStop();
-	}
-
-
-	/**
 	 * Creates an instance of {@link SimpleChromosomeWindow}.
 	 * @param start a window start
 	 * @param stop a window stop

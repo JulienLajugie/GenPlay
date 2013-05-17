@@ -235,12 +235,6 @@ public final class SimpleSCWList extends AbstractListView<ListView<ScoredChromos
 	}
 
 
-	@Override
-	public boolean isEmpty() {
-		return data.isEmpty();
-	}
-
-
 	/**
 	 * Method used for unserialization. Computes the statistics of the list after unserialization
 	 * @param in

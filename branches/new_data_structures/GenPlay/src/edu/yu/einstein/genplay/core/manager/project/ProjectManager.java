@@ -40,70 +40,7 @@ public class ProjectManager implements Serializable {
 
 	private static final long serialVersionUID = -8900126340763056646L; // generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private static	ProjectManager	instance = null;		// unique instance of the singleton
-	private			String			projectName;			// project name
-	private			String			cladeName;				// clade name
-	private			String			genomeName;				// genome name
-	private  		Assembly 		assembly;				// assembly name
-	private			boolean			multiGenome;			// True if it is a multi genome project, false if it is a simple genome project
-
-
-	private final ProjectConfiguration 	projectConfiguration;		// Instance of the Configuration Manager
-	private final ProjectWindow			projectWindow;				// Instance of the Genome Window Manager
-	private final ProjectZoom 			projectZoom;				// Instance of the Zoom Manager
-	private final ProjectChromosomes		projectChromosomes;			// Instance of the Chromosome Manager
-	private MultiGenomeProject			multiGenomeProject;			// Instance of the Multi Genome Project
-
-
-	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(projectName);
-		out.writeObject(cladeName);
-		out.writeObject(genomeName);
-		out.writeObject(assembly);
-		out.writeBoolean(multiGenome);
-
-		out.writeObject(projectWindow);
-		out.writeObject(projectChromosomes);
-	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		getInstance();
-		in.readInt();
-		instance.setProjectName((String) in.readObject());
-		instance.setCladeName((String) in.readObject());
-		instance.setGenomeName((String) in.readObject());
-		instance.setAssembly((Assembly) in.readObject());
-		instance.setMultiGenomeProject(in.readBoolean());
-
-		instance.getProjectWindow().setProjectWindow((ProjectWindow) in.readObject());
-		instance.getProjectChromosomes().setProjectChromosome((ProjectChromosomes) in.readObject());
-	}
-
-
-	/**
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	public void readMultiGenomeObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		if (instance.isMultiGenomeProject()) {
-			instance.getMultiGenomeProject().setMultiGenomeProject((MultiGenomeProject) in.readObject());
-		}
-	}
-
+	private static	ProjectManager	instance = null;					// unique instance of the singleton
 
 	/**
 	 * @return an instance of a {@link ProjectManager}.
@@ -121,6 +58,18 @@ public class ProjectManager implements Serializable {
 	}
 
 
+	private	String						projectName;			// project name
+	private	String						cladeName;				// clade name
+	private	String						genomeName;				// genome name
+	private Assembly 					assembly;				// assembly name
+	private	boolean						multiGenome;			// True if it is a multi genome project, false if it is a simple genome project
+	private final ProjectConfiguration 	projectConfiguration;	// Instance of the Configuration Manager
+	private final ProjectWindow			projectWindow;			// Instance of the Genome Window Manager
+	private final ProjectZoom 			projectZoom;			// Instance of the Zoom Manager
+	private final ProjectChromosomes	projectChromosomes;		// Instance of the Chromosome Manager
+	private MultiGenomeProject			multiGenomeProject;		// Instance of the Multi Genome Project
+
+
 	/**
 	 * Private constructor of the singleton. Creates an instance of a {@link ProjectManager}.
 	 */
@@ -134,63 +83,26 @@ public class ProjectManager implements Serializable {
 
 
 	/**
-	 * Updates the chromosome list
+	 * @return the assembly
 	 */
-	public void updateChromosomeList () {
-		List<Chromosome> chromosomeList;
-		chromosomeList = getAssembly().getChromosomeList();
-		projectChromosomes.setChromosomeList(chromosomeList);
+	public Assembly getAssembly() {
+		return assembly;
 	}
 
 
 	/**
-	 * @return the multiGenomeProject
+	 * @return the cladeName
 	 */
-	public boolean isMultiGenomeProject() {
-		return multiGenome;
+	public String getCladeName() {
+		return cladeName;
 	}
 
 
 	/**
-	 * @param multiGenome the multiGenomeProject to set
+	 * @return the genomeName
 	 */
-	public void setMultiGenomeProject(boolean multiGenome) {
-		this.multiGenome = multiGenome;
-		if (!multiGenome) {
-			multiGenomeProject = null;
-		}
-	}
-
-
-	/**
-	 * @return the Genome Window Manager
-	 */
-	public ProjectWindow getProjectWindow() {
-		return projectWindow;
-	}
-
-
-	/**
-	 * @return the Configuration Manager
-	 */
-	public ProjectConfiguration getProjectConfiguration () {
-		return projectConfiguration;
-	}
-
-
-	/**
-	 * @return the Zoom Manager
-	 */
-	public ProjectZoom getProjectZoom() {
-		return projectZoom;
-	}
-
-
-	/**
-	 * @return the chromosomeManager
-	 */
-	public ProjectChromosomes getProjectChromosomes() {
-		return projectChromosomes;
+	public String getGenomeName() {
+		return genomeName;
 	}
 
 
@@ -207,6 +119,22 @@ public class ProjectManager implements Serializable {
 
 
 	/**
+	 * @return the chromosomeManager
+	 */
+	public ProjectChromosomes getProjectChromosomes() {
+		return projectChromosomes;
+	}
+
+
+	/**
+	 * @return the Configuration Manager
+	 */
+	public ProjectConfiguration getProjectConfiguration () {
+		return projectConfiguration;
+	}
+
+
+	/**
 	 * @return the projectName
 	 */
 	public String getProjectName() {
@@ -215,18 +143,65 @@ public class ProjectManager implements Serializable {
 
 
 	/**
-	 * @param projectName the projectName to set
+	 * @return the Genome Window Manager
 	 */
-	public void setProjectName(String projectName) {
-		this.projectName = projectName;
+	public ProjectWindow getProjectWindow() {
+		return projectWindow;
 	}
 
 
 	/**
-	 * @return the cladeName
+	 * @return the Zoom Manager
 	 */
-	public String getCladeName() {
-		return cladeName;
+	public ProjectZoom getProjectZoom() {
+		return projectZoom;
+	}
+
+
+	/**
+	 * @return the multiGenomeProject
+	 */
+	public boolean isMultiGenomeProject() {
+		return multiGenome;
+	}
+
+
+	/**
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public void readMultiGenomeObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		if (instance.isMultiGenomeProject()) {
+			instance.getMultiGenomeProject().setMultiGenomeProject((MultiGenomeProject) in.readObject());
+		}
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		getInstance();
+		in.readInt();
+		instance.setProjectName((String) in.readObject());
+		instance.setCladeName((String) in.readObject());
+		instance.setGenomeName((String) in.readObject());
+		instance.setAssembly((Assembly) in.readObject());
+		instance.setMultiGenomeProject(in.readBoolean());
+		instance.getProjectWindow().setProjectWindow((ProjectWindow) in.readObject());
+		instance.getProjectChromosomes().setProjectChromosomes((ProjectChromosomes) in.readObject());
+	}
+
+
+	/**
+	 * @param assembly the assembly to set
+	 */
+	public void setAssembly(Assembly assembly) {
+		this.assembly = assembly;
 	}
 
 
@@ -239,14 +214,6 @@ public class ProjectManager implements Serializable {
 
 
 	/**
-	 * @return the genomeName
-	 */
-	public String getGenomeName() {
-		return genomeName;
-	}
-
-
-	/**
 	 * @param genomeName the genomeName to set
 	 */
 	public void setGenomeName(String genomeName) {
@@ -255,18 +222,47 @@ public class ProjectManager implements Serializable {
 
 
 	/**
-	 * @return the assembly
+	 * @param multiGenome the multiGenomeProject to set
 	 */
-	public Assembly getAssembly() {
-		return assembly;
+	public void setMultiGenomeProject(boolean multiGenome) {
+		this.multiGenome = multiGenome;
+		if (!multiGenome) {
+			multiGenomeProject = null;
+		}
 	}
 
 
 	/**
-	 * @param assembly the assembly to set
+	 * @param projectName the projectName to set
 	 */
-	public void setAssembly(Assembly assembly) {
-		this.assembly = assembly;
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
 	}
 
+
+	/**
+	 * Updates the chromosome list
+	 */
+	public void updateChromosomeList () {
+		List<Chromosome> chromosomeList;
+		chromosomeList = getAssembly().getChromosomeList();
+		projectChromosomes.setChromosomeList(chromosomeList);
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(projectName);
+		out.writeObject(cladeName);
+		out.writeObject(genomeName);
+		out.writeObject(assembly);
+		out.writeBoolean(multiGenome);
+		out.writeObject(projectWindow);
+		out.writeObject(projectChromosomes);
+	}
 }

@@ -35,7 +35,6 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWListBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 
 
 /**
@@ -127,7 +126,7 @@ public class SCWLOIndexByChromosome implements Operation<SCWList> {
 								if (score != 0) {
 									score = ((newDistance * (score - oldMin)) / oldDistance) + newMin;
 								}
-								resultListBuilder.addElementToBuild(chromosome, new SimpleScoredChromosomeWindow(start, stop, score));
+								resultListBuilder.addElementToBuild(chromosome, start, stop, score);
 							}
 						}
 					}

@@ -58,7 +58,7 @@ public final class BinList extends AbstractListView<ListView<ScoredChromosomeWin
 	private static final transient int CLASS_VERSION_NUMBER = 0;
 
 	/** Value of the BinSize factors averaged BinList */
-	public static final int[] AVERAGE_BIN_SIZE_FACTORS = {10, 100, 10000};
+	public static final int[] AVERAGE_BIN_SIZE_FACTORS = {100, 10000};
 
 	/**
 	 * @param scwListType a {@link SCWListType}
@@ -243,12 +243,6 @@ public final class BinList extends AbstractListView<ListView<ScoredChromosomeWin
 	@Override
 	public double getStandardDeviation() {
 		return standardDeviation;
-	}
-
-
-	@Override
-	public boolean isEmpty() {
-		return size() == 0;
 	}
 
 

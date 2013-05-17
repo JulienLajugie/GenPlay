@@ -57,6 +57,12 @@ public class ForegroundLayer extends AbstractLayer<ForegroundData> implements La
 
 
 	@Override
+	public ForegroundLayer clone() {
+		return new ForegroundLayer(getTrack());
+	}
+
+
+	@Override
 	public void draw(Graphics g, int width, int height) {
 		if (isVisible()) {
 			drawMiddleVerticalLine(g, width, height);

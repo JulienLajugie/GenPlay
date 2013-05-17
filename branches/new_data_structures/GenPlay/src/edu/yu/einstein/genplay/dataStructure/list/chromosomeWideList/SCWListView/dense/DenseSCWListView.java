@@ -117,12 +117,6 @@ public final class DenseSCWListView extends AbstractListView<ScoredChromosomeWin
 	}
 
 
-	@Override
-	public boolean isEmpty() {
-		return size() == 0;
-	}
-
-
 	/**
 	 * Method used for deserialization
 	 * @param in
