@@ -112,7 +112,6 @@ public class BinListScaler implements DataScalerForTrackDisplay<BinList, ListVie
 				ratio = scaledXRatio * dataToScale.getBinSize() * BinList.AVERAGE_BIN_SIZE_FACTORS[i];
 			}
 		}
-
 		if ((scaledXRatio * binSize) >= 1) {
 			return;
 		}
@@ -125,7 +124,6 @@ public class BinListScaler implements DataScalerForTrackDisplay<BinList, ListVie
 		if (fittedBinSize <= binSize) {
 			return;
 		}
-
 		// create a list adapted to the xRatio
 		BinListViewBuilder blvb = new BinListViewBuilder(fittedBinSize);
 		for(int index = 0; index < scaledSCWList.size(); index += binSizeRatio) {

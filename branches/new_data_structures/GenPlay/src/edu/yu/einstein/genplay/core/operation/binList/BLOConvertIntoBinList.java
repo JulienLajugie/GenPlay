@@ -100,7 +100,7 @@ public class BLOConvertIntoBinList implements Operation<BinList> {
 			threadList.add(currentThread);
 		}
 		op.startPool(threadList);
-		return new BinList(gwflFlattener.getGenomicList(), binSize);
+		return new BinList(gwflFlattener.getGenomicList());
 	}
 
 

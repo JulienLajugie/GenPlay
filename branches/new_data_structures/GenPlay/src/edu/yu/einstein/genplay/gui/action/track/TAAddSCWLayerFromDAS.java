@@ -42,13 +42,13 @@ import edu.yu.einstein.genplay.util.colors.Colors;
 public class TAAddSCWLayerFromDAS extends TrackListActionWorker<SCWList> {
 
 	private static final long serialVersionUID = 8520156015849830140L; // generated ID
-	private final DataSource 	dataSource;			// DAS data source
-	private final DASConnector 	dasConnector;		// DAS connector
-	private final DASType 		dasType;			// DAS type
-	private final int 			dataRange;			// enum representing the type of range (genome wide / current range / user defined)
-	private final SimpleGenomeWindow 	genomeWindow;		// genome window defined by the user
-	private final SimpleGenomeWindow 	currentWindow;		// current genome window
-	private final Track 		selectedTrack;		// selected track
+	private final DataSource 			dataSource;		// DAS data source
+	private final DASConnector 			dasConnector;	// DAS connector
+	private final DASType 				dasType;		// DAS type
+	private final int 					dataRange;		// enum representing the type of range (genome wide / current range / user defined)
+	private final SimpleGenomeWindow 	genomeWindow;	// genome window defined by the user
+	private final SimpleGenomeWindow 	currentWindow;	// current genome window
+	private final Track 				selectedTrack;	// selected track
 
 
 	/**
@@ -74,6 +74,17 @@ public class TAAddSCWLayerFromDAS extends TrackListActionWorker<SCWList> {
 
 
 	@Override
+	protected void doAtTheEnd(SCWList actionResult) {
+		if (actionResult != null) {
+			SimpleSCWLayer newLayer = new SimpleSCWLayer(selectedTrack, actionResult, dataSource.getName());
+			newLayer.getHistory().add("Load " + dataSource.getName() + " From DAS Server", Colors.GREY);
+			selectedTrack.getLayers().add(newLayer);
+			selectedTrack.setActiveLayer(newLayer);
+		}
+	}
+
+
+	@Override
 	protected SCWList processAction() throws Exception {
 		notifyActionStart("Loading From DAS Server", 1, false);
 		if(dataRange == DASDialog.GENERATE_GENOMEWIDE_LIST) {
@@ -89,16 +100,5 @@ public class TAAddSCWLayerFromDAS extends TrackListActionWorker<SCWList> {
 			return dasConnector.getSCWList(dataSource, dasType, currentWindow);
 		}
 		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(SCWList actionResult) {
-		if (actionResult != null) {
-			SimpleSCWLayer newLayer = new SimpleSCWLayer(selectedTrack, actionResult, dataSource.getName());
-			newLayer.getHistory().add("Load " + dataSource.getName() + " From DAS Server", Colors.GREY);
-			selectedTrack.getLayers().add(newLayer);
-			selectedTrack.setActiveLayer(newLayer);
-		}
 	}
 }

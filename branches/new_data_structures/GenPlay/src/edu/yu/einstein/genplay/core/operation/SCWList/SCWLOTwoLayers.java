@@ -31,11 +31,12 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
+import edu.yu.einstein.genplay.core.pileupFlattener.GenomeWideFlattener;
 import edu.yu.einstein.genplay.core.pileupFlattener.SimpleSCWPileupFlattener;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWListBuilder;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListOfListViewsIterator;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
@@ -74,7 +75,8 @@ public class SCWLOTwoLayers implements Operation<SCWList>, Stoppable {
 		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
-		final SCWListBuilder resultListBuilder = new SCWListBuilder(list1);
+		SimpleSCWPileupFlattener flattenerPrototype = new SimpleSCWPileupFlattener(scoreOperation, list1.getSCWListType());
+		final GenomeWideFlattener gwFlattener = new GenomeWideFlattener(flattenerPrototype);
 
 		for(final Chromosome currentChromosome : projectChromosomes) {
 			Callable<Void> currentThread = new Callable<Void>() {
@@ -86,20 +88,19 @@ public class SCWLOTwoLayers implements Operation<SCWList>, Stoppable {
 					listOfLV.add(list2.get(currentChromosome));
 					Iterator<ScoredChromosomeWindow> listOfLVIterator = new ListOfListViewsIterator<ScoredChromosomeWindow>(listOfLV);
 					// TODO male sure that list 1 is not a bin list. otherwise use BLOTowLayers instead
-					SimpleSCWPileupFlattener pileupFlattener = new SimpleSCWPileupFlattener(scoreOperation, list1.getSCWListType());
+
 					while (listOfLVIterator.hasNext() && !stopped) {
 						ScoredChromosomeWindow currentWindow = listOfLVIterator.next();
-						pileupFlattener.addWindow(currentWindow);
+						gwFlattener.addWindow(currentChromosome, currentWindow);
 					}
 					op.notifyDone();
 					return null;
 				}
-
 			};
 			threadList.add(currentThread);
 		}
 		op.startPool(threadList);
-		return resultListBuilder.getSCWList();
+		return new SimpleSCWList(gwFlattener.getGenomicList());
 	}
 
 

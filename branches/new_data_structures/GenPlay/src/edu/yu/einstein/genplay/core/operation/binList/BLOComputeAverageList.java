@@ -36,7 +36,6 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinListBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.util.FloatLists;
 
 /**
  * Computes the average of a BinList for a specified factor.
@@ -79,23 +78,24 @@ public class BLOComputeAverageList implements Operation<List<ListView<ScoredChro
 				@Override
 				public Void call() throws Exception {
 					if (currentList != null) {
-						List<Float> scoreList = new ArrayList<Float>();
 						// We divide each element by a constant
+
 						for (int i = 0; (i < currentList.size()) && !stopped; i += factor) {
+							float sum = 0;
+							int count = 0;
 							for (int j = 0; j < factor; j++) {
-								float score = currentList.get(i + j).getScore();
-								if (score != 0) {
-									scoreList.add(score);
+								if (currentList.get(i + j).getScore() != 0) {
+									sum += currentList.get(i + j).getScore();
+									count++;
 								}
 							}
 							float score;
-							if (scoreList.isEmpty()) {
+							if (count == 0) {
 								score = 0;
 							} else {
-								score = FloatLists.average(scoreList);
+								score = sum / count;
 							}
 							resultListBuilder.addElementToBuild(chromosome, score);
-							scoreList.clear();
 						}
 					}
 					// tell the operation pool that a chromosome is done

@@ -55,8 +55,8 @@ public class TrackListModel implements Serializable {
 	}
 
 
-	private final List<ListDataListener>		dataListeners;		// list of listeners that is notified each time a change to the data model occurs
-	private Track[] 					tracks; 			// array of tracks displayed in the table
+	private final List<ListDataListener>	dataListeners;		// list of listeners that is notified each time a change to the data model occurs
+	private Track[] 						tracks; 			// array of tracks displayed in the table
 
 
 	/**
@@ -93,6 +93,8 @@ public class TrackListModel implements Serializable {
 	 * @param row
 	 */
 	public void deleteTrack(int row) {
+		// removes references to avoid memory leaks
+		tracks[row].dispose();
 		for (int i = row + 1; i < tracks.length; i++) {
 			tracks[i - 1] = tracks[i];
 		}
@@ -112,6 +114,18 @@ public class TrackListModel implements Serializable {
 		if (trackIndex != -1) {
 			deleteTrack(trackIndex);
 		}
+	}
+
+
+	/**
+	 * @return the list of all the layers displayed in the {@link TrackListPanel}
+	 */
+	public List<Layer<?>> getAllLayers() {
+		List<Layer<?>> allLayers = new ArrayList<Layer<?>>();
+		for (Track currentTrack: tracks) {
+			allLayers.addAll(currentTrack.getLayers());
+		}
+		return allLayers;
 	}
 
 
@@ -222,17 +236,5 @@ public class TrackListModel implements Serializable {
 		// we notify the listeners that the data changed
 		ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, tracks.length - 1);
 		notifyListeners(event);
-	}
-
-
-	/**
-	 * @return the list of all the layers displayed in the {@link TrackListPanel}
-	 */
-	public List<Layer<?>> getAllLayers() {
-		List<Layer<?>> allLayers = new ArrayList<Layer<?>>();
-		for (Track currentTrack: tracks) {
-			allLayers.addAll(currentTrack.getLayers());
-		}
-		return allLayers;
 	}
 }

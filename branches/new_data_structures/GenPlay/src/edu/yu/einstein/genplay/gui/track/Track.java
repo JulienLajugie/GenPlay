@@ -132,6 +132,16 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 	}
 
 
+	/**
+	 * Removes references to this track to avoid memory leaks.
+	 */
+	public void dispose() {
+		// register the track to the project window manager so the track can be notified when the project window changes
+		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
+		projectWindow.removeGenomeWindowListener(this);
+	}
+
+
 	@Override
 	public void genomeWindowChanged(GenomeWindowEvent evt) {
 		// repaint the layers if the genome window changed
@@ -163,13 +173,13 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 	}
 
 
+
 	/**
 	 * @return the foreground layer of the track
 	 */
 	public Layer<ForegroundData> getForegroundLayer() {
 		return foregroundLayer;
 	}
-
 
 
 	/**

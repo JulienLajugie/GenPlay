@@ -97,15 +97,6 @@ public class TrackMenu extends JPopupMenu implements PopupMenuListener {
 
 
 	/**
-	 * Sets the selected track
-	 * @param track
-	 */
-	public void setTrack(Track track) {
-		selectedTrack = track;
-	}
-
-
-	/**
 	 * @return the selected track
 	 */
 	public Track getTrack() {
@@ -128,6 +119,7 @@ public class TrackMenu extends JPopupMenu implements PopupMenuListener {
 			}
 			layerMenus.clear();
 			remove(layerMenusSeparator);
+			selectedTrack = null;
 		}
 	}
 
@@ -154,5 +146,14 @@ public class TrackMenu extends JPopupMenu implements PopupMenuListener {
 				}
 			}
 		}
+	}
+
+
+	/**
+	 * Sets the selected track
+	 * @param track
+	 */
+	public void setTrack(Track track) {
+		selectedTrack = track;
 	}
 }

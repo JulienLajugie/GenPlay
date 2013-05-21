@@ -217,10 +217,16 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 	private void rebuildPanel() {
 		jpTrackList.removeAll();
 		Track[] trackList = getModel().getTracks();
+		int selectedTrackIndex = getModel().indexOf(selectedTrack);
 		for (int i = 0; i < trackList.length; i++) {
 			trackList[i].setNumber(i + 1);
 			jpTrackList.add(trackList[i]);
 			trackList[i].addTrackListener(this);
+		}
+		if (selectedTrackIndex == -1) {
+			selectedTrack = null;
+		} else {
+			selectedTrack = getModel().getTrack(selectedTrackIndex);
 		}
 		jpTrackList.revalidate();
 		setViewportView(jpTrackList);

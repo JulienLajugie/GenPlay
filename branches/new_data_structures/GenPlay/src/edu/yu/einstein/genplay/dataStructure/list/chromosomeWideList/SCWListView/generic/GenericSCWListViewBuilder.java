@@ -82,12 +82,19 @@ public final class GenericSCWListViewBuilder implements ListViewBuilder<ScoredCh
 			int lastElementIndex = windowStarts.size() -1;
 			int lastStart = windowStarts.get(lastElementIndex);;
 			int lastStop = windowStops.get(lastElementIndex);
+			float lastScore = windowScores.get(lastElementIndex);
 			if (start < lastStart) {
 				// case where the elements added are not sorted
 				throw new ElementAddedNotSortedException();
 			} else if (start < lastStop) {
 				// case where the elements added overlap
 				throw new ElementAddedOverlapException();
+			}
+			// if the previous window stop is equal to the current window start
+			// and the 2 windows have the same same score we merge them
+			if ((start == lastStop) && (score == lastScore)) {
+				windowStops.set(lastElementIndex, stop);
+				return;
 			}
 		}
 		windowStarts.add(start);

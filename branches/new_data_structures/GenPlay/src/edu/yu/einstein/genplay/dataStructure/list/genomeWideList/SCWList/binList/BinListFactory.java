@@ -66,6 +66,6 @@ public class BinListFactory {
 		while (scwReader.readItem()) {
 			genomeWideFlattener.addElementToBuild(scwReader.getChromosome(), scwReader.getStart(), scwReader.getStop(), scwReader.getScore());
 		}
-		return new BinList(genomeWideFlattener.getGenomicList(), binSize);
+		return new BinList(genomeWideFlattener.getGenomicList());
 	}
 }

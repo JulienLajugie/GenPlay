@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -109,22 +110,21 @@ public final class BinList extends AbstractListView<ListView<ScoredChromosomeWin
 	/**
 	 * Creates an instance of {@link BinList}
 	 * @param data list of {@link BinListView} organized by chromosome
-	 * @param binSize size of the bins
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 * @throws CloneNotSupportedException
+	 * @throws InvalidParameterException
 	 */
-	public BinList(List<ListView<ScoredChromosomeWindow>> data, int binSize) throws InterruptedException, ExecutionException, CloneNotSupportedException  {
+	public BinList(List<ListView<ScoredChromosomeWindow>> data) throws InterruptedException, ExecutionException, CloneNotSupportedException, InvalidParameterException {
 		super();
 		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
-		// TODO retrieve binsize automatically
-		this.binSize = binSize;
 		this.data = new BinListView[projectChromosomes.size()];
 		for (int i = 0; i < projectChromosomes.size(); i++){
 			if (i < data.size()) {
 				this.data[i] = (BinListView) data.get(i);
 			}
 		}
+		binSize = retrieveBinSize();
 		// computes some statistic values for this list
 		SCWLOComputeStats operation = new SCWLOComputeStats(this);
 		operation.compute();
@@ -255,6 +255,28 @@ public final class BinList extends AbstractListView<ListView<ScoredChromosomeWin
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		in.defaultReadObject();
+	}
+
+
+	/**
+	 * @return the size of the bins of the data
+	 * @throws InvalidParameterException If the {@link BinListView} have different window sizes
+	 */
+	private int retrieveBinSize() throws InvalidParameterException {
+		if (data == null) {
+			return -1;
+		}
+		Integer binSize = null;
+		for (BinListView currentBLV: data) {
+			int currentBinSize = currentBLV.getBinSize();
+			if (binSize == null) {
+				binSize = currentBinSize;
+			} else if (binSize != currentBinSize) {
+				// listview elements need to have the same bin size
+				throw new InvalidParameterException("Non-consistent ListView bin sizes");
+			}
+		}
+		return binSize;
 	}
 
 

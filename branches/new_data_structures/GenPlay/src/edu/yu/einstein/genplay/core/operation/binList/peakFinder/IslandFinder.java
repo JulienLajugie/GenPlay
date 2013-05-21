@@ -148,7 +148,7 @@ public class IslandFinder implements Serializable, Stoppable {
 		}
 		List<ListView<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			BinList resultList = new BinList(result, binList.getBinSize());
+			BinList resultList = new BinList(result);
 			return resultList;
 		} else {
 			return null;

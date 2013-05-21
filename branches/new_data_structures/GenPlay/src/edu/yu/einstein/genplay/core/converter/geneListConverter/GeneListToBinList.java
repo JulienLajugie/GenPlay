@@ -98,7 +98,7 @@ public class GeneListToBinList implements Converter {
 			threadList.add(currentThread);
 		}
 		op.startPool(threadList);
-		result = new BinList(gwflFlattener.getGenomicList(), binSize);
+		result = new BinList(gwflFlattener.getGenomicList());
 	}
 
 

@@ -124,13 +124,15 @@ public class SimpleSCWLScaler implements DataScalerForTrackDisplay<SCWList, List
 					// and if the score of the next window is equal to the score of the current one
 					while (((i + 1) < currentChromosomeList.size())
 							&& ((((currentChromosomeList.get(i + 1).getStart() - currentStop) < pixelGenomicWidth) && (currentChromosomeList.get(i + 1).getScore() == currentScore))
-									|| ((currentChromosomeList.get(i + 1).getStop() - currentStart) < pixelGenomicWidth)) && (currentChromosomeList.get(i + 1).getScore() != 0)) {
+									|| ((currentChromosomeList.get(i + 1).getStop() - currentStart) < pixelGenomicWidth))) {
 
 						i++;
 						// the new stop position is the max of the current stop and the stop of the new merged interval
 						currentStop = Math.max(currentStop, currentChromosomeList.get(i).getStop());
 						currentScore = currentChromosomeList.get(i).getScore();
-						scoreList.add(currentScore);
+						if (currentScore != 0) {
+							scoreList.add(currentScore);
+						}
 					}
 					currentScore = FloatLists.average(scoreList);
 					scoreList.clear();

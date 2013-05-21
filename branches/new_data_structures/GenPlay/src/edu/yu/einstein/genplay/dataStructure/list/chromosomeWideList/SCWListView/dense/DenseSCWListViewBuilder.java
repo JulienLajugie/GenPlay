@@ -88,6 +88,11 @@ public final class DenseSCWListViewBuilder implements ListViewBuilder<ScoredChro
 				// case where the elements added overlap
 				throw new ElementAddedOverlapException();
 			}
+			// if the current window and the previous one have the same same score we merge them
+			if (windowScores.get(lastElementIndex) == score) {
+				windowStops.set(lastElementIndex, stop);
+				return;
+			}
 			if (lastStop != start) {
 				windowStops.add(start);
 				windowScores.add(0f);

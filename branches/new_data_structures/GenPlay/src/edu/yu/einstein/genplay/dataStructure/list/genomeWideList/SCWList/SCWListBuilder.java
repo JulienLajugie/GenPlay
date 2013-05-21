@@ -118,8 +118,7 @@ public class SCWListBuilder {
 			return null;
 		}
 		if (data.get(0) instanceof BinListView) {
-			BinListView binListView = (BinListView) data.get(0);
-			return new BinList(data, binListView.getBinSize());
+			return new BinList(data);
 		} else {
 			return new SimpleSCWList(data);
 		}

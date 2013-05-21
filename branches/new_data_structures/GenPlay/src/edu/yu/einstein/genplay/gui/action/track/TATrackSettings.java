@@ -89,7 +89,6 @@ public class TATrackSettings extends TrackListAction {
 	public void actionPerformed(ActionEvent arg0) {
 		Track selectedTrack = getTrackListPanel().getSelectedTrack();
 		if (selectedTrack != null) {
-
 			TrackSettingsDialog dialog = new TrackSettingsDialog();
 			int option = dialog.showDialog(getRootPane(), selectedTrack);
 			if (option == TrackSettingsDialog.APPROVE_OPTION) {
@@ -103,34 +102,8 @@ public class TATrackSettings extends TrackListAction {
 				// Update the track display
 				selectedTrack.repaint();
 			}
+			dialog.dispose();
 		}
-	}
-
-
-	/**
-	 * Set the new track options
-	 * @param selectedTrack the selected track
-	 * @param trackOptions the track options
-	 */
-	private void setTrackOptions (Track selectedTrack, TrackSettingsPanel trackOptions) {
-		TrackScore trackScore = selectedTrack.getScore();
-		ForegroundData foregroundData = selectedTrack.getForegroundLayer().getData();
-		BackgroundData backgroundData = selectedTrack.getBackgroundLayer().getData();
-		// track basic settings
-		selectedTrack.setName(trackOptions.getTrackName());
-		selectedTrack.setPreferredHeight(trackOptions.getTrackHeight());
-		// track background settings
-		backgroundData.setHorizontalGridVisible(trackOptions.areHorizontalLinesVisibe());
-		backgroundData.setHorizontalLineCount(trackOptions.getHorizontalLineCout());
-		backgroundData.setVerticalGridVisible(trackOptions.areVerticalLinesVisibe());
-		backgroundData.setVerticalLineCount(trackOptions.getVerticalLineCout());
-		// track score settings
-		trackScore.setMinimumScore(trackOptions.getScoreMinimum());
-		trackScore.setMaximumScore(trackOptions.getScoreMaximum());
-		trackScore.setScoreAxisAutorescaled(trackOptions.isScoreAutoRescaled());
-		// track foreground settings
-		foregroundData.setScorePosition(trackOptions.getScorePosition());
-		foregroundData.setScoreColor(trackOptions.getScoreColor());
 	}
 
 
@@ -168,6 +141,33 @@ public class TATrackSettings extends TrackListAction {
 		if ((selectedTrack.getActiveLayer() == null) && (selectedTrack.getLayers().size() > 0)) {
 			selectedTrack.setActiveLayer(selectedTrack.getLayers().getLayers()[0]);
 		}
+	}
+
+
+	/**
+	 * Set the new track options
+	 * @param selectedTrack the selected track
+	 * @param trackOptions the track options
+	 */
+	private void setTrackOptions (Track selectedTrack, TrackSettingsPanel trackOptions) {
+		TrackScore trackScore = selectedTrack.getScore();
+		ForegroundData foregroundData = selectedTrack.getForegroundLayer().getData();
+		BackgroundData backgroundData = selectedTrack.getBackgroundLayer().getData();
+		// track basic settings
+		selectedTrack.setName(trackOptions.getTrackName());
+		selectedTrack.setPreferredHeight(trackOptions.getTrackHeight());
+		// track background settings
+		backgroundData.setHorizontalGridVisible(trackOptions.areHorizontalLinesVisibe());
+		backgroundData.setHorizontalLineCount(trackOptions.getHorizontalLineCout());
+		backgroundData.setVerticalGridVisible(trackOptions.areVerticalLinesVisibe());
+		backgroundData.setVerticalLineCount(trackOptions.getVerticalLineCout());
+		// track score settings
+		trackScore.setMinimumScore(trackOptions.getScoreMinimum());
+		trackScore.setMaximumScore(trackOptions.getScoreMaximum());
+		trackScore.setScoreAxisAutorescaled(trackOptions.isScoreAutoRescaled());
+		// track foreground settings
+		foregroundData.setScorePosition(trackOptions.getScorePosition());
+		foregroundData.setScoreColor(trackOptions.getScoreColor());
 	}
 
 }

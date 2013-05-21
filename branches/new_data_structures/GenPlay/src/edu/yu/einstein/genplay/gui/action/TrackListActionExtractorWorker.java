@@ -26,6 +26,7 @@ import java.io.File;
 import edu.yu.einstein.genplay.core.IO.extractor.Extractor;
 import edu.yu.einstein.genplay.core.IO.extractor.ExtractorFactory;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.ElementAddedNotSortedException;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
 import edu.yu.einstein.genplay.gui.dialog.exceptionDialog.WarningReportDialog;
@@ -86,12 +87,14 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 					+"\nThe file type is not compatible with the selected layer type.";
 			showWarningMessage(message);
 			throw new InterruptedException();
-		} else {
+		} else if (e.getMessage() != null) {
 			String message = "Error in file: " + fileToExtract.getName()
 					+ "\nThe following error occurred: \"" + e.getMessage() + "\""
 					+ "\nPlease check that the file is sorted and that there is no formatting errors.";
 			showWarningMessage(message);
 			throw new InterruptedException();
+		} else if (!(e instanceof InterruptedException)) {
+			ExceptionManager.getInstance().caughtException(Thread.currentThread(), e);
 		}
 	}
 

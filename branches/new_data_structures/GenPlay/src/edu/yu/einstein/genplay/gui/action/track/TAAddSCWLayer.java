@@ -144,7 +144,7 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 	protected SCWList generateList() throws Exception {
 		try {
 			notifyActionStart("Generating Variable Window Layer", SimpleSCWList.getCreationStepCount(SCWListType.GENERIC) + 1, true);
-			SCWList scwList = SimpleSCWListFactory.createGenericSCWList((SCWReader) extractor, scoreCalculation);
+			SCWList scwList = SimpleSCWListFactory.createDenseSCWList((SCWReader) extractor, scoreCalculation);
 			return scwList;
 		} catch (ClassCastException e) {
 			throw new InvalidFileTypeException();

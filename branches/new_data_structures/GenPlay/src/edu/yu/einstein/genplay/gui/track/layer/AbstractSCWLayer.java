@@ -150,17 +150,16 @@ public abstract class AbstractSCWLayer<T extends SCWList> extends AbstractVersio
 					int x = Math.max(0, projectWindow.genomeToScreenPosition(currentWindow.getStart()));
 					// we want to make sure that window width is not larger than the screen width
 					int widthWindow = Math.min(width, projectWindow.genomeToScreenPosition(currentWindow.getStop()) - x);
-					// we want to make sure that the window width is > 0
-					widthWindow = Math.max(1, widthWindow);
-
-					int y = getTrack().getScore().scoreToScreenPosition(currentWindow.getScore());
-					int rectHeight = y - screenY0;
-					if (currentWindow.getScore() > 0) {
-						g.setColor(getColor());
-						g.fillRect(x, y, widthWindow, -rectHeight);
-					} else {
-						g.setColor(reverseCurveColor);
-						g.fillRect(x, screenY0, widthWindow, rectHeight);
+					if (widthWindow > 0) {
+						int y = getTrack().getScore().scoreToScreenPosition(currentWindow.getScore());
+						int rectHeight = y - screenY0;
+						if (currentWindow.getScore() > 0) {
+							g.setColor(getColor());
+							g.fillRect(x, y, widthWindow, -rectHeight);
+						} else {
+							g.setColor(reverseCurveColor);
+							g.fillRect(x, screenY0, widthWindow, rectHeight);
+						}
 					}
 				}
 			}

@@ -25,13 +25,16 @@ import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOTwoLayers;
+import edu.yu.einstein.genplay.core.operation.binList.BLOTwoLayers;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
 import edu.yu.einstein.genplay.gui.dialog.trackChooser.TrackChooser;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.AbstractSCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
 import edu.yu.einstein.genplay.gui.track.layer.SimpleSCWLayer;
@@ -75,7 +78,13 @@ public final class SCWLATwoLayersOperation extends TrackListActionOperationWorke
 	@Override
 	protected void doAtTheEnd(SCWList actionResult) {
 		if (actionResult != null) {
-			AbstractSCWLayer<SCWList> newLayer = new SimpleSCWLayer(resultTrack, actionResult, selectedLayer.getName() + " & " + otherLayer.getName());
+			AbstractSCWLayer<?> newLayer;
+			if ((selectedLayer.getType() == LayerType.BIN_LAYER) &&
+					(otherLayer.getType() == LayerType.BIN_LAYER)) {
+				newLayer = new BinLayer(resultTrack, (BinList) actionResult, selectedLayer.getName() + " & " + otherLayer.getName());
+			} else {
+				newLayer = new SimpleSCWLayer(resultTrack, actionResult, selectedLayer.getName() + " & " + otherLayer.getName());
+			}
 			// add info to the history
 			newLayer.getHistory().add("Operation on two tracks", Colors.GREY);
 			newLayer.getHistory().add("Operation: " + scoreOperation.toString(), Colors.GREY);
@@ -104,7 +113,12 @@ public final class SCWLATwoLayersOperation extends TrackListActionOperationWorke
 					if (resultTrack != null) {
 						scoreOperation = Utils.chooseScoreCalculation(getRootPane());
 						if (scoreOperation != null) {
-							operation = new SCWLOTwoLayers(selectedLayer.getData(), otherLayer.getData(), scoreOperation);
+							if ((selectedLayer.getType() == LayerType.BIN_LAYER) &&
+									(otherLayer.getType() == LayerType.BIN_LAYER)) {
+								operation = new BLOTwoLayers((BinList) selectedLayer.getData(), (BinList) otherLayer.getData(), scoreOperation);
+							} else {
+								operation = new SCWLOTwoLayers(selectedLayer.getData(), otherLayer.getData(), scoreOperation);
+							}
 							return operation;
 						}
 					}
