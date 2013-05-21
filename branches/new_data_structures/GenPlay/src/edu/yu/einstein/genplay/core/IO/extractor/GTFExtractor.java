@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import edu.yu.einstein.genplay.core.IO.dataReader.GeneReader;
+import edu.yu.einstein.genplay.core.IO.dataReader.StrandReader;
 import edu.yu.einstein.genplay.core.IO.utils.DataLineValidator;
 import edu.yu.einstein.genplay.core.IO.utils.Extractors;
 import edu.yu.einstein.genplay.core.IO.utils.StrandedExtractorOptions;
@@ -47,7 +48,7 @@ import edu.yu.einstein.genplay.util.Utils;
  * A GTF file extractor
  * @author Julien Lajugie
  */
-public class GTFExtractor extends TextFileExtractor implements GeneReader, StrandedExtractor {
+public class GTFExtractor extends TextFileExtractor implements GeneReader, StrandReader, StrandedExtractor {
 
 	private StrandedExtractorOptions				strandOptions;		// options on the strand and read length / shift
 	private Chromosome 								currentChromosome;	// chromosome of the current item

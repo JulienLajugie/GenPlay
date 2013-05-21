@@ -24,6 +24,7 @@ package edu.yu.einstein.genplay.core.operation.binList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
@@ -70,7 +71,7 @@ public class BLOTwoLayers implements Operation<SCWList> {
 
 
 	@Override
-	public SCWList compute() throws Exception {
+	public SCWList compute() throws BinListDifferentWindowSizeException, CloneNotSupportedException, InterruptedException, ExecutionException  {
 		// make sure that the two binlists have the same size of bins
 		if (binList1.getBinSize() != binList2.getBinSize()) {
 			throw new BinListDifferentWindowSizeException();

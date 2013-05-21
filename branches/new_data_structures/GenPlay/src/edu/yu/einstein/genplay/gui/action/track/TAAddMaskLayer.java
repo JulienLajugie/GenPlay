@@ -29,8 +29,8 @@ import edu.yu.einstein.genplay.core.IO.dataReader.SCWReader;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWListFactory;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection.GenomeSelectionDialog;
@@ -99,7 +99,7 @@ public final class TAAddMaskLayer extends TrackListActionExtractorWorker<SCWList
 	public SCWList generateList() throws Exception {
 		try {
 			notifyActionStart("Generating Mask Layer", 1 + SimpleSCWList.getCreationStepCount(SCWListType.MASK), true);
-			SCWList maskList = SimpleSCWListFactory.createMaskSCWList((SCWReader) extractor);
+			SCWList maskList = SCWListFactory.createMaskSCWList((SCWReader) extractor);
 			return maskList;
 		} catch (ClassCastException e) {
 			throw new InvalidFileTypeException();

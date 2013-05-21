@@ -34,8 +34,8 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinListFactory;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.newCurveLayerDialog.NewCurveLayerDialog;
@@ -139,10 +139,19 @@ public final class TAAddBinLayer extends TrackListActionExtractorWorker<BinList>
 	@Override
 	protected BinList generateList() throws Exception {
 		try {
-			notifyActionStop();
-			// if the binSize is known we can find out how many steps will be used
-			notifyActionStart("Generating Layer", 1 + BinList.getCreationStepCount(SCWListType.BIN), true);
-			BinList binList = BinListFactory.createBinList((SCWReader) extractor, binSize, scoreCalculation);
+			BinList binList;
+			if (((strandShift != 0) || (readLength != 0)) && (strand == null)) {
+				/* if we extract both strand and the strands are shifted we need to use the strand safe
+				 * factory since reads on the 3' strand are shifted toward 5' which can change the order
+				 * of reads and cause the file to be no longer sorted
+				 */
+				notifyActionStart("Generating Layer", (BinList.getCreationStepCount(SCWListType.BIN) * 3) + 2, true);
+				binList = SCWListFactory.createStrandSafeBinList((SCWReader) extractor, binSize, scoreCalculation);
+			} else {
+				// if the binSize is known we can find out how many steps will be used
+				notifyActionStart("Generating Layer", BinList.getCreationStepCount(SCWListType.BIN) + 1, true);
+				binList = SCWListFactory.createBinList((SCWReader) extractor, binSize, scoreCalculation);
+			}
 			return binList;
 		} catch (ClassCastException e) {
 			throw new InvalidFileTypeException();

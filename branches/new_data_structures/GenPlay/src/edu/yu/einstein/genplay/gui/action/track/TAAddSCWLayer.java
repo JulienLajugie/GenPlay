@@ -34,8 +34,8 @@ import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWListFactory;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.newCurveLayerDialog.NewCurveLayerDialog;
@@ -143,8 +143,18 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 	@Override
 	protected SCWList generateList() throws Exception {
 		try {
-			notifyActionStart("Generating Variable Window Layer", SimpleSCWList.getCreationStepCount(SCWListType.GENERIC) + 1, true);
-			SCWList scwList = SimpleSCWListFactory.createDenseSCWList((SCWReader) extractor, scoreCalculation);
+			SCWList scwList;
+			if (((strandShift != 0) || (readLength != 0)) && (strand == null)) {
+				/* if we extract both strand and the strands are shifted we need to use the strand safe
+				 * factory since reads on the 3' strand are shifted toward 5' which can change the order
+				 * of reads and cause the file to be no longer sorted
+				 */
+				notifyActionStart("Generating Variable Window Layer", (SimpleSCWList.getCreationStepCount(SCWListType.GENERIC) * 3) + 2, true);
+				scwList = SCWListFactory.createStrandSafeDenseSCWList((SCWReader) extractor, scoreCalculation);
+			} else {
+				notifyActionStart("Generating Variable Window Layer", SimpleSCWList.getCreationStepCount(SCWListType.GENERIC) + 1, true);
+				scwList = SCWListFactory.createDenseSCWList((SCWReader) extractor, scoreCalculation);
+			}
 			return scwList;
 		} catch (ClassCastException e) {
 			throw new InvalidFileTypeException();

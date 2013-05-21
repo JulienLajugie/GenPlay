@@ -26,6 +26,7 @@ import java.io.FileNotFoundException;
 
 import edu.yu.einstein.genplay.core.IO.dataReader.RepeatReader;
 import edu.yu.einstein.genplay.core.IO.dataReader.SCWReader;
+import edu.yu.einstein.genplay.core.IO.dataReader.StrandReader;
 import edu.yu.einstein.genplay.core.IO.utils.DataLineValidator;
 import edu.yu.einstein.genplay.core.IO.utils.Extractors;
 import edu.yu.einstein.genplay.core.IO.utils.StrandedExtractorOptions;
@@ -40,7 +41,7 @@ import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
  * A GFF file extractor
  * @author Julien Lajugie
  */
-public final class GFFExtractor extends TextFileExtractor implements SCWReader, RepeatReader, StrandedExtractor {
+public final class GFFExtractor extends TextFileExtractor implements SCWReader, RepeatReader, StrandReader, StrandedExtractor {
 
 	private StrandedExtractorOptions		strandOptions;		// options on the strand and read length / shift
 	private Chromosome 						chromosome;		 	// chromosome of the last item read
@@ -165,6 +166,12 @@ public final class GFFExtractor extends TextFileExtractor implements SCWReader, 
 	@Override
 	public Integer getStop() {
 		return stop;
+	}
+
+
+	@Override
+	public Strand getStrand() {
+		return strand;
 	}
 
 

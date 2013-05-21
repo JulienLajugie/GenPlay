@@ -87,7 +87,7 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 					+"\nThe file type is not compatible with the selected layer type.";
 			showWarningMessage(message);
 			throw new InterruptedException();
-		} else {
+		} else if (!(e instanceof InterruptedException)) {
 			ExceptionManager.getInstance().caughtException(Thread.currentThread(), e);
 		}
 		/*else if (e.getMessage() != null) {
@@ -96,9 +96,7 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 					+ "\nPlease check that the file is sorted and that there is no formatting errors.";
 			showWarningMessage(message);
 			throw new InterruptedException();
-		} else if (!(e instanceof InterruptedException)) {
-			ExceptionManager.getInstance().caughtException(Thread.currentThread(), e);
-		} */
+		}*/
 	}
 
 

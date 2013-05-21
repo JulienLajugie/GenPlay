@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.list;
+package edu.yu.einstein.genplay.gui.track.layer.variantLayer;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 import edu.yu.einstein.genplay.core.IO.dataReader.SCWReader;
+import edu.yu.einstein.genplay.core.IO.dataReader.StrandReader;
 import edu.yu.einstein.genplay.core.IO.utils.DataLineValidator;
 import edu.yu.einstein.genplay.core.IO.utils.Extractors;
 import edu.yu.einstein.genplay.core.IO.utils.StrandedExtractorOptions;
@@ -40,13 +41,14 @@ import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
  * A Eland Extended file extractor
  * @author Julien Lajugie
  */
-public final class ElandExtendedExtractor extends TextFileExtractor implements SCWReader, StrandedExtractor {
+public final class ElandExtendedExtractor extends TextFileExtractor implements SCWReader, StrandReader, StrandedExtractor {
 
 	private StrandedExtractorOptions		strandOptions;		// options on the strand and read length / shift
 	private Chromosome 						chromosome;		 	// chromosome of the last item read
 	private Integer 						start;				// start position of the last item read
 	private Integer 						stop;				// stop position of the last item read
 	private Float 							score;				// score of the last item read
+	private Strand							strand;				// strand of the last item read
 	private final int[][] 					matchTypeCount; 	// number of lines with 0,1,2 mistakes per chromosome
 	private int 							NMCount = 0;		// Non matched line count
 	private int 							QCCount = 0;		// quality control line count
@@ -178,7 +180,7 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 		}
 		// retrieve the strand
 		char strandChar = (char) (line[i] & 0xFF); // because byte goes from -128 to 127 and char from 0 to 255
-		Strand strand = Strand.get(strandChar);
+		strand = Strand.get(strandChar);
 		if ((strand != null) && (strandOptions != null) && (!strandOptions.isSelected(strand))) {
 			chromosome = null;
 			return LINE_SKIPPED;
@@ -274,6 +276,12 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 	@Override
 	public Integer getStop() {
 		return stop;
+	}
+
+
+	@Override
+	public Strand getStrand() {
+		return strand;
 	}
 
 

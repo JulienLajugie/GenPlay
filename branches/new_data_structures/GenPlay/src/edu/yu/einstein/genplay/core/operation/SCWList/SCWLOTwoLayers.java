@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
@@ -71,7 +72,7 @@ public class SCWLOTwoLayers implements Operation<SCWList>, Stoppable {
 
 
 	@Override
-	public SCWList compute() throws Exception {
+	public SCWList compute() throws CloneNotSupportedException, InterruptedException, ExecutionException  {
 		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
@@ -87,8 +88,6 @@ public class SCWLOTwoLayers implements Operation<SCWList>, Stoppable {
 					listOfLV.add(list1.get(currentChromosome));
 					listOfLV.add(list2.get(currentChromosome));
 					Iterator<ScoredChromosomeWindow> listOfLVIterator = new ListOfListViewsIterator<ScoredChromosomeWindow>(listOfLV);
-					// TODO male sure that list 1 is not a bin list. otherwise use BLOTowLayers instead
-
 					while (listOfLVIterator.hasNext() && !stopped) {
 						ScoredChromosomeWindow currentWindow = listOfLVIterator.next();
 						gwFlattener.addWindow(currentChromosome, currentWindow);

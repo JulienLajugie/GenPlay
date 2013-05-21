@@ -36,7 +36,6 @@ import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.VariantDisplay;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
-import edu.yu.einstein.genplay.dataStructure.list.CacheTrack;
 
 
 /**
