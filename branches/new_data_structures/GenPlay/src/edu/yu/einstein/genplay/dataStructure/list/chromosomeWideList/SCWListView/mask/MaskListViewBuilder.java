@@ -26,7 +26,7 @@ import java.util.List;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.SCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
-import edu.yu.einstein.genplay.dataStructure.list.primitiveList.ListOfIntArraysAsIntegerList;
+import edu.yu.einstein.genplay.dataStructure.list.primitiveList.PrimitiveList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.ElementAddedNotSortedException;
 import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
@@ -49,8 +49,8 @@ public final class MaskListViewBuilder implements ListViewBuilder<ScoredChromoso
 	 * Creates an instance of {@link MaskListViewBuilder}
 	 */
 	public MaskListViewBuilder() {
-		maskStarts = new ListOfIntArraysAsIntegerList();
-		maskStops = new ListOfIntArraysAsIntegerList();
+		maskStarts = new PrimitiveList<Integer>(Integer.class);
+		maskStops = new PrimitiveList<Integer>(Integer.class);
 	}
 
 
@@ -121,9 +121,23 @@ public final class MaskListViewBuilder implements ListViewBuilder<ScoredChromoso
 
 	@Override
 	public ListView<ScoredChromosomeWindow> getListView() {
+		trimListsToSize();
 		ListView<ScoredChromosomeWindow> listView = new MaskListView(maskStarts, maskStops);
 		maskStarts = null;
 		maskStops = null;
 		return listView;
+	}
+
+
+	/**
+	 * Trims the lists to their sizes in order to improve the memory usage of the list view
+	 */
+	private void trimListsToSize() {
+		if (maskStarts instanceof PrimitiveList<?>) {
+			((PrimitiveList<?>) maskStarts).trimToSize();
+		}
+		if (maskStops instanceof PrimitiveList<?>) {
+			((PrimitiveList<?>) maskStops).trimToSize();
+		}
 	}
 }

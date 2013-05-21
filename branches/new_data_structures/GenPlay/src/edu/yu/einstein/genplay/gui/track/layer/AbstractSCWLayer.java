@@ -327,6 +327,7 @@ public abstract class AbstractSCWLayer<T extends SCWList> extends AbstractVersio
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		color = (Color) in.readObject();
+		graphType = (GraphType) in.readObject();
 	}
 
 
@@ -377,5 +378,6 @@ public abstract class AbstractSCWLayer<T extends SCWList> extends AbstractVersio
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(CLASS_VERSION_NUMBER);
 		out.writeObject(color);
+		out.writeObject(graphType);
 	}
 }

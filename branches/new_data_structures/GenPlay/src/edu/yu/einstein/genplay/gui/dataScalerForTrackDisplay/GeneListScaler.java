@@ -33,7 +33,7 @@ import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
-import edu.yu.einstein.genplay.dataStructure.list.primitiveList.ListOfIntArraysAsIntegerList;
+import edu.yu.einstein.genplay.dataStructure.list.primitiveList.PrimitiveList;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
 import edu.yu.einstein.genplay.util.ListView.ChromosomeWindowListViews;
@@ -139,7 +139,7 @@ public class GeneListScaler implements DataScalerForTrackDisplay<GeneList, List<
 		ProjectWindow pw = ProjectManager.getInstance().getProjectWindow();
 		// loop until every gene has been organized
 		while (organizedGeneCount < currentList.size()) {
-			List<Integer> indexes = new ListOfIntArraysAsIntegerList();
+			List<Integer> indexes = new PrimitiveList<Integer>(Integer.class);
 			Gene previousGene = null;
 			// we loop on the gene list
 			for (int i = 0; i < currentList.size(); i++) {

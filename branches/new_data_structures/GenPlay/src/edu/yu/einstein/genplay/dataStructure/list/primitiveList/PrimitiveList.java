@@ -35,8 +35,10 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import edu.yu.einstein.genplay.dataStructure.compressible.CompressibleList;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.CompressionException;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidPrimitiveArrayGenericParameterException;
 
 
 /**
@@ -45,7 +47,7 @@ import edu.yu.einstein.genplay.exception.exceptions.CompressionException;
  * @param <T> type of the data of the list
  * @author Julien Lajugie
  */
-abstract class PrimitiveList<T> extends AbstractList<T> implements Cloneable, Serializable, List<T>, RandomAccess, CompressibleList<T> {
+public class PrimitiveList<T> extends AbstractList<T> implements Cloneable, Serializable, List<T>, RandomAccess, CompressibleList<T> {
 
 	/** Generated serial ID */
 	private static final long serialVersionUID = -3250259696514106453L;
@@ -55,6 +57,21 @@ abstract class PrimitiveList<T> extends AbstractList<T> implements Cloneable, Se
 
 	/** Size of the sub arrays */
 	private static final int DEFAULT_SUBARRAY_SIZE = 5000;
+
+	/** Precision of the data of the project */
+	private transient static ScorePrecision scorePrecision = ScorePrecision.PRECISION_16BIT;
+
+	/**
+	 * Sets the score precision of the project
+	 * @param scorePrecision
+	 */
+	public static void setScorePrecision(ScorePrecision scorePrecision) {
+		PrimitiveList.scorePrecision = scorePrecision;
+	}
+
+	/** We need to store the type of the element of the list because java
+	 * generics are not reified */
+	private final Class<T> elementClass;
 
 	/** Size of the subarrays of the list */
 	private final int subarraySize;
@@ -68,39 +85,42 @@ abstract class PrimitiveList<T> extends AbstractList<T> implements Cloneable, Se
 	/** Data of the list */
 	private transient List<PrimitiveArrayWrapper<T>> elementData;
 
+
 	/** True if the list is compressed */
 	private transient boolean isCompressed = false;
 
 
 	/**
 	 * Creates an instance of {@link PrimitiveList} with default initial capacity.
+	 * @param elementClass class of the elements of the list
 	 */
-	PrimitiveList() {
-		this(DEFAULT_SUBARRAY_SIZE);
+	public PrimitiveList(Class<T> elementClass) {
+		this(elementClass, DEFAULT_SUBARRAY_SIZE);
 	}
 
 
 	/**
 	 * Constructs an empty list with the specified initial capacity.
-	 * @param initialCapacity the initial capacity of the list
+	 * @param elementClass class of the elements of the list
+	 * @param subarraySize size of the subarrays constituting the list
 	 * @throws IllegalArgumentException If the specified initial capacity is negative
 	 */
-	PrimitiveList(int subarraySize) {
+	public PrimitiveList(Class<T> elementClass, int subarraySize) {
 		super();
 		if (subarraySize < 0) {
 			throw new IllegalArgumentException("Illegal Subarray Size: " + subarraySize);
 		}
+		this.elementClass = elementClass;
 		this.subarraySize = subarraySize;
 		elementData = new ArrayList<PrimitiveArrayWrapper<T>>();
-		elementData.add(generateEmptyPrimitiveArrayWrapper(subarraySize));
 	}
 
 
 	@Override
 	public boolean add(T e) {
-		ensureCapacity(size++);
 		int subarrayIndex = getSubarrayIndex(size);
 		int indexWithinSubarray = getIndexWithinSubarray(size);
+		ensureCapacity(++size);
 		elementData.get(subarrayIndex).set(indexWithinSubarray, e);
 		return true;
 	}
@@ -137,7 +157,8 @@ abstract class PrimitiveList<T> extends AbstractList<T> implements Cloneable, Se
 		modCount++;
 		int oldCapacity = elementData.size() * subarraySize;
 		while (minCapacity > oldCapacity) {
-			PrimitiveArrayWrapper<T> newSubarray = generateEmptyPrimitiveArrayWrapper(subarraySize);
+			@SuppressWarnings("unchecked")
+			PrimitiveArrayWrapper<T> newSubarray = (PrimitiveArrayWrapper<T>) generateEmptyPrimitiveArrayWrapper(subarraySize);
 			elementData.add(newSubarray);
 			oldCapacity += subarraySize;
 		}
@@ -145,10 +166,26 @@ abstract class PrimitiveList<T> extends AbstractList<T> implements Cloneable, Se
 
 
 	/**
-	 * @param capacity capacity of the list to generate
-	 * @return a list with the specified capacity.
+	 * @param capacity
+	 * @return an empty {@link PrimitiveArrayWrapper} list and with the specified capacity
+	 * @throws InvalidPrimitiveArrayGenericParameterException If the generic paramter of the instance is not valid
 	 */
-	abstract PrimitiveArrayWrapper<T> generateEmptyPrimitiveArrayWrapper(int capacity);
+	private PrimitiveArrayWrapper<?> generateEmptyPrimitiveArrayWrapper(int capacity) throws InvalidPrimitiveArrayGenericParameterException {
+		if (elementClass == Integer.class) {
+			return new IntArrayWrapper(capacity);
+		} else if (elementClass == Float.class) {
+			if (scorePrecision == ScorePrecision.PRECISION_16BIT) {
+				return new HalfArrayWrapper(capacity);
+			} else if (scorePrecision == ScorePrecision.PRECISION_32BIT) {
+				return new FloatArrayWrapper(capacity);
+			}
+		} else if (elementClass == Byte.class) {
+			return new ByteArrayWrapper(capacity);
+		} else if (elementClass == Boolean.class) {
+			return new BooleanArrayWrapper(capacity);
+		}
+		throw new InvalidPrimitiveArrayGenericParameterException(elementClass);
+	}
 
 
 	@Override
@@ -261,7 +298,7 @@ abstract class PrimitiveList<T> extends AbstractList<T> implements Cloneable, Se
 		int oldCapacity = elementData.size() * subarraySize;
 		if (size < oldCapacity) {
 			PrimitiveArrayWrapper<T> lastSubarray = elementData.get(elementData.size() - 1);
-			int lastSubarraySize = getSubarrayIndex(size);
+			int lastSubarraySize = getIndexWithinSubarray(size);
 			lastSubarray.trimToSize(lastSubarraySize);
 		}
 	}

@@ -21,6 +21,9 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.dataStructure.list.primitiveList;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.AbstractList;
 import java.util.Arrays;
@@ -39,8 +42,11 @@ class HalfArrayWrapper extends AbstractList<Float> implements Serializable, List
 	/** Generated serial ID */
 	private static final long serialVersionUID = -4034533925862158855L;
 
+	/** Version number of the class */
+	private static final transient int CLASS_VERSION_NUMBER = 0;
+
 	/** Data of the list */
-	private final char[] elementData;
+	private char[] elementData;
 
 
 	/**
@@ -55,6 +61,20 @@ class HalfArrayWrapper extends AbstractList<Float> implements Serializable, List
 	@Override
 	public Float get(int index) {
 		return HalfFloat.toFloat(elementData[index]);
+	}
+
+
+	/**
+	 * Method used for deserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		// read the class version number
+		in.readInt();
+		// read other fields
+		elementData = (char[]) in.readObject();
 	}
 
 
@@ -74,6 +94,19 @@ class HalfArrayWrapper extends AbstractList<Float> implements Serializable, List
 
 	@Override
 	public void trimToSize(int newCapacity) {
-		Arrays.copyOf(elementData, newCapacity);
+		elementData = Arrays.copyOf(elementData, newCapacity);
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		// write the class version number
+		out.writeInt(CLASS_VERSION_NUMBER);
+		// write other fields
+		out.writeObject(elementData);
 	}
 }

@@ -26,7 +26,7 @@ import java.util.List;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.SCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
-import edu.yu.einstein.genplay.dataStructure.list.primitiveList.FloatListFactory;
+import edu.yu.einstein.genplay.dataStructure.list.primitiveList.PrimitiveList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.ElementAddedDontFallInBinException;
 import edu.yu.einstein.genplay.exception.exceptions.ElementAddedNotSortedException;
@@ -53,7 +53,7 @@ public final class BinListViewBuilder implements ListViewBuilder<ScoredChromosom
 	 */
 	public BinListViewBuilder(int binSize) {
 		this.binSize = binSize;
-		windowScores = FloatListFactory.createFloatList();
+		windowScores = new PrimitiveList<Float>(Float.class);
 	}
 
 
@@ -126,8 +126,19 @@ public final class BinListViewBuilder implements ListViewBuilder<ScoredChromosom
 
 	@Override
 	public ListView<ScoredChromosomeWindow> getListView() {
+		trimListsToSize();
 		ListView<ScoredChromosomeWindow> listView = new BinListView(binSize, windowScores);
 		windowScores = null;
 		return listView;
+	}
+
+
+	/**
+	 * Trims the lists to their sizes in order to improve the memory usage of the list view
+	 */
+	private void trimListsToSize() {
+		if (windowScores instanceof PrimitiveList<?>) {
+			((PrimitiveList<?>) windowScores).trimToSize();
+		}
 	}
 }

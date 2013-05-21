@@ -37,7 +37,7 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvan
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics.VCFFileFullStatistic;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.VariantType;
-import edu.yu.einstein.genplay.dataStructure.list.primitiveList.ListOfIntArraysAsIntegerList;
+import edu.yu.einstein.genplay.dataStructure.list.primitiveList.PrimitiveList;
 
 
 /**
@@ -58,7 +58,7 @@ public class VCFFile implements Serializable {
 	private VCFReader 							reader;				// Reader for the VCF file
 	private VCFFileFullStatistic				statistics;			// VCF file statistics
 	private Map<String, List<VariantType>>		variantTypeList;	// List of the different variant type contained in the VCF file and sorted by genome name
-	private ListOfIntArraysAsIntegerList		positionList;		// reference genome position array (indexes match with the boolean list of filters)
+	private List<Integer>						positionList;		// reference genome position array (indexes match with the boolean list of filters)
 	private Chromosome							chromosomeOfList;
 
 
@@ -267,7 +267,7 @@ public class VCFFile implements Serializable {
 	/**
 	 * @return the positionList
 	 */
-	public ListOfIntArraysAsIntegerList getPositionList() {
+	public List<Integer> getPositionList() {
 		return positionList;
 	}
 
@@ -324,14 +324,14 @@ public class VCFFile implements Serializable {
 	public void initializePositionList (Chromosome chromosome, List<VCFLine> results) {
 		if (chromosomeHasChanged(chromosome)) {
 			if (results != null) {
-				positionList = new ListOfIntArraysAsIntegerList(results.size());
+				positionList = new PrimitiveList<Integer>(Integer.class, results.size());
 				//VCFLine line = new VCFLine(null, null);
 				for (int i = 0; i < results.size(); i++) {
 					//line.initialize(results.get(i), null);
 					positionList.set(i, results.get(i).getReferencePosition());
 				}
 			} else {
-				positionList = new ListOfIntArraysAsIntegerList(0);
+				positionList = new PrimitiveList<Integer>(Integer.class, 0);
 			}
 		}
 	}
@@ -363,7 +363,7 @@ public class VCFFile implements Serializable {
 		header = (VCFHeader) in.readObject();
 		statistics = (VCFFileFullStatistic) in.readObject();
 		variantTypeList = (Map<String, List<VariantType>>) in.readObject();
-		positionList = (ListOfIntArraysAsIntegerList) in.readObject();
+		positionList = (List<Integer>) in.readObject();
 		chromosomeOfList = (Chromosome) in.readObject();
 		indexVCFFile(); // recreate the tabix reader
 		reader.setColumnNames(header.getColumnNames());

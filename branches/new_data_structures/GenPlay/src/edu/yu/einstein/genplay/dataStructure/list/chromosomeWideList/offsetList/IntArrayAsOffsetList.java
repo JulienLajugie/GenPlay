@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.dataStructure.list.primitiveList;
+package edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.offsetList;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

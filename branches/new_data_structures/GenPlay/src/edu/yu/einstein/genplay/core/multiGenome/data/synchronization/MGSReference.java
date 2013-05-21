@@ -30,7 +30,7 @@ import java.util.List;
 
 import edu.yu.einstein.genplay.core.comparator.MGOffsetComparator;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.dataStructure.list.primitiveList.IntArrayAsOffsetList;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.offsetList.IntArrayAsOffsetList;
 
 
 /**

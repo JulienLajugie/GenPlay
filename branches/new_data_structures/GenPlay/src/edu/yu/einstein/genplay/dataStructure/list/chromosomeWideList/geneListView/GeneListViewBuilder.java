@@ -28,10 +28,7 @@ import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
-import edu.yu.einstein.genplay.dataStructure.list.primitiveList.ByteArrayAsBooleanList;
-import edu.yu.einstein.genplay.dataStructure.list.primitiveList.FloatListFactory;
-import edu.yu.einstein.genplay.dataStructure.list.primitiveList.ListOfByteArraysAsByteList;
-import edu.yu.einstein.genplay.dataStructure.list.primitiveList.ListOfIntArraysAsIntegerList;
+import edu.yu.einstein.genplay.dataStructure.list.primitiveList.PrimitiveList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.ElementAddedNotSortedException;
 import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
@@ -81,16 +78,16 @@ public final class GeneListViewBuilder implements ListViewBuilder<Gene> {
 	 * Creates an instance of {@link GeneListViewBuilder}
 	 */
 	public GeneListViewBuilder() {
-		geneNames = new ListOfByteArraysAsByteList();
-		geneNameOffsets = new ListOfIntArraysAsIntegerList();
-		geneStrands = new ByteArrayAsBooleanList();
-		geneStarts = new ListOfIntArraysAsIntegerList();
-		geneStops = new ListOfIntArraysAsIntegerList();
-		geneUTR5Bounds = new ListOfIntArraysAsIntegerList();
-		geneUTR3Bounds = new ListOfIntArraysAsIntegerList();
+		geneNames = new PrimitiveList<Byte>(Byte.class);
+		geneNameOffsets = new PrimitiveList<Integer>(Integer.class);
+		geneStrands = new PrimitiveList<Boolean>(Boolean.class);
+		geneStarts = new PrimitiveList<Integer>(Integer.class);
+		geneStops = new PrimitiveList<Integer>(Integer.class);
+		geneUTR5Bounds = new PrimitiveList<Integer>(Integer.class);
+		geneUTR3Bounds = new PrimitiveList<Integer>(Integer.class);
 		exonLVBuilder = new GenericSCWListViewBuilder();
-		exonOffsets = new ListOfIntArraysAsIntegerList();
-		geneScores = FloatListFactory.createFloatList();
+		exonOffsets = new PrimitiveList<Integer>(Integer.class);
+		geneScores = new PrimitiveList<Float>(Float.class);
 	}
 
 
@@ -183,6 +180,7 @@ public final class GeneListViewBuilder implements ListViewBuilder<Gene> {
 
 	@Override
 	public ListView<Gene> getListView() {
+		trimListsToSize();
 		ListView<Gene> listView = new GeneListView(
 				geneNames,
 				geneNameOffsets,
@@ -206,5 +204,39 @@ public final class GeneListViewBuilder implements ListViewBuilder<Gene> {
 		exonLVBuilder = null;
 		exonOffsets = null;
 		return listView;
+	}
+
+
+	/**
+	 * Trims the lists to their sizes in order to improve the memory usage of the list view
+	 */
+	private void trimListsToSize() {
+		if (geneNames instanceof PrimitiveList<?>) {
+			((PrimitiveList<?>) geneNames).trimToSize();
+		}
+		if (geneNameOffsets instanceof PrimitiveList<?>) {
+			((PrimitiveList<?>) geneNameOffsets).trimToSize();
+		}
+		if (geneStrands instanceof PrimitiveList<?>) {
+			((PrimitiveList<?>) geneStrands).trimToSize();
+		}
+		if (geneStarts instanceof PrimitiveList<?>) {
+			((PrimitiveList<?>) geneStarts).trimToSize();
+		}
+		if (geneStops instanceof PrimitiveList<?>) {
+			((PrimitiveList<?>) geneStops).trimToSize();
+		}
+		if (geneUTR5Bounds instanceof PrimitiveList<?>) {
+			((PrimitiveList<?>) geneUTR5Bounds).trimToSize();
+		}
+		if (geneUTR3Bounds instanceof PrimitiveList<?>) {
+			((PrimitiveList<?>) geneUTR3Bounds).trimToSize();
+		}
+		if (exonOffsets instanceof PrimitiveList<?>) {
+			((PrimitiveList<?>) exonOffsets).trimToSize();
+		}
+		if (geneScores instanceof PrimitiveList<?>) {
+			((PrimitiveList<?>) geneScores).trimToSize();
+		}
 	}
 }

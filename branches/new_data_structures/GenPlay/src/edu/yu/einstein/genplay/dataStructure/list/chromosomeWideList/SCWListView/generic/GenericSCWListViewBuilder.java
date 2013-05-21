@@ -26,8 +26,7 @@ import java.util.List;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.SCWListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
-import edu.yu.einstein.genplay.dataStructure.list.primitiveList.FloatListFactory;
-import edu.yu.einstein.genplay.dataStructure.list.primitiveList.ListOfIntArraysAsIntegerList;
+import edu.yu.einstein.genplay.dataStructure.list.primitiveList.PrimitiveList;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.ElementAddedNotSortedException;
 import edu.yu.einstein.genplay.exception.exceptions.ElementAddedOverlapException;
@@ -54,9 +53,9 @@ public final class GenericSCWListViewBuilder implements ListViewBuilder<ScoredCh
 	 * Creates an instance of {@link GenericSCWListViewBuilder}
 	 */
 	public GenericSCWListViewBuilder() {
-		windowStarts = new ListOfIntArraysAsIntegerList();
-		windowStops = new ListOfIntArraysAsIntegerList();
-		windowScores = FloatListFactory.createFloatList();
+		windowStarts = new PrimitiveList<Integer>(Integer.class);
+		windowStops = new PrimitiveList<Integer>(Integer.class);
+		windowScores = new PrimitiveList<Float>(Float.class);
 	}
 
 
@@ -139,10 +138,27 @@ public final class GenericSCWListViewBuilder implements ListViewBuilder<ScoredCh
 
 	@Override
 	public ListView<ScoredChromosomeWindow> getListView() {
+		trimListsToSize();
 		ListView<ScoredChromosomeWindow> listView = new GenericSCWListView(windowStarts, windowStops, windowScores);
 		windowStarts = null;
 		windowStops = null;
 		windowScores = null;
 		return listView;
+	}
+
+
+	/**
+	 * Trims the lists to their sizes in order to improve the memory usage of the list view
+	 */
+	private void trimListsToSize() {
+		if (windowStarts instanceof PrimitiveList<?>) {
+			((PrimitiveList<?>) windowStarts).trimToSize();
+		}
+		if (windowStops instanceof PrimitiveList<?>) {
+			((PrimitiveList<?>) windowStops).trimToSize();
+		}
+		if (windowScores instanceof PrimitiveList<?>) {
+			((PrimitiveList<?>) windowScores).trimToSize();
+		}
 	}
 }

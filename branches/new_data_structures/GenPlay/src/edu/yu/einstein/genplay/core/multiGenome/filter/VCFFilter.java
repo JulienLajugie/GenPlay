@@ -31,7 +31,8 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
-import edu.yu.einstein.genplay.dataStructure.list.primitiveList.ByteArrayAsBooleanList;
+import edu.yu.einstein.genplay.dataStructure.list.primitiveList.PrimitiveList;
+
 /**
  * @author Nicolas Fourel
  * @version 0.1
@@ -43,7 +44,7 @@ public class VCFFilter extends MGFilter implements Serializable {
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 
 	private VCFFile					vcfFile;			// the file reader
-	private ByteArrayAsBooleanList 	booleanList;		// list of boolean meaning whether variants pass the filter or not
+	private List<Boolean> 			booleanList;		// list of boolean meaning whether variants pass the filter or not
 
 
 	/**
@@ -91,7 +92,7 @@ public class VCFFilter extends MGFilter implements Serializable {
 	public void generateFilter (List<VCFLine> results) {
 		vcfFile.initializePositionList(ProjectManager.getInstance().getProjectWindow().getGenomeWindow().getChromosome(), results);
 		if (results != null) {
-			booleanList = new ByteArrayAsBooleanList(vcfFile.getPositionList().size());
+			booleanList = new PrimitiveList<Boolean>(Boolean.class, vcfFile.getPositionList().size());
 			for (int i = 0; i < results.size(); i++) {
 				boolean valid = filter.isValid(results.get(i));
 				booleanList.set(i, valid);
@@ -103,7 +104,7 @@ public class VCFFilter extends MGFilter implements Serializable {
 	/**
 	 * @return the booleanList
 	 */
-	public ByteArrayAsBooleanList getBooleanList() {
+	public List<Boolean> getBooleanList() {
 		return booleanList;
 	}
 
@@ -216,18 +217,19 @@ public class VCFFilter extends MGFilter implements Serializable {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
+	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		filter = (FilterInterface) in.readObject();
 		vcfFile = (VCFFile) in.readObject();
-		booleanList = (ByteArrayAsBooleanList) in.readObject();
+		booleanList = (List<Boolean>) in.readObject();
 	}
 
 
 	/**
 	 * @param booleanList the booleanList to set
 	 */
-	public void setBooleanList(ByteArrayAsBooleanList booleanList) {
+	public void setBooleanList(List<Boolean> booleanList) {
 		this.booleanList = booleanList;
 	}
 

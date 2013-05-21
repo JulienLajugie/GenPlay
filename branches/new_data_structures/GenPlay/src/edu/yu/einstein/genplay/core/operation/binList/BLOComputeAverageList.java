@@ -83,7 +83,7 @@ public class BLOComputeAverageList implements Operation<List<ListView<ScoredChro
 						for (int i = 0; (i < currentList.size()) && !stopped; i += factor) {
 							float sum = 0;
 							int count = 0;
-							for (int j = 0; j < factor; j++) {
+							for (int j = 0; (j < factor) && ((i + j) < currentList.size()); j++) {
 								if (currentList.get(i + j).getScore() != 0) {
 									sum += currentList.get(i + j).getScore();
 									count++;

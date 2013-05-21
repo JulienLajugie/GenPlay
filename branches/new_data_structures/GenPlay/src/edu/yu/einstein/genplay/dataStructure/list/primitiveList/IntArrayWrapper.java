@@ -21,6 +21,9 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.dataStructure.list.primitiveList;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.AbstractList;
 import java.util.Arrays;
@@ -36,8 +39,11 @@ class IntArrayWrapper extends AbstractList<Integer> implements Serializable, Lis
 	/** Generated serial ID */
 	private static final long serialVersionUID = -880124320299615177L;
 
+	/** Version number of the class */
+	private static final transient int CLASS_VERSION_NUMBER = 0;
+
 	/** Data of the list */
-	private final int[] elementData;
+	private int[] elementData;
 
 
 	/**
@@ -52,6 +58,20 @@ class IntArrayWrapper extends AbstractList<Integer> implements Serializable, Lis
 	@Override
 	public Integer get(int index) {
 		return elementData[index];
+	}
+
+
+	/**
+	 * Method used for deserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		// read the class version number
+		in.readInt();
+		// read other fields
+		elementData = (int[]) in.readObject();
 	}
 
 
@@ -71,6 +91,19 @@ class IntArrayWrapper extends AbstractList<Integer> implements Serializable, Lis
 
 	@Override
 	public void trimToSize(int newCapacity) {
-		Arrays.copyOf(elementData, newCapacity);
+		elementData = Arrays.copyOf(elementData, newCapacity);
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		// write the class version number
+		out.writeInt(CLASS_VERSION_NUMBER);
+		// write other fields
+		out.writeObject(elementData);
 	}
 }
