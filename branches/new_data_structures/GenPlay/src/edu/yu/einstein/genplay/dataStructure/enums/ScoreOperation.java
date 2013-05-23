@@ -58,6 +58,16 @@ public enum ScoreOperation {
 	 */
 	MINIMUM ("Minimum");
 
+
+	/**
+	 * @return The score operations available to resolve a pileup
+	 */
+	public static ScoreOperation[] getPileupOperations() {
+		ScoreOperation[] pileupOperations = {ADDITION, MULTIPLICATION, AVERAGE, MAXIMUM, MINIMUM};
+		return pileupOperations;
+	}
+
+
 	/** Name of the method of score calculation */
 	private final String name;
 

@@ -41,9 +41,8 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
-import edu.yu.einstein.genplay.core.converter.ConverterFactory;
+import edu.yu.einstein.genplay.core.operation.converter.ConverterFactory;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
@@ -69,15 +68,18 @@ public class ConvertDialog extends JDialog {
 	private int	approved = CANCEL_OPTION;	// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
 	private int dialogwidth = 400;
 	private JPanel binPanel;
+	private JPanel scwPanel;
 
 	// Input layer elements
 	private final Layer<?> 		inputLayer;
 	private final LayerType[] 	layerTypes;
 
+	// Simple SCW list elements
+	private JComboBox 	jcbSCWCalculMetod;// combo box for the score calculation method of SCW (only if the input layer is a gene list)
+
 	// Bin list elements
 	private JSpinner 	jsBinSize;
-	private JComboBox 	jcbCalculMetod; 	// combo box for the score calculation method
-	private JComboBox 	jcbDataPrecision; 	// combo box for the data precision
+	private JComboBox 	jcbBinCalculMetod; 	// combo box for the score calculation method of bins
 
 	// Output track elements
 	private LayerType 	outputLayerType;	// The output layer type
@@ -137,7 +139,6 @@ public class ConvertDialog extends JDialog {
 		// Dialog settings
 		setTitle("Convert the layer");
 		setIconImage(Images.getApplicationImage());
-		setAlwaysOnTop(true);
 		setResizable(false);
 		setVisible(false);
 		pack();
@@ -158,15 +159,9 @@ public class ConvertDialog extends JDialog {
 
 		// Create the calculation method elements
 		JLabel jlCalculationMethod = new JLabel("Select a calculation method:");
-		jcbCalculMetod = new JComboBox(ScoreOperation.values());
-		jcbCalculMetod.setSelectedItem(ScoreOperation.ADDITION);
-		jcbCalculMetod.setPreferredSize(dimension);
-
-		// Create the data precision elements
-		JLabel jlDataPrecision = new JLabel("Select a data precision:");
-		jcbDataPrecision = new JComboBox(ScorePrecision.values());
-		jcbDataPrecision.setSelectedItem(ScorePrecision.PRECISION_32BIT);
-		jcbCalculMetod.setPreferredSize(dimension);
+		jcbBinCalculMetod = new JComboBox(ScoreOperation.getPileupOperations());
+		jcbBinCalculMetod.setSelectedItem(ScoreOperation.ADDITION);
+		jcbBinCalculMetod.setPreferredSize(dimension);
 
 		// Creates the panel
 		JPanel panel = new JPanel();
@@ -198,22 +193,18 @@ public class ConvertDialog extends JDialog {
 		gbc.gridx = 1;
 		gbc.weightx = 1;
 		gbc.insets = new Insets(5, 5, 0, 0);
-		panel.add(jcbCalculMetod, gbc);
-
-		// Add the data precision elements
-		gbc.gridx = 0;
-		gbc.gridy++;
-		gbc.weightx = 0;
-		gbc.insets = new Insets(5, 0, 0, 0);
-		panel.add(jlDataPrecision, gbc);
-		gbc.gridx = 1;
-		gbc.weighty = 1;
-		gbc.weightx = 1;
-		gbc.insets = new Insets(5, 5, 0, 0);
-		panel.add(jcbDataPrecision, gbc);
+		panel.add(jcbBinCalculMetod, gbc);
 
 		// Return the panel
 		return panel;
+	}
+
+
+	/**
+	 * @return the selected score calculation method
+	 */
+	public ScoreOperation getBinScoreCalculationMethod() {
+		return (ScoreOperation) jcbBinCalculMetod.getSelectedItem();
 	}
 
 
@@ -222,14 +213,6 @@ public class ConvertDialog extends JDialog {
 	 */
 	public int getBinSize() {
 		return (Integer) jsBinSize.getValue();
-	}
-
-
-	/**
-	 * @return the selected {@link ScorePrecision}
-	 */
-	public ScorePrecision getDataPrecision() {
-		return (ScorePrecision) jcbDataPrecision.getSelectedItem();
 	}
 
 
@@ -377,6 +360,7 @@ public class ConvertDialog extends JDialog {
 				public void actionPerformed(ActionEvent arg0) {
 					outputLayerType = currentLayerType;
 					updateBinPanel(outputLayerType);
+					updateSCWPanel(inputLayer.getType(), outputLayerType);
 				}
 			});
 
@@ -399,8 +383,48 @@ public class ConvertDialog extends JDialog {
 				binPanel = getBinPanel();
 				updateBinPanel(outputLayerType);
 				panel.add(binPanel, gbc);
+			} else if (currentLayerType == LayerType.SCW_LAYER) {
+				gbc.gridy++;
+				gbc.insets = new Insets(0, 25, 0, 0);
+				scwPanel = getScwPanel();
+				updateSCWPanel(inputLayer.getType(), outputLayerType);
+				panel.add(scwPanel, gbc);
 			}
 		}
+		// Return the panel
+		return panel;
+	}
+
+
+	private JPanel getScwPanel() {
+		Dimension dimension = new Dimension(100, 20);
+
+		// Create the calculation method elements
+		JLabel jlCalculationMethod = new JLabel("Select a calculation method:");
+		jcbSCWCalculMetod = new JComboBox(ScoreOperation.getPileupOperations());
+		jcbSCWCalculMetod.setSelectedItem(ScoreOperation.ADDITION);
+		jcbSCWCalculMetod.setPreferredSize(dimension);
+
+		// Creates the panel
+		JPanel panel = new JPanel();
+
+		// Layout settings
+		GridBagLayout layout = new GridBagLayout();
+		panel.setLayout(layout);
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.LINE_START;
+		gbc.weighty = 0;
+
+		// Add the bin size elements
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.insets = new Insets(5, 0, 0, 0);
+		panel.add(jlCalculationMethod, gbc);
+		gbc.gridx = 1;
+		gbc.weightx = 1;
+		gbc.insets = new Insets(5, 5, 0, 0);
+		panel.add(jcbSCWCalculMetod, gbc);
+
 		// Return the panel
 		return panel;
 	}
@@ -409,8 +433,8 @@ public class ConvertDialog extends JDialog {
 	/**
 	 * @return the selected score calculation method
 	 */
-	public ScoreOperation getScoreCalculationMethod() {
-		return (ScoreOperation) jcbCalculMetod.getSelectedItem();
+	public ScoreOperation getSCWScoreCalculationMethod() {
+		return (ScoreOperation) jcbSCWCalculMetod.getSelectedItem();
 	}
 
 
@@ -504,8 +528,24 @@ public class ConvertDialog extends JDialog {
 				enable = true;
 			}
 			jsBinSize.setEnabled(enable);
-			jcbCalculMetod.setEnabled(enable);
-			jcbDataPrecision.setEnabled(enable);
+			jcbBinCalculMetod.setEnabled(enable);
+		}
+	}
+
+
+	/**
+	 * Enable/Disable the bin panel according to the output and input layer types
+	 * @param layerType the output layer type
+	 */
+	private void updateSCWPanel(LayerType inputLayerType, LayerType outputLayerType) {
+		if (scwPanel != null) {
+			boolean enable = false;
+			if ((inputLayerType != null) && (inputLayerType == LayerType.GENE_LAYER) &&
+					(outputLayerType != null) && (outputLayerType == LayerType.SCW_LAYER)) {
+				enable = true;
+			}
+			scwPanel.setEnabled(enable);
+			jcbSCWCalculMetod.setEnabled(enable);
 		}
 	}
 }

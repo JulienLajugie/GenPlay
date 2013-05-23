@@ -47,7 +47,7 @@ class CalculMethodPanel extends JPanel {
 	 */
 	CalculMethodPanel() {
 		super();
-		jcbCalculMetod = new JComboBox(ScoreOperation.values());
+		jcbCalculMetod = new JComboBox(ScoreOperation.getPileupOperations());
 		jcbCalculMetod.setSelectedItem(defaultMethod);
 		add(jcbCalculMetod);
 		setBorder(BorderFactory.createTitledBorder("Score Calculation"));

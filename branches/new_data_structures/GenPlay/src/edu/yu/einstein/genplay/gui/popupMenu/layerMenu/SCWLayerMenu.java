@@ -23,6 +23,7 @@ package edu.yu.einstein.genplay.gui.popupMenu.layerMenu;
 
 import javax.swing.Action;
 
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.gui.action.layer.LAConvert;
 import edu.yu.einstein.genplay.gui.action.layer.LASave;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAAddConstant;
@@ -47,8 +48,8 @@ import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLATransfrag;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLATwoLayersOperation;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAUniqueScore;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAWindowCount;
-import edu.yu.einstein.genplay.gui.track.layer.SimpleSCWLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
+import edu.yu.einstein.genplay.gui.track.layer.SimpleSCWLayer;
 
 /**
  * Menu containing all the actions available for a {@link SimpleSCWLayer}
@@ -99,7 +100,7 @@ public class SCWLayerMenu extends AbstractLayerMenu {
 				null,
 				new SCWLAScoreDistribution(),
 				null,
-				new LAConvert(),
+				new LAConvert<GenomicListView<?>>(),
 				new LASave()
 		};
 		return actions;

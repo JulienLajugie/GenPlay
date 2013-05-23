@@ -78,7 +78,7 @@ public class SCWListFactory {
 		while (scwReader.readItem()) {
 			genomeWideFlattener.addElementToBuild(scwReader.getChromosome(), scwReader.getStart(), scwReader.getStop(), scwReader.getScore());
 		}
-		return new BinList(genomeWideFlattener.getGenomicList());
+		return new BinList(genomeWideFlattener.getListOfListViews());
 	}
 
 
@@ -167,7 +167,7 @@ public class SCWListFactory {
 		while (scwReader.readItem()) {
 			gwFlattener.addElementToBuild(scwReader.getChromosome(), scwReader.getStart(), scwReader.getStop(), scwReader.getScore());
 		}
-		return new SimpleSCWList(gwFlattener.getGenomicList());
+		return new SimpleSCWList(gwFlattener.getListOfListViews());
 	}
 
 
@@ -203,8 +203,8 @@ public class SCWListFactory {
 				genomeWideFlattener5.addElementToBuild(scwReader.getChromosome(), scwReader.getStart(), scwReader.getStop(), scwReader.getScore());
 			}
 		}
-		BinList binList5 = new BinList(genomeWideFlattener5.getGenomicList());
-		BinList binList3 = new BinList(genomeWideFlattener3.getGenomicList());
+		BinList binList5 = new BinList(genomeWideFlattener5.getListOfListViews());
+		BinList binList3 = new BinList(genomeWideFlattener3.getListOfListViews());
 		return (BinList) new BLOTwoLayers(binList5, binList3, ScoreOperation.ADDITION).compute();
 	}
 
@@ -287,8 +287,8 @@ public class SCWListFactory {
 				gwFlattener5.addElementToBuild(scwReader.getChromosome(), scwReader.getStart(), scwReader.getStop(), scwReader.getScore());
 			}
 		}
-		SCWList scwList5 = new SimpleSCWList(gwFlattener5.getGenomicList());
-		SCWList scwList3 = new SimpleSCWList(gwFlattener3.getGenomicList());
+		SCWList scwList5 = new SimpleSCWList(gwFlattener5.getListOfListViews());
+		SCWList scwList3 = new SimpleSCWList(gwFlattener3.getListOfListViews());
 		return new SCWLOTwoLayers(scwList5, scwList3, ScoreOperation.ADDITION).compute();
 	}
 }

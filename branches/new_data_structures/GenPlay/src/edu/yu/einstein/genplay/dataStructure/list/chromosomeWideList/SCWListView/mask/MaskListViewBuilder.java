@@ -79,7 +79,7 @@ public final class MaskListViewBuilder implements ListViewBuilder<ScoredChromoso
 			if (start < lastStart) {
 				// case where the element added are not sorted
 				throw new ElementAddedNotSortedException();
-			} else if (start < lastStop) {
+			} else if (start <= lastStop) {
 				// if the current start is smaller than the previous stop we merge the masks
 				stop = Math.max(stop, lastStop);
 				maskStops.set(lastElementIndex, stop);

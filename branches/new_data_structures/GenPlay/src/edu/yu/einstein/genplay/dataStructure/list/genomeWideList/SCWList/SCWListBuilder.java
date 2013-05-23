@@ -47,6 +47,27 @@ import edu.yu.einstein.genplay.exception.exceptions.ObjectAlreadyBuiltException;
  */
 public class SCWListBuilder {
 
+	/**
+	 * @param list an object instance of {@link SCWList}.
+	 * @return A {@link ListViewBuilder} that creates ListView objects the same kind of the ones from the specified list
+	 */
+	private static final SCWListViewBuilder createSCWLVBuilderPrototype(SCWList list) {
+		switch (list.getSCWListType()) {
+		case BIN:
+			BinList binList = (BinList) list;
+			return new BinListViewBuilder(binList.getBinSize());
+		case DENSE:
+			return new DenseSCWListViewBuilder();
+		case GENERIC:
+			return new GenericSCWListViewBuilder();
+		case MASK:
+			return new MaskListViewBuilder();
+		default:
+			throw new InvalidParameterException("The specified list is not a valid SCWList");
+		}
+	}
+
+
 	/** Builder used to build the data of the SCWList */
 	protected final ListOfListViewBuilder<ScoredChromosomeWindow> builders;
 
@@ -59,9 +80,7 @@ public class SCWListBuilder {
 	 * @throws CloneNotSupportedException
 	 */
 	public SCWListBuilder(SCWList list) throws CloneNotSupportedException {
-		super();
-		ListViewBuilder<ScoredChromosomeWindow> prototypeLVBuilder = createSCWLVBuilderPrototype(list);
-		builders = new ListOfListViewBuilder<ScoredChromosomeWindow>(prototypeLVBuilder);
+		this(createSCWLVBuilderPrototype(list));
 	}
 
 
@@ -105,7 +124,7 @@ public class SCWListBuilder {
 
 	/**
 	 * Creates an instance of {@link SCWList} that can either be an instance of {@link BinList} or of {@link SimpleSCWList} depending
-	 * on the specified {@link ListOfListViewBuilder}
+	 * on the specified {@link ListView} objects
 	 * @return An instance of {@link ScoredChromosomeWindow}
 	 * @throws ExecutionException
 	 * @throws InterruptedException
@@ -121,26 +140,6 @@ public class SCWListBuilder {
 			return new BinList(data);
 		} else {
 			return new SimpleSCWList(data);
-		}
-	}
-
-	/**
-	 * @param list an object instance of {@link SCWList}.
-	 * @return A {@link ListViewBuilder} that creates ListView objects the same kind of the ones from the specified list
-	 */
-	private final ListViewBuilder<ScoredChromosomeWindow> createSCWLVBuilderPrototype(SCWList list) {
-		switch (list.getSCWListType()) {
-		case BIN:
-			BinList binList = (BinList) list;
-			return new BinListViewBuilder(binList.getBinSize());
-		case DENSE:
-			return new DenseSCWListViewBuilder();
-		case GENERIC:
-			return new GenericSCWListViewBuilder();
-		case MASK:
-			return new MaskListViewBuilder();
-		default:
-			throw new InvalidParameterException("The specified list is not a valid SCWList");
 		}
 	}
 
@@ -164,7 +163,7 @@ public class SCWListBuilder {
 	 * @throws CloneNotSupportedException
 	 */
 	public SCWList getSCWList() throws InvalidParameterException, InterruptedException, ExecutionException, CloneNotSupportedException  {
-		SCWList list = createSCWList(builders.getGenomicList());
+		SCWList list = createSCWList(getListOfListViews());
 		return list;
 	}
 }

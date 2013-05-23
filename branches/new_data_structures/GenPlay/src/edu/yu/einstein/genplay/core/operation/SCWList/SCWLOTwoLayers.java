@@ -99,7 +99,7 @@ public class SCWLOTwoLayers implements Operation<SCWList>, Stoppable {
 			threadList.add(currentThread);
 		}
 		op.startPool(threadList);
-		return new SimpleSCWList(gwFlattener.getGenomicList());
+		return new SimpleSCWList(gwFlattener.getListOfListViews());
 	}
 
 

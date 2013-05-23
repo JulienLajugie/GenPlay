@@ -23,6 +23,7 @@ package edu.yu.einstein.genplay.gui.popupMenu.layerMenu;
 
 import javax.swing.Action;
 
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.gui.action.layer.LAConvert;
 import edu.yu.einstein.genplay.gui.action.layer.LASave;
 import edu.yu.einstein.genplay.gui.action.layer.maskLayer.MLAApplyMask;
@@ -54,7 +55,7 @@ public class MaskLayerMenu extends AbstractLayerMenu {
 				new MLAApplyMask(),
 				new MLAInvertMask(),
 				null,
-				new LAConvert(),
+				new LAConvert<GenomicListView<?>>(),
 				new LASave()
 		};
 		return actions;

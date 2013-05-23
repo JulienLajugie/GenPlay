@@ -23,23 +23,22 @@ package edu.yu.einstein.genplay.gui.action.layer;
 
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.converter.Converter;
-import edu.yu.einstein.genplay.core.converter.ConverterFactory;
+import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.core.operation.converter.ConverterFactory;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
-import edu.yu.einstein.genplay.exception.ExceptionManager;
-import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
+import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.ConvertDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
 import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
-import edu.yu.einstein.genplay.gui.track.layer.SimpleSCWLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
 import edu.yu.einstein.genplay.gui.track.layer.MaskLayer;
+import edu.yu.einstein.genplay.gui.track.layer.SimpleSCWLayer;
 import edu.yu.einstein.genplay.gui.track.layer.VersionedLayer;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
@@ -47,15 +46,16 @@ import edu.yu.einstein.genplay.util.colors.Colors;
 /**
  * Converts the selected {@link Layer} into another type of {@link Layer}
  * @author Nicolas Fourel
+ * @param <T> type of the list returned by the converter
  */
-public class LAConvert extends TrackListActionWorker<GenomicListView<?>> {
+public class LAConvert<T extends GenomicListView<?>> extends TrackListActionOperationWorker<T> {
 
 	private static final long serialVersionUID = 4027173438789911860L; 	// generated ID
 	private static final String 	ACTION_NAME = "Convert Layer";// action name
 	private static final String 	DESCRIPTION = "Convert the current layer into another type of layer";			// tooltip
 	private Layer<?> 				selectedLayer;					// The selected layer.
 	private Track					resultTrack;					// The result track.
-	private Converter				converter;						// The track converter.
+	private Operation<T>			converter;						// The track converter.
 
 	private GenomicListView<?> 		data;
 	private LayerType 				layerType;
@@ -89,7 +89,7 @@ public class LAConvert extends TrackListActionWorker<GenomicListView<?>> {
 
 
 	@Override
-	protected void doAtTheEnd(GenomicListView<?> actionResult) {
+	protected void doAtTheEnd(T actionResult) {
 		if (actionResult != null) {
 			Layer<?> newLayer = null;
 			if (layerType == LayerType.GENE_LAYER) {
@@ -104,6 +104,7 @@ public class LAConvert extends TrackListActionWorker<GenomicListView<?>> {
 			if (newLayer != null) {
 				((VersionedLayer<?>) newLayer).getHistory().add(layerType + " generated from " + selectedLayer.getType() + " \"" + selectedLayer.getName()+ "\"", Colors.GREY);
 				resultTrack.getLayers().add(newLayer);
+				resultTrack.setActiveLayer(newLayer);
 			} else {
 				System.err.println("The track could not be converted");
 			}
@@ -112,30 +113,27 @@ public class LAConvert extends TrackListActionWorker<GenomicListView<?>> {
 
 
 	@Override
-	public GenomicListView<?> processAction() {
+	public Operation<T> initializeOperation() throws Exception {
 		selectedLayer = (Layer<?>) getValue("Layer");
 		ConvertDialog dialog = new ConvertDialog(selectedLayer);
 		if (dialog.showDialog(getRootPane()) == ConvertDialog.APPROVE_OPTION) {
 			layerType = dialog.getOutputLayerType();
 			if (layerType == LayerType.BIN_LAYER) {
 				binSize = dialog.getBinSize();
-				method = dialog.getScoreCalculationMethod();
+				method = dialog.getBinScoreCalculationMethod();
+			} else if (layerType == LayerType.SCW_LAYER) {
+				method = dialog.getSCWScoreCalculationMethod();
 			}
 			resultTrack = dialog.getOutputTrack();
 			layerName = dialog.getOutputLayerName();
 			data = (GenomicListView<?>) selectedLayer.getData();
 
 			if (data != null) {
-				converter = ConverterFactory.getConverter(data, layerType, binSize, method);
+				converter = ConverterFactory.createConverter(data, layerType, binSize, method);
 			}
 
 			if (converter != null) {
-				try {
-					converter.convert();
-					return converter.getList();
-				} catch (Exception e) {
-					ExceptionManager.getInstance().caughtException(e);
-				}
+				return converter;
 			} else {
 				System.err.println("No converter found");
 			}

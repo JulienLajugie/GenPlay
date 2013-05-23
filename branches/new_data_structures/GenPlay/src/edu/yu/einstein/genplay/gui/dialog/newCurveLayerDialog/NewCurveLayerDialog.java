@@ -35,7 +35,6 @@ import javax.swing.JDialog;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.gui.dialog.genomeSelectionPanel.GenomeSelectionPanel;
@@ -55,7 +54,6 @@ public class NewCurveLayerDialog extends JDialog {
 	private final 	BinSizePanel			binSizePanel;			// panel for the binsize
 	private final 	ChromoSelectionPanel 	chromoSelectionPanel;	// panel for selecting chromosomes
 	private final 	CalculMethodPanel 		calculMethodPanel;		// panel for the method of score calculation
-	private final 	DataPrecisionPanel 		dataPrecisionPanel;		// panel for the precision of the data
 	private final 	StrandSelectionPanel	strandSelectionPanel;	// panel for the selection of the strand to extract
 	private final 	ReadDefinitionPanel		readDefinitionPanel;	// panel for the shift and the length of the reads
 	private final	GenomeSelectionPanel	genomeSelectionPanel;	// panel for the selection of the genome in a multigenome project
@@ -74,37 +72,24 @@ public class NewCurveLayerDialog extends JDialog {
 	public static final int CANCEL_OPTION = 1;
 
 
-	//	/**
-	//	 * Main method for the tests
-	//	 * @param args
-	//	 */
-	//	public static void main(String[] args) {
-	//		NewCurveLayerDialog ctd = new NewCurveLayerDialog("test", false, false, false, false, true, true);
-	//		ctd.showDialog(null);
-	//		ctd.dispose();
-	//	}
-
-
 	/**
 	 * Creates an instance of {@link NewCurveLayerDialog}
 	 * @param layerName the default name of the layer
 	 * @param isNameNeeded true if the layer name need to be asked
 	 * @param isBinSizeNeeded true if the binsize need to be asked
-	 * @param isPrecisionNeeded true if the precision need to be asked
 	 * @param isMethodNeeded true if the method of calculation need to be asked
 	 * @param isStrandNeeded true if the strand selection need to be asked
 	 * @param isChromoSelectionNeeded true if the chromosome selection need to be asked
 	 * @param isGenomeSelectionNeeded true if the genome selection need to be asked (works only in multi genome)
 	 */
-	public NewCurveLayerDialog(String layerName, boolean isNameNeeded, boolean isBinSizeNeeded, boolean isPrecisionNeeded,
-			boolean isMethodNeeded, boolean isStrandNeeded, boolean isChromoSelectionNeeded, boolean isGenomeSelectionNeeded) {
+	public NewCurveLayerDialog(String layerName, boolean isNameNeeded, boolean isBinSizeNeeded, boolean isMethodNeeded,
+			boolean isStrandNeeded, boolean isChromoSelectionNeeded, boolean isGenomeSelectionNeeded) {
 		super();
 		// create panels
 		layerNamePanel = new LayerNamePanel(layerName);
 		binSizePanel = new BinSizePanel();
 		chromoSelectionPanel = new ChromoSelectionPanel();
 		calculMethodPanel = new CalculMethodPanel();
-		dataPrecisionPanel = new DataPrecisionPanel();
 		strandSelectionPanel = new StrandSelectionPanel();
 		readDefinitionPanel = new ReadDefinitionPanel();
 		if (isGenomeSelectionNeeded && ProjectManager.getInstance().isMultiGenomeProject()) {
@@ -122,7 +107,6 @@ public class NewCurveLayerDialog extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				binSizePanel.saveDefault();
 				calculMethodPanel.saveDefault();
-				dataPrecisionPanel.saveDefault();
 				chromoSelectionPanel.saveDefault();
 				strandSelectionPanel.saveDefault();
 				readDefinitionPanel.saveDefault();
@@ -170,9 +154,9 @@ public class NewCurveLayerDialog extends JDialog {
 		if (isChromoSelectionNeeded) {
 			c = new GridBagConstraints();
 			c.fill = GridBagConstraints.BOTH;
-			c.gridheight = 7;
+			c.gridheight = 6;
 			c.gridwidth = 2;
-			if (!isNameNeeded && !isBinSizeNeeded && !isMethodNeeded && !isPrecisionNeeded && !isStrandNeeded) {
+			if (!isNameNeeded && !isBinSizeNeeded && !isMethodNeeded && !isStrandNeeded) {
 				c.gridx = 0;
 			} else {
 				c.gridx = 1;
@@ -208,24 +192,12 @@ public class NewCurveLayerDialog extends JDialog {
 			add(calculMethodPanel, c);
 		}
 
-		if (isPrecisionNeeded) {
-			c = new GridBagConstraints();
-			c.fill = GridBagConstraints.HORIZONTAL;
-			c.gridwidth = leftPanelsGridWidth;
-			c.gridx = 0;
-			c.gridy = 3;
-			c.insets = new Insets(INSET, INSET, INSET, INSET);
-			c.weightx = 1;
-			c.weighty = 1;
-			add(dataPrecisionPanel, c);
-		}
-
 		if (isStrandNeeded) {
 			c = new GridBagConstraints();
 			c.fill = GridBagConstraints.HORIZONTAL;
 			c.gridwidth = leftPanelsGridWidth;
 			c.gridx = 0;
-			c.gridy = 4;
+			c.gridy = 3;
 			c.insets = new Insets(INSET, INSET, INSET, INSET);
 			c.ipadx = INSET * 2;
 			c.weightx = 1;
@@ -236,7 +208,7 @@ public class NewCurveLayerDialog extends JDialog {
 			c.fill = GridBagConstraints.HORIZONTAL;
 			c.gridwidth = leftPanelsGridWidth;
 			c.gridx = 0;
-			c.gridy = 5;
+			c.gridy = 4;
 			c.insets = new Insets(INSET, INSET, INSET, INSET);
 			c.ipadx = INSET * 2;
 			c.weightx = 1;
@@ -249,7 +221,7 @@ public class NewCurveLayerDialog extends JDialog {
 			c.fill = GridBagConstraints.HORIZONTAL;
 			c.gridwidth = leftPanelsGridWidth;
 			c.gridx = 0;
-			c.gridy = 6;
+			c.gridy = 5;
 			c.insets = new Insets(INSET, INSET, INSET, INSET);
 			c.ipadx = INSET * 2;
 			c.weightx = 1;
@@ -261,7 +233,7 @@ public class NewCurveLayerDialog extends JDialog {
 		c.anchor = GridBagConstraints.LINE_END;
 		c.fill = GridBagConstraints.VERTICAL;
 		c.gridx = 0;
-		c.gridy = 7;
+		c.gridy = 6;
 		c.insets = new Insets(INSET, INSET, INSET, INSET);
 		c.weightx = 1;
 		c.weighty = 1;
@@ -271,7 +243,7 @@ public class NewCurveLayerDialog extends JDialog {
 		c.anchor = GridBagConstraints.LINE_START;
 		c.fill = GridBagConstraints.VERTICAL;
 		c.gridx = 1;
-		c.gridy = 7;
+		c.gridy = 6;
 		c.insets = new Insets(INSET, INSET, INSET, INSET);
 		c.weightx = 1;
 		c.weighty = 1;
@@ -289,6 +261,14 @@ public class NewCurveLayerDialog extends JDialog {
 
 
 	/**
+	 * @return the selected allele type
+	 */
+	public AlleleType getAlleleType () {
+		return genomeSelectionPanel.getAlleleType();
+	}
+
+
+	/**
 	 * @return the selected BinSize
 	 */
 	public int getBinSize() {
@@ -297,10 +277,26 @@ public class NewCurveLayerDialog extends JDialog {
 
 
 	/**
-	 * @return the selected {@link ScorePrecision}
+	 * @return the name of the genome
 	 */
-	public ScorePrecision getDataPrecision() {
-		return dataPrecisionPanel.getDataPrecision();
+	public String getGenomeName () {
+		return genomeSelectionPanel.getGenomeName();
+	}
+
+
+	/**
+	 * @return the name of the layer
+	 */
+	public String getLayerName() {
+		return layerNamePanel.getLayerName();
+	}
+
+
+	/**
+	 * @return the read length value. Returns zero if the read length is not specified
+	 */
+	public int getReadLengthValue() {
+		return readDefinitionPanel.getReadLengthValue();
 	}
 
 
@@ -329,42 +325,10 @@ public class NewCurveLayerDialog extends JDialog {
 
 
 	/**
-	 * @return the read length value. Returns zero if the read length is not specified
-	 */
-	public int getReadLengthValue() {
-		return readDefinitionPanel.getReadLengthValue();
-	}
-
-
-	/**
 	 * @return the Strand to extract. Null if both
 	 */
 	public Strand getStrandToExtract() {
 		return strandSelectionPanel.getStrandToExtract();
-	}
-
-
-	/**
-	 * @return the name of the layer
-	 */
-	public String getLayerName() {
-		return layerNamePanel.getLayerName();
-	}
-
-
-	/**
-	 * @return the name of the genome
-	 */
-	public String getGenomeName () {
-		return genomeSelectionPanel.getGenomeName();
-	}
-
-
-	/**
-	 * @return the selected allele type
-	 */
-	public AlleleType getAlleleType () {
-		return genomeSelectionPanel.getAlleleType();
 	}
 
 

@@ -21,12 +21,18 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.pileupFlattener;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.bin.BinListView;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
@@ -92,13 +98,49 @@ public class GenomeWideFlattener {
 
 
 	/**
+	 * Creates an instance of {@link SCWList} that can either be an instance of {@link BinList} or of {@link SimpleSCWList} depending
+	 * on the specified {@link ListView} objects
+	 * @return An instance of {@link ScoredChromosomeWindow}
+	 * @throws ExecutionException
+	 * @throws InterruptedException
+	 * @throws InvalidParameterException
+	 * @throws CloneNotSupportedException
+	 * @throws Exception
+	 */
+	private final SCWList createSCWList(List<ListView<ScoredChromosomeWindow>> data) throws InvalidParameterException, InterruptedException, ExecutionException, CloneNotSupportedException  {
+		if ((data == null) || data.isEmpty()) {
+			return null;
+		}
+		if (data.get(0) instanceof BinListView) {
+			return new BinList(data);
+		} else {
+			return new SimpleSCWList(data);
+		}
+	}
+
+
+	/**
 	 * @return the list of {@link ListView} elements
 	 */
-	public List<ListView<ScoredChromosomeWindow>> getGenomicList() {
+	public List<ListView<ScoredChromosomeWindow>> getListOfListViews() {
 		List<ListView<ScoredChromosomeWindow>> genomicList = new ArrayList<ListView<ScoredChromosomeWindow>>();
 		for (PileupFlattener currentFlattener: flatteners) {
 			genomicList.add(currentFlattener.getListView());
 		}
 		return genomicList;
+	}
+
+
+	/**
+	 * @return A SCWList resulting from the flattening process.<br>
+	 * The type of the SCWList will be the same as the one from the list specified during this object construction.
+	 * @throws ExecutionException
+	 * @throws InterruptedException
+	 * @throws InvalidParameterException
+	 * @throws CloneNotSupportedException
+	 */
+	public SCWList getSCWList() throws InvalidParameterException, InterruptedException, ExecutionException, CloneNotSupportedException  {
+		SCWList list = createSCWList(getListOfListViews());
+		return list;
 	}
 }

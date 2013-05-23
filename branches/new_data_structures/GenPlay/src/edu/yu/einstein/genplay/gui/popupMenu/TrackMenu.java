@@ -47,7 +47,6 @@ import edu.yu.einstein.genplay.gui.trackList.TrackListActionMap;
 /**
  * Contextual menu showed when a track handle is right clicked
  * @author Julien Lajugie
- * @version 0.1
  */
 public class TrackMenu extends JPopupMenu implements PopupMenuListener {
 
@@ -119,8 +118,8 @@ public class TrackMenu extends JPopupMenu implements PopupMenuListener {
 			}
 			layerMenus.clear();
 			remove(layerMenusSeparator);
-			selectedTrack = null;
 		}
+		selectedTrack = null;
 	}
 
 

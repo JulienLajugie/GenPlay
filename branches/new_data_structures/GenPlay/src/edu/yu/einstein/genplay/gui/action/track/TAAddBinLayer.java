@@ -111,7 +111,7 @@ public final class TAAddBinLayer extends TrackListActionExtractorWorker<BinList>
 	@Override
 	protected void doBeforeExtraction() throws InterruptedException {
 		boolean isStrandNeeded = extractor instanceof StrandedExtractor;
-		NewCurveLayerDialog ncld = new NewCurveLayerDialog(name, true, true, false, true, isStrandNeeded, true, true);
+		NewCurveLayerDialog ncld = new NewCurveLayerDialog(name, true, true, true, isStrandNeeded, true, true);
 		if (ncld.showDialog(getRootPane()) == NewCurveLayerDialog.APPROVE_OPTION) {
 			name = ncld.getLayerName();
 			binSize = ncld.getBinSize();
