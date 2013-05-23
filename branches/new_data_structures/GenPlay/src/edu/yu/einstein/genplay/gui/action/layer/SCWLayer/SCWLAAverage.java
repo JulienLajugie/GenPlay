@@ -21,8 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.layer.SCWLayer;
 
-import java.text.NumberFormat;
-
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
@@ -31,6 +29,7 @@ import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOAverage;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.track.layer.AbstractSCWLayer;
+import edu.yu.einstein.genplay.util.NumberFormats;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -66,7 +65,7 @@ public class SCWLAAverage extends TrackListActionOperationWorker<Double> {
 	@Override
 	protected void doAtTheEnd(Double actionResult) {
 		if (actionResult != null) {
-			JOptionPane.showMessageDialog(getRootPane(), "Average: \n" + NumberFormat.getInstance().format(actionResult), "Average", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(getRootPane(), "Average: \n" + NumberFormats.getScoreFormat().format(actionResult), "Average", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 

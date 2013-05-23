@@ -43,6 +43,10 @@ import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
  */
 public final class ElandExtendedExtractor extends TextFileExtractor implements SCWReader, StrandReader, StrandedExtractor {
 
+	/** Default first base position of bed files. Eland files are 0-based */
+	public static final int DEFAULT_FIRST_BASE_POSITION = 1;
+
+	private int	firstBasePosition = DEFAULT_FIRST_BASE_POSITION;// position of the first base
 	private StrandedExtractorOptions		strandOptions;		// options on the strand and read length / shift
 	private Chromosome 						chromosome;		 	// chromosome of the last item read
 	private Integer 						start;				// start position of the last item read
@@ -211,8 +215,8 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 		}
 
 		// if we are in a multi-genome project, we compute the position on the meta genome
-		start = getMultiGenomePosition(chromosome, start);
-		stop = getMultiGenomePosition(chromosome, stop);
+		start = getRealGenomePosition(chromosome, start);
+		stop = getRealGenomePosition(chromosome, stop);
 
 		// add data for the statistics
 		matchTypeCount[chromoNumber][0] += match0MNumber;
@@ -226,6 +230,12 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 	@Override
 	public Chromosome getChromosome() {
 		return chromosome;
+	}
+
+
+	@Override
+	public int getFirstBasePosition() {
+		return firstBasePosition;
 	}
 
 
@@ -288,6 +298,12 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 	@Override
 	public StrandedExtractorOptions getStrandedExtractorOptions() {
 		return strandOptions;
+	}
+
+
+	@Override
+	public void setFirstBasePosition(int firstBasePosition) {
+		this.firstBasePosition = firstBasePosition;
 	}
 
 

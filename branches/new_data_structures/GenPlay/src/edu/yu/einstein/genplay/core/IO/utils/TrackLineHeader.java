@@ -74,16 +74,6 @@ public class TrackLineHeader {
 	private static final String GENE_SCORE_TYPE_HEADER = "geneScoreType";
 
 
-	private String 			name;			// name of the data
-	private String			fileType;		// type of the file
-	private Color 			color; 			// color of the data (RRR,GGG,BBB) 0-255
-	private Boolean 		isAutoScale; 		// on | off
-	private Boolean 		isGridVisible; 	// on | off
-	private GraphType 		graphType; 		//bar | points | heatmap
-	private String 			geneDBURL;		// URL of the database for the genes (GenPlay extension)
-	private GeneScoreType 	geneScoreType;	// type of the scores of the genes ("RPKM", "Base Coverage Sum", "Maximum Coverage") (GenPlay extension)
-
-
 	/**
 	 * @param line
 	 * @return true if the specified line is a track line
@@ -98,6 +88,139 @@ public class TrackLineHeader {
 			line.trim();
 		}
 		return line.startsWith(TRACK_LINE_HEADER);
+	}
+
+
+	/**
+	 * @param line
+	 * @return the specified line without the track line header if the line is a track line header.
+	 * Returns the line otherwise.
+	 */
+	private static String removeTrackLineHeader(String line) {
+		if (!isTrackLine(line)) {
+			return line;
+		}
+		line = line.trim();
+		if (!line.isEmpty() && (line.charAt(0) == '#')) {
+			line = line.substring(1);
+			line.trim();
+		}
+		return line.substring(TRACK_LINE_HEADER.length()).trim();
+	}
+
+
+	private String 			name;			// name of the data
+	private String			fileType;		// type of the file
+	private Color 			color; 			// color of the data (RRR,GGG,BBB) 0-255
+	private Boolean 		isAutoScale; 	// on | off
+	private Boolean 		isGridVisible; 	// on | off
+	private GraphType 		graphType; 		//bar | points | heatmap
+	private String 			geneDBURL;		// URL of the database for the genes (GenPlay extension)
+	private GeneScoreType 	geneScoreType;	// type of the scores of the genes ("RPKM", "Base Coverage Sum", "Maximum Coverage") (GenPlay extension)
+
+
+	/**
+	 * Generates a track line header representing the state of the current object.
+	 * @return a track line. Null if all the fields are null
+	 */
+	public String generateTrackLine() {
+		String trackLine = TRACK_LINE_HEADER + " ";
+		if (name != null) {
+			trackLine += NAME_HEADER + "=\"" + name + "\" ";
+		}
+		if (fileType != null) {
+			trackLine += FILE_TYPE_HEADER + "=" + fileType + " ";
+		}
+		if (color != null) {
+			trackLine += COLOR_HEADER + "=" + color.getRed() + "," + color.getGreen() + "," + color.getBlue() + " ";
+			if (color.getAlpha() != 255) {
+				trackLine += TRANSPARENCY_HEADER + "=" + color.getAlpha() + " ";
+			}
+		}
+		if (isAutoScale != null) {
+			trackLine += AUTOSCALE_HEADER + "=" + (isAutoScale ? "on " : "off ");
+		}
+		if (isGridVisible != null) {
+			trackLine += GRID_DEFAULT_HEADER + "=" + (isGridVisible ? "on" : "off");
+		}
+		if (graphType != null) {
+			trackLine += GRAPH_TYPE_HEADER + "=" + graphType + " ";
+		}
+		if (geneDBURL != null){
+			trackLine += GENE_DATABASE_URL_HEADER + "=\"" + geneDBURL + "\" ";
+		}
+		if (geneScoreType != null) {
+			trackLine += GENE_SCORE_TYPE_HEADER + "=\"" + geneScoreType +"\" ";
+		}
+		// if there is no field set we return null
+		if (trackLine.trim().equals(TRACK_LINE_HEADER)) {
+			return null;
+		}
+		return trackLine;
+	}
+
+
+	/**
+	 * @return the color
+	 */
+	public Color getColor() {
+		return color;
+	}
+
+
+	/**
+	 * @return the fileType
+	 */
+	public String getFileType() {
+		return fileType;
+	}
+
+
+	/**
+	 * @return the geneDBURL
+	 */
+	public String getGeneDBURL() {
+		return geneDBURL;
+	}
+
+
+	/**
+	 * @return the geneScoreType
+	 */
+	public GeneScoreType getGeneScoreType() {
+		return geneScoreType;
+	}
+
+
+	/**
+	 * @return the graphType
+	 */
+	public GraphType getGraphType() {
+		return graphType;
+	}
+
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+
+	/**
+	 * @return the isAutoScale
+	 */
+	public boolean isAutoScale() {
+		return isAutoScale;
+	}
+
+
+	/**
+	 * @return the isGridVisible
+	 */
+	public boolean isGridVisible() {
+		return isGridVisible;
 	}
 
 
@@ -122,6 +245,70 @@ public class TrackLineHeader {
 				}
 			}
 		}
+	}
+
+
+	/**
+	 * @param isAutoScale the isAutoScale to set
+	 */
+	public void setAutoScale(boolean isAutoScale) {
+		this.isAutoScale = isAutoScale;
+	}
+
+
+	/**
+	 * @param color the color to set
+	 */
+	public void setColor(Color color) {
+		this.color = color;
+	}
+
+
+	/**
+	 * @param fileType the fileType to set
+	 */
+	public void setFileType(String fileType) {
+		this.fileType = fileType;
+	}
+
+
+	/**
+	 * @param geneDBURL the geneDBURL to set
+	 */
+	public void setGeneDBURL(String geneDBURL) {
+		this.geneDBURL = geneDBURL;
+	}
+
+
+	/**
+	 * @param geneScoreType the geneScoreType to set
+	 */
+	public void setGeneScoreType(GeneScoreType geneScoreType) {
+		this.geneScoreType = geneScoreType;
+	}
+
+
+	/**
+	 * @param graphType the graphType to set
+	 */
+	public void setGraphType(GraphType graphType) {
+		this.graphType = graphType;
+	}
+
+
+	/**
+	 * @param isGridVisible the isGridVisible to set
+	 */
+	public void setGridVisible(boolean isGridVisible) {
+		this.isGridVisible = isGridVisible;
+	}
+
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
 	}
 
 
@@ -189,192 +376,5 @@ public class TrackLineHeader {
 				}
 			}
 		}
-	}
-
-
-	/**
-	 * @param line
-	 * @return the specified line without the track line header if the line is a track line header.
-	 * Returns the line otherwise.
-	 */
-	private static String removeTrackLineHeader(String line) {
-		if (!isTrackLine(line)) {
-			return line;
-		}
-		line = line.trim();
-		if (!line.isEmpty() && (line.charAt(0) == '#')) {
-			line = line.substring(1);
-			line.trim();
-		}
-		return line.substring(TRACK_LINE_HEADER.length()).trim();
-	}
-
-
-	/**
-	 * Generates a track line header representing the state of the current object.
-	 * @return a track line. Null if all the fields are null
-	 */
-	public String generateTrackLine() {
-		String trackLine = TRACK_LINE_HEADER + " ";
-		if (name != null) {
-			trackLine += NAME_HEADER + "=\"" + name + "\" ";
-		}
-		if (fileType != null) {
-			trackLine += FILE_TYPE_HEADER + "=" + fileType + " ";
-		}
-		if (color != null) {
-			trackLine += COLOR_HEADER + "=" + color.getRed() + "," + color.getGreen() + "," + color.getBlue() + " ";
-			if (color.getAlpha() != 255) {
-				trackLine += TRANSPARENCY_HEADER + "=" + color.getAlpha() + " ";
-			}
-		}
-		if (isAutoScale != null) {
-			trackLine += AUTOSCALE_HEADER + "=" + (isAutoScale ? "on " : "off ");
-		}
-		if (isGridVisible != null) {
-			trackLine += GRID_DEFAULT_HEADER + "=" + (isGridVisible ? "on" : "off");
-		}
-		if (graphType != null) {
-			trackLine += GRAPH_TYPE_HEADER + "=" + graphType + " ";
-		}
-		if (geneDBURL != null){
-			trackLine += GENE_DATABASE_URL_HEADER + "=\"" + geneDBURL + "\" ";
-		}
-		if (geneScoreType != null) {
-			trackLine += GENE_SCORE_TYPE_HEADER + "=\"" + geneScoreType +"\" ";
-		}
-		// if there is no field set we return null
-		if (trackLine.trim().equals(TRACK_LINE_HEADER)) {
-			return null;
-		}
-		return trackLine;
-	}
-
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
-
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-
-	/**
-	 * @return the fileType
-	 */
-	public String getFileType() {
-		return fileType;
-	}
-
-
-	/**
-	 * @param fileType the fileType to set
-	 */
-	public void setFileType(String fileType) {
-		this.fileType = fileType;
-	}
-
-
-	/**
-	 * @return the color
-	 */
-	public Color getColor() {
-		return color;
-	}
-
-
-	/**
-	 * @param color the color to set
-	 */
-	public void setColor(Color color) {
-		this.color = color;
-	}
-
-
-	/**
-	 * @return the isAutoScale
-	 */
-	public boolean isAutoScale() {
-		return isAutoScale;
-	}
-
-
-	/**
-	 * @param isAutoScale the isAutoScale to set
-	 */
-	public void setAutoScale(boolean isAutoScale) {
-		this.isAutoScale = isAutoScale;
-	}
-
-
-	/**
-	 * @return the isGridVisible
-	 */
-	public boolean isGridVisible() {
-		return isGridVisible;
-	}
-
-
-	/**
-	 * @param isGridVisible the isGridVisible to set
-	 */
-	public void setGridVisible(boolean isGridVisible) {
-		this.isGridVisible = isGridVisible;
-	}
-
-
-	/**
-	 * @return the graphType
-	 */
-	public GraphType getGraphType() {
-		return graphType;
-	}
-
-
-	/**
-	 * @param graphType the graphType to set
-	 */
-	public void setGraphType(GraphType graphType) {
-		this.graphType = graphType;
-	}
-
-
-	/**
-	 * @return the geneDBURL
-	 */
-	public String getGeneDBURL() {
-		return geneDBURL;
-	}
-
-
-	/**
-	 * @param geneDBURL the geneDBURL to set
-	 */
-	public void setGeneDBURL(String geneDBURL) {
-		this.geneDBURL = geneDBURL;
-	}
-
-
-	/**
-	 * @return the geneScoreType
-	 */
-	public GeneScoreType getGeneScoreType() {
-		return geneScoreType;
-	}
-
-
-	/**
-	 * @param geneScoreType the geneScoreType to set
-	 */
-	public void setGeneScoreType(GeneScoreType geneScoreType) {
-		this.geneScoreType = geneScoreType;
 	}
 }

@@ -41,6 +41,10 @@ import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
  */
 public class SAMExtractor extends TextFileExtractor implements StrandedExtractor, SCWReader {
 
+	/** Default first base position of bed files. Sam files are 1-based */
+	public static final int DEFAULT_FIRST_BASE_POSITION = 1;
+
+	private int	firstBasePosition = DEFAULT_FIRST_BASE_POSITION;// position of the first base
 	private Chromosome 						chromosome;		 	// chromosome of the last item read
 	private StrandedExtractorOptions		strandOptions;		// options on the strand and read length / shift
 	private Integer 						start;				// start position of the last item read
@@ -133,8 +137,8 @@ public class SAMExtractor extends TextFileExtractor implements StrandedExtractor
 			}
 
 			// if we are in a multi-genome project, we compute the position on the meta genome
-			start = getMultiGenomePosition(chromosome, start);
-			stop = getMultiGenomePosition(chromosome, stop);
+			start = getRealGenomePosition(chromosome, start);
+			stop = getRealGenomePosition(chromosome, stop);
 			score = 1f;
 			return ITEM_EXTRACTED;
 		}
@@ -145,6 +149,12 @@ public class SAMExtractor extends TextFileExtractor implements StrandedExtractor
 	@Override
 	public Chromosome getChromosome() {
 		return chromosome;
+	}
+
+
+	@Override
+	public int getFirstBasePosition() {
+		return firstBasePosition;
 	}
 
 
@@ -169,6 +179,12 @@ public class SAMExtractor extends TextFileExtractor implements StrandedExtractor
 	@Override
 	public StrandedExtractorOptions getStrandedExtractorOptions() {
 		return strandOptions;
+	}
+
+
+	@Override
+	public void setFirstBasePosition(int firstBasePosition) {
+		this.firstBasePosition = firstBasePosition;
 	}
 
 

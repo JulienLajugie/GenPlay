@@ -21,10 +21,9 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow;
 
-import java.text.NumberFormat;
-
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.AbstractChromosomeWindow;
 import edu.yu.einstein.genplay.util.HashCodeUtil;
+import edu.yu.einstein.genplay.util.NumberFormats;
 
 
 /**
@@ -75,8 +74,8 @@ public abstract class AbstractScoredChromosomeWindow extends AbstractChromosomeW
 
 	@Override
 	public String toString() {
-		String startStr = NumberFormat.getInstance().format(getStart());
-		String stopStr = NumberFormat.getInstance().format(getStop());
+		String startStr = NumberFormats.getPositionFormat().format(getStart());
+		String stopStr = NumberFormats.getPositionFormat().format(getStop());
 		return startStr + "-" + stopStr + " : " + getScore();
 	}
 }

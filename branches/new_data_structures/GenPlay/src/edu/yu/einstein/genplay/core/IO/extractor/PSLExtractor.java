@@ -49,6 +49,10 @@ import edu.yu.einstein.genplay.util.Utils;
  */
 public final class PSLExtractor extends TextFileExtractor implements SCWReader, GeneReader, RepeatReader, StrandReader, StrandedExtractor {
 
+	/** Default first base position of bed files. PSL files are 0-based */
+	public static final int DEFAULT_FIRST_BASE_POSITION = 0;
+
+	private int	firstBasePosition = DEFAULT_FIRST_BASE_POSITION;// position of the first base
 	private StrandedExtractorOptions		strandOptions;		// options on the strand and read length / shift
 	private Chromosome 						chromosome;		 	// chromosome of the last item read
 	private Integer 						start;				// start position of the last item read
@@ -136,8 +140,8 @@ public final class PSLExtractor extends TextFileExtractor implements SCWReader, 
 		}
 
 		// if we are in a multi-genome project, we compute the position on the meta genome
-		start = getMultiGenomePosition(chromosome, start);
-		stop = getMultiGenomePosition(chromosome, stop);
+		start = getRealGenomePosition(chromosome, start);
+		stop = getRealGenomePosition(chromosome, stop);
 
 		// exons
 		String[] exonStartsStr = Utils.split(splitedLine[20], '"');
@@ -167,6 +171,12 @@ public final class PSLExtractor extends TextFileExtractor implements SCWReader, 
 	@Override
 	public ListView<ScoredChromosomeWindow> getExons() {
 		return exons;
+	}
+
+
+	@Override
+	public int getFirstBasePosition() {
+		return firstBasePosition;
 	}
 
 
@@ -227,6 +237,12 @@ public final class PSLExtractor extends TextFileExtractor implements SCWReader, 
 	@Override
 	public Integer getUTR5Bound() {
 		return start;
+	}
+
+
+	@Override
+	public void setFirstBasePosition(int firstBasePosition) {
+		this.firstBasePosition = firstBasePosition;
 	}
 
 

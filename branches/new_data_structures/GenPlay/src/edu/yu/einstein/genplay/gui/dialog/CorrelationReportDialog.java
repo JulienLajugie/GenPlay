@@ -28,7 +28,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.NumberFormat;
 import java.util.Comparator;
 
 import javax.swing.JButton;
@@ -51,6 +50,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.track.layer.ColoredLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.util.Images;
+import edu.yu.einstein.genplay.util.NumberFormats;
 import edu.yu.einstein.genplay.util.Utils;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
@@ -62,6 +62,35 @@ import edu.yu.einstein.genplay.util.colors.Colors;
  * @version 0.1
  */
 public class CorrelationReportDialog extends JDialog {
+
+	/**
+	 * An extension of the {@link JTable} class that sets the renderer and makes the cells not editable
+	 * @author Julien Lajugie
+	 * @version 0.1
+	 */
+	private class CorrelationJTable extends JTable {
+
+		private static final long serialVersionUID = 1023098920948600203L;	// generated ID
+
+		/**
+		 * Creates an instance of {@link CorrelationJTable}.
+		 * Sets the renderer as a {@link CorrelationJTableRenderer}
+		 * @param rowData
+		 * @param columnNames
+		 */
+		public CorrelationJTable(Object[][] rowData, Object[] columnNames) {
+			super(rowData, columnNames);
+			CorrelationJTableRenderer renderer = new CorrelationJTableRenderer();
+			setDefaultRenderer(Object.class, renderer);
+			setRowSorter(new CorrelationJTableSorter<TableModel>(rowData, getModel()));
+		}
+
+		@Override
+		public boolean isCellEditable(int row, int column) {
+			return false;
+		}
+	};
+
 
 	/**
 	 * An extension of the {@link DefaultTableCellRenderer} class that changes the background color and the alignment of the cells
@@ -89,27 +118,6 @@ public class CorrelationReportDialog extends JDialog {
 			setMaxMinStyle(table, value, row, column, component);
 			setTotalStyle(table, value, row, column, component);
 			return component;
-		}
-
-
-		/**
-		 * Sets the style of the "Total" line
-		 * @param table the JTable
-		 * @param value the value to assign to the cell at [row, column]
-		 * @param row the row of the cell to render
-		 * @param column the column of the cell to render
-		 * @param component the component whose style needs to be changed
-		 */
-		private void setTotalStyle(JTable table, Object value, int row, int column, Component component) {
-			String valueStr = null;
-			if (column == 0) {
-				valueStr = value.toString();
-			} else {
-				valueStr = table.getValueAt(row, 0).toString();
-			}
-			if ((valueStr != null) && (valueStr.equalsIgnoreCase("total"))) {
-				component.setFont(getFont().deriveFont(Font.BOLD + Font.ITALIC));
-			}
 		}
 
 
@@ -165,34 +173,26 @@ public class CorrelationReportDialog extends JDialog {
 				component.setForeground(Color.BLACK);
 			}
 		}
-	};
 
-
-	/**
-	 * An extension of the {@link JTable} class that sets the renderer and makes the cells not editable
-	 * @author Julien Lajugie
-	 * @version 0.1
-	 */
-	private class CorrelationJTable extends JTable {
-
-		private static final long serialVersionUID = 1023098920948600203L;	// generated ID
 
 		/**
-		 * Creates an instance of {@link CorrelationJTable}.
-		 * Sets the renderer as a {@link CorrelationJTableRenderer}
-		 * @param rowData
-		 * @param columnNames
+		 * Sets the style of the "Total" line
+		 * @param table the JTable
+		 * @param value the value to assign to the cell at [row, column]
+		 * @param row the row of the cell to render
+		 * @param column the column of the cell to render
+		 * @param component the component whose style needs to be changed
 		 */
-		public CorrelationJTable(Object[][] rowData, Object[] columnNames) {
-			super(rowData, columnNames);
-			CorrelationJTableRenderer renderer = new CorrelationJTableRenderer();
-			setDefaultRenderer(Object.class, renderer);
-			setRowSorter(new CorrelationJTableSorter<TableModel>(rowData, getModel()));
-		}
-
-		@Override
-		public boolean isCellEditable(int row, int column) {
-			return false;
+		private void setTotalStyle(JTable table, Object value, int row, int column, Component component) {
+			String valueStr = null;
+			if (column == 0) {
+				valueStr = value.toString();
+			} else {
+				valueStr = table.getValueAt(row, 0).toString();
+			}
+			if ((valueStr != null) && (valueStr.equalsIgnoreCase("total"))) {
+				component.setFont(getFont().deriveFont(Font.BOLD + Font.ITALIC));
+			}
 		}
 	}
 
@@ -255,6 +255,18 @@ public class CorrelationReportDialog extends JDialog {
 	private static JTextPane	jtaLayerNames; 							// text pane with the name of the layers
 
 	/**
+	 * Show a {@link CorrelationReportDialog} containing the specified data
+	 * @param parent parents component in which the dialog is shown
+	 * @param correlations array containing the correlation for each chromosome plus a row with the total correlation
+	 * @param layer1 1st layer
+	 * @param layer2 2nd layer
+	 */
+	public static void showDialog(Component parent, Double[] correlations, Layer<?> layer1, Layer<?> layer2) {
+		new CorrelationReportDialog(parent, correlations, layer1, layer2).setVisible(true);
+	}
+
+
+	/**
 	 * Privates constructor. Creates an instance of {@link CorrelationReportDialog}
 	 * @param parent parent Component in which the dialog is shown
 	 * @param correlations array containing the correlations for each chromosome and the correlation genome wide
@@ -271,13 +283,13 @@ public class CorrelationReportDialog extends JDialog {
 			if (correlations[i] == null) {
 				tableData[i][1] = "-";
 			} else {
-				tableData[i][1] = NumberFormat.getInstance().format(correlations[i]);
+				tableData[i][1] = NumberFormats.getScoreFormat().format(correlations[i]);
 			}
 		}
 		// we fill the total correlation
 		int lastIndex = tableData.length - 1;
 		tableData[lastIndex][0] = "Total";
-		tableData[lastIndex][1] = NumberFormat.getInstance().format(correlations[lastIndex]);
+		tableData[lastIndex][1] = NumberFormats.getScoreFormat().format(correlations[lastIndex]);
 		// we fill the column names
 		Object[] columnNames = {"Chromosome", "Correlation"};
 		// create the jtable
@@ -349,17 +361,5 @@ public class CorrelationReportDialog extends JDialog {
 		getRootPane().setDefaultButton(jbOk);
 		setTitle("Correlation Report");
 		setIconImage(Images.getApplicationImage());
-	}
-
-
-	/**
-	 * Show a {@link CorrelationReportDialog} containing the specified data
-	 * @param parent parents component in which the dialog is shown
-	 * @param correlations array containing the correlation for each chromosome plus a row with the total correlation
-	 * @param layer1 1st layer
-	 * @param layer2 2nd layer
-	 */
-	public static void showDialog(Component parent, Double[] correlations, Layer<?> layer1, Layer<?> layer2) {
-		new CorrelationReportDialog(parent, correlations, layer1, layer2).setVisible(true);
 	}
 }

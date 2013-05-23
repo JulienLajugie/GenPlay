@@ -25,7 +25,6 @@ import java.awt.event.ActionEvent;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.text.NumberFormat;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -35,6 +34,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotData;
 import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotPane;
+import edu.yu.einstein.genplay.util.NumberFormats;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -101,10 +101,10 @@ public class SPASaveData extends ScatterPlotAction {
 			writer.write("\t" + graphName + " " + getScatterPlotPane().getyAxis().getName());
 			writer.newLine();
 			for (int i = 0; i < scatterPlotData.getData().length; i++){
-				writer.write(NumberFormat.getInstance().format(scatterPlotData.getData()[i][0]));
+				writer.write(NumberFormats.getWriterScoreFormat().format(scatterPlotData.getData()[i][0]));
 				writer.write("\t");
 				if (i < scatterPlotData.getData().length) {
-					writer.write(NumberFormat.getInstance().format(scatterPlotData.getData()[i][1]));
+					writer.write(NumberFormats.getWriterScoreFormat().format(scatterPlotData.getData()[i][1]));
 				} else {
 					writer.write(Integer.toString(0));
 				}

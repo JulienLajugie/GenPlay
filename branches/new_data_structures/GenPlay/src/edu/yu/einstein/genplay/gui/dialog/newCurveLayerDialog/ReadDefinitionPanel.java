@@ -34,6 +34,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.NumberFormatter;
 
+import edu.yu.einstein.genplay.util.NumberFormats;
+
 
 /**
  * Read panel of a {@link NewCurveLayerDialog}. Allows the user to shift and/or define the lenght of the reads
@@ -70,7 +72,7 @@ class ReadDefinitionPanel extends JPanel {
 			}
 		});
 
-		jftfShift = new JFormattedTextField(NumberFormat.getInstance());
+		jftfShift = new JFormattedTextField(NumberFormats.getPositionFormat());
 		((NumberFormatter) jftfShift.getFormatter()).setMinimum(0);
 		jftfShift.setColumns(5);
 		jftfShift.setValue(jftfShiftDefaultValue);
@@ -133,20 +135,6 @@ class ReadDefinitionPanel extends JPanel {
 
 
 	/**
-	 * @return the shift value
-	 */
-	int getShiftValue() {
-		if (jcbShift.isSelected()) {
-			Number shiftNumber = ((Number) jftfShift.getValue());
-			if (shiftNumber != null) {
-				return shiftNumber.intValue();
-			}
-		}
-		return 0;
-	}
-
-
-	/**
 	 * @return the read length value. Returns zero if the read length is not specified
 	 */
 	int getReadLengthValue() {
@@ -154,6 +142,20 @@ class ReadDefinitionPanel extends JPanel {
 			Number readLengthNumber = ((Number) jftfReadLength.getValue());
 			if (readLengthNumber != null) {
 				return readLengthNumber.intValue();
+			}
+		}
+		return 0;
+	}
+
+
+	/**
+	 * @return the shift value
+	 */
+	int getShiftValue() {
+		if (jcbShift.isSelected()) {
+			Number shiftNumber = ((Number) jftfShift.getValue());
+			if (shiftNumber != null) {
+				return shiftNumber.intValue();
 			}
 		}
 		return 0;

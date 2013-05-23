@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -28,10 +28,7 @@ package edu.yu.einstein.genplay.dataStructure.enums;
  * @version 0.1
  */
 public enum RNAToDNAResultType {
-	/**
-	 * GDP Output File
-	 */
-	GDP ("GDP Output File"),
+
 	/**
 	 * BedGraph Output File
 	 */
@@ -40,9 +37,9 @@ public enum RNAToDNAResultType {
 	 * BedGraph Output File with extra fields
 	 */
 	BGR_WITH_EXTRA_FIELDS ("BGR Output File With Extra Fields");
-	
+
 	private final String 	description;	// description of the result type
-	
+
 	/**
 	 * Private constructor. Creates an instance of {@link RNAToDNAResultType}
 	 * @param description description of the result type
@@ -51,7 +48,7 @@ public enum RNAToDNAResultType {
 		this.description = description;
 	}
 
-	
+
 	/**
 	 * @return the description of the result type
 	 */
@@ -59,7 +56,7 @@ public enum RNAToDNAResultType {
 		return description;
 	}
 
-	
+
 	@Override
 	public String toString() {
 		return description;

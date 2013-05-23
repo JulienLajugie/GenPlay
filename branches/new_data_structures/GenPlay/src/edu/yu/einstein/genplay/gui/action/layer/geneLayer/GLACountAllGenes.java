@@ -21,8 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.layer.geneLayer;
 
-import java.text.NumberFormat;
-
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
@@ -31,6 +29,7 @@ import edu.yu.einstein.genplay.core.operation.geneList.GLOCountAllGenes;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
+import edu.yu.einstein.genplay.util.NumberFormats;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -38,7 +37,6 @@ import edu.yu.einstein.genplay.util.Utils;
  * Counts the number of genes of the selected {@link GeneLayer}
  * @author Julien Lajugie
  * @author Nicolas Fourel
- * @version 0.1
  */
 public final class GLACountAllGenes extends TrackListActionOperationWorker<Long> {
 
@@ -65,6 +63,14 @@ public final class GLACountAllGenes extends TrackListActionOperationWorker<Long>
 
 
 	@Override
+	protected void doAtTheEnd(Long actionResult) {
+		if (actionResult != null) {
+			JOptionPane.showMessageDialog(getRootPane(), "Number of genes: \n" + NumberFormats.getScoreFormat().format(actionResult), "Count Genes", JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+
+
+	@Override
 	public Operation<Long> initializeOperation() {
 		GeneLayer selectedLayer = (GeneLayer) getValue("Layer");
 		if (selectedLayer != null) {
@@ -76,13 +82,5 @@ public final class GLACountAllGenes extends TrackListActionOperationWorker<Long>
 			}
 		}
 		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(Long actionResult) {
-		if (actionResult != null) {
-			JOptionPane.showMessageDialog(getRootPane(), "Number of genes: \n" + NumberFormat.getInstance().format(actionResult), "Count Genes", JOptionPane.INFORMATION_MESSAGE);
-		}
 	}
 }

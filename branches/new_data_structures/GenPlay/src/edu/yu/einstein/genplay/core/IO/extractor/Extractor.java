@@ -48,8 +48,6 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
  */
 public abstract class Extractor implements InvalidDataEventsGenerator, Stoppable, OperationProgressEventsGenerator {
 
-	// TODO handle 0-base and 1-base extractors
-
 	/** Maximum number of warning that will be reported */
 	private final static int WARNING_LIMIT = 100;
 
@@ -139,6 +137,15 @@ public abstract class Extractor implements InvalidDataEventsGenerator, Stoppable
 	}
 
 
+	/**
+	 * This method returns the position of the first base of the extractor.
+	 * Most files are either 0-based (the first position on a chromosome is 0)
+	 * or 1-based (the first position on a chromosome is 1).
+	 * @return The position of the first base
+	 */
+	public abstract int getFirstBasePosition();
+
+
 	@Override
 	public InvalidDataListener[] getInvalidDataListeners() {
 		return (InvalidDataListener[]) invalidDataListenersList.toArray();
@@ -150,20 +157,6 @@ public abstract class Extractor implements InvalidDataEventsGenerator, Stoppable
 	 */
 	public int getItemExtractedCount() {
 		return itemExtractedCount;
-	}
-
-
-	/**
-	 * @param chromosome	current chromosome
-	 * @param position		current position
-	 * @return				the associated associated meta genome position
-	 */
-	protected int getMultiGenomePosition(Chromosome chromosome, int position) {
-		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			return ShiftCompute.getPosition(genomeName, alleleType, position, chromosome, FormattedMultiGenomeName.META_GENOME_NAME);
-		} else {
-			return position;
-		}
 	}
 
 
@@ -179,6 +172,24 @@ public abstract class Extractor implements InvalidDataEventsGenerator, Stoppable
 	 */
 	public ProjectChromosomes getProjectChromosome() {
 		return projectChromosomes;
+	}
+
+
+	/**
+	 * @param chromosome	current chromosome
+	 * @param position		current position
+	 * @return				the position shifted of 1 bp if the extractor is 0 based
+	 * and in the case of multi-genome project, the associated meta genome position
+	 */
+	protected int getRealGenomePosition(Chromosome chromosome, int position) {
+		if (getFirstBasePosition() != 1) {
+			position += 1 - getFirstBasePosition();
+		}
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			return ShiftCompute.getPosition(genomeName, alleleType, position, chromosome, FormattedMultiGenomeName.META_GENOME_NAME);
+		} else {
+			return position;
+		}
 	}
 
 
@@ -267,6 +278,15 @@ public abstract class Extractor implements InvalidDataEventsGenerator, Stoppable
 	public void setChromosomeSelector(ChromosomesSelector chromosomeSelector) {
 		this.chromosomeSelector = chromosomeSelector;
 	}
+
+
+	/**
+	 * Sets the position of the first base of the extractor.
+	 * Most files are either 0-based (the first position on a chromosome is 0)
+	 * or 1-based (the first position on a chromosome is 1).
+	 * @param firstBasePosition position of the first base
+	 */
+	public abstract void setFirstBasePosition(int firstBasePosition);
 
 
 	/**

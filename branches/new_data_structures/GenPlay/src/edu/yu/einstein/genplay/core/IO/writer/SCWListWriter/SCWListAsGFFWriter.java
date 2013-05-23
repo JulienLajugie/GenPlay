@@ -34,13 +34,12 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
-
+import edu.yu.einstein.genplay.util.NumberFormats;
 
 
 /**
- * Allows to write a BinList as a GFF file.
+ * Writes {@link SCWList} data into GFF files.
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class SCWListAsGFFWriter extends SCWListWriter implements Stoppable {
 
@@ -95,6 +94,7 @@ public final class SCWListAsGFFWriter extends SCWListWriter implements Stoppable
 						if (currentWindow.getScore() != 0) {
 							int start = currentWindow.getStart();
 							int stop = currentWindow.getStop();
+							String score = NumberFormats.getWriterScoreFormat().format(currentWindow.getScore());
 							if (stop > currentChromosomeSize) {
 								stop = currentChromosomeSize;
 							}
@@ -105,8 +105,7 @@ public final class SCWListAsGFFWriter extends SCWListWriter implements Stoppable
 							}
 
 							if ((start > -1) && (stop > -1)) {
-								//writer.write(currentChromosome.getName() + "\t-\t-\t" + currentWindow.getStart() + "\t" + currentWindow.getStop() + "\t" + currentWindow.getScore() + "\t+\t-\t-");
-								writer.write(currentChromosome.getName() + "\t-\t-\t" + start + "\t" + stop + "\t" + currentWindow.getScore() + "\t+\t-\t-");
+								writer.write(currentChromosome.getName() + "\t-\t-\t" + start + "\t" + stop + "\t" + score + "\t+\t-\t-");
 								writer.newLine();
 							}
 						}

@@ -185,9 +185,6 @@ public class Extractors {
 		if ((line.length() >= 7) && (line.substring(0, 7).equalsIgnoreCase("browser"))) {
 			return true;
 		}
-		if ((line.length() >= 9) && (line.substring(0, 9).equalsIgnoreCase("searchURL"))) {
-			return true;
-		}
 		return false; // not a header line
 	}
 

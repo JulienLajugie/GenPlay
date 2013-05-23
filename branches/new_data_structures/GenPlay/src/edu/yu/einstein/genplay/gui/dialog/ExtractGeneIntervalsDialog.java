@@ -26,7 +26,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.NumberFormat;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -39,6 +38,7 @@ import javax.swing.text.NumberFormatter;
 import edu.yu.einstein.genplay.core.operation.geneList.GLOExtractIntervals;
 import edu.yu.einstein.genplay.gui.action.layer.geneLayer.GLAExtractInterval;
 import edu.yu.einstein.genplay.util.Images;
+import edu.yu.einstein.genplay.util.NumberFormats;
 
 
 /**
@@ -90,7 +90,7 @@ public final class ExtractGeneIntervalsDialog extends JDialog implements ActionL
 		super();
 
 		jlStart1 = new JLabel("Extract intervals starting at ");
-		jftfStartDistance = new JFormattedTextField(NumberFormat.getInstance());
+		jftfStartDistance = new JFormattedTextField(NumberFormats.getPositionFormat());
 		((NumberFormatter)jftfStartDistance.getFormatter()).setMinimum(0);
 		jftfStartDistance.setValue(0);
 		jftfStartDistance.setColumns(9);
@@ -98,7 +98,7 @@ public final class ExtractGeneIntervalsDialog extends JDialog implements ActionL
 		jcbStartFrom = new JComboBox(OPTIONS);
 
 		jlStop1 = new JLabel("and stop at ");
-		jftfStopDistance = new JFormattedTextField(NumberFormat.getInstance());
+		jftfStopDistance = new JFormattedTextField(NumberFormats.getPositionFormat());
 		jftfStopDistance.setValue(0);
 		jftfStopDistance.setColumns(9);
 		jlStop2 = new JLabel(" bp ");

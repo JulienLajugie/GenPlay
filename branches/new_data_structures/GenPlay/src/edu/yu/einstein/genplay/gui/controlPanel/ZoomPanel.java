@@ -49,6 +49,7 @@ import edu.yu.einstein.genplay.gui.action.project.PAMoveLeft;
 import edu.yu.einstein.genplay.gui.action.project.PAMoveRight;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
+import edu.yu.einstein.genplay.util.NumberFormats;
 
 
 
@@ -75,7 +76,7 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 	ZoomPanel() {
 		projectZoom = ProjectManager.getInstance().getProjectZoom();
 		projectWindow = ProjectManager.getInstance().getProjectWindow();
-		jlZoom = new JLabel("Size: " + NumberFormat.getInstance().format(projectWindow.getGenomeWindow().getSize()));
+		jlZoom = new JLabel("Size: " + NumberFormats.getPositionFormat().format(projectWindow.getGenomeWindow().getSize()));
 		jbMinus = new JButton("-");
 		jbMinus.setMargin(new Insets(0, 3, 0, 3));
 		jbMinus.setFocusPainted(false);
@@ -155,40 +156,6 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 	}
 
 
-	/**
-	 * Called when the zoom changes
-	 * @param newZoom new zoom value
-	 */
-	void zoomChanged(int newZoom) {
-		int currentZoom = projectWindow.getGenomeWindow().getSize();
-		int	maximumZoom = projectWindow.getGenomeWindow().getChromosome().getLength() * 2;
-		if (newZoom > maximumZoom) {
-			newZoom = maximumZoom;
-		}
-		if (newZoom != currentZoom) {
-			double halfZoom = newZoom / (double)2;
-			Chromosome chromosome = projectWindow.getGenomeWindow().getChromosome();
-			int start = (int)(projectWindow.getGenomeWindow().getMiddlePosition() - halfZoom);
-			int stop = start + newZoom;
-			SimpleGenomeWindow newGenomeWindow = new SimpleGenomeWindow(chromosome, start, stop);
-			projectWindow.setGenomeWindow(newGenomeWindow);
-		}
-	}
-
-
-	@Override
-	public void mouseWheelMoved(MouseWheelEvent mwe) {
-		int currentZoom = projectWindow.getGenomeWindow().getSize();
-		for (int i = 0; i < Math.abs(mwe.getWheelRotation()); i++) {
-			if (mwe.getWheelRotation() > 0) {
-				zoomChanged(projectZoom.getNextZoomIn(currentZoom));
-			} else {
-				zoomChanged(projectZoom.getNextZoomOut(currentZoom));
-			}
-		}
-	}
-
-
 	@Override
 	public void genomeWindowChanged(GenomeWindowEvent evt) {
 		// we notify the gui
@@ -210,6 +177,40 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 			}
 		} else {
 			jsZoom.setValue(projectZoom.getZoomIndex(currentZoom));
+		}
+	}
+
+
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent mwe) {
+		int currentZoom = projectWindow.getGenomeWindow().getSize();
+		for (int i = 0; i < Math.abs(mwe.getWheelRotation()); i++) {
+			if (mwe.getWheelRotation() > 0) {
+				zoomChanged(projectZoom.getNextZoomIn(currentZoom));
+			} else {
+				zoomChanged(projectZoom.getNextZoomOut(currentZoom));
+			}
+		}
+	}
+
+
+	/**
+	 * Called when the zoom changes
+	 * @param newZoom new zoom value
+	 */
+	void zoomChanged(int newZoom) {
+		int currentZoom = projectWindow.getGenomeWindow().getSize();
+		int	maximumZoom = projectWindow.getGenomeWindow().getChromosome().getLength() * 2;
+		if (newZoom > maximumZoom) {
+			newZoom = maximumZoom;
+		}
+		if (newZoom != currentZoom) {
+			double halfZoom = newZoom / (double)2;
+			Chromosome chromosome = projectWindow.getGenomeWindow().getChromosome();
+			int start = (int)(projectWindow.getGenomeWindow().getMiddlePosition() - halfZoom);
+			int stop = start + newZoom;
+			SimpleGenomeWindow newGenomeWindow = new SimpleGenomeWindow(chromosome, start, stop);
+			projectWindow.setGenomeWindow(newGenomeWindow);
 		}
 	}
 

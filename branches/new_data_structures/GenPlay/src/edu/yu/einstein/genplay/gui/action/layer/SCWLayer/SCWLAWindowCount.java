@@ -21,8 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.layer.SCWLayer;
 
-import java.text.NumberFormat;
-
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
@@ -31,6 +29,7 @@ import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOWindowCount;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.track.layer.AbstractSCWLayer;
+import edu.yu.einstein.genplay.util.NumberFormats;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -65,7 +64,7 @@ public class SCWLAWindowCount extends TrackListActionOperationWorker<Long> {
 	@Override
 	protected void doAtTheEnd(Long actionResult) {
 		if (actionResult != null) {
-			JOptionPane.showMessageDialog(getRootPane(), "Total number of windows: \n" + NumberFormat.getInstance().format(actionResult), "Windows number", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(getRootPane(), "Total number of windows: \n" + NumberFormats.getScoreFormat().format(actionResult), "Windows number", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 

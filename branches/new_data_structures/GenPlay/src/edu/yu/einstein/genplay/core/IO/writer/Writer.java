@@ -27,16 +27,8 @@ import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 /**
  * Interface implemented by the data writers (BinListWriter, GeneListWriter...)
  * @author Julien Lajugie
- * @version 0.1
  */
 public interface Writer {
-
-	/**
-	 * Writes data in an output file
-	 * @throws Exception
-	 */
-	public void write() throws Exception;
-
 
 	/**
 	 * In Multi Genome projects, tracks can be saved according to three different categories of coordinate system:
@@ -50,4 +42,11 @@ public interface Writer {
 	 * @param allele an allele, will not be considered if the genome is the meta genome or the reference genome (therefore null)
 	 */
 	public void setMultiGenomeCoordinateSystem (String genome, AlleleType allele);
+
+
+	/**
+	 * Writes data in an output file
+	 * @throws Exception
+	 */
+	public void write() throws Exception;
 }

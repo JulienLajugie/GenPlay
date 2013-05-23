@@ -26,7 +26,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.NumberFormat;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -41,6 +40,7 @@ import javax.swing.text.NumberFormatter;
 
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.util.Images;
+import edu.yu.einstein.genplay.util.NumberFormats;
 
 
 /**
@@ -97,7 +97,7 @@ public class TransfragDialog extends JDialog {
 	public TransfragDialog(int transfragType) {
 		super();
 		jlGapSize = new JLabel("Enter the Gap: ");
-		NumberFormatter num = new NumberFormatter(NumberFormat.getInstance());
+		NumberFormatter num = new NumberFormatter(NumberFormats.getPositionFormat());
 		num.setAllowsInvalid(false);
 		jftGapSize = new JFormattedTextField(num);
 		jftGapSize.setValue(0);
@@ -222,6 +222,14 @@ public class TransfragDialog extends JDialog {
 	}
 
 	/**
+	 * Method called when the button okay is clicked
+	 */
+	protected void jbOkClicked() {
+		approved = APPROVE_OPTION;
+		setVisible(false);
+	}
+
+	/**
 	 * Method called when the selected result type changes
 	 */
 	protected void resultTypeChanged() {
@@ -230,14 +238,6 @@ public class TransfragDialog extends JDialog {
 		} else if (jrbScoredList.isSelected()) {
 			generateType = TransfragDialog.GENERATE_SCORED_LIST;
 		}
-	}
-
-	/**
-	 * Method called when the button okay is clicked
-	 */
-	protected void jbOkClicked() {
-		approved = APPROVE_OPTION;
-		setVisible(false);
 	}
 
 	/**

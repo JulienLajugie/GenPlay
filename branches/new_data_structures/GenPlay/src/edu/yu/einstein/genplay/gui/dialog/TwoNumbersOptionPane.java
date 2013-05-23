@@ -39,6 +39,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.util.Images;
+import edu.yu.einstein.genplay.util.NumberFormats;
 
 /**
  * An implementation of an input option pane for number.
@@ -63,6 +64,30 @@ public final class TwoNumbersOptionPane extends JDialog {
 	private static String 				label1;										// Text of the first JLabel
 	private static String 				label2;										// Text of the second JLabel
 	private static boolean 				validated;									// True if OK has been pressed
+
+
+	/**
+	 * Displays a GdpCurveChooser dialog, and returns a Number.
+	 * @param parent the parent component of the dialog, can be null; see showDialog for details
+	 * @param title Title of the dialog.
+	 * @param label1 Text of the first inside label of the dialog.
+	 * @param label2 Text of the second inside label of the dialog.
+	 * @param min Minimum allowed value for the input value.
+	 * @param max Maximum allowed value for the input value.
+	 * @param defaultValue1 first default displayed value when the dialog is displayed.
+	 * @param defaultValue2 second default displayed value when the dialog is displayed.
+	 * @return an array containing 2 numbers if OK has been pressed, otherwise null.
+	 */
+	public static Number[] getValue(Component parent, String title, String label1, String label2, double min, double max, double defaultValue1, double defaultValue2) {
+		TwoNumbersOptionPane NOP = new TwoNumbersOptionPane(parent, title, label1, label2, defaultValue1, defaultValue2, min, max);
+		NOP.setVisible(true);
+		if(validated) {
+			Number[] result = {validValue1, validValue2};
+			return result;
+		} else {
+			return null;
+		}
+	}
 
 
 	/**
@@ -109,7 +134,7 @@ public final class TwoNumbersOptionPane extends JDialog {
 		}
 
 
-		jftfValue1 = new JFormattedTextField(NumberFormat.getInstance());
+		jftfValue1 = new JFormattedTextField(NumberFormats.getScoreFormat());
 		jftfValue1.setValue(validValue1);
 		jftfValue1.setColumns(8);
 		jftfValue1.addPropertyChangeListener(new PropertyChangeListener() {
@@ -129,7 +154,7 @@ public final class TwoNumbersOptionPane extends JDialog {
 		});
 
 
-		jftfValue2 = new JFormattedTextField(NumberFormat.getInstance());
+		jftfValue2 = new JFormattedTextField(NumberFormats.getScoreFormat());
 		jftfValue2.setValue(validValue2);
 		jftfValue2.setColumns(8);
 		jftfValue2.addPropertyChangeListener(new PropertyChangeListener() {
@@ -266,30 +291,6 @@ public final class TwoNumbersOptionPane extends JDialog {
 			jftfValue2.setValue(validValue2);
 		} else {
 			validValue2 = currentValue;
-		}
-	}
-
-
-	/**
-	 * Displays a GdpCurveChooser dialog, and returns a Number.
-	 * @param parent the parent component of the dialog, can be null; see showDialog for details
-	 * @param title Title of the dialog.
-	 * @param label1 Text of the first inside label of the dialog.
-	 * @param label2 Text of the second inside label of the dialog.
-	 * @param min Minimum allowed value for the input value.
-	 * @param max Maximum allowed value for the input value.
-	 * @param defaultValue1 first default displayed value when the dialog is displayed.
-	 * @param defaultValue2 second default displayed value when the dialog is displayed.
-	 * @return an array containing 2 numbers if OK has been pressed, otherwise null.
-	 */
-	public static Number[] getValue(Component parent, String title, String label1, String label2, double min, double max, double defaultValue1, double defaultValue2) {
-		TwoNumbersOptionPane NOP = new TwoNumbersOptionPane(parent, title, label1, label2, defaultValue1, defaultValue2, min, max);
-		NOP.setVisible(true);
-		if(validated) {
-			Number[] result = {validValue1, validValue2};
-			return result;
-		} else {
-			return null;
 		}
 	}
 }

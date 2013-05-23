@@ -73,7 +73,6 @@ public class BinLayerMenu extends AbstractLayerMenu {
 	 */
 	public BinLayerMenu(Layer<?> layer) {
 		super(layer);
-		addSeparator();
 	}
 
 

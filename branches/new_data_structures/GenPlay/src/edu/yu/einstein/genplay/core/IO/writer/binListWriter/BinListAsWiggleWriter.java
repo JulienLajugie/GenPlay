@@ -34,13 +34,12 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
-
+import edu.yu.einstein.genplay.util.NumberFormats;
 
 
 /**
- * Allows to write a BinList as a wiggle file.
+ * Writes {@link BinList} data into Wiggle files.
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class BinListAsWiggleWriter extends BinListWriter implements Stoppable {
 
@@ -114,12 +113,12 @@ public final class BinListAsWiggleWriter extends BinListWriter implements Stoppa
 									if (cpt != 0) {
 										// case where there were less than ZERO_COUNT 0 values so we need to print them
 										for (int k = 0; k < cpt; k++) {
-											writer.write(Double.toString(0d));
+											writer.write("0");
 											writer.newLine();
 										}
 										cpt = 0;
 									}
-									writer.write(Float.toString(currentList.get(j).getScore()));
+									writer.write(NumberFormats.getWriterScoreFormat().format(currentList.get(j).getScore()));
 									writer.newLine();
 								}
 								j++;

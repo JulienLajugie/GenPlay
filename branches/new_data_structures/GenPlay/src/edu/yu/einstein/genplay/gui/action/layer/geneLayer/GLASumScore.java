@@ -21,8 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.layer.geneLayer;
 
-import java.text.NumberFormat;
-
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
@@ -31,6 +29,7 @@ import edu.yu.einstein.genplay.core.operation.geneList.GLOSumScore;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
+import edu.yu.einstein.genplay.util.NumberFormats;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -67,6 +66,14 @@ public final class GLASumScore extends TrackListActionOperationWorker<Double> {
 
 
 	@Override
+	protected void doAtTheEnd(Double actionResult) {
+		if (actionResult != null) {
+			JOptionPane.showMessageDialog(getRootPane(), "Score count: \n" + NumberFormats.getScoreFormat().format(actionResult), "Score Count", JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+
+
+	@Override
 	public Operation<Double> initializeOperation() {
 		GeneLayer selectedLayer = (GeneLayer) getValue("Layer");
 		if (selectedLayer != null) {
@@ -78,13 +85,5 @@ public final class GLASumScore extends TrackListActionOperationWorker<Double> {
 			}
 		}
 		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(Double actionResult) {
-		if (actionResult != null) {
-			JOptionPane.showMessageDialog(getRootPane(), "Score count: \n" + NumberFormat.getInstance().format(actionResult), "Score Count", JOptionPane.INFORMATION_MESSAGE);
-		}
 	}
 }

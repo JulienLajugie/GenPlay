@@ -36,13 +36,11 @@ import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.RNAPosToDNAPosOutputFileTypeDialog;
 import edu.yu.einstein.genplay.gui.fileFilter.BedFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.BedGraphFilter;
-import edu.yu.einstein.genplay.gui.fileFilter.GdpGeneFilter;
 import edu.yu.einstein.genplay.util.Utils;
 
 /**
  * Replaces positions relative to a reference (RNA) to DNA positions
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class PARNAPosToDNAPos extends TrackListActionWorker<Void> {
 
@@ -93,26 +91,14 @@ public final class PARNAPosToDNAPos extends TrackListActionWorker<Void> {
 				outputFileType = rnaToDnaDialog.getSelectedOutputFileType();
 
 				if (rtddResult == RNAPosToDNAPosOutputFileTypeDialog.APPROVE_OPTION) {
-					if (outputFileType == RNAToDNAResultType.GDP) {
-						JFileChooser jfc = new JFileChooser(ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory());
-						jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-						jfc.setDialogTitle("Select Output GDP File");
-						jfc.addChoosableFileFilter(new GdpGeneFilter());
-						jfc.setAcceptAllFileFilterUsed(false);
-						int returnVal = jfc.showSaveDialog(parent);
-						if (returnVal == JFileChooser.APPROVE_OPTION) {
-							fileOutput = Utils.addExtension(jfc.getSelectedFile(), "gdp");
-						}
-					} else {
-						JFileChooser jfc = new JFileChooser(ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory());
-						jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-						jfc.setDialogTitle("Select Output BGR File");
-						jfc.addChoosableFileFilter(new BedGraphFilter());
-						jfc.setAcceptAllFileFilterUsed(false);
-						int returnVal = jfc.showSaveDialog(parent);
-						if (returnVal == JFileChooser.APPROVE_OPTION) {
-							fileOutput = Utils.addExtension(jfc.getSelectedFile(), "bgr");
-						}
+					JFileChooser jfc = new JFileChooser(ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory());
+					jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+					jfc.setDialogTitle("Select Output BGR File");
+					jfc.addChoosableFileFilter(new BedGraphFilter());
+					jfc.setAcceptAllFileFilterUsed(false);
+					int returnVal = jfc.showSaveDialog(parent);
+					if (returnVal == JFileChooser.APPROVE_OPTION) {
+						fileOutput = Utils.addExtension(jfc.getSelectedFile(), "bgr");
 					}
 					if (fileOutput != null) {
 						final GeneRelativeToGenomePosition grtgp = new GeneRelativeToGenomePosition(fileData, fileRef, fileOutput, outputFileType);

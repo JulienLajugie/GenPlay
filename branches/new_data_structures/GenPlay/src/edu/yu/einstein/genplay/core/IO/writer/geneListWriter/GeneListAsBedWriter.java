@@ -25,6 +25,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.NumberFormat;
 
 import edu.yu.einstein.genplay.core.IO.utils.TrackLineHeader;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
@@ -36,13 +37,12 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneLi
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
-
+import edu.yu.einstein.genplay.util.NumberFormats;
 
 
 /**
- * Allows to write a {@link GeneList} as a BED file.
+ * Writes {@link GeneList} data into BED files.
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class GeneListAsBedWriter extends GeneListWriter implements Stoppable {
 
@@ -67,7 +67,7 @@ public final class GeneListAsBedWriter extends GeneListWriter implements Stoppab
 	 */
 	private final boolean areExonsScored(Gene gene) {
 		for (ScoredChromosomeWindow currentExon: gene.getExons()) {
-			if (currentExon.getScore() != Float.NaN) {
+			if (!Float.isNaN(currentExon.getScore())) {
 				return true;
 			}
 		}
@@ -120,7 +120,8 @@ public final class GeneListAsBedWriter extends GeneListWriter implements Stoppab
 				writer.write(trackLine);
 				writer.newLine();
 			}
-
+			// retrieve the number formats for the scores
+			NumberFormat numberFormat = NumberFormats.getWriterScoreFormat();
 			// print the data
 			for (Chromosome currentChromosome: projectChromosomes) {
 				ListView<Gene> currentList = data.get(currentChromosome);
@@ -132,18 +133,22 @@ public final class GeneListAsBedWriter extends GeneListWriter implements Stoppab
 							outputFile.delete();
 							throw new InterruptedException();
 						}
-						int currentChromosomeSize = currentChromosome.getLength();
 						int start = currentGene.getStart();
 						int stop = currentGene.getStop();
-						if (stop > currentChromosomeSize) {
-							stop = currentChromosomeSize;
-						}
+						int UTR5Bound = currentGene.getUTR5Bound();
+						int UTR3Bound = currentGene.getUTR3Bound();
 
 						if (isMultiGenome) {
 							start = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, allele, start, currentChromosome, fullGenomeName);
 							stop = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, allele, stop, currentChromosome, fullGenomeName);
+							UTR5Bound = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, allele, UTR5Bound, currentChromosome, fullGenomeName);
+							UTR3Bound = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, allele, UTR3Bound, currentChromosome, fullGenomeName);
 						}
-
+						// we subtract 1 because positions in bed files are 0 based and GenPlay positions are 1-based
+						start--;
+						stop--;
+						UTR5Bound--;
+						UTR3Bound--;
 						if ((start > -1) && (stop > -1)) {
 							String lineToPrint = new String();
 							lineToPrint = currentChromosome.toString();
@@ -158,20 +163,20 @@ public final class GeneListAsBedWriter extends GeneListWriter implements Stoppab
 							if (!isGeneListScored) {
 								lineToPrint += "1";
 							} else {
-								Float score = currentGene.getScore();
-								if (score == null) {
+								float score = currentGene.getScore();
+								if (Float.isNaN(score)) {
 									// if there is no score for the gene we put a default 1
 									lineToPrint += "0";
 								} else {
-									lineToPrint += score;
+									lineToPrint += numberFormat.format(score);
 								}
 							}
 							lineToPrint += "\t";
 							lineToPrint += currentGene.getStrand().toString();
 							lineToPrint += "\t";
-							lineToPrint += currentGene.getUTR5Bound();
+							lineToPrint += UTR5Bound;
 							lineToPrint += "\t";
-							lineToPrint += currentGene.getUTR3Bound();
+							lineToPrint += UTR3Bound;
 							// add "-" for itemRgb
 							lineToPrint += "\t-\t";
 							if (currentGene.getExons() == null) {
@@ -182,8 +187,6 @@ public final class GeneListAsBedWriter extends GeneListWriter implements Stoppab
 								lineToPrint += "\t";
 								// exon lengths
 								for (int i = 0; i < currentGene.getExons().size(); i++) {
-									//String size = "" + (currentGene.getExonStops()[i] - currentGene.getExonStarts()[i]);
-									//size = size.replaceAll(",", "");
 									lineToPrint += currentGene.getExons().get(i).getStop() - currentGene.getExons().get(i).getStart();
 									lineToPrint += ",";
 								}
@@ -203,10 +206,10 @@ public final class GeneListAsBedWriter extends GeneListWriter implements Stoppab
 									lineToPrint += "\t";
 									for (ScoredChromosomeWindow currentExon: currentGene.getExons()) {
 										float currentScore = currentExon.getScore();
-										if (currentScore == Float.NaN) {
+										if (Float.isNaN(currentScore)) {
 											currentScore = 0;
 										}
-										lineToPrint += currentScore;
+										lineToPrint += numberFormat.format(currentScore);
 										lineToPrint += ",";
 									}
 									// remove last comma

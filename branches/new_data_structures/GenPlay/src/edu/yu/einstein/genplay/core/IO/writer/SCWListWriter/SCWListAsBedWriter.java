@@ -34,11 +34,11 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
-
+import edu.yu.einstein.genplay.util.NumberFormats;
 
 
 /**
- * Writes a {@link SCWList} as a BedGraph file.
+ * Writes {@link SCWList} data into BedGraph files.
  * @author Julien Lajugie
  */
 public class SCWListAsBedWriter extends SCWListWriter implements Stoppable {
@@ -71,7 +71,6 @@ public class SCWListAsBedWriter extends SCWListWriter implements Stoppable {
 		BufferedWriter writer = null;
 		try {
 			boolean isMultiGenome = ProjectManager.getInstance().isMultiGenomeProject() && (fullGenomeName != null) && (allele != null);
-
 			// try to create a output file
 			writer = new BufferedWriter(new FileWriter(outputFile));
 			// print the title of the graph
@@ -93,18 +92,19 @@ public class SCWListAsBedWriter extends SCWListWriter implements Stoppable {
 						if (currentWindow.getScore() != 0) {
 							int start = currentWindow.getStart();
 							int stop = currentWindow.getStop();
+							String score = NumberFormats.getWriterScoreFormat().format(currentWindow.getScore());
 							if (stop > currentChromosomeSize) {
 								stop = currentChromosomeSize;
 							}
-
 							if (isMultiGenome) {
 								start = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, allele, start, currentChromosome, fullGenomeName);
 								stop = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, allele, stop, currentChromosome, fullGenomeName);
 							}
-
+							// we subtract 1 because positions in bed files are 0 based and GenPlay positions are 1-based
+							start--;
+							stop--;
 							if ((start > -1) && (stop > -1)) {
-								//writer.write(currentChromosome.getName() + "\t" + currentWindow.getStart() + "\t" + currentWindow.getStop() + "\t-\t" + currentWindow.getScore());
-								writer.write(currentChromosome.getName() + "\t" + start + "\t" + stop + "\t-\t" + currentWindow.getScore());
+								writer.write(currentChromosome.getName() + "\t" + start + "\t" + stop + "\t-\t" + score);
 								writer.newLine();
 							}
 						}

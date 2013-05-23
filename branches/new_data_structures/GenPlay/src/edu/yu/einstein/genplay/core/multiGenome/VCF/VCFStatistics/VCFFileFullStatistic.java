@@ -25,9 +25,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
+
+import edu.yu.einstein.genplay.util.NumberFormats;
 
 
 
@@ -78,47 +79,32 @@ public class VCFFileFullStatistic implements Serializable, VCFFileStatistics {
 	private static final String DELETION_SV_NAME 			= "   Long (SV)";			// Name for the Deletion SV sub-section
 
 
+	/**
+	 * @param number an int
+	 * @return the local formatted value of the given int
+	 */
+	protected static String getNumberFormat (Object o) {
+		Integer number = null;
+		try {
+			number = Integer.parseInt(o.toString());
+		} catch (Exception e) {
+			return o.toString();
+		}
+		return NumberFormats.getPositionFormat().format(number);
+	}
 	private Object[][] data;
 	private String[][] dataDisplay;
-	private Map<String, VCFSampleStatistics> genomeStatistics;
 
+	private Map<String, VCFSampleStatistics> genomeStatistics;
 	private int numberOfSNPs;
 	private int numberOfShortInsertions;
 	private int numberOfLongInsertions;
 	private int numberOfShortDeletions;
+
 	private int numberOfLongDeletions;
 
+
 	private int numberOfLines;
-
-
-	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-
-		out.writeObject(data);
-		out.writeObject(dataDisplay);
-		out.writeObject(genomeStatistics);
-	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	@SuppressWarnings("unchecked")
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-
-		data = (Object[][]) in.readObject();
-		dataDisplay = (String[][]) in.readObject();
-		genomeStatistics = (Map<String, VCFSampleStatistics>) in.readObject();
-	}
 
 
 	/**
@@ -141,9 +127,165 @@ public class VCFFileFullStatistic implements Serializable, VCFFileStatistics {
 
 
 	@Override
+	public void addGenomeName (String genomeName) {
+		if (!genomeStatistics.containsKey(genomeName)) {
+			genomeStatistics.put(genomeName, new VCFSampleFullStatistic());
+		}
+	}
+
+
+	/**
+	 * Format the data for display purposes to the dataDisplay attribute.
+	 */
+	private void formatData () {
+		if (data != null) {
+			dataDisplay = new String[LINE_NUMBER][COLUMN_NUMBER];
+
+			for (int row = 0; row < LINE_NUMBER; row++) {
+				for (int col = 0; col < COLUMN_NUMBER; col++) {
+					if (col == SECTION_INDEX) {
+						dataDisplay[row][col] = data[row][col].toString();
+					} else {
+						dataDisplay[row][col] = getNumberFormat(data[row][col]);
+					}
+				}
+			}
+		}
+	}
+
+
+	@Override
 	public String[] getColumnNamesForData () {
 		String[] columnNames = {SECTION_NAME, NUMBER_NAME, PERCENTAGE_SECTION_NAME, PERCENTAGE_TOTAL_NAME};
 		return columnNames;
+	}
+
+
+	@Override
+	public Object[][] getData() {
+		return data;
+	}
+
+
+	@Override
+	public int getDataInt (int indexLine) {
+		return getDataInt(indexLine, NUMBER_INDEX);
+	}
+
+
+	/**
+	 * @param indexLine		index of a line
+	 * @param indexColumn	index of a column
+	 * @return				the associated integer, -1 otherwise
+	 */
+	private int getDataInt (int indexLine, int indexColumn) {
+		int result = -1;
+		try {
+			result = Integer.parseInt(data[indexLine][indexColumn].toString());
+		} catch (Exception e) {}
+		return result;
+	}
+
+
+	@Override
+	public String[][] getDisplayData() {
+		return dataDisplay;
+	}
+
+
+	@Override
+	public String getFullString () {
+		String info = getString();
+		for (String sample: genomeStatistics.keySet()) {
+			info += "\nGenome Statistics \"" + sample + "\":\n" +  genomeStatistics.get(sample).getString();
+		}
+		return info;
+	}
+
+
+	@Override
+	public Map<String, VCFSampleStatistics> getGenomeStatistics() {
+		return genomeStatistics;
+	}
+
+
+	/**
+	 * @param value	the value
+	 * @param total	the total
+	 * @return		the percentage between the value and its total, 0 otherwise
+	 */
+	private int getPercentage (int value, int total) {
+		int result = 0;
+		if ((total == 0) && (value == total)) {
+			result = 100;
+		} else {
+			try {
+				result = (value * 100) / total;
+			} catch (Exception e) {}
+		}
+		return result;
+	}
+
+
+	@Override
+	public VCFSampleStatistics getSampleStatistics (String sample) {
+		return genomeStatistics.get(sample);
+	}
+
+
+	@Override
+	public String getString() {
+		String info = "";
+		info += "File Statistics:\n";
+		info += SECTION_NAME + "\t" + NUMBER_NAME + "\t" + PERCENTAGE_SECTION_NAME +  "\t" + PERCENTAGE_TOTAL_NAME + "\n";
+		for (int i = 0; i < LINE_NUMBER; i++) {
+			for (int j = 0; j < COLUMN_NUMBER; j++) {
+				info += data[i][j];
+				if (j < (COLUMN_NUMBER - 1)) {
+					info += "\t";
+				}
+			}
+			if (i < (LINE_NUMBER - 1)) {
+				info += "\n";
+			}
+		}
+		return info;
+	}
+
+
+	@Override
+	public void incrementNumberOfLines() {
+		numberOfLines++;
+	}
+
+
+	@Override
+	public void incrementNumberOfLongDeletions() {
+		numberOfLongDeletions++;
+	}
+
+
+	@Override
+	public void incrementNumberOfLongInsertions() {
+		numberOfLongInsertions++;
+	}
+
+
+	@Override
+	public void incrementNumberOfShortDeletions() {
+		numberOfShortDeletions++;
+	}
+
+
+	@Override
+	public void incrementNumberOfShortInsertions() {
+		numberOfShortInsertions++;
+	}
+
+
+	@Override
+	public void incrementNumberOfSNPs() {
+		numberOfSNPs++;
 	}
 
 
@@ -197,143 +339,18 @@ public class VCFFileFullStatistic implements Serializable, VCFFileStatistics {
 
 
 	/**
-	 * @param value	the value
-	 * @param total	the total
-	 * @return		the percentage between the value and its total, 0 otherwise
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
 	 */
-	private int getPercentage (int value, int total) {
-		int result = 0;
-		if ((total == 0) && (value == total)) {
-			result = 100;
-		} else {
-			try {
-				result = (value * 100) / total;
-			} catch (Exception e) {}
-		}
-		return result;
-	}
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
 
-
-	@Override
-	public int getDataInt (int indexLine) {
-		return getDataInt(indexLine, NUMBER_INDEX);
-	}
-
-
-	/**
-	 * @param indexLine		index of a line
-	 * @param indexColumn	index of a column
-	 * @return				the associated integer, -1 otherwise
-	 */
-	private int getDataInt (int indexLine, int indexColumn) {
-		int result = -1;
-		try {
-			result = Integer.parseInt(data[indexLine][indexColumn].toString());
-		} catch (Exception e) {}
-		return result;
-	}
-
-
-	/**
-	 * Format the data for display purposes to the dataDisplay attribute.
-	 */
-	private void formatData () {
-		if (data != null) {
-			dataDisplay = new String[LINE_NUMBER][COLUMN_NUMBER];
-
-			for (int row = 0; row < LINE_NUMBER; row++) {
-				for (int col = 0; col < COLUMN_NUMBER; col++) {
-					if (col == SECTION_INDEX) {
-						dataDisplay[row][col] = data[row][col].toString();
-					} else {
-						dataDisplay[row][col] = getNumberFormat(data[row][col]);
-					}
-				}
-			}
-		}
-	}
-
-
-	/**
-	 * @param number an int
-	 * @return the local formatted value of the given int
-	 */
-	protected static String getNumberFormat (Object o) {
-		Integer number = null;
-		try {
-			number = Integer.parseInt(o.toString());
-		} catch (Exception e) {
-			return o.toString();
-		}
-		return NumberFormat.getIntegerInstance().format(number);
-	}
-
-
-	@Override
-	public Object[][] getData() {
-		return data;
-	}
-
-
-	@Override
-	public String[][] getDisplayData() {
-		return dataDisplay;
-	}
-
-
-	@Override
-	public void addGenomeName (String genomeName) {
-		if (!genomeStatistics.containsKey(genomeName)) {
-			genomeStatistics.put(genomeName, new VCFSampleFullStatistic());
-		}
-	}
-
-
-	@Override
-	public VCFSampleStatistics getSampleStatistics (String sample) {
-		return genomeStatistics.get(sample);
-	}
-
-
-	@Override
-	public Map<String, VCFSampleStatistics> getGenomeStatistics() {
-		return genomeStatistics;
-	}
-
-
-	@Override
-	public void incrementNumberOfSNPs() {
-		this.numberOfSNPs++;
-	}
-
-
-	@Override
-	public void incrementNumberOfShortInsertions() {
-		this.numberOfShortInsertions++;
-	}
-
-
-	@Override
-	public void incrementNumberOfLongInsertions() {
-		this.numberOfLongInsertions++;
-	}
-
-
-	@Override
-	public void incrementNumberOfShortDeletions() {
-		this.numberOfShortDeletions++;
-	}
-
-
-	@Override
-	public void incrementNumberOfLongDeletions() {
-		this.numberOfLongDeletions++;
-	}
-
-
-	@Override
-	public void incrementNumberOfLines() {
-		this.numberOfLines++;
+		data = (Object[][]) in.readObject();
+		dataDisplay = (String[][]) in.readObject();
+		genomeStatistics = (Map<String, VCFSampleStatistics>) in.readObject();
 	}
 
 
@@ -360,32 +377,16 @@ public class VCFFileFullStatistic implements Serializable, VCFFileStatistics {
 	}
 
 
-	@Override
-	public String getString() {
-		String info = "";
-		info += "File Statistics:\n";
-		info += SECTION_NAME + "\t" + NUMBER_NAME + "\t" + PERCENTAGE_SECTION_NAME +  "\t" + PERCENTAGE_TOTAL_NAME + "\n";
-		for (int i = 0; i < LINE_NUMBER; i++) {
-			for (int j = 0; j < COLUMN_NUMBER; j++) {
-				info += data[i][j];
-				if (j < (COLUMN_NUMBER - 1)) {
-					info += "\t";
-				}
-			}
-			if (i < (LINE_NUMBER - 1)) {
-				info += "\n";
-			}
-		}
-		return info;
-	}
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 
-
-	@Override
-	public String getFullString () {
-		String info = getString();
-		for (String sample: genomeStatistics.keySet()) {
-			info += "\nGenome Statistics \"" + sample + "\":\n" +  genomeStatistics.get(sample).getString();
-		}
-		return info;
+		out.writeObject(data);
+		out.writeObject(dataDisplay);
+		out.writeObject(genomeStatistics);
 	}
 }

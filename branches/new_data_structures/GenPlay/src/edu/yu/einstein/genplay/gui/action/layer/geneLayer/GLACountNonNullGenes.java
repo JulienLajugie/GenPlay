@@ -21,8 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.layer.geneLayer;
 
-import java.text.NumberFormat;
-
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
@@ -31,6 +29,7 @@ import edu.yu.einstein.genplay.core.operation.geneList.GLOCountNonNullGenes;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
+import edu.yu.einstein.genplay.util.NumberFormats;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -65,6 +64,14 @@ public final class GLACountNonNullGenes extends TrackListActionOperationWorker<L
 
 
 	@Override
+	protected void doAtTheEnd(Long actionResult) {
+		if (actionResult != null) {
+			JOptionPane.showMessageDialog(getRootPane(), "Number of genes: \n" + NumberFormats.getScoreFormat().format(actionResult), "Count Non-Null Genes", JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+
+
+	@Override
 	public Operation<Long> initializeOperation() {
 		GeneLayer selectedLayer = (GeneLayer) getValue("Layer");
 		if (selectedLayer != null) {
@@ -76,13 +83,5 @@ public final class GLACountNonNullGenes extends TrackListActionOperationWorker<L
 			}
 		}
 		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(Long actionResult) {
-		if (actionResult != null) {
-			JOptionPane.showMessageDialog(getRootPane(), "Number of genes: \n" + NumberFormat.getInstance().format(actionResult), "Count Non-Null Genes", JOptionPane.INFORMATION_MESSAGE);
-		}
 	}
 }

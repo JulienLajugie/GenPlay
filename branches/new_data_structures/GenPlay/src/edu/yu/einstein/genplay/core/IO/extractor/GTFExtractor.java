@@ -50,6 +50,10 @@ import edu.yu.einstein.genplay.util.Utils;
  */
 public class GTFExtractor extends TextFileExtractor implements GeneReader, StrandReader, StrandedExtractor {
 
+	/** Default first base position of bed files. GTF files are 1-based */
+	public static final int DEFAULT_FIRST_BASE_POSITION = 1;
+
+	private int	firstBasePosition = DEFAULT_FIRST_BASE_POSITION;// position of the first base
 	private StrandedExtractorOptions				strandOptions;		// options on the strand and read length / shift
 	private Chromosome 								currentChromosome;	// chromosome of the current item
 	private Chromosome 								previousChromosome;	// chromosome of the last item read
@@ -144,8 +148,8 @@ public class GTFExtractor extends TextFileExtractor implements GeneReader, Stran
 		}
 
 		// if we are in a multi-genome project, we compute the position on the meta genome
-		start = getMultiGenomePosition(currentChromosome, start);
-		stop = getMultiGenomePosition(currentChromosome, stop);
+		start = getRealGenomePosition(currentChromosome, start);
+		stop = getRealGenomePosition(currentChromosome, stop);
 
 		// retrieve the score
 		Float score = Extractors.getFloat(splitedLine[5].trim(), null);
@@ -192,6 +196,12 @@ public class GTFExtractor extends TextFileExtractor implements GeneReader, Stran
 	@Override
 	public ListView<ScoredChromosomeWindow> getExons() {
 		return previousExons;
+	}
+
+
+	@Override
+	public int getFirstBasePosition() {
+		return firstBasePosition;
 	}
 
 
@@ -261,6 +271,7 @@ public class GTFExtractor extends TextFileExtractor implements GeneReader, Stran
 	}
 
 
+
 	@Override
 	public Integer getUTR5Bound() {
 		if ((previousExons != null) && !previousExons.isEmpty()) {
@@ -269,7 +280,6 @@ public class GTFExtractor extends TextFileExtractor implements GeneReader, Stran
 			return null;
 		}
 	}
-
 
 
 	/**
@@ -289,6 +299,12 @@ public class GTFExtractor extends TextFileExtractor implements GeneReader, Stran
 			attributeMap.put(attributeName, attributeValue);
 		}
 		return attributeMap;
+	}
+
+
+	@Override
+	public void setFirstBasePosition(int firstBasePosition) {
+		this.firstBasePosition = firstBasePosition;
 	}
 
 

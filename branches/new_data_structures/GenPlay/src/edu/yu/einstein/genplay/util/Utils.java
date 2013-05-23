@@ -56,12 +56,10 @@ import edu.yu.einstein.genplay.gui.fileFilter.ElandExtendedFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.ExtendedFileFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.GFFFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.GTFFilter;
-import edu.yu.einstein.genplay.gui.fileFilter.GdpGeneFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.PSLFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.PairFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.SAMFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.SOAPsnpFilter;
-import edu.yu.einstein.genplay.gui.fileFilter.SerializedBinListFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.TwoBitFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.WiggleFilter;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -659,7 +657,7 @@ public final class Utils {
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as BinList
 	 */
 	public final static ExtendedFileFilter[] getReadableBinListFileFilters() {
-		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new GTFFilter(), new WiggleFilter(), new PairFilter(), new ElandExtendedFilter(), new PSLFilter(), new SAMFilter(), new SerializedBinListFilter()};
+		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new GTFFilter(), new WiggleFilter(), new PairFilter(), new ElandExtendedFilter(), new PSLFilter(), new SAMFilter()};
 		return filters;
 	}
 
@@ -668,7 +666,7 @@ public final class Utils {
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as GeneList
 	 */
 	public final static ExtendedFileFilter[] getReadableGeneFileFilters() {
-		ExtendedFileFilter[] filters = {new BedFilter(), new GdpGeneFilter(), new GTFFilter(), new PSLFilter()};
+		ExtendedFileFilter[] filters = {new BedFilter(), new GTFFilter(), new PSLFilter()};
 		return filters;
 	}
 
@@ -722,7 +720,7 @@ public final class Utils {
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be saved as BinList
 	 */
 	public final static ExtendedFileFilter[] getWritableBinListFileFilters() {
-		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedGraphWith0Filter(), new BedFilter(), new GFFFilter(), new WiggleFilter(), new SerializedBinListFilter()};
+		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedGraphWith0Filter(), new BedFilter(), new GFFFilter(), new WiggleFilter()};
 		return filters;
 	}
 
@@ -731,7 +729,7 @@ public final class Utils {
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be saved as GeneList
 	 */
 	public final static ExtendedFileFilter[] getWritableGeneFileFilters() {
-		ExtendedFileFilter[] filters = {new BedFilter(), new GdpGeneFilter()};
+		ExtendedFileFilter[] filters = {new BedFilter()};
 		return filters;
 	}
 

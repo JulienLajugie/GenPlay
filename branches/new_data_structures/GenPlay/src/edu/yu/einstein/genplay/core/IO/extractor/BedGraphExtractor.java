@@ -38,6 +38,10 @@ import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
  */
 public final class BedGraphExtractor extends TextFileExtractor implements SCWReader {
 
+	/** Default first base position of bed files. Bedgraph files are 0-based */
+	public static final int DEFAULT_FIRST_BASE_POSITION = 0;
+
+	private int	firstBasePosition = DEFAULT_FIRST_BASE_POSITION;// position of the first base
 	private Chromosome 						chromosome;		 	// chromosome of the last item read
 	private Integer 						start;				// start position of the last item read
 	private Integer 						stop;				// stop position of the last item read
@@ -86,9 +90,9 @@ public final class BedGraphExtractor extends TextFileExtractor implements SCWRea
 		}
 
 		start = Extractors.getInt(splitedLine[1].trim());
-		start = getMultiGenomePosition(chromosome, start);
+		start = getRealGenomePosition(chromosome, start);
 		stop = Extractors.getInt(splitedLine[2].trim());
-		stop = getMultiGenomePosition(chromosome, stop);
+		stop = getRealGenomePosition(chromosome, stop);
 		score = Extractors.getFloat(splitedLine[3].trim());
 
 		if (score == 0) {
@@ -120,6 +124,12 @@ public final class BedGraphExtractor extends TextFileExtractor implements SCWRea
 
 
 	@Override
+	public int getFirstBasePosition() {
+		return firstBasePosition;
+	}
+
+
+	@Override
 	public Float getScore() {
 		return score;
 	}
@@ -134,5 +144,11 @@ public final class BedGraphExtractor extends TextFileExtractor implements SCWRea
 	@Override
 	public Integer getStop() {
 		return stop;
+	}
+
+
+	@Override
+	public void setFirstBasePosition(int firstBasePosition) {
+		this.firstBasePosition = firstBasePosition;
 	}
 }

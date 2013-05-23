@@ -227,6 +227,9 @@ public final class GeneListView extends AbstractListView<Gene> implements Serial
 		} else {
 			lastExonIndex = exons.size() - 1;
 		}
+		if (lastExonIndex < firstExonIndex) {
+			return null;
+		}
 		return exons.subList(firstExonIndex, lastExonIndex);
 	}
 

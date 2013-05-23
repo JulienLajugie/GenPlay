@@ -35,11 +35,15 @@ import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
- * A pair file extractor
+ * An Affymetrix pair file extractor
  * @author Julien Lajugie
  */
 public final class PairExtractor extends TextFileExtractor implements SCWReader {
 
+	/** Default first base position of bed files. Affymetrix PAIR files are 1-based (to be verified) */
+	public static final int DEFAULT_FIRST_BASE_POSITION = 0;
+
+	private int	firstBasePosition = DEFAULT_FIRST_BASE_POSITION;// position of the first base
 	private Chromosome 						chromosome;		 	// chromosome of the last item read
 	private Integer 						position;			// position of the last item read
 	private Float 							score;				// score of the last item read
@@ -105,7 +109,7 @@ public final class PairExtractor extends TextFileExtractor implements SCWReader 
 		// Checks errors
 		String errors = DataLineValidator.getErrors(chromosome, position, position, score);
 		if (errors.length() == 0) {
-			position = getMultiGenomePosition(chromosome, position);
+			position = getRealGenomePosition(chromosome, position);
 			return ITEM_EXTRACTED;
 		} else {
 			throw new DataLineException(errors);
@@ -116,6 +120,12 @@ public final class PairExtractor extends TextFileExtractor implements SCWReader 
 	@Override
 	public Chromosome getChromosome() {
 		return chromosome;
+	}
+
+
+	@Override
+	public int getFirstBasePosition() {
+		return firstBasePosition;
 	}
 
 
@@ -134,6 +144,12 @@ public final class PairExtractor extends TextFileExtractor implements SCWReader 
 	@Override
 	public Integer getStop() {
 		return position;
+	}
+
+
+	@Override
+	public void setFirstBasePosition(int firstBasePosition) {
+		this.firstBasePosition = firstBasePosition;
 	}
 }
 

@@ -185,9 +185,9 @@ public class BinListPileupFlattener implements PileupFlattener {
 	private void flush() {
 		if (!windowQueue.isEmpty()) {
 			int lastWindowStart = windowQueue.get(windowQueue.size() - 1).getStart();
-			int lastWindowStop = windowQueue.get(windowQueue.size() - 1).getStop() - 1;
+			int lastWindowStop = windowQueue.get(windowQueue.size() - 1).getStop();
 			int firstBinStart = (lastWindowStart / binSize) * binSize;
-			int lastBinStop = (((lastWindowStop / binSize) + 1 )* binSize);
+			int lastBinStop = (((lastWindowStop / binSize) + 1 ) * binSize);
 			flattenPileup(firstBinStart, lastBinStop);
 		}
 	}

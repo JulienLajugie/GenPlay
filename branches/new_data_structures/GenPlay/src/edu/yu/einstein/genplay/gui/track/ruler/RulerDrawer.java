@@ -23,7 +23,6 @@ package edu.yu.einstein.genplay.gui.track.ruler;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.text.NumberFormat;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
@@ -34,6 +33,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.track.Drawer;
 import edu.yu.einstein.genplay.gui.track.TrackConstants;
+import edu.yu.einstein.genplay.util.NumberFormats;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 /**
@@ -94,14 +94,6 @@ public class RulerDrawer implements Drawer {
 	}
 
 
-	private String getFormattedNumber (int position) {
-		if (position == -1000000000) {
-			return "-";
-		}
-		return NumberFormat.getInstance().format(position);
-	}
-
-
 	/**
 	 * Draws the relative units.
 	 * @param g  {@link Graphics} on which the layer will be drawn
@@ -119,7 +111,7 @@ public class RulerDrawer implements Drawer {
 			int x1 = (int)Math.round(i * gap);
 			int x2 = (int)Math.round((((2 * i) + 1) * gap) / 2d);
 			int distanceFromMiddle = (Math.abs(i - (LINE_COUNT / 2)) * (positionStop - positionStart)) / LINE_COUNT;
-			String stringToPrint = NumberFormat.getInstance().format(distanceFromMiddle);
+			String stringToPrint = NumberFormats.getPositionFormat().format(distanceFromMiddle);
 			if (x1 >= lastTextStopPos) {
 				g.setColor(TEXT_COLOR);
 				g.drawString(stringToPrint, x1 + 2, y);
@@ -131,5 +123,13 @@ public class RulerDrawer implements Drawer {
 			g.setColor(LINE_COLOR);
 			g.drawLine(x2, y, x2, height);
 		}
+	}
+
+
+	private String getFormattedNumber (int position) {
+		if (position == -1000000000) {
+			return "-";
+		}
+		return NumberFormats.getPositionFormat().format(position);
 	}
 }

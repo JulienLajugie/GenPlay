@@ -28,7 +28,6 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.text.NumberFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -43,6 +42,7 @@ import javax.swing.text.NumberFormatter;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
+import edu.yu.einstein.genplay.util.NumberFormats;
 
 
 /**
@@ -73,7 +73,7 @@ public class DataRangePanel extends JPanel {
 		super();
 
 		// create the formatter for the start and stop input boxes
-		formatter = new NumberFormatter(NumberFormat.getInstance());
+		formatter = new NumberFormatter(NumberFormats.getPositionFormat());
 		formatter.setAllowsInvalid(false);
 
 		// create start input
@@ -82,15 +82,15 @@ public class DataRangePanel extends JPanel {
 		jtfUserStart.setEnabled(false);
 		jtfUserStart.addFocusListener(new FocusListener() {
 			@Override
-			public void focusLost(FocusEvent e) {
-				if (jtfUserStart.getText().equals("")) {
-					jtfUserStart.setText("Start");
-				}
-			}
-			@Override
 			public void focusGained(FocusEvent e) {
 				if (jtfUserStart.getText().equals("Start")) {
 					jtfUserStart.setText("");
+				}
+			}
+			@Override
+			public void focusLost(FocusEvent e) {
+				if (jtfUserStart.getText().equals("")) {
+					jtfUserStart.setText("Start");
 				}
 			}
 		});
@@ -101,15 +101,15 @@ public class DataRangePanel extends JPanel {
 		jtfUserStop.setEnabled(false);
 		jtfUserStop.addFocusListener(new FocusListener() {
 			@Override
-			public void focusLost(FocusEvent e) {
-				if (jtfUserStop.getText().equals("")) {
-					jtfUserStop.setText("Stop");
-				}
-			}
-			@Override
 			public void focusGained(FocusEvent e) {
 				if (jtfUserStop.getText().equals("Stop")) {
 					jtfUserStop.setText("");
+				}
+			}
+			@Override
+			public void focusLost(FocusEvent e) {
+				if (jtfUserStop.getText().equals("")) {
+					jtfUserStop.setText("Stop");
 				}
 			}
 		});
@@ -232,6 +232,14 @@ public class DataRangePanel extends JPanel {
 
 
 	/**
+	 * @return dataRange(GENERATE_GENOMEWIDE_LIST or GENERATE_CURRENT_LIST or GENERATE_USER_SPECIFIED_LIST)
+	 */
+	public final int getDataRange() {
+		return dataRange;
+	}
+
+
+	/**
 	 * @return the genome window specified by the user
 	 */
 	public SimpleGenomeWindow getUserSpecifiedGenomeWindow() {
@@ -243,14 +251,6 @@ public class DataRangePanel extends JPanel {
 		} else {
 			return null;
 		}
-	}
-
-
-	/**
-	 * @return dataRange(GENERATE_GENOMEWIDE_LIST or GENERATE_CURRENT_LIST or GENERATE_USER_SPECIFIED_LIST)
-	 */
-	public final int getDataRange() {
-		return dataRange;
 	}
 
 

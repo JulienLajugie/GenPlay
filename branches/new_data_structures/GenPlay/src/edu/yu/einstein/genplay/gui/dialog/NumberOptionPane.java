@@ -39,6 +39,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.util.Images;
+import edu.yu.einstein.genplay.util.NumberFormats;
 
 /**
  * An implementation of an input option pane for number.
@@ -59,6 +60,44 @@ public final class NumberOptionPane extends JDialog {
 	private static String 				title;										// Title of the dialog
 	private static String 				label;										// Text of the JLabel jl
 	private static boolean 				validated;									// True if OK has been pressed
+
+
+	/**
+	 * Displays a dialog, and returns a Number.
+	 * @param parent the parent component of the dialog, can be null; see showDialog for details
+	 * @param title Title of the dialog.
+	 * @param label Text of the inside label of the dialog.
+	 * @param min Minimum allowed value for the input value.
+	 * @param max Maximum allowed value for the input value.
+	 * @param defaultValue Default displayed value when the dialog is displayed.
+	 * @return A number if OK has been pressed, otherwise null.
+	 */
+	public static Number getValue(Component parent, String title, String label, double min, double max, double defaultValue) {
+		NumberOptionPane NOP = new NumberOptionPane(parent, title, label, defaultValue, min, max);
+		NOP.setVisible(true);
+		if(validated) {
+			return validValue;
+		} else {
+			return null;
+		}
+	}
+
+
+	/**
+	 * Displays a dialog asking for a window size and returns a Number.
+	 * @param parent the parent component of the dialog, can be null; see showDialog for details
+	 * @param defaultValue Default displayed value when the dialog is displayed.
+	 * @return A number if OK has been pressed, otherwise null.
+	 */
+	public static Integer getValueWindow(Component parent, int defaultValue) {
+		NumberOptionPane NOP = new NumberOptionPane(parent, "Window size:", null, defaultValue, 1, 1000000);
+		NOP.setVisible(true);
+		if (validated) {
+			return validValue.intValue();
+		} else {
+			return null;
+		}
+	}
 
 
 	/**
@@ -97,7 +136,7 @@ public final class NumberOptionPane extends JDialog {
 			jl = new JLabel(label);
 		}
 
-		jftfValue = new JFormattedTextField(NumberFormat.getInstance());
+		jftfValue = new JFormattedTextField(NumberFormats.getScoreFormat());
 		jftfValue.setValue(validValue);
 		jftfValue.setColumns(8);
 		jftfValue.addPropertyChangeListener(new PropertyChangeListener() {
@@ -198,44 +237,6 @@ public final class NumberOptionPane extends JDialog {
 			jftfValue.setValue(validValue);
 		} else {
 			validValue = currentValue;
-		}
-	}
-
-
-	/**
-	 * Displays a dialog, and returns a Number.
-	 * @param parent the parent component of the dialog, can be null; see showDialog for details
-	 * @param title Title of the dialog.
-	 * @param label Text of the inside label of the dialog.
-	 * @param min Minimum allowed value for the input value.
-	 * @param max Maximum allowed value for the input value.
-	 * @param defaultValue Default displayed value when the dialog is displayed.
-	 * @return A number if OK has been pressed, otherwise null.
-	 */
-	public static Number getValue(Component parent, String title, String label, double min, double max, double defaultValue) {
-		NumberOptionPane NOP = new NumberOptionPane(parent, title, label, defaultValue, min, max);
-		NOP.setVisible(true);
-		if(validated) {
-			return validValue;
-		} else {
-			return null;
-		}
-	}
-
-
-	/**
-	 * Displays a dialog asking for a window size and returns a Number.
-	 * @param parent the parent component of the dialog, can be null; see showDialog for details
-	 * @param defaultValue Default displayed value when the dialog is displayed.
-	 * @return A number if OK has been pressed, otherwise null.
-	 */
-	public static Integer getValueWindow(Component parent, int defaultValue) {
-		NumberOptionPane NOP = new NumberOptionPane(parent, "Window size:", null, defaultValue, 1, 1000000);
-		NOP.setVisible(true);
-		if (validated) {
-			return validValue.intValue();
-		} else {
-			return null;
 		}
 	}
 }

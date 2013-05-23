@@ -27,7 +27,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -68,6 +67,40 @@ public class GeneRelativeToGenomePosition {
 		this.annotationFile = annotationFile;
 		this.outputFile = outputFile;
 		this.outputFileType = outputFileType;
+	}
+
+
+	/**
+	 * private method to merge the list of absolute lengths and list of start stop values from the coverage file
+	 * @param absolutebplengths
+	 * @param tempList
+	 * @param mergedList
+	 * @return mergedList
+	 */
+	private List<Integer> listsMerger (List<Integer> absolutebplengths, List<Double> tempList, List<Integer> mergedList) {
+		mergedList.add(0);
+		int i = 0;
+		int j = 0;
+		while ((i < absolutebplengths.size()) && (j < tempList.size())) {
+			if (((j+1)%3) == 0) {
+				j++;
+				continue;
+			}
+			int relbp = absolutebplengths.get(i);
+			int val = tempList.get(j).intValue();
+			if (relbp < val) {
+				if (mergedList.contains(relbp) == false) {
+					mergedList.add(relbp);
+				}
+				i++;
+			} else {
+				if (mergedList.contains(val) == false) {
+					mergedList.add(val);
+				}
+				j++;
+			}
+		}
+		return mergedList;
 	}
 
 
@@ -203,6 +236,24 @@ public class GeneRelativeToGenomePosition {
 
 
 	/**
+	 * private method to populate an array out of the final list of start stop and score values
+	 * @param tempList
+	 * @param startstopscorearray
+	 * @return startstopscorearray
+	 */
+	private double[][] populateFinalArray (List<Double> tempList, double[][] startstopscorearray) {
+		int j = 0;
+		for (int i = 0; i < tempList.size(); i+=3) {
+			startstopscorearray[j][0] = tempList.get(i);
+			startstopscorearray[j][1] = tempList.get(i+1);
+			startstopscorearray[j][2] = tempList.get(i+2);
+			j++;
+		}
+		return startstopscorearray;
+	}
+
+
+	/**
 	 * private method to populate the missing range values in an arraylist
 	 * @param tempList
 	 * @param intermediatestartstopscorearray
@@ -256,58 +307,6 @@ public class GeneRelativeToGenomePosition {
 			}
 		}
 		return tempList;
-	}
-
-
-	/**
-	 * private method to populate an array out of the final list of start stop and score values
-	 * @param tempList
-	 * @param startstopscorearray
-	 * @return startstopscorearray
-	 */
-	private double[][] populateFinalArray (List<Double> tempList, double[][] startstopscorearray) {
-		int j = 0;
-		for (int i = 0; i < tempList.size(); i+=3) {
-			startstopscorearray[j][0] = tempList.get(i);
-			startstopscorearray[j][1] = tempList.get(i+1);
-			startstopscorearray[j][2] = tempList.get(i+2);
-			j++;
-		}
-		return startstopscorearray;
-	}
-
-
-	/**
-	 * private method to merge the list of absolute lengths and list of start stop values from the coverage file
-	 * @param absolutebplengths
-	 * @param tempList
-	 * @param mergedList
-	 * @return mergedList
-	 */
-	private List<Integer> listsMerger (List<Integer> absolutebplengths, List<Double> tempList, List<Integer> mergedList) {
-		mergedList.add(0);
-		int i = 0;
-		int j = 0;
-		while ((i < absolutebplengths.size()) && (j < tempList.size())) {
-			if (((j+1)%3) == 0) {
-				j++;
-				continue;
-			}
-			int relbp = absolutebplengths.get(i);
-			int val = tempList.get(j).intValue();
-			if (relbp < val) {
-				if (mergedList.contains(relbp) == false) {
-					mergedList.add(relbp);
-				}
-				i++;
-			} else {
-				if (mergedList.contains(val) == false) {
-					mergedList.add(val);
-				}
-				j++;
-			}
-		}
-		return mergedList;
 	}
 
 
@@ -380,25 +379,6 @@ public class GeneRelativeToGenomePosition {
 	 * @param bufWriter
 	 * @throws IOException
 	 */
-	private void printToOutputFile (String chromosome, List<Double> finalStartStopScore, BufferedWriter bufWriter) throws IOException {
-		for (int i = 0; i < finalStartStopScore.size(); i+=3) {
-			int finalstart = finalStartStopScore.get(i).intValue();
-			int finalstop = finalStartStopScore.get(i+1).intValue();
-			double finalscore = finalStartStopScore.get(i+2);
-			if (finalscore > 0.0) {
-				bufWriter.write(chromosome + "\t" + finalstart + "\t" + finalstop + "\t" + finalscore + "\n");
-			}
-		}
-	}
-
-
-	/**
-	 * private method to print the start stop and score values to the output file
-	 * @param chromosome
-	 * @param finalStartStopScore
-	 * @param bufWriter
-	 * @throws IOException
-	 */
 	private void printOutputWithExtraFieldsToFile (String key, String chromosome, int chrStart, List<Double> finalStartStopScore, List<String> remainderStringForPrinting, BufferedWriter bufWriter) throws IOException {
 		for (int i = 0, j = 0; i < finalStartStopScore.size(); i+=3, j++) {
 			int finalstart = finalStartStopScore.get(i).intValue();
@@ -413,174 +393,21 @@ public class GeneRelativeToGenomePosition {
 
 
 	/**
-	 * Private method to write file in gdp format
-	 * @param key
-	 * @param chrmomosome
-	 * @param strand
-	 * @param chrStart
-	 * @param chrStop
+	 * private method to print the start stop and score values to the output file
+	 * @param chromosome
 	 * @param finalStartStopScore
-	 * @param exonStarts
-	 * @param basePairs
 	 * @param bufWriter
 	 * @throws IOException
 	 */
-	private void printToOutputFileDifferentFormat(String key, String chrmomosome, String strand, int chrStart, int chrStop, List<Double> finalStartStopScore, List<Integer> exonStarts, List<Integer> basePairs, BufferedWriter bufWriter) throws IOException {
-		String starts = "";
-		String stops = "";
-		String scores = "";
-
-		int startIndex = 0;
-		int stopIndex = 1;
-
-		for (int i = 0; i < exonStarts.size(); i++) {
-			int individualExonStart = exonStarts.get(i);
-			int individualExonStop = individualExonStart + basePairs.get(i);
-			double score = 0;
-
-			while ((startIndex < (finalStartStopScore.size() - 2)) && (individualExonStart != finalStartStopScore.get(startIndex).intValue())) {
-				startIndex += 3;
-			}
-
-			while ((stopIndex < (finalStartStopScore.size() - 1)) && (individualExonStop != finalStartStopScore.get(stopIndex).intValue())) {
-				stopIndex += 3;
-			}
-
-			for (int k = startIndex+2; k <= (stopIndex+1); k += 3) {
-				if (k < finalStartStopScore.size()) {
-					score += finalStartStopScore.get(k);
-				}
-			}
-
-			starts += Integer.toString(individualExonStart) + ",";
-			stops += Integer.toString(individualExonStop) + ",";
-			scores += Double.toString(score) + ",";
-		}
-		bufWriter.write(key + "\t" + chrmomosome + "\t" + strand + "\t" + chrStart + "\t" + chrStop + "\t" + starts + "\t" + stops + "\t" + scores + "\n");
-	}
-
-
-	/**
-	 * Private method to convert exon scores to RPKM
-	 * @throws IOException
-	 */
-	private void scoreToRPKM() throws IOException {
-		BufferedReader bufReader = new BufferedReader(new FileReader(outputFile));
-		Map<String, List<String>> gdpFileMap = new HashMap<String, List<String>>();
-		double totalScoreOfAllExons = 0;
-
-		String lineRead = bufReader.readLine();
-		StringTokenizer strTok;
-
-		while ((lineRead != null) && (lineRead.length() > 0)) {
-			strTok = new StringTokenizer(lineRead, "\t\n");
-			String gene = strTok.nextToken();
-			String chr = strTok.nextToken();
-			String strand = strTok.nextToken();
-			String chrStart = strTok.nextToken();
-			String chrStop = strTok.nextToken();
-			String exonStarts = strTok.nextToken();
-			String exonStops = strTok.nextToken();
-			String exonScores = strTok.nextToken();
-			List<String> toBeAdded = new ArrayList<String>();
-			toBeAdded.add(chr);
-			toBeAdded.add(strand);
-			toBeAdded.add(chrStart);
-			toBeAdded.add(chrStop);
-			toBeAdded.add(exonStarts);
-			toBeAdded.add(exonStops);
-			toBeAdded.add(exonScores);
-
-			gdpFileMap.put(gene, toBeAdded);
-
-			StringTokenizer exonScoreTok = new StringTokenizer(exonScores,",");
-			while (exonScoreTok.hasMoreTokens()) {
-				totalScoreOfAllExons += Double.parseDouble(exonScoreTok.nextToken());
-			}
-			lineRead = bufReader.readLine();
-		}
-		bufReader.close();
-
-		totalScoreOfAllExons = 1000000000 / totalScoreOfAllExons;
-
-		Iterator<String> iter = gdpFileMap.keySet().iterator();
-		BufferedWriter bufWriter = new BufferedWriter(new FileWriter(outputFile));
-		while (iter.hasNext()) {
-			List<String> starts = new ArrayList<String>();
-			String finalStarts = "";
-			List<String> stops = new ArrayList<String>();
-			String finalStops = "";
-			List<String> scores = new ArrayList<String>();
-			String finalScores = "";
-
-			List<String> value = new ArrayList<String>();
-
-			String gene = iter.next();
-			value = gdpFileMap.get(gene);
-			String chr = value.get(0);
-			String strand = value.get(1);
-			String chrStart = value.get(2);
-			String chrStop = value.get(3);
-
-			StringTokenizer startTok = new StringTokenizer(value.get(4),",");
-			while (startTok.hasMoreTokens()) {
-				String token = startTok.nextToken();
-				finalStarts += token + ",";
-				starts.add(token);
-			}
-
-			StringTokenizer stopTok = new StringTokenizer(value.get(5),",");
-			while (stopTok.hasMoreTokens()) {
-				String token = stopTok.nextToken();
-				finalStops += token + ",";
-				stops.add(token);
-			}
-
-			StringTokenizer exonScoreTok = new StringTokenizer(value.get(6),",");
-			int i = 0;
-			while (exonScoreTok.hasMoreTokens()) {
-				String token = exonScoreTok.nextToken();
-				scores.add(new Double((Double.parseDouble(token) * totalScoreOfAllExons) / (Integer.parseInt(stops.get(i)) - Integer.parseInt(starts.get(i)))).toString());
-				finalScores += NumberFormat.getInstance().format((Double.parseDouble(token) * totalScoreOfAllExons) / (Integer.parseInt(stops.get(i)) - Integer.parseInt(starts.get(i))))+",";
-			}
-			bufWriter.write(gene + "\t" + chr + "\t" + strand + "\t" + chrStart + "\t" + chrStop + "\t" + finalStarts + "\t" + finalStops + "\t" + finalScores + "\n");
-		}
-		bufWriter.close();
-	}
-
-
-	/**
-	 * private method to sort the repositioned file
-	 * @throws IOException
-	 */
-	private void sortRepositionedFile() throws IOException {
-		BufferedReader buf = new BufferedReader(new FileReader(outputFile));
-		List<FileDataLineForSorting> file = new ArrayList<FileDataLineForSorting>();
-		String lineRead = buf.readLine();
-		StringTokenizer strtok = new StringTokenizer(lineRead,"\t\n");
-		while (lineRead != null) {
-			String chrName = strtok.nextToken();
-			int start = Integer.parseInt(strtok.nextToken());
-			int stop = Integer.parseInt(strtok.nextToken());
-			double score = Double.parseDouble(strtok.nextToken());
-			FileDataLineForSorting fileSorter = new FileDataLineForSorting(chrName, start, stop, score);
-			file.add(fileSorter);
-			lineRead = buf.readLine();
-			if (lineRead != null) {
-				strtok = new StringTokenizer(lineRead,"\t\n");
+	private void printToOutputFile (String chromosome, List<Double> finalStartStopScore, BufferedWriter bufWriter) throws IOException {
+		for (int i = 0; i < finalStartStopScore.size(); i+=3) {
+			int finalstart = finalStartStopScore.get(i).intValue();
+			int finalstop = finalStartStopScore.get(i+1).intValue();
+			double finalscore = finalStartStopScore.get(i+2);
+			if (finalscore > 0.0) {
+				bufWriter.write(chromosome + "\t" + finalstart + "\t" + finalstop + "\t" + finalscore + "\n");
 			}
 		}
-		buf.close();
-
-		Collections.sort(file);
-		// write the sorted data to the file
-		BufferedWriter bufWriter = new BufferedWriter(new FileWriter(outputFile));
-		Iterator<FileDataLineForSorting> iter = file.iterator();
-		while (iter.hasNext()) {
-			FileDataLineForSorting fs = iter.next();
-			bufWriter.write(fs.getChromosomeName() + "\t" + fs.getStart() + "\t" + fs.getStop() + "\t" + fs.getScore() + "\n");
-		}
-		bufWriter.close();
 	}
 
 
@@ -603,15 +430,11 @@ public class GeneRelativeToGenomePosition {
 			while (lineReadFromFile2 != null) {
 				String chrmomosome = "";
 				int chrStart = 0;
-				int chrStop = 0;
 				String geneFromFile2 = "";
-				String strand = "";
 				try {
 					chrmomosome = newstrtok.nextToken();
 					chrStart = Integer.parseInt(newstrtok.nextToken());
-					chrStop = Integer.parseInt(newstrtok.nextToken());	// for the stop position
 					geneFromFile2 = newstrtok.nextToken();
-					strand = "";
 				} catch (NoSuchElementException e) {
 					lineReadFromFile2 = newbuf.readLine();
 					if (lineReadFromFile2 != null) {
@@ -655,7 +478,6 @@ public class GeneRelativeToGenomePosition {
 								break;
 							}
 							if (i == 1) {
-								strand = newstrtok.nextToken();
 								i++;
 								continue;
 							}
@@ -702,11 +524,6 @@ public class GeneRelativeToGenomePosition {
 							printToOutputFile(chrmomosome, finalStartStopScore, bufWriter);
 						}
 
-						// write to output file in gdp format
-						if (outputFileType == RNAToDNAResultType.GDP) {
-							printToOutputFileDifferentFormat(key, chrmomosome, strand, chrStart, chrStop, finalStartStopScore, exonStarts, basePairs, bufWriter);
-						}
-
 						// write to output file including extra fields from the input file
 						if (outputFileType == RNAToDNAResultType.BGR_WITH_EXTRA_FIELDS) {
 							printOutputWithExtraFieldsToFile(key, chrmomosome, chrStart, finalStartStopScore, remainderStringForPrinting, bufWriter);
@@ -726,13 +543,43 @@ public class GeneRelativeToGenomePosition {
 				sortRepositionedFile();
 			}
 
-			// Score to RPKM
-			if (outputFileType == RNAToDNAResultType.GDP) {
-				scoreToRPKM();
-			}
-
 		}catch (IOException e) {
 			ExceptionManager.getInstance().caughtException(e);
 		}
+	}
+
+
+	/**
+	 * private method to sort the repositioned file
+	 * @throws IOException
+	 */
+	private void sortRepositionedFile() throws IOException {
+		BufferedReader buf = new BufferedReader(new FileReader(outputFile));
+		List<FileDataLineForSorting> file = new ArrayList<FileDataLineForSorting>();
+		String lineRead = buf.readLine();
+		StringTokenizer strtok = new StringTokenizer(lineRead,"\t\n");
+		while (lineRead != null) {
+			String chrName = strtok.nextToken();
+			int start = Integer.parseInt(strtok.nextToken());
+			int stop = Integer.parseInt(strtok.nextToken());
+			double score = Double.parseDouble(strtok.nextToken());
+			FileDataLineForSorting fileSorter = new FileDataLineForSorting(chrName, start, stop, score);
+			file.add(fileSorter);
+			lineRead = buf.readLine();
+			if (lineRead != null) {
+				strtok = new StringTokenizer(lineRead,"\t\n");
+			}
+		}
+		buf.close();
+
+		Collections.sort(file);
+		// write the sorted data to the file
+		BufferedWriter bufWriter = new BufferedWriter(new FileWriter(outputFile));
+		Iterator<FileDataLineForSorting> iter = file.iterator();
+		while (iter.hasNext()) {
+			FileDataLineForSorting fs = iter.next();
+			bufWriter.write(fs.getChromosomeName() + "\t" + fs.getStart() + "\t" + fs.getStop() + "\t" + fs.getScore() + "\n");
+		}
+		bufWriter.close();
 	}
 }

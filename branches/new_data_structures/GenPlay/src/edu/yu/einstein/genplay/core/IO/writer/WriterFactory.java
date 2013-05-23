@@ -25,32 +25,32 @@ import java.io.File;
 
 import javax.swing.filechooser.FileFilter;
 
+import edu.yu.einstein.genplay.core.IO.writer.SCWListWriter.SCWListAsBedGraphWith0Writer;
 import edu.yu.einstein.genplay.core.IO.writer.SCWListWriter.SCWListAsBedGraphWriter;
 import edu.yu.einstein.genplay.core.IO.writer.SCWListWriter.SCWListAsBedWriter;
 import edu.yu.einstein.genplay.core.IO.writer.SCWListWriter.SCWListAsGFFWriter;
 import edu.yu.einstein.genplay.core.IO.writer.SCWListWriter.SCWListWriter;
+import edu.yu.einstein.genplay.core.IO.writer.binListWriter.BinListAsWiggleWriter;
+import edu.yu.einstein.genplay.core.IO.writer.binListWriter.BinListWriter;
 import edu.yu.einstein.genplay.core.IO.writer.geneListWriter.GeneListAsBedWriter;
-import edu.yu.einstein.genplay.core.IO.writer.geneListWriter.GeneListAsGdpGeneWriter;
 import edu.yu.einstein.genplay.core.IO.writer.geneListWriter.GeneListWriter;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
 import edu.yu.einstein.genplay.gui.fileFilter.BedFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.BedGraphFilter;
+import edu.yu.einstein.genplay.gui.fileFilter.BedGraphWith0Filter;
 import edu.yu.einstein.genplay.gui.fileFilter.GFFFilter;
-import edu.yu.einstein.genplay.gui.fileFilter.GdpGeneFilter;
-
+import edu.yu.einstein.genplay.gui.fileFilter.WiggleFilter;
 
 
 /**
  * Factory that tries to create and to return a class implementing the {@link Writer} interface
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class WriterFactory {
-
-	// TODO transform all writers in SCW writer (wiggle writers should be the only ones different for bin and SCW list because of the fix or variable step)
 
 	/**
 	 * Tries to create and to return a subclass of {@link BinListWriter} depending on the file filter used to save
@@ -60,25 +60,23 @@ public final class WriterFactory {
 	 * @param ff a subclass of {@link FileFilter}
 	 * @return a subclass of {@link BinListWriter} or null if the type can't be figured out
 	 */
-	/*private static BinListWriter getBinListWriter(File outputFile, BinList data, String name, FileFilter ff) {
+	private static Writer getBinListWriter(File outputFile, BinList data, String name, FileFilter ff) {
 		if (ff == null) {
 			return null;
 		} else if (ff instanceof BedFilter) {
-			return new BinListAsBedWriter(outputFile, data, name);
+			return new SCWListAsBedWriter(outputFile, data, name);
 		} else if (ff instanceof BedGraphFilter) {
-			return new BinListAsBedGraphWriter(outputFile, data, name);
+			return new SCWListAsBedGraphWriter(outputFile, data, name);
 		} else if (ff instanceof BedGraphWith0Filter) {
-			return new BinListAsBedGraphWith0Writer(outputFile, data, name);
+			return new SCWListAsBedGraphWith0Writer(outputFile, data, name);
 		} else if (ff instanceof GFFFilter) {
-			return new BinListAsGFFWriter(outputFile, data, name);
+			return new SCWListAsGFFWriter(outputFile, data, name);
 		} else if (ff instanceof WiggleFilter) {
 			return new BinListAsWiggleWriter(outputFile, data, name);
-		}else if (ff instanceof SerializedBinListFilter) {
-			return new SerializedBinListWriter(outputFile, data, name);
 		} else {
 			return null;
 		}
-	}*/
+	}
 
 
 	/**
@@ -94,8 +92,6 @@ public final class WriterFactory {
 			return null;
 		} else if (ff instanceof BedFilter) {
 			return new GeneListAsBedWriter(outputFile, data, name);
-		} else if (ff instanceof GdpGeneFilter) {
-			return new GeneListAsGdpGeneWriter(outputFile, data, name);
 		} else {
 			return null;
 		}
@@ -139,6 +135,9 @@ public final class WriterFactory {
 		if (data instanceof GeneList) {
 			GeneList geneList = (GeneList) data;
 			writer = getGeneListWriter(outputFile, geneList, name, ff);
+		} else if (data instanceof BinList) {
+			BinList scwList = (BinList) data;
+			writer = getBinListWriter(outputFile, scwList, name, ff);
 		} else if (data instanceof SCWList) {
 			SCWList scwList = (SCWList) data;
 			writer = getSCWListWriter(outputFile, scwList, name, ff);

@@ -25,9 +25,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.io.Serializable;
-import java.text.NumberFormat;
 
 import edu.yu.einstein.genplay.dataStructure.enums.LogBase;
+import edu.yu.einstein.genplay.util.NumberFormats;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -171,7 +171,7 @@ public class ScatterPlotAxis implements Serializable {
 		int labelHeight = g.getFontMetrics().getHeight();
 		for (double i = firstTick; i <= max; i += majorUnit) {
 			int pos = dataValueToScreenPosition(i, clip);
-			String label = NumberFormat.getInstance().format(i);
+			String label = NumberFormats.getScoreFormat().format(i);
 			int labelWidth = g.getFontMetrics().stringWidth(label);
 			if (orientation == HORIZONTAL) {
 				g.drawLine(pos, position - HALF_MAJOR_TICK_SIZE, pos, position + HALF_MAJOR_TICK_SIZE);

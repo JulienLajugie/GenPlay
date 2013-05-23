@@ -31,7 +31,6 @@ import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.text.NumberFormat;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -40,6 +39,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollBar;
 
 import edu.yu.einstein.genplay.util.Images;
+import edu.yu.einstein.genplay.util.NumberFormats;
 
 
 /**
@@ -58,6 +58,69 @@ public final class GenomeWidthChooser extends JDialog {
 	private static Integer 				validGenomeWidth;							// A valid value for sigma
 	private static boolean 				validated;									// True if OK has been pressed
 	private static String				type; 										// Describe the data asked.
+
+	/**
+	 * Displays a GenomeWidthChooser dialog, and returns
+	 * an integer value for the width of a moving standard deviation.
+	 * @param parent The parent {@link Component} from which the dialog is displayed..
+	 * @param aWindowSize greatest size of the bins of the curves.
+	 * @return An Integer value if OK has been pressed. Null otherwise.
+	 */
+	public static Integer getMovingStdDevWidth(Component parent, int aWindowSize) {
+		windowSize = aWindowSize;
+		validGenomeWidth = windowSize * 2;
+		type = "Moving std deviation width";
+		GenomeWidthChooser FS = new GenomeWidthChooser(parent);
+		FS.setVisible(true);
+		if(validated) {
+			return validGenomeWidth;
+		} else {
+			return null;
+		}
+	}
+
+
+	/**
+	 * Displays a GenomeWidthChooser dialog, and returns
+	 * an integer value for the moving window size.
+	 * @param parent The parent {@link Component} from which the dialog is displayed..
+	 * @param aWindowSize a size of bins.
+	 * @return An Integer value of the moving window size if OK has been pressed. Null otherwise.
+	 */
+	public static Integer getMovingWindowSize(Component parent, int aWindowSize) {
+		windowSize = aWindowSize;
+		validGenomeWidth = windowSize * 10;
+		type = "Moving Window Size";
+		GenomeWidthChooser FS = new GenomeWidthChooser(parent);
+		FS.setVisible(true);
+		if(validated) {
+			return validGenomeWidth;
+		} else {
+			return null;
+		}
+	}
+
+
+	/**
+	 * Displays a GenomeWidthChooser dialog, and returns
+	 * an integer value for sigma.
+	 * @param parent The parent {@link Component} from which the dialog is displayed..
+	 * @param aWindowSize a size of bins.
+	 * @return An Integer value of sigma if OK has been pressed. Null otherwise.
+	 */
+	public static Integer getSigma(Component parent, int aWindowSize) {
+		windowSize = aWindowSize;
+		validGenomeWidth = windowSize * 10;
+		type = "Sigma";
+		GenomeWidthChooser FS = new GenomeWidthChooser(parent);
+		FS.setVisible(true);
+		if(validated) {
+			return validGenomeWidth;
+		} else {
+			return null;
+		}
+	}
+
 
 	/**
 	 * Private constructor. Used internally to create a {@link GenomeWidthChooser} dialog.
@@ -89,7 +152,7 @@ public final class GenomeWidthChooser extends JDialog {
 			}
 		});
 
-		jftfGenomeWidth = new JFormattedTextField(NumberFormat.getInstance());
+		jftfGenomeWidth = new JFormattedTextField(NumberFormats.getPositionFormat());
 		jftfGenomeWidth.setValue(validGenomeWidth);
 		jftfGenomeWidth.setColumns(8);
 		jftfGenomeWidth.addPropertyChangeListener(new PropertyChangeListener() {
@@ -190,68 +253,5 @@ public final class GenomeWidthChooser extends JDialog {
 	private void jsbSigmaAdjustmentValueChanged() {
 		validGenomeWidth = jsbGenomeWidth.getValue();
 		jftfGenomeWidth.setValue(validGenomeWidth);
-	}
-
-
-	/**
-	 * Displays a GenomeWidthChooser dialog, and returns
-	 * an integer value for sigma.
-	 * @param parent The parent {@link Component} from which the dialog is displayed..
-	 * @param aWindowSize a size of bins.
-	 * @return An Integer value of sigma if OK has been pressed. Null otherwise.
-	 */
-	public static Integer getSigma(Component parent, int aWindowSize) {
-		windowSize = aWindowSize;
-		validGenomeWidth = windowSize * 10;
-		type = "Sigma";
-		GenomeWidthChooser FS = new GenomeWidthChooser(parent);
-		FS.setVisible(true);
-		if(validated) {
-			return validGenomeWidth;
-		} else {
-			return null;
-		}
-	}
-
-
-	/**
-	 * Displays a GenomeWidthChooser dialog, and returns
-	 * an integer value for the moving window size.
-	 * @param parent The parent {@link Component} from which the dialog is displayed..
-	 * @param aWindowSize a size of bins.
-	 * @return An Integer value of the moving window size if OK has been pressed. Null otherwise.
-	 */
-	public static Integer getMovingWindowSize(Component parent, int aWindowSize) {
-		windowSize = aWindowSize;
-		validGenomeWidth = windowSize * 10;
-		type = "Moving Window Size";
-		GenomeWidthChooser FS = new GenomeWidthChooser(parent);
-		FS.setVisible(true);
-		if(validated) {
-			return validGenomeWidth;
-		} else {
-			return null;
-		}
-	}
-
-
-	/**
-	 * Displays a GenomeWidthChooser dialog, and returns
-	 * an integer value for the width of a moving standard deviation.
-	 * @param parent The parent {@link Component} from which the dialog is displayed..
-	 * @param aWindowSize greatest size of the bins of the curves.
-	 * @return An Integer value if OK has been pressed. Null otherwise.
-	 */
-	public static Integer getMovingStdDevWidth(Component parent, int aWindowSize) {
-		windowSize = aWindowSize;
-		validGenomeWidth = windowSize * 2;
-		type = "Moving std deviation width";
-		GenomeWidthChooser FS = new GenomeWidthChooser(parent);
-		FS.setVisible(true);
-		if(validated) {
-			return validGenomeWidth;
-		} else {
-			return null;
-		}
 	}
 }

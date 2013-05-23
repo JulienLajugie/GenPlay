@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.IO.writer.binListWriter;
+package edu.yu.einstein.genplay.core.IO.writer.SCWListWriter;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -30,30 +30,31 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
-
+import edu.yu.einstein.genplay.util.NumberFormats;
 
 
 /**
- * Allows to write a BinList as a Bed file.
+ * Writes {@link SCWList} data into BedGraph files.
+ * The windows with a score of 0 are also written
  * @author Julien Lajugie
- * @version 0.1
  */
-public final class BinListAsBedWriter extends BinListWriter implements Stoppable {
+public final class SCWListAsBedGraphWith0Writer extends SCWListWriter implements Stoppable {
 
 	private boolean needsToBeStopped = false;	// true if the writer needs to be stopped
 
 
 	/**
-	 * Creates an instance of {@link BinListAsBedWriter}.
+	 * Creates an instance of {@link SCWListAsBedGraphWith0Writer}.
 	 * @param outputFile output {@link File}
 	 * @param data {@link BinList} to write
 	 * @param name a name for the {@link BinList}
 	 */
-	public BinListAsBedWriter(File outputFile, BinList data, String name) {
+	public SCWListAsBedGraphWith0Writer(File outputFile, SCWList data, String name) {
 		super(outputFile, data, name);
 	}
 
@@ -76,40 +77,44 @@ public final class BinListAsBedWriter extends BinListWriter implements Stoppable
 			// try to create a output file
 			writer = new BufferedWriter(new FileWriter(outputFile));
 			// print the title of the graph
-			writer.write("track type=bed name=" + name);
+			writer.write("track type=bedGraph name=" + name);
 			writer.newLine();
-			int binSize = data.getBinSize();
 			// print the data
 			for(Chromosome currentChromosome: projectChromosomes) {
 				if(data.get(currentChromosome) != null) {
 					ListView<ScoredChromosomeWindow> currentList = data.get(currentChromosome);
 					int currentChromosomeSize = currentChromosome.getLength();
-					for (int j = 0; j < currentList.size(); j++) {
+					int lastStop = 0;
+					for (ScoredChromosomeWindow currentWindow: currentList) {
 						// if the operation need to be stopped we close the writer and delete the file
 						if (needsToBeStopped) {
 							writer.close();
 							outputFile.delete();
 							throw new InterruptedException();
 						}
-						// we don't print the line if the score is 0
-						if (currentList.get(j).getScore() != 0) {
-							int start = j * binSize;
-							int stop = start + binSize;
-							if (stop > currentChromosomeSize) {
-								stop = currentChromosomeSize;
-							}
 
-							if (isMultiGenome) {
-								start = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, allele, start, currentChromosome, fullGenomeName);
-								stop = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, allele, stop, currentChromosome, fullGenomeName);
-							}
-
-							if ((start > -1) && (stop > -1)) {
-								//writer.write(currentChromosome.getName() + "\t" + (j * binSize) + "\t" + ((j + 1) * binSize) + "\t-\t" + currentList.get(j));
-								writer.write(currentChromosome.getName() + "\t" + start + "\t" + stop + "\t-\t" + currentList.get(j).getScore());
-								writer.newLine();
-							}
+						int start = currentWindow.getStart();
+						int stop = currentWindow.getStop();
+						String score = NumberFormats.getWriterScoreFormat().format(currentWindow.getScore());
+						if (stop > currentChromosomeSize) {
+							stop = currentChromosomeSize;
 						}
+						if (isMultiGenome) {
+							start = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, allele, start, currentChromosome, fullGenomeName);
+							stop = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, allele, stop, currentChromosome, fullGenomeName);
+						}
+						// we subtract 1 because positions in bedgraph files are 0 based and GenPlay positions are 1-based
+						start--;
+						stop--;
+
+						if ((start > -1) && (stop > -1)) {
+							if (start != lastStop) {
+								writer.write(currentChromosome.getName() + "\t" + lastStop + "\t" + start + "\t" + 0);
+							}
+							writer.write(currentChromosome.getName() + "\t" + start + "\t" + stop + "\t" + score);
+							writer.newLine();
+						}
+						lastStop = stop;
 					}
 				}
 			}

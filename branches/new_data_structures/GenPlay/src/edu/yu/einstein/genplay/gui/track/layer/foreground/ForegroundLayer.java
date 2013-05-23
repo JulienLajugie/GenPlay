@@ -24,7 +24,6 @@ package edu.yu.einstein.genplay.gui.track.layer.foreground;
 import java.awt.Graphics;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.text.NumberFormat;
 
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackConstants;
@@ -32,6 +31,7 @@ import edu.yu.einstein.genplay.gui.track.TrackScore;
 import edu.yu.einstein.genplay.gui.track.layer.AbstractLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
+import edu.yu.einstein.genplay.util.NumberFormats;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 /**
@@ -109,7 +109,7 @@ public class ForegroundLayer extends AbstractLayer<ForegroundData> implements La
 					scoreYPosition = g.getFontMetrics().getHeight();
 				}
 				g.setColor(data.getScoreColor());
-				g.drawString(NumberFormat.getInstance().format(currentScore), (width / 2) + 3, scoreYPosition);
+				g.drawString(NumberFormats.getScoreFormat().format(currentScore), (width / 2) + 3, scoreYPosition);
 			}
 		}
 	}

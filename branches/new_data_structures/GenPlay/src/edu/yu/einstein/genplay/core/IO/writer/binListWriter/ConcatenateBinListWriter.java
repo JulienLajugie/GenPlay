@@ -37,21 +37,29 @@ import edu.yu.einstein.genplay.exception.exceptions.BinListDifferentWindowSizeEx
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
 
-
 /**
- * Concatenates and saves a list of {@link BinList} in a file
+ * Concatenates and saves a list of {@link BinList} in a tab delimited file
+ * having the following fields:<br>
+ * <ol>
+ * <li> chromosome </li>
+ * <li> start position </li>
+ * <li> stop position </li>
+ * <li> score list 1 </li>
+ * <li> score list 2 </li>
+ * <li> ... </li>
+ * <li> score list n </li>
+ * </ol>
  * @author Julien Lajugie
- * @version 0.1
  */
 public class ConcatenateBinListWriter implements Writer, Stoppable {
 
-	private final BinList[] 		binListArray;			// array of the BinList to concatenate
-	private final String[] 			nameArray;				// name of the BinLists
-	private final File				outputFile;				// file where to write the concatenation
-	private boolean					needsToBeStopped = false;// true if the writing need to be stopped
+	private final BinList[] 		binListArray;				// array of the BinList to concatenate
+	private final String[] 			nameArray;					// name of the BinLists
+	private final File				outputFile;					// file where to write the concatenation
+	private boolean					needsToBeStopped = false;	// true if the writing need to be stopped
 
-	private String					fullGenomeName;		// the genome name (multi genome project only)
-	private AlleleType				allele;				// the allele type (multi genome project only)
+	private String					fullGenomeName;				// the genome name (multi genome project only)
+	private AlleleType				allele;						// the allele type (multi genome project only)
 
 
 	/**
@@ -69,8 +77,17 @@ public class ConcatenateBinListWriter implements Writer, Stoppable {
 
 	@Override
 	public void setMultiGenomeCoordinateSystem (String genome, AlleleType allele) {
-		this.fullGenomeName = genome;
+		fullGenomeName = genome;
 		this.allele = allele;
+	}
+
+
+	/**
+	 * Stops the writer while it's writing a file
+	 */
+	@Override
+	public void stop() {
+		needsToBeStopped = true;
 	}
 
 
@@ -131,6 +148,9 @@ public class ConcatenateBinListWriter implements Writer, Stoppable {
 							start = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, allele, start, currentChromosome, fullGenomeName);
 							stop = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, allele, stop, currentChromosome, fullGenomeName);
 						}
+						// we subtract 1 because positions in bed files are 0 based and GenPlay positions are 1-based
+						start--;
+						stop--;
 
 						if ((start > -1) && (stop > -1)) {
 							writer.write(currentChromosome + "\t" + start + "\t" + stop);
@@ -158,14 +178,5 @@ public class ConcatenateBinListWriter implements Writer, Stoppable {
 				}
 			}
 		}
-	}
-
-
-	/**
-	 * Stops the writer while it's writing a file
-	 */
-	@Override
-	public void stop() {
-		needsToBeStopped = true;
 	}
 }

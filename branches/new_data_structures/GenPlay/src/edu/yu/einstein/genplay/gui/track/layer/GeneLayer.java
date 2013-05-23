@@ -36,7 +36,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.URI;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -51,6 +50,7 @@ import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.dataScalerForTrackDisplay.GeneListScaler;
 import edu.yu.einstein.genplay.gui.track.ScrollingManager;
 import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.util.NumberFormats;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
@@ -389,9 +389,9 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 				} else {
 					// if there is a gene under the mouse we also check
 					// if there is an exon with a score under the mouse cursor
-					Float scoreExonUnderMouse = null;
+					float scoreExonUnderMouse = Float.NaN;
 					if ((geneUnderMouse.getExons() != null) && (geneUnderMouse.getExons().size() > 0)) {
-						for (int k = 0; (k < geneUnderMouse.getExons().size()) && (scoreExonUnderMouse == null); k++) {
+						for (int k = 0; (k < geneUnderMouse.getExons().size()) && (Float.isNaN(scoreExonUnderMouse)); k++) {
 							ScoredChromosomeWindow currentExon = geneUnderMouse.getExons().get(k);
 							if ((mousePosition.x >= projectWindow.genomeToScreenPosition(currentExon.getStart())) &&
 									(mousePosition.x <= projectWindow.genomeToScreenPosition(currentExon.getStop()))) {
@@ -407,10 +407,10 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 						toolTipText += "Score Type: <i>" + geneList.getGeneScoreType() + "</i><br>";
 					}
 					if (!Float.isNaN(geneUnderMouse.getScore())) {
-						toolTipText += "Gene Score = <i>" + NumberFormat.getInstance().format(geneUnderMouse.getScore()) + "</i><br>";
+						toolTipText += "Gene Score = <i>" + NumberFormats.getScoreFormat().format(geneUnderMouse.getScore()) + "</i><br>";
 					}
-					if (scoreExonUnderMouse != null) {
-						toolTipText += "Exon Score = <i>" + NumberFormat.getInstance().format(scoreExonUnderMouse) + "</i><br>";
+					if (!Float.isNaN(scoreExonUnderMouse)) {
+						toolTipText += "Exon Score = <i>" + NumberFormats.getScoreFormat().format(scoreExonUnderMouse) + "</i><br>";
 					}
 					toolTipText += "</html>";
 					getTrack().getGraphicsPanel().setToolTipText(toolTipText);

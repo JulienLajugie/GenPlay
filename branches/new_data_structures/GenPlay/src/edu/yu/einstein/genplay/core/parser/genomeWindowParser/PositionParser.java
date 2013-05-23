@@ -25,7 +25,8 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
+
+import edu.yu.einstein.genplay.util.NumberFormats;
 
 
 /**
@@ -64,14 +65,83 @@ public class PositionParser {
 
 
 	/**
+	 * @param list a list
+	 * @return the description of the list
+	 */
+	private String getListDescription (List<?> list) {
+		String description = "";
+		int size = list.size();
+		if (size == 0) {
+			description = "The list is empty.";
+		} else {
+			for (int i = 0; i < size; i++) {
+				description += (i + 1) + ": " + list.get(i).toString();
+				if (i < (size - 1)) {
+					description += "\n";
+				}
+			}
+		}
+		return description;
+	}
+
+
+	/**
+	 * @return the numberElements
+	 */
+	public List<Integer> getNumberElements() {
+		return numberElements;
+	}
+
+
+	/**
+	 * @return the textElements
+	 */
+	public List<String> getTextElements() {
+		return textElements;
+	}
+
+
+	/**
 	 * Initializes the parser lists.
 	 */
 	private void initialize () {
-		format = NumberFormat.getInstance(Locale.US);
+		format = NumberFormats.getPositionFormat();
 		textElements = new ArrayList<String>();
 		positionElements = new ArrayList<String>();
 		numberElements = new ArrayList<Integer>();
 		currentCharacter = new CharacterHandler();
+	}
+
+
+	/**
+	 * Integer has a minimum value of -2,147,483,648 and a maximum value of 2,147,483,647 (inclusive).
+	 * @param integer	an integer
+	 * @return			true if the integer is in the integer bounds, false otherwise
+	 */
+	private boolean isIntBound (int integer) {
+		return ((integer >= -2147483648) || (integer <= 2147483647));
+	}
+
+
+	/**
+	 * Transforms the list of position (still as text format) in an integer list.
+	 */
+	private void optimizeIntegerList () {
+		numberElements = new ArrayList<Integer>();
+
+		for (String position: positionElements) {
+			Number current = null;
+			try {
+				current = format.parse(position);
+			} catch (Exception e) {}
+			if (current != null) {
+				int currentValue = current.intValue();
+				if (isIntBound(currentValue)) {
+					numberElements.add(current.intValue());
+				}
+			}
+		}
+		Collections.sort(numberElements);
 	}
 
 
@@ -126,75 +196,6 @@ public class PositionParser {
 
 		// Transform positions into numbers
 		optimizeIntegerList();
-	}
-
-
-	/**
-	 * Transforms the list of position (still as text format) in an integer list.
-	 */
-	private void optimizeIntegerList () {
-		numberElements = new ArrayList<Integer>();
-
-		for (String position: positionElements) {
-			Number current = null;
-			try {
-				current = format.parse(position);
-			} catch (Exception e) {}
-			if (current != null) {
-				int currentValue = current.intValue();
-				if (isIntBound(currentValue)) {
-					numberElements.add(current.intValue());
-				}
-			}
-		}
-		Collections.sort(numberElements);
-	}
-
-
-	/**
-	 * Integer has a minimum value of -2,147,483,648 and a maximum value of 2,147,483,647 (inclusive).
-	 * @param integer	an integer
-	 * @return			true if the integer is in the integer bounds, false otherwise
-	 */
-	private boolean isIntBound (int integer) {
-		return ((integer >= -2147483648) || (integer <= 2147483647));
-	}
-
-
-	/**
-	 * @param list a list
-	 * @return the description of the list
-	 */
-	private String getListDescription (List<?> list) {
-		String description = "";
-		int size = list.size();
-		if (size == 0) {
-			description = "The list is empty.";
-		} else {
-			for (int i = 0; i < size; i++) {
-				description += (i + 1) + ": " + list.get(i).toString();
-				if (i < (size - 1)) {
-					description += "\n";
-				}
-			}
-		}
-		return description;
-	}
-
-
-	/**
-	 * @return the textElements
-	 */
-	public List<String> getTextElements() {
-		return textElements;
-	}
-
-
-	/**
-	 * @return the numberElements
-	 */
-	public List<Integer> getNumberElements() {
-		return numberElements;
 	}
 
 

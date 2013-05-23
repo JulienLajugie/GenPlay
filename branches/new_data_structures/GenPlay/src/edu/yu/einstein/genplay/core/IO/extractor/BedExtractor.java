@@ -49,6 +49,10 @@ import edu.yu.einstein.genplay.util.Utils;
  */
 public class BedExtractor extends TextFileExtractor implements SCWReader, GeneReader, RepeatReader, StrandReader, StrandedExtractor {
 
+	/** Default first base position of bed files. Bed files are 0-based */
+	public static final int DEFAULT_FIRST_BASE_POSITION = 0;
+
+	private int	firstBasePosition = DEFAULT_FIRST_BASE_POSITION;// position of the first base
 	private StrandedExtractorOptions		strandOptions;		// options on the strand and read length / shift
 	private Chromosome 						chromosome;		 	// chromosome of the last item read
 	private Integer 						start;				// start position of the last item read
@@ -119,7 +123,9 @@ public class BedExtractor extends TextFileExtractor implements SCWReader, GeneRe
 
 		// start and stop
 		start = Extractors.getInt(splitedLine[1].trim());
+		UTR5Bound = start;
 		stop = Extractors.getInt(splitedLine[2].trim());
+		UTR3Bound = stop;
 
 		String errors = DataLineValidator.getErrors(chromosome, start, stop);
 		if (!errors.isEmpty()) {
@@ -143,8 +149,8 @@ public class BedExtractor extends TextFileExtractor implements SCWReader, GeneRe
 		}
 
 		// if we are in a multi-genome project, we compute the position on the meta genome
-		start = getMultiGenomePosition(chromosome, start);
-		stop = getMultiGenomePosition(chromosome, stop);
+		start = getRealGenomePosition(chromosome, start);
+		stop = getRealGenomePosition(chromosome, stop);
 
 		if (splitedLine.length <= 3) {
 			return ITEM_EXTRACTED;
@@ -167,12 +173,12 @@ public class BedExtractor extends TextFileExtractor implements SCWReader, GeneRe
 		// UTR bounds are for genes only so we don't need to
 		// worry about the strand shift and the read length
 		// since these operations are not available for genes
-		UTR5Bound = Extractors.getInt(splitedLine[6].trim(), start);
-		UTR3Bound = Extractors.getInt(splitedLine[7].trim(), stop);
+		UTR5Bound = Extractors.getInt(splitedLine[6].trim(), UTR5Bound);
+		UTR3Bound = Extractors.getInt(splitedLine[7].trim(), UTR3Bound);
 
 		// but we need to compute the position on the meta-genome
-		UTR5Bound = getMultiGenomePosition(chromosome, UTR5Bound);
-		UTR3Bound = getMultiGenomePosition(chromosome, UTR3Bound);
+		UTR5Bound = getRealGenomePosition(chromosome, UTR5Bound);
+		UTR3Bound = getRealGenomePosition(chromosome, UTR3Bound);
 
 		if (splitedLine.length <= 11) {
 			return ITEM_EXTRACTED;
@@ -211,6 +217,12 @@ public class BedExtractor extends TextFileExtractor implements SCWReader, GeneRe
 	@Override
 	public ListView<ScoredChromosomeWindow> getExons() {
 		return exons;
+	}
+
+
+	@Override
+	public int getFirstBasePosition() {
+		return firstBasePosition;
 	}
 
 
@@ -271,6 +283,12 @@ public class BedExtractor extends TextFileExtractor implements SCWReader, GeneRe
 	@Override
 	public Integer getUTR5Bound() {
 		return UTR5Bound;
+	}
+
+
+	@Override
+	public void setFirstBasePosition(int firstBasePosition) {
+		this.firstBasePosition = firstBasePosition;
 	}
 
 

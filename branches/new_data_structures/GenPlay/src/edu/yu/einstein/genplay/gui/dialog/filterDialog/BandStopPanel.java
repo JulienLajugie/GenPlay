@@ -28,11 +28,9 @@ import javax.swing.JOptionPane;
 import edu.yu.einstein.genplay.dataStructure.enums.FilterType;
 
 
-
 /**
  * Filter panel for the band-stop filters
  * @author Julien Lajugie
- * @version 0.1
  */
 final class BandStopPanel extends FilterPanel {
 

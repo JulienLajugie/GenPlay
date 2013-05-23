@@ -69,12 +69,12 @@ public final class BinListView extends AbstractListView<ScoredChromosomeWindow> 
 
 		@Override
 		public int getStart() {
-			return windowIndex * binSize;
+			return (windowIndex * binSize) + 1;
 		}
 
 		@Override
 		public int getStop() {
-			return (windowIndex + 1) * binSize;
+			return ((windowIndex + 1) * binSize) + 1;
 		}
 	}
 

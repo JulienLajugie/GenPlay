@@ -50,10 +50,11 @@ import edu.yu.einstein.genplay.util.colors.Colors;
 public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 
 	private static final long serialVersionUID = 6498078428524511709L;	// generated ID
-	private static final String 	DESCRIPTION =
+	private static final String 			DESCRIPTION =
 			"Converts the stripes on a variable window track."; 										// tooltip
 	private static final int 				MNEMONIC = KeyEvent.VK_M; 									// mnemonic key
 	private static		 String 			ACTION_NAME = "Convert into variable window track";			// action name
+	private 			 VariantLayer 		selectedLayer;												// selected layer
 
 
 	/**
@@ -107,7 +108,7 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 		if (projectManager.isMultiGenomeProject()) {
 
 			// Get layer information
-			VariantLayer selectedLayer = (VariantLayer) getValue("Layer");
+			selectedLayer = (VariantLayer) getValue("Layer");
 
 			// Create the export settings
 			ExportSettings settings = new ExportSettings(selectedLayer);
@@ -148,8 +149,7 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 
 	private void setTrack (Track currentTrack, SCWList list) throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		if ((list!= null) && (currentTrack != null)) {
-			// TODO replace currentTrack.getName per currentLayer.getName
-			SimpleSCWLayer newLayer = new SimpleSCWLayer(currentTrack, list, currentTrack.getName());
+			SimpleSCWLayer newLayer = new SimpleSCWLayer(currentTrack, list, selectedLayer.getName());
 			newLayer.getHistory().add("Apply mask", Colors.GREY);
 			newLayer.getHistory().add("Track: " + currentTrack.getName(), Colors.GREY);
 			currentTrack.getLayers().add(newLayer);

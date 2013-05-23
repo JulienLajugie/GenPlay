@@ -29,7 +29,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.text.NumberFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -46,6 +45,7 @@ import javax.swing.text.NumberFormatter;
 
 import edu.yu.einstein.genplay.dataStructure.enums.LogBase;
 import edu.yu.einstein.genplay.util.Images;
+import edu.yu.einstein.genplay.util.NumberFormats;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
@@ -91,7 +91,7 @@ public class AxisOptionDialog extends JDialog {
 	 */
 	public AxisOptionDialog() {
 		jlMin = new JLabel("Minimum:");
-		jftfMin = new JFormattedTextField(NumberFormat.getInstance());
+		jftfMin = new JFormattedTextField(NumberFormats.getScoreFormat());
 		// min must be strictly smaller than the max
 		jftfMin.addFocusListener(new FocusAdapter() {
 			@Override
@@ -103,7 +103,7 @@ public class AxisOptionDialog extends JDialog {
 		});
 
 		jlMax = new JLabel("Maximum:");
-		jftfMax = new JFormattedTextField(NumberFormat.getInstance());
+		jftfMax = new JFormattedTextField(NumberFormats.getScoreFormat());
 		// max must be strictly greater than the min
 		jftfMax.addFocusListener(new FocusAdapter() {
 			@Override
@@ -115,7 +115,7 @@ public class AxisOptionDialog extends JDialog {
 		});
 
 		jlMajorUnit = new JLabel("Major unit:");
-		jftfMajorUnit = new JFormattedTextField(NumberFormat.getInstance());
+		jftfMajorUnit = new JFormattedTextField(NumberFormats.getScoreFormat());
 		// major unit must be greater or equal than minor unit
 		jftfMajorUnit.addFocusListener(new FocusAdapter() {
 			@Override
@@ -127,7 +127,7 @@ public class AxisOptionDialog extends JDialog {
 		});
 
 		jlMinorUnit = new JLabel("Minor unit:");
-		jftfMinorUnit = new JFormattedTextField(NumberFormat.getInstance());
+		jftfMinorUnit = new JFormattedTextField(NumberFormats.getScoreFormat());
 		// we just accept values > 0
 		((NumberFormatter) (jftfMinorUnit.getFormatter())).setMinimum(Double.MIN_NORMAL);
 		// minor unit must be smaller or equal than major unit

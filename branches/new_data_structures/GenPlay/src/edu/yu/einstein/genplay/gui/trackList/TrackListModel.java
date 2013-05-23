@@ -134,7 +134,7 @@ public class TrackListModel implements Serializable {
 	 * @return the {@link Track} at the specified row
 	 */
 	public Track getTrack(int row) {
-		return getTrack(row);
+		return tracks[row];
 	}
 
 

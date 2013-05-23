@@ -21,10 +21,9 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.dataStructure.chromosomeWindow;
 
-import java.text.NumberFormat;
-
 import edu.yu.einstein.genplay.core.comparator.ChromosomeWindowComparator;
 import edu.yu.einstein.genplay.util.HashCodeUtil;
+import edu.yu.einstein.genplay.util.NumberFormats;
 
 /**
  * This class provides a skeletal implementation of the {@link ChromosomeWindow} interface
@@ -120,8 +119,8 @@ public abstract class AbstractChromosomeWindow implements ChromosomeWindow{
 
 	@Override
 	public String toString() {
-		String startStr = NumberFormat.getInstance().format(getStart());
-		String stopStr = NumberFormat.getInstance().format(getStop());
+		String startStr = NumberFormats.getPositionFormat().format(getStart());
+		String stopStr = NumberFormats.getPositionFormat().format(getStop());
 		return startStr + "-" + stopStr;
 	}
 }

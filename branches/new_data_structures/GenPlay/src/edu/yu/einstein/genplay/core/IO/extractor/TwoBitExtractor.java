@@ -47,11 +47,17 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
  */
 public class TwoBitExtractor extends Extractor implements Stoppable {
 
+	/** Default first base position of bed files. 2bit files are 0-based */
+	public static final int DEFAULT_FIRST_BASE_POSITION = 0;
+
 	/** Signature of a 2bit file */
 	private final static String TWOBIT_SIGNATURE = "1A412743";
 
 	/** Set to true if the execution of the extractor needs to be stopped */
 	private boolean	isStopped = false;
+
+	/** Position of the first base */
+	private int	firstBasePosition = DEFAULT_FIRST_BASE_POSITION;
 
 	/** Genome name for a multi genome project */
 	private String genomeName;
@@ -240,6 +246,12 @@ public class TwoBitExtractor extends Extractor implements Stoppable {
 	}
 
 
+	@Override
+	public int getFirstBasePosition() {
+		return firstBasePosition;
+	}
+
+
 	/**
 	 * @return True if the order of the bytes of multi-bytes entities need to be reversed
 	 */
@@ -251,6 +263,12 @@ public class TwoBitExtractor extends Extractor implements Stoppable {
 	@Override
 	protected String retrieveDataName(File dataFile) {
 		return dataFile.getName();
+	}
+
+
+	@Override
+	public void setFirstBasePosition(int firstBasePosition) {
+		this.firstBasePosition = firstBasePosition;
 	}
 
 
