@@ -36,7 +36,7 @@ import edu.yu.einstein.genplay.util.NumberFormats;
  * - a number value is composed of number 0 to 9 (code 48 to 57)
  * - the list of delimiter is:
  * 		"tab" (code 9)
- * 		"-" (code 45)
+ * 		"-" (code 45) (if not preceded by a delimiter, otherwise it's considered as a minus sign)
  * 		":" (code 58)
  * 		";" (code 59)
  * - a text followed by a number (eg: "hello 5") is considered as a text value
@@ -45,7 +45,6 @@ import edu.yu.einstein.genplay.util.NumberFormats;
  * - a number value can contain commas and a dot (as decimal delimiter) in its text format
  * 
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class PositionParser {
 
@@ -157,10 +156,10 @@ public class PositionParser {
 		int size = s.length();			// Get the size of the list (avoids several size() calls).
 		Boolean isText = null;			// Says if the current string is a text element or a position element.
 		String currentBuffer = "";		// The current element in process.
-
+		CharacterHandler previousChar = null;
 		// Parse
 		for (int i = 0; i < size; i++) {
-			currentCharacter.initialize(s.charAt(i));
+			currentCharacter.initialize(s.charAt(i), previousChar);
 			if (currentCharacter.isDelimiter()) {
 				if (isText != null) {
 					if (isText) {
@@ -183,6 +182,7 @@ public class PositionParser {
 					}
 				}
 			}
+			previousChar = currentCharacter;
 		}
 
 		// Add the last element
