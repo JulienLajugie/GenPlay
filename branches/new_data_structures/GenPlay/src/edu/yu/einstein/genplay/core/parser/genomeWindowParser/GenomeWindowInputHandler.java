@@ -83,7 +83,7 @@ public class GenomeWindowInputHandler {
 	 * @return the genome window, null if wrong input
 	 */
 	public SimpleGenomeWindow getGenomeWindow () {
-		SimpleGenomeWindow genomeWindow = null;			// The genome window to return
+		SimpleGenomeWindow genomeWindow = null;		// The genome window to return
 		Integer start = getStart();					// The start position.
 		Integer stop = getStop();					// The stop position.
 		Chromosome chromosome = getChromosome();	// The chromosome.

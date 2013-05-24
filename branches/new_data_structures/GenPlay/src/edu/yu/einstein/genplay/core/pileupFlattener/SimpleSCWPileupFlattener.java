@@ -21,7 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.pileupFlattener;
 
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -77,7 +76,9 @@ public class SimpleSCWPileupFlattener implements PileupFlattener {
 			resultLVBuilder = new MaskListViewBuilder();
 			break;
 		default:
-			throw new InvalidParameterException("Invalid list type: " + scwListType);
+			// case where the input list is a binlist
+			// the simple SCW flattener will create a generic result list
+			resultLVBuilder = new GenericSCWListViewBuilder();
 		}
 	}
 
@@ -196,7 +197,9 @@ public class SimpleSCWPileupFlattener implements PileupFlattener {
 		List<Float> scores = computeScores(nodes);
 		// generate the list of windows from the flattening process
 		for (int i = 0; i < scores.size(); i++) {
-			resultLVBuilder.addElementToBuild(nodes.get(i), nodes.get(i + 1), scores.get(i));
+			if (scores.get(i) != 0) {
+				resultLVBuilder.addElementToBuild(nodes.get(i), nodes.get(i + 1), scores.get(i));
+			}
 		}
 	}
 

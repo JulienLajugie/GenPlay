@@ -103,6 +103,9 @@ public class FloatLists {
 			}
 			i++;
 		}
+		if (Float.isInfinite(max)) {
+			return 0;
+		}
 		return max;
 	}
 
@@ -138,6 +141,9 @@ public class FloatLists {
 				min = Math.max(min, currentValue);
 			}
 			i++;
+		}
+		if (Float.isInfinite(min)) {
+			return 0;
 		}
 		return min;
 	}
