@@ -38,22 +38,21 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
-import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
 import edu.yu.einstein.genplay.core.operation.converter.ConverterFactory;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
-import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
+import edu.yu.einstein.genplay.gui.customComponent.customPanel.OutputLayerPanel;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
 import edu.yu.einstein.genplay.util.Images;
 
+
 /**
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class ConvertDialog extends JDialog {
 
@@ -82,9 +81,8 @@ public class ConvertDialog extends JDialog {
 	private JComboBox 	jcbBinCalculMetod; 	// combo box for the score calculation method of bins
 
 	// Output track elements
-	private LayerType 	outputLayerType;	// The output layer type
-	private JTextField 	jtfLayerName;		// Text field for the layer name
-	private Track 		outputTrack;		// The output track
+	private LayerType 				outputLayerType;	// The output layer type
+	private final OutputLayerPanel	outputLayerPanel;	// Panel for the output options
 
 
 	/**
@@ -111,13 +109,13 @@ public class ConvertDialog extends JDialog {
 		// Get the panels
 		JPanel inputLayerPanel = getInputLayerPanel();
 		JPanel outputTypeLayerPanel = getOutputTypeLayer();
-		JPanel outputTrackPanel = getOutputTrackPanel();
+		outputLayerPanel = new OutputLayerPanel("Converted " + inputLayer.getName());
 		JPanel validationPanel = getValidationPanel();
 
 		// Set the panels dimension
 		setDimension(inputLayerPanel);
 		setDimension(outputTypeLayerPanel);
-		setDimension(outputTrackPanel);
+		setDimension(outputLayerPanel);
 		setDimension(validationPanel);
 
 		// Add the input layer panel
@@ -129,7 +127,7 @@ public class ConvertDialog extends JDialog {
 
 		// Add the output track panel
 		gbc.gridy++;
-		add(outputTrackPanel, gbc);
+		add(outputLayerPanel, gbc);
 
 		// Add the validation panel
 		gbc.gridy++;
@@ -259,7 +257,7 @@ public class ConvertDialog extends JDialog {
 	 * @return the output layer name
 	 */
 	public String getOutputLayerName() {
-		return jtfLayerName.getText();
+		return outputLayerPanel.getLayerName();
 	}
 
 
@@ -275,60 +273,7 @@ public class ConvertDialog extends JDialog {
 	 * @return the output track
 	 */
 	public Track getOutputTrack() {
-		return outputTrack;
-	}
-
-
-	/**
-	 * @return the panel that manages the output track options
-	 */
-	private JPanel getOutputTrackPanel () {
-		// Creates panel elements
-		JLabel jlTrackName = new JLabel("Output track name:");
-		JLabel jlTrack = new JLabel("Output track:");
-		jtfLayerName = new JTextField("Converted " + inputLayer.getName());
-		jtfLayerName.setColumns(15);
-		JComboBox jcbOutputTrack = new JComboBox(MainFrame.getInstance().getTrackListPanel().getModel().getTracks());
-		jcbOutputTrack.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {outputTrack = (Track) ((JComboBox)e.getSource()).getSelectedItem();}
-		});
-		jcbOutputTrack.setSelectedIndex(0);
-
-		// Creates the panel
-		JPanel panel = new JPanel();
-		panel.setBorder(BorderFactory.createTitledBorder("Output Track"));
-
-		// Layout settings
-		GridBagLayout layout = new GridBagLayout();
-		panel.setLayout(layout);
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.LINE_START;
-
-		gbc.weightx = 1;
-		gbc.weighty = 0;
-
-		// Add the output layer name
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.insets = new Insets(10, 5, 0, 0);
-		panel.add(jlTrackName, gbc);
-		gbc.gridx = 1;
-		gbc.insets = new Insets(10, 0, 0, 0);
-		panel.add(jtfLayerName, gbc);
-
-		// Add the output track selection box
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		gbc.insets = new Insets(5, 5, 0, 0);
-		panel.add(jlTrack, gbc);
-		gbc.gridx = 1;
-		gbc.weighty = 1;
-		gbc.insets = new Insets(5, 0, 10, 0);
-		panel.add(jcbOutputTrack, gbc);
-
-		// Return the panel
-		return panel;
+		return outputLayerPanel.getOutputTrack();
 	}
 
 

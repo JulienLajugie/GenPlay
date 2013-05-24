@@ -70,8 +70,12 @@ public class BLOGauss implements Operation<BinList> {
 		final int halfWidth = (2 * sigma) / binSize;
 		// we create an array of coefficients. The index correspond to a distance and for each distance we calculate a coefficient
 		final double[] coefTab = new double[halfWidth + 1];
+
+		// compute the gaussian coefficients
+		double gaussianCoefConst1 = 1 / (Math.sqrt(2.0 * Math.PI * sigma));
+		double gaussianCoefConst2 = 2.0 * Math.pow(sigma, 2);
 		for(int i = 0; i <= halfWidth; i++) {
-			coefTab[i] = Math.exp(-(Math.pow((i * binSize), 2) / (2.0 * Math.pow(sigma, 2))));
+			coefTab[i] = gaussianCoefConst1 * Math.exp(-(Math.pow((i * binSize), 2) / gaussianCoefConst2));
 		}
 
 		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();

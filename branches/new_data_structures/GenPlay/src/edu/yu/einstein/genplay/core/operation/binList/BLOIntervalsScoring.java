@@ -34,7 +34,6 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinListBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
@@ -53,7 +52,6 @@ public class BLOIntervalsScoring implements Operation<BinList> {
 	private final BinList 					valueList;					// BinList defining the values for the calculation
 	private final int 						percentageAcceptedValues;	// the calculation is calculated only on the x% greatest values of each interval
 	private final ScoreOperation 			method;						// method of calculation
-	private final ScorePrecision 			precision;					// precision of the result BinList
 	private boolean							stopped = false;			// true if the operation must be stopped
 
 
@@ -64,14 +62,12 @@ public class BLOIntervalsScoring implements Operation<BinList> {
 	 * @param valueList BinList defining the values for the calculation
 	 * @param percentageAcceptedValues the calculation is calculated only on the x% greatest values of each interval
 	 * @param method method of calculation
-	 * @param precision precision of the result BinList
 	 */
-	public BLOIntervalsScoring(BinList intervalList, BinList valueList, int percentageAcceptedValues, ScoreOperation method, ScorePrecision precision) {
+	public BLOIntervalsScoring(BinList intervalList, BinList valueList, int percentageAcceptedValues, ScoreOperation method) {
 		this.intervalList = intervalList;
 		this.valueList = valueList;
 		this.percentageAcceptedValues = percentageAcceptedValues;
 		this.method = method;
-		this.precision = precision;
 	}
 
 
@@ -130,7 +126,7 @@ public class BLOIntervalsScoring implements Operation<BinList> {
 									throw new IllegalArgumentException("Invalid score calculation method");
 								}
 
-								for (; k <= j; k++) {
+								for (; k < j; k++) {
 									if (k < currentIntervals.size()) {
 										resultListBuilder.addElementToBuild(chromosome, result);
 									}
@@ -154,7 +150,7 @@ public class BLOIntervalsScoring implements Operation<BinList> {
 
 	@Override
 	public String getDescription() {
-		return "Operation: Calculation on Projection, Accepted Values = " + percentageAcceptedValues + "%, Method = " + method + ", precision = " + precision;
+		return "Operation: Calculation on Projection, Accepted Values = " + percentageAcceptedValues + "%, Method = " + method;
 	}
 
 

@@ -51,7 +51,8 @@ public final class SCWLATwoLayersOperation extends TrackListActionOperationWorke
 
 	private static final long 				serialVersionUID = 4027173438789911860L; 		// generated ID
 	private static final String 			ACTION_NAME = "Two Layers Operation";			// action name
-	private static final String 			DESCRIPTION = "Run operation on two layers";	// tooltip
+	private static final String 			DESCRIPTION =
+			"Performs an arithmetic operation between two layers";							// tooltip
 	private Layer<SCWList>					selectedLayer;									// selected layer
 	private Layer<SCWList>					otherLayer = null;								// other layer
 	private Track							resultTrack = null;								// result track

@@ -46,23 +46,25 @@ import edu.yu.einstein.genplay.gui.track.layer.SimpleSCWLayer;
  */
 public class ConverterFactory {
 
-
 	/**
 	 * Creates a converter in order to convert the data to the new kind of layer.
 	 * @param binList		the bin list
 	 * @param layerType		the new type of layer to convert the data
 	 * @return				the appropriate converter
+	 * @param binSize 		size of the bins	(can be null if the layer type is not a {@link BinList})
+	 * @param method method to generate the BinList (can be null if the layer type is not a {@link BinList})
 	 */
 	@SuppressWarnings("unchecked")
-	private static <T extends GenomicListView<?>> Operation<T> createBinListConverter(BinList binList, LayerType layerType) {
+	private static <T extends GenomicListView<?>> Operation<T> createBinListConverter(BinList binList, LayerType layerType, int binSize, ScoreOperation method) {
 		Operation<T> converter = null;
-
 		if (layerType == LayerType.SCW_LAYER) {
 			converter = (Operation<T>) new SCWLOConvertIntoSimpleSCWList(binList, SCWListType.GENERIC);
 		} else if (layerType == LayerType.GENE_LAYER) {
 			converter = (Operation<T>) new SCWLOConvertIntoGeneList(binList);
 		} else if (layerType == LayerType.MASK_LAYER) {
 			converter = (Operation<T>) new SCWLOConvertIntoSimpleSCWList(binList, SCWListType.MASK);
+		} else if (layerType == LayerType.BIN_LAYER) {
+			converter = (Operation<T>) new SCWLOConvertIntoBinList(binList, binSize, method);
 		}
 		return converter;
 	}
@@ -86,7 +88,7 @@ public class ConverterFactory {
 				SCWListType scwListType = ((SCWList) data).getSCWListType();
 				if (scwListType == SCWListType.BIN) {
 					BinList binList = (BinList) data;
-					converter = createBinListConverter(binList, layerType);
+					converter = createBinListConverter(binList, layerType, binSize, method);
 				} else if ((scwListType == SCWListType.GENERIC) || (scwListType == SCWListType.DENSE)) {
 					SCWList scwList = (SCWList) data;
 					converter = createSCWListConverter(scwList, layerType, binSize, method);
@@ -170,7 +172,7 @@ public class ConverterFactory {
 	 * @return the array of {@link LayerType} a {@link BinLayer} can be converted in.
 	 */
 	public static LayerType[] getBinLayerType() {
-		LayerType[] array = {LayerType.GENE_LAYER, LayerType.SCW_LAYER, LayerType.MASK_LAYER};
+		LayerType[] array = {LayerType.GENE_LAYER, LayerType.SCW_LAYER, LayerType.MASK_LAYER, LayerType.BIN_LAYER};
 		return array;
 	}
 

@@ -22,9 +22,11 @@
 package edu.yu.einstein.genplay.gui.action.layer.SCWLayer;
 
 import javax.swing.ActionMap;
+import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOIndex;
+import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOIndexByChromosome;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
@@ -38,9 +40,9 @@ import edu.yu.einstein.genplay.gui.track.layer.AbstractSCWLayer;
 public final class SCWLAIndex extends TrackListActionOperationWorker<SCWList> {
 
 	private static final long serialVersionUID = -4566157311251154991L; // generated ID
-	private static final String 		ACTION_NAME = "Indexation";		// action name
-	private static final String 		DESCRIPTION =
-			"Index the selected layer";		 							// tooltip
+	private static final String 		ACTION_NAME = "Index";			// action name
+	private static final String 		DESCRIPTION = "Index the scores of the selected " +
+			"layer between specified minimum and maximum values";		// tooltip
 	private AbstractSCWLayer<SCWList>	selectedLayer;					// selected layer
 
 	/**
@@ -78,7 +80,18 @@ public final class SCWLAIndex extends TrackListActionOperationWorker<SCWList> {
 				Number indexMax = NumberOptionPane.getValue(getRootPane(), "Maximum", "New maximum score:", -1000000, 1000000, 100);
 				if(indexMax != null) {
 					SCWList scwList = selectedLayer.getData();
-					Operation<SCWList> operation = new SCWLOIndex(scwList, indexMin.floatValue(), indexMax.floatValue());
+					Operation<SCWList> operation;
+					if (JOptionPane.showConfirmDialog(
+							getRootPane(),
+							"Do you want to index each chromosome independently?",
+							"Index",
+							JOptionPane.YES_NO_OPTION,
+							JOptionPane.QUESTION_MESSAGE
+							) == JOptionPane.YES_OPTION) {
+						operation = new SCWLOIndexByChromosome(scwList, indexMin.floatValue(), indexMax.floatValue());
+					} else {
+						operation = new SCWLOIndex(scwList, indexMin.floatValue(), indexMax.floatValue());
+					}
 					return operation;
 				}
 			}

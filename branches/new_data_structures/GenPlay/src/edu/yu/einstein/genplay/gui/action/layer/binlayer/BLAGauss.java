@@ -35,7 +35,6 @@ import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
 /**
  * Gausses the selected {@link BinLayer}
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class BLAGauss extends TrackListActionOperationWorker<BinList> {
 
@@ -64,6 +63,14 @@ public final class BLAGauss extends TrackListActionOperationWorker<BinList> {
 
 
 	@Override
+	protected void doAtTheEnd(BinList actionResult) {
+		if (actionResult != null) {
+			selectedLayer.setData(actionResult, operation.getDescription());
+		}
+	}
+
+
+	@Override
 	public Operation<BinList> initializeOperation() {
 		selectedLayer = (BinLayer) getValue("Layer");
 		if (selectedLayer != null) {
@@ -84,13 +91,5 @@ public final class BLAGauss extends TrackListActionOperationWorker<BinList> {
 			}
 		}
 		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(BinList actionResult) {
-		if (actionResult != null) {
-			selectedLayer.setData(actionResult, operation.getDescription());
-		}
 	}
 }

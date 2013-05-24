@@ -26,26 +26,19 @@ import javax.swing.Action;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.gui.action.layer.LAConvert;
 import edu.yu.einstein.genplay.gui.action.layer.LASave;
-import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAAddConstant;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAAverage;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLACountNonNullLength;
-import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLADivideConstant;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAFilter;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAIndex;
-import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAIndexByChromosome;
-import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAInvertConstant;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLALog;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAMax;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAMin;
-import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAMultiplyConstant;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLANormalize;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLANormalizeStandardScore;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAOperationWithConstant;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAStandardDeviation;
-import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLASubtractConstant;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLASumScore;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLATwoLayersOperation;
-import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAUniqueScore;
-import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAChangeBinSize;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAConcatenate;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLACorrelate;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLADensity;
@@ -80,13 +73,7 @@ public class BinLayerMenu extends AbstractLayerMenu {
 	@Override
 	protected Action[] getLayerMenuActions() {
 		Action[] actions = {
-				new SCWLAAddConstant(),
-				new SCWLASubtractConstant(),
-				new SCWLAMultiplyConstant(),
-				new SCWLADivideConstant(),
-				new SCWLAInvertConstant(),
-				new SCWLAUniqueScore(),
-				null,
+				new SCWLAOperationWithConstant(),
 				new SCWLATwoLayersOperation(),
 				null,
 				new BLAMovingAverage(),
@@ -94,7 +81,6 @@ public class BinLayerMenu extends AbstractLayerMenu {
 				new BLALoessRegression(),
 				null,
 				new SCWLAIndex(),
-				new SCWLAIndexByChromosome(),
 				new SCWLALog(),
 				new SCWLANormalize(),
 				new SCWLANormalizeStandardScore(),
@@ -110,8 +96,6 @@ public class BinLayerMenu extends AbstractLayerMenu {
 				new SCWLAFilter(),
 				new BLAFindPeaks(),
 				new BLATransfrag(),
-				null,
-				new BLAChangeBinSize(),
 				null,
 				new BLADensity(),
 				new BLAIntervalsScoring(),
