@@ -62,7 +62,7 @@ public class SCWLONormalize implements Operation<SCWList> {
 
 	@Override
 	public SCWList compute() throws InterruptedException, ExecutionException, CloneNotSupportedException {
-		scoreSum = new SCWLOSumScore(inputList, null).compute();
+		scoreSum = inputList.getStatistics().getScoreSum();
 		// we want to multiply each window by the following coefficient
 		final double coef = factor / scoreSum;
 

@@ -43,8 +43,6 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
 public class SCWLONormalizeStandardScore implements Operation<SCWList> {
 
 	private final SCWList 					scwList;			// input list
-	private final SCWLOAverage 				avgOp;				// average
-	private final SCWLOStandardDeviation 	stdevOp;			// standard deviation
 	private boolean							stopped = false;	// true if the operation must be stopped
 
 
@@ -54,17 +52,15 @@ public class SCWLONormalizeStandardScore implements Operation<SCWList> {
 	 */
 	public SCWLONormalizeStandardScore(SCWList scwList) {
 		this.scwList = scwList;
-		avgOp = new SCWLOAverage(scwList, null);
-		stdevOp = new SCWLOStandardDeviation(scwList, null);
 	}
 
 
 	@Override
 	public SCWList compute() throws Exception {
 		// compute average
-		final double avg = avgOp.compute();
+		final double avg = scwList.getStatistics().getAverage();
 		// compute standard deviation
-		final double stdev = stdevOp.compute();
+		final double stdev = scwList.getStatistics().getStandardDeviation();
 
 		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
 		final OperationPool op = OperationPool.getInstance();
@@ -113,7 +109,7 @@ public class SCWLONormalizeStandardScore implements Operation<SCWList> {
 
 	@Override
 	public int getStepCount() {
-		return 1 + avgOp.getStepCount() + stdevOp.getStepCount() + scwList.getCreationStepCount();
+		return 1 + scwList.getCreationStepCount();
 	}
 
 

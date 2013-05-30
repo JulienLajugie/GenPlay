@@ -46,7 +46,7 @@ public class SCWLOMaxScoreToDisplay implements Operation<Float> {
 
 	@Override
 	public Float compute() {
-		final float realMax = scwList.getMaximum();
+		final float realMax = scwList.getStatistics().getMaximum();
 		// if the max is negative we return 0
 		if (realMax <= 0) {
 			return 0f;
@@ -60,7 +60,7 @@ public class SCWLOMaxScoreToDisplay implements Operation<Float> {
 			return realMax;
 		}
 		// otherwise we try to find the closest 10^x value above (average + stdev)
-		float proposedMax = (float) (scwList.getAverage() + scwList.getStandardDeviation());
+		float proposedMax = (float) (scwList.getStatistics().getAverage() + scwList.getStatistics().getStandardDeviation());
 		if (proposedMax <= 0) {
 			return 0f;
 		}

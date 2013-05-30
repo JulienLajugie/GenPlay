@@ -47,7 +47,7 @@ public class SCWLOMinScoreToDisplay implements Operation<Float> {
 	@Override
 	public Float compute() {
 		// if the min is positive we return 0
-		float realMin = scwList.getMinimum();
+		float realMin = scwList.getStatistics().getMinimum();
 		if (realMin >= 0) {
 			return 0f;
 		}
@@ -60,7 +60,7 @@ public class SCWLOMinScoreToDisplay implements Operation<Float> {
 			return realMin;
 		}
 		// otherwise we try to find the closest 10^x value under (average - stdev)
-		float proposedMin = (float) (scwList.getAverage() - scwList.getStandardDeviation());
+		float proposedMin = (float) (scwList.getStatistics().getAverage() - scwList.getStatistics().getStandardDeviation());
 		if (proposedMin >= 0) {
 			return 0f;
 		}

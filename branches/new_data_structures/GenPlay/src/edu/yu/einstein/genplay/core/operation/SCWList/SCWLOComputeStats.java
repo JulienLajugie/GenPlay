@@ -41,22 +41,46 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
 public class SCWLOComputeStats implements Operation<Void> {
 
 	/** Smallest value of the list */
-	private Float minimum = null;
+	private float minimum = Float.POSITIVE_INFINITY;
+
+	/** Smallest values of each chromo */
+	private final float[] minimums;
 
 	/** Greatest value of the list */
-	private Float maximum = null;
+	private float maximum = Float.NEGATIVE_INFINITY;
+
+	/** Greatest value of each chromo */
+	private final float[] maximums;
 
 	/** Average of the list */
-	private Double average = null;
+	private double average = 0d;
+
+	/** Averages of each chromo */
+	private final double[] averages;
 
 	/** Standard deviation of the list */
-	private Double standardDeviation = null;
+	private double standardDeviation = 0d;
+
+	/** Standard deviation of each chromo */
+	private final double[] standardDeviations;
+
+	/** Number of windows with a score different from 0 */
+	private long windowCount = 0l;
+
+	/** Number of windows with a score different from 0 for each chromo*/
+	private final long[] windowCounts;
+
+	/** Sum of the length of the windows with a score different from 0 */
+	private long windowLength = 0l;
+
+	/** Sum of the length of the windows with a score different from 0 for each chromosome */
+	private final long[] windowLengths;
 
 	/** Sum of Float scores of all windows */
-	private Double scoreSum = null;
+	private double scoreSum = 0d;
 
-	/** Count of none-null bins in the BinList */
-	private Long nonNullLength = null;
+	/** Sum of Float scores of all windows for each chromosome */
+	private final double[] scoreSums;
 
 	/**  input list */
 	private final SCWList inputList;
@@ -70,7 +94,16 @@ public class SCWLOComputeStats implements Operation<Void> {
 	 * @param inputList input list to analyze
 	 */
 	public SCWLOComputeStats(SCWList inputList) {
+		// retrieve the project manager
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
 		this.inputList = inputList;
+		minimums = new float[projectChromosomes.size()];
+		maximums = new float[projectChromosomes.size()];
+		averages = new double[projectChromosomes.size()];
+		standardDeviations = new double[projectChromosomes.size()];
+		windowCounts = new long[projectChromosomes.size()];
+		windowLengths = new long[projectChromosomes.size()];
+		scoreSums = new double[projectChromosomes.size()];
 	}
 
 
@@ -84,21 +117,6 @@ public class SCWLOComputeStats implements Operation<Void> {
 		// list for the threads
 		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
 
-		// set the default value
-		minimum = Float.POSITIVE_INFINITY;
-		maximum = Float.NEGATIVE_INFINITY;
-		average = 0d;
-		standardDeviation = 0d;
-		scoreSum = 0d;
-		nonNullLength = 0l;
-
-		// create arrays so each statics variable can be calculated for each chromosome
-		final float[] mins = new float[projectChromosomes.size()];
-		final float[] maxs = new float[projectChromosomes.size()];
-		final double[] stDevs = new double[projectChromosomes.size()];
-		final double[] scoreSums = new double[projectChromosomes.size()];
-		final long[] nonNullLengths = new long[projectChromosomes.size()];
-
 		// computes min / max / total score / non null bin count for each chromosome
 		for(short i = 0; i < inputList.size(); i++)  {
 			final ListView<ScoredChromosomeWindow> currentList = inputList.get(i);
@@ -107,16 +125,17 @@ public class SCWLOComputeStats implements Operation<Void> {
 			Callable<Void> currentThread = new Callable<Void>() {
 				@Override
 				public Void call() throws Exception {
-					mins[currentIndex] = Float.POSITIVE_INFINITY;
-					maxs[currentIndex] = Float.NEGATIVE_INFINITY;
+					minimums[currentIndex] = Float.POSITIVE_INFINITY;
+					maximums[currentIndex] = Float.NEGATIVE_INFINITY;
 					if (currentList != null) {
 						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 							ScoredChromosomeWindow currentWindow = currentList.get(j);
 							if (currentWindow.getScore() != 0) {
-								mins[currentIndex] = Math.min(mins[currentIndex], currentWindow.getScore());
-								maxs[currentIndex] = Math.max(maxs[currentIndex], currentWindow.getScore());
+								minimums[currentIndex] = Math.min(minimums[currentIndex], currentWindow.getScore());
+								maximums[currentIndex] = Math.max(maximums[currentIndex], currentWindow.getScore());
 								scoreSums[currentIndex] += currentWindow.getScore() * currentWindow.getSize();
-								nonNullLengths[currentIndex] += currentWindow.getSize();
+								windowCounts[currentIndex]++;
+								windowLengths[currentIndex] += currentWindow.getSize();
 							}
 						}
 					}
@@ -133,15 +152,16 @@ public class SCWLOComputeStats implements Operation<Void> {
 
 		// compute the genome wide result from the chromosomes results
 		for (int i = 0; i < projectChromosomes.size(); i++) {
-			minimum = Math.min(minimum, mins[i]);
-			maximum = Math.max(maximum, maxs[i]);
+			minimum = Math.min(minimum, minimums[i]);
+			maximum = Math.max(maximum, maximums[i]);
 			scoreSum += scoreSums[i];
-			nonNullLength += nonNullLengths[i];
+			windowCount += windowCounts[i];
+			windowLength += windowLengths[i];
 		}
 
-		if (nonNullLength != 0) {
+		if (windowLength != 0) {
 			// compute the average
-			average = scoreSum / (double) nonNullLength;
+			average = scoreSum / windowLength;
 			threadList.clear();
 
 			// compute the standard deviation for each chromosome
@@ -156,7 +176,7 @@ public class SCWLOComputeStats implements Operation<Void> {
 							for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 								ScoredChromosomeWindow currentWindow = currentList.get(j);
 								if (currentWindow.getScore() != 0) {
-									stDevs[currentIndex] += Math.pow(currentWindow.getScore() - average, 2) * currentWindow.getSize();
+									standardDeviations[currentIndex] += Math.pow(currentWindow.getScore() - average, 2) * currentWindow.getSize();
 								}
 							}
 						}
@@ -173,9 +193,9 @@ public class SCWLOComputeStats implements Operation<Void> {
 
 			// compute the genome wide standard deviation
 			for (int i = 0; i < projectChromosomes.size(); i++) {
-				standardDeviation += stDevs[i];
+				standardDeviation += standardDeviations[i];
 			}
-			standardDeviation = Math.sqrt(standardDeviation / (double) nonNullLength);
+			standardDeviation = Math.sqrt(standardDeviation / windowLength);
 		}
 		return null;
 	}
@@ -184,8 +204,16 @@ public class SCWLOComputeStats implements Operation<Void> {
 	/**
 	 * @return the average
 	 */
-	public Double getAverage() {
+	public double getAverage() {
 		return average;
+	}
+
+
+	/**
+	 * @return the averages
+	 */
+	public double[] getAverages() {
+		return averages;
 	}
 
 
@@ -206,24 +234,32 @@ public class SCWLOComputeStats implements Operation<Void> {
 	/**
 	 * @return the maximum
 	 */
-	public Float getMaximum() {
+	public float getMaximum() {
 		return maximum;
+	}
+
+
+	/**
+	 * @return the maximums
+	 */
+	public float[] getMaximums() {
+		return maximums;
 	}
 
 
 	/**
 	 * @return the minimum
 	 */
-	public Float getMinimum() {
+	public float getMinimum() {
 		return minimum;
 	}
 
 
 	/**
-	 * @return the nonNullLength
+	 * @return the minimums
 	 */
-	public Long getNonNullLength() {
-		return nonNullLength;
+	public float[] getMinimums() {
+		return minimums;
 	}
 
 
@@ -234,24 +270,72 @@ public class SCWLOComputeStats implements Operation<Void> {
 
 
 	/**
-	 * @return the scoreSum
+	 * @return the nonNullLength
 	 */
-	public Double getScoreSum() {
+	public double getScoreSum() {
 		return scoreSum;
+	}
+
+
+	/**
+	 * @return the scoreSums
+	 */
+	public double[] getScoreSums() {
+		return scoreSums;
 	}
 
 
 	/**
 	 * @return the standardDeviation
 	 */
-	public Double getStandardDeviation() {
+	public double getStandardDeviation() {
 		return standardDeviation;
+	}
+
+
+	/**
+	 * @return the standardDeviations
+	 */
+	public double[] getStandardDeviations() {
+		return standardDeviations;
 	}
 
 
 	@Override
 	public int getStepCount() {
 		return 2;
+	}
+
+
+	/**
+	 * @return the window count
+	 */
+	public long getWindowCount() {
+		return windowCount;
+	}
+
+
+	/**
+	 * @return the window counts
+	 */
+	public long[] getWindowCounts() {
+		return windowCounts;
+	}
+
+
+	/**
+	 * @return the window length
+	 */
+	public long getWindowLength() {
+		return windowLength;
+	}
+
+
+	/**
+	 * @return the window lengths
+	 */
+	public long[] getWindowLengths() {
+		return windowLengths;
 	}
 
 
