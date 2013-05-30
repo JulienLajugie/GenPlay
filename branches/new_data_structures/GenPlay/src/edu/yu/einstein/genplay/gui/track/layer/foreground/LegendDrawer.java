@@ -46,13 +46,86 @@ import edu.yu.einstein.genplay.util.colors.Colors;
  */
 public class LegendDrawer implements Drawer, MouseListener, MouseMotionListener {
 
+	/**
+	 * This class processes the opening & the closing of the legend
+	 * @author Nicolas Fourel
+	 * @version 0.1
+	 */
+	private class Rolling extends Thread {
+
+		/** Option to open the legend */
+		public static final int OPEN = 1;
+		/** Option to close the legend */
+		public static final int CLOSE = 0;
+		/** The lower, the faster! */
+		private static final int SPEED = 1;
+
+		private final int motion; // Option to open or close the legend
+
+
+		/**
+		 * Constructor of {@link Rolling}
+		 * @param option to open or close the legend
+		 */
+		public Rolling (int option) {
+			motion = option;
+		}
+
+
+		/**
+		 * Close the legend
+		 */
+		private void close () {
+			while (legendWidth >= 0) {
+				legendWidth--;
+				repaint();
+			}
+		}
+
+
+		/**
+		 * Open the legend
+		 */
+		private void open () {
+			while (legendWidth <= originalLegendWidth) {
+				legendWidth++;
+				repaint();
+			}
+		}
+
+
+		/**
+		 * Repaint the legend
+		 */
+		private void repaint () {
+			parent.getTrack().getGraphicsPanel().repaint();
+			try {
+				Thread.sleep(SPEED);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
+
+		@Override
+		public void run() {
+			if (motion == OPEN) {
+				open();
+				isVisible = true;
+			} else if (motion == CLOSE) {
+				isVisible = false;
+				close();
+			}
+		}
+
+	}
 	private final Layer<?> parent;
 	private final int widthOffset = 2; 				// Space between the border of the rectangle and the text.
 	private final int heightOffset = 2; 			// Space between the border of the rectangle and the top of the track.
 	private final int transparency = 240;			// Transparency of the legend and the roller.
 	private final int rollerWidth = 7;				// Width of the roller.
-	private final int rollerHeight = 15;			// Height of the roller.
 
+	private final int rollerHeight = 15;			// Height of the roller.
 	private Graphics graphic;						// The track graphic.
 	private Graphics gRoller;						// The graphic of the roller.
 	private Graphics gLegend;						// The graphic of the legend.
@@ -62,7 +135,9 @@ public class LegendDrawer implements Drawer, MouseListener, MouseMotionListener 
 	private int trackWidth;							// Width of the track.
 	private int originalLegendWidth;				// Original width of the legend.
 	private int legendWidth;						// Width of the legend.
+
 	private int legendHeight;						// Height of the legend.
+
 
 	private boolean isVisible;						// If the legend is visible or not.
 
@@ -79,47 +154,12 @@ public class LegendDrawer implements Drawer, MouseListener, MouseMotionListener 
 
 
 	/**
-	 * Register the {@link ForegroundLayer} listeners to the {@link GraphicsPanel}
-	 * @param graphicsPanel
+	 * Close the legend
 	 */
-	private void registerListener (GraphicsPanel graphicsPanel) {
-		graphicsPanel.addMouseListener(this);
-		graphicsPanel.addMouseMotionListener(this);
-	}
-
-
-	@Override
-	public void draw(Graphics g, int width, int height) {
-		g.setFont(TrackConstants.FONT_LEGEND);
-		initialize(g, width);
-		draw(g);
-	}
-
-
-	/**
-	 * Initialize all the drawing attributes
-	 * @param g
-	 * @param width
-	 */
-	private void initialize (Graphics g, int width) {
-		graphic = g;
-		trackWidth = width;
-
-		// Set names
-		trackName = null;
-		activeLayer = null;
-		if ((parent.getTrack().getName() != null) && (!parent.getTrack().getName().trim().isEmpty())) {
-			trackName = parent.getTrack().getName();
-			activeLayer = parent.getTrack().getActiveLayer();
-		}
-		layers = parent.getTrack().getLayers().getLayers();
-
-		// Get area dimensions
-		if (isVisible) {
-			legendWidth = getMaxWidth();
-			originalLegendWidth = legendWidth;
-		}
-		legendHeight = getHeight();
+	private void closeLegend () {
+		Thread rolling = new Rolling(Rolling.CLOSE);
+		rolling.start();
+		parent.getTrack().getGraphicsPanel().updateCursor();
 	}
 
 
@@ -143,29 +183,11 @@ public class LegendDrawer implements Drawer, MouseListener, MouseMotionListener 
 	}
 
 
-	/**
-	 * Draw the legend area elements (borders and rectangle content).
-	 */
-	private void drawLegendArea () {
-		Color rect = Colors.addTransparency(Colors.WHITE, transparency);
-		gLegend.setColor(rect);
-		gLegend.fillRect(0, 0, gLegend.getClipBounds().width, gLegend.getClipBounds().height - 1);
-		gLegend.setColor(Colors.BLACK);
-		gLegend.drawRect(0, 0, gLegend.getClipBounds().width, gLegend.getClipBounds().height - 1);
-	}
-
-
-	/**
-	 * Draw the name of the track
-	 */
-	private void drawTrackName () {
-		if (trackName != null) {
-			FontMetrics fm = gLegend.getFontMetrics();
-			int textHeight = fm.getHeight();									// height of the text
-
-			// Draw the track name
-			gLegend.drawString(trackName, widthOffset, textHeight);
-		}
+	@Override
+	public void draw(Graphics g, int width, int height) {
+		g.setFont(TrackConstants.FONT_LEGEND);
+		initialize(g, width);
+		draw(g);
 	}
 
 
@@ -212,6 +234,59 @@ public class LegendDrawer implements Drawer, MouseListener, MouseMotionListener 
 
 
 	/**
+	 * Draw the legend area elements (borders and rectangle content).
+	 */
+	private void drawLegendArea () {
+		Color rect = Colors.addTransparency(Colors.WHITE, transparency);
+		gLegend.setColor(rect);
+		gLegend.fillRect(0, 0, gLegend.getClipBounds().width, gLegend.getClipBounds().height - 1);
+		gLegend.setColor(Colors.BLACK);
+		gLegend.drawRect(0, 0, gLegend.getClipBounds().width, gLegend.getClipBounds().height - 1);
+	}
+
+
+	/**
+	 * Draw the roller graphic
+	 */
+	private void drawRoller () {
+		// Set metrics
+		int backgroundHeight = gRoller.getClipBounds().height;
+		int backgroundWidth = gRoller.getClipBounds().width;
+		int dotDiameter = 3;
+		int dotNumber = 3;
+		int dotOffset = (backgroundHeight / dotNumber) - 1;
+		int dotX = (backgroundWidth - dotDiameter) / 2;
+
+		// Draw background
+		Color backgroundColor = Colors.addTransparency(Colors.LIGHT_GREY, transparency);
+		gRoller.setColor(backgroundColor);
+		gRoller.fillRect(0, 0, backgroundWidth, backgroundHeight);
+
+		// Draw dots
+		gRoller.setColor(Colors.BLACK);
+		int currentDotY = 2;
+		for (int i = 0; i < dotNumber; i++) {
+			gRoller.fillOval(dotX, currentDotY, dotDiameter, dotDiameter);
+			currentDotY += dotOffset;
+		}
+	}
+
+
+	/**
+	 * Draw the name of the track
+	 */
+	private void drawTrackName () {
+		if (trackName != null) {
+			FontMetrics fm = gLegend.getFontMetrics();
+			int textHeight = fm.getHeight();									// height of the text
+
+			// Draw the track name
+			gLegend.drawString(trackName, widthOffset, textHeight);
+		}
+	}
+
+
+	/**
 	 * Draw a {@link VariantLayer} name
 	 * @param layer
 	 * @param y
@@ -243,46 +318,31 @@ public class LegendDrawer implements Drawer, MouseListener, MouseMotionListener 
 	}
 
 
+
 	/**
-	 * Print a string
-	 * @param s	the string
-	 * @param x	the x position
-	 * @param y the y position
-	 * @param color the color of the text
-	 * @return the x position the string continues
+	 * @return the height of the legend area
 	 */
-	private int printString (String s, int x, int y, Color color) {
-		gLegend.setColor(Colors.BLACK);
-		gLegend.drawString(s, x, y);
-		return x += gLegend.getFontMetrics().stringWidth(s);
+	private int getHeight () {
+		int lines = 0;
+
+		if (trackName != null) {
+			lines++;
+		}
+
+		lines += layers.length;
+
+		FontMetrics fm = graphic.getFontMetrics();
+		int height = (lines * fm.getHeight()) + (heightOffset * 2);
+
+		return height;
 	}
 
 
-
 	/**
-	 * Draw the roller graphic
+	 * @return the X position where the legend starts on the track
 	 */
-	private void drawRoller () {
-		// Set metrics
-		int backgroundHeight = gRoller.getClipBounds().height;
-		int backgroundWidth = gRoller.getClipBounds().width;
-		int dotDiameter = 3;
-		int dotNumber = 3;
-		int dotOffset = (backgroundHeight / dotNumber) - 1;
-		int dotX = (backgroundWidth - dotDiameter) / 2;
-
-		// Draw background
-		Color backgroundColor = Colors.addTransparency(Colors.LIGHT_GREY, transparency);
-		gRoller.setColor(backgroundColor);
-		gRoller.fillRect(0, 0, backgroundWidth, backgroundHeight);
-
-		// Draw dots
-		gRoller.setColor(Colors.BLACK);
-		int currentDotY = 2;
-		for (int i = 0; i < dotNumber; i++) {
-			gRoller.fillOval(dotX, currentDotY, dotDiameter, dotDiameter);
-			currentDotY += dotOffset;
-		}
+	private int getLegendX () {
+		return trackWidth - legendWidth;
 	}
 
 
@@ -310,21 +370,10 @@ public class LegendDrawer implements Drawer, MouseListener, MouseMotionListener 
 
 
 	/**
-	 * @return the height of the legend area
+	 * @return the Y position where the roller starts on the track
 	 */
-	private int getHeight () {
-		int lines = 0;
-
-		if (trackName != null) {
-			lines++;
-		}
-
-		lines += layers.length;
-
-		FontMetrics fm = graphic.getFontMetrics();
-		int height = (lines * fm.getHeight()) + (heightOffset * 2);
-
-		return height;
+	private int getRollerX () {
+		return getLegendX() - rollerWidth;
 	}
 
 
@@ -345,18 +394,29 @@ public class LegendDrawer implements Drawer, MouseListener, MouseMotionListener 
 
 
 	/**
-	 * @return the X position where the legend starts on the track
+	 * Initialize all the drawing attributes
+	 * @param g
+	 * @param width
 	 */
-	private int getLegendX () {
-		return trackWidth - legendWidth;
-	}
+	private void initialize (Graphics g, int width) {
+		graphic = g;
+		trackWidth = width;
 
+		// Set names
+		trackName = null;
+		activeLayer = null;
+		if ((parent.getTrack().getName() != null) && (!parent.getTrack().getName().trim().isEmpty())) {
+			trackName = parent.getTrack().getName();
+			activeLayer = parent.getTrack().getActiveLayer();
+		}
+		layers = parent.getTrack().getLayers().getLayers();
 
-	/**
-	 * @return the Y position where the roller starts on the track
-	 */
-	private int getRollerX () {
-		return getLegendX() - rollerWidth;
+		// Get area dimensions
+		if (isVisible) {
+			legendWidth = getMaxWidth();
+			originalLegendWidth = legendWidth;
+		}
+		legendHeight = getHeight();
 	}
 
 
@@ -384,18 +444,6 @@ public class LegendDrawer implements Drawer, MouseListener, MouseMotionListener 
 
 
 	@Override
-	public void mouseDragged(MouseEvent e) {}
-
-
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		if (isInRoller(e.getPoint())) {
-			parent.getTrack().getGraphicsPanel().setCursor(new Cursor(Cursor.HAND_CURSOR));
-		}
-	}
-
-
-	@Override
 	public void mouseClicked(MouseEvent arg0) {
 		if ((arg0.getButton() == MouseEvent.BUTTON1) && isInRoller(arg0.getPoint())) {
 			if (isVisible) {
@@ -407,15 +455,33 @@ public class LegendDrawer implements Drawer, MouseListener, MouseMotionListener 
 	}
 
 
-	/**
-	 * Close the legend
-	 */
-	private void closeLegend () {
-		Thread rolling = new Rolling(Rolling.CLOSE);
-		rolling.start();
-		parent.getTrack().getGraphicsPanel().updateCursor();
+	@Override
+	public void mouseDragged(MouseEvent e) {}
+
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {}
+
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {}
+
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		if (isInRoller(e.getPoint())) {
+			parent.getTrack().getGraphicsPanel().setCursor(new Cursor(Cursor.HAND_CURSOR));
+		} else {
+			parent.getTrack().getGraphicsPanel().updateCursor();
+		}
 	}
 
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {}
 
 	/**
 	 * Open the legend
@@ -425,91 +491,27 @@ public class LegendDrawer implements Drawer, MouseListener, MouseMotionListener 
 		rolling.start();
 	}
 
-
-	@Override
-	public void mouseEntered(MouseEvent arg0) {}
-
-	@Override
-	public void mouseExited(MouseEvent arg0) {}
-
-	@Override
-	public void mousePressed(MouseEvent arg0) {}
-
-	@Override
-	public void mouseReleased(MouseEvent arg0) {}
+	/**
+	 * Print a string
+	 * @param s	the string
+	 * @param x	the x position
+	 * @param y the y position
+	 * @param color the color of the text
+	 * @return the x position the string continues
+	 */
+	private int printString (String s, int x, int y, Color color) {
+		gLegend.setColor(Colors.BLACK);
+		gLegend.drawString(s, x, y);
+		return x += gLegend.getFontMetrics().stringWidth(s);
+	}
 
 
 	/**
-	 * This class processes the opening & the closing of the legend
-	 * @author Nicolas Fourel
-	 * @version 0.1
+	 * Register the {@link ForegroundLayer} listeners to the {@link GraphicsPanel}
+	 * @param graphicsPanel
 	 */
-	private class Rolling extends Thread {
-
-		/** Option to open the legend */
-		public static final int OPEN = 1;
-		/** Option to close the legend */
-		public static final int CLOSE = 0;
-		/** The lower, the faster! */
-		private static final int SPEED = 1;
-
-		private final int motion; // Option to open or close the legend
-
-
-		/**
-		 * Constructor of {@link Rolling}
-		 * @param option to open or close the legend
-		 */
-		public Rolling (int option) {
-			motion = option;
-		}
-
-
-		@Override
-		public void run() {
-			if (motion == OPEN) {
-				open();
-				isVisible = true;
-			} else if (motion == CLOSE) {
-				isVisible = false;
-				close();
-			}
-		}
-
-
-		/**
-		 * Open the legend
-		 */
-		private void open () {
-			while (legendWidth <= originalLegendWidth) {
-				legendWidth++;
-				repaint();
-			}
-		}
-
-
-		/**
-		 * Close the legend
-		 */
-		private void close () {
-			while (legendWidth >= 0) {
-				legendWidth--;
-				repaint();
-			}
-		}
-
-
-		/**
-		 * Repaint the legend
-		 */
-		private void repaint () {
-			parent.getTrack().getGraphicsPanel().repaint();
-			try {
-				Thread.sleep(SPEED);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-
+	private void registerListener (GraphicsPanel graphicsPanel) {
+		graphicsPanel.addMouseListener(this);
+		graphicsPanel.addMouseMotionListener(this);
 	}
 }

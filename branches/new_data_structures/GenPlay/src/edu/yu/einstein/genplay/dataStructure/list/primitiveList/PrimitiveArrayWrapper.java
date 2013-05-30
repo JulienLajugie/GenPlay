@@ -24,7 +24,7 @@ package edu.yu.einstein.genplay.dataStructure.list.primitiveList;
 import java.util.List;
 
 /**
- * 
+ * Interface implemented by the different type of Primitive List
  * @param <T>
  * @author Julien Lajugie
  */
