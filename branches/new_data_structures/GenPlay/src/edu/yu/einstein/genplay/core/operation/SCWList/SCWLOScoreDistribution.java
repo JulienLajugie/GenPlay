@@ -109,8 +109,8 @@ public class SCWLOScoreDistribution implements Operation<double [][][]>{
 	 */
 	public double[][] singleSCWListResult (final SCWList scwList) throws InterruptedException, ExecutionException {
 		// search the greatest and smallest score
-		double max = Math.max(0, scwList.getMaximum());
-		double min = Math.min(0, scwList.getMinimum());
+		double max = Math.max(0, scwList.getStatistics().getMaximum());
+		double min = Math.min(0, scwList.getStatistics().getMinimum());
 		// search the score of the first bin
 		final double startPoint = Math.floor(min / scoreBinSize) * scoreBinSize;
 		// distance from the max to the first score

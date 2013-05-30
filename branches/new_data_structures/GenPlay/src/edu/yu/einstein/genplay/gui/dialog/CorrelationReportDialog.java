@@ -200,7 +200,6 @@ public class CorrelationReportDialog extends JDialog {
 	/**
 	 * Redefines the sorting process for the column containing the chromosome
 	 * @author Julien Lajugie
-	 * @version 0.1
 	 * @param <T>
 	 */
 	private class CorrelationJTableSorter<T extends TableModel> extends TableRowSorter<T > {

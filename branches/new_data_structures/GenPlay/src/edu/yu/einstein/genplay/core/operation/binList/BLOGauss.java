@@ -36,6 +36,7 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinListBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.util.NumberFormats;
 
 
 /**
@@ -44,22 +45,22 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
  */
 public class BLOGauss implements Operation<BinList> {
 
-	private final BinList 	binList;		// input list
-	private final int 		sigma;			// sigma parameter of the gaussian
-	private final boolean	fillNullValues; // true to fill the null values
-	private boolean			stopped = false;// true if the operation must be stopped
+	private final BinList 	binList;			// input list
+	private final int 		movingWindowWidth;	// size of the moving window in bp
+	private final boolean	fillNullValues; 	// true to fill the null values
+	private boolean			stopped = false;	// true if the operation must be stopped
 
 
 	/**
 	 * Creates an instance of {@link BLOGauss}
 	 * Applies a gaussian filter on the BinList and returns the result in a new BinList.
 	 * @param binList {@link BinList} to gauss
-	 * @param sigma parameter of the gaussian filter
+	 * @param movingWindowWidth size of the moving window in bp
 	 * @param fillNullValues set to true to fill the null values
 	 */
-	public BLOGauss(BinList binList, int sigma, boolean fillNullValues) {
+	public BLOGauss(BinList binList, int movingWindowWidth, boolean fillNullValues) {
 		this.binList = binList;
-		this.sigma = sigma;
+		this.movingWindowWidth = movingWindowWidth;
 		this.fillNullValues = fillNullValues;
 	}
 
@@ -67,7 +68,8 @@ public class BLOGauss implements Operation<BinList> {
 	@Override
 	public BinList compute() throws InvalidParameterException, InterruptedException, ExecutionException, CloneNotSupportedException  {
 		final int binSize =  binList.getBinSize();
-		final int halfWidth = (2 * sigma) / binSize;
+		final int sigma = movingWindowWidth / 4;
+		final int halfWidth = movingWindowWidth / 2 / binSize;
 		// we create an array of coefficients. The index correspond to a distance and for each distance we calculate a coefficient
 		final double[] coefTab = new double[halfWidth + 1];
 
@@ -125,7 +127,12 @@ public class BLOGauss implements Operation<BinList> {
 
 	@Override
 	public String getDescription() {
-		return "Operation: Gauss, Sigma = " + sigma + "bp";
+		final int sigma = movingWindowWidth / 4;
+		return "Operation: Gauss, Sigma = "
+		+ NumberFormats.getPositionFormat().format(sigma)
+		+ "bp, Moving Window = "
+		+ NumberFormats.getPositionFormat().format(movingWindowWidth)
+		+"bp";
 	}
 
 

@@ -21,40 +21,38 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.layer.SCWLayer;
 
-import javax.swing.ActionMap;
-import javax.swing.JOptionPane;
+import java.awt.event.ActionEvent;
 
-import edu.yu.einstein.genplay.core.operation.Operation;
-import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOAverage;
+import javax.swing.ActionMap;
+
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
-import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.track.layer.AbstractSCWLayer;
-import edu.yu.einstein.genplay.util.NumberFormats;
-import edu.yu.einstein.genplay.util.Utils;
+import edu.yu.einstein.genplay.gui.action.TrackListAction;
+import edu.yu.einstein.genplay.gui.dialog.SCWListStatsDialog.SCWListStatsDialog;
+import edu.yu.einstein.genplay.gui.track.layer.Layer;
 
 
 /**
- * Computes the average of the scores of the selected {@link AbstractSCWLayer}.
+ * Shows stats about the data of the selected layer
  * @author Julien Lajugie
  */
-public class SCWLAAverage extends TrackListActionOperationWorker<Double> {
+public final class SCWLAShowStatistics extends TrackListAction {
 
-	private static final long serialVersionUID = 4662911501034876210L;
-	private static final String 	ACTION_NAME = "Average";			// action name
+	private static final long serialVersionUID = -3864460354387970028L;	// generated ID
+	private static final String 	ACTION_NAME = "Show Statistics";	// action name
 	private static final String 	DESCRIPTION =
-			"Compute the average of the scores of the selected layer";	// tooltip
+			"Show statistics about the selected layer";					// tooltip
 
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = SCWLAAverage.class.getName();
+	public static final String ACTION_KEY = SCWLAShowStatistics.class.getName();
 
 
 	/**
-	 * Creates an instance of {@link SCWLAAverage}
+	 * Creates an instance of {@link SCWLAShowStatistics}
 	 */
-	public SCWLAAverage() {
+	public SCWLAShowStatistics() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -63,24 +61,11 @@ public class SCWLAAverage extends TrackListActionOperationWorker<Double> {
 
 
 	@Override
-	protected void doAtTheEnd(Double actionResult) {
-		if (actionResult != null) {
-			JOptionPane.showMessageDialog(getRootPane(), "Average: \n" + NumberFormats.getScoreFormat().format(actionResult), "Average", JOptionPane.INFORMATION_MESSAGE);
+	public void actionPerformed(ActionEvent e) {
+		Layer<?> selectedLayer = (Layer<?>) getValue("Layer");
+		if ((selectedLayer != null) && (selectedLayer.getData() instanceof SCWList)) {
+			SCWList scwList = (SCWList) selectedLayer.getData();
+			SCWListStatsDialog.showDialog(getRootPane(), scwList.getStatistics());
 		}
-	}
-
-
-	@Override
-	public Operation<Double> initializeOperation() {
-		AbstractSCWLayer<?> selectedLayer = (AbstractSCWLayer<?>) getValue("Layer");
-		if (selectedLayer != null) {
-			boolean[] selectedChromo = Utils.chooseChromosomes(getRootPane());
-			if (selectedChromo != null) {
-				SCWList scwList = selectedLayer.getData();
-				operation = new SCWLOAverage(scwList, selectedChromo);
-				return operation;
-			}
-		}
-		return null;
 	}
 }

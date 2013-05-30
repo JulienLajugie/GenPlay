@@ -71,8 +71,8 @@ public class SCWLOIndex implements Operation<SCWList> {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
 
-		final float oldMin = scwList.getMinimum();
-		final float oldMax = scwList.getMaximum();
+		final float oldMin = scwList.getStatistics().getMinimum();
+		final float oldMax = scwList.getStatistics().getMaximum();
 		// We calculate the difference between the highest and the lowest value
 		final float oldDistance = oldMax - oldMin;
 		if (oldDistance == 0) {

@@ -45,7 +45,7 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
 public class BLOLoessRegression implements Operation<BinList> {
 
 	private final BinList 	binList;			// input list
-	private final int 		movingWindowWidth;				// size of the moving window in bp
+	private final int 		movingWindowWidth;	// size of the moving window in bp
 	private final boolean	fillNullValues; 	// true to fill the null values
 	private boolean			stopped = false;	// true if the operation must be stopped
 

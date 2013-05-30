@@ -32,12 +32,12 @@ import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOComputeStats;
 import edu.yu.einstein.genplay.core.operation.binList.BLOComputeAverageList;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.bin.BinListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWListStats.SCWListStats;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.AbstractListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
@@ -87,24 +87,8 @@ public final class BinList extends AbstractListView<ListView<ScoredChromosomeWin
 	/** {@link GenomicDataArrayList} containing the Genes */
 	private final BinListView[] data;
 
-	/** Smallest value of the list */
-	private final float minimum;
-
-	/** Greatest value of the list */
-	private final float maximum;
-
-	/** Average of the list */
-	private final double average;
-
-	/** Standard deviation of the list */
-	private final double standardDeviation;
-
-	/** Sum of the scores of all windows */
-	private final double scoreSum;
-
-
-	/** Count of none-null bins in the BinList */
-	private final long nonNullLength;
+	/** Statistics of the list */
+	private final SCWListStats listStats;
 
 
 	/**
@@ -126,14 +110,7 @@ public final class BinList extends AbstractListView<ListView<ScoredChromosomeWin
 		}
 		binSize = retrieveBinSize();
 		// computes some statistic values for this list
-		SCWLOComputeStats operation = new SCWLOComputeStats(this);
-		operation.compute();
-		maximum = operation.getMaximum();
-		minimum = operation.getMinimum();
-		average = operation.getAverage();
-		standardDeviation = operation.getStandardDeviation();
-		nonNullLength = operation.getNonNullLength();
-		scoreSum = operation.getScoreSum();
+		listStats = new SCWListStats(this);
 		averagedList = new ArrayList<List<ListView<ScoredChromosomeWindow>>>();
 		for (int currentFactor: AVERAGE_BIN_SIZE_FACTORS) {
 			averagedList.add(new BLOComputeAverageList(this, currentFactor).compute());
@@ -169,12 +146,6 @@ public final class BinList extends AbstractListView<ListView<ScoredChromosomeWin
 	}
 
 
-	@Override
-	public double getAverage() {
-		return average;
-	}
-
-
 	/**
 	 * @param index
 	 * @return The averaged list of bins with a bin size equals to ({@link BinList#getBinSize()} * {@link #AVERAGE_BIN_SIZE_FACTORS}[index])
@@ -200,24 +171,6 @@ public final class BinList extends AbstractListView<ListView<ScoredChromosomeWin
 
 
 	@Override
-	public float getMaximum() {
-		return maximum;
-	}
-
-
-	@Override
-	public float getMinimum() {
-		return minimum;
-	}
-
-
-	@Override
-	public long getNonNullLength() {
-		return nonNullLength;
-	}
-
-
-	@Override
 	public float getScore(Chromosome chromosome, int position) {
 		int binIndex = position / binSize;
 		if (binIndex < size(chromosome)) {
@@ -229,20 +182,14 @@ public final class BinList extends AbstractListView<ListView<ScoredChromosomeWin
 
 
 	@Override
-	public double getScoreSum() {
-		return scoreSum;
-	}
-
-
-	@Override
 	public SCWListType getSCWListType() {
 		return SCWListType.BIN;
 	}
 
 
 	@Override
-	public double getStandardDeviation() {
-		return standardDeviation;
+	public SCWListStats getStatistics() {
+		return listStats;
 	}
 
 

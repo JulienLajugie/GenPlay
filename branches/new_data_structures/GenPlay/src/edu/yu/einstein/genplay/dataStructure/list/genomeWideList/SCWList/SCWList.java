@@ -24,6 +24,7 @@ package edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWListStats.SCWListStats;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
 
@@ -35,33 +36,9 @@ public interface SCWList extends GenomicListView<ScoredChromosomeWindow> {
 
 
 	/**
-	 * @return the average score of the windows of the list
-	 */
-	public double getAverage();
-
-
-	/**
 	 * @return the number of steps needed to create a {@link SCWList} simimlar to this one
 	 */
 	public int getCreationStepCount();
-
-
-	/**
-	 * @return the greatest score of the windows of the list list
-	 */
-	public float getMaximum();
-
-
-	/**
-	 * @return the smallest score of the windows of the list list
-	 */
-	public float getMinimum();
-
-
-	/**
-	 * @return the sum of the lengths (in bp) of none-null windows of the list
-	 */
-	public long getNonNullLength();
 
 
 	/**
@@ -73,19 +50,14 @@ public interface SCWList extends GenomicListView<ScoredChromosomeWindow> {
 
 
 	/**
-	 * @return the sum of the scores of the windows of the list
-	 */
-	public double getScoreSum();
-
-
-	/**
 	 * @return the type of the {@link SCWList}
 	 */
 	public SCWListType getSCWListType();
 
 
+
 	/**
-	 * @return the standard deviation of the scores of the list
+	 * @return the statistics of the {@link SCWList}
 	 */
-	public double getStandardDeviation();
+	public SCWListStats getStatistics();
 }

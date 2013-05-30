@@ -29,7 +29,6 @@ import java.util.concurrent.Callable;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
-import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOSumScore;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
@@ -76,7 +75,7 @@ public class GLOScoreFromSCWList implements Operation<GeneList> {
 		// in the case of RPKM we need to know the score count genome wide
 		final double scoreCount;
 		if (geneScoreType == GeneScoreType.RPKM) {
-			scoreCount = new SCWLOSumScore(scwList, null).compute();
+			scoreCount = scwList.getStatistics().getScoreSum();
 		} else {
 			scoreCount = 0;
 		}
@@ -195,11 +194,7 @@ public class GLOScoreFromSCWList implements Operation<GeneList> {
 
 	@Override
 	public int getStepCount() {
-		int stepCount = 2;
-		if (geneScoreType == GeneScoreType.RPKM) {
-			stepCount += new SCWLOSumScore(scwList, null).getStepCount();
-		}
-		return stepCount;
+		return 2;
 	}
 
 

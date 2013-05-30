@@ -29,8 +29,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOCountNonNullLength;
-import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOSumScore;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.core.stat.MathFunctions;
 import edu.yu.einstein.genplay.core.stat.Poisson;
@@ -376,9 +374,7 @@ public class IslandFinder implements Serializable, Stoppable {
 	 */
 	private double lambdaCalcul () throws InterruptedException, ExecutionException {
 		double result = 0.1;
-		SCWLOSumScore totalScore = new SCWLOSumScore(binList, null);
-		SCWLOCountNonNullLength windowsLength = new SCWLOCountNonNullLength(binList, null);
-		result = (totalScore.compute() * binList.getBinSize()) / windowsLength.compute();
+		result = binList.getStatistics().getScoreSum() / binList.getStatistics().getWindowLength();
 		return result;
 	}
 

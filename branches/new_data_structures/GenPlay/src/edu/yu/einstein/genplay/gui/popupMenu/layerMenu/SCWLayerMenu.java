@@ -26,22 +26,16 @@ import javax.swing.Action;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.gui.action.layer.LAConvert;
 import edu.yu.einstein.genplay.gui.action.layer.LASave;
-import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAAverage;
-import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLACountNonNullLength;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAFilter;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAIndex;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLALog;
-import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAMax;
-import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAMin;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLANormalize;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLANormalizeStandardScore;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAOperationWithConstant;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAScoreDistribution;
-import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAStandardDeviation;
-import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLASumScore;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAShowStatistics;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLATransfrag;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLATwoLayersOperation;
-import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAWindowCount;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.SimpleSCWLayer;
 
@@ -74,13 +68,7 @@ public class SCWLayerMenu extends AbstractLayerMenu {
 				new SCWLANormalize(),
 				new SCWLANormalizeStandardScore(),
 				null,
-				new SCWLAMin(),
-				new SCWLAMax(),
-				new SCWLACountNonNullLength(),
-				new SCWLASumScore(),
-				new SCWLAAverage(),
-				new SCWLAStandardDeviation(),
-				new SCWLAWindowCount(),
+				new SCWLAShowStatistics(),
 				null,
 				new SCWLAFilter(),
 				new SCWLATransfrag(),

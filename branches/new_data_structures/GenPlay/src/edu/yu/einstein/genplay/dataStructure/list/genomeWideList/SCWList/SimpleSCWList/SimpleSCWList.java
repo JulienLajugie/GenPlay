@@ -32,8 +32,6 @@ import java.util.concurrent.ExecutionException;
 import edu.yu.einstein.genplay.core.comparator.ChromosomeWindowStartComparator;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOComputeStats;
-import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOCountNonNullLength;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
@@ -41,6 +39,7 @@ import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListView;
 import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.mask.MaskListView;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWListStats.SCWListStats;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.SimpleGeneList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.AbstractListView;
@@ -85,24 +84,8 @@ public final class SimpleSCWList extends AbstractListView<ListView<ScoredChromos
 	/** Type of the list */
 	private final SCWListType scwListType;
 
-	/** Smallest value of the list */
-	private final float minimum;
-
-	/** Greatest value of the list */
-	private final float maximum;
-
-	/** Average of the list */
-	private final double average;
-
-	/** Standard deviation of the list */
-	private final double standardDeviation;
-
-	/** Sum of the scores of all windows */
-	private final double scoreSum;
-
-
-	/** Count of none-null bins in the BinList */
-	private final long nonNullLength;
+	/** Statistics of the list */
+	private final SCWListStats listStats;
 
 
 	/**
@@ -122,23 +105,7 @@ public final class SimpleSCWList extends AbstractListView<ListView<ScoredChromos
 		// check if the listviews are valid and retrieve the type of the list
 		scwListType = retrieveListType(data);
 		// computes some statistic values for this list
-		if (scwListType == SCWListType.MASK) {
-			maximum = 1f;
-			minimum = 1f;
-			average = 1f;
-			standardDeviation = 0f;
-			nonNullLength = new SCWLOCountNonNullLength(this, null).compute();
-			scoreSum = nonNullLength;
-		} else {
-			SCWLOComputeStats operation = new SCWLOComputeStats(this);
-			operation.compute();
-			maximum = operation.getMaximum();
-			minimum = operation.getMinimum();
-			average = operation.getAverage();
-			standardDeviation = operation.getStandardDeviation();
-			nonNullLength = operation.getNonNullLength();
-			scoreSum = operation.getScoreSum();
-		}
+		listStats = new SCWListStats(this);
 	}
 
 
@@ -168,34 +135,12 @@ public final class SimpleSCWList extends AbstractListView<ListView<ScoredChromos
 	}
 
 
-	@Override
-	public double getAverage() {
-		return average;
-	}
-
 
 	@Override
 	public int getCreationStepCount() {
 		return getCreationStepCount(scwListType);
 	}
 
-
-	@Override
-	public float getMaximum() {
-		return maximum;
-	}
-
-
-	@Override
-	public float getMinimum() {
-		return minimum;
-	}
-
-
-	@Override
-	public long getNonNullLength() {
-		return nonNullLength;
-	}
 
 
 	@Override
@@ -218,20 +163,14 @@ public final class SimpleSCWList extends AbstractListView<ListView<ScoredChromos
 
 
 	@Override
-	public double getScoreSum() {
-		return scoreSum;
-	}
-
-
-	@Override
 	public SCWListType getSCWListType() {
 		return scwListType;
 	}
 
 
 	@Override
-	public double getStandardDeviation() {
-		return standardDeviation;
+	public SCWListStats getStatistics() {
+		return listStats;
 	}
 
 

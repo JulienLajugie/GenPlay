@@ -104,8 +104,8 @@ public class BLOScoreDistribution extends JComponent implements Operation<double
 	 */
 	public double[][] singleBinListResult (final BinList binList) throws InterruptedException, ExecutionException {
 		// search the greatest and smallest score
-		float max = Math.max(0, binList.getMaximum());
-		float min = Math.min(0, binList.getMinimum());
+		float max = Math.max(0, binList.getStatistics().getMaximum());
+		float min = Math.min(0, binList.getStatistics().getMinimum());
 		// search the score of the first bin
 		final double startPoint = Math.floor(min / scoreBinSize) * scoreBinSize;
 		// distance from the max to the first score

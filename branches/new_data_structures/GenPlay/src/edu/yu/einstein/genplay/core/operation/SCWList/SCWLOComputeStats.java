@@ -153,17 +153,33 @@ public class SCWLOComputeStats implements Operation<Void> {
 		// compute the genome wide result from the chromosomes results
 		for (int i = 0; i < projectChromosomes.size(); i++) {
 			minimum = Math.min(minimum, minimums[i]);
+			if (Float.isInfinite(minimums[i])) {
+				minimums[i] = 0;
+			}
 			maximum = Math.max(maximum, maximums[i]);
+			if (Float.isInfinite(maximums[i])) {
+				maximums[i] = 0;
+			}
+			if (windowLengths[i] != 0) {
+				averages[i] = scoreSums[i] / windowLengths[i];
+			}
 			scoreSum += scoreSums[i];
 			windowCount += windowCounts[i];
 			windowLength += windowLengths[i];
+		}
+		if (Float.isInfinite(minimum)) {
+			minimum = 0;
+		}
+		if (Float.isInfinite(maximum)) {
+			maximum = 0;
 		}
 
 		if (windowLength != 0) {
 			// compute the average
 			average = scoreSum / windowLength;
 			threadList.clear();
-
+			// standard deviation genome wide need to be computed separetly because it uses the average GW
+			final double[] gwStandardDeviations = new double[projectChromosomes.size()];
 			// compute the standard deviation for each chromosome
 			for(short i = 0; i < inputList.size(); i++)  {
 				final ListView<ScoredChromosomeWindow> currentList = inputList.get(i);
@@ -176,8 +192,12 @@ public class SCWLOComputeStats implements Operation<Void> {
 							for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 								ScoredChromosomeWindow currentWindow = currentList.get(j);
 								if (currentWindow.getScore() != 0) {
-									standardDeviations[currentIndex] += Math.pow(currentWindow.getScore() - average, 2) * currentWindow.getSize();
+									gwStandardDeviations[currentIndex] += Math.pow(currentWindow.getScore() - average, 2) * currentWindow.getSize();
+									standardDeviations[currentIndex] += Math.pow(currentWindow.getScore() - averages[currentIndex], 2) * currentWindow.getSize();
 								}
+							}
+							if (windowLengths[currentIndex] != 0) {
+								standardDeviations[currentIndex] = Math.sqrt(standardDeviations[currentIndex] / windowLengths[currentIndex]);
 							}
 						}
 						// notify that the current chromosome is done
@@ -193,7 +213,7 @@ public class SCWLOComputeStats implements Operation<Void> {
 
 			// compute the genome wide standard deviation
 			for (int i = 0; i < projectChromosomes.size(); i++) {
-				standardDeviation += standardDeviations[i];
+				standardDeviation += gwStandardDeviations[i];
 			}
 			standardDeviation = Math.sqrt(standardDeviation / windowLength);
 		}

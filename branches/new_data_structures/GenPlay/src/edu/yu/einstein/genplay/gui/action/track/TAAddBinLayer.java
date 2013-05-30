@@ -40,7 +40,6 @@ import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.newCurveLayerDialog.NewCurveLayerDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
-import edu.yu.einstein.genplay.util.NumberFormats;
 import edu.yu.einstein.genplay.util.Utils;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
@@ -84,7 +83,7 @@ public final class TAAddBinLayer extends TrackListActionExtractorWorker<BinList>
 			Track selectedTrack = getTrackListPanel().getSelectedTrack();
 			BinLayer newLayer = new BinLayer(selectedTrack, actionResult, fileToExtract.getName());
 			// add the history to the layer
-			String history = "Bin Size = " + actionResult.getBinSize() + "bp, Score Count = " + NumberFormats.getScoreFormat().format(actionResult.getScoreSum());
+			String history = "Bin Size = " + actionResult.getBinSize() + "bp";
 			history += ", Method of Calculation = " + scoreCalculation;
 			if (strand != null) {
 				history += ", Strand = ";
