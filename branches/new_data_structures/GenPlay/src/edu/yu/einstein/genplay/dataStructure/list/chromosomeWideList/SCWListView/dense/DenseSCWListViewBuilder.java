@@ -75,7 +75,7 @@ public final class DenseSCWListViewBuilder implements ListViewBuilder<ScoredChro
 		}
 		if (windowStops.size() > 0) {
 			int lastElementIndex = windowStops.size() -1;
-			int lastStart = 0;
+			int lastStart = 1;
 			if (windowStops.size() > 1) {
 				lastStart = windowStops.get(lastElementIndex - 1);
 			}
@@ -87,15 +87,18 @@ public final class DenseSCWListViewBuilder implements ListViewBuilder<ScoredChro
 				// case where the elements added overlap
 				throw new ElementAddedOverlapException();
 			}
-			// if the current window and the previous one have the same same score we merge them
-			if (windowScores.get(lastElementIndex) == score) {
-				windowStops.set(lastElementIndex, stop);
-				return;
-			}
 			if (lastStop != start) {
 				windowStops.add(start);
 				windowScores.add(0f);
+			} else if (windowScores.get(lastElementIndex) == score) {
+				// if the current window and the previous one have the same same score
+				// and are adjacent we merge them
+				windowStops.set(lastElementIndex, stop);
+				return;
 			}
+		} else if (start != 1) {
+			windowStops.add(start);
+			windowScores.add(0f);
 		}
 		windowStops.add(stop);
 		windowScores.add(score);
