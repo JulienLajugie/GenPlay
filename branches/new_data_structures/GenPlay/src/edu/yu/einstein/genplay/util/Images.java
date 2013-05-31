@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -31,10 +31,11 @@ import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
  * @version 0.1
  */
 public class Images {
-	
+
 	private static final ClassLoader cl = MainFrame.class.getClassLoader();
 
-	private static final String APPLICATION_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/icon.png";						// Path of the application image
+	//	private static final String APPLICATION_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/icon.png";						// Path of the application image
+	private static final String APPLICATION_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/GenPlay.png";					// Path of the application image
 	private static final String BANNER_IMAGE_PATH		= "edu/yu/einstein/genplay/resource/genplay_banner_447x91.png";		// Path of the banner image
 	private static final String TOOLS_IMAGE_PATH 		= "edu/yu/einstein/genplay/resource/tools.png";						// Path of the tools image
 	private static final String ADD_IMAGE_PATH 			= "edu/yu/einstein/genplay/resource/add_entry_50x50.png"; 			// Path of the add entry image
@@ -48,7 +49,7 @@ public class Images {
 	private static final String INFERIOR_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/inferior8x6.png";				// Path of the inferior sign
 	private static final String DNA_IMAGE_PATH 			= "edu/yu/einstein/genplay/resource/dna_25x17.png";					// Path of the DNA sign
 
-	
+
 	private static Image applicationImage 	= null;		// Application image
 	private static Image bannerImage		= null;		// Banner image
 	private static Image toolsImage 		= null;		// Tools image
@@ -63,31 +64,29 @@ public class Images {
 	private static Image inferiorImage 		= null;		// Inferior image
 	private static Image dnaImage 			= null;		// DNA image
 
-	
+
 
 	//////////////////////////////////////////////////////// UTIL methods
 
 	/**
-	 * Creates a new squared image.
-	 * @param image	the image
-	 * @param side	size of the side
-	 * @return		the resized
+	 * @return the image of the Actualize icon (15x15)
 	 */
-	public static Image getSquareImage (Image image, int side) {
-		return getResizedImage(image, side, side);
+	public static Image getActualizeImage () {
+		if (actualizeImage == null) {
+			actualizeImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(ACTUALIZE_IMAGE_PATH));
+		}
+		return actualizeImage;
 	}
-	
-	
+
+
 	/**
-	 * Creates a new resized image.
-	 * @param image		the image
-	 * @param width 	width of the new image
-	 * @param height 	height of the new image
-	 * @return			the resized image
+	 * @return the image of the Add icon (50x50)
 	 */
-	public static Image getResizedImage (Image image, int width, int height) {
-		Image newImg = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-		return newImg;
+	public static Image getAddImage () {
+		if (addImage == null) {
+			addImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(ADD_IMAGE_PATH));
+		}
+		return addImage;
 	}
 
 	////////////////////////////////////////////////////////
@@ -119,24 +118,24 @@ public class Images {
 
 
 	/**
-	 * @return the image of the Tools icon
+	 * @return the image of the Delete icon (50x50)
 	 */
-	public static Image getToolsImage () {
-		if (toolsImage == null) {
-			toolsImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(TOOLS_IMAGE_PATH));
+	public static Image getDeleteImage () {
+		if (deleteImage == null) {
+			deleteImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(DELETE_IMAGE_PATH));
 		}
-		return toolsImage;
+		return deleteImage;
 	}
 
 
 	/**
-	 * @return the image of the Add icon (50x50)
+	 * @return the image of the DNA icon (25x17)
 	 */
-	public static Image getAddImage () {
-		if (addImage == null) {
-			addImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(ADD_IMAGE_PATH));
+	public static Image getDNAImage () {
+		if (dnaImage == null) {
+			dnaImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(DNA_IMAGE_PATH));
 		}
-		return addImage;
+		return dnaImage;
 	}
 
 
@@ -152,16 +151,16 @@ public class Images {
 
 
 	/**
-	 * @return the image of the Delete icon (50x50)
+	 * @return the image of the Inferior icon (8x6)
 	 */
-	public static Image getDeleteImage () {
-		if (deleteImage == null) {
-			deleteImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(DELETE_IMAGE_PATH));
+	public static Image getInferiorImage () {
+		if (inferiorImage == null) {
+			inferiorImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(INFERIOR_IMAGE_PATH));
 		}
-		return deleteImage;
+		return inferiorImage;
 	}
 
-	
+
 	/**
 	 * @return the image of the Mouse icon (50x50)
 	 */
@@ -171,7 +170,7 @@ public class Images {
 		}
 		return mouseImage;
 	}
-	
+
 
 	/**
 	 * @return the image of the Next icon (256x256)
@@ -196,13 +195,26 @@ public class Images {
 
 
 	/**
-	 * @return the image of the Actualize icon (15x15)
+	 * Creates a new resized image.
+	 * @param image		the image
+	 * @param width 	width of the new image
+	 * @param height 	height of the new image
+	 * @return			the resized image
 	 */
-	public static Image getActualizeImage () {
-		if (actualizeImage == null) {
-			actualizeImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(ACTUALIZE_IMAGE_PATH));
-		}
-		return actualizeImage;
+	public static Image getResizedImage (Image image, int width, int height) {
+		Image newImg = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+		return newImg;
+	}
+
+
+	/**
+	 * Creates a new squared image.
+	 * @param image	the image
+	 * @param side	size of the side
+	 * @return		the resized
+	 */
+	public static Image getSquareImage (Image image, int side) {
+		return getResizedImage(image, side, side);
 	}
 
 
@@ -218,23 +230,12 @@ public class Images {
 
 
 	/**
-	 * @return the image of the Inferior icon (8x6)
+	 * @return the image of the Tools icon
 	 */
-	public static Image getInferiorImage () {
-		if (inferiorImage == null) {
-			inferiorImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(INFERIOR_IMAGE_PATH));
+	public static Image getToolsImage () {
+		if (toolsImage == null) {
+			toolsImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(TOOLS_IMAGE_PATH));
 		}
-		return inferiorImage;
-	}
-	
-	
-	/**
-	 * @return the image of the DNA icon (25x17)
-	 */
-	public static Image getDNAImage () {
-		if (dnaImage == null) {
-			dnaImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(DNA_IMAGE_PATH));
-		}
-		return dnaImage;
+		return toolsImage;
 	}
 }

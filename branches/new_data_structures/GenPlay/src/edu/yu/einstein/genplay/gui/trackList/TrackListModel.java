@@ -29,6 +29,8 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
+import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 
@@ -94,11 +96,11 @@ public class TrackListModel implements Serializable {
 	 */
 	public void deleteTrack(int row) {
 		// removes references to avoid memory leaks
-		tracks[row].dispose();
 		for (int i = row + 1; i < tracks.length; i++) {
 			tracks[i - 1] = tracks[i];
 		}
 		tracks[tracks.length - 1] = new Track(tracks.length);
+		updateTracksRegisteredToProjectWindow();
 		// we notify the listeners that the data changed
 		ListDataEvent event = new ListDataEvent(this, ListDataEvent.INTERVAL_REMOVED, row, row);
 		notifyListeners(event);
@@ -178,6 +180,7 @@ public class TrackListModel implements Serializable {
 			tracks[i + 1] = tracks[i];
 		}
 		tracks[row] = track;
+		updateTracksRegisteredToProjectWindow();
 		// we notify the listeners that the data changed
 		ListDataEvent event = new ListDataEvent(this, ListDataEvent.INTERVAL_ADDED, row, row);
 		notifyListeners(event);
@@ -221,7 +224,8 @@ public class TrackListModel implements Serializable {
 	 * @param row row where the track needs to be set
 	 */
 	public void setTrack(Track track, int row) {
-		getTracks()[row] = track;
+		tracks[row] = track;
+		updateTracksRegisteredToProjectWindow();
 		// we notify the listeners that the data changed
 		ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, row, row);
 		notifyListeners(event);
@@ -233,8 +237,30 @@ public class TrackListModel implements Serializable {
 	 */
 	public void setTracks(Track[] tracks) {
 		this.tracks = tracks;
+		updateTracksRegisteredToProjectWindow();
 		// we notify the listeners that the data changed
 		ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, tracks.length - 1);
 		notifyListeners(event);
+	}
+
+
+	/**
+	 * This method update the list of tracks registered as {@link GenomeWindowListener} in the
+	 * {@link ProjectWindow}. This method should be used every time the list of track is modified.
+	 * All the tracks not present in this model are removed from the list of listeners.
+	 * All the tracks of this model that are not registered are added to the list of listeners.
+	 */
+	public void updateTracksRegisteredToProjectWindow() {
+		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
+		// removes all the track listener from the list of listeners of the project window
+		for (GenomeWindowListener currentGWL: projectWindow.getGenomeWindowListeners()) {
+			if (currentGWL instanceof Track) {
+				projectWindow.removeGenomeWindowListener(currentGWL);
+			}
+		}
+		// registers the tracks
+		for (Track currentTrack: tracks) {
+			projectWindow.addGenomeWindowListener(currentTrack);
+		}
 	}
 }

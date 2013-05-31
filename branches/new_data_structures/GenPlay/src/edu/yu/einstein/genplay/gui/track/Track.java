@@ -41,7 +41,6 @@ import javax.swing.event.ListDataListener;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectConfiguration;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEvent;
@@ -129,16 +128,6 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 		}
 		updateGraphicsPanelDrawers();
 		getScore().autorescaleScoreAxis();
-	}
-
-
-	/**
-	 * Removes references to this track to avoid memory leaks.
-	 */
-	public void dispose() {
-		// register the track to the project window manager so the track can be notified when the project window changes
-		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-		projectWindow.removeGenomeWindowListener(this);
 	}
 
 
@@ -273,10 +262,6 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 		// initializes the layer list
 		layers = new TrackModel();
 		layers.addListDataListener(this);
-
-		// register the track to the project window manager so the track can be notified when the project window changes
-		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-		projectWindow.addGenomeWindowListener(this);
 	}
 
 
