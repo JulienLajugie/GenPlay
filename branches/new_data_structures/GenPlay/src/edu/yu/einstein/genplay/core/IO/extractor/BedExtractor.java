@@ -246,6 +246,9 @@ public class BedExtractor extends TextFileExtractor implements SCWReader, GeneRe
 
 	@Override
 	public Float getScore() {
+		if (score == null) {
+			return 1f;
+		}
 		return score;
 	}
 
