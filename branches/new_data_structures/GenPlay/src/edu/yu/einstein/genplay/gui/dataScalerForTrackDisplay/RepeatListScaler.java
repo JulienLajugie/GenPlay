@@ -55,7 +55,6 @@ class RepeatListScaler implements DataScalerForTrackDisplay<RepeatFamilyList, Li
 		public void run() {
 			Thread thisThread = Thread.currentThread();
 			ListView<RepeatFamilyListView> currentChromosomeList;
-			scaledRepeatList = null;
 			try {
 				currentChromosomeList = dataToScale.get(scaledChromosome);
 			} catch (InvalidChromosomeException e) {
@@ -162,6 +161,7 @@ class RepeatListScaler implements DataScalerForTrackDisplay<RepeatFamilyList, Li
 	 * for the current zoom level and screen resolution
 	 */
 	private void scaleChromosome() {
+		scaledRepeatList = null;
 		scalerThread = new ScalerThread();
 		scalerThread.start();
 	}

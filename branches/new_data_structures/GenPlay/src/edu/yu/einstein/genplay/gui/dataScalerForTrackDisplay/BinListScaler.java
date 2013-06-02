@@ -50,7 +50,6 @@ class BinListScaler implements DataScalerForTrackDisplay<BinList, ListView<Score
 		public void run() {
 			Thread thisThread = Thread.currentThread();
 			ListView<ScoredChromosomeWindow> currentChromosomeList;
-			scaledSCWList = null;
 			try {
 				currentChromosomeList = dataToScale.get(scaledChromosome);
 			} catch (InvalidChromosomeException e) {
@@ -61,8 +60,9 @@ class BinListScaler implements DataScalerForTrackDisplay<BinList, ListView<Score
 				return;
 			}
 			int binSize = dataToScale.getBinSize();
-			scaledSCWList = currentChromosomeList;
 			if ((scaledXRatio * binSize) >= 1) {
+				scaledSCWList = currentChromosomeList;
+				DataScalerManager.getInstance().redrawLayers(BinListScaler.this);
 				return;
 			}
 			int chromosomeIndex = ProjectManager.getInstance().getProjectChromosomes().getIndex(scaledChromosome);
@@ -70,10 +70,9 @@ class BinListScaler implements DataScalerForTrackDisplay<BinList, ListView<Score
 			double ratio = scaledXRatio * dataToScale.getBinSize() * BinList.AVERAGE_BIN_SIZE_FACTORS[i];
 			while ((i < BinList.AVERAGE_BIN_SIZE_FACTORS.length) && (ratio < 1)) {
 				if (thisThread != scalerThread) {
-					scaledSCWList = null;
 					return;
 				}
-				scaledSCWList = dataToScale.getAveragedList(i).get(chromosomeIndex);
+				currentChromosomeList = dataToScale.getAveragedList(i).get(chromosomeIndex);
 				binSize = dataToScale.getBinSize() * BinList.AVERAGE_BIN_SIZE_FACTORS[i];
 				i++;
 				if (i < BinList.AVERAGE_BIN_SIZE_FACTORS.length) {
@@ -81,6 +80,8 @@ class BinListScaler implements DataScalerForTrackDisplay<BinList, ListView<Score
 				}
 			}
 			if ((scaledXRatio * binSize) >= 1) {
+				scaledSCWList = currentChromosomeList;
+				DataScalerManager.getInstance().redrawLayers(BinListScaler.this);
 				return;
 			}
 
@@ -90,20 +91,21 @@ class BinListScaler implements DataScalerForTrackDisplay<BinList, ListView<Score
 
 			// if the fitted bin size is smaller than the regular bin size we don't modify the data
 			if (fittedBinSize <= binSize) {
+				scaledSCWList = currentChromosomeList;
+				DataScalerManager.getInstance().redrawLayers(BinListScaler.this);
 				return;
 			}
 			// create a list adapted to the xRatio
 			BinListViewBuilder blvb = new BinListViewBuilder(fittedBinSize);
-			for(int index = 0; index < scaledSCWList.size(); index += binSizeRatio) {
+			for(int index = 0; index < currentChromosomeList.size(); index += binSizeRatio) {
 				if (thisThread != scalerThread) {
-					scaledSCWList = null;
 					return;
 				}
 				float sum = 0;
 				int n = 0;
-				for(int j = 0; j < binSizeRatio; j ++) {
-					if (((index + j) < scaledSCWList.size()) && (scaledSCWList.get(index + j).getScore() != 0)) {
-						sum += scaledSCWList.get(index + j).getScore();
+				for(int j = 0; (j < binSizeRatio) && (thisThread == scalerThread); j ++) {
+					if (((index + j) < currentChromosomeList.size()) && (currentChromosomeList.get(index + j).getScore() != 0)) {
+						sum += currentChromosomeList.get(index + j).getScore();
 						n++;
 					}
 				}
@@ -173,6 +175,7 @@ class BinListScaler implements DataScalerForTrackDisplay<BinList, ListView<Score
 	 * for the current zoom level and screen resolution
 	 */
 	private void scaleChromosome() {
+		scaledSCWList = null;
 		scalerThread = new ScalerThread();
 		scalerThread.start();
 	}

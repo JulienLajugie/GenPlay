@@ -45,7 +45,6 @@ import edu.yu.einstein.genplay.util.Utils;
  * 
  * @author Julien Lajugie
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class PASaveProject extends TrackListActionWorker<Boolean> {
 
@@ -107,7 +106,11 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 		int returnVal = jfc.showSaveDialog(trackListPanel.getRootPane());
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			ExtendedFileFilter selectedFilter = (ExtendedFileFilter) jfc.getFileFilter();
-			selectedFile = Utils.addExtension(jfc.getSelectedFile(), selectedFilter.getExtensions()[0]);
+			if (selectedFilter != null) {
+				selectedFile = Utils.addExtension(jfc.getSelectedFile(), selectedFilter.getExtensions()[0]);
+			} else {
+				selectedFile = Utils.addExtension(jfc.getSelectedFile(), "gen");
+			}
 			if (!Utils.cancelBecauseFileExist(trackListPanel.getRootPane(), selectedFile)) {
 				notifyActionStart("Saving Project", 1, false);
 				String projectName = Utils.getFileNameWithoutExtension(selectedFile);

@@ -59,7 +59,6 @@ class GeneListScaler implements DataScalerForTrackDisplay<GeneList, List<ListVie
 		public void run() {
 			Thread thisThread = Thread.currentThread();
 			ListView<Gene> currentList;
-			scaledGeneList = null;
 			try {
 				currentList = dataToScale.get(scaledChromosome);
 			} catch (InvalidChromosomeException e) {
@@ -206,6 +205,7 @@ class GeneListScaler implements DataScalerForTrackDisplay<GeneList, List<ListVie
 	 * for the current zoom level and screen resolution
 	 */
 	private void scaleChromosome() {
+		scaledGeneList = null;
 		scalerThread = new ScalerThread();
 		scalerThread.start();
 	}
