@@ -42,7 +42,68 @@ import edu.yu.einstein.genplay.util.ListView.ChromosomeWindowListViews;
  * This class scales a {@link RepeatFamilyList} to be displayed on a track.
  * @author Julien Lajugie
  */
-public class RepeatListScaler implements DataScalerForTrackDisplay<RepeatFamilyList, List<RepeatFamilyListView>> {
+class RepeatListScaler implements DataScalerForTrackDisplay<RepeatFamilyList, List<RepeatFamilyListView>> {
+
+	/**
+	 * Threads that computes the scaled data for the chromosome currently displayed
+	 * at the current zoom level and screen resolution.
+	 * @author Julien Lajugie
+	 */
+	private class ScalerThread extends Thread {
+
+		@Override
+		public void run() {
+			Thread thisThread = Thread.currentThread();
+			ListView<RepeatFamilyListView> currentChromosomeList;
+			scaledRepeatList = null;
+			try {
+				currentChromosomeList = dataToScale.get(scaledChromosome);
+			} catch (InvalidChromosomeException e) {
+				ExceptionManager.getInstance().caughtException(e);
+				scaledChromosome = null;
+				return;
+			}
+			if ((currentChromosomeList == null) || currentChromosomeList.isEmpty()) {
+				return;
+			}
+			if (scaledXRatio > 1) {
+				scaledRepeatList = currentChromosomeList;
+			} else {
+				// compute the width on the genome that takes up 1 pixel on the screen
+				double pixelGenomicWidth = 1 / scaledXRatio;
+				ListViewBuilder<RepeatFamilyListView> familyListBuilder = new SimpleListViewBuilder<RepeatFamilyListView>();
+				for (RepeatFamilyListView currentFamily : currentChromosomeList) {
+					RepeatFamilyListViewBuilder familyBuilder = new RepeatFamilyListViewBuilder(currentFamily.getName());
+					int i = 0;
+					while (i < currentFamily.size()) {
+						if (thisThread != scalerThread) {
+							scaledRepeatList = null;
+							return;
+						}
+						int currentStart = currentFamily.get(i).getStart();
+						int currentStop = currentFamily.get(i).getStop();
+						// we merge two windows together if there is a next window
+						// and if the gap between the current window and the next one is smaller than 1 pixel
+						while (((i + 1) < currentFamily.size())
+								&& ((currentFamily.get(i + 1).getStart() - currentStop) < pixelGenomicWidth)) {
+							i++;
+							// the new stop is the one of the next window
+							currentStop = currentFamily.get(i).getStop();
+						}
+						familyBuilder.addElementToBuild(currentStart, currentStop);
+						i++;
+					}
+					familyListBuilder.addElementToBuild((RepeatFamilyListView) familyBuilder.getListView());
+				}
+				scaledRepeatList = familyListBuilder.getListView();
+				DataScalerManager.getInstance().redrawLayers(RepeatListScaler.this);
+			}
+		}
+	}
+
+
+	/** Thread that scales the data */
+	private ScalerThread scalerThread;
 
 	/** Scaled chromosome */
 	private Chromosome scaledChromosome;
@@ -61,7 +122,7 @@ public class RepeatListScaler implements DataScalerForTrackDisplay<RepeatFamilyL
 	 * Creates an instance of {@link RepeatListScaler}
 	 * @param dataToScale data that needs to be scaled
 	 */
-	public RepeatListScaler(RepeatFamilyList dataToScale) {
+	RepeatListScaler(RepeatFamilyList dataToScale) {
 		this.dataToScale = dataToScale;
 	}
 
@@ -97,48 +158,11 @@ public class RepeatListScaler implements DataScalerForTrackDisplay<RepeatFamilyL
 
 
 	/**
-	 * Merges two repeats of the same family together if the gap between
-	 * the two repeats is not visible at the current zoom level
+	 * Starts the thread that scales the current chromosome
+	 * for the current zoom level and screen resolution
 	 */
 	private void scaleChromosome() {
-		ListView<RepeatFamilyListView> currentChromosomeList;
-		scaledRepeatList = null;
-		try {
-			currentChromosomeList = dataToScale.get(scaledChromosome);
-		} catch (InvalidChromosomeException e) {
-			ExceptionManager.getInstance().caughtException(e);
-			scaledChromosome = null;
-			return;
-		}
-		if ((currentChromosomeList == null) || currentChromosomeList.isEmpty()) {
-			return;
-		}
-		if (scaledXRatio > 1) {
-			scaledRepeatList = currentChromosomeList;
-		} else {
-			// compute the width on the genome that takes up 1 pixel on the screen
-			double pixelGenomicWidth = 1 / scaledXRatio;
-			ListViewBuilder<RepeatFamilyListView> familyListBuilder = new SimpleListViewBuilder<RepeatFamilyListView>();
-			for (RepeatFamilyListView currentFamily : currentChromosomeList) {
-				RepeatFamilyListViewBuilder familyBuilder = new RepeatFamilyListViewBuilder(currentFamily.getName());
-				int i = 0;
-				while (i < currentFamily.size()) {
-					int currentStart = currentFamily.get(i).getStart();
-					int currentStop = currentFamily.get(i).getStop();
-					// we merge two windows together if there is a next window
-					// and if the gap between the current window and the next one is smaller than 1 pixel
-					while (((i + 1) < currentFamily.size())
-							&& ((currentFamily.get(i + 1).getStart() - currentStop) < pixelGenomicWidth)) {
-						i++;
-						// the new stop is the one of the next window
-						currentStop = currentFamily.get(i).getStop();
-					}
-					familyBuilder.addElementToBuild(currentStart, currentStop);
-					i++;
-				}
-				familyListBuilder.addElementToBuild((RepeatFamilyListView) familyBuilder.getListView());
-			}
-			scaledRepeatList = familyListBuilder.getListView();
-		}
+		scalerThread = new ScalerThread();
+		scalerThread.start();
 	}
 }

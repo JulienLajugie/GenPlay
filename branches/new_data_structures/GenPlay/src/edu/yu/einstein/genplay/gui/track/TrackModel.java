@@ -27,6 +27,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -74,18 +75,6 @@ public class TrackModel implements Serializable, Collection<Layer<?>> {
 	}
 
 
-	/**
-	 * Adds the specified layer at the end of the list
-	 * @param layer a {@link Layer}
-	 */
-	public void addLast(Layer<?> layer) {
-		int indexAdded = layers.size();
-		layers.add(layer);
-		ListDataEvent event = new ListDataEvent(this, ListDataEvent.INTERVAL_ADDED, indexAdded, indexAdded);
-		notifyListeners(event);
-	}
-
-
 	@Override
 	public boolean addAll(Collection<? extends Layer<?>> layers) {
 		int indexFirstAdded = this.layers.size();
@@ -96,6 +85,18 @@ public class TrackModel implements Serializable, Collection<Layer<?>> {
 			notifyListeners(event);
 		}
 		return listChanged;
+	}
+
+
+	/**
+	 * Adds the specified layer at the end of the list
+	 * @param layer a {@link Layer}
+	 */
+	public void addLast(Layer<?> layer) {
+		int indexAdded = layers.size();
+		layers.add(layer);
+		ListDataEvent event = new ListDataEvent(this, ListDataEvent.INTERVAL_ADDED, indexAdded, indexAdded);
+		notifyListeners(event);
 	}
 
 
@@ -276,7 +277,7 @@ public class TrackModel implements Serializable, Collection<Layer<?>> {
 
 	@Override
 	public Object[] toArray() {
-		return layers.toArray();
+		return Collections.synchronizedList(layers).toArray();
 	}
 
 

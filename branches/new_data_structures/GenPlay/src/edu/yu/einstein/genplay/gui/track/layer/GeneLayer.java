@@ -23,7 +23,6 @@ package edu.yu.einstein.genplay.gui.track.layer;
 
 import java.awt.Cursor;
 import java.awt.Desktop;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.InputEvent;
@@ -47,7 +46,7 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneLi
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
-import edu.yu.einstein.genplay.gui.dataScalerForTrackDisplay.GeneListScaler;
+import edu.yu.einstein.genplay.gui.dataScalerForTrackDisplay.DataScalerManager;
 import edu.yu.einstein.genplay.gui.track.ScrollingManager;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.NumberFormats;
@@ -60,12 +59,14 @@ import edu.yu.einstein.genplay.util.colors.Colors;
  */
 public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer<GeneList>, VersionedLayer<GeneList>, ScoredLayer, MouseListener, MouseMotionListener, MouseWheelListener {
 
+	/** The name of the genes are printed if the ratio is higher than this value */
+	public static final double MIN_X_RATIO_PRINT_NAME = 0.0005d;
+
 	private static final long serialVersionUID = 3779631846077486596L; 		// generated ID
 	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;				// Saved format version
 	private static final float 				SCORE_SATURATION = 0.02f;		// saturation of the score of the exon for the display
 	private static final short				GENE_HEIGHT = 6;				// size of a gene in pixel
 	private static final short				UTR_HEIGHT = 3;					// height of a UTR region of a gene in pixel
-	private transient GeneListScaler		dataScaler;						// object that scales the list of genes for display
 	private int 							firstLineToDisplay;				// number of the first line to be displayed
 	private int 							geneLinesCount;					// number of line of genes
 	private int 							mouseStartDragY = -1;			// position of the mouse when start dragging
@@ -128,11 +129,9 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 			float max = getTrack().getScore().getMaximumScore();
 			float min = getTrack().getScore().getMinimumScore();
 			// we print the gene names if the x ratio > MIN_X_RATIO_PRINT_NAME
-			boolean isGeneNamePrinted = projectWindow.getXRatio() > GeneListScaler.MIN_X_RATIO_PRINT_NAME;
-			// check that the data scaler is valid
-			validateDataScaler();
+			boolean isGeneNamePrinted = projectWindow.getXRatio() > MIN_X_RATIO_PRINT_NAME;
 			// Retrieve the genes to print
-			List<ListView<Gene>> genesToPrint = dataScaler.getDataScaledForTrackDisplay();
+			List<ListView<Gene>> genesToPrint = DataScalerManager.getInstance().getScaledData(this);
 			if ((genesToPrint != null) && (genesToPrint.size() > 0)){
 				// Compute the maximum number of line displayable
 				int displayedLineCount = 0;
@@ -292,7 +291,7 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 			// we retrieve the project window
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
 			// we print the gene names if the x ratio > MIN_X_RATIO_PRINT_NAME
-			boolean isGeneNamePrinted = projectWindow.getXRatio() > GeneListScaler.MIN_X_RATIO_PRINT_NAME;
+			boolean isGeneNamePrinted = projectWindow.getXRatio() > MIN_X_RATIO_PRINT_NAME;
 			if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
 				int distance = 0;
 				if (isGeneNamePrinted) {
@@ -335,11 +334,9 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 				// retrieve the position of the mouse
 				Point mousePosition = e.getPoint();
 				// check if the name of genes is printed
-				boolean isGeneNamePrinted = projectWindow.getXRatio() > GeneListScaler.MIN_X_RATIO_PRINT_NAME;
-				// check that the data scaler is valid
-				validateDataScaler();
+				boolean isGeneNamePrinted = projectWindow.getXRatio() > MIN_X_RATIO_PRINT_NAME;
 				// retrieve the list of the printed genes
-				List<ListView<Gene>> printedGenes = dataScaler.getDataScaledForTrackDisplay();
+				List<ListView<Gene>> printedGenes = DataScalerManager.getInstance().getScaledData(this);
 				// do nothing if there is no genes
 				if (printedGenes == null) {
 					return;
@@ -523,18 +520,6 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 			int maxIndex = (scoreList.size() - 1) - (int)((SCORE_SATURATION * scoreList.size()) - 1);
 			min = scoreList.get(minIndex);
 			max = scoreList.get(maxIndex);
-		}
-	}
-
-
-	/**
-	 * Checks that the data scaler is valid. Regenerates the data scaler if it's not valid
-	 */
-	private void validateDataScaler() {
-		// if the data scaler is null or is not set to scale the current data we regenerate it
-		if ((dataScaler == null) || (getData() != dataScaler.getDataToScale())) {
-			FontMetrics fontMetrics = getTrack().getGraphicsPanel().getGraphics().getFontMetrics();
-			dataScaler = new GeneListScaler(getData(), fontMetrics);
 		}
 	}
 

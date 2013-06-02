@@ -26,7 +26,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
-import edu.yu.einstein.genplay.gui.dataScalerForTrackDisplay.BinListScaler;
 import edu.yu.einstein.genplay.gui.track.Track;
 
 
@@ -84,15 +83,6 @@ public final class BinLayer extends AbstractSCWLayer<BinList> implements Layer<B
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-	}
-
-
-	@Override
-	protected void validateDataScaler() {
-		// if the data scaler is null or is not set to scale the current data we regenerate it
-		if ((dataScaler == null) || (getData() != dataScaler.getDataToScale())) {
-			dataScaler = new BinListScaler(getData());
-		}
 	}
 
 

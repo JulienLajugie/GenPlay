@@ -40,7 +40,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.dataStructure.enums.Nucleotide;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.nucleotideList.NucleotideList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.nucleotideList.TwoBitSequenceList;
-import edu.yu.einstein.genplay.gui.dataScalerForTrackDisplay.NucleotideListScaler;
+import edu.yu.einstein.genplay.gui.dataScalerForTrackDisplay.DataScalerManager;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.ScrollingManager;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -57,7 +57,6 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 
 	private static final long 	serialVersionUID = 3779631846077486596L;// generated ID
 	private static final int 				NUCLEOTIDE_HEIGHT = 10;		// y position of the nucleotides on the track
-	private transient NucleotideListScaler	dataScaler;					// object that scales the list of nucleotide for display
 	private transient Integer				maxBaseWidth = null;		// size on the screen of the widest base to display (in pixels)
 	private transient Integer 				baseUnderMouseIndex = null;	// index of the base under the mouse
 	private transient boolean				nucleotidePrinted = false;	// true if the nucleotide are printed
@@ -70,7 +69,6 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 	 */
 	private NucleotideLayer(NucleotideLayer nucleotideLayer) {
 		super(nucleotideLayer);
-		dataScaler = nucleotideLayer.dataScaler;
 		maxBaseWidth = nucleotideLayer.maxBaseWidth;
 		baseUnderMouseIndex = null;
 		nucleotidePrinted = nucleotideLayer.nucleotidePrinted;
@@ -136,9 +134,7 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 		if (getData() != null) {
 			if (nucleotidePrinted) {
 				ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-				// check that the data scaler is valid
-				validateDataScaler();
-				Nucleotide[] nucleotides = dataScaler.getDataScaledForTrackDisplay();
+				Nucleotide[] nucleotides = DataScalerManager.getInstance().getScaledData(this);
 				for (int position = projectWindow.getGenomeWindow().getStart(); position <= projectWindow.getGenomeWindow().getStop(); position++) {
 					int index = position - projectWindow.getGenomeWindow().getStart();
 					if (nucleotides[index] != null) {
@@ -178,9 +174,7 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 		if (getData() != null) {
 			if (nucleotidePrinted) {
 				ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-				// check that the data scaler is valid
-				validateDataScaler();
-				Nucleotide[] nucleotides = dataScaler.getDataScaledForTrackDisplay();
+				Nucleotide[] nucleotides = DataScalerManager.getInstance().getScaledData(this);
 				for (int position = projectWindow.getGenomeWindow().getStart(); position <= projectWindow.getGenomeWindow().getStop(); position++) {
 					int index = position - projectWindow.getGenomeWindow().getStart();
 					if (nucleotides[index] != null) {
@@ -265,10 +259,8 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 				if (nucleotidePrinted) {
 					// retrieve the position of the mouse
 					Point mousePosition = e.getPoint();
-					// check that the data scaler is valid
-					validateDataScaler();
 					// retrieve the list of the printed nucleotides
-					Nucleotide[] printedBases = dataScaler.getDataScaledForTrackDisplay();
+					Nucleotide[] printedBases = DataScalerManager.getInstance().getScaledData(this);
 					// do nothing if there is no genes
 					if (printedBases != null) {
 						double distance = projectWindow.screenToGenomeWidth(mousePosition.x);
@@ -282,9 +274,7 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 					}
 				}
 				if (baseUnderMouseIndex != null) {
-					// check that the data scaler is valid
-					validateDataScaler();
-					Nucleotide nucleotide = dataScaler.getDataScaledForTrackDisplay()[baseUnderMouseIndex];
+					Nucleotide nucleotide = DataScalerManager.getInstance().getScaledData(this)[baseUnderMouseIndex];
 					if (nucleotide != null) {
 						getTrack().setToolTipText(nucleotide.name());
 					}
@@ -353,17 +343,6 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 					setData(null);
 				}
 			}
-		}
-	}
-
-
-	/**
-	 * Checks that the data scaler is valid. Regenerates the data scaler if it's not valid
-	 */
-	private void validateDataScaler() {
-		// if the data scaler is null or is not set to scale the current data we regenerate it
-		if ((dataScaler == null) || (getData() != dataScaler.getDataToScale())) {
-			dataScaler = new NucleotideListScaler(getData());
 		}
 	}
 }

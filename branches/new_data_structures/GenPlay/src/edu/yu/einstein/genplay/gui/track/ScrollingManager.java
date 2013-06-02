@@ -39,7 +39,6 @@ public class ScrollingManager {
 	 * The ScrollModeThread class is used to scroll the track horizontally
 	 * when the scroll mode is on (ie when the middle button of the mouse is clicked)
 	 * @author Julien Lajugie
-	 * @version 0.1
 	 */
 	private class ScrollingThread extends Thread {
 		@Override

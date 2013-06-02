@@ -30,16 +30,16 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
  * @param <U> type of the data returned by the scaling method
  * @author Julien Lajugie
  */
-public interface DataScalerForTrackDisplay<T, U> {
+interface DataScalerForTrackDisplay<T, U> {
 
 	/**
 	 * @return the data rescaled to be displayed in the track for the {@link ProjectWindow}
 	 */
-	public U getDataScaledForTrackDisplay();
+	U getDataScaledForTrackDisplay();
 
 
 	/**
 	 * @return the data to scale for track display
 	 */
-	public T getDataToScale();
+	T getDataToScale();
 }

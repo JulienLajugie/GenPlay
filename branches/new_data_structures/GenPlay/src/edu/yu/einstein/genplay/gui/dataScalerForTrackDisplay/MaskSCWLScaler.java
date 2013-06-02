@@ -37,7 +37,63 @@ import edu.yu.einstein.genplay.util.ListView.ChromosomeWindowListViews;
  * This class scales a {@link SCWList} of masks to be displayed on a track.
  * @author Julien Lajugie
  */
-public class MaskSCWLScaler implements DataScalerForTrackDisplay<SCWList, ListView<ScoredChromosomeWindow>> {
+class MaskSCWLScaler implements DataScalerForTrackDisplay<SCWList, ListView<ScoredChromosomeWindow>> {
+
+	/**
+	 * Threads that computes the scaled data for the chromosome currently displayed
+	 * at the current zoom level and screen resolution.
+	 * @author Julien Lajugie
+	 */
+	private class ScalerThread extends Thread {
+
+		@Override
+		public void run() {
+			Thread thisThread = Thread.currentThread();
+			ListView<ScoredChromosomeWindow> currentChromosomeList;
+			scaledSCWList = null;
+			try {
+				currentChromosomeList = dataToScale.get(scaledChromosome);
+			} catch (InvalidChromosomeException e) {
+				ExceptionManager.getInstance().caughtException(e);
+				scaledChromosome = null;
+				return;
+			}
+			if ((currentChromosomeList == null) || currentChromosomeList.isEmpty()) {
+				return;
+			}
+			if (scaledXRatio >= 1) {
+				scaledSCWList = currentChromosomeList;
+			} else {
+				// compute the width on the genome that takes up 1 pixel on the screen
+				double pixelGenomicWidth = 1 / scaledXRatio;
+				MaskListViewBuilder maskLVBuilder = new MaskListViewBuilder();
+				int i = 0;
+				while (i < currentChromosomeList.size()) {
+					if (thisThread != scalerThread) {
+						scaledSCWList = null;
+						return;
+					}
+					int currentStart = currentChromosomeList.get(i).getStart();
+					int currentStop = currentChromosomeList.get(i).getStop();
+					// we merge two windows together if there is a next window
+					// and if the gap between the current window and the next one is smaller than 1 pixel
+					while (((i + 1) < currentChromosomeList.size())
+							&& ((currentChromosomeList.get(i + 1).getStart() - currentStop) < pixelGenomicWidth)) {
+						i++;
+						// the new stop is the one of the next window
+						currentStop = currentChromosomeList.get(i).getStop();
+					}
+					maskLVBuilder.addElementToBuild(currentStart, currentStop);
+					i++;
+				}
+				scaledSCWList = maskLVBuilder.getListView();
+				DataScalerManager.getInstance().redrawLayers(MaskSCWLScaler.this);
+			}
+		}
+	}
+
+	/** Thread that scales the data */
+	private ScalerThread scalerThread;
 
 	/** scaled chromosome */
 	private Chromosome scaledChromosome;
@@ -56,7 +112,7 @@ public class MaskSCWLScaler implements DataScalerForTrackDisplay<SCWList, ListVi
 	 * Creates an instance of {@link MaskSCWLScaler}
 	 * @param dataToScale the data that needs to be scaled
 	 */
-	public MaskSCWLScaler(SCWList dataToScale) {
+	MaskSCWLScaler(SCWList dataToScale) {
 		this.dataToScale = dataToScale;
 	}
 
@@ -85,44 +141,11 @@ public class MaskSCWLScaler implements DataScalerForTrackDisplay<SCWList, ListVi
 
 
 	/**
-	 * Merges two windows together if the gap between the two windows is not visible
-	 * at the current zoom level
+	 * Starts the thread that scales the current chromosome
+	 * for the current zoom level and screen resolution
 	 */
 	private void scaleChromosome() {
-		ListView<ScoredChromosomeWindow> currentChromosomeList;
-		scaledSCWList = null;
-		try {
-			currentChromosomeList = dataToScale.get(scaledChromosome);
-		} catch (InvalidChromosomeException e) {
-			ExceptionManager.getInstance().caughtException(e);
-			scaledChromosome = null;
-			return;
-		}
-		if ((currentChromosomeList == null) || currentChromosomeList.isEmpty()) {
-			return;
-		}
-		if (scaledXRatio >= 1) {
-			scaledSCWList = currentChromosomeList;
-		} else {
-			// compute the width on the genome that takes up 1 pixel on the screen
-			double pixelGenomicWidth = 1 / scaledXRatio;
-			MaskListViewBuilder maskLVBuilder = new MaskListViewBuilder();
-			int i = 0;
-			while (i < currentChromosomeList.size()) {
-				int currentStart = currentChromosomeList.get(i).getStart();
-				int currentStop = currentChromosomeList.get(i).getStop();
-				// we merge two windows together if there is a next window
-				// and if the gap between the current window and the next one is smaller than 1 pixel
-				while (((i + 1) < currentChromosomeList.size())
-						&& ((currentChromosomeList.get(i + 1).getStart() - currentStop) < pixelGenomicWidth)) {
-					i++;
-					// the new stop is the one of the next window
-					currentStop = currentChromosomeList.get(i).getStop();
-				}
-				maskLVBuilder.addElementToBuild(currentStart, currentStop);
-				i++;
-			}
-			scaledSCWList = maskLVBuilder.getListView();
-		}
+		scalerThread = new ScalerThread();
+		scalerThread.start();
 	}
 }

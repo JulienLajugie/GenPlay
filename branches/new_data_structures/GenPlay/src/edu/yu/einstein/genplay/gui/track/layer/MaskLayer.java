@@ -33,7 +33,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.gui.dataScalerForTrackDisplay.MaskSCWLScaler;
+import edu.yu.einstein.genplay.gui.dataScalerForTrackDisplay.DataScalerManager;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.colors.LayerColors;
 
@@ -46,7 +46,6 @@ public class MaskLayer extends AbstractVersionedLayer<SCWList> implements Serial
 
 	private static final long serialVersionUID = 3779631846077486596L; // generated ID
 	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// Saved format version
-	private transient MaskSCWLScaler	dataScaler;	// object that scales the list of masks for display
 	private Color 						color;		// color of the layer
 
 
@@ -57,7 +56,6 @@ public class MaskLayer extends AbstractVersionedLayer<SCWList> implements Serial
 	 */
 	private MaskLayer(MaskLayer maskLayer) {
 		super(maskLayer);
-		dataScaler = maskLayer.dataScaler;
 		color = maskLayer.color;
 	}
 
@@ -86,10 +84,8 @@ public class MaskLayer extends AbstractVersionedLayer<SCWList> implements Serial
 			if (getData() != null) {
 				ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
 				g.setColor(color);
-				// check that the data scaler is valid
-				validateDataScaler();
 				// Retrieve the genes to print
-				ListView<ScoredChromosomeWindow> listToPrint = dataScaler.getDataScaledForTrackDisplay();
+				ListView<ScoredChromosomeWindow> listToPrint = DataScalerManager.getInstance().getScaledData(this);
 				if (listToPrint != null) {
 					for (ScoredChromosomeWindow currentStripe: listToPrint) {
 						int x = projectWindow.genomeToScreenPosition(currentStripe.getStart());
@@ -132,17 +128,6 @@ public class MaskLayer extends AbstractVersionedLayer<SCWList> implements Serial
 	@Override
 	public void setColor(Color color) {
 		this.color = color;
-	}
-
-
-	/**
-	 * Checks that the data scaler is valid. Regenerates the data scaler if it's not valid
-	 */
-	private void validateDataScaler() {
-		// if the data scaler is null or is not set to scale the current data we regenerate it
-		if ((dataScaler == null) || (getData() != dataScaler.getDataToScale())) {
-			dataScaler = new MaskSCWLScaler(getData());
-		}
 	}
 
 

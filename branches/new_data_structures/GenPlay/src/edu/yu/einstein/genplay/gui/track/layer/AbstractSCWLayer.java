@@ -39,7 +39,7 @@ import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.gui.dataScalerForTrackDisplay.DataScalerForTrackDisplay;
+import edu.yu.einstein.genplay.gui.dataScalerForTrackDisplay.DataScalerManager;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackConstants;
 import edu.yu.einstein.genplay.util.colors.Colors;
@@ -58,9 +58,6 @@ public abstract class AbstractSCWLayer<T extends SCWList> extends AbstractVersio
 	/**  Version number of the class */
 	private static final transient int CLASS_VERSION_NUMBER = 0;
 
-	/** Object that scales the list of SCW for display */
-	protected transient DataScalerForTrackDisplay<T, ListView<ScoredChromosomeWindow>>	dataScaler;	// object that scales the list of SCW for display
-
 	/** Type of graph display in the layer */
 	private GraphType graphType;
 
@@ -74,7 +71,6 @@ public abstract class AbstractSCWLayer<T extends SCWList> extends AbstractVersio
 	 */
 	protected AbstractSCWLayer(AbstractSCWLayer<T> abstractSCWLayer) {
 		super(abstractSCWLayer);
-		this.dataScaler = abstractSCWLayer.dataScaler;
 		this.graphType = abstractSCWLayer.graphType;
 		this.color = abstractSCWLayer.color;
 	}
@@ -140,10 +136,8 @@ public abstract class AbstractSCWLayer<T extends SCWList> extends AbstractVersio
 				reverseCurveColor = Colors.GREY;
 			}
 			reverseCurveColor = new Color(reverseCurveColor.getRed(), reverseCurveColor.getGreen(), reverseCurveColor.getBlue(), getColor().getAlpha());
-			// check that the data scaler is valid
-			validateDataScaler();
-			// Retrieve the scw to print
-			ListView<ScoredChromosomeWindow> listToPrint = dataScaler.getDataScaledForTrackDisplay();
+			// Retrieve the list to print
+			ListView<ScoredChromosomeWindow> listToPrint = DataScalerManager.getInstance().getScaledData(this);
 			if (listToPrint != null) {
 				for (ScoredChromosomeWindow currentWindow: listToPrint) {
 					// we want to make sure that x is > 0
@@ -177,10 +171,8 @@ public abstract class AbstractSCWLayer<T extends SCWList> extends AbstractVersio
 		if (getData() != null) {
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
 			g.setColor(getColor());
-			// check that the data scaler is valid
-			validateDataScaler();
-			// Retrieve the genes to print
-			ListView<ScoredChromosomeWindow> listToPrint = dataScaler.getDataScaledForTrackDisplay();
+			// Retrieve the list to print
+			ListView<ScoredChromosomeWindow> listToPrint = DataScalerManager.getInstance().getScaledData(this);
 			if ((listToPrint != null) && (listToPrint.size() > 0)) {
 				int x1 = -1;
 				int x2 = -1;
@@ -230,10 +222,8 @@ public abstract class AbstractSCWLayer<T extends SCWList> extends AbstractVersio
 	private void drawDenseGraph(Graphics g, int width, int height) {
 		if (getData() != null) {
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-			// check that the data scaler is valid
-			validateDataScaler();
-			// Retrieve the genes to print
-			ListView<ScoredChromosomeWindow> listToPrint = dataScaler.getDataScaledForTrackDisplay();
+			// Retrieve the list to print
+			ListView<ScoredChromosomeWindow> listToPrint = DataScalerManager.getInstance().getScaledData(this);
 			if (listToPrint != null) {
 				for (ScoredChromosomeWindow currentWindow: listToPrint) {
 					int x = projectWindow.genomeToScreenPosition(currentWindow.getStart());
@@ -260,10 +250,7 @@ public abstract class AbstractSCWLayer<T extends SCWList> extends AbstractVersio
 		if (getData() != null) {
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
 			g.setColor(getColor());
-			// check that the data scaler is valid
-			validateDataScaler();
-			// Retrieve the genes to print
-			ListView<ScoredChromosomeWindow> listToPrint = dataScaler.getDataScaledForTrackDisplay();
+			ListView<ScoredChromosomeWindow> listToPrint = DataScalerManager.getInstance().getScaledData(this);
 			if (listToPrint != null) {
 				for (ScoredChromosomeWindow currentWindow: listToPrint) {
 					// we want to make sure that x is > 0
@@ -362,12 +349,6 @@ public abstract class AbstractSCWLayer<T extends SCWList> extends AbstractVersio
 	public void setGraphType(GraphType graphType) {
 		this.graphType = graphType;
 	}
-
-
-	/**
-	 * Checks that the data scaler is valid. Regenerates the data scaler if it's not valid
-	 */
-	protected abstract void validateDataScaler();
 
 
 	/**

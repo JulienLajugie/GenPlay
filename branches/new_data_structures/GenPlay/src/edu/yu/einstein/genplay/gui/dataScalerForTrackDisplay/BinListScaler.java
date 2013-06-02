@@ -34,10 +34,94 @@ import edu.yu.einstein.genplay.util.ListView.ChromosomeWindowListViews;
 
 
 /**
- * This class scales a {@link BinListScaler} to be displayed on a track.
+ * This class scales a {@link BinList} to be displayed on a track.
  * @author Julien Lajugie
  */
-public class BinListScaler implements DataScalerForTrackDisplay<BinList, ListView<ScoredChromosomeWindow>> {
+class BinListScaler implements DataScalerForTrackDisplay<BinList, ListView<ScoredChromosomeWindow>> {
+
+	/**
+	 * Threads that computes the scaled data for the chromosome currently displayed
+	 * at the current zoom level and screen resolution.
+	 * @author Julien Lajugie
+	 */
+	private class ScalerThread extends Thread {
+
+		@Override
+		public void run() {
+			Thread thisThread = Thread.currentThread();
+			ListView<ScoredChromosomeWindow> currentChromosomeList;
+			scaledSCWList = null;
+			try {
+				currentChromosomeList = dataToScale.get(scaledChromosome);
+			} catch (InvalidChromosomeException e) {
+				ExceptionManager.getInstance().caughtException(e);
+				return;
+			}
+			if ((currentChromosomeList == null) || currentChromosomeList.isEmpty()) {
+				return;
+			}
+			int binSize = dataToScale.getBinSize();
+			scaledSCWList = currentChromosomeList;
+			if ((scaledXRatio * binSize) >= 1) {
+				return;
+			}
+			int chromosomeIndex = ProjectManager.getInstance().getProjectChromosomes().getIndex(scaledChromosome);
+			int i = 0;
+			double ratio = scaledXRatio * dataToScale.getBinSize() * BinList.AVERAGE_BIN_SIZE_FACTORS[i];
+			while ((i < BinList.AVERAGE_BIN_SIZE_FACTORS.length) && (ratio < 1)) {
+				if (thisThread != scalerThread) {
+					scaledSCWList = null;
+					return;
+				}
+				scaledSCWList = dataToScale.getAveragedList(i).get(chromosomeIndex);
+				binSize = dataToScale.getBinSize() * BinList.AVERAGE_BIN_SIZE_FACTORS[i];
+				i++;
+				if (i < BinList.AVERAGE_BIN_SIZE_FACTORS.length) {
+					ratio = scaledXRatio * dataToScale.getBinSize() * BinList.AVERAGE_BIN_SIZE_FACTORS[i];
+				}
+			}
+			if ((scaledXRatio * binSize) >= 1) {
+				return;
+			}
+
+			// we calculate how many windows are printable depending on the screen resolution
+			int binSizeRatio  = (int) (1 / (binSize * scaledXRatio));
+			int fittedBinSize = binSizeRatio * binSize;
+
+			// if the fitted bin size is smaller than the regular bin size we don't modify the data
+			if (fittedBinSize <= binSize) {
+				return;
+			}
+			// create a list adapted to the xRatio
+			BinListViewBuilder blvb = new BinListViewBuilder(fittedBinSize);
+			for(int index = 0; index < scaledSCWList.size(); index += binSizeRatio) {
+				if (thisThread != scalerThread) {
+					scaledSCWList = null;
+					return;
+				}
+				float sum = 0;
+				int n = 0;
+				for(int j = 0; j < binSizeRatio; j ++) {
+					if (((index + j) < scaledSCWList.size()) && (scaledSCWList.get(index + j).getScore() != 0)) {
+						sum += scaledSCWList.get(index + j).getScore();
+						n++;
+					}
+				}
+				if (n > 0) {
+					blvb.addElementToBuild(sum / n);
+				}
+				else {
+					blvb.addElementToBuild(0);
+				}
+			}
+			scaledSCWList = blvb.getListView();
+			DataScalerManager.getInstance().redrawLayers(BinListScaler.this);
+		}
+	}
+
+
+	/** Thread that scales the data */
+	private ScalerThread scalerThread;
 
 	/** Scaled chromosome */
 	private Chromosome scaledChromosome;
@@ -56,7 +140,7 @@ public class BinListScaler implements DataScalerForTrackDisplay<BinList, ListVie
 	 * Creates an instance of {@link BinListScaler}
 	 * @param dataToScale the data that needs to be scaled
 	 */
-	public BinListScaler(BinList dataToScale) {
+	BinListScaler(BinList dataToScale) {
 		this.dataToScale = dataToScale;
 	}
 
@@ -84,64 +168,12 @@ public class BinListScaler implements DataScalerForTrackDisplay<BinList, ListVie
 	}
 
 
+	/**
+	 * Starts the thread that scales the current chromosome
+	 * for the current zoom level and screen resolution
+	 */
 	private void scaleChromosome() {
-		ListView<ScoredChromosomeWindow> currentChromosomeList;
-		scaledSCWList = null;
-		try {
-			currentChromosomeList = dataToScale.get(scaledChromosome);
-		} catch (InvalidChromosomeException e) {
-			ExceptionManager.getInstance().caughtException(e);
-			return;
-		}
-		if ((currentChromosomeList == null) || currentChromosomeList.isEmpty()) {
-			return;
-		}
-		int binSize = dataToScale.getBinSize();
-		scaledSCWList = currentChromosomeList;
-		if ((scaledXRatio * binSize) >= 1) {
-			return;
-		}
-		int chromosomeIndex = ProjectManager.getInstance().getProjectChromosomes().getIndex(scaledChromosome);
-		int i = 0;
-		double ratio = scaledXRatio * dataToScale.getBinSize() * BinList.AVERAGE_BIN_SIZE_FACTORS[i];
-		while ((i < BinList.AVERAGE_BIN_SIZE_FACTORS.length) && (ratio < 1)) {
-			scaledSCWList = dataToScale.getAveragedList(i).get(chromosomeIndex);
-			binSize = dataToScale.getBinSize() * BinList.AVERAGE_BIN_SIZE_FACTORS[i];
-			i++;
-			if (i < BinList.AVERAGE_BIN_SIZE_FACTORS.length) {
-				ratio = scaledXRatio * dataToScale.getBinSize() * BinList.AVERAGE_BIN_SIZE_FACTORS[i];
-			}
-		}
-		if ((scaledXRatio * binSize) >= 1) {
-			return;
-		}
-
-		// we calculate how many windows are printable depending on the screen resolution
-		int binSizeRatio  = (int) (1 / (binSize * scaledXRatio));
-		int fittedBinSize = binSizeRatio * binSize;
-
-		// if the fitted bin size is smaller than the regular bin size we don't modify the data
-		if (fittedBinSize <= binSize) {
-			return;
-		}
-		// create a list adapted to the xRatio
-		BinListViewBuilder blvb = new BinListViewBuilder(fittedBinSize);
-		for(int index = 0; index < scaledSCWList.size(); index += binSizeRatio) {
-			float sum = 0;
-			int n = 0;
-			for(int j = 0; j < binSizeRatio; j ++) {
-				if (((index + j) < scaledSCWList.size()) && (scaledSCWList.get(index + j).getScore() != 0)) {
-					sum += scaledSCWList.get(index + j).getScore();
-					n++;
-				}
-			}
-			if (n > 0) {
-				blvb.addElementToBuild(sum / n);
-			}
-			else {
-				blvb.addElementToBuild(0);
-			}
-		}
-		scaledSCWList = blvb.getListView();
+		scalerThread = new ScalerThread();
+		scalerThread.start();
 	}
 }

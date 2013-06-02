@@ -37,7 +37,7 @@ import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
  * Scales a {@link NucleotideList} to be displayed on a track.
  * @author Julien Lajugie
  */
-public class NucleotideListScaler implements DataScalerForTrackDisplay<NucleotideList, Nucleotide[]> {
+class NucleotideListScaler implements DataScalerForTrackDisplay<NucleotideList, Nucleotide[]> {
 
 	/** Chromosome window of the scaled nucleotide array */
 	private ChromosomeWindow scaledWindow;
@@ -53,7 +53,7 @@ public class NucleotideListScaler implements DataScalerForTrackDisplay<Nucleotid
 	 * Creates an instance of {@link NucleotideListScaler}
 	 * @param dataToScale data to be scaled for track display
 	 */
-	public NucleotideListScaler(NucleotideList dataToScale) {
+	NucleotideListScaler(NucleotideList dataToScale) {
 		this.dataToScale = dataToScale;
 	}
 

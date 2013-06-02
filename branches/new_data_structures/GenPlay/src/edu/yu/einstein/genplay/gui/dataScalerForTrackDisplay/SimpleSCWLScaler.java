@@ -42,7 +42,77 @@ import edu.yu.einstein.genplay.util.ListView.ChromosomeWindowListViews;
  * This class scales a {@link SimpleSCWList}to be displayed on a track.
  * @author Julien Lajugie
  */
-public class SimpleSCWLScaler implements DataScalerForTrackDisplay<SCWList, ListView<ScoredChromosomeWindow>> {
+class SimpleSCWLScaler implements DataScalerForTrackDisplay<SCWList, ListView<ScoredChromosomeWindow>> {
+
+	/**
+	 * Threads that computes the scaled data for the chromosome currently displayed
+	 * at the current zoom level and screen resolution.
+	 * @author Julien Lajugie
+	 */
+	private class ScalerThread extends Thread {
+
+		@Override
+		public void run() {
+			Thread thisThread = Thread.currentThread();
+			ListView<ScoredChromosomeWindow> currentChromosomeList;
+			scaledSCWList = null;
+			try {
+				currentChromosomeList = dataToScale.get(scaledChromosome);
+			} catch (InvalidChromosomeException e) {
+				ExceptionManager.getInstance().caughtException(e);
+				return;
+			}
+			if ((currentChromosomeList == null) || currentChromosomeList.isEmpty()) {
+				return;
+			}
+			if (scaledXRatio >= 1) {
+				scaledSCWList = currentChromosomeList;
+			} else {
+				if (currentChromosomeList.size() > 0) {
+					// compute the width on the genome that takes up 1 pixel on the screen
+					double pixelGenomicWidth = 1 / scaledXRatio;
+					GenericSCWListViewBuilder scaledSCWListBuilder = new GenericSCWListViewBuilder();
+					List<Float> scoreList = new ArrayList<Float>();
+					int i = 0;
+					while (i < currentChromosomeList.size()) {
+						if (thisThread != scalerThread) {
+							scaledSCWList = null;
+							return;
+						}
+						int currentStart = currentChromosomeList.get(i).getStart();
+						int currentStop = currentChromosomeList.get(i).getStop();
+						float currentScore = currentChromosomeList.get(i).getScore();
+						scoreList.add(currentScore);
+						// we merge two windows together if there is a next window
+						// and if the gap between the current window and the next one is smaller than 1 pixel
+						// and if the score of the next window is equal to the score of the current one
+						while (((i + 1) < currentChromosomeList.size())
+								&& ((((currentChromosomeList.get(i + 1).getStart() - currentStop) < pixelGenomicWidth) && (currentChromosomeList.get(i + 1).getScore() == currentScore))
+										|| ((currentChromosomeList.get(i + 1).getStop() - currentStart) < pixelGenomicWidth))) {
+
+							i++;
+							// the new stop position is the max of the current stop and the stop of the new merged interval
+							currentStop = Math.max(currentStop, currentChromosomeList.get(i).getStop());
+							currentScore = currentChromosomeList.get(i).getScore();
+							if (currentScore != 0) {
+								scoreList.add(currentScore);
+							}
+						}
+						currentScore = FloatLists.average(scoreList);
+						scoreList.clear();
+						scaledSCWListBuilder.addElementToBuild(currentStart, currentStop, currentScore);
+						i++;
+					}
+					scaledSCWList = scaledSCWListBuilder.getListView();
+					DataScalerManager.getInstance().redrawLayers(SimpleSCWLScaler.this);
+				}
+			}
+		}
+	}
+
+
+	/** Thread that scales the data */
+	private ScalerThread scalerThread;
 
 	/** Scaled chromosome */
 	private Chromosome scaledChromosome;
@@ -61,7 +131,7 @@ public class SimpleSCWLScaler implements DataScalerForTrackDisplay<SCWList, List
 	 * Creates an instance of {@link SimpleSCWLScaler}
 	 * @param dataToScale the data that needs to be scaled
 	 */
-	public SimpleSCWLScaler(SCWList dataToScale) {
+	SimpleSCWLScaler(SCWList dataToScale) {
 		this.dataToScale = dataToScale;
 	}
 
@@ -90,57 +160,11 @@ public class SimpleSCWLScaler implements DataScalerForTrackDisplay<SCWList, List
 
 
 	/**
-	 * Merges two windows together if the gap between the two windows is not visible
-	 * at the current zoom level and if the scores of the windows are identical.
+	 * Starts the thread that scales the current chromosome
+	 * for the current zoom level and screen resolution
 	 */
 	private void scaleChromosome() {
-		ListView<ScoredChromosomeWindow> currentChromosomeList;
-		scaledSCWList = null;
-		try {
-			currentChromosomeList = dataToScale.get(scaledChromosome);
-		} catch (InvalidChromosomeException e) {
-			ExceptionManager.getInstance().caughtException(e);
-			return;
-		}
-		if ((currentChromosomeList == null) || currentChromosomeList.isEmpty()) {
-			return;
-		}
-		if (scaledXRatio >= 1) {
-			scaledSCWList = currentChromosomeList;
-		} else {
-			if (currentChromosomeList.size() > 0) {
-				// compute the width on the genome that takes up 1 pixel on the screen
-				double pixelGenomicWidth = 1 / scaledXRatio;
-				GenericSCWListViewBuilder scaledSCWListBuilder = new GenericSCWListViewBuilder();
-				List<Float> scoreList = new ArrayList<Float>();
-				int i = 0;
-				while (i < currentChromosomeList.size()) {
-					int currentStart = currentChromosomeList.get(i).getStart();
-					int currentStop = currentChromosomeList.get(i).getStop();
-					float currentScore = currentChromosomeList.get(i).getScore();
-					scoreList.add(currentScore);
-					// we merge two windows together if there is a next window
-					// and if the gap between the current window and the next one is smaller than 1 pixel
-					// and if the score of the next window is equal to the score of the current one
-					while (((i + 1) < currentChromosomeList.size())
-							&& ((((currentChromosomeList.get(i + 1).getStart() - currentStop) < pixelGenomicWidth) && (currentChromosomeList.get(i + 1).getScore() == currentScore))
-									|| ((currentChromosomeList.get(i + 1).getStop() - currentStart) < pixelGenomicWidth))) {
-
-						i++;
-						// the new stop position is the max of the current stop and the stop of the new merged interval
-						currentStop = Math.max(currentStop, currentChromosomeList.get(i).getStop());
-						currentScore = currentChromosomeList.get(i).getScore();
-						if (currentScore != 0) {
-							scoreList.add(currentScore);
-						}
-					}
-					currentScore = FloatLists.average(scoreList);
-					scoreList.clear();
-					scaledSCWListBuilder.addElementToBuild(currentStart, currentStop, currentScore);
-					i++;
-				}
-				scaledSCWList = scaledSCWListBuilder.getListView();
-			}
-		}
+		scalerThread = new ScalerThread();
+		scalerThread.start();
 	}
 }

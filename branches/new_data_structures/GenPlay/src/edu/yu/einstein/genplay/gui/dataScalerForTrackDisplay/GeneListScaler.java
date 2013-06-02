@@ -24,6 +24,7 @@ package edu.yu.einstein.genplay.gui.dataScalerForTrackDisplay;
 import java.awt.FontMetrics;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
@@ -36,6 +37,7 @@ import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.primitiveList.PrimitiveList;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidChromosomeException;
+import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
 import edu.yu.einstein.genplay.util.ListView.ChromosomeWindowListViews;
 
 
@@ -43,13 +45,97 @@ import edu.yu.einstein.genplay.util.ListView.ChromosomeWindowListViews;
  * This class scales a {@link GeneList} to be displayed on a track.
  * @author Julien Lajugie
  */
-public class GeneListScaler implements DataScalerForTrackDisplay<GeneList, List<ListView<Gene>>> {
+class GeneListScaler implements DataScalerForTrackDisplay<GeneList, List<ListView<Gene>>> {
 
-	/** The name of the genes are printed if the ratio is higher than this value */
-	public static final double MIN_X_RATIO_PRINT_NAME = 0.0005d;
+
+	/**
+	 * Threads that computes the scaled data for the chromosome currently displayed
+	 * at the current zoom level and screen resolution.
+	 * @author Julien Lajugie
+	 */
+	private class ScalerThread extends Thread {
+
+		@Override
+		public void run() {
+			Thread thisThread = Thread.currentThread();
+			ListView<Gene> currentList;
+			scaledGeneList = null;
+			try {
+				currentList = dataToScale.get(scaledChromosome);
+			} catch (InvalidChromosomeException e) {
+				ExceptionManager.getInstance().caughtException(e);
+				scaledChromosome = null;
+				return;
+			}
+
+			if ((currentList == null) || currentList.isEmpty()) {
+				return;
+			}
+			scaledGeneList = new ArrayList<ListView<Gene>>();
+			// how many genes have been organized
+			int organizedGeneCount = 0;
+			// which genes have already been selected and organized
+			boolean[] organizedGenes = new boolean[currentList.size()];
+			Arrays.fill(organizedGenes, false);
+			// check if we need to print the gene names at the current scale
+			boolean isGeneNamePrinted = (scaledXRatio > GeneLayer.MIN_X_RATIO_PRINT_NAME) && (fontMetrics != null);
+			ProjectWindow pw = ProjectManager.getInstance().getProjectWindow();
+			// loop until every gene has been organized
+			while (organizedGeneCount < currentList.size()) {
+				if (thisThread != scalerThread) {
+					scaledGeneList = null;
+					return;
+				}
+				List<Integer> indexes = new PrimitiveList<Integer>(Integer.class);
+				Gene previousGene = null;
+				// we loop on the gene list
+				for (int i = 0; i < currentList.size(); i++) {
+					if (thisThread != scalerThread) {
+						scaledGeneList = null;
+						return;
+					}
+					// if the current gene has not been organized yet
+					if (!organizedGenes[i]) {
+						// if the current line is empty we add the current gene
+						if (previousGene == null) {
+							previousGene = currentList.get(i);
+							indexes.add(i);
+							organizedGenes[i] = true;
+							organizedGeneCount++;
+						} else {
+							long currentStart = pw.genomeToAbsoluteScreenPosition(currentList.get(i).getStart());
+							long previousStop;
+							// if we don't print the gene names the previous stop is the stop position of the gene + the minimum length between two genes
+							if (!isGeneNamePrinted) {
+								previousStop = pw.genomeToAbsoluteScreenPosition(previousGene.getStop()) + MIN_DISTANCE_BETWEEN_2_GENES;
+							} else { // if we print the name the previous stop is the max between the stop of the gene and the end position of the name of the gene (+ MIN_DISTANCE_BETWEEN_2_GENES in both case)
+								long previousNameStop = fontMetrics.stringWidth(previousGene.getName()) + pw.genomeToAbsoluteScreenPosition(previousGene.getStart());
+								long previousGeneStop = pw.genomeToAbsoluteScreenPosition(previousGene.getStop());
+								previousStop = Math.max(previousNameStop, previousGeneStop);
+								previousStop += MIN_DISTANCE_BETWEEN_2_GENES;
+							}
+							// if the current gene won't overlap with the previous one we add it to the current line of the list of organized genes
+							if (currentStart > previousStop) {
+								previousGene = currentList.get(i);
+								indexes.add(i);
+								organizedGenes[i] = true;
+								organizedGeneCount++;
+							}
+						}
+					}
+				}
+				scaledGeneList.add(currentList.subList(indexes));
+				DataScalerManager.getInstance().redrawLayers(GeneListScaler.this);
+			}
+		}
+	}
+
 
 	/** Minimum distance in pixel between two genes */
 	private static final int MIN_DISTANCE_BETWEEN_2_GENES = 5;
+
+	/** Thread that scales the data */
+	private ScalerThread scalerThread;
 
 	/** Scaled chromosome */
 	private Chromosome scaledChromosome;
@@ -72,7 +158,7 @@ public class GeneListScaler implements DataScalerForTrackDisplay<GeneList, List<
 	 * @param geneList gene list to scale
 	 * @param fontMetrics font metrics of the track
 	 */
-	public GeneListScaler(GeneList geneList, FontMetrics fontMetrics) {
+	GeneListScaler(GeneList geneList, FontMetrics fontMetrics) {
 		scaledChromosome = null;
 		scaledXRatio = -1;
 		scaledGeneList = null;
@@ -95,11 +181,15 @@ public class GeneListScaler implements DataScalerForTrackDisplay<GeneList, List<
 			return null;
 		}
 		List<ListView<Gene>> resultList = new ArrayList<ListView<Gene>>();
-		// search genes for each line
-		for (ListView<Gene> currentLine : scaledGeneList) {
-			// retrieve the sublist of genes that are located between the start and stop displayed positions
-			ListView<Gene> lineToAdd = ChromosomeWindowListViews.subList(currentLine, projectWindow.getStart(), projectWindow.getStop());
-			resultList.add(lineToAdd);
+		try {
+			// search genes for each line
+			for (ListView<Gene> currentLine : scaledGeneList) {
+				// retrieve the sublist of genes that are located between the start and stop displayed positions
+				ListView<Gene> lineToAdd = ChromosomeWindowListViews.subList(currentLine, projectWindow.getStart(), projectWindow.getStop());
+				resultList.add(lineToAdd);
+			}
+		} catch (ConcurrentModificationException e) {
+			return null;
 		}
 		return resultList;
 	}
@@ -112,68 +202,11 @@ public class GeneListScaler implements DataScalerForTrackDisplay<GeneList, List<
 
 
 	/**
-	 * Organizes the list of genes by line so two genes don't overlap on the screen.
+	 * Starts the thread that scales the current chromosome
+	 * for the current zoom level and screen resolution
 	 */
 	private void scaleChromosome() {
-		ListView<Gene> currentList;
-		scaledGeneList = null;
-		try {
-			currentList = dataToScale.get(scaledChromosome);
-		} catch (InvalidChromosomeException e) {
-			ExceptionManager.getInstance().caughtException(e);
-			scaledChromosome = null;
-			return;
-		}
-
-		if ((currentList == null) || currentList.isEmpty()) {
-			return;
-		}
-		scaledGeneList = new ArrayList<ListView<Gene>>();
-		// how many genes have been organized
-		int organizedGeneCount = 0;
-		// which genes have already been selected and organized
-		boolean[] organizedGenes = new boolean[currentList.size()];
-		Arrays.fill(organizedGenes, false);
-		// check if we need to print the gene names at the current scale
-		boolean isGeneNamePrinted = (scaledXRatio > MIN_X_RATIO_PRINT_NAME) && (fontMetrics != null);
-		ProjectWindow pw = ProjectManager.getInstance().getProjectWindow();
-		// loop until every gene has been organized
-		while (organizedGeneCount < currentList.size()) {
-			List<Integer> indexes = new PrimitiveList<Integer>(Integer.class);
-			Gene previousGene = null;
-			// we loop on the gene list
-			for (int i = 0; i < currentList.size(); i++) {
-				// if the current gene has not been organized yet
-				if (!organizedGenes[i]) {
-					// if the current line is empty we add the current gene
-					if (previousGene == null) {
-						previousGene = currentList.get(i);
-						indexes.add(i);
-						organizedGenes[i] = true;
-						organizedGeneCount++;
-					} else {
-						long currentStart = pw.genomeToAbsoluteScreenPosition(currentList.get(i).getStart());
-						long previousStop;
-						// if we don't print the gene names the previous stop is the stop position of the gene + the minimum length between two genes
-						if (!isGeneNamePrinted) {
-							previousStop = pw.genomeToAbsoluteScreenPosition(previousGene.getStop()) + MIN_DISTANCE_BETWEEN_2_GENES;
-						} else { // if we print the name the previous stop is the max between the stop of the gene and the end position of the name of the gene (+ MIN_DISTANCE_BETWEEN_2_GENES in both case)
-							long previousNameStop = fontMetrics.stringWidth(previousGene.getName()) + pw.genomeToAbsoluteScreenPosition(previousGene.getStart());
-							long previousGeneStop = pw.genomeToAbsoluteScreenPosition(previousGene.getStop());
-							previousStop = Math.max(previousNameStop, previousGeneStop);
-							previousStop += MIN_DISTANCE_BETWEEN_2_GENES;
-						}
-						// if the current gene won't overlap with the previous one we add it to the current line of the list of organized genes
-						if (currentStart > previousStop) {
-							previousGene = currentList.get(i);
-							indexes.add(i);
-							organizedGenes[i] = true;
-							organizedGeneCount++;
-						}
-					}
-				}
-			}
-			scaledGeneList.add(currentList.subList(indexes));
-		}
+		scalerThread = new ScalerThread();
+		scalerThread.start();
 	}
 }
