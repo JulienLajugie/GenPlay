@@ -138,7 +138,9 @@ public abstract class AbstractSCWLayer<T extends SCWList> extends AbstractVersio
 			reverseCurveColor = new Color(reverseCurveColor.getRed(), reverseCurveColor.getGreen(), reverseCurveColor.getBlue(), getColor().getAlpha());
 			// Retrieve the list to print
 			ListView<ScoredChromosomeWindow> listToPrint = DataScalerManager.getInstance().getScaledData(this);
-			if (listToPrint != null) {
+			if (listToPrint == null) {
+				getTrack().drawLoadingAnimation(g);
+			} else {
 				for (ScoredChromosomeWindow currentWindow: listToPrint) {
 					// we want to make sure that x is > 0
 					int x = Math.max(0, projectWindow.genomeToScreenPosition(currentWindow.getStart()));
@@ -173,7 +175,9 @@ public abstract class AbstractSCWLayer<T extends SCWList> extends AbstractVersio
 			g.setColor(getColor());
 			// Retrieve the list to print
 			ListView<ScoredChromosomeWindow> listToPrint = DataScalerManager.getInstance().getScaledData(this);
-			if ((listToPrint != null) && (listToPrint.size() > 0)) {
+			if (listToPrint == null) {
+				getTrack().drawLoadingAnimation(g);
+			} else {
 				int x1 = -1;
 				int x2 = -1;
 				float score1 = Float.NaN;
@@ -224,7 +228,9 @@ public abstract class AbstractSCWLayer<T extends SCWList> extends AbstractVersio
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
 			// Retrieve the list to print
 			ListView<ScoredChromosomeWindow> listToPrint = DataScalerManager.getInstance().getScaledData(this);
-			if (listToPrint != null) {
+			if (listToPrint == null) {
+				getTrack().drawLoadingAnimation(g);
+			} else {
 				for (ScoredChromosomeWindow currentWindow: listToPrint) {
 					int x = projectWindow.genomeToScreenPosition(currentWindow.getStart());
 					int widthWindow = projectWindow.genomeToScreenPosition(currentWindow.getStop()) - x;
@@ -251,7 +257,9 @@ public abstract class AbstractSCWLayer<T extends SCWList> extends AbstractVersio
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
 			g.setColor(getColor());
 			ListView<ScoredChromosomeWindow> listToPrint = DataScalerManager.getInstance().getScaledData(this);
-			if (listToPrint != null) {
+			if (listToPrint == null) {
+				getTrack().drawLoadingAnimation(g);
+			} else {
 				for (ScoredChromosomeWindow currentWindow: listToPrint) {
 					// we want to make sure that x is > 0
 					int x1 = Math.max(0, projectWindow.genomeToScreenPosition(currentWindow.getStart()));

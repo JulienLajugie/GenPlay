@@ -57,6 +57,7 @@ class BinListScaler implements DataScalerForTrackDisplay<BinList, ListView<Score
 				return;
 			}
 			if ((currentChromosomeList == null) || currentChromosomeList.isEmpty()) {
+				scaledSCWList = currentChromosomeList;
 				return;
 			}
 			int binSize = dataToScale.getBinSize();
@@ -157,7 +158,7 @@ class BinListScaler implements DataScalerForTrackDisplay<BinList, ListView<Score
 			scaledXRatio = projectXRatio;
 			scaleChromosome();
 		}
-		if ((scaledSCWList == null) || (scaledSCWList.size() == 0)) {
+		if (scaledSCWList == null) {
 			return null;
 		}
 		return ChromosomeWindowListViews.subList(scaledSCWList, projectWindow.getStart(), projectWindow.getStop());

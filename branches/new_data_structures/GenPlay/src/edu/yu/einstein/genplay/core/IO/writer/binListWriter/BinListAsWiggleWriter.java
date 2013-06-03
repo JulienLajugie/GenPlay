@@ -89,7 +89,7 @@ public final class BinListAsWiggleWriter extends BinListWriter implements Stoppa
 						j++;
 					}
 					while (j < currentList.size()) {
-						int start = j * binSize;
+						int start = currentList.get(j).getStart();
 						if (isMultiGenome) {
 							start = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, allele, start, currentChromosome, fullGenomeName);
 						}

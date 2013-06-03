@@ -148,27 +148,22 @@ public class ConcatenateBinListWriter implements Writer, Stoppable {
 							start = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, allele, start, currentChromosome, fullGenomeName);
 							stop = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, allele, stop, currentChromosome, fullGenomeName);
 						}
-						// we subtract 1 because positions in bed files are 0 based and GenPlay positions are 1-based
-						start--;
-						stop--;
 
-						if ((start > -1) && (stop > -1)) {
-							writer.write(currentChromosome + "\t" + start + "\t" + stop);
-							for (BinList currentBinList: binListArray) {
-								// if the operation need to be stopped we close the writer and delete the file
-								if (needsToBeStopped) {
-									writer.close();
-									outputFile.delete();
-									throw new InterruptedException();
-								}
-								if ((currentBinList.get(currentChromosome) != null) && (j < currentBinList.size(currentChromosome))) {
-									writer.write("\t" + currentBinList.get(currentChromosome, j));
-								} else {
-									writer.write("\t0.0");
-								}
+						writer.write(currentChromosome + "\t" + start + "\t" + stop);
+						for (BinList currentBinList: binListArray) {
+							// if the operation need to be stopped we close the writer and delete the file
+							if (needsToBeStopped) {
+								writer.close();
+								outputFile.delete();
+								throw new InterruptedException();
 							}
-							writer.newLine();
+							if ((currentBinList.get(currentChromosome) != null) && (j < currentBinList.size(currentChromosome))) {
+								writer.write("\t" + currentBinList.get(currentChromosome, j).getScore());
+							} else {
+								writer.write("\t0.0");
+							}
 						}
+						writer.newLine();
 						j++;
 					}
 				}

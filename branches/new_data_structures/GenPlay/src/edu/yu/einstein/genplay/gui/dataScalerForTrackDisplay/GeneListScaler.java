@@ -24,7 +24,6 @@ package edu.yu.einstein.genplay.gui.dataScalerForTrackDisplay;
 import java.awt.FontMetrics;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
@@ -67,10 +66,12 @@ class GeneListScaler implements DataScalerForTrackDisplay<GeneList, List<ListVie
 				return;
 			}
 
+			scaledGeneList = new ArrayList<ListView<Gene>>();
+
 			if ((currentList == null) || currentList.isEmpty()) {
 				return;
 			}
-			scaledGeneList = new ArrayList<ListView<Gene>>();
+
 			// how many genes have been organized
 			int organizedGeneCount = 0;
 			// which genes have already been selected and organized
@@ -82,7 +83,7 @@ class GeneListScaler implements DataScalerForTrackDisplay<GeneList, List<ListVie
 			// loop until every gene has been organized
 			while (organizedGeneCount < currentList.size()) {
 				if (thisThread != scalerThread) {
-					scaledGeneList = null;
+					//scaledGeneList = null;
 					return;
 				}
 				List<Integer> indexes = new PrimitiveList<Integer>(Integer.class);
@@ -90,7 +91,7 @@ class GeneListScaler implements DataScalerForTrackDisplay<GeneList, List<ListVie
 				// we loop on the gene list
 				for (int i = 0; i < currentList.size(); i++) {
 					if (thisThread != scalerThread) {
-						scaledGeneList = null;
+						//scaledGeneList = null;
 						return;
 					}
 					// if the current gene has not been organized yet
@@ -123,8 +124,12 @@ class GeneListScaler implements DataScalerForTrackDisplay<GeneList, List<ListVie
 						}
 					}
 				}
-				scaledGeneList.add(currentList.subList(indexes));
-				DataScalerManager.getInstance().redrawLayers(GeneListScaler.this);
+				synchronized (GeneListScaler.class) {
+					if ((thisThread == scalerThread) && (scaledGeneList != null)) {
+						scaledGeneList.add(currentList.subList(indexes));
+					}
+					DataScalerManager.getInstance().redrawLayers(GeneListScaler.this);
+				}
 			}
 		}
 	}
@@ -180,15 +185,13 @@ class GeneListScaler implements DataScalerForTrackDisplay<GeneList, List<ListVie
 			return null;
 		}
 		List<ListView<Gene>> resultList = new ArrayList<ListView<Gene>>();
-		try {
+		synchronized (GeneListScaler.class) {
 			// search genes for each line
 			for (ListView<Gene> currentLine : scaledGeneList) {
 				// retrieve the sublist of genes that are located between the start and stop displayed positions
 				ListView<Gene> lineToAdd = ChromosomeWindowListViews.subList(currentLine, projectWindow.getStart(), projectWindow.getStop());
 				resultList.add(lineToAdd);
 			}
-		} catch (ConcurrentModificationException e) {
-			return null;
 		}
 		return resultList;
 	}

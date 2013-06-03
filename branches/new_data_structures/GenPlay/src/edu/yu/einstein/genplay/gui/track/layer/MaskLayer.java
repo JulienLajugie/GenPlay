@@ -86,7 +86,9 @@ public class MaskLayer extends AbstractVersionedLayer<SCWList> implements Serial
 				g.setColor(color);
 				// Retrieve the genes to print
 				ListView<ScoredChromosomeWindow> listToPrint = DataScalerManager.getInstance().getScaledData(this);
-				if (listToPrint != null) {
+				if (listToPrint == null) {
+					getTrack().drawLoadingAnimation(g);
+				} else {
 					for (ScoredChromosomeWindow currentStripe: listToPrint) {
 						int x = projectWindow.genomeToScreenPosition(currentStripe.getStart());
 						int widthWindow = projectWindow.genomeToScreenWidth(currentStripe.getStop() - currentStripe.getStart());

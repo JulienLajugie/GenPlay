@@ -48,8 +48,7 @@ public class Images {
 	private static final String SUPERIOR_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/superior8x6.png";				// Path of the superior sign
 	private static final String INFERIOR_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/inferior8x6.png";				// Path of the inferior sign
 	private static final String DNA_IMAGE_PATH 			= "edu/yu/einstein/genplay/resource/dna_25x17.png";					// Path of the DNA sign
-
-
+	private static final String LOADING_IMAGE_PATH 		= "edu/yu/einstein/genplay/resource/loading_anim.gif";				// Path of the application image
 	private static Image applicationImage 	= null;		// Application image
 	private static Image bannerImage		= null;		// Banner image
 	private static Image toolsImage 		= null;		// Tools image
@@ -63,10 +62,8 @@ public class Images {
 	private static Image superiorImage 		= null;		// Superior image
 	private static Image inferiorImage 		= null;		// Inferior image
 	private static Image dnaImage 			= null;		// DNA image
+	private static Image loadingImage		= null;		// image showed while tracks are loading
 
-
-
-	//////////////////////////////////////////////////////// UTIL methods
 
 	/**
 	 * @return the image of the Actualize icon (15x15)
@@ -89,11 +86,6 @@ public class Images {
 		return addImage;
 	}
 
-	////////////////////////////////////////////////////////
-
-
-
-	//////////////////////////////////////////////////////// GET methods
 
 	/**
 	 * @return the image of the GenPlay icon
@@ -158,6 +150,17 @@ public class Images {
 			inferiorImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(INFERIOR_IMAGE_PATH));
 		}
 		return inferiorImage;
+	}
+
+
+	/**
+	 * @return the image showed while tracks are loading
+	 */
+	public static Image getLoadingImage () {
+		if (loadingImage == null) {
+			loadingImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(LOADING_IMAGE_PATH));
+		}
+		return loadingImage;
 	}
 
 

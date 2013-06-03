@@ -54,13 +54,9 @@ class MaskSCWLScaler implements DataScalerForTrackDisplay<SCWList, ListView<Scor
 				currentChromosomeList = dataToScale.get(scaledChromosome);
 			} catch (InvalidChromosomeException e) {
 				ExceptionManager.getInstance().caughtException(e);
-				scaledChromosome = null;
 				return;
 			}
-			if ((currentChromosomeList == null) || currentChromosomeList.isEmpty()) {
-				return;
-			}
-			if (scaledXRatio >= 1) {
+			if ((currentChromosomeList == null) || currentChromosomeList.isEmpty() || (scaledXRatio >= 1)) {
 				scaledSCWList = currentChromosomeList;
 			} else {
 				// compute the width on the genome that takes up 1 pixel on the screen
@@ -86,8 +82,8 @@ class MaskSCWLScaler implements DataScalerForTrackDisplay<SCWList, ListView<Scor
 					i++;
 				}
 				scaledSCWList = maskLVBuilder.getListView();
-				DataScalerManager.getInstance().redrawLayers(MaskSCWLScaler.this);
 			}
+			DataScalerManager.getInstance().redrawLayers(MaskSCWLScaler.this);
 		}
 	}
 
@@ -126,7 +122,7 @@ class MaskSCWLScaler implements DataScalerForTrackDisplay<SCWList, ListView<Scor
 			scaledXRatio = projectXRatio;
 			scaleChromosome();
 		}
-		if ((scaledSCWList == null) || (scaledSCWList.size() == 0)) {
+		if (scaledSCWList == null) {
 			return null;
 		}
 		return ChromosomeWindowListViews.subList(scaledSCWList, projectWindow.getStart(), projectWindow.getStop());

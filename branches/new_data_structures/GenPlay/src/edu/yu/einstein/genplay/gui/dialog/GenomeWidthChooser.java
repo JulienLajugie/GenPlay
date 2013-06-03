@@ -210,6 +210,7 @@ public final class GenomeWidthChooser extends JDialog {
 	 * Changes the text of textField jftfGenomicWidth when the scrollBar jftfSigma is used.
 	 */
 	private void jftfSigmaPropertyChange() {
+
 		int currentGenomicWidth = ((Number)(jftfGenomeWidth.getValue())).intValue();
 
 		if((currentGenomicWidth < windowSize) || (currentGenomicWidth > (windowSize * 100000))) {

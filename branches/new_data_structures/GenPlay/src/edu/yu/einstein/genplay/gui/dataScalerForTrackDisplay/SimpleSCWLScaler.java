@@ -61,10 +61,7 @@ class SimpleSCWLScaler implements DataScalerForTrackDisplay<SCWList, ListView<Sc
 				ExceptionManager.getInstance().caughtException(e);
 				return;
 			}
-			if ((currentChromosomeList == null) || currentChromosomeList.isEmpty()) {
-				return;
-			}
-			if (scaledXRatio >= 1) {
+			if ((currentChromosomeList == null) || currentChromosomeList.isEmpty() || (scaledXRatio >= 1)) {
 				scaledSCWList = currentChromosomeList;
 			} else {
 				if (currentChromosomeList.size() > 0) {
@@ -145,7 +142,7 @@ class SimpleSCWLScaler implements DataScalerForTrackDisplay<SCWList, ListView<Sc
 			scaledXRatio = projectXRatio;
 			scaleChromosome();
 		}
-		if ((scaledSCWList == null) || (scaledSCWList.size() == 0)) {
+		if (scaledSCWList == null) {
 			return null;
 		}
 		return ChromosomeWindowListViews.subList(scaledSCWList, projectWindow.getStart(), projectWindow.getStop());

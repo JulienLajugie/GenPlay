@@ -24,6 +24,7 @@ package edu.yu.einstein.genplay.gui.track;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
@@ -52,6 +53,7 @@ import edu.yu.einstein.genplay.gui.track.layer.background.BackgroundData;
 import edu.yu.einstein.genplay.gui.track.layer.background.BackgroundLayer;
 import edu.yu.einstein.genplay.gui.track.layer.foreground.ForegroundData;
 import edu.yu.einstein.genplay.gui.track.layer.foreground.ForegroundLayer;
+import edu.yu.einstein.genplay.util.Images;
 
 /**
  * Track component showing the data in GenPlay.
@@ -131,6 +133,19 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 	}
 
 
+	/**
+	 * Draws an animation in the middle of the track
+	 * showing that the track is being loaded
+	 * @param g graphics where to draw the animation
+	 */
+	public void drawLoadingAnimation(Graphics g) {
+		Image image = Images.getLoadingImage();
+		int x = (graphicsPanel.getWidth() - image.getWidth(null)) / 2;
+		int y = (graphicsPanel.getHeight() - image.getHeight(null)) / 2;
+		g.drawImage(image, x, y, this);
+	}
+
+
 	@Override
 	public void genomeWindowChanged(GenomeWindowEvent evt) {
 		// repaint the layers if the genome window changed
@@ -154,13 +169,13 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 	}
 
 
+
 	/**
 	 * @return the default height of the track
 	 */
 	public int getDefaultHeight() {
 		return defaultHeight;
 	}
-
 
 
 	/**

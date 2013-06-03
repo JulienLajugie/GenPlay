@@ -132,7 +132,9 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 			boolean isGeneNamePrinted = projectWindow.getXRatio() > MIN_X_RATIO_PRINT_NAME;
 			// Retrieve the genes to print
 			List<ListView<Gene>> genesToPrint = DataScalerManager.getInstance().getScaledData(this);
-			if ((genesToPrint != null) && (genesToPrint.size() > 0)){
+			if (genesToPrint == null) {
+				getTrack().drawLoadingAnimation(g);
+			} else {
 				// Compute the maximum number of line displayable
 				int displayedLineCount = 0;
 				if (isGeneNamePrinted) {

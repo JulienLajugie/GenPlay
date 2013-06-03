@@ -116,7 +116,9 @@ public class RepeatLayer extends AbstractLayer<RepeatFamilyList> implements Laye
 						String familyToDraw = familyNames.get(i + firstLineToDisplay);
 						RepeatFamilyListView currentFamily = null;
 						int indexFamilyToDisplay = 0;
-						if (repeatFamilyList != null) {
+						if (repeatFamilyList == null) {
+							getTrack().drawLoadingAnimation(g);
+						} else {
 							while ((currentFamily == null) && (indexFamilyToDisplay < repeatFamilyList.size())) {
 								if (repeatFamilyList.get(indexFamilyToDisplay).getName().equals(familyToDraw)) {
 									currentFamily = repeatFamilyList.get(indexFamilyToDisplay);
