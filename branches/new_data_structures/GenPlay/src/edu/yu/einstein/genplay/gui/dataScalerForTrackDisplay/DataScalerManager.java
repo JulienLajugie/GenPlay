@@ -116,6 +116,7 @@ public class DataScalerManager {
 		@Override
 		public void run() {
 			Thread thisThread = Thread.currentThread();
+			setName("Data Scaler Cleaner Thread");
 			while (DataScalerManager.getInstance().cleanerThread == thisThread) {
 				cleanDataScalerMap();
 				cleanLayerListMap();

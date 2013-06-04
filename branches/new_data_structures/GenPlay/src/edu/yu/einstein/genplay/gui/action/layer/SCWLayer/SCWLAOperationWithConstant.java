@@ -24,11 +24,8 @@ package edu.yu.einstein.genplay.gui.action.layer.SCWLayer;
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
-import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOAddConstant;
-import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOInvertConstant;
-import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOMultiplyConstant;
-import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOSubtractConstant;
-import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOUniqueScore;
+import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOOperationWithConstant;
+import edu.yu.einstein.genplay.dataStructure.enums.OperationWithConstant;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.OperationWithConstantDialog;
@@ -40,80 +37,6 @@ import edu.yu.einstein.genplay.gui.track.layer.AbstractSCWLayer;
  * @author Julien Lajugie
  */
 public class SCWLAOperationWithConstant extends TrackListActionOperationWorker<SCWList> {
-
-	/**
-	 * Enumeration of the different type of operation with constant
-	 * @author Julien Lajugie
-	 */
-	public enum OperationWithConstant {
-
-		/** Add a constant */
-		ADDITION ("Addition", "<html>Apply the following function f for each score x of the selected layer:<br>f(x) = x + constant</html>"),
-
-		/** Subtract a constant */
-		SUBTRACTION ("Subtraction", "<html>Apply the following function f for each score x of the selected layer:<br>f(x) = x - constant</html>"),
-
-		/** Multiply by a constant */
-		MULTIPLICATION ("Multiplication", "<html>Apply the following function f for each score x of the selected layer:<br>f(x) = x * constant</html>"),
-
-		/** Invert */
-		INVERTION ("Invertion", "<html>Apply the following function f for each score x of the selected layer:<br>f(x) = constant / x</html>"),
-
-		/** Set a unique score */
-		UNIQUE_SCORE ("Unique Score", "<html>Apply the following function f for each score x of the selected layer:<br>f(x) = constant</html>");
-
-		private final 	String name;			// name of the operation
-		private final	String description;		// description of the operation
-
-
-		/**
-		 * Creates an instance of {@link OperationWithConstant}
-		 * @param name
-		 * @param description
-		 */
-		private OperationWithConstant(String name, String description) {
-			this.name = name;
-			this.description = description;
-		}
-
-
-		/**
-		 * @return the description of the operation
-		 */
-		public String getDescription() {
-			return description;
-		}
-
-
-		/**
-		 * @param scwList a {@link SCWList}
-		 * @param constant a constant
-		 * @return an {@link Operation} corresponding to the specified element of this enumeration
-		 */
-		public Operation<SCWList> getOperation(SCWList scwList, float constant) {
-			switch (this) {
-			case ADDITION:
-				return new SCWLOAddConstant(scwList, constant);
-			case SUBTRACTION:
-				return new SCWLOSubtractConstant(scwList, constant);
-			case MULTIPLICATION:
-				return new SCWLOMultiplyConstant(scwList, constant);
-			case INVERTION:
-				return new SCWLOInvertConstant(scwList, constant);
-			case UNIQUE_SCORE:
-				return new SCWLOUniqueScore(scwList, constant);
-			default:
-				return null;
-			}
-		}
-
-
-		@Override
-		public String toString() {
-			return name;
-		}
-	}
-
 
 	private static final long serialVersionUID = 4027173438789911860L; 								// generated ID
 	private static final String 		ACTION_NAME = "Constant Operation";							// action name
@@ -156,9 +79,9 @@ public class SCWLAOperationWithConstant extends TrackListActionOperationWorker<S
 			if (owcDialog.showDialog(getRootPane()) == OperationWithConstantDialog.APPROVE_OPTION) {
 				float constant = owcDialog.getConstant();
 				OperationWithConstant operationWithConstant = owcDialog.getOperation();
+				boolean applyToNullWindows = owcDialog.getApplyToNullWindows();
 				SCWList scwList = selectedLayer.getData();
-				operation = operationWithConstant.getOperation(scwList, constant);
-				return operation;
+				return new SCWLOOperationWithConstant(scwList, operationWithConstant, constant, applyToNullWindows);
 			}
 		}
 		return null;

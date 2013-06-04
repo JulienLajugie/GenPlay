@@ -33,14 +33,15 @@ import java.awt.event.ItemListener;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import edu.yu.einstein.genplay.dataStructure.enums.OperationWithConstant;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAOperationWithConstant;
-import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAOperationWithConstant.OperationWithConstant;
 import edu.yu.einstein.genplay.util.NumberFormats;
 
 
@@ -57,11 +58,11 @@ public class OperationWithConstantDialog extends JDialog {
 	/** Return value when Cancel has been clicked. */
 	public static final 	int 			CANCEL_OPTION 		= 1;
 
-	private int	approved = CANCEL_OPTION;			// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
+	private int	approved = CANCEL_OPTION;				// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
 
-	private JFormattedTextField jftfConstant;		// the text field to enter the constant
-	private JComboBox			jcbOperationType;	// combo box to select the type of operation
-
+	private JFormattedTextField jftfConstant;			// the text field to enter the constant
+	private JComboBox			jcbOperationType;		// combo box to select the type of operation
+	private JCheckBox			jcbApplyToNullWindows;	// check box apply to null windows
 
 	/**
 	 * Creates an instance of {@link OperationWithConstantDialog}
@@ -76,6 +77,14 @@ public class OperationWithConstantDialog extends JDialog {
 
 		pack();
 		setResizable(false);
+	}
+
+
+	/**
+	 * @return true if the operation should be applied to null windows
+	 */
+	public boolean getApplyToNullWindows() {
+		return jcbApplyToNullWindows.isSelected();
 	}
 
 
@@ -102,6 +111,7 @@ public class OperationWithConstantDialog extends JDialog {
 		final JLabel jlOperationDescription = new JLabel();
 		JLabel jlOperation = new JLabel("Choose an operation:");
 		JLabel jlConstant = new JLabel("Where constant = ");
+		//JLabel jlApplyToNullWindows = new JLabel("A")
 		jftfConstant = new JFormattedTextField(NumberFormats.getScoreFormat());
 		jftfConstant.setColumns(8);
 		jftfConstant.setValue(0);
@@ -114,6 +124,9 @@ public class OperationWithConstantDialog extends JDialog {
 		});
 		jcbOperationType.setSelectedItem(OperationWithConstant.ADDITION);
 		jlOperationDescription.setText(((OperationWithConstant) jcbOperationType.getSelectedItem()).getDescription());
+
+		jcbApplyToNullWindows = new JCheckBox("Apply to null windows: ");
+
 
 		// Creates the panel
 		JPanel jPanel = new JPanel();
@@ -142,8 +155,15 @@ public class OperationWithConstantDialog extends JDialog {
 		gbc.gridwidth = 1;
 		gbc.insets = new Insets(0, 0, 0, 0);
 		jPanel.add(jlConstant, gbc);
+
 		gbc.gridx = 1;
 		jPanel.add(jftfConstant, gbc);
+
+		gbc.gridx = 0;
+		gbc.gridy = 3;
+		gbc.gridwidth = 2;
+		gbc.insets = new Insets(0, 0, 0, 0);
+		jPanel.add(jcbApplyToNullWindows, gbc);
 
 		return jPanel;
 	}

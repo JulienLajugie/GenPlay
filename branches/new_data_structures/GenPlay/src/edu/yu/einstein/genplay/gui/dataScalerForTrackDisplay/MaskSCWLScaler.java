@@ -49,6 +49,7 @@ class MaskSCWLScaler implements DataScalerForTrackDisplay<SCWList, ListView<Scor
 		@Override
 		public void run() {
 			Thread thisThread = Thread.currentThread();
+			setName("Data Scaler Thread");
 			ListView<ScoredChromosomeWindow> currentChromosomeList;
 			try {
 				currentChromosomeList = dataToScale.get(scaledChromosome);

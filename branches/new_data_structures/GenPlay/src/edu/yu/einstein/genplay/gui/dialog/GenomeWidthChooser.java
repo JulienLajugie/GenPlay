@@ -32,6 +32,7 @@ import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.text.ParseException;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -39,6 +40,8 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollBar;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.NumberFormats;
@@ -87,9 +90,9 @@ public final class GenomeWidthChooser extends JDialog {
 	/**
 	 * Updates the text of the sigma label
 	 */
-	private static void updateSigmaLabeText() {
+	private static void updateSigmaLabeText(int genomeWidth) {
 		if (jlSigma.isVisible()) {
-			int sigma = validGenomeWidth / 4;
+			int sigma = genomeWidth / 4;
 			jlSigma.setText("Sigma = " + NumberFormats.getPositionFormat().format(sigma));
 		}
 	}
@@ -135,9 +138,22 @@ public final class GenomeWidthChooser extends JDialog {
 			}
 		});
 
+		jftfGenomeWidth.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
+			public void changedUpdate(DocumentEvent e) {}
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				jftfSigmaDocumentChange();
+			}
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				jftfSigmaDocumentChange();
+			}
+		});
+
 		jlSigma = new JLabel();
 		jlSigma.setVisible(showSigma);
-		updateSigmaLabeText();
+		updateSigmaLabeText(validGenomeWidth);
 
 		jbOk = new JButton("OK");
 		jbOk.addActionListener(new ActionListener() {
@@ -207,12 +223,33 @@ public final class GenomeWidthChooser extends JDialog {
 
 
 	/**
+	 * Updates sigma during input in the text field
+	 */
+	private void jftfSigmaDocumentChange() {
+		Integer currentGenomicWidth = null;
+		try {
+			currentGenomicWidth = Integer.parseInt(jftfGenomeWidth.getText());
+		} catch (NumberFormatException e) {
+			currentGenomicWidth = null;
+		}
+		if (currentGenomicWidth == null) {
+			try {
+				currentGenomicWidth = NumberFormats.getPositionFormat().parse(jftfGenomeWidth.getText()).intValue();
+			} catch (ParseException e) {
+				currentGenomicWidth = null;
+			}
+		}
+		if (currentGenomicWidth != null) {
+			updateSigmaLabeText(currentGenomicWidth);
+		}
+	}
+
+
+	/**
 	 * Changes the text of textField jftfGenomicWidth when the scrollBar jftfSigma is used.
 	 */
 	private void jftfSigmaPropertyChange() {
-
 		int currentGenomicWidth = ((Number)(jftfGenomeWidth.getValue())).intValue();
-
 		if((currentGenomicWidth < windowSize) || (currentGenomicWidth > (windowSize * 100000))) {
 			JOptionPane.showMessageDialog(getRootPane(), "The moving window value must be between " + windowSize + " and " + (windowSize * 100) + ".", "Incorrect sigma value.", JOptionPane.WARNING_MESSAGE);
 			jftfGenomeWidth.setValue(validGenomeWidth);
@@ -220,7 +257,7 @@ public final class GenomeWidthChooser extends JDialog {
 		else {
 			validGenomeWidth = currentGenomicWidth;
 			jsbGenomeWidth.setValue(currentGenomicWidth);
-			updateSigmaLabeText();
+			updateSigmaLabeText(validGenomeWidth);
 		}
 	}
 
@@ -231,6 +268,6 @@ public final class GenomeWidthChooser extends JDialog {
 	private void jsbSigmaAdjustmentValueChanged() {
 		validGenomeWidth = jsbGenomeWidth.getValue();
 		jftfGenomeWidth.setValue(validGenomeWidth);
-		updateSigmaLabeText();
+		updateSigmaLabeText(validGenomeWidth);
 	}
 }

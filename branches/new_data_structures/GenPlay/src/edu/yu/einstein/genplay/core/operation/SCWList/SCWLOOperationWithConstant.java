@@ -30,38 +30,46 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.enums.OperationWithConstant;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWListBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 
 
 /**
- * Inverses the specified {@link SCWList}. Applies the function f(x) = a / x, where a is a specified double
+ * Adds a specified constant to the scores of each window of a {@link SimpleScoredChromosomeWindow}
  * @author Julien Lajugie
  */
-public class SCWLOInvertConstant implements Operation<SCWList> {
+public class SCWLOOperationWithConstant implements Operation<SCWList> {
 
-	private final SCWList 	scwList;			// input list
-	private final float 	constant;			// coefficient a in f(x) = a / x
-	private boolean			stopped = false;	// true if the operation must be stopped
+	private final SCWList 				scwList;			// input list
+	private final OperationWithConstant operation;			// operation type
+	private final float 				constant;			// constant to add
+	private final boolean 				applyToNullWindows; // apply to windows with a score of 0
+	private boolean						stopped = false;	// true if the operation must be stopped
 
 
 	/**
-	 * Creates an instance of {@link SCWLOInvertConstant}
-	 * @param scwList input {@link SCWList}
-	 * @param constant constant a in f(x) = a / x
+	 * Adds a specified constant to the scores of each window of a {@link SimpleScoredChromosomeWindow}
+	 * @param scwList input list
+	 * @param operation {@link OperationWithConstant}
+	 * @param constant constant to add
+	 * @param applyToNullWindows set to true to apply the operation to the windows with a score of 0
 	 */
-	public SCWLOInvertConstant(SCWList scwList, float constant) {
+	public SCWLOOperationWithConstant(SCWList scwList, OperationWithConstant operation, float constant, boolean applyToNullWindows) {
 		this.scwList = scwList;
+		this.operation = operation;
 		this.constant = constant;
+		this.applyToNullWindows = applyToNullWindows;
 	}
 
 
 	@Override
 	public SCWList compute() throws Exception {
 		if (constant == 0) {
-			return null;
+			return scwList;
 		}
 
 		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
@@ -76,15 +84,19 @@ public class SCWLOInvertConstant implements Operation<SCWList> {
 				@Override
 				public Void call() throws Exception {
 					if (currentList != null) {
-						// we invert each element
+						int lastStop = 1;
+						// we add a constant to each element
 						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 							int start = currentList.get(j).getStart();
 							int stop = currentList.get(j).getStop();
-							float score = currentList.get(j).getScore();
-							if (score != 0) {
-								score = constant / currentList.get(j).getScore();
+							if ((start != lastStop) && applyToNullWindows) {
+								resultListBuilder.addElementToBuild(chromosome, lastStop, start, computeScore(0));
 							}
-							resultListBuilder.addElementToBuild(chromosome, start, stop, score);
+							float currentScore = currentList.get(j).getScore();
+							if (applyToNullWindows || (currentScore != 0)) {
+								resultListBuilder.addElementToBuild(chromosome, start, stop, computeScore(currentScore));
+							}
+							lastStop = stop;
 						}
 					}
 					// tell the operation pool that a chromosome is done
@@ -100,15 +112,45 @@ public class SCWLOInvertConstant implements Operation<SCWList> {
 	}
 
 
+	/**
+	 * @param score current score
+	 * @return the score after applying the operation with constant
+	 */
+	private float computeScore(float score) {
+		switch (operation) {
+		case ADDITION:
+			return score + constant;
+		case INVERTION:
+			if (score == 0) {
+				return 0;
+			}
+			return constant / score;
+		case MULTIPLICATION:
+			return score * constant;
+		case DIVISION:
+			if (constant == 0) {
+				return 0;
+			}
+			return score / constant;
+		case SUBTRACTION:
+			return score - constant;
+		case UNIQUE_SCORE:
+			return constant;
+		default:
+			return 0;
+		}
+	}
+
+
 	@Override
 	public String getDescription() {
-		return "Operation: Invert, constant = " + constant;
+		return "Operation: Operation With Constant, Operation = " + operation + ", Constant = " + constant;
 	}
 
 
 	@Override
 	public String getProcessingDescription() {
-		return "Inverting";
+		return "Computing  " + operation;
 	}
 
 

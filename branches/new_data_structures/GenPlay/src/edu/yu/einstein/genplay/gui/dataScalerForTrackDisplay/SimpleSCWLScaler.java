@@ -54,6 +54,7 @@ class SimpleSCWLScaler implements DataScalerForTrackDisplay<SCWList, ListView<Sc
 		@Override
 		public void run() {
 			Thread thisThread = Thread.currentThread();
+			setName("Data Scaler Thread");
 			ListView<ScoredChromosomeWindow> currentChromosomeList;
 			try {
 				currentChromosomeList = dataToScale.get(scaledChromosome);

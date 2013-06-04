@@ -58,9 +58,7 @@ public abstract class AbstractLayerMenu extends JMenu {
 		}
 		// if the layer is a versioned layer we add the versionlayer sub-menu
 		if (layer instanceof VersionedLayer) {
-			JMenu versionedMenu = new VersionedLayerMenu((VersionedLayer<?>) layer);
-			versionedMenu.setEnabled(enable);
-			add(versionedMenu);
+			VersionedLayerMenu.addVersionedOptionsToMenu(this,(VersionedLayer<?>) layer, enable);
 			add(new JSeparator());
 		}
 		// add all the menu items for the layer

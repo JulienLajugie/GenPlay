@@ -54,6 +54,7 @@ class RepeatListScaler implements DataScalerForTrackDisplay<RepeatFamilyList, Li
 		@Override
 		public void run() {
 			Thread thisThread = Thread.currentThread();
+			setName("Data Scaler Thread");
 			ListView<RepeatFamilyListView> currentChromosomeList;
 			try {
 				currentChromosomeList = dataToScale.get(scaledChromosome);

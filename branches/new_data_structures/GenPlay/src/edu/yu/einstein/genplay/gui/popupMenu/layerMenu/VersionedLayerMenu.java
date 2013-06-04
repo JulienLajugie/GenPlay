@@ -34,48 +34,46 @@ import edu.yu.einstein.genplay.gui.track.layer.VersionedLayer;
 /**
  * Menu for the versioned layers
  * @author Julien Lajugie
- * @version 0.1
  */
-public class VersionedLayerMenu extends JMenu {
-
-	private static final long serialVersionUID = -593896017514090894L; // generated serial ID
+public class VersionedLayerMenu {
 
 
 	/**
-	 * Creates an instance of {@link VersionedLayerMenu}
+	 * Adds the options for versioned layers to the specified menu
+	 * @param menu a menu
 	 * @param layer the layer associated to this menu
+	 * @param areItemsEnabled true if the items should be enabled, false otherwise
 	 */
-	public VersionedLayerMenu(VersionedLayer<?> layer) {
-		super("Versions");
+	public static void addVersionedOptionsToMenu(JMenu menu, VersionedLayer<?> layer, boolean areItemsEnabled) {
 		// show history
 		VLAHistory vlaHistory = new VLAHistory();
 		vlaHistory.putValue("Layer", layer);
 		JMenuItem jmiHistory = new JMenuItem(vlaHistory);
-		jmiHistory.setEnabled(layer.getHistory() != null);
+		jmiHistory.setEnabled(areItemsEnabled && (layer.getHistory() != null));
 
 		// undo
 		VLAUndo vlaUndo = new VLAUndo();
 		vlaUndo.putValue("Layer", layer);
 		JMenuItem jmiUndo = new JMenuItem(vlaUndo);
-		jmiUndo.setEnabled(layer.isUndoable());
+		jmiUndo.setEnabled(areItemsEnabled && layer.isUndoable());
 
 		// redo
 		VLARedo vlaRedo = new VLARedo();
 		vlaRedo.putValue("Layer", layer);
 		JMenuItem jmiRedo = new JMenuItem(vlaRedo);
-		jmiRedo.setEnabled(layer.isRedoable());
+		jmiRedo.setEnabled(areItemsEnabled && layer.isRedoable());
 
 		// reset
 		VLAReset vlaReset = new VLAReset();
 		vlaReset.putValue("Layer", layer);
 		JMenuItem jmiReset = new JMenuItem(vlaReset);
-		jmiReset.setEnabled(layer.isResetable());
+		jmiReset.setEnabled(areItemsEnabled && layer.isResetable());
 
 		// add items to the menu
-		add(jmiHistory);
-		addSeparator();
-		add(jmiUndo);
-		add(jmiRedo);
-		add(jmiReset);
+		menu.add(jmiHistory);
+		menu.addSeparator();
+		menu.add(jmiUndo);
+		menu.add(jmiRedo);
+		menu.add(jmiReset);
 	}
 }

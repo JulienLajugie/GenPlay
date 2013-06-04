@@ -26,18 +26,30 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWListStats.SCWListStats;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.Utils;
 
@@ -72,7 +84,7 @@ public class SCWListStatsDialog extends JDialog {
 		super();
 		// create the table
 		TableModel statsTableModel = new SCWListStatsTableModel(scwListStats);
-		JTable jtStats = new JTable(statsTableModel);
+		final JTable jtStats = new JTable(statsTableModel);
 		jtStats.setDefaultRenderer(Object.class, new SCWListStatsRenderer());
 		// other table properties
 		jtStats.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -93,11 +105,28 @@ public class SCWListStatsDialog extends JDialog {
 			}
 		});
 
+		// create the ok button
+		JButton jbSave = new JButton("Save");
+		jbSave.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				saveStats(jtStats);
+			}
+		});
+
+		// create panel with buttons
+		JPanel jpButtons = new JPanel();
+		jpButtons.setLayout(new BoxLayout(jpButtons, BoxLayout.LINE_AXIS));
+		jpButtons.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		jpButtons.add(Box.createHorizontalGlue());
+		jpButtons.add(jbOK);
+		jpButtons.add(Box.createRigidArea(new Dimension(10, 0)));
+		jpButtons.add(jbSave);
+
 		// add the components
-		BorderLayout border = new BorderLayout();
-		setLayout(border);
+		setLayout(new BorderLayout());
 		add(scrollPane, BorderLayout.CENTER);
-		add(jbOK, BorderLayout.SOUTH);
+		add(jpButtons, BorderLayout.SOUTH);
 
 		// set dialog properties
 		setIconImage(Images.getApplicationImage());
@@ -148,6 +177,58 @@ public class SCWListStatsDialog extends JDialog {
 
 			int columnWidth = computeColumnWidth(jtStats, column, columnIndex) + 5;
 			column.setPreferredWidth(columnWidth);
+		}
+	}
+
+
+	/**
+	 * Saves the statistics in a file
+	 */
+	private void saveStats(JTable jtStats) {
+		JFileChooser saveFC = new JFileChooser(ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory());
+		saveFC.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("TSV file (*.TSV)", "tsv");
+		saveFC.setFileFilter(filter);
+		saveFC.setDialogTitle("Save statistics in a tab separated file");
+		saveFC.setSelectedFile(new File("stats.tsv"));
+		int returnVal = saveFC.showSaveDialog(getRootPane());
+		if(returnVal == JFileChooser.APPROVE_OPTION) {
+			File file = Utils.addExtension(saveFC.getSelectedFile(), "tsv");
+			if (!Utils.cancelBecauseFileExist(getRootPane(), file)) {
+				try {
+					writeStatsToFile(jtStats, file);
+				} catch (IOException e) {
+					ExceptionManager.getInstance().caughtException(Thread.currentThread(), e);
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * Writes the stats of the specified table into the specified file
+	 * @param jtStats
+	 * @param file
+	 * @throws IOException
+	 */
+	private void writeStatsToFile(JTable jtStats, File file) throws IOException {
+		BufferedWriter writer = null;
+		try{
+			writer = new BufferedWriter(new FileWriter(file));
+			for (int column = 0; column < jtStats.getColumnCount(); column++) {
+				writer.write(jtStats.getColumnModel().getColumn(column).getHeaderValue() + "\t");
+			}
+			writer.newLine();
+			for (int row = 0; row < jtStats.getRowCount(); row++) {
+				for (int column = 0; column < jtStats.getColumnCount(); column++) {
+					writer.write(jtStats.getModel().getValueAt(row, column) + "\t");
+				}
+				writer.newLine();
+			}
+		} finally {
+			if (writer != null) {
+				writer.close();
+			}
 		}
 	}
 }

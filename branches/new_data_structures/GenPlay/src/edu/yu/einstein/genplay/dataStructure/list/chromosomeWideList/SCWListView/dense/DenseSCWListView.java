@@ -74,7 +74,7 @@ public final class DenseSCWListView extends AbstractListView<ScoredChromosomeWin
 			if (windowIndex > 0) {
 				return windowStops.get(windowIndex - 1);
 			} else {
-				return 0;
+				return 1;
 			}
 		}
 

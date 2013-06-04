@@ -105,13 +105,16 @@ public class GLOScoreFromSCWList implements Operation<GeneList> {
 									List<ScoredChromosomeWindow> currentExonSCW = Utils.searchChromosomeWindowInterval(currentSCWList, currentGene.getExons().get(k).getStart(), currentGene.getExons().get(k).getStop());
 									if (currentExonSCW != null) {
 										for (int l = 0; (l < currentExonSCW.size()) && !stopped; l++) {
-											if (geneScoreType == GeneScoreType.MAXIMUM_COVERAGE) {
-												scores[k] = Math.max(scores[k], currentExonSCW.get(l).getScore());
-												break;
-											} else { // case RPKM and BASE_COVERAGE_SUM
-												double start = Math.max(currentExonSCW.get(l).getStart(), currentGene.getExons().get(k).getStart());
-												double stop = Math.min(currentExonSCW.get(l).getStop(), currentGene.getExons().get(k).getStop());
-												scores[k] += currentExonSCW.get(l).getScore() * (stop - start);
+											float currentScore = currentExonSCW.get(l).getScore();
+											if (currentScore != 0) {
+												if (geneScoreType == GeneScoreType.MAXIMUM_COVERAGE) {
+													scores[k] = Math.max(scores[k], currentScore);
+													break;
+												} else { // case RPKM and BASE_COVERAGE_SUM
+													double start = Math.max(currentExonSCW.get(l).getStart(), currentGene.getExons().get(k).getStart());
+													double stop = Math.min(currentExonSCW.get(l).getStop(), currentGene.getExons().get(k).getStop());
+													scores[k] += currentScore * (stop - start);
+												}
 											}
 										}
 									}

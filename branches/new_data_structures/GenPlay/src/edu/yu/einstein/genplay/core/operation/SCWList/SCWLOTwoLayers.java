@@ -105,13 +105,13 @@ public class SCWLOTwoLayers implements Operation<SCWList>, Stoppable {
 
 	@Override
 	public String getDescription() {
-		return "Operation on two layers: " + scoreOperation.toString();
+		return "Operation on two layers: " + scoreOperation;
 	}
 
 
 	@Override
 	public String getProcessingDescription() {
-		return "Two Layers Operation";
+		return "Computing " + scoreOperation;
 	}
 
 

@@ -31,46 +31,6 @@ package edu.yu.einstein.genplay.dataStructure.halfFloat;
 public class HalfFloat {
 
 	/**
-	 * Converts a half-precision floating-point format stored in a
-	 * char primitive (16-bit) into a float primitive (32-bit).
-	 * @param hbits a char value
-	 * @return a float value
-	 */
-	public static float toFloat(char hbits) {
-		// 10 bits mantissa
-		int mant = hbits & 0x03ff;
-		// 5 bits exponent
-		int exp =  hbits & 0x7c00;
-		// NaN/Inf
-		if (exp == 0x7c00) {
-			// -> NaN/Inf
-			exp = 0x3fc00;
-		} else if ( exp != 0 ) {	// normalized value
-			// exp - 15 + 127
-			exp += 0x1c000;
-			if ((mant == 0) && (exp > 0x1c400)) {
-				// smooth transition
-				return Float.intBitsToFloat( (( hbits & 0x8000 ) << 16) | (exp << 13) | 0x3ff );
-			}
-		}
-		else if( mant != 0 ) { // && exp==0 -> subnormal
-			// make it normal
-			exp = 0x1c400;
-			do {
-				// mantissa * 2
-				mant <<= 1;
-				// decrease exp by 1
-				exp -= 0x400;
-			} while (( mant & 0x400 ) == 0); // while not normal
-			// discard subnormal bit
-			mant &= 0x3ff;
-		} // else +/-0 -> +/-0
-		// combine all parts: sign  << ( 31 - 15 ), value << ( 23 - 10 )
-		return Float.intBitsToFloat((( hbits & 0x8000 ) << 16) | (( exp | mant ) << 13));
-	}
-
-
-	/**
 	 * Converts a float primitive (32-bit) into a half-precision
 	 * floating-point format store in a char primitive (16-bit)
 	 * @param fval a float value
@@ -107,5 +67,45 @@ public class HalfFloat {
 		val = ( fbits & 0x7fffffff ) >>> 23;
 		// add subnormal bit, round depending on cut off, div by 2^(1-(exp-127+15)) and >> 13 | exp=0
 		return (char) (sign | ((((fbits & 0x7fffff) | 0x800000)	+ (0x800000 >>> (val - 102))) >>> (126 - val)));
+	}
+
+
+	/**
+	 * Converts a half-precision floating-point format stored in a
+	 * char primitive (16-bit) into a float primitive (32-bit).
+	 * @param hbits a char value
+	 * @return a float value
+	 */
+	public static float toFloat(char hbits) {
+		// 10 bits mantissa
+		int mant = hbits & 0x03ff;
+		// 5 bits exponent
+		int exp =  hbits & 0x7c00;
+		// NaN/Inf
+		if (exp == 0x7c00) {
+			// -> NaN/Inf
+			exp = 0x3fc00;
+		} else if ( exp != 0 ) {	// normalized value
+			// exp - 15 + 127
+			exp += 0x1c000;
+			/* if ((mant == 0) && (exp > 0x1c400)) {
+				// smooth transition
+				return Float.intBitsToFloat( (( hbits & 0x8000 ) << 16) | (exp << 13) | 0x3ff );
+			} */
+		}
+		else if( mant != 0 ) { // && exp==0 -> subnormal
+			// make it normal
+			exp = 0x1c400;
+			do {
+				// mantissa * 2
+				mant <<= 1;
+				// decrease exp by 1
+				exp -= 0x400;
+			} while (( mant & 0x400 ) == 0); // while not normal
+			// discard subnormal bit
+			mant &= 0x3ff;
+		} // else +/-0 -> +/-0
+		// combine all parts: sign  << ( 31 - 15 ), value << ( 23 - 10 )
+		return Float.intBitsToFloat((( hbits & 0x8000 ) << 16) | (( exp | mant ) << 13));
 	}
 }

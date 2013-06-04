@@ -57,6 +57,7 @@ class GeneListScaler implements DataScalerForTrackDisplay<GeneList, List<ListVie
 		@Override
 		public void run() {
 			Thread thisThread = Thread.currentThread();
+			setName("Data Scaler Thread");
 			ListView<Gene> currentList;
 			try {
 				currentList = dataToScale.get(scaledChromosome);
