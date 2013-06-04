@@ -185,8 +185,9 @@ public class ExceptionReportDialog extends JDialog {
 	 */
 	private void send () {
 		if (GenPlayMail.send("[GenPlay] Error report", report)) {
-			JOptionPane.showMessageDialog(this, "The report has been sent.", "Message", JOptionPane.INFORMATION_MESSAGE);
 			setReport("");
+			setVisible(false);
+			JOptionPane.showMessageDialog(this, "The report has been sent.", "Message", JOptionPane.INFORMATION_MESSAGE);
 		} else {
 			JOptionPane.showMessageDialog(this, "The report could not been sent.", "Message Error", JOptionPane.ERROR_MESSAGE);
 		}

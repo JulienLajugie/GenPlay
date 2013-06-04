@@ -147,6 +147,9 @@ public final class GeneListViewBuilder implements ListViewBuilder<Gene> {
 		// add gene name offset
 		geneNameOffsets.add(geneNames.size());
 		// add the gene name
+		if (geneName == null) {
+			geneName = "";
+		}
 		byte[] geneNameBytes = geneName.getBytes();
 		for (int i = 0; i < geneNameBytes.length; i++) {
 			geneNames.add(geneNameBytes[i]);

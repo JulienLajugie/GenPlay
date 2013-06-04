@@ -44,9 +44,6 @@ import edu.yu.einstein.genplay.exception.ExceptionManager;
 public class Crypto {
 
 	private static final String PWD_ALGO = "AES/ECB/PKCS5Padding";
-	private static final String KEY_PATH = "edu/yu/einstein/genplay/resource/files/key";
-	private static final String USER_PATH = "edu/yu/einstein/genplay/resource/files/usr";
-	private static final String PASSWORD_PATH = "edu/yu/einstein/genplay/resource/files/pwd";
 
 	private SecretKey key;
 
@@ -61,35 +58,6 @@ public class Crypto {
 			key = null;
 			ExceptionManager.getInstance().caughtException(e);
 		}
-	}
-
-
-	/**
-	 * @return the {@link SecretKey} serialized in the key file
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private SecretKey getKey () throws IOException, ClassNotFoundException {
-		InputStream is = GenPlayMail.class.getClassLoader().getResourceAsStream(KEY_PATH);
-		ObjectInputStream ois = null;
-		ois = new ObjectInputStream(is);
-		SecretKey key = (SecretKey) ois.readObject();
-		return key;
-	}
-
-
-	/**
-	 * Encodes a text using
-	 * @param text	a text to encode
-	 * @param key	the key to use
-	 * @return	the encoded fragment as an array of bytes
-	 * @throws Exception
-	 */
-	@SuppressWarnings("unused")
-	private byte[] encode (String text, SecretKey key) throws Exception {
-		Cipher aes = Cipher.getInstance(PWD_ALGO);
-		aes.init(Cipher.ENCRYPT_MODE, key);
-		return aes.doFinal(text.getBytes());
 	}
 
 
@@ -113,20 +81,17 @@ public class Crypto {
 
 
 	/**
-	 * @param path the internal path of the data to decode
-	 * @return the decoded message
+	 * Encodes a text using
+	 * @param text	a text to encode
+	 * @param key	the key to use
+	 * @return	the encoded fragment as an array of bytes
+	 * @throws Exception
 	 */
-	public String getDecodedInformation (String path) {
-		InputStream is = GenPlayMail.class.getClassLoader().getResourceAsStream(path);
-		byte[] bytes = null;
-		String message = null;
-		try {
-			bytes = getBytes(is);
-			message = decode(bytes, key);
-		} catch (Exception e) {
-			ExceptionManager.getInstance().caughtException(e);
-		}
-		return message;
+	@SuppressWarnings("unused")
+	private byte[] encode (String text, SecretKey key) throws Exception {
+		Cipher aes = Cipher.getInstance(PWD_ALGO);
+		aes.init(Cipher.ENCRYPT_MODE, key);
+		return aes.doFinal(text.getBytes());
 	}
 
 
@@ -150,10 +115,34 @@ public class Crypto {
 
 
 	/**
-	 * @return the username
+	 * @param path the internal path of the data to decode
+	 * @return the decoded message
 	 */
-	public String getUserName () {
-		return getDecodedInformation(USER_PATH);
+	public String getDecodedInformation (String path) {
+		InputStream is = GenPlayMail.class.getClassLoader().getResourceAsStream(path);
+		byte[] bytes = null;
+		String message = null;
+		try {
+			bytes = getBytes(is);
+			message = decode(bytes, key);
+		} catch (Exception e) {
+			ExceptionManager.getInstance().caughtException(e);
+		}
+		return message;
+	}
+
+
+	/**
+	 * @return the {@link SecretKey} serialized in the key file
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private SecretKey getKey () throws IOException, ClassNotFoundException {
+		InputStream is = GenPlayMail.class.getClassLoader().getResourceAsStream(GenPlayMail.KEY_PATH);
+		ObjectInputStream ois = null;
+		ois = new ObjectInputStream(is);
+		SecretKey key = (SecretKey) ois.readObject();
+		return key;
 	}
 
 
@@ -161,6 +150,14 @@ public class Crypto {
 	 * @return the password
 	 */
 	public String getPassword () {
-		return getDecodedInformation(PASSWORD_PATH);
+		return getDecodedInformation(GenPlayMail.PASSWORD_PATH);
+	}
+
+
+	/**
+	 * @return the username
+	 */
+	public String getUserName () {
+		return getDecodedInformation(GenPlayMail.USER_PATH);
 	}
 }

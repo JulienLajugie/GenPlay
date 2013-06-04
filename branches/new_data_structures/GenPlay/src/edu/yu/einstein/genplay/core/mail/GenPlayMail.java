@@ -22,7 +22,6 @@
 package edu.yu.einstein.genplay.core.mail;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -47,9 +46,123 @@ import edu.yu.einstein.genplay.exception.ExceptionManager;
  * This is anonymous, the sender is not the user.
  * 
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class GenPlayMail {
+
+	/** Path to the mail key resource file */
+	public static final String KEY_PATH = "edu/yu/einstein/genplay/resource/mail/key";
+
+	/** Path to the mail user resource file */
+	public static final String USER_PATH = "edu/yu/einstein/genplay/resource/mail/usr";
+
+	/** Path to the mail password resource file */
+	public static final String PASSWORD_PATH = "edu/yu/einstein/genplay/resource/mail/pwd";
+
+	/** SMTP host */
+	private static final String SMTP_HOST = "owa.yu.edu";
+
+	/** SMTP port */
+	private static final int SMTP_PORT = 587;
+
+	/** Sender email */
+	private static final String SENDER_EMAIL = "nicolas.fourel@einstein.yu.edu";
+
+	/**  Sender alias */
+	private static final String SENDER_ALIAS = "GenPlay Mailbox Admin";
+
+	/** Reply email */
+	private static final String REPLY_EMAIL = "genplay@einstein.yu.edu";
+
+	/**  Reply alias */
+	private static final String REPLY_ALIAS = "GenPlay Mailbox";
+
+	/**
+	 * @return the {@link Authenticator} of the sender
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private static Authenticator getAuthenticator () throws IOException, ClassNotFoundException {
+		Crypto crypto = new Crypto();
+		final String username = crypto.getUserName();
+		final String password = crypto.getPassword();
+		if ((username != null) && (password != null)) {
+			Authenticator authenticator = new Authenticator() {
+				private final PasswordAuthentication pa = new PasswordAuthentication(username, password);
+				@Override
+				public PasswordAuthentication getPasswordAuthentication() {
+					return pa;
+				}
+			};
+			return authenticator;
+		}
+		return null;
+	}
+
+
+	/**
+	 * @param session the {@link Session} to send the email
+	 * @param subject the subject of the email
+	 * @param message the content of the email
+	 * @return the {@link Message} of the email
+	 * @throws UnsupportedEncodingException
+	 * @throws MessagingException
+	 */
+	private static Message getMessage (Session session, String subject, String message) throws UnsupportedEncodingException, MessagingException {
+		Message msg = new MimeMessage(session);
+		msg.setFrom(new InternetAddress(SENDER_EMAIL, SENDER_ALIAS));
+		msg.addRecipient(Message.RecipientType.TO, new InternetAddress(REPLY_EMAIL, REPLY_ALIAS));
+		msg.setSubject(subject);
+		msg.setText(message);
+		return msg;
+	}
+
+
+	/**
+	 * @return the {@link Properties} of the email
+	 */
+	private static Properties getProperties () {
+		Properties properties = new Properties();
+		properties.setProperty("mail.smtp.host", SMTP_HOST);
+		properties.setProperty("mail.smtp.port", "" + SMTP_PORT);
+		properties.put("mail.smtp.auth", true);
+		return properties;
+	}
+
+
+	/**
+	 * @return true if GenPlay can connect to the GenPlay website, false otherwise
+	 */
+	private static boolean isInternetReachable() {
+		try {
+			// Make a URL to a known source
+			URL url = new URL("http://www.genplay.net");
+
+			// Open a connection to that source
+			HttpURLConnection urlConnect = (HttpURLConnection)url.openConnection();
+
+			// Trying to retrieve data from the source. If there is no connection, this line will fail.
+			urlConnect.getContent();
+		} catch (Exception e) {
+			ExceptionManager.getInstance().caughtException(e);
+			return false;
+		}
+		return true;
+	}
+
+
+	/**
+	 * @return true if the email feature is available, false otherwise
+	 */
+	private static boolean isMailEnabled () {
+		boolean isKey = GenPlayMail.class.getClassLoader().getResourceAsStream(KEY_PATH) != null;
+		boolean isUser = GenPlayMail.class.getClassLoader().getResourceAsStream(USER_PATH) != null;
+		boolean isPassword = GenPlayMail.class.getClassLoader().getResourceAsStream(PASSWORD_PATH) != null;
+		if (isKey && isUser && isPassword) {
+			return true;
+		}
+		return false;
+	}
+
 
 	/**
 	 * Send an anonymous email with the name of Nicolas Fourel as GenPlay Mailbox admin to the GenPlay Mailbox.
@@ -88,95 +201,6 @@ public class GenPlayMail {
 		}
 
 		return hasBeenSent;
-	}
-
-
-	/**
-	 * @return true if the email feature is available, false otherwise
-	 */
-	private static boolean isMailEnabled () {
-		InputStream isKey = GenPlayMail.class.getClassLoader().getResourceAsStream("edu/yu/einstein/genplay/resource/files/key");
-		InputStream isUser = GenPlayMail.class.getClassLoader().getResourceAsStream("edu/yu/einstein/genplay/resource/files/usr");
-		InputStream isPassword = GenPlayMail.class.getClassLoader().getResourceAsStream("edu/yu/einstein/genplay/resource/files/pwd");
-		if ((isKey != null) && (isUser != null) && (isPassword != null)) {
-			return true;
-		}
-		return false;
-	}
-
-
-	/**
-	 * @return true if GenPlay can connect to the GenPlay website, false otherwise
-	 */
-	private static boolean isInternetReachable() {
-		try {
-			// Make a URL to a known source
-			URL url = new URL("http://www.genplay.net");
-
-			// Open a connection to that source
-			HttpURLConnection urlConnect = (HttpURLConnection)url.openConnection();
-
-			// Trying to retrieve data from the source. If there is no connection, this line will fail.
-			@SuppressWarnings("unused") // only for the connection test
-			Object objData = urlConnect.getContent();
-		} catch (Exception e) {
-			ExceptionManager.getInstance().caughtException(e);
-			return false;
-		}
-		return true;
-	}
-
-
-	/**
-	 * @return the {@link Properties} of the email
-	 */
-	private static Properties getProperties () {
-		Properties properties = new Properties();
-		properties.setProperty("mail.smtp.host", "owa.yu.edu");
-		properties.setProperty("mail.smtp.port", "" + 587);
-		properties.put("mail.smtp.auth", true);
-		return properties;
-	}
-
-
-	/**
-	 * @return the {@link Authenticator} of the sender
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private static Authenticator getAuthenticator () throws IOException, ClassNotFoundException {
-		Crypto crypto = new Crypto();
-		final String username = crypto.getUserName();
-		final String password = crypto.getPassword();
-		if ((username != null) && (password != null)) {
-			Authenticator authenticator = new Authenticator() {
-				private final PasswordAuthentication pa = new PasswordAuthentication(username, password);
-				@Override
-				public PasswordAuthentication getPasswordAuthentication() {
-					return pa;
-				}
-			};
-			return authenticator;
-		}
-		return null;
-	}
-
-
-	/**
-	 * @param session the {@link Session} to send the email
-	 * @param subject the subject of the email
-	 * @param message the content of the email
-	 * @return the {@link Message} of the email
-	 * @throws UnsupportedEncodingException
-	 * @throws MessagingException
-	 */
-	private static Message getMessage (Session session, String subject, String message) throws UnsupportedEncodingException, MessagingException {
-		Message msg = new MimeMessage(session);
-		msg.setFrom(new InternetAddress("nicolas.fourel@einstein.yu.edu", "GenPlay Mailbox Admin"));
-		msg.addRecipient(Message.RecipientType.TO, new InternetAddress("genplay@einstein.yu.edu", "GenPlay Mailbox"));
-		msg.setSubject(subject);
-		msg.setText(message);
-		return msg;
 	}
 
 }
