@@ -42,13 +42,13 @@ import edu.yu.einstein.genplay.util.colors.Colors;
 public class TAAddGeneLayerFromDAS extends TrackListActionWorker<GeneList> {
 
 	private static final long serialVersionUID = 142539909587173492L; // generated ID
-	private final DataSource 	dataSource;			// DAS data source
-	private final DASConnector 	dasConnector;		// DAS connector
-	private final DASType 		dasType;			// DAS type
-	private final int 			dataRange;			// enum representing the type of range (genome wide / current range / user defined)
+	private final DataSource 			dataSource;			// DAS data source
+	private final DASConnector 			dasConnector;		// DAS connector
+	private final DASType 				dasType;			// DAS type
+	private final int 					dataRange;			// enum representing the type of range (genome wide / current range / user defined)
 	private final SimpleGenomeWindow 	genomeWindow;		// genome window defined by the user
 	private final SimpleGenomeWindow 	currentWindow;		// current genome window
-	private final Track			selectedTrack;		// selected track
+	private final Track					selectedTrack;		// selected track
 
 
 	/**
@@ -74,6 +74,17 @@ public class TAAddGeneLayerFromDAS extends TrackListActionWorker<GeneList> {
 
 
 	@Override
+	protected void doAtTheEnd(GeneList actionResult) {
+		if (actionResult != null) {
+			GeneLayer newLayer = new GeneLayer(selectedTrack, actionResult, dataSource.getName());
+			newLayer.getHistory().add("Load " + dataSource.getName() + " From DAS Server", Colors.GREY);
+			selectedTrack.getLayers().add(newLayer);
+			selectedTrack.setActiveLayer(newLayer);
+		}
+	}
+
+
+	@Override
 	protected GeneList processAction() throws Exception {
 		notifyActionStart("Loading From DAS Server", 1, true);
 		if(dataRange == DASDialog.GENERATE_GENOMEWIDE_LIST) {
@@ -88,16 +99,5 @@ public class TAAddGeneLayerFromDAS extends TrackListActionWorker<GeneList> {
 			return dasConnector.getGeneList(dataSource, dasType, currentWindow);
 		}
 		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(GeneList actionResult) {
-		if (actionResult != null) {
-			GeneLayer newLayer = new GeneLayer(selectedTrack, actionResult, dataSource.getName());
-			newLayer.getHistory().add("Load " + dataSource.getName() + " From DAS Server", Colors.GREY);
-			selectedTrack.getLayers().add(newLayer);
-			selectedTrack.setActiveLayer(newLayer);
-		}
 	}
 }

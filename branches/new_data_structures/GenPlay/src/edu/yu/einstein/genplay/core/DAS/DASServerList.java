@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -36,13 +36,12 @@ import org.xml.sax.SAXException;
 /**
  * A list of DAS servers
  * @author Julien Lajugie
- * @version 0.1
  */
 public class DASServerList extends ArrayList<DASServer> {
 
 	private static final long serialVersionUID = 9132952222755375888L;	// generated ID
-		
-	
+
+
 	/**
 	 * Creates an instance of {@link DASServerList}
 	 * @param DASServerFile	URL of the XML file containing information about the DAS servers available

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -33,7 +33,6 @@ import org.xml.sax.helpers.DefaultHandler;
  * Parse a DNS XML file and extract the list of data source
  * <br/>See <a href="http://www.biodas.org/documents/spec.html">http://www.biodas.org/documents/spec.html</a>
  * @author Julien Lajugie
- * @version 0.1
  */
 public class DataSourceHandler extends DefaultHandler {
 
@@ -48,6 +47,29 @@ public class DataSourceHandler extends DefaultHandler {
 	public DataSourceHandler() {
 		super();
 		dataSourceList = new ArrayList<DataSource>();
+	}
+
+
+	@Override
+	public void characters(char[] ch, int start, int length) {
+		if (currentMarkup != null) {
+			String elementValue = new String(ch, start, length);
+			if (currentMarkup.equals("SOURCE")) {
+				currentDataSource.setName(elementValue);
+			} else if (currentMarkup.equals("MAPMASTER")) {
+				currentDataSource.setMapMaster(elementValue);
+			} else if (currentMarkup.equals("DESCRIPTION")) {
+				currentDataSource.setDescription(elementValue);
+			}
+		}
+	}
+
+
+	@Override
+	public void endElement(String uri, String localName, String qName) throws SAXException {
+		if (qName.equalsIgnoreCase("DSN")) {
+			dataSourceList.add(currentDataSource);
+		}
 	}
 
 
@@ -78,29 +100,6 @@ public class DataSourceHandler extends DefaultHandler {
 			}
 		} else {
 			currentMarkup = null;
-		}
-	}
-
-
-	@Override
-	public void endElement(String uri, String localName, String qName) throws SAXException {
-		if (qName.equalsIgnoreCase("DSN")) {
-			dataSourceList.add(currentDataSource);
-		}
-	}
-
-
-	@Override
-	public void characters(char[] ch, int start, int length) {
-		if (currentMarkup != null) {
-			String elementValue = new String(ch, start, length);
-			if (currentMarkup.equals("SOURCE")) {
-				currentDataSource.setName(elementValue);
-			} else if (currentMarkup.equals("MAPMASTER")) {
-				currentDataSource.setMapMaster(elementValue);
-			} else if (currentMarkup.equals("DESCRIPTION")) {
-				currentDataSource.setDescription(elementValue);
-			}
 		}
 	}
 }

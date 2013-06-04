@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -28,16 +28,15 @@ import java.io.IOException;
 
 /**
  * This class allows writing the DAS Server List
- * to a file. 
+ * to a file.
  * @author Chirag Gorasia
- * @version 0.1
  */
 public class DASServerListWriter {
 
 	/**
 	 * @param tableData of type Object[][]
 	 * @param fileName of type String
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public void write(Object[][] tableData, String fileName) throws IOException {
 		BufferedWriter writer = null;

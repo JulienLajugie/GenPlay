@@ -54,14 +54,13 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
  * Provides tools to connect and retrieve data from a DAS server
  * <br/>See <a href="http://www.biodas.org/documents/spec.html">http://www.biodas.org/documents/spec.html</a>
  * @author Julien Lajugie
- * @version 0.1
  */
 public class DASConnector {
 
-	private final String 			serverAddress;		// address of a DAS Server
-	private final ProjectChromosomes projectChromosomes; 	// Instance of the Chromosome Manager
-	private String 					genomeName;			// for multi-genome project only.  Name of the genome on which the data were mapped
-	private AlleleType 				alleleType;			// for multi-genome project only.  Type of allele for synchronization
+	private final String 				serverAddress;		// address of a DAS Server
+	private final ProjectChromosomes 	projectChromosomes; // Instance of the Chromosome Manager
+	private String 						genomeName;			// for multi-genome project only.  Name of the genome on which the data were mapped
+	private AlleleType 					alleleType;			// for multi-genome project only.  Type of allele for synchronization
 
 
 	/**

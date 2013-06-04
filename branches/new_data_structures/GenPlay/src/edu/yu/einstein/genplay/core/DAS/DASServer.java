@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -25,20 +25,13 @@ package edu.yu.einstein.genplay.core.DAS;
 /**
  * A DAS server
  * @author Julien Lajugie
- * @version 0.1
  */
 public class DASServer {
-	
+
 	private String URL;			// URL of the server
 	private String name;		// name of the server
-	
-	
-	@Override
-	public String toString() {
-		return name;
-	}
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link DASServer}
 	 */
@@ -46,15 +39,15 @@ public class DASServer {
 		super();
 	}
 
-	
+
 	/**
-	 * @param uRL the uRL to set
+	 * @return the name
 	 */
-	public void setURL(String uRL) {
-		URL = uRL;
+	public String getName() {
+		return name;
 	}
 
-	
+
 	/**
 	 * @return the uRL
 	 */
@@ -62,7 +55,7 @@ public class DASServer {
 		return URL;
 	}
 
-	
+
 	/**
 	 * @param name the name to set
 	 */
@@ -70,11 +63,17 @@ public class DASServer {
 		this.name = name;
 	}
 
-	
+
 	/**
-	 * @return the name
+	 * @param uRL the uRL to set
 	 */
-	public String getName() {
+	public void setURL(String uRL) {
+		URL = uRL;
+	}
+
+
+	@Override
+	public String toString() {
 		return name;
 	}
 }

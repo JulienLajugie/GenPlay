@@ -39,7 +39,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 
-import edu.yu.einstein.genplay.core.mail.GenPlayMail;
+import edu.yu.einstein.genplay.core.email.GenPlayEmail;
 import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.Utils;
 
@@ -184,7 +184,7 @@ public class ExceptionReportDialog extends JDialog {
 	 * Send the report
 	 */
 	private void send () {
-		if (GenPlayMail.send("[GenPlay] Error report", report)) {
+		if (GenPlayEmail.send("[GenPlay] Error report", report)) {
 			setReport("");
 			setVisible(false);
 			JOptionPane.showMessageDialog(this, "The report has been sent.", "Message", JOptionPane.INFORMATION_MESSAGE);

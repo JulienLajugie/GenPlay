@@ -53,7 +53,7 @@ public class DataSelectionPanel extends JPanel {
 
 	private static final long serialVersionUID = 9076119842012637763L; // generated ID
 	private final static String SERVER_LIST_PATH =
-			"edu/yu/einstein/genplay/resource/DASServerList.xml";	// config file path
+			"edu/yu/einstein/genplay/resource/DAS/DASServerList.xml";	// config file path
 	private final JLabel 		jlServer;						// label server
 	private final JComboBox 	jcbServer;						// combo box server
 	private final JLabel 		jlDataSource;					// label data source
@@ -159,6 +159,30 @@ public class DataSelectionPanel extends JPanel {
 
 
 	/**
+	 * @return the selected {@link DASConnector}
+	 */
+	public final DASConnector getSelectedDasConnector() {
+		return selectedDasConnector;
+	}
+
+
+	/**
+	 * @return the selected {@link DASType}
+	 */
+	public final DASType getSelectedDasType() {
+		return selectedDasType;
+	}
+
+
+	/**
+	 * @return the selected {@link DataSource}
+	 */
+	public final DataSource getSelectedDataSource() {
+		return selectedDataSource;
+	}
+
+
+	/**
 	 * Method called when the selected DASType changes
 	 */
 	private void selectedDasTypeChanged() {
@@ -202,29 +226,5 @@ public class DataSelectionPanel extends JPanel {
 				ExceptionManager.getInstance().caughtException(Thread.currentThread(), e, "Error when retrieving the data sources from " + selectedServer);
 			}
 		}
-	}
-
-
-	/**
-	 * @return the selected {@link DASConnector}
-	 */
-	public final DASConnector getSelectedDasConnector() {
-		return selectedDasConnector;
-	}
-
-
-	/**
-	 * @return the selected {@link DASType}
-	 */
-	public final DASType getSelectedDasType() {
-		return selectedDasType;
-	}
-
-
-	/**
-	 * @return the selected {@link DataSource}
-	 */
-	public final DataSource getSelectedDataSource() {
-		return selectedDataSource;
 	}
 }

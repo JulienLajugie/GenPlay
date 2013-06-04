@@ -34,21 +34,21 @@ public class Images {
 
 	private static final ClassLoader cl = MainFrame.class.getClassLoader();
 
-	//	private static final String APPLICATION_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/icon.png";						// Path of the application image
-	private static final String APPLICATION_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/GenPlay.png";					// Path of the application image
-	private static final String BANNER_IMAGE_PATH		= "edu/yu/einstein/genplay/resource/genplay_banner_447x91.png";		// Path of the banner image
-	private static final String TOOLS_IMAGE_PATH 		= "edu/yu/einstein/genplay/resource/tools.png";						// Path of the tools image
-	private static final String ADD_IMAGE_PATH 			= "edu/yu/einstein/genplay/resource/add_entry_50x50.png"; 			// Path of the add entry image
-	private static final String EDIT_IMAGE_PATH 		= "edu/yu/einstein/genplay/resource/edit_entry_50x50.png"; 			// Path of the edit entry image
-	private static final String DELETE_IMAGE_PATH 		= "edu/yu/einstein/genplay/resource/delete_entry_50x50.png"; 		// Path of the delete entry image
-	private static final String MOUSE_IMAGE_PATH		= "edu/yu/einstein/genplay/resource/mouse_right_click_50x50.png"; 	// Path of the mouse image
-	private static final String NEXT_IMAGE_PATH 		= "edu/yu/einstein/genplay/resource/next_icon_256x256.png"; 		// Path of the next image
-	private static final String PREVIOUS_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/previous_icon_256x256.png"; 	// Path of the previous image
-	private static final String ACTUALIZE_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/actualize15x15.png";			// Path of the actualize image
-	private static final String SUPERIOR_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/superior8x6.png";				// Path of the superior sign
-	private static final String INFERIOR_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/inferior8x6.png";				// Path of the inferior sign
-	private static final String DNA_IMAGE_PATH 			= "edu/yu/einstein/genplay/resource/dna_25x17.png";					// Path of the DNA sign
-	private static final String LOADING_IMAGE_PATH 		= "edu/yu/einstein/genplay/resource/loading_anim.gif";				// Path of the application image
+	//	private static final String APPLICATION_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/images/icon.png";						// Path of the application image
+	private static final String APPLICATION_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/images/GenPlay.png";					// Path of the application image
+	private static final String BANNER_IMAGE_PATH		= "edu/yu/einstein/genplay/resource/images/genplay_banner_447x91.png";		// Path of the banner image
+	private static final String TOOLS_IMAGE_PATH 		= "edu/yu/einstein/genplay/resource/images/tools.png";						// Path of the tools image
+	private static final String ADD_IMAGE_PATH 			= "edu/yu/einstein/genplay/resource/images/add_entry_50x50.png"; 			// Path of the add entry image
+	private static final String EDIT_IMAGE_PATH 		= "edu/yu/einstein/genplay/resource/images/edit_entry_50x50.png"; 			// Path of the edit entry image
+	private static final String DELETE_IMAGE_PATH 		= "edu/yu/einstein/genplay/resource/images/delete_entry_50x50.png"; 		// Path of the delete entry image
+	private static final String MOUSE_IMAGE_PATH		= "edu/yu/einstein/genplay/resource/images/mouse_right_click_50x50.png"; 	// Path of the mouse image
+	private static final String NEXT_IMAGE_PATH 		= "edu/yu/einstein/genplay/resource/images/next_icon_256x256.png"; 			// Path of the next image
+	private static final String PREVIOUS_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/images/previous_icon_256x256.png"; 		// Path of the previous image
+	private static final String ACTUALIZE_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/images/actualize15x15.png";				// Path of the actualize image
+	private static final String SUPERIOR_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/images/superior8x6.png";				// Path of the superior sign
+	private static final String INFERIOR_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/images/inferior8x6.png";				// Path of the inferior sign
+	private static final String DNA_IMAGE_PATH 			= "edu/yu/einstein/genplay/resource/images/dna_25x17.png";					// Path of the DNA sign
+	private static final String LOADING_IMAGE_PATH 		= "edu/yu/einstein/genplay/resource/images/loading_anim.gif";				// Path of the application image
 	private static Image applicationImage 	= null;		// Application image
 	private static Image bannerImage		= null;		// Banner image
 	private static Image toolsImage 		= null;		// Tools image

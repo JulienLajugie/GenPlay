@@ -29,7 +29,7 @@ import java.io.ObjectInputStream;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 
-import edu.yu.einstein.genplay.core.mail.GenPlayMail;
+import edu.yu.einstein.genplay.core.email.GenPlayEmail;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 
 /**
@@ -119,7 +119,7 @@ public class Crypto {
 	 * @return the decoded message
 	 */
 	public String getDecodedInformation (String path) {
-		InputStream is = GenPlayMail.class.getClassLoader().getResourceAsStream(path);
+		InputStream is = GenPlayEmail.class.getClassLoader().getResourceAsStream(path);
 		byte[] bytes = null;
 		String message = null;
 		try {
@@ -138,7 +138,7 @@ public class Crypto {
 	 * @throws ClassNotFoundException
 	 */
 	private SecretKey getKey () throws IOException, ClassNotFoundException {
-		InputStream is = GenPlayMail.class.getClassLoader().getResourceAsStream(GenPlayMail.KEY_PATH);
+		InputStream is = GenPlayEmail.class.getClassLoader().getResourceAsStream(GenPlayEmail.KEY_PATH);
 		ObjectInputStream ois = null;
 		ois = new ObjectInputStream(is);
 		SecretKey key = (SecretKey) ois.readObject();
@@ -150,7 +150,7 @@ public class Crypto {
 	 * @return the password
 	 */
 	public String getPassword () {
-		return getDecodedInformation(GenPlayMail.PASSWORD_PATH);
+		return getDecodedInformation(GenPlayEmail.PASSWORD_PATH);
 	}
 
 
@@ -158,6 +158,6 @@ public class Crypto {
 	 * @return the username
 	 */
 	public String getUserName () {
-		return getDecodedInformation(GenPlayMail.USER_PATH);
+		return getDecodedInformation(GenPlayEmail.USER_PATH);
 	}
 }

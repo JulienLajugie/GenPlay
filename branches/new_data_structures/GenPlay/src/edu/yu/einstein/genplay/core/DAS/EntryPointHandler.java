@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -35,7 +35,6 @@ import edu.yu.einstein.genplay.dataStructure.enums.Strand;
  * Parse a DNS XML file and extract the list of {@link EntryPoint}
  * <br/>See <a href="http://www.biodas.org/documents/spec.html">http://www.biodas.org/documents/spec.html</a>
  * @author Julien Lajugie
- * @version 0.1
  */
 public class EntryPointHandler extends DefaultHandler {
 
@@ -77,6 +76,6 @@ public class EntryPointHandler extends DefaultHandler {
 				}
 			}
 			entryPointList.add(currentEntryPoint);
-		} 
-	}	
+		}
+	}
 }

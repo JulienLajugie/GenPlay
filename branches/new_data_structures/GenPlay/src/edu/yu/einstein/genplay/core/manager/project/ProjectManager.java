@@ -29,7 +29,9 @@ import java.util.List;
 
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.genome.Assembly;
+import edu.yu.einstein.genplay.dataStructure.list.primitiveList.PrimitiveList;
 
 
 /**
@@ -39,7 +41,7 @@ import edu.yu.einstein.genplay.dataStructure.genome.Assembly;
 public class ProjectManager implements Serializable {
 
 	private static final long serialVersionUID = -8900126340763056646L; // generated ID
-	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 1;			// saved format version
 	private static	ProjectManager	instance = null;					// unique instance of the singleton
 
 	/**
@@ -63,6 +65,7 @@ public class ProjectManager implements Serializable {
 	private	String						genomeName;				// genome name
 	private Assembly 					assembly;				// assembly name
 	private	boolean						multiGenome;			// True if it is a multi genome project, false if it is a simple genome project
+	private ScorePrecision				projectScorePrecision;	// precision of the scores of the project (16 / 32 BIT)
 	private final ProjectConfiguration 	projectConfiguration;	// Instance of the Configuration Manager
 	private final ProjectWindow			projectWindow;			// Instance of the Genome Window Manager
 	private final ProjectZoom 			projectZoom;			// Instance of the Zoom Manager
@@ -143,6 +146,14 @@ public class ProjectManager implements Serializable {
 
 
 	/**
+	 * @return the precision of the scores of the project
+	 */
+	public ScorePrecision getProjectScorePrecision() {
+		return projectScorePrecision;
+	}
+
+
+	/**
 	 * @return the Genome Window Manager
 	 */
 	public ProjectWindow getProjectWindow() {
@@ -186,12 +197,15 @@ public class ProjectManager implements Serializable {
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		getInstance();
-		in.readInt();
+		int savedVersion = in.readInt();
 		instance.setProjectName((String) in.readObject());
 		instance.setCladeName((String) in.readObject());
 		instance.setGenomeName((String) in.readObject());
 		instance.setAssembly((Assembly) in.readObject());
 		instance.setMultiGenomeProject(in.readBoolean());
+		if (savedVersion > 0) {
+			instance.setProjectScorePrecision((ScorePrecision) in.readObject());
+		}
 		instance.getProjectWindow().setProjectWindow((ProjectWindow) in.readObject());
 		instance.getProjectChromosomes().setProjectChromosomes((ProjectChromosomes) in.readObject());
 	}
@@ -241,6 +255,15 @@ public class ProjectManager implements Serializable {
 
 
 	/**
+	 * @param projectScorePrecision the ScorePrecision of the scores of the project
+	 */
+	public void setProjectScorePrecision(ScorePrecision projectScorePrecision) {
+		PrimitiveList.setScorePrecision(projectScorePrecision);
+		this.projectScorePrecision = projectScorePrecision;
+	}
+
+
+	/**
 	 * Updates the chromosome list
 	 */
 	public void updateChromosomeList () {
@@ -262,6 +285,7 @@ public class ProjectManager implements Serializable {
 		out.writeObject(genomeName);
 		out.writeObject(assembly);
 		out.writeBoolean(multiGenome);
+		out.writeObject(projectScorePrecision);
 		out.writeObject(projectWindow);
 		out.writeObject(projectChromosomes);
 	}

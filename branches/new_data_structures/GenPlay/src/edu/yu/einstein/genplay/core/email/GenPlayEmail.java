@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.mail;
+package edu.yu.einstein.genplay.core.email;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -41,22 +41,22 @@ import edu.yu.einstein.genplay.core.crypto.Crypto;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 
 /**
- * The {@link GenPlayMail} offers the possibility to send an email to the official GenPlay Mailbox.
+ * The {@link GenPlayEmail} offers the possibility to send an email to the official GenPlay Mailbox.
  * There is only one method: send, which has a subject and a message.
  * This is anonymous, the sender is not the user.
  * 
  * @author Nicolas Fourel
  */
-public class GenPlayMail {
+public class GenPlayEmail {
 
 	/** Path to the mail key resource file */
-	public static final String KEY_PATH = "edu/yu/einstein/genplay/resource/mail/key";
+	public static final String KEY_PATH = "edu/yu/einstein/genplay/resource/email/key";
 
 	/** Path to the mail user resource file */
-	public static final String USER_PATH = "edu/yu/einstein/genplay/resource/mail/usr";
+	public static final String USER_PATH = "edu/yu/einstein/genplay/resource/email/usr";
 
 	/** Path to the mail password resource file */
-	public static final String PASSWORD_PATH = "edu/yu/einstein/genplay/resource/mail/pwd";
+	public static final String PASSWORD_PATH = "edu/yu/einstein/genplay/resource/email/pwd";
 
 	/** SMTP host */
 	private static final String SMTP_HOST = "owa.yu.edu";
@@ -154,9 +154,9 @@ public class GenPlayMail {
 	 * @return true if the email feature is available, false otherwise
 	 */
 	private static boolean isMailEnabled () {
-		boolean isKey = GenPlayMail.class.getClassLoader().getResourceAsStream(KEY_PATH) != null;
-		boolean isUser = GenPlayMail.class.getClassLoader().getResourceAsStream(USER_PATH) != null;
-		boolean isPassword = GenPlayMail.class.getClassLoader().getResourceAsStream(PASSWORD_PATH) != null;
+		boolean isKey = GenPlayEmail.class.getClassLoader().getResourceAsStream(KEY_PATH) != null;
+		boolean isUser = GenPlayEmail.class.getClassLoader().getResourceAsStream(USER_PATH) != null;
+		boolean isPassword = GenPlayEmail.class.getClassLoader().getResourceAsStream(PASSWORD_PATH) != null;
 		if (isKey && isUser && isPassword) {
 			return true;
 		}

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -32,7 +32,6 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * Parse a DASServer XML file and extract the list of {@link DASServer}
  * @author Julien Lajugie
- * @version 0.1
  */
 public class DASServerHandler extends DefaultHandler {
 
@@ -65,6 +64,6 @@ public class DASServerHandler extends DefaultHandler {
 				currentDasServer.setURL(attributes.getValue("href"));
 			}
 			dasServerList.add(currentDasServer);
-		} 
-	}	
+		}
+	}
 }
