@@ -73,6 +73,8 @@ public final class ExtractorFactory {
 			return new PSLExtractor(fileToExtract);
 		} else if (fileExtension.equalsIgnoreCase("sam")) {
 			return new SAMExtractor(fileToExtract);
+		} else if (fileExtension.equalsIgnoreCase("bam")) {
+			return new SAMExtractor(fileToExtract);
 		} else if (fileExtension.equalsIgnoreCase("2bit")) {
 			return new TwoBitExtractor(fileToExtract);
 		} else {

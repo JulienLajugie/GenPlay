@@ -49,6 +49,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.gui.dialog.chromosomeChooser.ChromosomeChooserDialog;
+import edu.yu.einstein.genplay.gui.fileFilter.BAMFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.BedFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.BedGraphFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.BedGraphWith0Filter;
@@ -59,7 +60,6 @@ import edu.yu.einstein.genplay.gui.fileFilter.GTFFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.PSLFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.PairFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.SAMFilter;
-import edu.yu.einstein.genplay.gui.fileFilter.SOAPsnpFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.TwoBitFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.WiggleFilter;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -657,7 +657,7 @@ public final class Utils {
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as BinList
 	 */
 	public final static ExtendedFileFilter[] getReadableBinListFileFilters() {
-		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new GTFFilter(), new WiggleFilter(), new PairFilter(), new ElandExtendedFilter(), new PSLFilter(), new SAMFilter()};
+		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new GTFFilter(), new WiggleFilter(), new PairFilter(), new ElandExtendedFilter(), new PSLFilter(), new SAMFilter(), new BAMFilter()};
 		return filters;
 	}
 
@@ -667,6 +667,15 @@ public final class Utils {
 	 */
 	public final static ExtendedFileFilter[] getReadableGeneFileFilters() {
 		ExtendedFileFilter[] filters = {new BedFilter(), new GTFFilter(), new PSLFilter()};
+		return filters;
+	}
+
+
+	/**
+	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as stripes
+	 */
+	public final static ExtendedFileFilter[] getReadableMaskFileFilters() {
+		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new GTFFilter(), new WiggleFilter(), new PSLFilter(), new SAMFilter(), new BAMFilter()};
 		return filters;
 	}
 
@@ -684,7 +693,7 @@ public final class Utils {
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as SCWList
 	 */
 	public final static ExtendedFileFilter[] getReadableSCWFileFilters() {
-		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new GTFFilter(), new WiggleFilter(), new PSLFilter()};
+		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new GTFFilter(), new WiggleFilter(), new PSLFilter(), new SAMFilter(), new BAMFilter()};
 		return filters;
 	}
 
@@ -694,24 +703,6 @@ public final class Utils {
 	 */
 	public final static FileFilter[] getReadableSequenceFileFilters() {
 		ExtendedFileFilter[] filters = {new TwoBitFilter()};
-		return filters;
-	}
-
-
-	/**
-	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as SNPList
-	 */
-	public final static FileFilter[] getReadableSNPFileFilters() {
-		ExtendedFileFilter[] filters = {new SOAPsnpFilter()};
-		return filters;
-	}
-
-
-	/**
-	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as stripes
-	 */
-	public final static ExtendedFileFilter[] getReadableStripeFileFilters() {
-		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new GTFFilter(), new WiggleFilter(), new PSLFilter()};
 		return filters;
 	}
 

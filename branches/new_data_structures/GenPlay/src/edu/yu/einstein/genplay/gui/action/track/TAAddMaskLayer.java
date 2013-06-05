@@ -110,7 +110,7 @@ public final class TAAddMaskLayer extends TrackListActionExtractorWorker<SCWList
 	@Override
 	protected File retrieveFileToExtract() {
 		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
-		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Mask File", defaultDirectory, Utils.getReadableStripeFileFilters(), true);
+		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Mask File", defaultDirectory, Utils.getReadableMaskFileFilters(), true);
 		if (selectedFile != null) {
 			return selectedFile;
 		}

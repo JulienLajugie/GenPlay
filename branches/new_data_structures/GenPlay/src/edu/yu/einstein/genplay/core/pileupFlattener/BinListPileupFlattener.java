@@ -76,12 +76,11 @@ public class BinListPileupFlattener implements PileupFlattener {
 			}
 		} else {
 			int lastWindowStart = windowQueue.get(windowQueue.size() - 1).getStart();
-			int currentWindowStart = windowStart;
-			if (currentWindowStart < lastWindowStart) {
+			if (windowStart < lastWindowStart) {
 				throw new ElementAddedNotSortedException();
 			}
 			int firstBinStart = (((lastWindowStart - 1) / binSize) * binSize) + 1;
-			int lastBinStop = (((currentWindowStart - 1) / binSize) * binSize) + 1;
+			int lastBinStop = (((windowStart - 1) / binSize) * binSize) + 1;
 
 			// add the new window at the end of the queue
 			windowQueue.add(windowStart, windowStop, windowScore);

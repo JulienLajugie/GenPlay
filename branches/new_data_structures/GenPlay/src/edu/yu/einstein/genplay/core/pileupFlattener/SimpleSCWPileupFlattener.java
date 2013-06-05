@@ -100,17 +100,16 @@ public class SimpleSCWPileupFlattener implements PileupFlattener {
 		if (windowQueue.isEmpty()) {
 			windowQueue.add(windowStart, windowStop, windowScore);
 		} else {
-			int newWindowStart = windowStart;
 			int lastStart = windowQueue.get(windowQueue.size() - 1).getStart();
-			if (newWindowStart < lastStart) {
+			if (windowStart < lastStart) {
 				throw new ElementAddedNotSortedException();
 			}
 			// add the new window at the end of the queue
 			windowQueue.add(windowStart, windowStop, windowScore);
 			// retrieve the result of the pileup flattening
-			flattenPileup(lastStart, newWindowStart);
+			flattenPileup(lastStart, windowStart);
 			// remove the element that are not needed anymore
-			removeProcessedElements(newWindowStart);
+			removeProcessedElements(windowStart);
 		}
 	}
 
