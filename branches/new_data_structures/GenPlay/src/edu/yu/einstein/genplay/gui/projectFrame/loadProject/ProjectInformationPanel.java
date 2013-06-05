@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -48,17 +48,19 @@ class ProjectInformationPanel extends JPanel {
 
 	private final static Dimension PANEL_DIM = new Dimension (ProjectFrame.LOAD_DIM.width - 70, 170);
 
-	private JLabel jlProjectName;			// Label name for project name
-	private JLabel jlProjectGenome;			// Label name for project genome
-	private JLabel jlProjectType;			// Label name for project type
-	private JLabel jlProjectDate;			// Label name for project date
-	private JLabel jlProjectTrackNumber;	// Label name for project track number
+	private final JLabel jlProjectName;			// Label name for project name
+	private final JLabel jlProjectPrecision;	// Label name for project precision
+	private final JLabel jlProjectGenome;		// Label name for project genome
+	private final JLabel jlProjectType;			// Label name for project type
+	private final JLabel jlProjectDate;			// Label name for project date
+	private final JLabel jlProjectTrackNumber;	// Label name for project track number
 
-	private JLabel projectName;				// Label information for project name
-	private JLabel projectGenome;			// Label information for project genome
-	private JLabel projectType;				// Label information for project type
-	private JLabel projectDate;				// Label information for project date
-	private JLabel projectTrackNumber;		// Label information for project track number
+	private final JLabel projectName;			// Label information for project name
+	private final JLabel projectPrecision;		// Label information for project precision
+	private final JLabel projectGenome;			// Label information for project genome
+	private final JLabel projectType;			// Label information for project type
+	private final JLabel projectDate;			// Label information for project date
+	private final JLabel projectTrackNumber;	// Label information for project track number
 
 
 	/**
@@ -76,6 +78,7 @@ class ProjectInformationPanel extends JPanel {
 
 		//Fields name
 		jlProjectName = new JLabel("Name");
+		jlProjectPrecision = new JLabel("Precision");
 		jlProjectGenome = new JLabel("Genome");
 		jlProjectType = new JLabel("Project type");
 		jlProjectDate = new JLabel("Last modified");
@@ -83,6 +86,7 @@ class ProjectInformationPanel extends JPanel {
 
 		//Fields label
 		projectName = new JLabel("");
+		projectPrecision = new JLabel("");
 		projectGenome = new JLabel("");
 		projectType = new JLabel("");
 		projectDate = new JLabel("");
@@ -108,63 +112,71 @@ class ProjectInformationPanel extends JPanel {
 
 		//projectName
 		gbc.gridx = 1;
-		gbc.gridy = 0;
 		gbc.insets = infoInsets;
 		gbc.anchor = GridBagConstraints.LINE_START;
 		add(projectName, gbc);
 
+		//jlProjectPrecision
+		gbc.gridx = 0;
+		gbc.gridy++;
+		gbc.insets = labelInsets;
+		gbc.anchor = GridBagConstraints.LINE_START;
+		add(jlProjectPrecision, gbc);
+
+		//projectPrecision
+		gbc.gridx = 1;
+		gbc.insets = infoInsets;
+		gbc.anchor = GridBagConstraints.LINE_START;
+		add(projectPrecision, gbc);
+
 		//jlProjectGenome
 		gbc.gridx = 0;
-		gbc.gridy = 1;
+		gbc.gridy++;
 		gbc.insets = labelInsets;
 		gbc.anchor = GridBagConstraints.LINE_START;
 		add(jlProjectGenome, gbc);
 
 		//projectGenome
 		gbc.gridx = 1;
-		gbc.gridy = 1;
 		gbc.insets = infoInsets;
 		gbc.anchor = GridBagConstraints.LINE_START;
 		add(projectGenome, gbc);
 
 		//jlProjectType
 		gbc.gridx = 0;
-		gbc.gridy = 2;
+		gbc.gridy++;
 		gbc.insets = labelInsets;
 		gbc.anchor = GridBagConstraints.LINE_START;
 		add(jlProjectType, gbc);
 
 		//projectType
 		gbc.gridx = 1;
-		gbc.gridy = 2;
 		gbc.insets = infoInsets;
 		gbc.anchor = GridBagConstraints.LINE_START;
 		add(projectType, gbc);
 
 		//jlProjectDate
 		gbc.gridx = 0;
-		gbc.gridy = 3;
+		gbc.gridy++;
 		gbc.insets = labelInsets;
 		gbc.anchor = GridBagConstraints.LINE_START;
 		add(jlProjectDate, gbc);
 
 		//projectDate
 		gbc.gridx = 1;
-		gbc.gridy = 3;
 		gbc.insets = infoInsets;
 		gbc.anchor = GridBagConstraints.LINE_START;
 		add(projectDate, gbc);
 
 		//jlProjectTrackNumber
 		gbc.gridx = 0;
-		gbc.gridy = 4;
+		gbc.gridy++;
 		gbc.insets = bottomInsets;
 		gbc.anchor = GridBagConstraints.LINE_START;
 		add(jlProjectTrackNumber, gbc);
 
 		//projectTrackNumber
 		gbc.gridx = 1;
-		gbc.gridy = 4;
 		gbc.insets = infoInsets;
 		gbc.anchor = GridBagConstraints.LINE_START;
 		add(projectTrackNumber, gbc);
@@ -178,12 +190,14 @@ class ProjectInformationPanel extends JPanel {
 	protected void showProjectInformation (ProjectInformation projectInformation) {
 		if (projectInformation == null) {
 			projectName.setText("...");
+			projectPrecision.setText("...");
 			projectGenome.setText("...");
 			projectType.setText("...");
 			projectDate.setText("...");
 			projectTrackNumber.setText("...");
 		} else {
 			projectName.setText(projectInformation.getProjectName());
+			projectPrecision.setText(projectInformation.getProjectPrecision());
 			projectGenome.setText(projectInformation.getProjectGenome());
 			projectType.setText(projectInformation.getProjectType());
 			projectDate.setText(projectInformation.getProjectDate());

@@ -48,7 +48,8 @@ public class Images {
 	private static final String SUPERIOR_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/images/superior8x6.png";				// Path of the superior sign
 	private static final String INFERIOR_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/images/inferior8x6.png";				// Path of the inferior sign
 	private static final String DNA_IMAGE_PATH 			= "edu/yu/einstein/genplay/resource/images/dna_25x17.png";					// Path of the DNA sign
-	private static final String LOADING_IMAGE_PATH 		= "edu/yu/einstein/genplay/resource/images/loading_anim.gif";				// Path of the application image
+	private static final String LOADING_IMAGE_PATH 		= "edu/yu/einstein/genplay/resource/images/loading_anim.gif";				// Path of the loading animated GIF
+	private static final String HELP_IMAGE_PATH 		= "edu/yu/einstein/genplay/resource/images/help.png";						// Path of the help image
 	private static Image applicationImage 	= null;		// Application image
 	private static Image bannerImage		= null;		// Banner image
 	private static Image toolsImage 		= null;		// Tools image
@@ -63,6 +64,7 @@ public class Images {
 	private static Image inferiorImage 		= null;		// Inferior image
 	private static Image dnaImage 			= null;		// DNA image
 	private static Image loadingImage		= null;		// image showed while tracks are loading
+	private static Image helpImage			= null;		// help image
 
 
 	/**
@@ -139,6 +141,17 @@ public class Images {
 			editImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(EDIT_IMAGE_PATH));
 		}
 		return editImage;
+	}
+
+
+	/**
+	 * @return the help image
+	 */
+	public static Image getHelpImage () {
+		if (helpImage == null) {
+			helpImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(HELP_IMAGE_PATH));
+		}
+		return helpImage;
 	}
 
 

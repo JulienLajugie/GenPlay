@@ -97,7 +97,9 @@ public class TATrackSettings extends TrackListAction {
 				setTrackOptions(selectedTrack, dialog.getTrackOptions());
 
 				// Set the layer options
-				setLayerOptions(selectedTrack, dialog.getLayerOptions());
+				if (dialog.getLayerOptions() != null) {
+					setLayerOptions(selectedTrack, dialog.getLayerOptions());
+				}
 
 				// Update the track display
 				selectedTrack.repaint();

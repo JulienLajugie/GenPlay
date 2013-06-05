@@ -113,6 +113,7 @@ public class Launcher {
 		assembly.setChromosomeList(projectFrame.getSelectedChromosomes());
 		ProjectManager projectManager = ProjectManager.getInstance();
 		projectManager.setProjectName(projectFrame.getProjectName());
+		projectManager.setProjectScorePrecision(projectFrame.getProjectScorePrecision());
 		projectManager.setCladeName(clade.getName());
 		projectManager.setGenomeName(genome.getName());
 		projectManager.setAssembly(assembly);

@@ -85,6 +85,34 @@ public class LayerSettingsPanel extends JPanel {
 
 
 	/**
+	 * If some layers have been set for deletion this method ask the user to confirm the deletion
+	 * @return true if:<br>
+	 *  - the user want to delete the layers <br>
+	 *  - there is no layers set for deletion<br>
+	 *  Return false otherwise.
+	 */
+	public boolean confirmLayerDeletion() {
+		String confirmQuestion = "Do you really want to delete the following layers: \n";
+		boolean deletionRequested = false;
+		if (data == null) {
+			return true;
+		}
+		for (LayerSettingsRow currentRow: data) {
+			if (currentRow.isLayerSetForDeletion()) {
+				deletionRequested = true;
+				confirmQuestion += currentRow.getLayer().getName() + "\n";
+			}
+		}
+		if (deletionRequested) {
+			int confirmOption = JOptionPane.showConfirmDialog(getRootPane(), confirmQuestion, "Delete Layers", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+			return confirmOption == JOptionPane.YES_OPTION;
+		} else {
+			return true;
+		}
+	}
+
+
+	/**
 	 * @return the data displayed in the layer settings table
 	 */
 	public LayerSettingsRow[] getData() {
@@ -161,31 +189,6 @@ public class LayerSettingsPanel extends JPanel {
 			add(layerSettingsTable.getTableHeader(), BorderLayout.NORTH);
 			add(layerSettingsTable, BorderLayout.CENTER);
 			add(buttonPanel, BorderLayout.SOUTH);
-		}
-	}
-
-
-	/**
-	 * If some layers have been set for deletion this method ask the user to confirm the deletion
-	 * @return true if:<br>
-	 *  - the user want to delete the layers <br>
-	 *  - there is no layers set for deletion<br>
-	 *  Return false otherwise.
-	 */
-	public boolean confirmLayerDeletion() {
-		String confirmQuestion = "Do you really want to delete the following layers: \n";
-		boolean deletionRequested = false;
-		for (LayerSettingsRow currentRow: data) {
-			if (currentRow.isLayerSetForDeletion()) {
-				deletionRequested = true;
-				confirmQuestion += currentRow.getLayer().getName() + "\n";
-			}
-		}
-		if (deletionRequested) {
-			int confirmOption = JOptionPane.showConfirmDialog(getRootPane(), confirmQuestion, "Delete Layers", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-			return confirmOption == JOptionPane.YES_OPTION;
-		} else {
-			return true;
 		}
 	}
 

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -35,14 +35,14 @@ import java.io.Serializable;
  * 
  * @author Julien Lajugie
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class ProjectInformation implements Serializable {
 
 	private static final long serialVersionUID = 5252641489962010266L; // generated ID
-	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 1;			// saved format version
 	private File 		file;						// file of the project
 	private String 		projectName;				// project name
+	private String		projectPrecision;			// project precision
 	private String 		projectGenome;				// project genome
 	private String 		projectType;				// project type
 	private String 		projectDate;				// project date
@@ -51,26 +51,77 @@ public class ProjectInformation implements Serializable {
 
 
 	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
+	 * @return the file
 	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(file);
-		out.writeObject(projectName);
-		out.writeObject(projectGenome);
-		out.writeObject(projectType);
-		out.writeObject(projectDate);
-		out.writeObject(projectTrackNumber);
-		if (projectFiles == null) {
-			out.writeInt(0);
-		} else {
-			out.writeInt(projectFiles.length);
-			for (String path: projectFiles) {
-				out.writeObject(path);
-			}
+	public File getFile() {
+		return file;
+	}
+
+
+	/**
+	 * @return the projectDate
+	 */
+	public String getProjectDate() {
+		return projectDate;
+	}
+
+
+	/**
+	 * @return the projectFiles
+	 */
+	public String[] getProjectFiles() {
+		return projectFiles;
+	}
+
+
+	/**
+	 * @return the projectGenome
+	 */
+	public String getProjectGenome() {
+		return projectGenome;
+	}
+
+
+	/**
+	 * @return the projectName
+	 */
+	public String getProjectName() {
+		return projectName;
+	}
+
+
+	/**
+	 * @return the precision of the scores of the project
+	 */
+	public String getProjectPrecision() {
+		return projectPrecision;
+	}
+
+
+	/**
+	 * @return the projectTrackNumber
+	 */
+	public String getProjectTrackNumber() {
+		return projectTrackNumber;
+	}
+
+
+	/**
+	 * @return the projectType
+	 */
+	public String getProjectType() {
+		return projectType;
+	}
+
+
+	/**
+	 * @return true if it is a single project, false otherwise
+	 */
+	public boolean isSingleProject () {
+		if (projectType.equals("Single Genome Project")) {
+			return true;
 		}
+		return false;
 	}
 
 
@@ -81,9 +132,14 @@ public class ProjectInformation implements Serializable {
 	 * @throws ClassNotFoundException
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
+		int version = in.readInt();
 		file = (File) in.readObject();
 		projectName = (String) in.readObject();
+		if (version > 0) {
+			projectPrecision = (String) in.readObject();
+		} else {
+			projectPrecision = "Unknown";
+		}
 		projectGenome = (String) in.readObject();
 		projectType = (String) in.readObject();
 		projectDate = (String) in.readObject();
@@ -101,66 +157,10 @@ public class ProjectInformation implements Serializable {
 
 
 	/**
-	 * @return the file
-	 */
-	public File getFile() {
-		return file;
-	}
-
-
-	/**
 	 * @param file the file to set
 	 */
 	public void setFile(File file) {
 		this.file = file;
-	}
-
-
-	/**
-	 * @param projectName the projectName to set
-	 */
-	public void setProjectName(String projectName) {
-		this.projectName = projectName;
-	}
-
-
-	/**
-	 * @return the projectName
-	 */
-	public String getProjectName() {
-		return projectName;
-	}
-
-
-	/**
-	 * @param projectGenome the projectGenome to set
-	 */
-	public void setProjectGenome(String projectGenome) {
-		this.projectGenome = projectGenome;
-	}
-
-
-	/**
-	 * @return the projectGenome
-	 */
-	public String getProjectGenome() {
-		return projectGenome;
-	}
-
-
-	/**
-	 * @param projectType the projectType to set
-	 */
-	public void setProjectType(String projectType) {
-		this.projectType = projectType;
-	}
-
-
-	/**
-	 * @return the projectType
-	 */
-	public String getProjectType() {
-		return projectType;
 	}
 
 
@@ -173,10 +173,35 @@ public class ProjectInformation implements Serializable {
 
 
 	/**
-	 * @return the projectDate
+	 * @param projectFiles the projectFiles to set
 	 */
-	public String getProjectDate() {
-		return projectDate;
+	public void setProjectFiles(String[] projectFiles) {
+		this.projectFiles = projectFiles;
+	}
+
+
+	/**
+	 * @param projectGenome the projectGenome to set
+	 */
+	public void setProjectGenome(String projectGenome) {
+		this.projectGenome = projectGenome;
+	}
+
+
+	/**
+	 * @param projectName the projectName to set
+	 */
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
+
+
+	/**
+	 * Sets the precision of the scores of the project
+	 * @param projectPrecision
+	 */
+	public void setProjectPrecision(String projectPrecision) {
+		this.projectPrecision = projectPrecision;
 	}
 
 
@@ -189,39 +214,12 @@ public class ProjectInformation implements Serializable {
 
 
 	/**
-	 * @return the projectTrackNumber
+	 * @param projectType the projectType to set
 	 */
-	public String getProjectTrackNumber() {
-		return projectTrackNumber;
+	public void setProjectType(String projectType) {
+		this.projectType = projectType;
 	}
 
-
-	/**
-	 * @return the projectFiles
-	 */
-	public String[] getProjectFiles() {
-		return projectFiles;
-	}
-
-
-	/**
-	 * @param projectFiles the projectFiles to set
-	 */
-	public void setProjectFiles(String[] projectFiles) {
-		this.projectFiles = projectFiles;
-	}
-
-	
-	/**
-	 * @return true if it is a single project, false otherwise
-	 */
-	public boolean isSingleProject () {
-		if (projectType.equals("Single Genome Project")) {
-			return true;
-		}
-		return false;
-	}
-	
 
 	/**
 	 * Shows the project information
@@ -230,6 +228,7 @@ public class ProjectInformation implements Serializable {
 		String info = "";
 		info += "---------- Project Information\n";
 		info += "Name: " + projectName + "\n";
+		info += "Precision: " + projectPrecision + "\n";
 		info += "Genome: " + projectGenome + "\n";
 		info += "Date: " + projectDate.toString() + "\n";
 		info += "File: " + file.getPath() + "\n";
@@ -238,12 +237,37 @@ public class ProjectInformation implements Serializable {
 		if (projectFiles != null) {
 			info += "Is file dependant:\n";
 			for (int i = 0; i < projectFiles.length; i++) {
-				info += (i + 1) + ": " + projectFiles[i] + "\n"; 
+				info += (i + 1) + ": " + projectFiles[i] + "\n";
 			}
 		} else {
 			info += "Is not file dependant\n";
 		}
 		info += "----------";
 		System.out.println(info);
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(file);
+		out.writeObject(projectName);
+		out.writeObject(projectPrecision);
+		out.writeObject(projectGenome);
+		out.writeObject(projectType);
+		out.writeObject(projectDate);
+		out.writeObject(projectTrackNumber);
+		if (projectFiles == null) {
+			out.writeInt(0);
+		} else {
+			out.writeInt(projectFiles.length);
+			for (String path: projectFiles) {
+				out.writeObject(path);
+			}
+		}
 	}
 }

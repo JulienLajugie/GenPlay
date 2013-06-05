@@ -34,11 +34,11 @@ public enum ScorePrecision {
 	/**
 	 * 16-bit floating point format
 	 */
-	PRECISION_16BIT ("16-Bit", "16-bit floating point format"),
+	PRECISION_16BIT ("Low-Precision", "16-bit floating point format"),
 	/**
 	 * 32-bit floating point format
 	 */
-	PRECISION_32BIT ("32-Bit", "32-bit floating point format");
+	PRECISION_32BIT ("High-Precision", "32-bit floating point format");
 
 
 	private final String name; 			// name of the precision

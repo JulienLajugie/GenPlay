@@ -34,6 +34,7 @@ import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.genome.Assembly;
 import edu.yu.einstein.genplay.dataStructure.genome.Clade;
 import edu.yu.einstein.genplay.dataStructure.genome.Genome;
@@ -62,8 +63,10 @@ public class ProjectFrame extends JFrame {
 	public static final Double CONTENT_RATIO 			= 0.7;
 	/** Ratio for the height of the name section in the content part */
 	public static final Double NAME_RATIO 				= 0.1;
+	/** Ratio for the height of the score precision section in the content part */
+	public static final Double PRECISION_RATIO			= 0.1;
 	/** Ratio for the height of the assembly section in the content part */
-	public static final Double ASSEMBLY_RATIO 			= 0.25;
+	public static final Double ASSEMBLY_RATIO 			= 0.22;
 	/** Ratio for the height of the genome section in the content part */
 	public static final Double GENOME_RATIO 			= 0.15;
 	/** Ratio for the height of the VCF section in the content part */
@@ -74,6 +77,7 @@ public class ProjectFrame extends JFrame {
 	public static final Double PROJECT_CHOOSER_RATIO 	= 0.05;
 	/** Ratio for the height of the confirmation section */
 	public static final Double CONFIRM_RATIO 			= 0.07;
+
 	//Size
 	/** Width of the dialog */
 	public static final int SCREEN_WIDTH 					= 450;
@@ -87,6 +91,8 @@ public class ProjectFrame extends JFrame {
 	public static final int CONTENT_HEIGHT 					= (int)Math.round(SCREEN_HEIGHT*CONTENT_RATIO);
 	/** Height of the name section in the content part */
 	public static final int NAME_HEIGHT 					= (int)Math.round(CONTENT_HEIGHT*NAME_RATIO);
+	/** Height of the score precision section in the content part */
+	public static final int PRECISION_HEIGHT				= (int)Math.round(CONTENT_HEIGHT*PRECISION_RATIO);
 	/** Height of the assembly section in the content part */
 	public static final int ASSEMBLY_HEIGHT 				= (int)Math.round(CONTENT_HEIGHT*ASSEMBLY_RATIO);
 	/** Height of the genome section in the content part */
@@ -110,12 +116,15 @@ public class ProjectFrame extends JFrame {
 	public static final Dimension NEW_DIM 		= new Dimension (SCREEN_WIDTH, CONTENT_HEIGHT);
 	/** Dimension of the name section */
 	public static final Dimension NAME_DIM 		= new Dimension (SCREEN_WIDTH, NAME_HEIGHT);
+	/** Dimension of the score precision section */
+	public static final Dimension PRECISION_DIM = new Dimension (SCREEN_WIDTH, PRECISION_HEIGHT);
 	/** Dimension of the assembly section */
 	public static final Dimension ASSEMBLY_DIM 	= new Dimension (SCREEN_WIDTH, ASSEMBLY_HEIGHT);
 	/** Dimension of the genome section */
 	public static final Dimension GENOME_DIM 	= new Dimension (SCREEN_WIDTH, GENOME_HEIGHT);
 	/** Dimension of the VCF section */
 	public static final Dimension VCF_DIM 		= new Dimension (SCREEN_WIDTH, VCF_HEIGHT);
+
 	// Load project panel dimensions
 	/** Dimension of the load project section */
 	public static final Dimension LOAD_DIM 				= new Dimension (SCREEN_WIDTH, CONTENT_HEIGHT);
@@ -125,6 +134,7 @@ public class ProjectFrame extends JFrame {
 	public static final Dimension PROJECT_CHOOSER_DIM 	= new Dimension (SCREEN_WIDTH-70, PROJECT_CHOOSER_HEIGHT);
 	/** Dimension of the confirmation section */
 	public static final Dimension CONFIRM_DIM 			= new Dimension (SCREEN_WIDTH, CONFIRM_HEIGHT);
+
 	//Tool tip text
 	/** Name for adding a vcf file */
 	public static final String ADD_VCF_FILE 		= "Add vcf file";
@@ -144,6 +154,7 @@ public class ProjectFrame extends JFrame {
 	public static final String MOVE_DOWN_FILES 		= "Move down selection";
 	/** Name to select the basic chromosomes */
 	public static final String SELECT_BASIC_CHR 	= "Select basics chromosome";
+
 	//Real colors
 	/** White color */
 	public static final		Color COLOR 			= Color.white;
@@ -155,6 +166,8 @@ public class ProjectFrame extends JFrame {
 	public static final 	Color NEW_COLOR 		= COLOR;
 	/** Color of the name section */
 	public static final 	Color NAME_COLOR 		= COLOR;
+	/** Color of the score precision section */
+	public static final 	Color PRECISION_COLOR	= COLOR;
 	/** Color of the assembly section */
 	public static final 	Color ASSEMBLY_COLOR 	= COLOR;
 	/** Color of the genome section */
@@ -176,22 +189,18 @@ public class ProjectFrame extends JFrame {
 	/** Text of the button if you choose to load a project */
 	public static final 	String 	LOAD_BUTTON = "Load";
 
-	private static ProjectFrame		instance = null;			// The instance of the class
-	private NewProjectPanel 		newProjectPanel;			// Panel for a new project
-	private LoadProjectPanel 		loadProjectPanel;			// Panel for loading a project
-	private BannerPanel 			bannerPanel;				// The banner
-	private ProjectTypePanel 		projectTypePanel;			// The type of the project (new/load)
-	private ConfirmPanel 			confirmPanel;				// Panel to confirm the user choice
-	private GridBagConstraints 		gbc;						// Constraints for the GriBagLayout
+	// The instance of the class
+	private static ProjectFrame		instance = null;
 
 
 	/**
-	 * Shows a popup
-	 * @param title title of the popup
-	 * @param info	information to display
+	 * @return the instance of the singleton {@link ProjectFrame}.
 	 */
-	public static void showPopUp (String title, String info) {
-		JOptionPane.showMessageDialog(instance, info, title, JOptionPane.WARNING_MESSAGE);
+	public static ProjectFrame getInstance () {
+		if (instance == null) {
+			instance = new ProjectFrame();
+		}
+		return instance;
 	}
 
 
@@ -210,6 +219,22 @@ public class ProjectFrame extends JFrame {
 
 
 	/**
+	 * Shows a popup
+	 * @param title title of the popup
+	 * @param info	information to display
+	 */
+	public static void showPopUp (String title, String info) {
+		JOptionPane.showMessageDialog(instance, info, title, JOptionPane.WARNING_MESSAGE);
+	}
+	private NewProjectPanel 		newProjectPanel;			// Panel for a new project
+	private LoadProjectPanel 		loadProjectPanel;			// Panel for loading a project
+	private BannerPanel 			bannerPanel;				// The banner
+	private ProjectTypePanel 		projectTypePanel;			// The type of the project (new/load)
+	private ConfirmPanel 			confirmPanel;				// Panel to confirm the user choice
+	private GridBagConstraints 		gbc;						// Constraints for the GriBagLayout
+
+
+	/**
 	 * Private constructor.
 	 * Creates an instance of singleton {@link MainFrame}
 	 * @throws HeadlessException
@@ -220,13 +245,96 @@ public class ProjectFrame extends JFrame {
 
 
 	/**
-	 * @return the instance of the singleton {@link ProjectFrame}.
+	 * This method gather new project information.
 	 */
-	public static ProjectFrame getInstance () {
-		if (instance == null) {
-			instance = new ProjectFrame();
+	protected void confirmCreate () {
+		Boolean valid = true;
+		// check that a project name is specified
+		if (newProjectPanel.getProjectName().equals(""))  {
+			JOptionPane.showMessageDialog(getRootPane(), "Please fill the project name field", "Invalid Project Name", JOptionPane.WARNING_MESSAGE);
+			valid = false;
 		}
-		return instance;
+		// in the case of the multi-genome project, check that the multi-genome information is correct
+		if (!newProjectPanel.isSingleProject()) {
+			if (!newProjectPanel.isValidMultigenomeProject()) {
+				valid = false;
+			}
+		}
+		if (newProjectPanel.getSelectedChromosomes().size() == 0) {
+			JOptionPane.showMessageDialog(getRootPane(), "Please select at least one chromosome", "Invalid Chromosome Selection", JOptionPane.WARNING_MESSAGE);
+			valid = false;
+		}
+		//start a new project
+		if (valid) {
+			Launcher.initiateNewProject();
+		}
+	}
+
+
+	/**
+	 * This method gather loading project information.
+	 */
+	protected void confirmLoading () {
+		if (loadProjectPanel.getFileProjectToLoad() != null) {
+			setVisible(false);
+			Launcher.startProjectFromFile(loadProjectPanel.getFileProjectToLoad());
+		}
+	}
+
+
+	/**
+	 * @return the mapping between genome full names and their readers.
+	 */
+	public Map<String, List<VCFFile>> getGenomeFileAssociation ()  {
+		return newProjectPanel.getGenomeFileAssociation();
+	}
+
+
+	/**
+	 * @return the project name
+	 */
+	public String getProjectName() {
+		return newProjectPanel.getProjectName();
+	}
+
+
+	/**
+	 * @return the selected score precision
+	 */
+	public ScorePrecision getProjectScorePrecision() {
+		return newProjectPanel.getProjectScorePrecision();
+	}
+
+
+	/**
+	 * @return the selected assembly
+	 */
+	public Assembly getSelectedAssembly() {
+		return newProjectPanel.getAssembly();
+	}
+
+
+	/**
+	 * @return a {@link Map} containing the selected chromosomes.  Each chromosome is associated to its name in the map
+	 */
+	public List<Chromosome> getSelectedChromosomes() {
+		return newProjectPanel.getSelectedChromosomes();
+	}
+
+
+	/**
+	 * @return the selected clade
+	 */
+	public Clade getSelectedClade() {
+		return newProjectPanel.getClade();
+	}
+
+
+	/**
+	 * @return the selected genome
+	 */
+	public Genome getSelectedGenome() {
+		return newProjectPanel.getGenome();
 	}
 
 
@@ -283,119 +391,11 @@ public class ProjectFrame extends JFrame {
 
 
 	/**
-	 * This method show the {@link LoadProjectPanel} panel
-	 */
-	public void toLoadScreenProject () {
-		newProjectPanel.setVisible(false);
-		loadProjectPanel.setVisible(true);
-		confirmPanel.setConfirmButton(LOAD_BUTTON);
-		projectTypePanel.getLoadRadio().setSelected(true);
-	}
-
-
-	/**
-	 * This method show the {@link NewProjectPanel} panel
-	 */
-	public void toNewScreenProject () {
-		loadProjectPanel.setVisible(false);
-		newProjectPanel.setVisible(true);
-		confirmPanel.setConfirmButton(CREATE_BUTTON);
-		projectTypePanel.getNewRadio().setSelected(true);
-	}
-
-
-	/**
-	 * This method gather new project information.
-	 */
-	protected void confirmCreate () {
-		Boolean valid = true;
-		// check that a project name is specified
-		if (newProjectPanel.getProjectName().equals(""))  {
-			JOptionPane.showMessageDialog(getRootPane(), "Please fill the project name field", "Invalid Project Name", JOptionPane.WARNING_MESSAGE);
-			valid = false;
-		}
-		// in the case of the multi-genome project, check that the multi-genome information is correct
-		if (!newProjectPanel.isSingleProject()) {
-			if (!newProjectPanel.isValidMultigenomeProject()) {
-				valid = false;
-			}
-		}
-		if (newProjectPanel.getSelectedChromosomes().size() == 0) {
-			JOptionPane.showMessageDialog(getRootPane(), "Please select at least one chromosome", "Invalid Chromosome Selection", JOptionPane.WARNING_MESSAGE);
-			valid = false;
-		}
-		//start a new project
-		if (valid) {
-			Launcher.initiateNewProject();
-		}
-	}
-
-
-	/**
 	 * This method determines if user chose a simple or a multi genome project.
 	 * @return true if user chose a simple genome project.
 	 */
 	public boolean isSingleProject () {
 		return newProjectPanel.isSingleProject();
-	}
-
-
-	/**
-	 * This method gather loading project information.
-	 */
-	protected void confirmLoading () {
-		if (loadProjectPanel.getFileProjectToLoad() != null) {
-			setVisible(false);
-			Launcher.startProjectFromFile(loadProjectPanel.getFileProjectToLoad());
-		}
-	}
-
-
-	/**
-	 * @return a {@link Map} containing the selected chromosomes.  Each chromosome is associated to its name in the map
-	 */
-	public List<Chromosome> getSelectedChromosomes() {
-		return newProjectPanel.getSelectedChromosomes();
-	}
-
-
-	/**
-	 * @return the project name
-	 */
-	public String getProjectName() {
-		return newProjectPanel.getProjectName();
-	}
-
-
-	/**
-	 * @return the selected clade
-	 */
-	public Clade getSelectedClade() {
-		return newProjectPanel.getClade();
-	}
-
-
-	/**
-	 * @return the selected genome
-	 */
-	public Genome getSelectedGenome() {
-		return newProjectPanel.getGenome();
-	}
-
-
-	/**
-	 * @return the selected assembly
-	 */
-	public Assembly getSelectedAssembly() {
-		return newProjectPanel.getAssembly();
-	}
-
-
-	/**
-	 * @return the mapping between genome full names and their readers.
-	 */
-	public Map<String, List<VCFFile>> getGenomeFileAssociation ()  {
-		return newProjectPanel.getGenomeFileAssociation();
 	}
 
 
@@ -419,4 +419,26 @@ public class ProjectFrame extends JFrame {
 		super.setVisible(aFlag);
 	}
 
+
+	/**
+	 * This method show the {@link LoadProjectPanel} panel
+	 */
+	public void toLoadScreenProject () {
+		newProjectPanel.setVisible(false);
+		loadProjectPanel.setVisible(true);
+		confirmPanel.setConfirmButton(LOAD_BUTTON);
+		projectTypePanel.getLoadRadio().setSelected(true);
+	}
+
+
+	/**
+	 * This method show the {@link NewProjectPanel} panel
+	 */
+	public void toNewScreenProject () {
+		loadProjectPanel.setVisible(false);
+		newProjectPanel.setVisible(true);
+		confirmPanel.setConfirmButton(CREATE_BUTTON);
+		projectTypePanel.getNewRadio().setSelected(true);
+	}
 }
+

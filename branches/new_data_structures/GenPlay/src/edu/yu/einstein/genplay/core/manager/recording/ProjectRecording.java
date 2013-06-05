@@ -46,9 +46,7 @@ import edu.yu.einstein.genplay.gui.trackList.TrackListPanel;
 
 /**
  * This class manages the saving and loading processes of the current project.
- * 
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class ProjectRecording {
 
@@ -154,6 +152,7 @@ public class ProjectRecording {
 		trackListReadyToLoad = true;
 	}
 
+
 	/**
 	 * Creates/sets chromosome manager object.
 	 * @param inputFile project file
@@ -164,6 +163,7 @@ public class ProjectRecording {
 		fis = new FileInputStream(inputFile);
 		initObjectInputStream(fis);
 	}
+
 
 	/**
 	 * Creates/sets chromosome manager object.
@@ -180,6 +180,7 @@ public class ProjectRecording {
 		}
 	}
 
+
 	/**
 	 * Initializes the project information. It unserializes the first object
 	 * contained in the file that is the information about the project. This
@@ -193,6 +194,7 @@ public class ProjectRecording {
 			projectInformation = (ProjectInformation) ois.readObject();
 		}
 	}
+
 
 	/**
 	 * Initializes the project manager. It unserializes the second object
@@ -215,12 +217,14 @@ public class ProjectRecording {
 		}
 	}
 
+
 	/**
 	 * @return the loadingEvent
 	 */
 	public boolean isLoadingEvent() {
 		return loadingEvent;
 	}
+
 
 	/**
 	 * Saves the current list of tracks into a file
@@ -275,12 +279,14 @@ public class ProjectRecording {
 		return true;
 	}
 
+
 	/**
 	 * @param currentProjectPath the currentProjectPath to set
 	 */
 	public void setCurrentProjectPath(String currentProjectPath) {
 		this.currentProjectPath = currentProjectPath;
 	}
+
 
 	/**
 	 * @param fileToLoad the fileToLoad to set
@@ -289,12 +295,14 @@ public class ProjectRecording {
 		this.fileToLoad = fileToLoad;
 	}
 
+
 	/**
 	 * @param loadingEvent the loadingEvent to set
 	 */
 	public void setLoadingEvent(boolean loadingEvent) {
 		this.loadingEvent = loadingEvent;
 	}
+
 
 	/**
 	 * Updates the current information about the project
@@ -304,6 +312,7 @@ public class ProjectRecording {
 		projectInformation.setFile(new File(currentProjectPath));
 		ProjectManager projectManager = ProjectManager.getInstance();
 		projectInformation.setProjectName(projectManager.getProjectName());
+		projectInformation.setProjectPrecision(projectManager.getProjectScorePrecision().toString());
 		projectInformation.setProjectGenome(projectManager.getGenomeName());
 		if (projectManager.isMultiGenomeProject()) {
 			projectInformation.setProjectType("Multi Genome Project");

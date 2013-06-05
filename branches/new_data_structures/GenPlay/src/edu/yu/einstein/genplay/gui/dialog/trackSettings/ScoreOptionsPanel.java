@@ -96,7 +96,7 @@ class ScoreOptionsPanel extends JPanel implements ActionListener, ChangeListener
 		scorePositionGroup.add(jrbTopPosition);
 		scorePositionGroup.add(jrbBottomPosition);
 
-		jlScoreColor = new JLabel("Color of the score:");
+		jlScoreColor = new JLabel("Score Color:");
 		jbScoreColor = new JButton("Color");
 		jbScoreColor.addActionListener(this);
 

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -25,6 +25,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -37,14 +38,14 @@ import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
  * @version 0.1
  */
 class NamePanel extends JPanel {
-	
+
 	private static final long serialVersionUID = 3176088024132214727L;
-	
+
 	private static final Dimension 	JTF_DIM = new Dimension(250, 24);	// Name text field size
-	private JLabel 					jlName;								// Name label
-	private JTextField 				jtName;								// Name text field
-	
-	
+	private final JLabel 			jlName;								// Name label
+	private final JTextField 		jtName;								// Name text field
+
+
 	/**
 	 * Constructor of {@link NamePanel}
 	 */
@@ -54,26 +55,26 @@ class NamePanel extends JPanel {
 		setPreferredSize(getSize());
 		setMinimumSize(getSize());
 		setMaximumSize(getSize());
-		
+
 		//Background
 		setBackground(ProjectFrame.NAME_COLOR);
-		
+
 		//Name label
 		jlName = new JLabel("Name: ");
-		
+
 		//Name text field
 		jtName = new JTextField(NewProjectPanel.DEFAULT_PROJECT_NAME);
 		jtName.setPreferredSize(JTF_DIM);
 		jtName.setMinimumSize(JTF_DIM);
-		
+
 		//Layout
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
-		
+
 		//Insets
 		Insets labelInsets = new Insets (10, 15, 10, 0);
 		Insets jtfInsets = new Insets (0, 15, 0, 0);
-		
+
 		//jlClade
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -86,7 +87,7 @@ class NamePanel extends JPanel {
 		gbc.anchor = GridBagConstraints.LINE_START;
 		gbc.weighty = 0;
 		add(jlName, gbc);
-		
+
 		//jcClade
 		gbc.gridx = 1;
 		gbc.gridy = 0;
@@ -107,5 +108,5 @@ class NamePanel extends JPanel {
 	protected String getProjectName() {
 		return jtName.getText();
 	}
-	
+
 }
