@@ -237,7 +237,9 @@ public class SimpleSCWPileupFlattener implements PileupFlattener {
 		case AVERAGE:
 			return FloatLists.average(currentScoreList);
 		case DIVISION:
-			if (currentScoreList.isEmpty() || (currentScoreList.size() == 1)) {
+			if (currentScoreList.isEmpty()) {
+				return 0f;
+			} else if (currentScoreList.size() == 1) {
 				return currentScoreList.get(0);
 			} else if (currentScoreList.size() == 2) {
 				return currentScoreList.get(0) / currentScoreList.get(1);
@@ -258,7 +260,9 @@ public class SimpleSCWPileupFlattener implements PileupFlattener {
 				throw new UnsupportedOperationException("Multiplication with more than two operands not supported");
 			}
 		case SUBTRACTION:
-			if (currentScoreList.isEmpty() || (currentScoreList.size() == 1)) {
+			if (currentScoreList.isEmpty()) {
+				return 0f;
+			} else if (currentScoreList.size() == 1) {
 				return currentScoreList.get(0);
 			} else if (currentScoreList.size() == 2) {
 				return currentScoreList.get(0) - currentScoreList.get(1);

@@ -214,7 +214,9 @@ public class BinListPileupFlattener implements PileupFlattener {
 		case AVERAGE:
 			return FloatLists.average(currentScoreList);
 		case DIVISION:
-			if (currentScoreList.size() == 1) {
+			if (currentScoreList.isEmpty()) {
+				return 0f;
+			} else if (currentScoreList.size() == 1) {
 				return currentScoreList.get(0);
 			} else if (currentScoreList.size() == 2) {
 				return currentScoreList.get(0) / currentScoreList.get(1);
@@ -226,7 +228,7 @@ public class BinListPileupFlattener implements PileupFlattener {
 		case MINIMUM:
 			return FloatLists.minNoZero(currentScoreList);
 		case MULTIPLICATION:
-			if (currentScoreList.size() == 1) {
+			if (currentScoreList.isEmpty() || (currentScoreList.size() == 1)) {
 				// multiplication with a window with a score of 0
 				return 0f;
 			} else if (currentScoreList.size() == 2) {
@@ -235,7 +237,9 @@ public class BinListPileupFlattener implements PileupFlattener {
 				throw new UnsupportedOperationException("Multiplication with more than two operands not supported");
 			}
 		case SUBTRACTION:
-			if (currentScoreList.size() == 1) {
+			if (currentScoreList.isEmpty()) {
+				return 0f;
+			} else if (currentScoreList.size() == 1) {
 				return currentScoreList.get(0);
 			} else if (currentScoreList.size() == 2) {
 				return currentScoreList.get(0) - currentScoreList.get(1);
