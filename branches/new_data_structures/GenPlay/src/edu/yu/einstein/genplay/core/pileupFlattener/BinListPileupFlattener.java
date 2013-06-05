@@ -80,8 +80,8 @@ public class BinListPileupFlattener implements PileupFlattener {
 			if (currentWindowStart < lastWindowStart) {
 				throw new ElementAddedNotSortedException();
 			}
-			int firstBinStart = (lastWindowStart / binSize) * binSize;
-			int lastBinStop = ((currentWindowStart / binSize) * binSize);
+			int firstBinStart = (((lastWindowStart - 1) / binSize) * binSize) + 1;
+			int lastBinStop = (((currentWindowStart - 1) / binSize) * binSize) + 1;
 
 			// add the new window at the end of the queue
 			windowQueue.add(windowStart, windowStop, windowScore);
@@ -157,10 +157,10 @@ public class BinListPileupFlattener implements PileupFlattener {
 
 			while (windowQueueIterator.hasNext() &&
 					((currentRead = windowQueueIterator.next()).getStart() < lastBinStop)) {
-				int readFirstBinStart = (currentRead.getStart() / binSize) * binSize;
+				int readFirstBinStart = (((currentRead.getStart() - 1)/ binSize) * binSize) + 1;
 				readFirstBinStart = Math.max(readFirstBinStart, firstBinStart);
 				// we subtract one the stop because this position is excluded
-				int readLastBinStart = ((currentRead.getStop() - 1) / binSize) * binSize;
+				int readLastBinStart = (((currentRead.getStop() - 1) / binSize) * binSize) + 1;
 				readLastBinStart = Math.min(readLastBinStart, lastBinStop - binSize);
 				int i = 0;
 				for (int binStart = readFirstBinStart; binStart <= readLastBinStart; binStart += binSize) {
@@ -186,8 +186,8 @@ public class BinListPileupFlattener implements PileupFlattener {
 		if (!windowQueue.isEmpty()) {
 			int lastWindowStart = windowQueue.get(windowQueue.size() - 1).getStart();
 			int lastWindowStop = windowQueue.get(windowQueue.size() - 1).getStop();
-			int firstBinStart = (lastWindowStart / binSize) * binSize;
-			int lastBinStop = (((lastWindowStop / binSize) + 1 ) * binSize);
+			int firstBinStart = (((lastWindowStart - 1) / binSize) * binSize) + 1;
+			int lastBinStop = (((lastWindowStop - 1) / binSize) * binSize) + 1;
 			flattenPileup(firstBinStart, lastBinStop);
 		}
 	}

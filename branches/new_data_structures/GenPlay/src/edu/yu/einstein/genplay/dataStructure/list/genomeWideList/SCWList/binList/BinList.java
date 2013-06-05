@@ -172,7 +172,7 @@ public final class BinList extends AbstractListView<ListView<ScoredChromosomeWin
 
 	@Override
 	public float getScore(Chromosome chromosome, int position) {
-		int binIndex = position / binSize;
+		int binIndex = (position - 1) / binSize;
 		if (binIndex < size(chromosome)) {
 			return get(chromosome).get(binIndex).getScore();
 		} else {

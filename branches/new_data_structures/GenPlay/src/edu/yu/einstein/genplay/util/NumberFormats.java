@@ -36,7 +36,7 @@ public class NumberFormats {
 	 * @return The Number format used to display positions (except by writers)
 	 */
 	public static NumberFormat getPositionFormat() {
-		DecimalFormat df = (DecimalFormat) DecimalFormat.getIntegerInstance();
+		DecimalFormat df = (DecimalFormat) NumberFormat.getIntegerInstance();
 		df.setGroupingUsed(true);
 		return df;
 	}
@@ -46,7 +46,7 @@ public class NumberFormats {
 	 * @return The {@link NumberFormat} used to display scores (except by writers)
 	 */
 	public static NumberFormat getScoreFormat() {
-		DecimalFormat df = (DecimalFormat) DecimalFormat.getNumberInstance();
+		DecimalFormat df = (DecimalFormat) NumberFormat.getNumberInstance();
 		df.setDecimalSeparatorAlwaysShown(false);
 		df.setGroupingUsed(true);
 		df.setMaximumFractionDigits(3);
@@ -59,7 +59,7 @@ public class NumberFormats {
 	 * Groupings are not used because they can interfere with the writer separator character
 	 */
 	public static NumberFormat getWriterScoreFormat() {
-		DecimalFormat df = (DecimalFormat) DecimalFormat.getNumberInstance(Locale.US);
+		DecimalFormat df = (DecimalFormat) NumberFormat.getNumberInstance(Locale.US);
 		df.setDecimalSeparatorAlwaysShown(false);
 		df.setGroupingUsed(false);
 		df.setMaximumFractionDigits(3);
