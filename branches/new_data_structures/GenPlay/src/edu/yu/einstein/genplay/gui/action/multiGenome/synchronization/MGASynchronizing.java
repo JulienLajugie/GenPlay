@@ -84,6 +84,53 @@ public class MGASynchronizing extends TrackListActionWorker<Track[]> {
 
 
 	@Override
+	protected void doAtTheEnd(Track[] actionResult) {
+		multiGenomeProject.updateChromosomeList();
+
+		MainFrame.getInstance().getControlPanel().reinitChromosomePanel();
+		MainFrame.getInstance().getControlPanel().resetGenomeNames(multiGenomeProject.getGenomeNames());
+
+		// Unlocks the main frame
+		MainFrame.getInstance().unlock();
+
+		//multiGenomeProject.show();
+	}
+
+
+	private List<String> getRequiredGenomeNames () {
+		List<String> genomes = null;
+		if (genomeFileAssociation != null) {
+			genomes = new ArrayList<String>(genomeFileAssociation.keySet());
+		}
+		return genomes;
+	}
+
+
+	/**
+	 * Checks if file readers and genome file association parameters are null,
+	 * if they are not, it sets the genome synchronizer using them.
+	 * Then, it checks if genome synchronizer has been initialized.
+	 * @return true if genome synchronizer has been initialized, false if not.
+	 */
+	private boolean hasBeenInitialized () {
+		boolean valid = false;
+
+		// If parameter have been given,
+		// sets the genome synchronizer.
+		if (genomeFileAssociation != null) {
+			multiGenomeProject.setGenomeFileAssociation(genomeFileAssociation);
+		}
+
+		// Checks if genome synchronizer has been initialized
+		if (multiGenomeProject.getGenomeFileAssociation() != null) {
+			valid = true;
+		}
+
+		return valid;
+	}
+
+
+	@Override
 	protected Track[] processAction() throws Exception {
 		ProjectManager projectManager = ProjectManager.getInstance();
 
@@ -132,43 +179,6 @@ public class MGASynchronizing extends TrackListActionWorker<Track[]> {
 	}
 
 
-	@Override
-	protected void doAtTheEnd(Track[] actionResult) {
-		multiGenomeProject.updateChromosomeList();
-
-		MainFrame.getInstance().getControlPanel().reinitChromosomePanel();
-		MainFrame.getInstance().getControlPanel().resetGenomeNames(multiGenomeProject.getGenomeNames());
-
-		// Unlocks the main frame
-		MainFrame.getInstance().unlock();
-
-		//multiGenomeProject.show();
-	}
-
-
-	/**
-	 * Checks if file readers and genome file association parameters are null,
-	 * if they are not, it sets the genome synchronizer using them.
-	 * Then, it checks if genome synchronizer has been initialized.
-	 * @return true if genome synchronizer has been initialized, false if not.
-	 */
-	private boolean hasBeenInitialized () {
-		boolean valid = false;
-
-		// If parameter have been given,
-		// sets the genome synchronizer.
-		if (genomeFileAssociation != null) {
-			multiGenomeProject.setGenomeFileAssociation(genomeFileAssociation);
-		}
-
-		// Checks if genome synchronizer has been initialized
-		if (multiGenomeProject.getGenomeFileAssociation() != null) {
-			valid = true;
-		}
-
-		return valid;
-	}
-
 
 	/**
 	 * This method must be used when multi-genome synchronization is performed for the first time in a project.
@@ -176,15 +186,5 @@ public class MGASynchronizing extends TrackListActionWorker<Track[]> {
 	 */
 	public void setGenomeFileAssociation(Map<String, List<VCFFile>> genomeFileAssociation) {
 		this.genomeFileAssociation = genomeFileAssociation;
-	}
-
-
-
-	private List<String> getRequiredGenomeNames () {
-		List<String> genomes = null;
-		if (genomeFileAssociation != null) {
-			genomes = new ArrayList<String>(genomeFileAssociation.keySet());
-		}
-		return genomes;
 	}
 }

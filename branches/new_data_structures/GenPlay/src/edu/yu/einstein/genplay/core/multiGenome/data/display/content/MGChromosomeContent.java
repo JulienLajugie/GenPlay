@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.array.MGByteArray;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.array.MGFloatArray;
@@ -61,7 +62,7 @@ public class MGChromosomeContent implements Iterable<MGLineContent>, Serializabl
 	/** Default serial version ID */
 	private static final long serialVersionUID = -8385957556240550523L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
-	private Chromosome 						chromosome;				// The chromosome represented here.
+	private String	 						chromosomeName;				// The chromosome represented here.
 	private MGIntegerArray 					positions;				// The array of reference genome positions.
 	private MGFloatArray 					scores;					// The array of scores.
 	private List<MGIntegerArray> 			alternatives;			// The list of alternatives.
@@ -70,46 +71,12 @@ public class MGChromosomeContent implements Iterable<MGLineContent>, Serializabl
 
 
 	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(chromosome);
-		out.writeObject(positions);
-		out.writeObject(scores);
-		out.writeObject(alternatives);
-		out.writeObject(genotypes);
-		out.writeObject(variants);
-	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	@SuppressWarnings("unchecked")
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		chromosome = (Chromosome) in.readObject();
-		positions = (MGIntegerArray) in.readObject();
-		scores = (MGFloatArray) in.readObject();
-		alternatives = (List<MGIntegerArray>) in.readObject();
-		genotypes = (Map<String, List<MGByteArray>>) in.readObject();
-		variants = (MGChromosomeVariants) in.readObject();
-	}
-
-
-	/**
 	 * Constructor of {@link MGChromosomeContent}
 	 * @param chromosome
 	 * @param genomeNames
 	 */
-	public MGChromosomeContent (Chromosome chromosome, List<String> genomeNames) {
-		this.chromosome = chromosome;
+	public MGChromosomeContent (String chromosome, List<String> genomeNames) {
+		this.chromosomeName = chromosome;
 		positions = new MGIntegerArray();
 		scores = new MGFloatArray();
 		alternatives = new ArrayList<MGIntegerArray>();
@@ -120,27 +87,6 @@ public class MGChromosomeContent implements Iterable<MGLineContent>, Serializabl
 			genotypes.get(genomeName).add(new MGByteArray());
 		}
 		variants = null;
-	}
-
-
-
-	/**
-	 * Add a {@link MGLineContent} into the file content structure
-	 * @param index		index to insert the {@link MGLineContent}
-	 * @param position	the {@link MGLineContent} to insert
-	 */
-	public void addPosition (int index, MGLineContent position) {
-		// Each element of a position is added separately in the different lists
-		positions.set(index, position.getReferenceGenomePosition());						// Add the position.
-		scores.set(index, position.getScore());												// Add the score.
-		for (int i = 0; i < position.getAlternatives().length; i++) {						// Add the alternatives.
-			addAlternative(i, index, position.getAlternatives()[i]);
-		}
-
-		List<String> genomes = new ArrayList<String>(position.getGenotypes().keySet());		// Add the genotypes.
-		for (String genome: genomes) {
-			addGenotype(index, genome, position.getGenotypes().get(genome));
-		}
 	}
 
 
@@ -176,27 +122,59 @@ public class MGChromosomeContent implements Iterable<MGLineContent>, Serializabl
 	}
 
 
+
 	/**
-	 * @param index index of the {@link MGLineContent}
-	 * @return the {@link MGLineContent} for the given index
+	 * Add a {@link MGLineContent} into the file content structure
+	 * @param index		index to insert the {@link MGLineContent}
+	 * @param position	the {@link MGLineContent} to insert
 	 */
-	public MGLineContent getPosition (int index) {
-		MGLineContent position = new MGLineContent();
-		return getPosition(position, index);
+	public void addPosition (int index, MGLineContent position) {
+		// Each element of a position is added separately in the different lists
+		positions.set(index, position.getReferenceGenomePosition());						// Add the position.
+		scores.set(index, position.getScore());												// Add the score.
+		for (int i = 0; i < position.getAlternatives().length; i++) {						// Add the alternatives.
+			addAlternative(i, index, position.getAlternatives()[i]);
+		}
+
+		List<String> genomes = new ArrayList<String>(position.getGenotypes().keySet());		// Add the genotypes.
+		for (String genome: genomes) {
+			addGenotype(index, genome, position.getGenotypes().get(genome));
+		}
 	}
 
 
 	/**
-	 * @param position a {@link MGLineContent} to update
-	 * @param index index of the {@link MGLineContent}
-	 * @return the {@link MGLineContent} for the given index
+	 * Compact all lists resizing arrays for better memory usage
 	 */
-	public MGLineContent getPosition (MGLineContent position, int index) {
-		position.setReferenceGenomePosition(positions.get(index));
-		position.setScore(scores.get(index));
-		position.setAlternatives(getAlternatives(index));
-		position.setGenotypes(getGenotypes(index));
-		return position;
+	public void compact () {
+		positions.compact();
+		int size = positions.size();
+		scores.resize(size);
+		for (MGIntegerArray alternative: alternatives) {
+			alternative.resize(size);
+		}
+		for (String genomeName: genotypes.keySet()) {
+			for (MGByteArray genotype: genotypes.get(genomeName)) {
+				genotype.resize(size);
+			}
+		}
+	}
+
+
+	/**
+	 * Generates the variants based on {@link MGChromosomeContent} information.
+	 */
+	public void generateVariants () {
+		variants = new MGChromosomeVariants();
+		variants.generateVariants(this);
+	}
+
+
+	/**
+	 * @return the alternatives
+	 */
+	public List<MGIntegerArray> getAlternatives() {
+		return alternatives;
 	}
 
 
@@ -222,6 +200,14 @@ public class MGChromosomeContent implements Iterable<MGLineContent>, Serializabl
 
 
 	/**
+	 * @return the chromosome
+	 */
+	public Chromosome getChromosome() {
+		return ProjectManager.getInstance().getProjectChromosomes().get(chromosomeName);
+	}
+
+
+	/**
 	 * @param index index of the genotypes
 	 * @return the map of genotypes
 	 */
@@ -236,62 +222,6 @@ public class MGChromosomeContent implements Iterable<MGLineContent>, Serializabl
 			genotypes.put(genomeName, array);
 		}
 		return genotypes;
-	}
-
-
-	/**
-	 * Compact all lists resizing arrays for better memory usage
-	 */
-	public void compact () {
-		positions.compact();
-		int size = positions.size();
-		scores.resize(size);
-		for (MGIntegerArray alternative: alternatives) {
-			alternative.resize(size);
-		}
-		for (String genomeName: this.genotypes.keySet()) {
-			for (MGByteArray genotype: genotypes.get(genomeName)) {
-				genotype.resize(size);
-			}
-		}
-	}
-
-
-	/**
-	 * Generates the variants based on {@link MGChromosomeContent} information.
-	 */
-	public void generateVariants () {
-		variants = new MGChromosomeVariants();
-		variants.generateVariants(this);
-	}
-
-
-	/**
-	 * Removes the variants
-	 */
-	public void removeVariants () {
-		variants = null;
-	}
-
-
-
-	/**
-	 * @return file content size (number of position)
-	 */
-	public int getSize () {
-		return positions.size();
-	}
-
-
-	/**
-	 * @param index	position index on the list
-	 * @return the score for the given index, -1 otherwise
-	 */
-	public float getScore (int index) {
-		if (index < getSize()) {
-			return scores.get(index);
-		}
-		return -1;
 	}
 
 
@@ -319,29 +249,27 @@ public class MGChromosomeContent implements Iterable<MGLineContent>, Serializabl
 
 
 	/**
-	 * Shows file content
+	 * @param index index of the {@link MGLineContent}
+	 * @return the {@link MGLineContent} for the given index
 	 */
-	public void show () {
-		String info = "";
-
-		int size = positions.size();
-		for (int i = 0; i < size; i++) {
-			info += getPosition(i).toString() + "\n";
-		}
-
-		System.out.println(info);
-
-		if (variants != null) {
-			variants.show();
-		}
+	public MGLineContent getPosition (int index) {
+		MGLineContent position = new MGLineContent();
+		return getPosition(position, index);
 	}
 
 
+
 	/**
-	 * @return the chromosome
+	 * @param position a {@link MGLineContent} to update
+	 * @param index index of the {@link MGLineContent}
+	 * @return the {@link MGLineContent} for the given index
 	 */
-	public Chromosome getChromosome() {
-		return chromosome;
+	public MGLineContent getPosition (MGLineContent position, int index) {
+		position.setReferenceGenomePosition(positions.get(index));
+		position.setScore(scores.get(index));
+		position.setAlternatives(getAlternatives(index));
+		position.setGenotypes(getGenotypes(index));
+		return position;
 	}
 
 
@@ -354,6 +282,18 @@ public class MGChromosomeContent implements Iterable<MGLineContent>, Serializabl
 
 
 	/**
+	 * @param index	position index on the list
+	 * @return the score for the given index, -1 otherwise
+	 */
+	public float getScore (int index) {
+		if (index < getSize()) {
+			return scores.get(index);
+		}
+		return -1;
+	}
+
+
+	/**
 	 * @return the scores
 	 */
 	public MGFloatArray getScores() {
@@ -362,16 +302,10 @@ public class MGChromosomeContent implements Iterable<MGLineContent>, Serializabl
 
 
 	/**
-	 * @return the alternatives
+	 * @return file content size (number of position)
 	 */
-	public List<MGIntegerArray> getAlternatives() {
-		return alternatives;
-	}
-
-
-	@Override
-	public Iterator<MGLineContent> iterator() {
-		return new ChromosomeContentIterator(this);
+	public int getSize () {
+		return positions.size();
 	}
 
 
@@ -380,6 +314,12 @@ public class MGChromosomeContent implements Iterable<MGLineContent>, Serializabl
 	 */
 	public MGChromosomeVariants getVariants() {
 		return variants;
+	}
+
+
+	@Override
+	public Iterator<MGLineContent> iterator() {
+		return new ChromosomeContentIterator(this);
 	}
 
 
@@ -428,6 +368,67 @@ public class MGChromosomeContent implements Iterable<MGLineContent>, Serializabl
 				}
 			}
 		}
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		chromosomeName = (String) in.readObject();
+		positions = (MGIntegerArray) in.readObject();
+		scores = (MGFloatArray) in.readObject();
+		alternatives = (List<MGIntegerArray>) in.readObject();
+		genotypes = (Map<String, List<MGByteArray>>) in.readObject();
+		variants = (MGChromosomeVariants) in.readObject();
+	}
+
+
+	/**
+	 * Removes the variants
+	 */
+	public void removeVariants () {
+		variants = null;
+	}
+
+
+	/**
+	 * Shows file content
+	 */
+	public void show () {
+		String info = "";
+
+		int size = positions.size();
+		for (int i = 0; i < size; i++) {
+			info += getPosition(i).toString() + "\n";
+		}
+
+		System.out.println(info);
+
+		if (variants != null) {
+			variants.show();
+		}
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(chromosomeName);
+		out.writeObject(positions);
+		out.writeObject(scores);
+		out.writeObject(alternatives);
+		out.writeObject(genotypes);
+		out.writeObject(variants);
 	}
 
 }

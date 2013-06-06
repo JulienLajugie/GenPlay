@@ -312,7 +312,12 @@ public class ProjectRecording {
 		projectInformation.setFile(new File(currentProjectPath));
 		ProjectManager projectManager = ProjectManager.getInstance();
 		projectInformation.setProjectName(projectManager.getProjectName());
-		projectInformation.setProjectPrecision(projectManager.getProjectScorePrecision().toString());
+		if (projectManager.getProjectScorePrecision() == null) {
+			// for compatibility with old projects when they were no score precision
+			projectInformation.setProjectPrecision("Unknown");
+		} else {
+			projectInformation.setProjectPrecision(projectManager.getProjectScorePrecision().toString());
+		}
 		projectInformation.setProjectGenome(projectManager.getGenomeName());
 		if (projectManager.isMultiGenomeProject()) {
 			projectInformation.setProjectType("Multi Genome Project");

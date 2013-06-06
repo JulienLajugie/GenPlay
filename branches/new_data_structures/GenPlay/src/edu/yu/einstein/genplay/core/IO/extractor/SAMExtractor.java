@@ -24,6 +24,7 @@ package edu.yu.einstein.genplay.core.IO.extractor;
 import java.io.File;
 import java.io.IOException;
 
+import net.sf.samtools.SAMFileHeader.SortOrder;
 import net.sf.samtools.SAMFileReader;
 import net.sf.samtools.SAMRecord;
 import net.sf.samtools.SAMRecordIterator;
@@ -31,6 +32,7 @@ import edu.yu.einstein.genplay.core.IO.dataReader.ChromosomeWindowReader;
 import edu.yu.einstein.genplay.core.IO.dataReader.DataReader;
 import edu.yu.einstein.genplay.core.IO.dataReader.SCWReader;
 import edu.yu.einstein.genplay.core.IO.dataReader.StrandReader;
+import edu.yu.einstein.genplay.core.IO.utils.StrandedExtractorOptions;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
@@ -41,7 +43,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.Strand;
  * Extractor that extract data from a SAM / BAM file
  * @author Julien Lajugie
  */
-public class SAMExtractor extends Extractor implements DataReader, ChromosomeWindowReader, SCWReader, StrandReader {
+public class SAMExtractor extends Extractor implements DataReader, ChromosomeWindowReader, SCWReader, StrandReader, StrandedExtractor {
 
 	/**
 	 * Default first base position of bed files. SAM files are 1-based
@@ -50,13 +52,14 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 	 * */
 	public static final int DEFAULT_FIRST_BASE_POSITION = 1;
 
-	private int	firstBasePosition = DEFAULT_FIRST_BASE_POSITION; 	// position of the first base
-	private final SAMFileReader 	samReader;						// reader that read sam / bam files (from sam.jar)
-	private final SAMRecordIterator iterator;						// iterator in the file
-	private Chromosome 				chromosome;						// chromosome of the last item read
-	private Integer 				start;							// start position of the last item read
-	private Integer 				stop;							// stop position of the last item read
-	private Strand 					strand;							// strand of the last item read
+	private int	firstBasePosition = DEFAULT_FIRST_BASE_POSITION; 		// position of the first base
+	private StrandedExtractorOptions	strandOptions;					// options on the strand and read length / shift
+	private final SAMFileReader 		samReader;						// reader that read sam / bam files (from sam.jar)
+	private final SAMRecordIterator 	iterator;						// iterator in the file
+	private Chromosome 					chromosome;						// chromosome of the last item read
+	private Integer 					start;							// start position of the last item read
+	private Integer 					stop;							// stop position of the last item read
+	private Strand 						strand;							// strand of the last item read
 
 
 	/**
@@ -67,6 +70,7 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 		super(dataFile);
 		samReader = new SAMFileReader(dataFile);
 		iterator = samReader.iterator();
+		iterator.assertSorted(SortOrder.coordinate);
 	}
 
 
@@ -103,6 +107,12 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 	@Override
 	public Strand getStrand() {
 		return strand;
+	}
+
+
+	@Override
+	public StrandedExtractorOptions getStrandedExtractorOptions() {
+		return strandOptions;
 	}
 
 
@@ -143,7 +153,7 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 		chromosome = projectChromosomes.get(samRecord.getReferenceName());
 		start = samRecord.getAlignmentStart();
 		stop = start + samRecord.getReadLength();
-		if (samRecord.getReadPairedFlag() && samRecord.getProperPairFlag() && !samRecord.getMateUnmappedFlag()) {
+		if (samRecord.getReadPairedFlag() && samRecord.getProperPairFlag() && !samRecord.getMateUnmappedFlag() && (samRecord.getInferredInsertSize() > 0)) {
 			stop += samRecord.getInferredInsertSize();
 		}
 		strand = samRecord.getReadNegativeStrandFlag() ? Strand.THREE : Strand.FIVE;
@@ -152,25 +162,29 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 
 	@Override
 	public boolean readItem() throws IOException {
-		SAMRecord samRecord = null;
-		boolean isValidRecord = false;
-		while (iterator.hasNext() && !isValidRecord) {
-			samRecord = iterator.next();
-			isValidRecord = isValidRecord(samRecord);
-		}
-		if (iterator.hasNext()) {
-			processSamRecord(samRecord);
+		try {
+			SAMRecord samRecord = null;
+			boolean isValidRecord = false;
+			while (iterator.hasNext() && !isValidRecord) {
+				samRecord = iterator.next();
+				isValidRecord = isValidRecord(samRecord);
+			}
+			if (iterator.hasNext()) {
+				processSamRecord(samRecord);
+				return true;
+			} else {
+				return false;
+			}
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
 			return true;
-		} else {
-			return false;
 		}
 	}
 
 
 	@Override
 	protected String retrieveDataName(File dataFile) {
-		// TODO Auto-generated method stub
-		return null;
+		return dataFile.getName();
 	}
 
 
@@ -178,5 +192,11 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 	public void setFirstBasePosition(int firstBasePosition) {
 		this.firstBasePosition = firstBasePosition;
 
+	}
+
+
+	@Override
+	public void setStrandedExtractorOptions(StrandedExtractorOptions options) {
+		strandOptions = options;
 	}
 }

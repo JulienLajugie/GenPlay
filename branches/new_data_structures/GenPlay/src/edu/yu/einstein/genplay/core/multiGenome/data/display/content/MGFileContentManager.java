@@ -36,7 +36,7 @@ import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 
 /**
- * A {@link MGFileContentManager} represents the content of all {@link VCFFile} organized byt {@link Chromosome} and {@link MGChromosomeContent}.
+ * A {@link MGFileContentManager} represents the content of all {@link VCFFile} organized by {@link Chromosome} and {@link MGChromosomeContent}.
  * 
  * @author Nicolas Fourel
  * @version 0.1
@@ -46,7 +46,7 @@ public class MGFileContentManager implements Serializable {
 	/** Default serial version ID */
 	private static final long serialVersionUID = 4837189232012683529L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
-	private Map<VCFFile, Map<Chromosome, MGChromosomeContent>> lists;		// Maps to store all data from all files.
+	private Map<VCFFile, Map<String, MGChromosomeContent>> lists;		// Maps to store all data from all files.
 
 
 	/**
@@ -54,9 +54,9 @@ public class MGFileContentManager implements Serializable {
 	 * @param files list of {@link VCFFile};
 	 */
 	public MGFileContentManager (List<VCFFile> files) {
-		lists = new HashMap<VCFFile, Map<Chromosome,MGChromosomeContent>>();
+		lists = new HashMap<VCFFile, Map<String,MGChromosomeContent>>();
 		for (VCFFile file: files) {
-			lists.put(file, new HashMap<Chromosome, MGChromosomeContent>());
+			lists.put(file, new HashMap<String, MGChromosomeContent>());
 		}
 	}
 
@@ -67,8 +67,8 @@ public class MGFileContentManager implements Serializable {
 	public void compact () {
 		List<VCFFile> fileList = new ArrayList<VCFFile>(lists.keySet());
 		for (VCFFile file: fileList) {
-			List<Chromosome> chromosomeList = new ArrayList<Chromosome>(lists.get(file).keySet());
-			for (Chromosome chromosome: chromosomeList) {
+			List<String> chromosomeList = new ArrayList<String>(lists.get(file).keySet());
+			for (String chromosome: chromosomeList) {
 				lists.get(file).get(chromosome).compact();
 			}
 		}
@@ -82,12 +82,12 @@ public class MGFileContentManager implements Serializable {
 	 */
 	public MGChromosomeContent getContent (VCFFile file, Chromosome chromosome) {
 		if (lists.get(file) == null) {
-			lists.put(file, new HashMap<Chromosome, MGChromosomeContent>());
+			lists.put(file, new HashMap<String, MGChromosomeContent>());
 		}
-		if (lists.get(file).get(chromosome) == null) {
-			lists.get(file).put(chromosome, new MGChromosomeContent(chromosome, file.getHeader().getGenomeNames()));
+		if (lists.get(file).get(chromosome.getName()) == null) {
+			lists.get(file).put(chromosome.getName(), new MGChromosomeContent(chromosome.getName(), file.getHeader().getGenomeNames()));
 		}
-		return lists.get(file).get(chromosome);
+		return lists.get(file).get(chromosome.getName());
 	}
 
 
@@ -98,7 +98,7 @@ public class MGFileContentManager implements Serializable {
 	 */
 	public VCFFile getFile (Chromosome chromosome, MGChromosomeContent chromosomeContent) {
 		for (VCFFile file: getFileList()) {
-			MGChromosomeContent currentChromosomeContent = lists.get(file).get(chromosome);
+			MGChromosomeContent currentChromosomeContent = lists.get(file).get(chromosome.getName());
 			if ((currentChromosomeContent != null) && currentChromosomeContent.equals(chromosomeContent)) {
 				return file;
 			}
@@ -124,7 +124,7 @@ public class MGFileContentManager implements Serializable {
 	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		lists = (Map<VCFFile, Map<Chromosome, MGChromosomeContent>>) in.readObject();
+		lists = (Map<VCFFile, Map<String, MGChromosomeContent>>) in.readObject();
 	}
 
 
@@ -135,9 +135,9 @@ public class MGFileContentManager implements Serializable {
 		List<VCFFile> fileList = new ArrayList<VCFFile>(lists.keySet());
 		for (VCFFile file: fileList) {
 			System.out.println("FILE: " + file.getFile().getName());
-			List<Chromosome> chromosomeList = new ArrayList<Chromosome>(lists.get(file).keySet());
-			for (Chromosome chromosome: chromosomeList) {
-				System.out.println("CHROMOSOME: " + chromosome.getName());
+			List<String> chromosomeList = new ArrayList<String>(lists.get(file).keySet());
+			for (String chromosome: chromosomeList) {
+				System.out.println("CHROMOSOME: " + chromosome);
 				lists.get(file).get(chromosome).show();
 			}
 		}
@@ -153,10 +153,10 @@ public class MGFileContentManager implements Serializable {
 
 		// Reset variants
 		for (VCFFile file: fileList) {
-			List<Chromosome> chromosomeList = new ArrayList<Chromosome>(lists.get(file).keySet());
-			for (Chromosome chromosome: chromosomeList) {
-				if (!chromosome.equals(currentChromosome)) {
-					MGChromosomeContent content = lists.get(file).get(currentChromosome);
+			List<String> chromosomeList = new ArrayList<String>(lists.get(file).keySet());
+			for (String chromosome: chromosomeList) {
+				if (!chromosome.equals(currentChromosome.getName())) {
+					MGChromosomeContent content = lists.get(file).get(currentChromosome.getName());
 					if (content != null) {
 						content.removeVariants();
 					}
@@ -166,7 +166,7 @@ public class MGFileContentManager implements Serializable {
 
 		// Load variants
 		for (VCFFile file: fileList) {
-			MGChromosomeContent content = lists.get(file).get(currentChromosome);
+			MGChromosomeContent content = lists.get(file).get(currentChromosome.getName());
 			if (content != null) {
 				content.generateVariants();
 			}
