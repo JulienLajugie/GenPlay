@@ -66,6 +66,15 @@ import edu.yu.einstein.genplay.gui.action.project.PASaveProject;
 import edu.yu.einstein.genplay.gui.action.project.PAWarningReport;
 import edu.yu.einstein.genplay.gui.action.project.PAZoomIn;
 import edu.yu.einstein.genplay.gui.action.project.PAZoomOut;
+import edu.yu.einstein.genplay.gui.action.track.TAAddLayer;
+import edu.yu.einstein.genplay.gui.action.track.TAAddLayerFromDAS;
+import edu.yu.einstein.genplay.gui.action.track.TACopy;
+import edu.yu.einstein.genplay.gui.action.track.TACut;
+import edu.yu.einstein.genplay.gui.action.track.TADelete;
+import edu.yu.einstein.genplay.gui.action.track.TAInsert;
+import edu.yu.einstein.genplay.gui.action.track.TAPaste;
+import edu.yu.einstein.genplay.gui.action.track.TASaveAsImage;
+import edu.yu.einstein.genplay.gui.action.track.TATrackSettings;
 import edu.yu.einstein.genplay.gui.controlPanel.ControlPanel;
 import edu.yu.einstein.genplay.gui.dialog.optionDialog.OptionDialog;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
@@ -313,6 +322,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 	 * the main menu.
 	 */
 	private void setActionMap() {
+		// Add project actions to action map
 		getRootPane().getActionMap().put(PAAbout.ACTION_KEY, new PAAbout(getRootPane()));
 		getRootPane().getActionMap().put(PAExit.ACTION_KEY, new PAExit(this));
 		getRootPane().getActionMap().put(PAFullScreen.ACTION_KEY, new PAFullScreen(this));
@@ -330,6 +340,16 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		getRootPane().getActionMap().put(PARNAPosToDNAPos.ACTION_KEY, new PARNAPosToDNAPos(this));
 		getRootPane().getActionMap().put(PAWarningReport.ACTION_KEY, new PAWarningReport(this));
 		getRootPane().getActionMap().put(PACopyCurrentPosition.ACTION_KEY, new PACopyCurrentPosition());
+		// Add track actions to action map
+		getRootPane().getActionMap().put(TAAddLayer.ACTION_KEY, new TAAddLayer());
+		getRootPane().getActionMap().put(TAAddLayerFromDAS.ACTION_KEY, new TAAddLayerFromDAS());
+		getRootPane().getActionMap().put(TACopy.ACTION_KEY, new TACopy());
+		getRootPane().getActionMap().put(TACut.ACTION_KEY, new TACut());
+		getRootPane().getActionMap().put(TAPaste.ACTION_KEY, new TAPaste());
+		getRootPane().getActionMap().put(TAInsert.ACTION_KEY, new TAInsert());
+		getRootPane().getActionMap().put(TADelete.ACTION_KEY, new TADelete());
+		getRootPane().getActionMap().put(TASaveAsImage.ACTION_KEY, new TASaveAsImage());
+		getRootPane().getActionMap().put(TATrackSettings.ACTION_KEY, new TATrackSettings());
 	}
 
 

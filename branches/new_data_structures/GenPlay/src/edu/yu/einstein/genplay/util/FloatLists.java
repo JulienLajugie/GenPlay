@@ -151,6 +151,39 @@ public class FloatLists {
 
 	/**
 	 * @param list {@link List} of Float elements
+	 * @return the multiplication of the values of the list
+	 */
+	public static float multiply(List<Float> list) {
+		return multiply(list, 0, list.size() - 1);
+	}
+
+
+	/**
+	 * Multiplies all the value of the specified list between the start index and the stop index
+	 * @param list
+	 * @param indexStart start index
+	 * @param indexStop stop index
+	 * @return the multiplication of the values of the list between start index and stop index
+	 */
+	public static float multiply(List<Float> list, int indexStart, int indexStop) {
+		if (indexStart > indexStop) {
+			return 0;
+		} else if (indexStart == indexStop) {
+			return list.get(indexStart);
+		}
+
+		float multiplication = 0;
+		int i = indexStart;
+		while ((i <= indexStop) && (i < list.size())) {
+			multiplication *= list.get(i);
+			i++;
+		}
+		return multiplication;
+	}
+
+
+	/**
+	 * @param list {@link List} of Float elements
 	 * @return the standard deviation of the values of the list
 	 */
 	public static float standardDeviation(List<Float> list) {
@@ -200,7 +233,7 @@ public class FloatLists {
 
 
 	/**
-	 * Sum all the value of the specified list between the start index and the stop index
+	 * Sums all the value of the specified list between the start index and the stop index
 	 * @param list
 	 * @param indexStart start index
 	 * @param indexStop stop index
@@ -221,5 +254,4 @@ public class FloatLists {
 		}
 		return sum;
 	}
-
 }

@@ -29,6 +29,7 @@ import java.util.concurrent.ExecutionException;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOTwoLayers;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
@@ -72,9 +73,9 @@ public class BLOTwoLayers implements Operation<SCWList> {
 
 	@Override
 	public SCWList compute() throws BinListDifferentWindowSizeException, CloneNotSupportedException, InterruptedException, ExecutionException  {
-		// make sure that the two binlists have the same size of bins
+		// if the two bin lists have different bin sizes we use the generic algorithm for SCWList
 		if (binList1.getBinSize() != binList2.getBinSize()) {
-			throw new BinListDifferentWindowSizeException();
+			return new SCWLOTwoLayers(binList1, binList2, scm).compute();
 		}
 
 		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();

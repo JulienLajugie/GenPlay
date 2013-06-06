@@ -32,6 +32,7 @@ import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLALog;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLANormalize;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLANormalizeStandardScore;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAOperationWithConstant;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAScoreDistribution;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAShowStatistics;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLATwoLayersOperation;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAConcatenate;
@@ -39,7 +40,6 @@ import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLACorrelate;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLADensity;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAFindPeaks;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAIntervalsScoring;
-import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAScoreDistribution;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLASmooth;
 import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLATransfrag;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
@@ -82,7 +82,7 @@ public class BinLayerMenu extends AbstractLayerMenu {
 				new BLAFindPeaks(),
 				new BLATransfrag(),
 				null,
-				new BLAScoreDistribution(),
+				new SCWLAScoreDistribution(),
 				new BLACorrelate(),
 				null,
 				new BLADensity(),

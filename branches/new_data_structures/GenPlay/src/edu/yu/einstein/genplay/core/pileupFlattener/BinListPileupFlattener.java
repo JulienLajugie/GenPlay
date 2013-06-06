@@ -213,38 +213,15 @@ public class BinListPileupFlattener implements PileupFlattener {
 		case AVERAGE:
 			return FloatLists.average(currentScoreList);
 		case DIVISION:
-			if (currentScoreList.isEmpty()) {
-				return 0f;
-			} else if (currentScoreList.size() == 1) {
-				return currentScoreList.get(0);
-			} else if (currentScoreList.size() == 2) {
-				return currentScoreList.get(0) / currentScoreList.get(1);
-			} else {
-				throw new UnsupportedOperationException("Division with more than two operands not supported");
-			}
+			throw new UnsupportedOperationException("Operation not supported: Division. Noncommutative operations are not supported.");
 		case MAXIMUM:
 			return FloatLists.maxNoZero(currentScoreList);
 		case MINIMUM:
 			return FloatLists.minNoZero(currentScoreList);
 		case MULTIPLICATION:
-			if (currentScoreList.isEmpty() || (currentScoreList.size() == 1)) {
-				// multiplication with a window with a score of 0
-				return 0f;
-			} else if (currentScoreList.size() == 2) {
-				return currentScoreList.get(0) * currentScoreList.get(1);
-			} else {
-				throw new UnsupportedOperationException("Multiplication with more than two operands not supported");
-			}
+			return FloatLists.multiply(currentScoreList);
 		case SUBTRACTION:
-			if (currentScoreList.isEmpty()) {
-				return 0f;
-			} else if (currentScoreList.size() == 1) {
-				return currentScoreList.get(0);
-			} else if (currentScoreList.size() == 2) {
-				return currentScoreList.get(0) - currentScoreList.get(1);
-			} else {
-				throw new UnsupportedOperationException("Subtraction with more than two operands not supported");
-			}
+			throw new UnsupportedOperationException("Operation not supported: Subtraction. Noncommutative operations are not supported.");
 		default:
 			throw new UnsupportedOperationException("Operation not supported: " + scoreOperation.name());
 		}

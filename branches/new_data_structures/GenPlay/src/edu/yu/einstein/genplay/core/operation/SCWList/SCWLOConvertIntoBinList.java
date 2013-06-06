@@ -84,7 +84,7 @@ public class SCWLOConvertIntoBinList implements Operation<BinList> {
 							if (score != 0) {
 								int start = scw.getStart();
 								int stop = scw.getStop();
-								gwFlattener.addElementToBuild(chromosome, start, stop, score);
+								gwFlattener.addWindow(chromosome, start, stop, score);
 							}
 						}
 					}

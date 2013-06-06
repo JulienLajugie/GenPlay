@@ -76,7 +76,7 @@ public class SCWListFactory {
 		BinListPileupFlattener flattenerPrototype = new BinListPileupFlattener(binSize, scoreOperation);
 		GenomeWideFlattener genomeWideFlattener = new GenomeWideFlattener(flattenerPrototype);
 		while (scwReader.readItem()) {
-			genomeWideFlattener.addElementToBuild(scwReader.getChromosome(), scwReader.getStart(), scwReader.getStop(), scwReader.getScore());
+			genomeWideFlattener.addWindow(scwReader.getChromosome(), scwReader.getStart(), scwReader.getStop(), scwReader.getScore());
 		}
 		return new BinList(genomeWideFlattener.getListOfListViews());
 	}
@@ -165,7 +165,7 @@ public class SCWListFactory {
 		PileupFlattener flattenerPrototype = new SimpleSCWPileupFlattener(scoreOperation, lvBuilderPrototype);
 		GenomeWideFlattener gwFlattener = new GenomeWideFlattener(flattenerPrototype);
 		while (scwReader.readItem()) {
-			gwFlattener.addElementToBuild(scwReader.getChromosome(), scwReader.getStart(), scwReader.getStop(), scwReader.getScore());
+			gwFlattener.addWindow(scwReader.getChromosome(), scwReader.getStart(), scwReader.getStop(), scwReader.getScore());
 		}
 		return new SimpleSCWList(gwFlattener.getListOfListViews());
 	}
@@ -198,9 +198,9 @@ public class SCWListFactory {
 		GenomeWideFlattener genomeWideFlattener3 = new GenomeWideFlattener(flattenerPrototype3);
 		while (scwReader.readItem()) {
 			if ((scwReader instanceof StrandReader) && (((StrandReader) scwReader).getStrand() == Strand.THREE)){
-				genomeWideFlattener3.addElementToBuild(scwReader.getChromosome(), scwReader.getStart(), scwReader.getStop(), scwReader.getScore());
+				genomeWideFlattener3.addWindow(scwReader.getChromosome(), scwReader.getStart(), scwReader.getStop(), scwReader.getScore());
 			} else {
-				genomeWideFlattener5.addElementToBuild(scwReader.getChromosome(), scwReader.getStart(), scwReader.getStop(), scwReader.getScore());
+				genomeWideFlattener5.addWindow(scwReader.getChromosome(), scwReader.getStart(), scwReader.getStop(), scwReader.getScore());
 			}
 		}
 		BinList binList5 = new BinList(genomeWideFlattener5.getListOfListViews());
@@ -282,9 +282,9 @@ public class SCWListFactory {
 		GenomeWideFlattener gwFlattener3 = new GenomeWideFlattener(flattenerPrototype3);
 		while (scwReader.readItem()) {
 			if ((scwReader instanceof StrandReader) && (((StrandReader) scwReader).getStrand() == Strand.THREE)){
-				gwFlattener3.addElementToBuild(scwReader.getChromosome(), scwReader.getStart(), scwReader.getStop(), scwReader.getScore());
+				gwFlattener3.addWindow(scwReader.getChromosome(), scwReader.getStart(), scwReader.getStop(), scwReader.getScore());
 			} else {
-				gwFlattener5.addElementToBuild(scwReader.getChromosome(), scwReader.getStart(), scwReader.getStop(), scwReader.getScore());
+				gwFlattener5.addWindow(scwReader.getChromosome(), scwReader.getStart(), scwReader.getStop(), scwReader.getScore());
 			}
 		}
 		SCWList scwList5 = new SimpleSCWList(gwFlattener5.getListOfListViews());

@@ -36,7 +36,8 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
 
 
 /**
- * @author Chirag Gorasia
+ * Computes the distribution of the scores of a {@link SCWList}
+ * @author Julien Lajugie
  */
 public class SCWLOScoreDistribution implements Operation<double [][][]>{
 

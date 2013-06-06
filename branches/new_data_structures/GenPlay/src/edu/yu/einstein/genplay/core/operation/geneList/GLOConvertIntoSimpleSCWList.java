@@ -81,7 +81,7 @@ public class GLOConvertIntoSimpleSCWList implements Operation<SimpleSCWList> {
 							if (score != 0) {
 								int start = scw.getStart();
 								int stop = scw.getStop();
-								gwFlattener.addElementToBuild(chromosome, start, stop, score);
+								gwFlattener.addWindow(chromosome, start, stop, score);
 							}
 						}
 					}

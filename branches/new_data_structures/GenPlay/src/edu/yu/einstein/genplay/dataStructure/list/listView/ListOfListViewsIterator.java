@@ -41,6 +41,10 @@ public class ListOfListViewsIterator<T extends Comparable<? super T>> implements
 	/** Indexes of the current element in each {@link ListView} */
 	private final int[] listViewIndexes;
 
+	/** Index of the list that returned the last next element */
+	private int lastNextListIndex;
+
+
 	/**
 	 * Creates an instance of {@link ListOfListViewsIterator}
 	 * @param listOfLV {@link List} of {@link ListView} objects for the iterator to iterate
@@ -48,6 +52,14 @@ public class ListOfListViewsIterator<T extends Comparable<? super T>> implements
 	public ListOfListViewsIterator(List<ListView<T>> listOfLV) {
 		this.listOfLV = listOfLV;
 		listViewIndexes = new int[listOfLV.size()];
+	}
+
+
+	/**
+	 * @return The index of the list that contains the last element returned by the {@link #next()} method.
+	 */
+	public int getLastNextListIndex() {
+		return lastNextListIndex;
 	}
 
 
@@ -87,6 +99,7 @@ public class ListOfListViewsIterator<T extends Comparable<? super T>> implements
 		}
 		// return the element with the smallest start position
 		listViewIndexes[indexNextList]++;
+		lastNextListIndex = indexNextList;
 		return nextPosition;
 	}
 

@@ -128,7 +128,7 @@ class SCWListStatsTableModel extends AbstractTableModel {
 
 	@Override
 	public int getRowCount() {
-		return projectChromosomes.size();
+		return projectChromosomes.size() + 1;
 	}
 
 

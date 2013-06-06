@@ -78,7 +78,7 @@ public class GenomeWideFlattener {
 	 * @throws InvalidChromosomeException
 	 * @throws ObjectAlreadyBuiltException
 	 */
-	public void addElementToBuild(Chromosome chromosome, int start, int stop, float score) throws ObjectAlreadyBuiltException {
+	public void addWindow(Chromosome chromosome, int start, int stop, float score) throws ObjectAlreadyBuiltException {
 		int chromosomeIndex = projectChromosomes.getIndex(chromosome);
 		flatteners.get(chromosomeIndex).addWindow(start, stop, score);
 	}

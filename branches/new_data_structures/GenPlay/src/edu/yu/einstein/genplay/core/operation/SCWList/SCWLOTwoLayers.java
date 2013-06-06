@@ -23,7 +23,6 @@ package edu.yu.einstein.genplay.core.operation.SCWList;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -76,7 +75,17 @@ public class SCWLOTwoLayers implements Operation<SCWList>, Stoppable {
 		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
-		SimpleSCWPileupFlattener flattenerPrototype = new SimpleSCWPileupFlattener(scoreOperation, list1.getSCWListType());
+		ScoreOperation pileupOperation;
+		if (scoreOperation == ScoreOperation.SUBTRACTION) {
+			// pileup object doesn't work with noncommutative operations so we need to transform (A - B) into A + (-B)
+			pileupOperation = ScoreOperation.ADDITION;
+		} else if (scoreOperation == ScoreOperation.DIVISION) {
+			// pileup object doesn't work with noncommutative operations so we need to transform (A / B) into A * (1 / B)
+			pileupOperation = ScoreOperation.MULTIPLICATION;
+		} else {
+			pileupOperation = scoreOperation;
+		}
+		SimpleSCWPileupFlattener flattenerPrototype = new SimpleSCWPileupFlattener(pileupOperation, list1.getSCWListType());
 		final GenomeWideFlattener gwFlattener = new GenomeWideFlattener(flattenerPrototype);
 
 		for(final Chromosome currentChromosome : projectChromosomes) {
@@ -87,10 +96,20 @@ public class SCWLOTwoLayers implements Operation<SCWList>, Stoppable {
 					List<ListView<ScoredChromosomeWindow>> listOfLV = new ArrayList<ListView<ScoredChromosomeWindow>>();
 					listOfLV.add(list1.get(currentChromosome));
 					listOfLV.add(list2.get(currentChromosome));
-					Iterator<ScoredChromosomeWindow> listOfLVIterator = new ListOfListViewsIterator<ScoredChromosomeWindow>(listOfLV);
+					ListOfListViewsIterator<ScoredChromosomeWindow> listOfLVIterator = new ListOfListViewsIterator<ScoredChromosomeWindow>(listOfLV);
 					while (listOfLVIterator.hasNext() && !stopped) {
 						ScoredChromosomeWindow currentWindow = listOfLVIterator.next();
-						gwFlattener.addWindow(currentChromosome, currentWindow);
+						int start = currentWindow.getStart();
+						int stop = currentWindow.getStop();
+						float score = currentWindow.getScore();
+						if ((scoreOperation == ScoreOperation.SUBTRACTION) && (listOfLVIterator.getLastNextListIndex() == 1)) {
+							// A - B = A + (-B)
+							score *= -1;
+						} else if ((scoreOperation == ScoreOperation.DIVISION) && (listOfLVIterator.getLastNextListIndex() == 1)) {
+							// A / B = A * (1 / B)
+							score = 1 / score;
+						}
+						gwFlattener.addWindow(currentChromosome, start, stop, score);
 					}
 					op.notifyDone();
 					return null;
