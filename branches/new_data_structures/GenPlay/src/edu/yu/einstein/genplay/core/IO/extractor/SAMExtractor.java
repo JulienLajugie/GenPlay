@@ -23,6 +23,8 @@ package edu.yu.einstein.genplay.core.IO.extractor;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.sf.samtools.SAMFileHeader.SortOrder;
 import net.sf.samtools.SAMFileReader;
@@ -60,6 +62,10 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 	private Integer 					start;							// start position of the last item read
 	private Integer 					stop;							// stop position of the last item read
 	private Strand 						strand;							// strand of the last item read
+	private final Map<String, SAMRecord> 		leftMostOfPairMap;				//
+
+
+
 
 
 	/**
@@ -71,6 +77,7 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 		samReader = new SAMFileReader(dataFile);
 		iterator = samReader.iterator();
 		iterator.assertSorted(SortOrder.coordinate);
+		leftMostOfPairMap = new HashMap<String, SAMRecord>();
 	}
 
 
@@ -118,16 +125,37 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 
 	/**
 	 * @param samRecord
+	 * @return true if the read is the leftmost one of a pair
+	 */
+	private boolean isLeftMostOfPair(SAMRecord samRecord) {
+		return !samRecord.getReadNegativeStrandFlag();
+	}
+
+
+	/**
+	 * @param samRecord
+	 * @return true if the read is paired, and the pair is valid. False otherwise.
+	 */
+	private boolean isPaired(SAMRecord samRecord) {
+		if (!samRecord.getReadPairedFlag()) {
+			return false;
+		}
+		if (!samRecord.getProperPairFlag()) {
+			return false;
+		}
+		if (samRecord.getMateUnmappedFlag()) {
+			return false;
+		}
+		return true;
+	}
+
+
+	/**
+	 * @param samRecord
 	 * @return true if the specified SAM record is valid and should be loaded. False otherwise.
 	 */
 	private boolean isValidRecord(SAMRecord samRecord) {
-		if (samRecord.getReadPairedFlag() && samRecord.getSecondOfPairFlag()) {
-			return false;
-		}
 		if (samRecord.getReadUnmappedFlag()) {
-			return false;
-		}
-		if (samRecord.getReadPairedFlag() && samRecord.getMateUnmappedFlag()) {
 			return false;
 		}
 		if (samRecord.getNotPrimaryAlignmentFlag()) {
@@ -143,20 +171,35 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 	}
 
 
+	private void printReadInfo(SAMRecord samRecord) {
+		strand = samRecord.getReadNegativeStrandFlag() ? Strand.THREE : Strand.FIVE;
+		System.out.println(samRecord.getReferenceName() + "\t" + samRecord.getAlignmentStart() + "\t" + samRecord.getAlignmentEnd()+ "\t" + samRecord.getMappingQuality() + "\t" + samRecord.getReadLength() + "\t" + strand + "\t" + samRecord.getMateAlignmentStart() + "\t" + samRecord.getInferredInsertSize());
+	}
+
+
 	/**
 	 * Process the specified {@link SAMRecord} and extract its
 	 * chromosome, start, stop and strand values
 	 * @param samRecord
 	 */
 	private void processSamRecord(SAMRecord samRecord) {
+		if (isPaired(samRecord)) {
+			if (isLeftMostOfPair(samRecord)) {
+				leftMostOfPairMap.put(samRecord.getReadName(), samRecord);
+			} else {
+				SAMRecord leftMostOfPair = leftMostOfPairMap.get(samRecord.getReadName());
+				if (leftMostOfPair != null) {
+					//printReadInfo(leftMostOfPair);
+					//printReadInfo(samRecord);
+					leftMostOfPairMap.remove(samRecord.getReadName());
+				}
+			}
+		}
+
 		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
 		chromosome = projectChromosomes.get(samRecord.getReferenceName());
 		start = samRecord.getAlignmentStart();
-		stop = start + samRecord.getReadLength();
-		if (samRecord.getReadPairedFlag() && samRecord.getProperPairFlag() && !samRecord.getMateUnmappedFlag() && (samRecord.getInferredInsertSize() > 0)) {
-			stop += samRecord.getInferredInsertSize();
-		}
-		strand = samRecord.getReadNegativeStrandFlag() ? Strand.THREE : Strand.FIVE;
+		stop = start + samRecord.getInferredInsertSize() + 1;
 	}
 
 
@@ -173,6 +216,7 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 				processSamRecord(samRecord);
 				return true;
 			} else {
+				System.out.println("Read not process=" + leftMostOfPairMap.size());
 				return false;
 			}
 		} catch (IllegalStateException e) {
