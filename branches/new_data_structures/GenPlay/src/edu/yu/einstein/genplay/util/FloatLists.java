@@ -169,10 +169,10 @@ public class FloatLists {
 		if (indexStart > indexStop) {
 			return 0;
 		} else if (indexStart == indexStop) {
-			return list.get(indexStart);
+			return 0;
 		}
 
-		float multiplication = 0;
+		float multiplication = 1;
 		int i = indexStart;
 		while ((i <= indexStop) && (i < list.size())) {
 			multiplication *= list.get(i);
