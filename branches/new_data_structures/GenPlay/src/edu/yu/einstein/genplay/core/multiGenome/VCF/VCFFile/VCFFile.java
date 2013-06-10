@@ -328,7 +328,7 @@ public class VCFFile implements Serializable {
 				//VCFLine line = new VCFLine(null, null);
 				for (int i = 0; i < results.size(); i++) {
 					//line.initialize(results.get(i), null);
-					positionList.set(i, results.get(i).getReferencePosition());
+					positionList.add(results.get(i).getReferencePosition());
 				}
 			} else {
 				positionList = new PrimitiveList<Integer>(Integer.class, 0);

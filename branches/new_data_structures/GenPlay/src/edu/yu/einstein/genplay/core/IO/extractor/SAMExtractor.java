@@ -54,15 +54,15 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 	 * */
 	public static final int DEFAULT_FIRST_BASE_POSITION = 1;
 
-	private int	firstBasePosition = DEFAULT_FIRST_BASE_POSITION; 		// position of the first base
-	private StrandedExtractorOptions	strandOptions;					// options on the strand and read length / shift
-	private final SAMFileReader 		samReader;						// reader that read sam / bam files (from sam.jar)
-	private final SAMRecordIterator 	iterator;						// iterator in the file
-	private Chromosome 					chromosome;						// chromosome of the last item read
-	private Integer 					start;							// start position of the last item read
-	private Integer 					stop;							// stop position of the last item read
-	private Strand 						strand;							// strand of the last item read
-	private final Map<String, SAMRecord> 		leftMostOfPairMap;				//
+	private int	firstBasePosition = DEFAULT_FIRST_BASE_POSITION; 			// position of the first base
+	private StrandedExtractorOptions		strandOptions;					// options on the strand and read length / shift
+	private final SAMFileReader 			samReader;						// reader that read sam / bam files (from sam.jar)
+	private final SAMRecordIterator 		iterator;						// iterator in the file
+	private Chromosome 						chromosome;						// chromosome of the last item read
+	private Integer 						start;							// start position of the last item read
+	private Integer 						stop;							// stop position of the last item read
+	private Strand 							strand;							// strand of the last item read
+	private final Map<String, SAMRecord> 	leftMostOfPairMap;				//
 
 
 
@@ -182,31 +182,26 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 	 * chromosome, start, stop and strand values
 	 * @param samRecord
 	 */
-	private void processSamRecord(SAMRecord samRecord) {
+	private boolean processSamRecord(SAMRecord samRecord) {
 		if (isPaired(samRecord)) {
 			if (isLeftMostOfPair(samRecord)) {
 				leftMostOfPairMap.put(samRecord.getReadName(), samRecord);
 			} else {
 				SAMRecord leftMostOfPair = leftMostOfPairMap.get(samRecord.getReadName());
 				if (leftMostOfPair != null) {
-					//printReadInfo(leftMostOfPair);
-					//printReadInfo(samRecord);
-					//int length = leftMostOfPair.getAlignmentStart() - samRecord.getAlignmentEnd();
-					//int insert = leftMostOfPair.getInferredInsertSize();
-					//System.out.println(length + "-" + insert);
+					ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
+					chromosome = projectChromosomes.get(samRecord.getReferenceName());
+					start = leftMostOfPair.getAlignmentStart();
+					stop = samRecord.getAlignmentEnd() + 1;
+					System.out.println((stop - start) + "  --- " + (leftMostOfPair.getInferredInsertSize() + 1));
+					strand = leftMostOfPair.getFirstOfPairFlag() ? Strand.FIVE : Strand.THREE;
 					leftMostOfPairMap.remove(samRecord.getReadName());
-
-					if (samRecord.getMappingQuality() != 60) {
-						System.out.println(leftMostOfPair.getMappingQuality() + " - " + samRecord.getMappingQuality());
-					}
+					return true;
 				}
 			}
 		}
+		return false;
 
-		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
-		chromosome = projectChromosomes.get(samRecord.getReferenceName());
-		start = samRecord.getAlignmentStart();
-		stop = start + samRecord.getInferredInsertSize();
 	}
 
 
@@ -217,21 +212,9 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 			boolean isValidRecord = false;
 			while (iterator.hasNext() && !isValidRecord) {
 				samRecord = iterator.next();
-				isValidRecord = isValidRecord(samRecord);
+				isValidRecord = isValidRecord(samRecord) && processSamRecord(samRecord);
 			}
-			if (iterator.hasNext()) {
-				processSamRecord(samRecord);
-				return true;
-			} else {
-				System.out.println("Read not process=" + leftMostOfPairMap.size());
-				for (SAMRecord record: leftMostOfPairMap.values()) {
-					printReadInfo(record);
-
-				}
-
-
-				return false;
-			}
+			return iterator.hasNext();
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
 			return true;

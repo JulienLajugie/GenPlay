@@ -38,10 +38,10 @@ public final class ProjectConfiguration implements Serializable {
 	private static final String DEFAULT_RECENT_PROJECT_FILE_NAME = "GenPlayProjects.txt"; 	// the default log file name
 	private static final String DEFAULT_DAS_SERVER_FILE_NAME 	= "DASServerList.xml"; 	// the default log file name
 	private final static String DEFAULT_DAS_SERVER_PATH =
-			"edu/yu/einstein/genplay/resource/DASServerList.xml"; 				// DAS Server List file path
+			"edu/yu/einstein/genplay/resource/DAS/DASServerList.xml"; 		// DAS Server List file path
 	private static final String DEFAULT_DEFAULT_DIRECTORY = ""; 			// default directory
 	private static final String DEFAULT_LOOK_AND_FEEL =
-			"javax.swing.plaf.metal.MetalLookAndFeel";							// default look and feel
+			"javax.swing.plaf.metal.MetalLookAndFeel";						// default look and feel
 
 	private static final int DEFAULT_TRACK_COUNT 	= 50; 					// default number of track
 	private static final int DEFAULT_TRACK_HEIGHT 	= 100; 					// default track height
