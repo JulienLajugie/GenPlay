@@ -173,7 +173,7 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 
 	private void printReadInfo(SAMRecord samRecord) {
 		strand = samRecord.getReadNegativeStrandFlag() ? Strand.THREE : Strand.FIVE;
-		System.out.println(samRecord.getReferenceName() + "\t" + samRecord.getAlignmentStart() + "\t" + samRecord.getAlignmentEnd()+ "\t" + samRecord.getMappingQuality() + "\t" + samRecord.getReadLength() + "\t" + strand + "\t" + samRecord.getMateAlignmentStart() + "\t" + samRecord.getInferredInsertSize());
+		System.out.println(samRecord.getReadName() + "\t" + samRecord.getReferenceName() + "\t" + samRecord.getAlignmentStart() + "\t" + samRecord.getAlignmentEnd()+ "\t" + samRecord.getMappingQuality() + "\t" + samRecord.getReadLength() + "\t" + strand + "\t" + samRecord.getMateAlignmentStart() + "\t" + samRecord.getInferredInsertSize());
 	}
 
 
@@ -191,7 +191,14 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 				if (leftMostOfPair != null) {
 					//printReadInfo(leftMostOfPair);
 					//printReadInfo(samRecord);
+					//int length = leftMostOfPair.getAlignmentStart() - samRecord.getAlignmentEnd();
+					//int insert = leftMostOfPair.getInferredInsertSize();
+					//System.out.println(length + "-" + insert);
 					leftMostOfPairMap.remove(samRecord.getReadName());
+
+					if (samRecord.getMappingQuality() != 60) {
+						System.out.println(leftMostOfPair.getMappingQuality() + " - " + samRecord.getMappingQuality());
+					}
 				}
 			}
 		}
@@ -199,7 +206,7 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
 		chromosome = projectChromosomes.get(samRecord.getReferenceName());
 		start = samRecord.getAlignmentStart();
-		stop = start + samRecord.getInferredInsertSize() + 1;
+		stop = start + samRecord.getInferredInsertSize();
 	}
 
 
@@ -217,6 +224,12 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 				return true;
 			} else {
 				System.out.println("Read not process=" + leftMostOfPairMap.size());
+				for (SAMRecord record: leftMostOfPairMap.values()) {
+					printReadInfo(record);
+
+				}
+
+
 				return false;
 			}
 		} catch (IllegalStateException e) {
