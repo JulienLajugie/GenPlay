@@ -71,17 +71,17 @@ public class InvalidFileDialog extends JDialog {
 	public static final 	int 			CANCEL_OPTION 			= 1;
 
 	private 				int				approved 				= CANCEL_OPTION;								// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
-	private final 				int				inset					= 10;				// unique inset used
+	private final 			int				inset					= 10;				// unique inset used
 	private					int				dialogWidth;								// width of the dialog
 	private					int				dialogHeight;								// height of the dialog
-	private final					int				titlePanelHeight		= 40;				// height of the title panel
+	private final			int				titlePanelHeight		= 40;				// height of the title panel
 	private					int				filePanelHeight;							// height of the file selection panel
-	private final					int				validationPanelHeight	= 40;				// height of the validation panel
-	private final					int				lineHeight				= 20;				// height of a line in the file selection panel
+	private final			int				validationPanelHeight	= 40;				// height of the validation panel
+	private final			int				lineHeight				= 20;				// height of a line in the file selection panel
 
 	private JPanel 					filePanel;											// the file selection panel
 	private JPanel 					validationPanel;									// the validation panel
-	private final String[] 				files;												// the input files
+	private final String[] 			files;												// the input files
 	private CustomFileComboBox[] 	correctedFiles;										// the array of combo box containing the corrected files
 
 
@@ -112,19 +112,6 @@ public class InvalidFileDialog extends JDialog {
 
 
 	/**
-	 * Shows the component.
-	 * @param parent the parent component of the dialog, can be null; see showDialog for details
-	 * @return APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
-	 */
-	public int showDialog(Component parent) {
-		setModalityType(ModalityType.APPLICATION_MODAL);
-		setLocationRelativeTo(parent);
-		setVisible(true);
-		return approved;
-	}
-
-
-	/**
 	 * Closes the VCF loader dialog
 	 */
 	public void closeDialog () {
@@ -133,18 +120,20 @@ public class InvalidFileDialog extends JDialog {
 
 
 	/**
-	 * @return the upper panel with the description of the dialog
+	 * @return the array of corrected paths
 	 */
-	private JPanel getTitlePanel () {
-		JPanel panel = new JPanel();
-		FlowLayout layout = new FlowLayout(FlowLayout.LEFT, inset, 0);
-		panel.setLayout(layout);
-		JLabel titleLabel = new JLabel("<html>Some files have been moved,<br>please select the new paths.</html>");
-		Dimension titleLabelDimension = new Dimension(dialogWidth, titlePanelHeight);
-		titleLabel.setPreferredSize(titleLabelDimension);
-		titleLabel.setMinimumSize(titleLabelDimension);
-		panel.add(titleLabel);
-		return panel;
+	public String[] getCorrectedPaths () {
+		String[] correctedPaths = new String[files.length];
+
+		for (int i = 0; i < correctedFiles.length; i++) {
+			if ((correctedFiles != null) && !correctedFiles[i].getSelectedItem().equals(CustomComboBox.ADD_TEXT)) {
+				correctedPaths[i] = ((File) correctedFiles[i].getSelectedItem()).getPath();
+			} else {
+				correctedPaths[i] = null;
+			}
+		}
+
+		return correctedPaths;
 	}
 
 
@@ -200,6 +189,39 @@ public class InvalidFileDialog extends JDialog {
 
 
 	/**
+	 * @return the longest path length
+	 */
+	private int getMaxLength () {
+		int result = 0;
+		JPanel p = new JPanel();
+		FontMetrics fm = getFontMetrics(p.getFont());
+		for (String path: files) {
+			int pathLength = fm.stringWidth(path);
+			if (pathLength > result) {
+				result = pathLength;
+			}
+		}
+		return result;
+	}
+
+
+	/**
+	 * @return the upper panel with the description of the dialog
+	 */
+	private JPanel getTitlePanel () {
+		JPanel panel = new JPanel();
+		FlowLayout layout = new FlowLayout(FlowLayout.LEFT, inset, 0);
+		panel.setLayout(layout);
+		JLabel titleLabel = new JLabel("<html>Some files have been moved,<br>please select the new paths.</html>");
+		Dimension titleLabelDimension = new Dimension(dialogWidth, titlePanelHeight);
+		titleLabel.setPreferredSize(titleLabelDimension);
+		titleLabel.setMinimumSize(titleLabelDimension);
+		panel.add(titleLabel);
+		return panel;
+	}
+
+
+	/**
 	 * The validation panel contains ok and cancel buttons
 	 * @param dimension dimension of the panel
 	 * @return			the panel
@@ -247,20 +269,15 @@ public class InvalidFileDialog extends JDialog {
 
 
 	/**
-	 * @return the array of corrected paths
+	 * Shows the component.
+	 * @param parent the parent component of the dialog, can be null; see showDialog for details
+	 * @return APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
 	 */
-	public String[] getCorrectedPaths () {
-		String[] correctedPaths = new String[files.length];
-
-		for (int i = 0; i < correctedFiles.length; i++) {
-			if ((correctedFiles != null) && !correctedFiles[i].getSelectedItem().equals(CustomComboBox.ADD_TEXT)) {
-				correctedPaths[i] = ((File) correctedFiles[i].getSelectedItem()).getPath();
-			} else {
-				correctedPaths[i] = null;
-			}
-		}
-
-		return correctedPaths;
+	public int showDialog(Component parent) {
+		setModalityType(ModalityType.APPLICATION_MODAL);
+		setLocationRelativeTo(parent);
+		setVisible(true);
+		return approved;
 	}
 
 
@@ -272,23 +289,6 @@ public class InvalidFileDialog extends JDialog {
 		int numberOfLines = files.length * 2;
 		filePanelHeight = (lineHeight + (2 * inset)) * numberOfLines;
 		dialogHeight = titlePanelHeight + filePanelHeight + validationPanelHeight;
-	}
-
-
-	/**
-	 * @return the longest path length
-	 */
-	private int getMaxLength () {
-		int result = 0;
-		JPanel p = new JPanel();
-		FontMetrics fm = getFontMetrics(p.getFont());
-		for (String path: files) {
-			int pathLength = fm.stringWidth(path);
-			if (pathLength > result) {
-				result = pathLength;
-			}
-		}
-		return result;
 	}
 
 }

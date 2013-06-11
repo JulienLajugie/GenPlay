@@ -159,7 +159,7 @@ public final class PAInitManagers extends AbstractAction {
 									if (!projectInformation.isSingleProject()) {
 										JOptionPane.showMessageDialog(null, "You are about to load a Multi Genome Project but some files have been moved.\n" +
 												"The next window will allow you to define their new location.\n" +
-												"Please remind that .gz and .gz.tbi files must have the same name and location.");
+												"Please keep in mind that .gz and .gz.tbi files must have the same name and location.");
 									}
 
 									InvalidFileDialog invalidFileDialog = new InvalidFileDialog(invalidPaths);
@@ -208,18 +208,10 @@ public final class PAInitManagers extends AbstractAction {
 
 
 	/**
-	 * @param file the file to set
+	 * @return the error message
 	 */
-	public void setFile(File file) {
-		this.file = file;
-	}
-
-
-	/**
-	 * @param inputStream the inputStream to set
-	 */
-	public void setInputStream(InputStream inputStream) {
-		this.inputStream = inputStream;
+	public String getErrorMessage () {
+		return error;
 	}
 
 
@@ -228,16 +220,6 @@ public final class PAInitManagers extends AbstractAction {
 	 */
 	public InputStream getInputStream() {
 		return inputStream;
-	}
-
-
-	private boolean hasInvalidFiles () {
-		for (int i = 0; i < invalidPaths.length; i++) {
-			if (invalidPaths[i] != null) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 
@@ -277,6 +259,27 @@ public final class PAInitManagers extends AbstractAction {
 
 
 	/**
+	 * @return true if the managers have been initialized, false otherwise
+	 */
+	public boolean hasBeenInitialized () {
+		if (error == null) {
+			return true;
+		}
+		return false;
+	}
+
+
+	private boolean hasInvalidFiles () {
+		for (int i = 0; i < invalidPaths.length; i++) {
+			if (invalidPaths[i] != null) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	/**
 	 * @param path file path
 	 * @return true if the file is valid
 	 */
@@ -284,25 +287,6 @@ public final class PAInitManagers extends AbstractAction {
 		if (path != null) {
 			File file = new File(path);
 			return file.exists();
-		}
-		return false;
-	}
-
-
-	/**
-	 * @return the error message
-	 */
-	public String getErrorMessage () {
-		return error;
-	}
-
-
-	/**
-	 * @return true if the managers have been initialized, false otherwise
-	 */
-	public boolean hasBeenInitialized () {
-		if (error == null) {
-			return true;
 		}
 		return false;
 	}
@@ -347,6 +331,22 @@ public final class PAInitManagers extends AbstractAction {
 			}
 		}
 		return false;
+	}
+
+
+	/**
+	 * @param file the file to set
+	 */
+	public void setFile(File file) {
+		this.file = file;
+	}
+
+
+	/**
+	 * @param inputStream the inputStream to set
+	 */
+	public void setInputStream(InputStream inputStream) {
+		this.inputStream = inputStream;
 	}
 
 

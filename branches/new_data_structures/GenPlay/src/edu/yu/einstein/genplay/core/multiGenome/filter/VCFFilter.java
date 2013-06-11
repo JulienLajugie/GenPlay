@@ -93,9 +93,9 @@ public class VCFFilter extends MGFilter implements Serializable {
 		vcfFile.initializePositionList(ProjectManager.getInstance().getProjectWindow().getGenomeWindow().getChromosome(), results);
 		if (results != null) {
 			booleanList = new PrimitiveList<Boolean>(Boolean.class, vcfFile.getPositionList().size());
-			for (int i = 0; i < results.size(); i++) {
-				boolean valid = filter.isValid(results.get(i));
-				booleanList.set(i, valid);
+			for (VCFLine currentVcfLine: results) {
+				boolean valid = filter.isValid(currentVcfLine);
+				booleanList.add(valid);
 			}
 		}
 	}

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -49,7 +49,29 @@ import java.io.File;
  */
 public class ProjectFiles {
 
+	/** Separator on windows platforms */
+	private final static char WINDOWS_FILE_SEPARATOR = '\\';
+
+	/** Separator on Unix platforms */
+	private final static char UNIX_FILE_SEPARATOR = '/';
+
 	private static	ProjectFiles	instance = null;		// unique instance of the singleton
+
+
+	/**
+	 * @return an instance of a {@link ProjectFiles}.
+	 * Makes sure that there is only one unique instance as specified in the singleton pattern
+	 */
+	public static ProjectFiles getInstance() {
+		if (instance == null) {
+			synchronized(ProjectFiles.class) {
+				if (instance == null) {
+					instance = new ProjectFiles();
+				}
+			}
+		}
+		return instance;
+	}
 
 	private String[] currentFiles;	// current or old files, these are the ones supposed to be used if no new file defined
 	private String[] newFiles;		// if the current files are not valid, here are the ones selected by the user
@@ -64,55 +86,45 @@ public class ProjectFiles {
 	}
 
 
-	/**
-	 * @return an instance of a {@link ProjectFiles}. 
-	 * Makes sure that there is only one unique instance as specified in the singleton pattern
-	 */
-	public static ProjectFiles getInstance() {
-		if (instance == null) {
-			synchronized(ProjectFiles.class) {
-				if (instance == null) {
-					instance = new ProjectFiles();
-				}
-			}
-		}
-		return instance;
+	private String createPlatformIndependantFileName(String path) {
+		return path.replace(WINDOWS_FILE_SEPARATOR, UNIX_FILE_SEPARATOR);
+
 	}
 
 
 	/**
-	 * @return true if the project is file dependant, false otherwise
+	 * @return the oldFiles
 	 */
-	public boolean isFileDependant () {
-		if (currentFiles == null) {
-			return false;
-		} else {
-			return true;
-		}
+	public String[] getCurrentFiles() {
+		return currentFiles;
 	}
 
 
 	/**
-	 * Get the path of this path, it means that if a new one has been given for this path, it will be used!
-	 * If no path has been define, it will return the same path.
-	 * @param path 	the path
-	 * @return		the valid path (if defined, the same otherwise)
+	 * @return the newFiles
 	 */
-	public String getValidPathOf (String path) {
-		if (currentFiles == null || newFiles == null) {
-			return path;
-		}
-		int oldPathIndex = -1;
-		for (int i = 0; i < currentFiles.length; i++) {
-			if (currentFiles[i].equals(path)) {
-				oldPathIndex = i;
-				break;
+	public String[] getNewFiles() {
+		return newFiles;
+	}
+
+
+	/**
+	 * Creates the array containing valid file paths.
+	 * The new paths are used by default, if one is missing the current path is used.
+	 * @return the array of the most recent set of path
+	 */
+	public String[] getValidArrayOfFiles () {
+		String[] array = new String[currentFiles.length];
+
+		for (int i = 0; i < array.length; i++) {
+			if ((newFiles != null) && (newFiles[i] != null)) {
+				array[i] = newFiles[i];
+			} else {
+				array[i] = currentFiles[i];
 			}
 		}
-		if (oldPathIndex >= 0) {
-			return newFiles[oldPathIndex];
-		}
-		return path;
+
+		return array;
 	}
 
 
@@ -134,10 +146,40 @@ public class ProjectFiles {
 
 
 	/**
-	 * @return the oldFiles
+	 * Get the path of this path, it means that if a new one has been given for this path, it will be used!
+	 * If no path has been define, it will return the same path.
+	 * @param path 	the path
+	 * @return		the valid path (if defined, the same otherwise)
 	 */
-	public String[] getCurrentFiles() {
-		return currentFiles;
+	public String getValidPathOf (String path) {
+		if ((currentFiles == null) || (newFiles == null)) {
+			return path;
+		}
+		int oldPathIndex = -1;
+		for (int i = 0; i < currentFiles.length; i++) {
+			path = createPlatformIndependantFileName(path);
+			String currentFile = createPlatformIndependantFileName(currentFiles[i]);
+			if (currentFile.equals(path)) {
+				oldPathIndex = i;
+				break;
+			}
+		}
+		if (oldPathIndex >= 0) {
+			return newFiles[oldPathIndex];
+		}
+		return path;
+	}
+
+
+	/**
+	 * @return true if the project is file dependant, false otherwise
+	 */
+	public boolean isFileDependant () {
+		if (currentFiles == null) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 
@@ -150,38 +192,9 @@ public class ProjectFiles {
 
 
 	/**
-	 * @return the newFiles
-	 */
-	public String[] getNewFiles() {
-		return newFiles;
-	}
-
-
-	/**
 	 * @param newFiles the newFiles to set
 	 */
 	public void setNewFiles(String[] newFiles) {
 		this.newFiles = newFiles;
 	}
-
-
-	/**
-	 * Creates the array containing valid file paths.
-	 * The new paths are used by default, if one is missing the current path is used.
-	 * @return the array of the most recent set of path
-	 */
-	public String[] getValidArrayOfFiles () {
-		String[] array = new String[currentFiles.length];
-
-		for (int i = 0; i < array.length; i++) {
-			if (newFiles != null && newFiles[i] != null) {
-				array[i] = newFiles[i];
-			} else {
-				array[i] = currentFiles[i];
-			}
-		}
-
-		return array;
-	}
-
 }
