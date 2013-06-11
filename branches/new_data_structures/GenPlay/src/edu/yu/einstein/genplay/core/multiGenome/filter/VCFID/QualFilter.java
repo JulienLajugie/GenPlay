@@ -33,12 +33,11 @@ import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.filter.utils.FilterUtility;
 import edu.yu.einstein.genplay.core.multiGenome.filter.utils.FormatFilterOperatorType;
 import edu.yu.einstein.genplay.core.multiGenome.filter.utils.NumberUtility;
-import edu.yu.einstein.genplay.dataStructure.enums.InequalityOperators;
+import edu.yu.einstein.genplay.dataStructure.enums.ComparisonOperators;
 import edu.yu.einstein.genplay.dataStructure.enums.VCFColumnName;
 
 /**
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class QualFilter implements NumberIDFilterInterface, Serializable {
 
@@ -48,45 +47,11 @@ public class QualFilter implements NumberIDFilterInterface, Serializable {
 
 	private FilterUtility			utility;
 	private VCFHeaderType			header;
-	private InequalityOperators		inequation01;
-	private InequalityOperators 	inequation02;
+	private ComparisonOperators		inequation01;
+	private ComparisonOperators 	inequation02;
 	private Float 					value01;
 	private Float 					value02;
 	private boolean					cumulative;
-
-
-	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(header);
-		out.writeObject(inequation01);
-		out.writeObject(inequation02);
-		out.writeFloat(value01);
-		out.writeFloat(value02);
-		out.writeBoolean(cumulative);
-	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		header = (VCFHeaderType) in.readObject();
-		inequation01 = (InequalityOperators) in.readObject();
-		inequation02 = (InequalityOperators) in.readObject();
-		value01 = in.readFloat();
-		value02 = in.readFloat();
-		cumulative = in.readBoolean();
-		utility = new NumberUtility();
-	}
 
 
 	/**
@@ -98,92 +63,8 @@ public class QualFilter implements NumberIDFilterInterface, Serializable {
 
 
 	@Override
-	public VCFHeaderType getHeaderType() {
-		return header;
-	}
-
-
-	@Override
-	public void setHeaderType(VCFHeaderType id) {
-		this.header = id;
-	}
-
-
-	@Override
-	public InequalityOperators getInequation01() {
-		return inequation01;
-	}
-
-
-	@Override
-	public void setInequation01(InequalityOperators inequation01) {
-		this.inequation01 = inequation01;
-	}
-
-
-	@Override
-	public InequalityOperators getInequation02() {
-		return inequation02;
-	}
-
-
-	@Override
-	public void setInequation02(InequalityOperators inequation02) {
-		this.inequation02 = inequation02;
-	}
-
-
-	@Override
-	public Float getValue01() {
-		return value01;
-	}
-
-
-	@Override
-	public void setValue01(Float value01) {
-		this.value01 = value01;
-	}
-
-
-	@Override
-	public Float getValue02() {
-		return value02;
-	}
-
-
-	@Override
-	public void setValue02(Float value02) {
-		this.value02 = value02;
-	}
-
-
-	@Override
-	public String toStringForDisplay() {
-		return utility.toStringForDisplay(this);
-	}
-
-
-	@Override
-	public String getErrors() {
-		return utility.getErrors(this);
-	}
-
-
-	@Override
 	public boolean equals(Object obj) {
 		return utility.equals(this, obj);
-	}
-
-
-	@Override
-	public boolean isValid(VCFLine line) {
-		return utility.isValid(this, line);
-	}
-
-
-	@Override
-	public boolean isValid(Variant variant) {
-		return false;
 	}
 
 
@@ -194,34 +75,8 @@ public class QualFilter implements NumberIDFilterInterface, Serializable {
 
 
 	@Override
-	public void setCumulative(boolean cumulative) {
-		this.cumulative = cumulative;
-	}
-
-
-	@Override
-	public boolean isCumulative() {
-		return cumulative;
-	}
-
-
-	@Override
-	public void setGenomeNames(List<String> genomeNames) {}
-
-
-	@Override
-	public List<String> getGenomeNames() {
-		return null;
-	}
-
-
-	@Override
-	public void setOperator(FormatFilterOperatorType operator) {}
-
-
-	@Override
-	public FormatFilterOperatorType getOperator() {
-		return null;
+	public String getDescription() {
+		return "Filter for the QUAL field.";
 	}
 
 
@@ -239,13 +94,157 @@ public class QualFilter implements NumberIDFilterInterface, Serializable {
 
 
 	@Override
+	public String getErrors() {
+		return utility.getErrors(this);
+	}
+
+
+	@Override
+	public List<String> getGenomeNames() {
+		return null;
+	}
+
+
+	@Override
+	public VCFHeaderType getHeaderType() {
+		return header;
+	}
+
+
+	@Override
+	public ComparisonOperators getInequation01() {
+		return inequation01;
+	}
+
+
+	@Override
+	public ComparisonOperators getInequation02() {
+		return inequation02;
+	}
+
+
+	@Override
 	public String getName() {
 		return "QUAL: Quality value";
 	}
 
 
 	@Override
-	public String getDescription() {
-		return "Filter for the QUAL field.";
+	public FormatFilterOperatorType getOperator() {
+		return null;
+	}
+
+
+	@Override
+	public Float getValue01() {
+		return value01;
+	}
+
+
+	@Override
+	public Float getValue02() {
+		return value02;
+	}
+
+
+	@Override
+	public boolean isCumulative() {
+		return cumulative;
+	}
+
+
+	@Override
+	public boolean isValid(Variant variant) {
+		return false;
+	}
+
+
+	@Override
+	public boolean isValid(VCFLine line) {
+		return utility.isValid(this, line);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		header = (VCFHeaderType) in.readObject();
+		inequation01 = (ComparisonOperators) in.readObject();
+		inequation02 = (ComparisonOperators) in.readObject();
+		value01 = in.readFloat();
+		value02 = in.readFloat();
+		cumulative = in.readBoolean();
+		utility = new NumberUtility();
+	}
+
+
+	@Override
+	public void setCumulative(boolean cumulative) {
+		this.cumulative = cumulative;
+	}
+
+
+	@Override
+	public void setGenomeNames(List<String> genomeNames) {}
+
+
+	@Override
+	public void setHeaderType(VCFHeaderType id) {
+		header = id;
+	}
+
+
+	@Override
+	public void setInequation01(ComparisonOperators inequation01) {
+		this.inequation01 = inequation01;
+	}
+
+
+	@Override
+	public void setInequation02(ComparisonOperators inequation02) {
+		this.inequation02 = inequation02;
+	}
+
+
+	@Override
+	public void setOperator(FormatFilterOperatorType operator) {}
+
+
+	@Override
+	public void setValue01(Float value01) {
+		this.value01 = value01;
+	}
+
+
+	@Override
+	public void setValue02(Float value02) {
+		this.value02 = value02;
+	}
+
+
+	@Override
+	public String toStringForDisplay() {
+		return utility.toStringForDisplay(this);
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(header);
+		out.writeObject(inequation01);
+		out.writeObject(inequation02);
+		out.writeFloat(value01);
+		out.writeFloat(value02);
+		out.writeBoolean(cumulative);
 	}
 }

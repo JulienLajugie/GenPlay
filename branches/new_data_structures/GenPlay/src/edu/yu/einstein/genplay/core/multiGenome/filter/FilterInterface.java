@@ -31,9 +31,12 @@ import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 public interface FilterInterface {
 
 	/**
-	 * @return the name of the filter
+	 * Equals method
+	 * @param obj
+	 * @return true if the parameter is equal to the instance
 	 */
-	public String getName ();
+	@Override
+	public boolean equals(Object obj);
 
 
 	/**
@@ -43,10 +46,9 @@ public interface FilterInterface {
 
 
 	/**
-	 * Gives a string for display use of the filter
-	 * @return a string
+	 * @return a duplicate of the current object
 	 */
-	public String toStringForDisplay ();
+	public FilterInterface getDuplicate ();
 
 
 	/**
@@ -57,11 +59,9 @@ public interface FilterInterface {
 
 
 	/**
-	 * Checks if the object (purpose of the filter) is valid according to the filter
-	 * @param line the line of a VCF
-	 * @return true if it is valid, false otherwise;
+	 * @return the name of the filter
 	 */
-	public boolean isValid (VCFLine line);
+	public String getName ();
 
 
 	/**
@@ -73,17 +73,17 @@ public interface FilterInterface {
 
 
 	/**
-	 * Equals method
-	 * @param obj
-	 * @return true if the parameter is equal to the instance
+	 * Checks if the object (purpose of the filter) is valid according to the filter
+	 * @param line the line of a VCF
+	 * @return true if it is valid, false otherwise;
 	 */
-	@Override
-	public boolean equals(Object obj);
+	public boolean isValid (VCFLine line);
 
 
 	/**
-	 * @return a duplicate of the current object
+	 * Gives a string for display use of the filter
+	 * @return a string
 	 */
-	public FilterInterface getDuplicate ();
+	public String toStringForDisplay ();
 
 }

@@ -23,13 +23,15 @@ package edu.yu.einstein.genplay.core.multiGenome.operation.BED;
 
 import java.util.List;
 
+import edu.yu.einstein.genplay.core.pileupFlattener.GenomeWideFlattener;
+import edu.yu.einstein.genplay.core.pileupFlattener.PileupFlattener;
+import edu.yu.einstein.genplay.core.pileupFlattener.SimpleSCWPileupFlattener;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.enums.CoordinateSystemType;
-import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.SCWListViewBuilder;
-import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.SCWListView.generic.GenericSCWListViewBuilder;
+import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
+import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWListBuilder;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 
@@ -41,7 +43,7 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
  */
 public class AlleleSettingsBedConvert extends AlleleSettingsBed {
 
-	private final SCWListBuilder listBuilder;
+	private final GenomeWideFlattener gwPileupFlattener;
 
 
 	/**
@@ -52,8 +54,8 @@ public class AlleleSettingsBedConvert extends AlleleSettingsBed {
 	 */
 	protected AlleleSettingsBedConvert (AlleleType allele, CoordinateSystemType coordinateSystem) throws CloneNotSupportedException {
 		super(allele, coordinateSystem);
-		SCWListViewBuilder lvBuilderPrototype = new GenericSCWListViewBuilder();
-		listBuilder = new SCWListBuilder(lvBuilderPrototype);
+		PileupFlattener flattenerPrototype = new SimpleSCWPileupFlattener(ScoreOperation.ADDITION, SCWListType.GENERIC);
+		gwPileupFlattener = new GenomeWideFlattener(flattenerPrototype);
 	}
 
 
@@ -70,13 +72,8 @@ public class AlleleSettingsBedConvert extends AlleleSettingsBed {
 		if (dbScore == null) {
 			valid = false;
 		}
-		/*if (valid && (currentAltIndex == -1) && (!includeReferences)) {
-			valid = false;
-		}*/
 		if (valid) {
-			//int start = getCurrentStart();
-			//int stop = getDisplayableCurrentStop();
-			listBuilder.addElementToBuild(chromosome, currentStart, currentStop, dbScore);
+			gwPileupFlattener.addWindow(chromosome, currentStart, currentStop, dbScore);
 		} else {
 			System.err.println("AlleleSettingsBedConvert.addCurrentInformation() Could not convert '" + score + "' into a double.");
 		}
@@ -87,6 +84,6 @@ public class AlleleSettingsBedConvert extends AlleleSettingsBed {
 	 * @return the startList
 	 */
 	public List<ListView<ScoredChromosomeWindow>> getListOfListViews() {
-		return listBuilder.getListOfListViews();
+		return gwPileupFlattener.getListOfListViews();
 	}
 }

@@ -33,7 +33,7 @@ import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.filter.utils.FilterUtility;
 import edu.yu.einstein.genplay.core.multiGenome.filter.utils.FormatFilterOperatorType;
 import edu.yu.einstein.genplay.core.multiGenome.filter.utils.NumberUtility;
-import edu.yu.einstein.genplay.dataStructure.enums.InequalityOperators;
+import edu.yu.einstein.genplay.dataStructure.enums.ComparisonOperators;
 import edu.yu.einstein.genplay.dataStructure.enums.VCFColumnName;
 
 /**
@@ -48,8 +48,8 @@ public class NumberIDFilter implements NumberIDFilterInterface, Serializable {
 
 	private FilterUtility				utility;
 	private VCFHeaderType 				header;				// ID of the filter
-	private InequalityOperators			inequation01;
-	private InequalityOperators 		inequation02;
+	private ComparisonOperators			inequation01;
+	private ComparisonOperators 		inequation02;
 	private Float 						value01;
 	private Float 						value02;
 	private boolean						cumulative;
@@ -58,155 +58,10 @@ public class NumberIDFilter implements NumberIDFilterInterface, Serializable {
 
 
 	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(inequation01);
-		out.writeObject(inequation02);
-		out.writeFloat(value01);
-		out.writeFloat(value02);
-		out.writeBoolean(cumulative);
-		out.writeObject(genomeNames);
-		out.writeObject(operator);
-	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	@SuppressWarnings("unchecked")
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		inequation01 = (InequalityOperators) in.readObject();
-		inequation02 = (InequalityOperators) in.readObject();
-		value01 = in.readFloat();
-		value02 = in.readFloat();
-		cumulative = in.readBoolean();
-		genomeNames = (List<String>) in.readObject();
-		operator = (FormatFilterOperatorType) in.readObject();
-		utility = new NumberUtility();
-	}
-
-
-	/**
 	 * Constructor of {@link NumberIDFilter}
 	 */
 	public NumberIDFilter () {
 		utility = new NumberUtility();
-	}
-
-
-	@Override
-	public VCFHeaderType getHeaderType() {
-		return header;
-	}
-
-
-	@Override
-	public void setHeaderType(VCFHeaderType id) {
-		this.header = id;
-	}
-
-
-	/**
-	 * @return the inequation01
-	 */
-	@Override
-	public InequalityOperators getInequation01() {
-		return inequation01;
-	}
-
-
-	/**
-	 * @param inequation01 the inequation01 to set
-	 */
-	@Override
-	public void setInequation01(InequalityOperators inequation01) {
-		this.inequation01 = inequation01;
-	}
-
-
-	/**
-	 * @return the inequation02
-	 */
-	@Override
-	public InequalityOperators getInequation02() {
-		return inequation02;
-	}
-
-
-	/**
-	 * @param inequation02 the inequation02 to set
-	 */
-	@Override
-	public void setInequation02(InequalityOperators inequation02) {
-		this.inequation02 = inequation02;
-	}
-
-
-	/**
-	 * @return the value01
-	 */
-	@Override
-	public Float getValue01() {
-		return value01;
-	}
-
-
-	/**
-	 * @param value01 the value01 to set
-	 */
-	@Override
-	public void setValue01(Float value01) {
-		this.value01 = value01;
-	}
-
-
-	/**
-	 * @return the value02
-	 */
-	@Override
-	public Float getValue02() {
-		return value02;
-	}
-
-
-	/**
-	 * @param value02 the value02 to set
-	 */
-	@Override
-	public void setValue02(Float value02) {
-		this.value02 = value02;
-	}
-
-
-	@Override
-	public String toStringForDisplay() {
-		return utility.toStringForDisplay(this);
-	}
-
-
-	@Override
-	public String getErrors() {
-		return utility.getErrors(this);
-	}
-
-
-	@Override
-	public boolean isValid(VCFLine line) {
-		return utility.isValid(this, line);
-	}
-
-
-	@Override
-	public boolean isValid(Variant variant) {
-		return false;
 	}
 
 
@@ -223,38 +78,8 @@ public class NumberIDFilter implements NumberIDFilterInterface, Serializable {
 
 
 	@Override
-	public void setCumulative(boolean cumulative) {
-		this.cumulative = cumulative;
-	}
-
-
-	@Override
-	public boolean isCumulative() {
-		return cumulative;
-	}
-
-
-	@Override
-	public void setGenomeNames(List<String> genomeNames) {
-		this.genomeNames = genomeNames;
-	}
-
-
-	@Override
-	public List<String> getGenomeNames() {
-		return genomeNames;
-	}
-
-
-	@Override
-	public void setOperator(FormatFilterOperatorType operator) {
-		this.operator = operator;
-	}
-
-
-	@Override
-	public FormatFilterOperatorType getOperator() {
-		return operator;
+	public String getDescription() {
+		return "Filter for numbers.";
 	}
 
 
@@ -274,13 +99,188 @@ public class NumberIDFilter implements NumberIDFilterInterface, Serializable {
 
 
 	@Override
+	public String getErrors() {
+		return utility.getErrors(this);
+	}
+
+
+	@Override
+	public List<String> getGenomeNames() {
+		return genomeNames;
+	}
+
+
+	@Override
+	public VCFHeaderType getHeaderType() {
+		return header;
+	}
+
+
+	/**
+	 * @return the inequation01
+	 */
+	@Override
+	public ComparisonOperators getInequation01() {
+		return inequation01;
+	}
+
+
+	/**
+	 * @return the inequation02
+	 */
+	@Override
+	public ComparisonOperators getInequation02() {
+		return inequation02;
+	}
+
+
+	@Override
 	public String getName() {
 		return "Number filter";
 	}
 
 
 	@Override
-	public String getDescription() {
-		return "Filter for numbers.";
+	public FormatFilterOperatorType getOperator() {
+		return operator;
+	}
+
+
+	/**
+	 * @return the value01
+	 */
+	@Override
+	public Float getValue01() {
+		return value01;
+	}
+
+
+	/**
+	 * @return the value02
+	 */
+	@Override
+	public Float getValue02() {
+		return value02;
+	}
+
+
+	@Override
+	public boolean isCumulative() {
+		return cumulative;
+	}
+
+
+	@Override
+	public boolean isValid(Variant variant) {
+		return false;
+	}
+
+
+	@Override
+	public boolean isValid(VCFLine line) {
+		return utility.isValid(this, line);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		inequation01 = (ComparisonOperators) in.readObject();
+		inequation02 = (ComparisonOperators) in.readObject();
+		value01 = in.readFloat();
+		value02 = in.readFloat();
+		cumulative = in.readBoolean();
+		genomeNames = (List<String>) in.readObject();
+		operator = (FormatFilterOperatorType) in.readObject();
+		utility = new NumberUtility();
+	}
+
+
+	@Override
+	public void setCumulative(boolean cumulative) {
+		this.cumulative = cumulative;
+	}
+
+
+	@Override
+	public void setGenomeNames(List<String> genomeNames) {
+		this.genomeNames = genomeNames;
+	}
+
+
+	@Override
+	public void setHeaderType(VCFHeaderType id) {
+		header = id;
+	}
+
+
+	/**
+	 * @param inequation01 the inequation01 to set
+	 */
+	@Override
+	public void setInequation01(ComparisonOperators inequation01) {
+		this.inequation01 = inequation01;
+	}
+
+
+	/**
+	 * @param inequation02 the inequation02 to set
+	 */
+	@Override
+	public void setInequation02(ComparisonOperators inequation02) {
+		this.inequation02 = inequation02;
+	}
+
+
+	@Override
+	public void setOperator(FormatFilterOperatorType operator) {
+		this.operator = operator;
+	}
+
+
+	/**
+	 * @param value01 the value01 to set
+	 */
+	@Override
+	public void setValue01(Float value01) {
+		this.value01 = value01;
+	}
+
+
+	/**
+	 * @param value02 the value02 to set
+	 */
+	@Override
+	public void setValue02(Float value02) {
+		this.value02 = value02;
+	}
+
+
+	@Override
+	public String toStringForDisplay() {
+		return utility.toStringForDisplay(this);
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(inequation01);
+		out.writeObject(inequation02);
+		out.writeFloat(value01);
+		out.writeFloat(value02);
+		out.writeBoolean(cumulative);
+		out.writeObject(genomeNames);
+		out.writeObject(operator);
 	}
 }

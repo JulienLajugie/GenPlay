@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -23,59 +23,86 @@ package edu.yu.einstein.genplay.dataStructure.enums;
 
 
 /**
- * A type for inequalities
+ * Enumeration of the different types of comparison operators
  * @author Nicolas Fourel
- * @version 0.1
+ * @author Julien Lajugie
  */
-public enum InequalityOperators {
-	
+public enum ComparisonOperators {
+
 
 	/**
-	 * Symbol for the equality
+	 * "Equal" operator
 	 */
 	EQUAL ("="),
-	
+
 	/**
-	 * Symbol for the difference
+	 * "Not equal" operator
 	 */
 	DIFFERENT ("!="),
-	
+
 	/**
-	 * Symbol for the superior or equal inequality
+	 * "Greater than or equal to" operator
 	 */
-	SUPERIOR_OR_EQUAL (">="),
-	
+	GREATER_OR_EQUAL (">="),
+
 	/**
-	 * Symbol for the superior inequality
+	 * "Greater than" operator
 	 */
-	SUPERIOR (">"),
-	
+	GREATER (">"),
+
 	/**
-	 * Symbol for the inferior or equal inequality
+	 * "Less than or equal to" operator
 	 */
-	INFERIOR_OR_EQUAL ("<="),
-	
+	LESS_OR_EQUAL ("<="),
+
 	/**
-	 * Symbol for the inferior inequality
+	 * "Less than" operator
 	 */
-	INFERIOR ("<");
-	
-	
-	
-	private final String name; // String representing the inequality 
-	
-	
+	LESS ("<");
+
+
 	/**
-	 * Private constructor. Creates an instance of {@link InequalityOperators}
+	 * Symbol of the operator
+	 */
+	private final String symbol;
+
+
+	/**
+	 * Private constructor. Creates an instance of {@link ComparisonOperators}
 	 * @param name
 	 */
-	private InequalityOperators(String name) {
-		this.name = name;
+	private ComparisonOperators(String symbol) {
+		this.symbol = symbol;
 	}
-	
-	
+
+
+	/**
+	 * @param leftOperand left operand
+	 * @param rightOperand right operand
+	 * @return the result of the comparison between the left and the right operand
+	 */
+	public <T extends Comparable<T>> boolean process(T leftOperand, T rightOperand) {
+		switch (this) {
+		case EQUAL:
+			return leftOperand.compareTo(rightOperand) == 0;
+		case DIFFERENT:
+			return leftOperand.compareTo(rightOperand) != 0;
+		case GREATER_OR_EQUAL:
+			return leftOperand.compareTo(rightOperand) >= 0;
+		case GREATER:
+			return leftOperand.compareTo(rightOperand) > 0;
+		case LESS_OR_EQUAL:
+			return leftOperand.compareTo(rightOperand) <= 0;
+		case LESS:
+			return leftOperand.compareTo(rightOperand) < 0;
+		default:
+			throw new UnsupportedOperationException();
+		}
+	}
+
+
 	@Override
 	public String toString() {
-		return name;
+		return symbol;
 	}
 }

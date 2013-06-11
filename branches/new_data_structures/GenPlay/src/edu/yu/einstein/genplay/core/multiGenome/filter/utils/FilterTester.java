@@ -14,14 +14,14 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.filter.utils;
 
-import edu.yu.einstein.genplay.dataStructure.enums.InequalityOperators;
+import edu.yu.einstein.genplay.dataStructure.enums.ComparisonOperators;
 import edu.yu.einstein.genplay.dataStructure.enums.VCFColumnName;
 
 /**
@@ -51,7 +51,7 @@ public class FilterTester {
 
 	/**
 	 * Checks if a pattern is found in a string.
-	 * @param fullLine	the string associated to a {@link VCFColumnName} (not the full VCF line) 
+	 * @param fullLine	the string associated to a {@link VCFColumnName} (not the full VCF line)
 	 * @param pattern	the pattern
 	 * @return			true if the pattern is found, false otherwise
 	 */
@@ -65,32 +65,16 @@ public class FilterTester {
 
 
 	/**
-	 * Performs the validation using a boolean "required" and a boolean "found".
-	 * An attribute can be found or not, required or not.
-	 * @param required	a boolean meaning the attribute is required or not
-	 * @param found		a boolean meaning the attribute has been found or not
-	 * @return			true if the attribute is required and found, or, not required and not found.
-	 */
-	public static boolean passTest (boolean required, boolean found) {
-		if (required && found || !required && !found) {
-			return true;
-		}
-
-		return false;
-	}
-
-
-	/**
 	 * Compare to float in order to define if they correlate the inequation.
 	 * @param inequation		an inequation
 	 * @param referenceValue	a first value
 	 * @param valueToCompare	a second value
 	 * @return					true if both values correlate the inequation, false otherwise.
 	 */
-	public static boolean passInequation (InequalityOperators inequation, Float referenceValue, Float valueToCompare) {
+	public static boolean passInequation (ComparisonOperators inequation, Float referenceValue, Float valueToCompare) {
 		boolean valid = false;
 
-		if (valueToCompare == null || referenceValue == null) {
+		if ((valueToCompare == null) || (referenceValue == null)) {
 			return valid;
 		}
 
@@ -100,29 +84,45 @@ public class FilterTester {
 
 		int result = valueToCompare.compareTo(referenceValue);
 
-		if (inequation == InequalityOperators.EQUAL) {
+		if (inequation == ComparisonOperators.EQUAL) {
 			if (result == 0) {
 				valid = true;
 			}
-		} else if (inequation == InequalityOperators.SUPERIOR) {
+		} else if (inequation == ComparisonOperators.GREATER) {
 			if (result > 0) {
 				valid = true;
 			}
-		} else if (inequation == InequalityOperators.SUPERIOR_OR_EQUAL) {
+		} else if (inequation == ComparisonOperators.GREATER_OR_EQUAL) {
 			if (result >= 0) {
 				valid = true;
 			}
-		} else if (inequation == InequalityOperators.INFERIOR) {
+		} else if (inequation == ComparisonOperators.LESS) {
 			if (result < 0) {
 				valid = true;
 			}
-		} else if (inequation == InequalityOperators.INFERIOR_OR_EQUAL) {
+		} else if (inequation == ComparisonOperators.LESS_OR_EQUAL) {
 			if (result <= 0) {
 				valid = true;
 			}
 		}
 
 		return valid;
+	}
+
+
+	/**
+	 * Performs the validation using a boolean "required" and a boolean "found".
+	 * An attribute can be found or not, required or not.
+	 * @param required	a boolean meaning the attribute is required or not
+	 * @param found		a boolean meaning the attribute has been found or not
+	 * @return			true if the attribute is required and found, or, not required and not found.
+	 */
+	public static boolean passTest (boolean required, boolean found) {
+		if ((required && found) || (!required && !found)) {
+			return true;
+		}
+
+		return false;
 	}
 
 }

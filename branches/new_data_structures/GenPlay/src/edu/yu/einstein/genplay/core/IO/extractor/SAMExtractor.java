@@ -24,10 +24,13 @@ package edu.yu.einstein.genplay.core.IO.extractor;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import net.sf.samtools.SAMFileHeader;
 import net.sf.samtools.SAMFileHeader.SortOrder;
 import net.sf.samtools.SAMFileReader;
+import net.sf.samtools.SAMReadGroupRecord;
 import net.sf.samtools.SAMRecord;
 import net.sf.samtools.SAMRecordIterator;
 import edu.yu.einstein.genplay.core.IO.dataReader.ChromosomeWindowReader;
@@ -63,9 +66,6 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 	private Integer 						stop;							// stop position of the last item read
 	private Strand 							strand;							// strand of the last item read
 	private final Map<String, SAMRecord> 	leftMostOfPairMap;				//
-
-
-
 
 
 	/**
@@ -171,6 +171,10 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 	}
 
 
+	/**
+	 * 
+	 * @param samRecord
+	 */
 	private void printReadInfo(SAMRecord samRecord) {
 		strand = samRecord.getReadNegativeStrandFlag() ? Strand.THREE : Strand.FIVE;
 		System.out.println(samRecord.getReadName() + "\t" + samRecord.getReferenceName() + "\t" + samRecord.getAlignmentStart() + "\t" + samRecord.getAlignmentEnd()+ "\t" + samRecord.getMappingQuality() + "\t" + samRecord.getReadLength() + "\t" + strand + "\t" + samRecord.getMateAlignmentStart() + "\t" + samRecord.getInferredInsertSize());
@@ -225,6 +229,23 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 	@Override
 	protected String retrieveDataName(File dataFile) {
 		return dataFile.getName();
+	}
+
+
+	/**
+	 * @return the read groups of the SAM file extracted from the header
+	 */
+	private String[] retrieveReadGroups() {
+		SAMFileHeader header = samReader.getFileHeader();
+		List<SAMReadGroupRecord> readGroups = header.getReadGroups();
+		if (readGroups == null) {
+			return null;
+		}
+		String[] readGroupIDs = new String[readGroups.size()];
+		for (int i = 0; i < readGroups.size(); i++) {
+			readGroupIDs[i] = readGroups.get(i).getId();
+		}
+		return readGroupIDs;
 	}
 
 
