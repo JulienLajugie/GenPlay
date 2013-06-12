@@ -141,20 +141,49 @@ public abstract class AbstractSCWLayer<T extends SCWList> extends AbstractVersio
 			if (listToPrint == null) {
 				getTrack().drawLoadingAnimation(g);
 			} else {
+				Integer waitingX = null;
+				Float waintingScore = null;
 				for (ScoredChromosomeWindow currentWindow: listToPrint) {
-					// we want to make sure that x is > 0
-					int x = Math.max(0, projectWindow.genomeToScreenPosition(currentWindow.getStart()));
-					// we want to make sure that window width is not larger than the screen width
-					int widthWindow = Math.min(width, projectWindow.genomeToScreenPosition(currentWindow.getStop()) - x);
-					if (widthWindow > 0) {
-						int y = getTrack().getScore().scoreToScreenPosition(currentWindow.getScore());
-						int rectHeight = y - screenY0;
-						if (currentWindow.getScore() > 0) {
-							g.setColor(getColor());
-							g.fillRect(x, y, widthWindow, -rectHeight);
+					float score = currentWindow.getScore();
+					if (score != 0) {
+						// we want to make sure that x is > 0
+						int x = Math.max(0, projectWindow.genomeToScreenPosition(currentWindow.getStart()));
+
+						// if the width of the precedent window was 0 we print it with a width of 1
+						// if it doesn't overlap with the current window.
+						if (waitingX != null) {
+							if (waitingX < x) {
+								int y = getTrack().getScore().scoreToScreenPosition(waintingScore);
+								int rectHeight = y - screenY0;
+								if (score > 0) {
+									g.setColor(getColor());
+									g.fillRect(waitingX, y, 1, -rectHeight);
+								} else {
+									g.setColor(reverseCurveColor);
+									g.fillRect(waitingX, screenY0, 1, rectHeight);
+								}
+							}
+							waitingX = null;
+							waintingScore = null;
+						}
+
+						// we want to make sure that window width is not larger than the screen width
+						int widthWindow = Math.min(width, projectWindow.genomeToScreenPosition(currentWindow.getStop()) - x);
+						if (widthWindow > 0) {
+							int y = getTrack().getScore().scoreToScreenPosition(score);
+							int rectHeight = y - screenY0;
+							if (score > 0) {
+								g.setColor(getColor());
+								g.fillRect(x, y, widthWindow, -rectHeight);
+							} else {
+								g.setColor(reverseCurveColor);
+								g.fillRect(x, screenY0, widthWindow, rectHeight);
+							}
 						} else {
-							g.setColor(reverseCurveColor);
-							g.fillRect(x, screenY0, widthWindow, rectHeight);
+							// if the width is less than 1 we save it for the next iteration in our list of windows to print
+							// because we will print it with a width of 1 if it doesn't overlap with the next window
+							waitingX = x;
+							waintingScore = score;
 						}
 					}
 				}

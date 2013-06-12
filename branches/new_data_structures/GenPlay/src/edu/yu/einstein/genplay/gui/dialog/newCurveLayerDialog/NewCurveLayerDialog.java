@@ -44,7 +44,6 @@ import edu.yu.einstein.genplay.util.Images;
 /**
  * A dialog for the input for a curve layer loading
  * @author Julien Lajugie
- * @version 0.1
  */
 public class NewCurveLayerDialog extends JDialog {
 
@@ -263,7 +262,7 @@ public class NewCurveLayerDialog extends JDialog {
 	/**
 	 * @return the selected allele type
 	 */
-	public AlleleType getAlleleType () {
+	public AlleleType getAlleleType() {
 		return genomeSelectionPanel.getAlleleType();
 	}
 
@@ -277,9 +276,17 @@ public class NewCurveLayerDialog extends JDialog {
 
 
 	/**
+	 * @return the strand shifting value
+	 */
+	public int getFragmentLengthValue() {
+		return readDefinitionPanel.getFragmentLengthValue();
+	}
+
+
+	/**
 	 * @return the name of the genome
 	 */
-	public String getGenomeName () {
+	public String getGenomeName() {
 		return genomeSelectionPanel.getGenomeName();
 	}
 
@@ -313,14 +320,6 @@ public class NewCurveLayerDialog extends JDialog {
 	 */
 	public boolean[] getSelectedChromosomes() {
 		return chromoSelectionPanel.getSelectedChromosomes();
-	}
-
-
-	/**
-	 * @return the strand shifting value
-	 */
-	public int getStrandShiftValue () {
-		return readDefinitionPanel.getShiftValue();
 	}
 
 

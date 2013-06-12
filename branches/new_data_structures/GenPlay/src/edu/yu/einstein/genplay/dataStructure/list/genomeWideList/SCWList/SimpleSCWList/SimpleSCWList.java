@@ -66,15 +66,10 @@ public final class SimpleSCWList extends AbstractListView<ListView<ScoredChromos
 	 * @return the number of steps needed to create a list of the specified type
 	 */
 	public static int getCreationStepCount(SCWListType scwListType) {
-		switch (scwListType) {
-		case GENERIC:
-			return 2;
-		case MASK:
-			return 1;
-		case BIN:
+		if (scwListType == SCWListType.BIN) {
 			return BinList.getCreationStepCount(SCWListType.BIN);
-		default:
-			return 0;
+		} else {
+			return 2;
 		}
 	}
 
@@ -140,7 +135,6 @@ public final class SimpleSCWList extends AbstractListView<ListView<ScoredChromos
 	public int getCreationStepCount() {
 		return getCreationStepCount(scwListType);
 	}
-
 
 
 	@Override

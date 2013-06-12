@@ -28,69 +28,59 @@ import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 
 /**
  * Options for {@link StrandedExtractor}.
- * Allows user to choose which strand to extract, to define a fixed read length and to shift the reads.
+ * Allows user to choose which strand to extract and to define a fragment size
  * @author Julien Lajugie
  */
 public class StrandedExtractorOptions {
 
 	private final Strand 	selectedStrand;	// strand to extract. Both if null
-	private final int 		strandShift;	// value of the shift to perform on the selected strand
-	private final int 		readLength;		// length of the reads. 0 to keep the values from the input data file
+	private final int 		fragmentLength;	// length of the fragments
+	private final int 		readLength;		// length of the reads
 
 
 	/**
 	 * Creates an instance of {@link StrandedExtractorOptions}
 	 * @param strandToExtract strand to extract. Both strand will be extracted if this parameter is null
-	 * @param strandShift value of the shift to perform on the selected strand
-	 * @param readLength length of the reads. 0 to keep the values from the input data file
+	 * @param fragmentLength length of the fragments
+	 * @param readLength length of the reads
 	 */
-	public StrandedExtractorOptions(Strand strandToExtract, int strandShift, int readLength) {
+	public StrandedExtractorOptions(Strand strandToExtract, int fragmentLength, int readLength) {
 		super();
 		selectedStrand = strandToExtract;
-		this.strandShift = strandShift;
+		this.fragmentLength = fragmentLength;
 		this.readLength = readLength;
 	}
 
 
 	/**
-	 * Computes the new start and stop positions of a specified read after applying
-	 * the shift and the read length options.
+	 * Computes the new start and stop positions of a specified read after applying the read length options.
 	 * @param chromo chromosome of the read
-	 * @param start start positions of the read
+	 * @param start start position of the read
 	 * @param stop stop position of the read
 	 * @param strand strand of the read
 	 * @return a {@link SimpleChromosomeWindow} with the result start and stop positions
 	 */
 	public SimpleChromosomeWindow computeStartStop(Chromosome chromo, int start, int stop, Strand strand) {
-		if ((strand == null) || (chromo == null)) {
-			// if the strand or chromosome parameter is null we return the value without modifying them
+		if ((strand == null) || (chromo == null) || (readLength == 0) || (fragmentLength == 0)) {
+			// we return the value without modifying them
 			return new SimpleChromosomeWindow(start, stop);
 		}
-		if (strand == Strand.FIVE) {
-			// case where the read is on the 5' strand
-			// we want to make sure that the result positions are not greater than the chromosome length
-			start = Math.min(chromo.getLength(), start + strandShift);
-			if (readLength == 0) {
-				// case where we keep the original read length
-				stop = Math.min(chromo.getLength(), stop + strandShift);
-			} else {
-				// case where we use the read length specified by the user
-				stop = Math.min(chromo.getLength(), start + readLength);
-			}
-		} else {
+		if (strand == Strand.THREE) {
 			// case where the read is on the 3' strand
-			// we want to make sure that the result positions are not smaller than zero
-			stop = Math.max(0, stop - strandShift);
-			if (readLength == 0) {
-				// case where we keep the original read length
-				start = Math.max(0, start - strandShift);
-
-			} else {
-				// case where we use the read length specified by the user
-				start = Math.max(0, stop - readLength);
-			}
+			// we want to make sure that the result positions are not smaller than 1
+			start = Math.max(1, (start + readLength) - fragmentLength);
 		}
+		// we want to make sure that the result positions are not greater than the chromosome length
+		stop = Math.min(chromo.getLength(), start + fragmentLength);
 		return new SimpleChromosomeWindow(start, stop);
+	}
+
+
+	/**
+	 * @return the fragment length value
+	 */
+	public int getFragmentLength() {
+		return fragmentLength;
 	}
 
 
@@ -107,14 +97,6 @@ public class StrandedExtractorOptions {
 	 */
 	public Strand getSelectedStrand() {
 		return selectedStrand;
-	}
-
-
-	/**
-	 * @return the strand shift value
-	 */
-	public int getStrandShift() {
-		return strandShift;
 	}
 
 

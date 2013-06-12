@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.util.concurrent.CountDownLatch;
 
 import javax.swing.JOptionPane;
+import javax.swing.ToolTipManager;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
@@ -79,6 +80,16 @@ public class Launcher {
 			load.actionPerformed(null);
 		}
 	}
+
+	/**
+	 * Tooltip dismissal delay value for the entire program
+	 */
+	private static final int TOOLTIP_DISMISS_DELAY = Integer.MAX_VALUE;
+
+	/**
+	 * Tooltip initial delay value for the entire program
+	 */
+	private static final int TOOLTIP_INITIAL_DELAY = 500;
 
 
 	/**
@@ -201,7 +212,9 @@ public class Launcher {
 	public static void main(final String[] args) {
 		// Initialize the exception manager
 		initializeExceptionManagement();
-
+		// set the tooltip properties
+		ToolTipManager.sharedInstance().setDismissDelay(TOOLTIP_DISMISS_DELAY);
+		ToolTipManager.sharedInstance().setInitialDelay(TOOLTIP_INITIAL_DELAY);
 		//SwingUtilities.invokeLater(new Runnable() {
 		/*
 		 * Fix for the exception that starts like:

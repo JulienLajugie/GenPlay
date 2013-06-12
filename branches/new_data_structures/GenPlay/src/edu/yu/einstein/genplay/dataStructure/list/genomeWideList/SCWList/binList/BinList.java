@@ -66,15 +66,10 @@ public final class BinList extends AbstractListView<ListView<ScoredChromosomeWin
 	 * @return the number of steps needed to create a list of the specified type
 	 */
 	public static int getCreationStepCount(SCWListType scwListType) {
-		switch (scwListType) {
-		case GENERIC:
-			return SimpleSCWList.getCreationStepCount(SCWListType.GENERIC);
-		case MASK:
-			return SimpleSCWList.getCreationStepCount(SCWListType.MASK);
-		case BIN:
+		if (scwListType == SCWListType.BIN) {
 			return AVERAGE_BIN_SIZE_FACTORS.length + 2;
-		default:
-			return 0;
+		} else {
+			return SimpleSCWList.getCreationStepCount(scwListType);
 		}
 	}
 

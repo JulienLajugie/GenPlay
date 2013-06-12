@@ -57,7 +57,7 @@ public final class TAAddBinLayer extends TrackListActionExtractorWorker<BinList>
 	private int 					binSize = 0;													// Size of the bins of the BinList
 	private ScoreOperation 			scoreCalculation = null;										// Method of calculation of the score of the BinList
 	private Strand					strand = null;													// strand to extract
-	private int						strandShift = 0;												// position shift on a strand
+	private int						fragmentLength = 0;												// user specified length of the fragments
 	private int 					readLength = 0;													// user specified length of the reads (0 to keep the original length)
 
 
@@ -93,11 +93,11 @@ public final class TAAddBinLayer extends TrackListActionExtractorWorker<BinList>
 					history += "3'";
 				}
 			}
-			if (strandShift != 0) {
-				history += ", Strand Shift = " + strandShift +"bp";
+			if (fragmentLength != 0) {
+				history += ", Fragment Length = " + fragmentLength + "bp";
 			}
 			if (readLength != 0) {
-				history += ", Read Length = " + readLength +"bp";
+				history += ", Read Length = " + readLength + "bp";
 			}
 			newLayer.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Colors.GREY);
 			newLayer.getHistory().add(history, Colors.GREY);
@@ -121,9 +121,9 @@ public final class TAAddBinLayer extends TrackListActionExtractorWorker<BinList>
 			extractor.setChromosomeSelector(new ChromosomesSelector(selectedChromo));
 			if (isStrandNeeded) {
 				strand = ncld.getStrandToExtract();
-				strandShift = ncld.getStrandShiftValue();
+				fragmentLength = ncld.getFragmentLengthValue();
 				readLength = ncld.getReadLengthValue();
-				StrandedExtractorOptions strandedExtractorOptions = new StrandedExtractorOptions(strand, strandShift, readLength);
+				StrandedExtractorOptions strandedExtractorOptions = new StrandedExtractorOptions(strand, fragmentLength, readLength);
 				((StrandedExtractor) extractor).setStrandedExtractorOptions(strandedExtractorOptions);
 			}
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
@@ -139,7 +139,7 @@ public final class TAAddBinLayer extends TrackListActionExtractorWorker<BinList>
 	protected BinList generateList() throws Exception {
 		try {
 			BinList binList;
-			if (((strandShift != 0) || (readLength != 0)) && (strand == null)) {
+			if (((fragmentLength != 0) || (readLength != 0)) && (strand == null)) {
 				/* if we extract both strand and the strands are shifted we need to use the strand safe
 				 * factory since reads on the 3' strand are shifted toward 5' which can change the order
 				 * of reads and cause the file to be no longer sorted
