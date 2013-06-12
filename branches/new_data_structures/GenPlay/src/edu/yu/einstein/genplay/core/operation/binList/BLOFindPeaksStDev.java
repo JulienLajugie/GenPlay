@@ -74,13 +74,14 @@ public class BLOFindPeaksStDev implements Operation<BinList[]> {
 
 		for (final Chromosome chromosome: projectChromosomes) {
 			final ListView<ScoredChromosomeWindow> currentList = binList.get(chromosome);
+			int chromosomeIndex = projectChromosomes.getIndex(chromosome);
+			final double sd = binList.getStatistics().getStandardDeviations()[chromosomeIndex];
 			Callable<Void> currentThread = new Callable<Void>() {
 
 				@Override
 				public Void call() throws Exception {
 					if (currentList != null) {
 						// compute the stdev for the chromosome
-						double sd = SCWListViews.standardDeviation(currentList, 0, currentList.size() - 1);
 						if (sd != 0) {
 							// compute the value the local standard deviation must be for a bin to be accepted
 							double minAcceptedSD = nbSDAccepted * sd;

@@ -21,7 +21,15 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.IO.utils;
 
+
+/**
+ * 
+ * @author Julien Lajugie
+ */
 public class SAMFilters {
+
+	//private final SAMRecord samRecord;
+
 
 
 }

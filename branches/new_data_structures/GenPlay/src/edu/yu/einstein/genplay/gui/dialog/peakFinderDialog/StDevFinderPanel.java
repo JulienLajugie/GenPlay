@@ -24,7 +24,6 @@ package edu.yu.einstein.genplay.gui.dialog.peakFinderDialog;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.text.NumberFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFormattedTextField;
@@ -32,12 +31,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
+import javax.swing.text.InternationalFormatter;
 import javax.swing.text.NumberFormatter;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.binList.BLOFindPeaksStDev;
 import edu.yu.einstein.genplay.dataStructure.enums.PeakFinderType;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
+import edu.yu.einstein.genplay.util.NumberFormats;
 
 
 
@@ -86,7 +87,7 @@ class StDevFinderPanel extends JPanel implements PeakFinderPanel {
 		jtaDescription.setWrapStyleWord(true);
 
 		jlRegionWidth1 = new JLabel("Enter the half size, S = ");
-		jftfRegionWidth = new JFormattedTextField(NumberFormat.getInstance());
+		jftfRegionWidth = new JFormattedTextField(NumberFormats.getPositionFormat());
 		jftfRegionWidth.setValue(defaultRegionWidth);
 		jftfRegionWidth.setHorizontalAlignment(SwingConstants.RIGHT);
 		jftfRegionWidth.setColumns(4);
@@ -94,11 +95,11 @@ class StDevFinderPanel extends JPanel implements PeakFinderPanel {
 		jlRegionWidth2 = new JLabel(" windows");
 
 		jlThreshold1 = new JLabel("Enter the threshold, T = ");
-		jftfThreshold = new JFormattedTextField(NumberFormat.getInstance());
+		jftfThreshold = new JFormattedTextField(NumberFormats.getScoreFormat());
 		jftfThreshold.setValue(defaultThreshold);
 		jftfThreshold.setHorizontalAlignment(SwingConstants.RIGHT);
 		jftfThreshold.setColumns(4);
-		((NumberFormatter) jftfThreshold.getFormatter()).setMinimum(0);
+		((InternationalFormatter) jftfThreshold.getFormatter()).setMinimum(0.0);
 		jlThreshold2 = new JLabel(" times the chromosome stdev");
 
 		setLayout(new GridBagLayout());
