@@ -44,7 +44,7 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
 public class SCWLONormalize implements Operation<SCWList> {
 
 	private final SCWList 	inputList;			// input ScoredChromosomeWindowList
-	private final float		factor;				// the result of the normalization is multiplied by this factor
+	private final double	factor;				// the result of the normalization is multiplied by this factor
 	private Double 			scoreSum;			// sum of the scores
 	private boolean			stopped = false;	// true if the operation must be stopped
 
@@ -54,7 +54,7 @@ public class SCWLONormalize implements Operation<SCWList> {
 	 * @param inputList ScoredChromosomeWindowList to normalize
 	 * @param factor factor
 	 */
-	public SCWLONormalize(SCWList inputList, float factor) {
+	public SCWLONormalize(SCWList inputList, double factor) {
 		this.inputList = inputList;
 		this.factor = factor;
 	}

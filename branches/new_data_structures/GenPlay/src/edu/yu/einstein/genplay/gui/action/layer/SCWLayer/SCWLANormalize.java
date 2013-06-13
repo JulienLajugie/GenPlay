@@ -61,6 +61,20 @@ public class SCWLANormalize extends TrackListActionOperationWorker<SCWList> {
 	}
 
 
+	/**
+	 * @param scwList
+	 * @return a factor that will be used as the default factor value for the normalization
+	 */
+	private double computeDefaultFactor(SCWList scwList) {
+		double scoreSum = scwList.getStatistics().getScoreSum();
+		double roundedSum = 1;
+		while (roundedSum < scoreSum) {
+			roundedSum *= 10;
+		}
+		return roundedSum;
+	}
+
+
 	@Override
 	protected void doAtTheEnd(SCWList actionResult) {
 		if (actionResult != null) {
@@ -74,10 +88,11 @@ public class SCWLANormalize extends TrackListActionOperationWorker<SCWList> {
 	public Operation<SCWList> initializeOperation() {
 		selectedLayer = (AbstractSCWLayer<SCWList>) getValue("Layer");
 		if (selectedLayer != null) {
-			Number factor = NumberOptionPane.getValue(getRootPane(), "Multiplicative constant", "Enter a factor of X:", 0, 1000000000, 10000000);
+			SCWList inputList = selectedLayer.getData();
+			double defaultFactor = computeDefaultFactor(inputList);
+			Number factor = NumberOptionPane.getValue(getRootPane(), "Multiplicative constant", "Enter a factor of X:", 0, Double.MAX_VALUE, defaultFactor);
 			if(factor != null) {
-				SCWList inputList = selectedLayer.getData();
-				Operation<SCWList> operation = new SCWLONormalize(inputList, factor.floatValue());
+				Operation<SCWList> operation = new SCWLONormalize(inputList, factor.doubleValue());
 				return operation;
 			}
 		}

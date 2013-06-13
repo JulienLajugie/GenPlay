@@ -19,17 +19,19 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.IO.utils;
+package edu.yu.einstein.genplay.core.IO.utils.SAMRecordFilter;
 
+import net.sf.samtools.SAMRecord;
 
 /**
- * 
+ * Filters out {@link SAMRecord} that are not uniquely aligned
  * @author Julien Lajugie
  */
-public class SAMFilters {
+public class NotUniqueSAMRecordFilter implements SAMRecordFilter {
 
-	//private final SAMRecord samRecord;
-
-
-
+	@Override
+	public SAMRecord applyFilter(SAMRecord samRecord) {
+		String typeBWAFlag = (String) samRecord.getAttribute("XT");
+		return ((typeBWAFlag != null) && typeBWAFlag.equalsIgnoreCase("U")) ? samRecord : null;
+	}
 }

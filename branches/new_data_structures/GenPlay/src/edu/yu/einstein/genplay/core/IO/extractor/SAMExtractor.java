@@ -23,13 +23,14 @@ package edu.yu.einstein.genplay.core.IO.extractor;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
+import net.sf.samtools.AlignmentBlock;
 import net.sf.samtools.SAMFileHeader;
-import net.sf.samtools.SAMFileHeader.SortOrder;
 import net.sf.samtools.SAMFileReader;
+import net.sf.samtools.SAMProgramRecord;
 import net.sf.samtools.SAMReadGroupRecord;
 import net.sf.samtools.SAMRecord;
 import net.sf.samtools.SAMRecordIterator;
@@ -38,6 +39,8 @@ import edu.yu.einstein.genplay.core.IO.dataReader.DataReader;
 import edu.yu.einstein.genplay.core.IO.dataReader.SCWReader;
 import edu.yu.einstein.genplay.core.IO.dataReader.StrandReader;
 import edu.yu.einstein.genplay.core.IO.utils.StrandedExtractorOptions;
+import edu.yu.einstein.genplay.core.IO.utils.SAMRecordFilter.SAMRecordFilter;
+import edu.yu.einstein.genplay.core.IO.utils.SAMRecordFilter.UnpairedSAMRecordFilter;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
@@ -58,14 +61,18 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 	public static final int DEFAULT_FIRST_BASE_POSITION = 1;
 
 	private int	firstBasePosition = DEFAULT_FIRST_BASE_POSITION; 			// position of the first base
-	private StrandedExtractorOptions		strandOptions;					// options on the strand and read length / shift
+	private final SAMReadGroupRecord[]		readGroups;						// read groups of the SAM file
+	private final String[]					programNames;					// programs used to generate and process the SAM file
 	private final SAMFileReader 			samReader;						// reader that read sam / bam files (from sam.jar)
 	private final SAMRecordIterator 		iterator;						// iterator in the file
-	private Chromosome 						chromosome;						// chromosome of the last item read
-	private Integer 						start;							// start position of the last item read
-	private Integer 						stop;							// stop position of the last item read
-	private Strand 							strand;							// strand of the last item read
-	private final Map<String, SAMRecord> 	leftMostOfPairMap;				//
+	private StrandedExtractorOptions		strandOptions;					// options on the strand and read length / shift
+	private SAMRecordFilter[]				recordFilters;					// SAM record filters (we don't consider records that don't pass these filters)
+	private boolean							isPairedMode;					// true if the extractor is in pair end mode
+	private final UnpairedSAMRecordFilter	unpairedFilter;					// filter that filters out unpaired reads
+	private Chromosome 						chromosome;						// chromosome of the last record read (a record has exactly one chromosome)
+	private final Queue<Integer>			startQueue;						// queue containing the start positions of the last record read (a record can have more than one start if split)
+	private final Queue<Integer>			stopQueue;						// queue containing the stop position of the last record read (a record can have more than one stop if split)
+	private Strand 							strand;							// strand of the last record read (a record has exactly one strand)
 
 
 	/**
@@ -75,9 +82,33 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 	public SAMExtractor(File dataFile) {
 		super(dataFile);
 		samReader = new SAMFileReader(dataFile);
+		readGroups = retrieveReadGroups();
+		programNames = retrieveProgramNames();
 		iterator = samReader.iterator();
-		iterator.assertSorted(SortOrder.coordinate);
-		leftMostOfPairMap = new HashMap<String, SAMRecord>();
+		unpairedFilter = new UnpairedSAMRecordFilter();
+		startQueue = new ConcurrentLinkedQueue<Integer>();
+		stopQueue = new ConcurrentLinkedQueue<Integer>();
+	}
+
+
+	/**
+	 * Applies the SAM record filters to a specified samRecord
+	 * @param samRecord a {@link SAMRecord}
+	 * @return the record itself if it passes the filter tests, null otherwise.
+	 */
+	private SAMRecord applyFilters(SAMRecord samRecord) {
+		if (recordFilters == null) {
+			return samRecord;
+		}
+		for (SAMRecordFilter currentFilter: recordFilters) {
+			if (currentFilter != null) {
+				samRecord = currentFilter.applyFilter(samRecord);
+				if (samRecord == null) {
+					return null;
+				}
+			}
+		}
+		return samRecord;
 	}
 
 
@@ -93,6 +124,21 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 	}
 
 
+	/**
+	 * @return the list of the programs that were used to generate the SAM / BAM file
+	 */
+	public String[] getProgramNames() {
+		return programNames;
+	}
+
+	/**
+	 * @return the read groups of the SAM / BAM file
+	 */
+	public SAMReadGroupRecord[] getReadGroups() {
+		return readGroups;
+	}
+
+
 	@Override
 	public Float getScore() {
 		return 1f;
@@ -101,13 +147,21 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 
 	@Override
 	public Integer getStart() {
-		return start;
+		if (startQueue.isEmpty()) {
+			return null;
+		} else {
+			return startQueue.peek();
+		}
 	}
 
 
 	@Override
 	public Integer getStop() {
-		return stop;
+		if (stopQueue.isEmpty()) {
+			return null;
+		} else {
+			return stopQueue.peek();
+		}
 	}
 
 
@@ -133,96 +187,81 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 
 
 	/**
-	 * @param samRecord
-	 * @return true if the read is paired, and the pair is valid. False otherwise.
+	 * @return true if the extractor is in pair end mode
 	 */
-	private boolean isPaired(SAMRecord samRecord) {
-		if (!samRecord.getReadPairedFlag()) {
-			return false;
-		}
-		if (!samRecord.getProperPairFlag()) {
-			return false;
-		}
-		if (samRecord.getMateUnmappedFlag()) {
-			return false;
-		}
-		return true;
+	public boolean isPairedMode() {
+		return isPairedMode;
 	}
 
 
 	/**
-	 * @param samRecord
-	 * @return true if the specified SAM record is valid and should be loaded. False otherwise.
+	 * Process a paired SAM record and extract its starts and stops
+	 * @param samRecord a {@link SAMRecord}
+	 * @return true if a window was extracted from the record, false otherwise
 	 */
-	private boolean isValidRecord(SAMRecord samRecord) {
-		if (samRecord.getReadUnmappedFlag()) {
-			return false;
-		}
-		if (samRecord.getNotPrimaryAlignmentFlag()) {
-			return false;
-		}
-		if (samRecord.getReadFailsVendorQualityCheckFlag()) {
-			return false;
-		}
-		if (samRecord.getDuplicateReadFlag()) {
-			return false;
-		}
-		return true;
-	}
-
-
-	/**
-	 * 
-	 * @param samRecord
-	 */
-	private void printReadInfo(SAMRecord samRecord) {
-		strand = samRecord.getReadNegativeStrandFlag() ? Strand.THREE : Strand.FIVE;
-		System.out.println(samRecord.getReadName() + "\t" + samRecord.getReferenceName() + "\t" + samRecord.getAlignmentStart() + "\t" + samRecord.getAlignmentEnd()+ "\t" + samRecord.getMappingQuality() + "\t" + samRecord.getReadLength() + "\t" + strand + "\t" + samRecord.getMateAlignmentStart() + "\t" + samRecord.getInferredInsertSize());
-	}
-
-
-	/**
-	 * Process the specified {@link SAMRecord} and extract its
-	 * chromosome, start, stop and strand values
-	 * @param samRecord
-	 */
-	private boolean processSamRecord(SAMRecord samRecord) {
-		if (isPaired(samRecord)) {
+	private boolean processPairedSamRecord(SAMRecord samRecord) {
+		// check if the read is properly paired
+		samRecord = unpairedFilter.applyFilter(samRecord);
+		if (samRecord != null) {
+			// check if the read is the leftmost of the pair
 			if (isLeftMostOfPair(samRecord)) {
-				leftMostOfPairMap.put(samRecord.getReadName(), samRecord);
-			} else {
-				SAMRecord leftMostOfPair = leftMostOfPairMap.get(samRecord.getReadName());
-				if (leftMostOfPair != null) {
-					ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
-					chromosome = projectChromosomes.get(samRecord.getReferenceName());
-					start = leftMostOfPair.getAlignmentStart();
-					stop = samRecord.getAlignmentEnd() + 1;
-					System.out.println((stop - start) + "  --- " + (leftMostOfPair.getInferredInsertSize() + 1));
-					strand = leftMostOfPair.getFirstOfPairFlag() ? Strand.FIVE : Strand.THREE;
-					leftMostOfPairMap.remove(samRecord.getReadName());
-					return true;
-				}
+				int start = samRecord.getAlignmentStart();
+				int stop = start + samRecord.getInferredInsertSize() + 1;
+				startQueue.add(start);
+				stopQueue.add(stop);
+				return true;
 			}
 		}
 		return false;
-
 	}
+
+
+	/**
+	 * Process the specified {@link SAMRecord} and extract its chromosome, starts, stops and strand values
+	 * @param samRecord a {@link SAMRecord}
+	 */
+	private boolean processSamRecord(SAMRecord samRecord) {
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
+		chromosome = projectChromosomes.get(samRecord.getReferenceName());
+		strand = samRecord.getFirstOfPairFlag() ? Strand.FIVE : Strand.THREE;
+		if (isPairedMode) {
+			return processPairedSamRecord(samRecord);
+		}
+		List<AlignmentBlock> alignmentBlocks = samRecord.getAlignmentBlocks();
+		if (alignmentBlocks != null) {
+			for (AlignmentBlock currentBlock: alignmentBlocks) {
+				int start = currentBlock.getReferenceStart();
+				int stop = start + currentBlock.getLength() + 1;
+				startQueue.add(start);
+				stopQueue.add(stop);
+			}
+			return true;
+		}
+		return false;
+	}
+
 
 
 	@Override
 	public boolean readItem() throws IOException {
-		try {
-			SAMRecord samRecord = null;
-			boolean isValidRecord = false;
-			while (iterator.hasNext() && !isValidRecord) {
-				samRecord = iterator.next();
-				isValidRecord = isValidRecord(samRecord) && processSamRecord(samRecord);
+		// remove the last item from the queues
+		if (!startQueue.isEmpty()) {
+			startQueue.poll();
+			stopQueue.poll();
+			// nothing to do if there still some items in the queues
+			if (!startQueue.isEmpty()) {
+				return true;
 			}
-			return iterator.hasNext();
-		} catch (IllegalStateException e) {
-			e.printStackTrace();
-			return true;
 		}
+		SAMRecord samRecord = null;
+		while (iterator.hasNext()) {
+			samRecord = iterator.next();
+			samRecord = applyFilters(samRecord);
+			if (processSamRecord(samRecord)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 
@@ -233,19 +272,44 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 
 
 	/**
+	 * @return the name of the programs that processed the SAM file
+	 */
+	private String[] retrieveProgramNames() {
+		SAMFileHeader header = samReader.getFileHeader();
+		List<SAMProgramRecord> programs = header.getProgramRecords();
+		if (programs == null) {
+			return null;
+		}
+		String[] programNames = new String[programs.size()];
+		for (int i = 0; i < programs.size(); i++) {
+			programNames[i] = programs.get(i).getProgramName();
+		}
+		return programNames;
+	}
+
+	/**
 	 * @return the read groups of the SAM file extracted from the header
 	 */
-	private String[] retrieveReadGroups() {
+	private SAMReadGroupRecord[] retrieveReadGroups() {
 		SAMFileHeader header = samReader.getFileHeader();
 		List<SAMReadGroupRecord> readGroups = header.getReadGroups();
 		if (readGroups == null) {
 			return null;
 		}
-		String[] readGroupIDs = new String[readGroups.size()];
+		SAMReadGroupRecord[] SAMReadGroupRecords = new SAMReadGroupRecord[readGroups.size()];
 		for (int i = 0; i < readGroups.size(); i++) {
-			readGroupIDs[i] = readGroups.get(i).getId();
+			SAMReadGroupRecords[i] = readGroups.get(i);
 		}
-		return readGroupIDs;
+		return SAMReadGroupRecords;
+	}
+
+
+	/**
+	 * Sets the {@link SAMRecordFilter} to apply on the reads.  Only the reads that pass all the filters will be considered.
+	 * @param recordFilter
+	 */
+	public void setFilters(SAMRecordFilter... recordFilter) {
+		recordFilters = recordFilter;
 	}
 
 
@@ -253,6 +317,15 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 	public void setFirstBasePosition(int firstBasePosition) {
 		this.firstBasePosition = firstBasePosition;
 
+	}
+
+
+	/**
+	 * @param isPairedMode set to true to extract to set the extractor in pair end mode.
+	 * In pair end mode the extractor returns windows having the size of the fragments delimited by the pair ends.
+	 */
+	public void setPairedMode(boolean isPairedMode) {
+		this.isPairedMode = isPairedMode;
 	}
 
 
