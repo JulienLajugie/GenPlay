@@ -73,7 +73,7 @@ public final class TAAddMaskLayer extends TrackListActionExtractorWorker<SCWList
 	protected void doAtTheEnd(SCWList actionResult) {
 		if (actionResult != null) {
 			Track selectedTrack = getTrackListPanel().getSelectedTrack();
-			MaskLayer newLayer = new MaskLayer(selectedTrack, actionResult, fileToExtract.getName());
+			MaskLayer newLayer = new MaskLayer(selectedTrack, actionResult, name);
 			newLayer.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Colors.GREY);
 			selectedTrack.getLayers().add(newLayer);
 			selectedTrack.setActiveLayer(newLayer);

@@ -83,18 +83,27 @@ public class SCWLOTransfrag implements Operation<SCWList> {
 						int j = 0;
 						while ((j < currentList.size()) && !stopped) {
 							// skip zero values
-							while ((j < currentList.size()) && (currentList.get(j) == null) && !stopped) {
+							while ((j < currentList.size()) && (currentList.get(j).getScore() == 0) && !stopped) {
 								j++;
 							}
 							int regionStartIndex = j;
 							int regionStopIndex = regionStartIndex;
+							int gapSize = 0;
 							// a region stops when there is maxZeroWindowGap consecutive zero bins
-							while (((j + 1) < currentList.size()) && ((currentList.get(j + 1).getStart() - currentList.get(j).getStop()) <= zeroSCWGap) && !stopped) {
-								regionStopIndex = j+1;
+							while (((j + 1) < currentList.size()) && (gapSize <= zeroSCWGap) && !stopped) {
+								regionStopIndex = j;
+								if (currentList.get(j + 1).getScore() == 0) {
+									gapSize += currentList.get(j + 1).getSize();
+								} else if (currentList.get(j + 1).getStart() != currentList.get(j).getStop()) {
+									gapSize += currentList.get(j + 1).getStart() - currentList.get(j).getStop();
+								} else {
+									gapSize = 0;
+								}
 								j++;
 							}
+							j = regionStopIndex;
 							if (regionStopIndex >= currentList.size()) {
-								regionStopIndex = currentList.size()-1;
+								regionStopIndex = currentList.size() - 1;
 							}
 							if (regionStopIndex >= regionStartIndex) {
 								float regionScore = 0;

@@ -39,7 +39,6 @@ import edu.yu.einstein.genplay.gui.track.layer.variantLayer.VariantLayer;
  * Loads a layer from data retrieve from a DAS server
  * @author Julien Lajugie
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class TAAddVariantLayer extends TrackListAction {
 

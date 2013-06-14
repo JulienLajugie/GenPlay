@@ -47,7 +47,6 @@ import edu.yu.einstein.genplay.util.colors.Colors;
 /**
  * Adds a {@link BinLayer} to the specified track
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class TAAddBinLayer extends TrackListActionExtractorWorker<BinList> {
 
@@ -81,7 +80,7 @@ public final class TAAddBinLayer extends TrackListActionExtractorWorker<BinList>
 	public void doAtTheEnd(BinList actionResult) {
 		if (actionResult != null) {
 			Track selectedTrack = getTrackListPanel().getSelectedTrack();
-			BinLayer newLayer = new BinLayer(selectedTrack, actionResult, fileToExtract.getName());
+			BinLayer newLayer = new BinLayer(selectedTrack, actionResult, name);
 			// add the history to the layer
 			String history = "Bin Size = " + actionResult.getBinSize() + "bp";
 			history += ", Method of Calculation = " + scoreCalculation;

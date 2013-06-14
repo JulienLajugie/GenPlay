@@ -35,7 +35,7 @@ public class Images {
 	private static final ClassLoader cl = MainFrame.class.getClassLoader();
 
 	//	private static final String APPLICATION_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/images/icon.png";						// Path of the application image
-	private static final String APPLICATION_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/images/GenPlay.png";					// Path of the application image
+	private static final String APPLICATION_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/images/GenPlay64x64.png";					// Path of the application image
 	private static final String BANNER_IMAGE_PATH		= "edu/yu/einstein/genplay/resource/images/genplay_banner_447x91.png";		// Path of the banner image
 	private static final String TOOLS_IMAGE_PATH 		= "edu/yu/einstein/genplay/resource/images/tools.png";						// Path of the tools image
 	private static final String ADD_IMAGE_PATH 			= "edu/yu/einstein/genplay/resource/images/add_entry_50x50.png"; 			// Path of the add entry image

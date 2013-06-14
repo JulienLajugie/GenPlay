@@ -383,7 +383,6 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 				}
 				// unset the tool text and the mouse cursor if there is no gene under the mouse
 				if (geneUnderMouse == null) {
-					getTrack().getGraphicsPanel().setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
 					getTrack().getGraphicsPanel().setToolTipText(null);
 				} else {
 					// if there is a gene under the mouse we also check

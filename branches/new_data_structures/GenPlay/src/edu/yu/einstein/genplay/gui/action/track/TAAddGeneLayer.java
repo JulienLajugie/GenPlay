@@ -42,7 +42,6 @@ import edu.yu.einstein.genplay.util.colors.Colors;
 /**
  * Adds a {@link GeneLayer} to the selected track
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class TAAddGeneLayer extends TrackListActionExtractorWorker<GeneList> {
 
@@ -76,7 +75,7 @@ public final class TAAddGeneLayer extends TrackListActionExtractorWorker<GeneLis
 		}
 		if ((actionResult != null) && valid) {
 			Track selectedTrack = getTrackListPanel().getSelectedTrack();
-			GeneLayer newLayer = new GeneLayer(selectedTrack, actionResult, fileToExtract.getName());
+			GeneLayer newLayer = new GeneLayer(selectedTrack, actionResult, name);
 			newLayer.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Colors.GREY);
 			selectedTrack.getLayers().add(newLayer);
 			selectedTrack.setActiveLayer(newLayer);

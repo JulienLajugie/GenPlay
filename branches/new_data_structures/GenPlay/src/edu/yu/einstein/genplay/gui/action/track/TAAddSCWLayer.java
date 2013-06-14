@@ -81,7 +81,7 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 	public void doAtTheEnd(SCWList actionResult) {
 		if (actionResult != null) {
 			Track selectedTrack = getTrackListPanel().getSelectedTrack();
-			SimpleSCWLayer newLayer = new SimpleSCWLayer(selectedTrack, actionResult, fileToExtract.getName());
+			SimpleSCWLayer newLayer = new SimpleSCWLayer(selectedTrack, actionResult, name);
 			newLayer.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Colors.GREY);
 			String history = new String();
 			if (scoreCalculation != null) {

@@ -41,7 +41,6 @@ import edu.yu.einstein.genplay.util.Utils;
 /**
  * Adds a {@link RepeatLayer} to the selected {@link Track}
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class TAAddRepeatLayer extends TrackListActionExtractorWorker<RepeatFamilyList> {
 
@@ -74,7 +73,7 @@ public final class TAAddRepeatLayer extends TrackListActionExtractorWorker<Repea
 		}
 		if ((actionResult != null) && valid) {
 			Track selectedTrack = getTrackListPanel().getSelectedTrack();
-			RepeatLayer newLayer = new RepeatLayer(selectedTrack, actionResult, fileToExtract.getName());
+			RepeatLayer newLayer = new RepeatLayer(selectedTrack, actionResult, name);
 			selectedTrack.getLayers().add(newLayer);
 			selectedTrack.setActiveLayer(newLayer);
 		}

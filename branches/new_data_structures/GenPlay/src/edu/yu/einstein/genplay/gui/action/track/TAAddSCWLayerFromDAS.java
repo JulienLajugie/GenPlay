@@ -37,7 +37,6 @@ import edu.yu.einstein.genplay.util.colors.Colors;
  * Adds a {@link SimpleSCWLayer} from data retrieve from a DAS server
  * @author Julien Lajugie
  * @author Chirag Gorasia
- * @version 0.1
  */
 public class TAAddSCWLayerFromDAS extends TrackListActionWorker<SCWList> {
 

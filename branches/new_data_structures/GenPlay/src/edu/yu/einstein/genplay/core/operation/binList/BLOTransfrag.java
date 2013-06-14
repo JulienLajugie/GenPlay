@@ -90,7 +90,7 @@ public class BLOTransfrag implements Operation<BinList> {
 						while ((j < currentList.size()) && !stopped) {
 							// skip zero values
 							while ((j < currentList.size()) && (currentList.get(j).getScore() == 0) && !stopped) {
-								resultListBuilder.addElementToBuild(chromosome, currentList.get(j).getScore());
+								resultListBuilder.addElementToBuild(chromosome, 0);
 								j++;
 							}
 							int regionStart = j;
@@ -127,7 +127,7 @@ public class BLOTransfrag implements Operation<BinList> {
 									}
 								}
 							}
-							j++;
+							//j++;
 						}
 					}
 					// tell the operation pool that a chromosome is done
