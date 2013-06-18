@@ -28,6 +28,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -93,6 +94,43 @@ public class GenomeSelectionPanel extends JPanel {
 		gbc.insets = new Insets(2, 10, 4, 10);
 		add(getAlleleTypeComboBox(), gbc);
 
+		setBorder(BorderFactory.createTitledBorder("Genome Selection"));
+	}
+
+
+	/**
+	 * @return the selected allele type
+	 */
+	public AlleleType getAlleleType () {
+		if (jcbAllele.isEnabled()) {
+			return (AlleleType)jcbAllele.getSelectedItem();
+		}
+		return AlleleType.BOTH;
+	}
+
+
+	/**
+	 * Create the allele type combo box.
+	 * @return the allele type combo box
+	 */
+	private JComboBox getAlleleTypeComboBox () {
+		// Creates the combo box
+		Object[] alleles = new Object[]{AlleleType.ALLELE01, AlleleType.ALLELE02};
+		jcbAllele = new JComboBox(alleles);
+		jcbAllele.setSelectedIndex(defaultAllele);
+
+		//Dimension
+		int height = jcbAllele.getFontMetrics(jcbAllele.getFont()).getHeight() + 5;
+		Dimension dimension = new Dimension(PANEL_WIDTH, height);
+		jcbAllele.setPreferredSize(dimension);
+		jcbAllele.setMinimumSize(dimension);
+
+		// Tool tip text
+		jcbAllele.setToolTipText("Select an allele to synchronize with");
+
+		updateAlleleTypeComboBox(jcbGenome.getSelectedItem().toString());
+
+		return jcbAllele;
 	}
 
 
@@ -145,45 +183,6 @@ public class GenomeSelectionPanel extends JPanel {
 
 
 	/**
-	 * Update the allele type combo box state.
-	 * If the reference genome is selected, the allele type box should not be enabled.
-	 * @param genomeName a genome name
-	 */
-	private void updateAlleleTypeComboBox (String genomeName) {
-		if (genomeName.equals(ProjectManager.getInstance().getAssembly().getDisplayName()) || genomeName.equals(FormattedMultiGenomeName.META_GENOME_NAME)) {
-			jcbAllele.setEnabled(false);
-		} else {
-			jcbAllele.setEnabled(true);
-		}
-	}
-
-
-	/**
-	 * Create the allele type combo box.
-	 * @return the allele type combo box
-	 */
-	private JComboBox getAlleleTypeComboBox () {
-		// Creates the combo box
-		Object[] alleles = new Object[]{AlleleType.ALLELE01, AlleleType.ALLELE02};
-		jcbAllele = new JComboBox(alleles);
-		jcbAllele.setSelectedIndex(defaultAllele);
-
-		//Dimension
-		int height = jcbAllele.getFontMetrics(jcbAllele.getFont()).getHeight() + 5;
-		Dimension dimension = new Dimension(PANEL_WIDTH, height);
-		jcbAllele.setPreferredSize(dimension);
-		jcbAllele.setMinimumSize(dimension);
-
-		// Tool tip text
-		jcbAllele.setToolTipText("Select an allele to synchronize with");
-
-		updateAlleleTypeComboBox(jcbGenome.getSelectedItem().toString());
-
-		return jcbAllele;
-	}
-
-
-	/**
 	 * @return the selected score calculation method
 	 */
 	public int getGenomeIndex() {
@@ -200,21 +199,24 @@ public class GenomeSelectionPanel extends JPanel {
 
 
 	/**
-	 * @return the selected allele type
-	 */
-	public AlleleType getAlleleType () {
-		if (jcbAllele.isEnabled()) {
-			return (AlleleType)jcbAllele.getSelectedItem();
-		}
-		return AlleleType.BOTH;
-	}
-
-
-	/**
 	 * Saves the default selected items
 	 */
 	public void saveDefault() {
 		defaultGenome = getGenomeIndex();
 		defaultAllele = jcbAllele.getSelectedIndex();
+	}
+
+
+	/**
+	 * Update the allele type combo box state.
+	 * If the reference genome is selected, the allele type box should not be enabled.
+	 * @param genomeName a genome name
+	 */
+	private void updateAlleleTypeComboBox (String genomeName) {
+		if (genomeName.equals(ProjectManager.getInstance().getAssembly().getDisplayName()) || genomeName.equals(FormattedMultiGenomeName.META_GENOME_NAME)) {
+			jcbAllele.setEnabled(false);
+		} else {
+			jcbAllele.setEnabled(true);
+		}
 	}
 }

@@ -28,16 +28,20 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 
+import edu.yu.einstein.genplay.core.IO.extractor.Extractor;
+import edu.yu.einstein.genplay.core.IO.extractor.SAMExtractor;
+import edu.yu.einstein.genplay.core.IO.extractor.StrandedExtractor;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.gui.dialog.genomeSelectionPanel.GenomeSelectionPanel;
+import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
+import edu.yu.einstein.genplay.gui.track.layer.SimpleSCWLayer;
 import edu.yu.einstein.genplay.util.Images;
 
 
@@ -56,6 +60,7 @@ public class NewCurveLayerDialog extends JDialog {
 	private final 	StrandSelectionPanel	strandSelectionPanel;	// panel for the selection of the strand to extract
 	private final 	ReadDefinitionPanel		readDefinitionPanel;	// panel for the shift and the length of the reads
 	private final	GenomeSelectionPanel	genomeSelectionPanel;	// panel for the selection of the genome in a multigenome project
+	private final	SAMPanel				samPanel;				// panel for SAM/BAM options
 	private final 	JButton 				jbOk; 					// Button OK
 	private final 	JButton 				jbCancel; 				// Button cancel
 	private int 							approved = CANCEL_OPTION;	// indicate if the user canceled or validated
@@ -72,29 +77,68 @@ public class NewCurveLayerDialog extends JDialog {
 
 
 	/**
-	 * Creates an instance of {@link NewCurveLayerDialog}
-	 * @param layerName the default name of the layer
-	 * @param isNameNeeded true if the layer name need to be asked
-	 * @param isBinSizeNeeded true if the binsize need to be asked
-	 * @param isMethodNeeded true if the method of calculation need to be asked
-	 * @param isStrandNeeded true if the strand selection need to be asked
-	 * @param isChromoSelectionNeeded true if the chromosome selection need to be asked
-	 * @param isGenomeSelectionNeeded true if the genome selection need to be asked (works only in multi genome)
+	 * Creates a {@link NewCurveLayerDialog} for {@link BinLayer}
+	 * @param extractor
+	 * @return a new curve dialog
 	 */
-	public NewCurveLayerDialog(String layerName, boolean isNameNeeded, boolean isBinSizeNeeded, boolean isMethodNeeded,
-			boolean isStrandNeeded, boolean isChromoSelectionNeeded, boolean isGenomeSelectionNeeded) {
+	public static NewCurveLayerDialog createNewBinLayerDialog(Extractor extractor) {
+		return new NewCurveLayerDialog(true, extractor);
+	}
+
+
+	/**
+	 * Creates a {@link NewCurveLayerDialog} for {@link SimpleSCWLayer}
+	 * @param extractor
+	 * @return a new curve dialog
+	 */
+	public static NewCurveLayerDialog createNewSimpleSCWLayerDialog(Extractor extractor) {
+		return new NewCurveLayerDialog(false, extractor);
+	}
+
+
+	/**
+	 * Creates an instance of {@link NewCurveLayerDialog}
+	 * @param isBinSizeNeeded true if the binsize need to be asked
+	 * @param extractor {@link Extractor} that will be configured by this dialog
+	 */
+	private NewCurveLayerDialog(boolean isBinSizeNeeded, Extractor extractor) {
 		super();
+		// we don't need to select method of calculation for SAM files
+		// (it's always addition because the reads have no scores)
+		boolean isMethodNeeded = !(extractor instanceof SAMExtractor);
+		// need to add the strand panel if the extractor is stranded
+		boolean isStrandNeeded = extractor instanceof StrandedExtractor;
+		boolean isGenomeSelectionPanelNeeded = ProjectManager.getInstance().isMultiGenomeProject();
+		boolean isSAMPanelNeeded = extractor instanceof SAMExtractor;
+
 		// create panels
-		layerNamePanel = new LayerNamePanel(layerName);
-		binSizePanel = new BinSizePanel();
+		layerNamePanel = new LayerNamePanel(extractor.getDataName());
 		chromoSelectionPanel = new ChromoSelectionPanel();
-		calculMethodPanel = new CalculMethodPanel();
-		strandSelectionPanel = new StrandSelectionPanel();
-		readDefinitionPanel = new ReadDefinitionPanel();
-		if (isGenomeSelectionNeeded && ProjectManager.getInstance().isMultiGenomeProject()) {
+		if (isBinSizeNeeded) {
+			binSizePanel = new BinSizePanel();
+		} else {
+			binSizePanel = null;
+		}
+		if (isStrandNeeded) {
+			strandSelectionPanel = new StrandSelectionPanel();
+			readDefinitionPanel = new ReadDefinitionPanel();
+		} else {
+			strandSelectionPanel = null;
+			readDefinitionPanel = null;
+		}
+		if (isMethodNeeded) {
+			calculMethodPanel = new CalculMethodPanel();
+		} else {
+			calculMethodPanel = null;
+		}
+		if (isSAMPanelNeeded) {
+			samPanel = new SAMPanel((SAMExtractor) extractor);
+		} else {
+			samPanel = null;
+		}
+
+		if (isGenomeSelectionPanelNeeded) {
 			genomeSelectionPanel = new GenomeSelectionPanel();
-			genomeSelectionPanel.setBorder(BorderFactory.createTitledBorder("Genome Selection"));
-			//genomeSelectionPanel.setPreferredSize(new Dimension(150, getPreferredSize().height));
 		} else {
 			genomeSelectionPanel = null;
 		}
@@ -129,124 +173,62 @@ public class NewCurveLayerDialog extends JDialog {
 		// we want the size of the two buttons to be equal
 		jbOk.setPreferredSize(jbCancel.getPreferredSize());
 
-		// if there is no chromosome selection panel the other panels
-		int leftPanelsGridWidth = 1;
-		if (!isChromoSelectionNeeded) {
-			leftPanelsGridWidth = 2;
-		}
-
 		// add the components
 		setLayout(new GridBagLayout());
 		GridBagConstraints c;
 
-		if (isNameNeeded) {
-			c = new GridBagConstraints();
-			c.anchor = GridBagConstraints.LINE_END;
-			c.fill = GridBagConstraints.HORIZONTAL;
-			c.gridwidth = leftPanelsGridWidth;
-			c.insets = new Insets(INSET, INSET, INSET, INSET);
-			c.weightx = 1;
-			c.weighty = 1;
-			add(layerNamePanel, c);
-		}
-
-		if (isChromoSelectionNeeded) {
-			c = new GridBagConstraints();
-			c.fill = GridBagConstraints.BOTH;
-			c.gridheight = 6;
-			c.gridwidth = 2;
-			if (!isNameNeeded && !isBinSizeNeeded && !isMethodNeeded && !isStrandNeeded) {
-				c.gridx = 0;
-			} else {
-				c.gridx = 1;
-			}
-			c.gridy = 0;
-			c.insets = new Insets(INSET, INSET, INSET, INSET);
-			c.weightx = 1;
-			c.weighty = 1;
-			add(chromoSelectionPanel, c);
-		}
+		c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 0;
+		c.anchor = GridBagConstraints.LINE_END;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.insets = new Insets(INSET, INSET, INSET, INSET);
+		c.weightx = 1;
+		c.weighty = 1;
+		add(layerNamePanel, c);
 
 		if (isBinSizeNeeded) {
-			c = new GridBagConstraints();
-			c.fill = GridBagConstraints.HORIZONTAL;
-			c.gridwidth = leftPanelsGridWidth;
-			c.gridx = 0;
-			c.gridy = 1;
-			c.insets = new Insets(INSET, INSET, INSET, INSET);
-			c.weightx = 1;
-			c.weighty = 1;
+			c.gridy++;
 			add(binSizePanel, c);
 		}
 
 		if (isMethodNeeded) {
-			c = new GridBagConstraints();
-			c.fill = GridBagConstraints.HORIZONTAL;
-			c.gridwidth = leftPanelsGridWidth;
-			c.gridx = 0;
-			c.gridy = 2;
-			c.insets = new Insets(INSET, INSET, INSET, INSET);
-			c.weightx = 1;
-			c.weighty = 1;
+			c.gridy++;
 			add(calculMethodPanel, c);
 		}
 
+		if (isSAMPanelNeeded) {
+			c.gridy++;
+			add(samPanel, c);
+		}
+
 		if (isStrandNeeded) {
-			c = new GridBagConstraints();
-			c.fill = GridBagConstraints.HORIZONTAL;
-			c.gridwidth = leftPanelsGridWidth;
-			c.gridx = 0;
-			c.gridy = 3;
-			c.insets = new Insets(INSET, INSET, INSET, INSET);
-			c.ipadx = INSET * 2;
-			c.weightx = 1;
-			c.weighty = 1;
+			c.gridy++;
 			add(strandSelectionPanel, c);
 
-			c = new GridBagConstraints();
-			c.fill = GridBagConstraints.HORIZONTAL;
-			c.gridwidth = leftPanelsGridWidth;
-			c.gridx = 0;
-			c.gridy = 4;
-			c.insets = new Insets(INSET, INSET, INSET, INSET);
-			c.ipadx = INSET * 2;
-			c.weightx = 1;
-			c.weighty = 1;
+			c.gridy++;
 			add(readDefinitionPanel, c);
 		}
 
 		if (genomeSelectionPanel != null) {
-			c = new GridBagConstraints();
-			c.fill = GridBagConstraints.HORIZONTAL;
-			c.gridwidth = leftPanelsGridWidth;
-			c.gridx = 0;
-			c.gridy = 5;
-			c.insets = new Insets(INSET, INSET, INSET, INSET);
-			c.ipadx = INSET * 2;
-			c.weightx = 1;
-			c.weighty = 1;
+			c.gridy++;
 			add(genomeSelectionPanel, c);
 		}
 
-		c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.LINE_END;
 		c.fill = GridBagConstraints.VERTICAL;
-		c.gridx = 0;
-		c.gridy = 6;
-		c.insets = new Insets(INSET, INSET, INSET, INSET);
-		c.weightx = 1;
-		c.weighty = 1;
+		c.gridy++;
 		add(jbOk, c);
 
-		c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.LINE_START;
-		c.fill = GridBagConstraints.VERTICAL;
 		c.gridx = 1;
-		c.gridy = 6;
-		c.insets = new Insets(INSET, INSET, INSET, INSET);
-		c.weightx = 1;
-		c.weighty = 1;
 		add(jbCancel, c);
+
+		c.fill = GridBagConstraints.BOTH;
+		c.gridheight = c.gridy;
+		c.gridx = 1;
+		c.gridy = 0;
+		add(chromoSelectionPanel, c);
 
 		setTitle("New Layer");
 		setIconImage(Images.getApplicationImage());

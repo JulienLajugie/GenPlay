@@ -131,6 +131,7 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 		return programNames;
 	}
 
+
 	/**
 	 * @return the read groups of the SAM / BAM file
 	 */
@@ -241,7 +242,6 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 	}
 
 
-
 	@Override
 	public boolean readItem() throws IOException {
 		// remove the last item from the queues
@@ -286,6 +286,7 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 		}
 		return programNames;
 	}
+
 
 	/**
 	 * @return the read groups of the SAM file extracted from the header

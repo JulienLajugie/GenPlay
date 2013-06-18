@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -30,7 +30,6 @@ import javax.swing.SpinnerNumberModel;
 /**
  * Panel of a {@link NewCurveLayerDialog} with an input box for the bin size
  * @author Julien Lajugie
- * @version 0.1
  */
 class BinSizePanel extends JPanel {
 
@@ -39,8 +38,8 @@ class BinSizePanel extends JPanel {
 	private static final int 	SPINNER_STEP = 100; 					// step of the spinner
 	private final JSpinner 		jsBinSize; 								// spinner for the binsize input
 	private static int 			defaultBinSize = 1000; 					// default binsize
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link BinSizePanel}
 	 */
@@ -49,18 +48,18 @@ class BinSizePanel extends JPanel {
 		SpinnerNumberModel snm = new SpinnerNumberModel(defaultBinSize, 1, MAX_BINSIZE, SPINNER_STEP);
 		jsBinSize = new JSpinner(snm);
 		add(jsBinSize);
-		setBorder(BorderFactory.createTitledBorder("Window Size"));
+		setBorder(BorderFactory.createTitledBorder("Bin Size"));
 	}
 
-	
+
 	/**
 	 * @return the selected binsize
 	 */
 	int getBinSize() {
 		return (Integer) jsBinSize.getValue();
 	}
-	
-	
+
+
 	/**
 	 * Saves the selected bin size as default
 	 */

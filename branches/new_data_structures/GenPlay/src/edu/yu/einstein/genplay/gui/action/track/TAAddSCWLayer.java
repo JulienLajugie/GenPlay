@@ -113,7 +113,7 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 	@Override
 	protected void doBeforeExtraction() throws InterruptedException {
 		boolean isStrandNeeded = extractor instanceof StrandedExtractor;
-		NewCurveLayerDialog ncld = new NewCurveLayerDialog(name, true, false, true, isStrandNeeded, true, true);
+		NewCurveLayerDialog ncld = NewCurveLayerDialog.createNewSimpleSCWLayerDialog(extractor);
 		if (ncld.showDialog(getRootPane()) == NewCurveLayerDialog.APPROVE_OPTION) {
 			selectedChromo = ncld.getSelectedChromosomes();
 			// if not all the chromosomes are selected we need

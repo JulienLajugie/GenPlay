@@ -21,6 +21,8 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.newCurveLayerDialog;
 
+import java.awt.BorderLayout;
+
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -44,8 +46,8 @@ class LayerNamePanel extends JPanel {
 	LayerNamePanel(String layerName) {
 		super();
 		jtfLayerName = new JTextField(layerName);
-		jtfLayerName.setColumns(15);
-		add(jtfLayerName);
+		setLayout(new BorderLayout());
+		add(jtfLayerName, BorderLayout.CENTER);
 		setBorder(BorderFactory.createTitledBorder("Layer Name"));
 	}
 
