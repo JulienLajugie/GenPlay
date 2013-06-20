@@ -21,22 +21,37 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.IO.utils.SAMRecordFilter;
 
+import net.sf.samtools.SAMReadGroupRecord;
 import net.sf.samtools.SAMRecord;
 
 /**
- * Filters out invalid SAM records (eg: unmapped, not primary alignments).
+ * Filters out {@link SAMRecord} that are not in the specified read groups
  * @author Julien Lajugie
  */
-public class InvalidSAMRecordFilter implements SAMRecordFilter {
+public class ReadGroupsSAMRecordFilter implements SAMRecordFilter {
+
+	/** Will reject all records with a read group not in this list */
+	private final SAMReadGroupRecord[] readGroups;
+
+
+	/**
+	 * Creates an instance of {@link ReadGroupsSAMRecordFilter}
+	 * @param readGroups this filter will filter out {@link SAMRecord} that are not in these read groups
+	 */
+	public ReadGroupsSAMRecordFilter(SAMReadGroupRecord... readGroups) {
+		this.readGroups = readGroups;
+	}
+
 
 	@Override
 	public SAMRecord applyFilter(SAMRecord samRecord) {
-		if (samRecord.getReadUnmappedFlag()) {
-			return null;
+		SAMReadGroupRecord recordReadGroup = samRecord.getReadGroup();
+		for (SAMReadGroupRecord currentReadGroup: readGroups) {
+			if (currentReadGroup.equals(recordReadGroup)) {
+				return samRecord;
+			}
 		}
-		if (samRecord.getReadFailsVendorQualityCheckFlag()) {
-			return null;
-		}
-		return samRecord;
+		// record read group was never found
+		return null;
 	}
 }

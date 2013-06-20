@@ -79,9 +79,9 @@ class ReadDefinitionPanel extends JPanel {
 		// tooltip
 		jlHelp = new JLabel(new ImageIcon(Images.getHelpImage()));
 		jlHelp.setToolTipText("<html>Check to define the size of the fragments.<br>" +
-				"Only the start position define in the file will be used. Positions are defined as follow:<br>" +
-				"On <b>5'</b>: <b>start</b> = start from file, <b>stop</b> = (start + fragment length)<br>" +
-				"On <b>3'</b>: <b>start</b> = (start from file + read length - fragment length), <b>stop</b> = (start + fragment length)<br></html>");
+				"Only the start positions defined in the file will be used. Positions are computed as follow:<br>" +
+				"On <b>5'</b>: <b>start</b> = start from file, <b>stop</b> = (start + user-specified fragment length)<br>" +
+				"On <b>3'</b>: <b>start</b> = (start from file + user-specified read length - user-specified fragment length), <b>stop</b> = (start + user-specified fragment length)<br></html>");
 
 		// fragment length components
 		jlFragmentLength = new JLabel("Fragment Length:");

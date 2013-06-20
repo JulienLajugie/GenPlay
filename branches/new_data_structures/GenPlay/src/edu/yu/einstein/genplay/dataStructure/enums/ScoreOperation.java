@@ -63,7 +63,7 @@ public enum ScoreOperation {
 	 * @return The score operations available to resolve a pileup
 	 */
 	public static ScoreOperation[] getPileupOperations() {
-		ScoreOperation[] pileupOperations = {ADDITION, MULTIPLICATION, AVERAGE, MAXIMUM, MINIMUM};
+		ScoreOperation[] pileupOperations = {ADDITION, AVERAGE, MAXIMUM, MINIMUM};
 		return pileupOperations;
 	}
 

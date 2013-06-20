@@ -43,7 +43,7 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.Simple
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListViewBuilder;
 import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.util.Utils;
+import edu.yu.einstein.genplay.util.ListView.ChromosomeWindowListViews;
 
 
 /**
@@ -102,7 +102,7 @@ public class GLOScoreFromSCWList implements Operation<GeneList> {
 								double score = 0; // gene score
 								// set the score per exon
 								for (int k = 0; (k < currentGene.getExons().size()) && !stopped; k++) {
-									List<ScoredChromosomeWindow> currentExonSCW = Utils.searchChromosomeWindowInterval(currentSCWList, currentGene.getExons().get(k).getStart(), currentGene.getExons().get(k).getStop());
+									ListView<ScoredChromosomeWindow> currentExonSCW = ChromosomeWindowListViews.subList(currentSCWList, currentGene.getExons().get(k).getStart(), currentGene.getExons().get(k).getStop());
 									if (currentExonSCW != null) {
 										for (int l = 0; (l < currentExonSCW.size()) && !stopped; l++) {
 											float currentScore = currentExonSCW.get(l).getScore();

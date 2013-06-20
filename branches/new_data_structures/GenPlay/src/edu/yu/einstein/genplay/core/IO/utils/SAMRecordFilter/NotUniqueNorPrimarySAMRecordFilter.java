@@ -24,19 +24,14 @@ package edu.yu.einstein.genplay.core.IO.utils.SAMRecordFilter;
 import net.sf.samtools.SAMRecord;
 
 /**
- * Filters out invalid SAM records (eg: unmapped, not primary alignments).
+ * Filters out {@link SAMRecord} that are not uniquely aligned
  * @author Julien Lajugie
  */
-public class InvalidSAMRecordFilter implements SAMRecordFilter {
+public class NotUniqueNorPrimarySAMRecordFilter implements SAMRecordFilter {
 
 	@Override
 	public SAMRecord applyFilter(SAMRecord samRecord) {
-		if (samRecord.getReadUnmappedFlag()) {
-			return null;
-		}
-		if (samRecord.getReadFailsVendorQualityCheckFlag()) {
-			return null;
-		}
-		return samRecord;
+		String typeBWAFlag = (String) samRecord.getAttribute("XT");
+		return ((typeBWAFlag != null) && typeBWAFlag.equalsIgnoreCase("U")) ? samRecord : null;
 	}
 }

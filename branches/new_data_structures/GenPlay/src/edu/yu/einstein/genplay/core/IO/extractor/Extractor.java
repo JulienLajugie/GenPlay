@@ -213,14 +213,9 @@ public abstract class Extractor implements InvalidDataEventsGenerator, Stoppable
 	/**
 	 * Notifies the listener that a data event occurred
 	 * @param e exception to send to the listeners
-	 * @param lineNumber line number with a problem
-	 * @param line line with a problem
 	 */
-	protected void notifyDataEventListeners(DataLineException e, int lineNumber, String line) {
+	protected void notifyDataEventListeners(DataLineException e) {
 		if (warningCount < WARNING_LIMIT) {
-			e.setFile(dataFile);
-			e.setLineNumber(lineNumber);
-			e.setLine(line);
 			for (InvalidDataListener listeners: invalidDataListenersList) {
 				listeners.invalidDataExtracted(e.getFormattedMessage());
 			}
@@ -230,6 +225,20 @@ public abstract class Extractor implements InvalidDataEventsGenerator, Stoppable
 			}
 		}
 		warningCount++;
+	}
+
+
+	/**
+	 * Notifies the listener that a data event occurred
+	 * @param e exception to send to the listeners
+	 * @param lineNumber line number with a problem
+	 * @param line line with a problem
+	 */
+	protected void notifyDataEventListeners(DataLineException e, int lineNumber, String line) {
+		e.setFile(dataFile);
+		e.setLineNumber(lineNumber);
+		e.setLine(line);
+		notifyDataEventListeners(e);
 	}
 
 

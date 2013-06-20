@@ -31,6 +31,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 
+import net.sf.samtools.SAMReadGroupRecord;
 import edu.yu.einstein.genplay.core.IO.extractor.Extractor;
 import edu.yu.einstein.genplay.core.IO.extractor.SAMExtractor;
 import edu.yu.einstein.genplay.core.IO.extractor.StrandedExtractor;
@@ -148,13 +149,26 @@ public class NewCurveLayerDialog extends JDialog {
 		jbOk.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				binSizePanel.saveDefault();
-				calculMethodPanel.saveDefault();
-				chromoSelectionPanel.saveDefault();
-				strandSelectionPanel.saveDefault();
-				readDefinitionPanel.saveDefault();
+				if (binSizePanel != null) {
+					binSizePanel.saveDefault();
+				}
+				if (calculMethodPanel != null) {
+					calculMethodPanel.saveDefault();
+				}
+				if (chromoSelectionPanel != null) {
+					chromoSelectionPanel.saveDefault();
+				}
+				if (strandSelectionPanel != null) {
+					strandSelectionPanel.saveDefault();
+				}
+				if (readDefinitionPanel != null) {
+					readDefinitionPanel.saveDefault();
+				}
 				if (genomeSelectionPanel != null) {
 					genomeSelectionPanel.saveDefault();
+				}
+				if (samPanel != null) {
+					samPanel.saveDefault();
 				}
 				approved = APPROVE_OPTION;
 				setVisible(false);
@@ -282,6 +296,22 @@ public class NewCurveLayerDialog extends JDialog {
 
 
 	/**
+	 * @return the minimum mapping quality to extract
+	 */
+	public int getMappingQuality() {
+		return samPanel.getMappingQuality();
+	}
+
+
+	/**
+	 * @return the selected read group, null if all read-groups are selected
+	 */
+	public SAMReadGroupRecord getReadGroup() {
+		return samPanel.getSelectedReadGroup();
+	}
+
+
+	/**
 	 * @return the read length value. Returns zero if the read length is not specified
 	 */
 	public int getReadLengthValue() {
@@ -293,6 +323,10 @@ public class NewCurveLayerDialog extends JDialog {
 	 * @return the selected {@link ScoreOperation}
 	 */
 	public ScoreOperation getScoreCalculationMethod() {
+		// the default value is addition
+		if (calculMethodPanel == null) {
+			return ScoreOperation.ADDITION;
+		}
 		return calculMethodPanel.getScoreCalculationMethod();
 	}
 
@@ -310,6 +344,54 @@ public class NewCurveLayerDialog extends JDialog {
 	 */
 	public Strand getStrandToExtract() {
 		return strandSelectionPanel.getStrandToExtract();
+	}
+
+
+	/**
+	 * @return true if all the reads should be extracted
+	 */
+	public boolean isAllReadsSelected() {
+		return samPanel.isAllReadsSelected();
+	}
+
+
+	/**
+	 * @return true if the pair end mode is selected
+	 */
+	public boolean isPairedEndSelected() {
+		return samPanel.isPairedEndSelected();
+	}
+
+
+	/**
+	 * @return true if the unique reads and the primary alignments should be extracted
+	 */
+	public boolean isPrimaryAligmentSelected() {
+		return samPanel.isPrimaryAligmentSelected();
+	}
+
+
+	/**
+	 * @return true if the remove duplicates options is selected
+	 */
+	public boolean isRemoveDuplicatesSelected() {
+		return samPanel.isRemoveDuplicatesSelected();
+	}
+
+
+	/**
+	 * @return true if the extraction should be done in single end mode
+	 */
+	public boolean isSingleEndSelected() {
+		return samPanel.isSingleEndSelected();
+	}
+
+
+	/**
+	 * @return true if only the unique reads should be extracted
+	 */
+	public boolean isUniqueSelected() {
+		return samPanel.isUniqueSelected();
 	}
 
 

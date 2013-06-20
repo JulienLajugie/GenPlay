@@ -22,7 +22,6 @@
 package edu.yu.einstein.genplay.gui.dialog;
 
 import java.awt.Component;
-import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -34,10 +33,8 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
+import javax.swing.JTextArea;
 
-import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.Utils;
 
@@ -45,14 +42,25 @@ import edu.yu.einstein.genplay.util.Utils;
 /**
  * A {@link JDialog} with a {@link JEditorPane}
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class TextDialog extends JDialog implements ActionListener {
 
 	private static final long serialVersionUID = -4149933399246523843L; // generated ID
-
 	private static final Dimension DIALOG_DIMENSION = new Dimension(600, 500); // dimension of the dialog
-	private final JEditorPane 	jepText;	// display the text
+
+	/**
+	 * Shows the dialog
+	 * @param parent the parent component of the dialog, can be null; see showDialog for details
+	 * @param title title of the dialog
+	 * @param text text to display
+	 */
+	public static void showDialog(Component parent, String title, String text) {
+		TextDialog textDialog = new TextDialog(title, text);
+		textDialog.setLocationRelativeTo(parent);
+		textDialog.setVisible(true);
+	}
+
+	private final JTextArea 	jtaText;	// display the text
 	private final JScrollPane 	jspText;	// scroll pane for the text
 	private final JButton 		jbOk;		// button ok
 
@@ -60,30 +68,16 @@ public final class TextDialog extends JDialog implements ActionListener {
 	/**
 	 * Private constructor.
 	 * Creates an instance of {@link TextDialog}
-	 * @param fileURL url of the file to display
 	 * @param title title of the dialog
+	 * @param text text to display
 	 * @throws IOException
 	 */
-	private TextDialog(String fileURL, String title) throws IOException {
-		jepText = new JEditorPane(fileURL);
-		jepText.setEditable(false);
-		// add  hyperlink gestion
-		jepText.addHyperlinkListener(new HyperlinkListener() {
-			@Override
-			public void hyperlinkUpdate(HyperlinkEvent evt) {
-				if (Desktop.isDesktopSupported()) {
-					if (evt.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-						try {
-							Desktop.getDesktop().browse(evt.getURL().toURI());
-						} catch (Exception e) {
-							ExceptionManager.getInstance().caughtException(e);
-						}
-					}
-				}
-			}
-		});
+	private TextDialog(String title, String text) {
+		jtaText = new JTextArea();
+		jtaText.setText(text);
+		jtaText.setEditable(false);
 
-		jspText = new JScrollPane(jepText);
+		jspText = new JScrollPane(jtaText);
 		jspText.getVerticalScrollBar().setUnitIncrement(Utils.SCROLL_INCREMENT_UNIT);
 
 		jbOk = new JButton("Ok");
@@ -95,16 +89,13 @@ public final class TextDialog extends JDialog implements ActionListener {
 		c.fill = GridBagConstraints.BOTH;
 		c.gridx = 0;
 		c.gridy = 0;
-		c.gridwidth = 2;
 		c.weightx = 1;
 		c.weighty = 1;
 		add(jspText, c);
 
 		c.fill = GridBagConstraints.NONE;
-		c.anchor = GridBagConstraints.LINE_END;
-		c.gridx = 1;
+		c.anchor = GridBagConstraints.CENTER;
 		c.gridy = 1;
-		c.gridwidth = 1;
 		c.weightx = 0;
 		c.weighty = 0;
 		add(jbOk, c);
@@ -126,19 +117,5 @@ public final class TextDialog extends JDialog implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		dispose();
-	}
-
-
-	/**
-	 * Shows the dialog
-	 * @param parent the parent component of the dialog, can be null; see showDialog for details
-	 * @param fileURL url of the file to display
-	 * @param title title of the dialog
-	 * @throws IOException
-	 */
-	public static void showDialog(Component parent, String fileURL, String title) throws IOException {
-		TextDialog textDialog = new TextDialog(fileURL, title);
-		textDialog.setLocationRelativeTo(parent);
-		textDialog.setVisible(true);
 	}
 }

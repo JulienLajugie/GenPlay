@@ -49,7 +49,7 @@ public final class DataLineException extends Exception {
 	private final 	String 	process;		// Description of the error
 	private 		File 	file;			// File where the error happened
 	private			String	line;			// Original line where the error happened
-	private 		int 	lineNumber;		// Line of the file where the error happened
+	private 		Integer	lineNumber;		// Line of the file where the error happened
 
 
 	/**
@@ -106,7 +106,10 @@ public final class DataLineException extends Exception {
 		String formattedMessage = "";
 		String defaultIndentPattern = "Description: ";
 		if (file != null) {
-			formattedMessage += "Error in the file " + file.getPath() + " at line " + lineNumber + "\n";
+			formattedMessage += "Error in the file " + file.getPath();
+			if (lineNumber != null) {
+				formattedMessage += " at line " + lineNumber + "\n";
+			}
 		}
 		formattedMessage += "Treatment: " + process + "\n";
 		formattedMessage += "Description: ";
@@ -121,7 +124,9 @@ public final class DataLineException extends Exception {
 			}
 			formattedMessage += array[i] + "\n";
 		}
-		formattedMessage += getAdjustedString(defaultIndentPattern, "Line:") + line + "\n";
+		if (line != null) {
+			formattedMessage += getAdjustedString(defaultIndentPattern, "Line:") + line + "\n";
+		}
 		return formattedMessage;
 	}
 
@@ -155,7 +160,7 @@ public final class DataLineException extends Exception {
 	/**
 	 * @return the lineNumber
 	 */
-	public int getLineNumber() {
+	public Integer getLineNumber() {
 		return lineNumber;
 	}
 
@@ -179,7 +184,7 @@ public final class DataLineException extends Exception {
 	/**
 	 * @param lineNumber the lineNumber to set
 	 */
-	public void setLineNumber(int lineNumber) {
+	public void setLineNumber(Integer lineNumber) {
 		this.lineNumber = lineNumber;
 	}
 }

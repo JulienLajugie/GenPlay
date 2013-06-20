@@ -26,9 +26,17 @@ import java.io.File;
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.IO.dataReader.SCWReader;
+import edu.yu.einstein.genplay.core.IO.extractor.SAMExtractor;
 import edu.yu.einstein.genplay.core.IO.extractor.StrandedExtractor;
 import edu.yu.einstein.genplay.core.IO.utils.ChromosomesSelector;
 import edu.yu.einstein.genplay.core.IO.utils.StrandedExtractorOptions;
+import edu.yu.einstein.genplay.core.IO.utils.SAMRecordFilter.DuplicateSAMRecordFilter;
+import edu.yu.einstein.genplay.core.IO.utils.SAMRecordFilter.InvalidSAMRecordFilter;
+import edu.yu.einstein.genplay.core.IO.utils.SAMRecordFilter.MappingQualitySAMRecordFilter;
+import edu.yu.einstein.genplay.core.IO.utils.SAMRecordFilter.NotUniqueNorPrimarySAMRecordFilter;
+import edu.yu.einstein.genplay.core.IO.utils.SAMRecordFilter.NotUniqueSAMRecordFilter;
+import edu.yu.einstein.genplay.core.IO.utils.SAMRecordFilter.ReadGroupsSAMRecordFilter;
+import edu.yu.einstein.genplay.core.IO.utils.SAMRecordFilter.UnpairedSAMRecordFilter;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
@@ -58,6 +66,7 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 	private Strand					strand = null;													// strand to extract
 	private int						fragmentLength = 0;												// user specified length of the fragments
 	private int 					readLength = 0;													// user specified length of the reads
+	private String 					samHistory = null;												// history line for sam extraction
 
 
 	/**
@@ -104,6 +113,9 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 			if (!history.isEmpty()) {
 				newLayer.getHistory().add(history, Colors.GREY);
 			}
+			if (samHistory != null) {
+				newLayer.getHistory().add(samHistory, Colors.GREY);
+			}
 			selectedTrack.getLayers().add(newLayer);
 			selectedTrack.setActiveLayer(newLayer);
 		}
@@ -113,6 +125,8 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 	@Override
 	protected void doBeforeExtraction() throws InterruptedException {
 		boolean isStrandNeeded = extractor instanceof StrandedExtractor;
+		boolean isSAMExtractor = extractor instanceof SAMExtractor;
+		boolean isMultiGenome = ProjectManager.getInstance().isMultiGenomeProject();
 		NewCurveLayerDialog ncld = NewCurveLayerDialog.createNewSimpleSCWLayerDialog(extractor);
 		if (ncld.showDialog(getRootPane()) == NewCurveLayerDialog.APPROVE_OPTION) {
 			selectedChromo = ncld.getSelectedChromosomes();
@@ -121,6 +135,7 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 			extractor.setChromosomeSelector(new ChromosomesSelector(selectedChromo));
 			name = ncld.getLayerName();
 			scoreCalculation = ncld.getScoreCalculationMethod();
+			// set strand options
 			if (isStrandNeeded) {
 				strand = ncld.getStrandToExtract();
 				fragmentLength = ncld.getFragmentLengthValue();
@@ -128,7 +143,42 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 				StrandedExtractorOptions strandedExtractorOptions = new StrandedExtractorOptions(strand, fragmentLength, readLength);
 				((StrandedExtractor) extractor).setStrandedExtractorOptions(strandedExtractorOptions);
 			}
-			if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			// set SAM options
+			if (isSAMExtractor) {
+				samHistory = "";
+				SAMExtractor samExtractor = (SAMExtractor) extractor;
+				// always remove invalid reads
+				samExtractor.addFilter(new InvalidSAMRecordFilter());
+				if (ncld.getReadGroup() != null) {
+					samExtractor.addFilter(new ReadGroupsSAMRecordFilter(ncld.getReadGroup()));
+					samHistory += "Read Group: " + ncld.getReadGroup() + ", ";
+				}
+				if (ncld.isRemoveDuplicatesSelected()) {
+					samExtractor.addFilter(new DuplicateSAMRecordFilter());
+					samHistory += "Duplicates Removed, ";
+				}
+				if (ncld.isPairedEndSelected()) {
+					samExtractor.setPairedMode(true);
+					samExtractor.addFilter(new UnpairedSAMRecordFilter());
+					samHistory += "Paired-End Mode";
+				} else {
+					samExtractor.setPairedMode(false);
+					samHistory += "Single-End Mode, ";
+					if (ncld.getMappingQuality() > 0) {
+						samExtractor.addFilter(new MappingQualitySAMRecordFilter(ncld.getMappingQuality()));
+						samHistory += "Mapping Quality ≥ " + ncld.getMappingQuality() + ", ";
+					}
+					if (ncld.isUniqueSelected()) {
+						samExtractor.addFilter(new NotUniqueSAMRecordFilter());
+						samHistory += ", Unique Alignments Only";
+					} else if (ncld.isPrimaryAligmentSelected()) {
+						samExtractor.addFilter(new NotUniqueNorPrimarySAMRecordFilter());
+						samHistory += ", Unique and Primary Alignments";
+					}
+				}
+			}
+			// set multi-genome options
+			if (isMultiGenome) {
 				genomeName = ncld.getGenomeName();
 				alleleType = ncld.getAlleleType();
 				extractor.setGenomeName(genomeName);
@@ -149,10 +199,10 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 				 * factory since reads on the 3' strand are shifted toward 5' which can change the order
 				 * of reads and cause the file to be no longer sorted
 				 */
-				notifyActionStart("Generating Variable Window Layer", (SimpleSCWList.getCreationStepCount(SCWListType.GENERIC) * 3) + 2, true);
+				notifyActionStart("Generating Variable-Window Layer", (SimpleSCWList.getCreationStepCount(SCWListType.GENERIC) * 3) + 2, true);
 				scwList = SCWListFactory.createStrandSafeDenseSCWList((SCWReader) extractor, scoreCalculation);
 			} else {
-				notifyActionStart("Generating Variable Window Layer", SimpleSCWList.getCreationStepCount(SCWListType.GENERIC) + 1, true);
+				notifyActionStart("Generating Variable-Window Layer", SimpleSCWList.getCreationStepCount(SCWListType.GENERIC) + 1, true);
 				scwList = SCWListFactory.createDenseSCWList((SCWReader) extractor, scoreCalculation);
 			}
 			return scwList;

@@ -113,6 +113,8 @@ public final class WriterFactory {
 			return new SCWListAsBedWriter(outputFile, data, name);
 		} else if (ff instanceof BedGraphFilter) {
 			return new SCWListAsBedGraphWriter(outputFile, data, name);
+		} else if (ff instanceof BedGraphWith0Filter) {
+			return new SCWListAsBedGraphWith0Writer(outputFile, data, name);
 		} else if (ff instanceof GFFFilter) {
 			return new SCWListAsGFFWriter(outputFile, data, name);
 		} else {

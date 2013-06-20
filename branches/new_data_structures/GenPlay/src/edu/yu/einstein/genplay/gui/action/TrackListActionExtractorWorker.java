@@ -124,6 +124,9 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 					return generateList();
 				}
 			} catch (Exception e) {
+				if (extractor != null) {
+					extractor.stop();
+				}
 				handleProcessActionException(e);
 			}
 		}

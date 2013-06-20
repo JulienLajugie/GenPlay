@@ -35,19 +35,10 @@ import javax.swing.filechooser.FileFilter;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
-import edu.yu.einstein.genplay.dataStructure.enums.FilterType;
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
-import edu.yu.einstein.genplay.dataStructure.enums.IslandResultType;
 import edu.yu.einstein.genplay.dataStructure.enums.LogBase;
-import edu.yu.einstein.genplay.dataStructure.enums.SaturationType;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
-import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
-import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
-import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.gui.dialog.chromosomeChooser.ChromosomeChooserDialog;
 import edu.yu.einstein.genplay.gui.fileFilter.BAMFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.BedFilter;
@@ -71,7 +62,6 @@ import edu.yu.einstein.genplay.gui.track.layer.LayerType;
  * Collection of static methods used in this project
  * @author Julien Lajugie
  * @author Nicolas Fourel
- * @version 0.1
  */
 public final class Utils {
 
@@ -114,23 +104,6 @@ public final class Utils {
 		} else {
 			return file;
 		}
-	}
-
-
-	/**
-	 * @param chromoList array of boolean.
-	 * @return true if all the booleans are set to true or if the array is null. False otherwise
-	 */
-	public final static boolean allChromosomeSelected(boolean[] chromoList) {
-		if (chromoList == null) {
-			return true;
-		}
-		for (boolean isSelected: chromoList) {
-			if (!isSelected) {
-				return false;
-			}
-		}
-		return true;
 	}
 
 
@@ -216,23 +189,6 @@ public final class Utils {
 
 
 	/**
-	 * A dialog box used to choose a {@link FilterType}
-	 * @param parentComponent the parent Component for the dialog
-	 * @return a {@link FilterType} value
-	 */
-	public final static FilterType chooseFilterType(Component parentComponent) {
-		return (FilterType)JOptionPane.showInputDialog(
-				parentComponent,
-				"Choose a type of filter",
-				"Filter Type",
-				JOptionPane.QUESTION_MESSAGE,
-				null,
-				FilterType.values(),
-				FilterType.PERCENTAGE);
-	}
-
-
-	/**
 	 * A dialog box used to choose a {@link GeneScoreType}
 	 * @param parentComponent the parent Component for the dialog
 	 * @return a {@link GeneScoreType}
@@ -246,23 +202,6 @@ public final class Utils {
 				null,
 				GeneScoreType.values(),
 				GeneScoreType.RPKM);
-	}
-
-
-	/**
-	 * A dialog box used to choose a {@link IslandResultType}
-	 * @param parentComponent the parent Component for the dialog
-	 * @return a {@link FilterType} value
-	 */
-	public final static IslandResultType chooseIslandResultType(Component parentComponent) {
-		return (IslandResultType)JOptionPane.showInputDialog(
-				parentComponent,
-				"Choose a type of result",
-				"Island result Type",
-				JOptionPane.QUESTION_MESSAGE,
-				null,
-				IslandResultType.values(),
-				IslandResultType.FILTERED);
 	}
 
 
@@ -284,58 +223,6 @@ public final class Utils {
 
 
 	/**
-	 * A dialog box used to choose a {@link ScorePrecision}
-	 * @param parentComponent the parent Component for the dialog
-	 * @return a {@link ScorePrecision}
-	 */
-	public final static ScorePrecision choosePrecision(Component parentComponent) {
-		return (ScorePrecision)JOptionPane.showInputDialog(
-				parentComponent,
-				"Choose a precision for the data of the fixed window list",
-				"Select Data Precision",
-				JOptionPane.QUESTION_MESSAGE,
-				null,
-				ScorePrecision.values(),
-				ScorePrecision.PRECISION_32BIT);
-	}
-
-
-	/**
-	 * A dialog box used to choose a {@link ScorePrecision}
-	 * @param parentComponent the parent Component for the dialog
-	 * @param defaultValue default value in the input box
-	 * @return a {@link ScorePrecision}
-	 */
-	public final static ScorePrecision choosePrecision(Component parentComponent, ScorePrecision defaultValue) {
-		return (ScorePrecision)JOptionPane.showInputDialog(
-				parentComponent,
-				"Choose a precision for the data of the fixed window list",
-				"Select Data Precision",
-				JOptionPane.QUESTION_MESSAGE,
-				null,
-				ScorePrecision.values(),
-				defaultValue);
-	}
-
-
-	/**
-	 * A dialog box used to choose a {@link SaturationType}
-	 * @param parentComponent the parent Component for the dialog
-	 * @return a {@link SaturationType}
-	 */
-	public final static SaturationType chooseSaturationType(Component parentComponent) {
-		return (SaturationType)JOptionPane.showInputDialog(
-				parentComponent,
-				"Choose a type of saturation",
-				"Saturation Type",
-				JOptionPane.QUESTION_MESSAGE,
-				null,
-				SaturationType.values(),
-				SaturationType.PERCENTAGE);
-	}
-
-
-	/**
 	 * A dialog box used to choose a {@link ScoreOperation}
 	 * @param parentComponent the parent Component for the dialog
 	 * @return a {@link ScoreOperation}
@@ -349,153 +236,6 @@ public final class Utils {
 				null,
 				ScoreOperation.values(),
 				ScoreOperation.AVERAGE);
-	}
-
-
-	/**
-	 * A dialog box used to choose a {@link ScoreOperation}
-	 * @param parentComponent the parent Component for the dialog
-	 * @return a {@link ScoreOperation}
-	 */
-	public final static ScoreOperation chooseScoreOperation(Component parentComponent) {
-		return (ScoreOperation)JOptionPane.showInputDialog(
-				parentComponent,
-				"Choose a method for the calculation of the score",
-				"Score Calculation",
-				JOptionPane.QUESTION_MESSAGE,
-				null,
-				ScoreOperation.values(),
-				ScoreOperation.ADDITION);
-	}
-
-
-	/**
-	 * Checks if the variant contains the given position.
-	 * If the position is located before the window, -1 is returned.
-	 * If the position is located after the window, 1 is returned.
-	 * if the position is included in the window, 0 is returned.
-	 * @param variant the variant
-	 * @param position the position to check
-	 * @return 0 is the position is in the variant, -1 if lower, 1 if higher.
-	 */
-	public final static int containsVariantPosition (Variant variant, int position) {
-		if (position < variant.getStart()) {
-			return -1;
-		} else if (position > variant.getStop()) {
-			return 1;
-		}
-		return 0;
-	}
-
-
-	/**
-	 * Returns the index of the window where the value is found OR the index right after if not found.
-	 * The scan is based on the start and stop position of the windows (containsPosition method of {@link SimpleChromosomeWindow} is used).
-	 * Recursive function.
-	 * 
-	 * @param <T> 			type of the element of the input list
-	 * @param list			list to scan
-	 * @param value			value to find
-	 * @param indexStart	index of the list to start the scan
-	 * @param indexStop		index of the list to stop the scan
-	 * @return				the index where the value of the window is found or the index right after if the exact value is not found
-	 */
-	private static <T extends ChromosomeWindow> int findChromosomePosition(ListView<T> list, int value, int indexStart, int indexStop) {
-		if (indexStart == indexStop) {
-			return indexStart;
-		} else {
-			int middle = (indexStop - indexStart) / 2;
-			int compare = list.get(indexStart + middle).containsPosition(value);
-
-			if (compare == 0) {
-				return indexStart + middle;
-			} else if (compare < 0) {
-				return findChromosomePosition(list, value, indexStart, indexStart + middle);
-			} else {
-				return findChromosomePosition(list, value, indexStart + middle + 1, indexStop);
-			}
-		}
-	}
-
-
-	/**
-	 * Returns the index of the window where the value is found OR the index right after if not found.
-	 * The scan is based on the start position of the windows.
-	 * Recursive function.
-	 * 
-	 * @param <T> 			type of the element of the input list
-	 * @param list			list to scan
-	 * @param value			value to find
-	 * @param indexStart	index of the list to start the scan
-	 * @param indexStop		index of the list to stop the scan
-	 * @return 				the index where the start value of the window is found or the index right after if the exact value is not found
-	 */
-	public final static <T extends ChromosomeWindow> int findStart(List<T> list, int value, int indexStart, int indexStop) {
-		int middle = (indexStop - indexStart) / 2;
-		if (indexStart == indexStop) {
-			return indexStart;
-		} else if (value == list.get(indexStart + middle).getStart()) {
-			return indexStart + middle;
-		} else if (value > list.get(indexStart + middle).getStart()) {
-			return findStart(list, value, indexStart + middle + 1, indexStop);
-		} else {
-			return findStart(list, value, indexStart, indexStart + middle);
-		}
-	}
-
-
-	/**
-	 * Returns the index of the window where the value is found OR the index right after if not found.
-	 * The scan is based on the stop position of the windows.
-	 * Recursive function.
-	 * 
-	 * @param <T> 			type of the element of the input list
-	 * @param list			list to scan
-	 * @param value			value to find
-	 * @param indexStart	index of the list to start the scan
-	 * @param indexStop		index of the list to stop the scan
-	 * @return 				the index where the stop value of the window is found or the index right before if the exact value is not found
-	 */
-	public final static <T extends ChromosomeWindow> int findStop(List<T> list, int value, int indexStart, int indexStop) {
-		int middle = (indexStop - indexStart) / 2;
-		if (indexStart == indexStop) {
-			return indexStart;
-		} else if (value == list.get(indexStart + middle).getStop()) {
-			return indexStart + middle;
-		} else if (value > list.get(indexStart + middle).getStop()) {
-			return findStop(list, value, indexStart + middle + 1, indexStop);
-		} else {
-			return findStop(list, value, indexStart, indexStart + middle);
-		}
-	}
-
-
-	/**
-	 * Returns the index of the variant where the value is found OR the index right after if not found.
-	 * The scan is based on the start and stop position of the variant.
-	 * Recursive function.
-	 * 
-	 * @param list			list to scan
-	 * @param value			value to find
-	 * @param indexStart	index of the list to start the scan
-	 * @param indexStop		index of the list to stop the scan
-	 * @return				the index where the value of the variant is found or the index right after if the exact value is not found
-	 */
-	private static int findVariantPosition(List<Variant> list, int value, int indexStart, int indexStop) {
-		if (indexStart == indexStop) {
-			return indexStart;
-		} else {
-			int middle = (indexStop - indexStart) / 2;
-			int compare = containsVariantPosition(list.get(indexStart + middle), value);
-
-			if (compare == 0) {
-				return indexStart + middle;
-			} else if (compare < 0) {
-				return findVariantPosition(list, value, indexStart, indexStart + middle);
-			} else {
-				return findVariantPosition(list, value, indexStart + middle + 1, indexStop);
-			}
-		}
 	}
 
 
@@ -636,27 +376,9 @@ public final class Utils {
 
 
 	/**
-	 * @param objects	the array of objects
-	 * @param metrics	the metrics
-	 * @return the length of the longest object (as a string), 0 otherwise
-	 */
-	public final static int getMaximumLength (Object[] objects, FontMetrics metrics) {
-		int result = 0;
-
-		if ((objects != null) && (objects.length > 0)) {
-			for (Object object: objects) {
-				result = Math.max(result, metrics.stringWidth(object.toString()));
-			}
-		}
-
-		return result;
-	}
-
-
-	/**
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as BinList
 	 */
-	public final static ExtendedFileFilter[] getReadableBinListFileFilters() {
+	public final static FileFilter[] getReadableBinListFileFilters() {
 		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new GTFFilter(), new WiggleFilter(), new PairFilter(), new ElandExtendedFilter(), new PSLFilter(), new SAMFilter(), new BAMFilter()};
 		return filters;
 	}
@@ -665,7 +387,7 @@ public final class Utils {
 	/**
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as GeneList
 	 */
-	public final static ExtendedFileFilter[] getReadableGeneFileFilters() {
+	public final static FileFilter[] getReadableGeneFileFilters() {
 		ExtendedFileFilter[] filters = {new BedFilter(), new GTFFilter(), new PSLFilter()};
 		return filters;
 	}
@@ -674,7 +396,7 @@ public final class Utils {
 	/**
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as stripes
 	 */
-	public final static ExtendedFileFilter[] getReadableMaskFileFilters() {
+	public final static FileFilter[] getReadableMaskFileFilters() {
 		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new GTFFilter(), new WiggleFilter(), new PSLFilter(), new SAMFilter(), new BAMFilter()};
 		return filters;
 	}
@@ -683,7 +405,7 @@ public final class Utils {
 	/**
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as Repeats
 	 */
-	public final static ExtendedFileFilter[] getReadableRepeatFileFilters() {
+	public final static FileFilter[] getReadableRepeatFileFilters() {
 		ExtendedFileFilter[] filters = {new BedFilter(), new GFFFilter(), new GTFFilter(), new PSLFilter()};
 		return filters;
 	}
@@ -692,7 +414,7 @@ public final class Utils {
 	/**
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as SCWList
 	 */
-	public final static ExtendedFileFilter[] getReadableSCWFileFilters() {
+	public final static FileFilter[] getReadableSCWFileFilters() {
 		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new GTFFilter(), new WiggleFilter(), new PSLFilter(), new SAMFilter(), new BAMFilter()};
 		return filters;
 	}
@@ -710,7 +432,7 @@ public final class Utils {
 	/**
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be saved as BinList
 	 */
-	public final static ExtendedFileFilter[] getWritableBinListFileFilters() {
+	public final static FileFilter[] getWritableBinListFileFilters() {
 		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedGraphWith0Filter(), new BedFilter(), new GFFFilter(), new WiggleFilter()};
 		return filters;
 	}
@@ -719,7 +441,7 @@ public final class Utils {
 	/**
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be saved as GeneList
 	 */
-	public final static ExtendedFileFilter[] getWritableGeneFileFilters() {
+	public final static FileFilter[] getWritableGeneFileFilters() {
 		ExtendedFileFilter[] filters = {new BedFilter()};
 		return filters;
 	}
@@ -728,50 +450,9 @@ public final class Utils {
 	/**
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be saved as SCWList
 	 */
-	public final static ExtendedFileFilter[] getWritableSCWFileFilter() {
-		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter()};
+	public final static FileFilter[] getWritableSCWFileFilter() {
+		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedGraphWith0Filter(), new BedFilter(), new GFFFilter()};
 		return filters;
-	}
-
-
-	/**
-	 * @param element		the element to test
-	 * @param positionStart	the start position on the main frame
-	 * @param positionStop	the stop position on the main frame
-	 * @return true if the element is in the main frame, false otherwise
-	 */
-	public final static boolean isInVariant (Variant element, int positionStart, int positionStop) {
-		if (element.getStop() < positionStart) {
-			return false;
-		}
-
-		if (element.getStart() > positionStop) {
-			return false;
-		}
-
-		return true;
-	}
-
-
-	/**
-	 * 
-	 * @param <T> type of the window list (ie: {@link SimpleScoredChromosomeWindow},
-	 * {@link SimpleChromosomeWindow} ...) must be or extends {@link SimpleChromosomeWindow}
-	 * @param element		the element to test
-	 * @param windowStart	a start position
-	 * @param windowStop	a stop position
-	 * @return true if the element is in the specified window, false otherwise
-	 */
-	public final static <T extends ChromosomeWindow> boolean isInWindow (T element, int windowStart, int windowStop) {
-		if (element.getStop() < windowStart) {
-			return false;
-		}
-
-		if (element.getStart() > windowStop) {
-			return false;
-		}
-
-		return true;
 	}
 
 
@@ -790,7 +471,6 @@ public final class Utils {
 			return Math.log(value) / Math.log(logBase.getValue());
 		}
 	}
-
 
 
 	/**
@@ -812,95 +492,6 @@ public final class Utils {
 			right--;
 		}
 		return b;
-	}
-
-
-	/**
-	 * Returns a sublist of the input list. The first window contains or
-	 * starts after the specified start position.
-	 * The last window contains or stops before the specified stop position.
-	 * @param <T> type of the window list (ie: {@link SimpleScoredChromosomeWindow},
-	 * {@link SimpleChromosomeWindow} ...) must be or extends {@link SimpleChromosomeWindow}
-	 * @param list input list
-	 * @param positionStart
-	 * @param positionStop
-	 * @return a sublist of the input list
-	 */
-	public final static <T extends ChromosomeWindow> List<T> searchChromosomeWindowInterval(ListView<T> list, int positionStart, int positionStop) {
-		if ((list == null) || (list.size() == 0)) {
-			return null;
-		}
-
-		ArrayList<T> resultList = new ArrayList<T>();
-
-		// Gets the start and stop indexes of the list
-		int indexStart = findChromosomePosition(list, positionStart, 0, list.size() - 1);
-		int indexStop = findChromosomePosition(list, positionStop, 0, list.size() - 1);
-
-		// Extract the windows from the start (included) to the stop (excluded)
-		for (int i = indexStart; i < indexStop; i++) {
-			resultList.add(list.get(i));
-		}
-
-		// The stop position may have been returned even if the window is not included between the start and stop position
-		// It is necessary to test it before adding it
-		T element = list.get(indexStop);
-		if (isInWindow(element, positionStart, positionStop)) {
-			resultList.add(element);
-		}
-
-		return resultList;
-	}
-
-
-	/**
-	 * Returns a sublist of the input list. The first variant contains or
-	 * starts after the specified start position.
-	 * The last variant contains or stops before the specified stop position.
-	 * @param list input list
-	 * @param positionStart
-	 * @param positionStop
-	 * @return a sublist of the input list
-	 */
-	public final static ArrayList<Variant> searchVariantInterval(List<Variant> list, int positionStart, int positionStop) {
-		if ((list == null) || (list.size() == 0)) {
-			return null;
-		}
-
-		ArrayList<Variant> resultList = new ArrayList<Variant>();
-
-		// Gets the start and stop indexes of the list
-		int indexStart = findVariantPosition(list, positionStart, 0, list.size() - 1);
-		int indexStop = findVariantPosition(list, positionStop, 0, list.size() - 1);
-
-		// Extract the windows from the start (included) to the stop (excluded)
-		for (int i = indexStart; i < indexStop; i++) {
-			resultList.add(list.get(i));
-		}
-
-		// The stop position may have been returned even if the window is not included between the start and stop position
-		// It is necessary to test it before adding it
-		Variant element = list.get(indexStop);
-		if (isInVariant(element, positionStart, positionStop)) {
-			resultList.add(element);
-		}
-
-		return resultList;
-	}
-
-
-
-	/**
-	 * Shows the chromosome details of a list of chromosomes
-	 * @param chromosomeList the list of chromosomes
-	 */
-	public final static void showChromosomeList (List<Chromosome> chromosomeList) {
-		String output = "---------- showChromosomeList\n";
-		for (Chromosome chromosome: chromosomeList) {
-			output += chromosome.getName() + " : " + chromosome.getLength() + "\n";
-		}
-		output += "----------";
-		System.out.println(output);
 	}
 
 

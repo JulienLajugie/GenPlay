@@ -24,11 +24,15 @@ package edu.yu.einstein.genplay.gui.dialog.newCurveLayerDialog;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.NumberFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -40,6 +44,7 @@ import javax.swing.text.NumberFormatter;
 
 import net.sf.samtools.SAMReadGroupRecord;
 import edu.yu.einstein.genplay.core.IO.extractor.SAMExtractor;
+import edu.yu.einstein.genplay.gui.dialog.TextDialog;
 import edu.yu.einstein.genplay.util.Images;
 
 
@@ -52,35 +57,46 @@ class SAMPanel extends JPanel {
 	/** Generated serial ID */
 	private static final long serialVersionUID = 3121403025053985776L;
 
-	private final JRadioButton 			jrbSingleEnd;			//
+	private final SAMExtractor 			samExtractor;			// sam extractor with infos about read groups, programs used etc..
+
+	private final JLabel				jlReadGroups;			// label read groups
+	private final JComboBox 			jcbReadGroups;			// combo box to choose read groups
+
+	private final JCheckBox				jcbRemoveDuplicates;	// check box remove duplicates
+	private final JLabel 				jlRemoveDuplicatesHelp;	// label help remove duplicates
+
+	private final JRadioButton 			jrbSingleEnd;			// radio button single end
 	private final JLabel 				jlSingleEndHelp;		// label help single end
-	private final JRadioButton 			jrbPairedEnd;			//
+	private final JRadioButton 			jrbPairedEnd;			// radio button paired end
 	private final JLabel 				jlPairedEndHelp;		// label help paired ends
-	private final ButtonGroup 			readParityRadioGroup;	//
+	private final ButtonGroup 			readParityRadioGroup;	// group with the single end / pair end radio buttons
 
-	private final JFormattedTextField 	jftfMappingQuality;		//
-	private final JLabel 				jlMappingQuality;
+	private final JFormattedTextField 	jftfMappingQuality;		// input text field for the mapping quality
+	private final JLabel 				jlMappingQuality;		// label for the mapping quality
 
-	private final JLabel				jlReadsToExtract;
-	private final JRadioButton 			jrbUnique;				//
-	private final JRadioButton 			jrbPrimaryAlignment;	//
-	private final JRadioButton 			jrbAllReads;			//
-	private final ButtonGroup 			readUniquenessGroup;	//
+	private final JLabel				jlReadsToExtract;		// label reads to extract
+	private final JRadioButton 			jrbUnique;				// radio button unique matches
+	private final JRadioButton 			jrbPrimaryAlignment;	// radio button primary alignment
+	private final JRadioButton 			jrbAllReads;			// radio all reads
+	private final ButtonGroup 			readUniquenessGroup;	// group with the reads to extract radio buttons
 
-	private final JLabel				jlReadGroups;
-	private final JComboBox 			jcbReadGroups;			//
+	private final JButton				jbHeader;				// button to show the header of the SAM/BAM file
 
-	private static int defaultMapQual = 0;
-	private static boolean isSingleEndSelected = true;
-	private static boolean isPairedEndSelected = false;
-	private static boolean isUniqueSelected = true;
-	private static boolean isPrimaryAligmentSelected = false;
-	private static boolean isAllReadsSelected = false;
+	private static int 		defaultMapQual = 0;					// default mapping quality
+	private static boolean 	isRemoveDuplicatesSelected = true;	// remove duplicates check-box default value
+	private static boolean 	isSingleEndSelected = true;			// single-end radio button default state
+	private static boolean 	isPairedEndSelected = false;		// paired-end radio button default state
+	private static boolean 	isUniqueSelected = true;			// unique radio button default state
+	private static boolean 	isPrimaryAligmentSelected = false;	// primary alignment radio button default state
+	private static boolean 	isAllReadsSelected = false;			// all reads radio button default state
+
 
 	/**
 	 * Creates an instance of {@link SAMPanel}
 	 */
 	SAMPanel(SAMExtractor samExtractor) {
+		this.samExtractor = samExtractor;
+
 		// mapping quality field
 		jlMappingQuality = new JLabel("Mapping Quality ≥");
 		jftfMappingQuality = new JFormattedTextField(NumberFormat.getIntegerInstance());
@@ -123,7 +139,8 @@ class SAMPanel extends JPanel {
 		jrbPairedEnd.setSelected(isPairedEndSelected);
 		// tooltip
 		jlPairedEndHelp = new JLabel(new ImageIcon(Images.getHelpImage()));
-		jlPairedEndHelp.setToolTipText("<html>Choose this option to extract fragments with both ends mapped and properly paired.</html>");
+		jlPairedEndHelp.setToolTipText("<html>Choose this option to only extract fragments with both ends mapped and properly paired.</html>");
+
 		readParityRadioGroup = new ButtonGroup();
 		readParityRadioGroup.add(jrbSingleEnd);
 		readParityRadioGroup.add(jrbPairedEnd);
@@ -134,11 +151,27 @@ class SAMPanel extends JPanel {
 			jlReadGroups = null;
 		} else {
 			jcbReadGroups = new JComboBox();
+			jcbReadGroups.addItem("All Read-Groups");
 			for (SAMReadGroupRecord currentReadGroupe: samExtractor.getReadGroups()) {
 				jcbReadGroups.addItem(currentReadGroupe.getId());
 			}
 			jlReadGroups = new JLabel("Read-Group to Extract:");
 		}
+
+		jcbRemoveDuplicates = new JCheckBox("Remove Duplicates");
+		jcbRemoveDuplicates.setSelected(isRemoveDuplicatesSelected);
+		// tooltip
+		jlRemoveDuplicatesHelp = new JLabel(new ImageIcon(Images.getHelpImage()));
+		jlRemoveDuplicatesHelp.setToolTipText("<html>Choose this option to exclude marked PCR and optical duplicates.</html>");
+
+		jbHeader = new JButton("Show Header");
+		jbHeader.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String header = SAMPanel.this.samExtractor.getHeaderString();
+				TextDialog.showDialog(SAMPanel.this, "SAM/BAM Header", header);
+			}
+		});
 
 		JPanel jpSingleEndOptions = new JPanel();
 		jpSingleEndOptions.setLayout(new GridBagLayout());
@@ -168,26 +201,30 @@ class SAMPanel extends JPanel {
 
 		setLayout(new GridBagLayout());
 		gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.BOTH;
+		gbc.anchor = GridBagConstraints.LINE_START;
 		gbc.gridy = -1;
 
 		if (jcbReadGroups != null) {
-			gbc.insets = new Insets(0, 0, 10, 0);
 			gbc.gridy++;
 			gbc.gridwidth = 1;
 			add(jlReadGroups, gbc);
 			gbc.gridx = 1;
 			add(jcbReadGroups, gbc);
-			gbc.insets = new Insets(0, 0, 0, 0);
 		}
+
+		gbc.gridx = 0;
+		gbc.gridy++;
+		gbc.insets = new Insets(10, 0, 0, 0);
+		add(jcbRemoveDuplicates, gbc);
+
+		gbc.gridx = 1;
+		add(jlRemoveDuplicatesHelp, gbc);
 
 		gbc.gridx = 0;
 		gbc.gridy++;
 		add(jrbSingleEnd, gbc);
 
 		gbc.gridx = 1;
-		gbc.fill = GridBagConstraints.NONE;
-		gbc.anchor = GridBagConstraints.LINE_START;
 		add(jlSingleEndHelp, gbc);
 
 		gbc.gridx = 0;
@@ -205,6 +242,95 @@ class SAMPanel extends JPanel {
 		gbc.anchor = GridBagConstraints.LINE_START;
 		add(jlPairedEndHelp, gbc);
 
+		gbc.gridx = 0;
+		gbc.gridy++;
+		gbc.gridwidth = 2;
+		gbc.anchor = GridBagConstraints.CENTER;
+		add(jbHeader, gbc);
+
 		setBorder(BorderFactory.createTitledBorder("SAM/BAM Options"));
+	}
+
+
+	/**
+	 * @return the minimum mapping quality to extract
+	 */
+	int getMappingQuality() {
+		return ((Number) jftfMappingQuality.getValue()).intValue();
+	}
+
+
+	/**
+	 * @return the selected read group, null if all read-groups are selected
+	 */
+	SAMReadGroupRecord getSelectedReadGroup() {
+		int selectedIndex = jcbReadGroups.getSelectedIndex();
+		if (selectedIndex == 0) {
+			return null;
+		} else {
+			return samExtractor.getReadGroups()[selectedIndex - 1];
+		}
+	}
+
+
+	/**
+	 * @return true if all the reads should be extracted
+	 */
+	boolean isAllReadsSelected() {
+		return jrbAllReads.isSelected();
+	}
+
+
+	/**
+	 * @return true if the pair end mode is selected
+	 */
+	boolean isPairedEndSelected() {
+		return jrbPairedEnd.isSelected();
+	}
+
+
+	/**
+	 * @return true if the unique reads and the primary alignments should be extracted
+	 */
+	boolean isPrimaryAligmentSelected() {
+		return jrbPrimaryAlignment.isSelected();
+	}
+
+
+	/**
+	 * @return true if the remove duplicates options is selected
+	 */
+	public boolean isRemoveDuplicatesSelected() {
+		return jcbRemoveDuplicates.isSelected();
+	}
+
+
+	/**
+	 * @return true if the extraction should be done in single end mode
+	 */
+	boolean isSingleEndSelected() {
+		return jrbSingleEnd.isSelected();
+	}
+
+
+	/**
+	 * @return true if only the unique reads should be extracted
+	 */
+	boolean isUniqueSelected() {
+		return jrbUnique.isSelected();
+	}
+
+
+	/**
+	 * Saves the default value for next time the window will become visible
+	 */
+	void saveDefault() {
+		defaultMapQual = getMappingQuality();
+		isRemoveDuplicatesSelected = isRemoveDuplicatesSelected();
+		isAllReadsSelected = isAllReadsSelected();
+		isPairedEndSelected = isPairedEndSelected();
+		isPrimaryAligmentSelected = isPrimaryAligmentSelected();
+		isSingleEndSelected = isSingleEndSelected();
+		isUniqueSelected = isUniqueSelected();
 	}
 }

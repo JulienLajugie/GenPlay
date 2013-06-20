@@ -26,7 +26,7 @@ import java.security.InvalidParameterException;
 import net.sf.samtools.SAMRecord;
 
 /**
- * Filters out {@link SAMRecord} with a quality value smaller than
+ * Filters out {@link SAMRecord} with a quality value smaller than a specified one
  * @author Julien Lajugie
  */
 public class MappingQualitySAMRecordFilter implements SAMRecordFilter {
