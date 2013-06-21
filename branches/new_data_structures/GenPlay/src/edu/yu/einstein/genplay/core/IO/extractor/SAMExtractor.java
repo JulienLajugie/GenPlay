@@ -259,7 +259,7 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 		if ((alignmentBlocks != null) && (!alignmentBlocks.isEmpty())) {
 			AlignmentBlock firstBlock = alignmentBlocks.get(0);
 			int start = firstBlock.getReferenceStart();
-			int stop = start + firstBlock.getLength() + 1;
+			int stop = start + firstBlock.getLength();
 			// compute the read position with specified strand shift and read length
 			if (strandOptions != null) {
 				SimpleChromosomeWindow resultStartStop = strandOptions.computeStartStop(chromosome, start, stop, strand);
@@ -279,11 +279,11 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 			startQueue.add(start);
 			stopQueue.add(stop);
 
+			// add the other blocks to the waiting list to make sure that they will be retrieved in sorted order
 			for (int i = 1; i < alignmentBlocks.size(); i++) {
-				// add the other blocks to the waiting list to make sure that they will be retrieved in sorted order
 				AlignmentBlock currentBlock = alignmentBlocks.get(i);
 				start = currentBlock.getReferenceStart();
-				stop = start + currentBlock.getLength() + 1;
+				stop = start + currentBlock.getLength();
 				// compute the read position with specified strand shift and read length
 				if (strandOptions != null) {
 					SimpleChromosomeWindow resultStartStop = strandOptions.computeStartStop(chromosome, start, stop, strand);
@@ -294,8 +294,8 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 				start = getRealGenomePosition(chromosome, start);
 				stop = getRealGenomePosition(chromosome, stop);
 				waitingAlignmentBlocks.add(new SimpleChromosomeWindow(start, stop));
-				return true;
 			}
+			return true;
 		}
 		return false;
 	}
