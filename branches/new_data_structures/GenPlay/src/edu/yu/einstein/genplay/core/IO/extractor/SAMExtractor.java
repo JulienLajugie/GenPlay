@@ -25,7 +25,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NavigableSet;
 import java.util.Queue;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.sf.samtools.AlignmentBlock;
@@ -42,9 +44,11 @@ import edu.yu.einstein.genplay.core.IO.dataReader.SCWReader;
 import edu.yu.einstein.genplay.core.IO.dataReader.StrandReader;
 import edu.yu.einstein.genplay.core.IO.utils.StrandedExtractorOptions;
 import edu.yu.einstein.genplay.core.IO.utils.SAMRecordFilter.SAMRecordFilter;
+import edu.yu.einstein.genplay.core.comparator.ChromosomeWindowStartComparator;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
@@ -75,7 +79,7 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 	private final Queue<Integer>			startQueue;						// queue containing the start positions of the last record read (a record can have more than one start if split)
 	private final Queue<Integer>			stopQueue;						// queue containing the stop position of the last record read (a record can have more than one stop if split)
 	private Strand 							strand;							// strand of the last record read (a record has exactly one strand)
-
+	private final NavigableSet<ChromosomeWindow>	waitingAlignmentBlocks;			// set containing the alignment blocks sorted by start position
 
 	/**
 	 * Creates an instance of {@link SAMExtractor}
@@ -90,6 +94,7 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 		startQueue = new ConcurrentLinkedQueue<Integer>();
 		stopQueue = new ConcurrentLinkedQueue<Integer>();
 		recordFilters = new ArrayList<SAMRecordFilter>();
+		waitingAlignmentBlocks = new TreeSet<ChromosomeWindow>(new ChromosomeWindowStartComparator());
 	}
 
 
@@ -251,10 +256,34 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 		}
 		strand = samRecord.getReadNegativeStrandFlag() ? Strand.THREE : Strand.FIVE;
 		List<AlignmentBlock> alignmentBlocks = samRecord.getAlignmentBlocks();
-		if (alignmentBlocks != null) {
-			for (AlignmentBlock currentBlock: alignmentBlocks) {
-				int start = currentBlock.getReferenceStart();
-				int stop = start + currentBlock.getLength() + 1;
+		if ((alignmentBlocks != null) && (!alignmentBlocks.isEmpty())) {
+			AlignmentBlock firstBlock = alignmentBlocks.get(0);
+			int start = firstBlock.getReferenceStart();
+			int stop = start + firstBlock.getLength() + 1;
+			// compute the read position with specified strand shift and read length
+			if (strandOptions != null) {
+				SimpleChromosomeWindow resultStartStop = strandOptions.computeStartStop(chromosome, start, stop, strand);
+				start = resultStartStop.getStart();
+				stop = resultStartStop.getStop();
+			}
+			// if we are in a multi-genome project, we compute the position on the meta genome
+			start = getRealGenomePosition(chromosome, start);
+			stop = getRealGenomePosition(chromosome, stop);
+			ChromosomeWindow chromosomeWindow = new SimpleChromosomeWindow(start, stop);
+			while (!waitingAlignmentBlocks.isEmpty() && (waitingAlignmentBlocks.first().compareTo(chromosomeWindow) <= 0)) {
+				ChromosomeWindow removedWaitingBlock = waitingAlignmentBlocks.pollFirst();
+				startQueue.add(removedWaitingBlock.getStart());
+				stopQueue.add(removedWaitingBlock.getStop());
+			}
+			// add the first alignment block to the start and stop list ready to be retrieved
+			startQueue.add(start);
+			stopQueue.add(stop);
+
+			for (int i = 1; i < alignmentBlocks.size(); i++) {
+				// add the other blocks to the waiting list to make sure that they will be retrieved in sorted order
+				AlignmentBlock currentBlock = alignmentBlocks.get(i);
+				start = currentBlock.getReferenceStart();
+				stop = start + currentBlock.getLength() + 1;
 				// compute the read position with specified strand shift and read length
 				if (strandOptions != null) {
 					SimpleChromosomeWindow resultStartStop = strandOptions.computeStartStop(chromosome, start, stop, strand);
@@ -264,8 +293,7 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 				// if we are in a multi-genome project, we compute the position on the meta genome
 				start = getRealGenomePosition(chromosome, start);
 				stop = getRealGenomePosition(chromosome, stop);
-				startQueue.add(start);
-				stopQueue.add(stop);
+				waitingAlignmentBlocks.add(new SimpleChromosomeWindow(start, stop));
 				return true;
 			}
 		}
@@ -275,6 +303,9 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 
 	@Override
 	public boolean readItem() throws IOException {
+		if (isStopped()) {
+			return false;
+		}
 		// remove the last item from the queues
 		if (!startQueue.isEmpty()) {
 			startQueue.poll();
