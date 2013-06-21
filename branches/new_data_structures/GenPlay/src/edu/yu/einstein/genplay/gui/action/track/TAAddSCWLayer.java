@@ -163,10 +163,10 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 					samHistory += "Paired-End Mode";
 				} else {
 					samExtractor.setPairedMode(false);
-					samHistory += "Single-End Mode, ";
+					samHistory += "Single-End Mode";
 					if (ncld.getMappingQuality() > 0) {
 						samExtractor.addFilter(new MappingQualitySAMRecordFilter(ncld.getMappingQuality()));
-						samHistory += "Mapping Quality ≥ " + ncld.getMappingQuality() + ", ";
+						samHistory += ", Mapping Quality ≥ " + ncld.getMappingQuality();
 					}
 					if (ncld.isUniqueSelected()) {
 						samExtractor.addFilter(new NotUniqueSAMRecordFilter());
