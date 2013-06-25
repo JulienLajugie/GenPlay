@@ -45,7 +45,7 @@ public enum LayerType {
 	/**
 	 * GeneList layer
 	 */
-	GENE_LAYER ("Gene Layer"),
+	GENE_LAYER ("Gene Annotation Layer"),
 
 	/**
 	 * Mask layer
@@ -63,9 +63,14 @@ public enum LayerType {
 	REPEAT_FAMILY_LAYER ("Repeat Family Layer"),
 
 	/**
-	 * ScoredChromosomeWindowList layer
+	 * Generic ScoredChromosomeWindowList layer
 	 */
-	SCW_LAYER ("Variable Window Layer"),
+	SCW_LAYER ("Sequencing/Microarray Layer"),
+
+	/**
+	 * Simple SCW layer
+	 */
+	SIMPLE_SCW_LAYER ("Variable Window Layer"),
 
 	/**
 	 * Variant layer displaying the multigenome information

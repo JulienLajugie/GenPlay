@@ -57,7 +57,7 @@ public class ConverterFactory {
 	@SuppressWarnings("unchecked")
 	private static <T extends GenomicListView<?>> Operation<T> createBinListConverter(BinList binList, LayerType layerType, int binSize, ScoreOperation method) {
 		Operation<T> converter = null;
-		if (layerType == LayerType.SCW_LAYER) {
+		if (layerType == LayerType.SIMPLE_SCW_LAYER) {
 			converter = (Operation<T>) new SCWLOConvertIntoSimpleSCWList(binList, SCWListType.GENERIC);
 		} else if (layerType == LayerType.GENE_LAYER) {
 			converter = (Operation<T>) new SCWLOConvertIntoGeneList(binList);
@@ -115,7 +115,7 @@ public class ConverterFactory {
 		Operation<T> converter = null;
 		if (layerType == LayerType.BIN_LAYER) {
 			converter = (Operation<T>) new SCWLOConvertIntoBinList(geneList, binSize, method);
-		} else if (layerType == LayerType.SCW_LAYER) {
+		} else if (layerType == LayerType.SIMPLE_SCW_LAYER) {
 			converter = (Operation<T>) new GLOConvertIntoSimpleSCWList(geneList, method);
 		} else if (layerType == LayerType.MASK_LAYER) {
 			converter = (Operation<T>) new SCWLOConvertIntoSimpleSCWList(geneList, SCWListType.MASK);
@@ -137,7 +137,7 @@ public class ConverterFactory {
 		Operation<T> converter = null;
 		if (layerType == LayerType.BIN_LAYER) {
 			converter = (Operation<T>) new SCWLOConvertIntoBinList(maskList, binSize, method);
-		} else if (layerType == LayerType.SCW_LAYER) {
+		} else if (layerType == LayerType.SIMPLE_SCW_LAYER) {
 			converter = (Operation<T>) new SCWLOConvertIntoSimpleSCWList(maskList, SCWListType.GENERIC);
 		} else if (layerType == LayerType.GENE_LAYER) {
 			converter = (Operation<T>) new SCWLOConvertIntoGeneList(maskList);
@@ -172,7 +172,7 @@ public class ConverterFactory {
 	 * @return the array of {@link LayerType} a {@link BinLayer} can be converted in.
 	 */
 	public static LayerType[] getBinLayerType() {
-		LayerType[] array = {LayerType.GENE_LAYER, LayerType.SCW_LAYER, LayerType.MASK_LAYER, LayerType.BIN_LAYER};
+		LayerType[] array = {LayerType.GENE_LAYER, LayerType.SIMPLE_SCW_LAYER, LayerType.MASK_LAYER, LayerType.BIN_LAYER};
 		return array;
 	}
 
@@ -181,7 +181,7 @@ public class ConverterFactory {
 	 * @return the array of {@link LayerType} a {@link GeneLayer} can be converted in.
 	 */
 	public static LayerType[] getGeneLayerType() {
-		LayerType[] array = {LayerType.SCW_LAYER, LayerType.MASK_LAYER, LayerType.BIN_LAYER};
+		LayerType[] array = {LayerType.SIMPLE_SCW_LAYER, LayerType.MASK_LAYER, LayerType.BIN_LAYER};
 		return array;
 	}
 
@@ -212,7 +212,7 @@ public class ConverterFactory {
 	 * @return the array of {@link LayerType} a {@link MaskLayer} can be converted in.
 	 */
 	public static LayerType[] getMaskLayerType() {
-		LayerType[] array = {LayerType.GENE_LAYER, LayerType.SCW_LAYER, LayerType.BIN_LAYER};
+		LayerType[] array = {LayerType.GENE_LAYER, LayerType.SIMPLE_SCW_LAYER, LayerType.BIN_LAYER};
 		return array;
 	}
 

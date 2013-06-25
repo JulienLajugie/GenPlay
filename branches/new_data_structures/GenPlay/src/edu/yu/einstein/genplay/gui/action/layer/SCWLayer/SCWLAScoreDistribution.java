@@ -116,7 +116,7 @@ public final class SCWLAScoreDistribution extends TrackListActionOperationWorker
 				Number scoreBin = NumberOptionPane.getValue(getRootPane(), "Size", "Enter the size of the bin of score:", 0 + Double.MIN_NORMAL, 1000, 1);
 				if (scoreBin != null) {
 					// we ask the user to choose the layers for the distribution only if there is more than one layer
-					LayerType[] availableLayerTypes = {LayerType.SCW_LAYER};
+					LayerType[] availableLayerTypes = {LayerType.SIMPLE_SCW_LAYER, LayerType.BIN_LAYER};
 					Layer<?>[] scwLayers = Utils.getLayers(getTrackListPanel().getModel().getTracks(), availableLayerTypes);
 					if (scwLayers.length > 1) {
 						LayerChooserDialog layerChooserDialog = new LayerChooserDialog();

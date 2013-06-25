@@ -44,10 +44,13 @@ import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWListFactory;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.newCurveLayerDialog.NewCurveLayerDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.track.layer.AbstractSCWLayer;
+import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
 import edu.yu.einstein.genplay.gui.track.layer.SimpleSCWLayer;
 import edu.yu.einstein.genplay.util.Utils;
 import edu.yu.einstein.genplay.util.colors.Colors;
@@ -67,6 +70,8 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 	private int						fragmentLength = 0;												// user specified length of the fragments
 	private int 					readLength = 0;													// user specified length of the reads
 	private String 					samHistory = null;												// history line for sam extraction
+	private boolean 				isBinList = false;												// true if the result should be a bin list
+	private int 					binSize = 0;													// Size of the bins of the BinList
 
 
 	/**
@@ -90,9 +95,16 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 	public void doAtTheEnd(SCWList actionResult) {
 		if (actionResult != null) {
 			Track selectedTrack = getTrackListPanel().getSelectedTrack();
-			SimpleSCWLayer newLayer = new SimpleSCWLayer(selectedTrack, actionResult, name);
-			newLayer.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Colors.GREY);
+			AbstractSCWLayer<?> newLayer;
 			String history = new String();
+			if (isBinList) {
+				newLayer = new BinLayer(selectedTrack, (BinList) actionResult, name);
+				// add the history to the layer
+				history = "Bin Size = " + binSize + "bp";
+			} else {
+				newLayer = new SimpleSCWLayer(selectedTrack, actionResult, name);
+			}
+			newLayer.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Colors.GREY);
 			if (scoreCalculation != null) {
 				history += "Method of Calculation = " + scoreCalculation;
 			}
@@ -127,7 +139,7 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 		boolean isStrandNeeded = extractor instanceof StrandedExtractor;
 		boolean isSAMExtractor = extractor instanceof SAMExtractor;
 		boolean isMultiGenome = ProjectManager.getInstance().isMultiGenomeProject();
-		NewCurveLayerDialog ncld = NewCurveLayerDialog.createNewSimpleSCWLayerDialog(extractor);
+		NewCurveLayerDialog ncld = new NewCurveLayerDialog(extractor);
 		if (ncld.showDialog(getRootPane()) == NewCurveLayerDialog.APPROVE_OPTION) {
 			selectedChromo = ncld.getSelectedChromosomes();
 			// if not all the chromosomes are selected we need
@@ -135,6 +147,8 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 			extractor.setChromosomeSelector(new ChromosomesSelector(selectedChromo));
 			name = ncld.getLayerName();
 			scoreCalculation = ncld.getScoreCalculationMethod();
+			isBinList = ncld.isCreateBinListSelected();
+			binSize = ncld.getBinSize();
 			// set strand options
 			if (isStrandNeeded) {
 				strand = ncld.getStrandToExtract();
@@ -199,11 +213,21 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 				 * factory since reads on the 3' strand are shifted toward 5' which can change the order
 				 * of reads and cause the file to be no longer sorted
 				 */
-				notifyActionStart("Generating Variable-Window Layer", (SimpleSCWList.getCreationStepCount(SCWListType.GENERIC) * 3) + 2, true);
-				scwList = SCWListFactory.createStrandSafeDenseSCWList((SCWReader) extractor, scoreCalculation);
+				if (isBinList) {
+					notifyActionStart("Generating Fixed-Window Layer", (BinList.getCreationStepCount(SCWListType.BIN) * 3) + 2, true);
+					scwList = SCWListFactory.createStrandSafeBinList((SCWReader) extractor, binSize, scoreCalculation);
+				} else {
+					notifyActionStart("Generating Sequencing/Microarray Layer", (SimpleSCWList.getCreationStepCount(SCWListType.GENERIC) * 3) + 2, true);
+					scwList = SCWListFactory.createStrandSafeDenseSCWList((SCWReader) extractor, scoreCalculation);
+				}
 			} else {
-				notifyActionStart("Generating Variable-Window Layer", SimpleSCWList.getCreationStepCount(SCWListType.GENERIC) + 1, true);
-				scwList = SCWListFactory.createDenseSCWList((SCWReader) extractor, scoreCalculation);
+				if (isBinList) {
+					notifyActionStart("Generating Sequencing/Microarray Layer", BinList.getCreationStepCount(SCWListType.BIN) + 1, true);
+					scwList = SCWListFactory.createBinList((SCWReader) extractor, binSize, scoreCalculation);
+				} else {
+					notifyActionStart("Generating Sequencing/Microarray Layer", SimpleSCWList.getCreationStepCount(SCWListType.GENERIC) + 1, true);
+					scwList = SCWListFactory.createDenseSCWList((SCWReader) extractor, scoreCalculation);
+				}
 			}
 			return scwList;
 		} catch (ClassCastException e) {
@@ -215,7 +239,7 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 	@Override
 	protected File retrieveFileToExtract() {
 		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
-		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Variable Window Layer", defaultDirectory, Utils.getReadableSCWFileFilters(), true);
+		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Sequencing/Microarray Layer", defaultDirectory, Utils.getReadableSCWFileFilters(), true);
 		if (selectedFile != null) {
 			return selectedFile;
 		}

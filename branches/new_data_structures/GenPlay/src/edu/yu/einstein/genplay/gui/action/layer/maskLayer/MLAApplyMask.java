@@ -90,7 +90,7 @@ public final class MLAApplyMask extends TrackListActionOperationWorker<SCWList> 
 		if (selectedLayer != null) {
 			LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
 			layerChooserDialog.setLayers(getTrackListPanel().getModel().getAllLayers());
-			LayerType[] selectableLayers = {LayerType.BIN_LAYER, LayerType.SCW_LAYER, LayerType.MASK_LAYER};
+			LayerType[] selectableLayers = {LayerType.BIN_LAYER, LayerType.SIMPLE_SCW_LAYER, LayerType.MASK_LAYER};
 			layerChooserDialog.setSelectableLayerTypes(selectableLayers);
 			layerChooserDialog.setMultiselectable(false);
 			if (layerChooserDialog.showDialog(getRootPane(), "Select Layer to Mask") == LayerChooserDialog.APPROVE_OPTION) {

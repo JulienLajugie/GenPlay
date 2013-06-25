@@ -54,7 +54,7 @@ class DataScalerFactory {
 			return new NucleotideListScaler((NucleotideList) layer.getData());
 		case REPEAT_FAMILY_LAYER:
 			return new RepeatListScaler((RepeatFamilyList) layer.getData());
-		case SCW_LAYER:
+		case SIMPLE_SCW_LAYER:
 			return new SimpleSCWLScaler((SCWList) layer.getData());
 		default:
 			return null;

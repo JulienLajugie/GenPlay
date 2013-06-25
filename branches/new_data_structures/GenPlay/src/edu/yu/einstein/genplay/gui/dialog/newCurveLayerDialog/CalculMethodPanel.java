@@ -21,13 +21,17 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.newCurveLayerDialog;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
+import edu.yu.einstein.genplay.util.Images;
 
 
 /**
@@ -40,6 +44,7 @@ class CalculMethodPanel extends JPanel {
 	private static final int 		PANEL_WIDTH = 150;							// width of the panel
 	private static ScoreOperation 	defaultMethod = ScoreOperation.ADDITION;	// default operation to compute the scores
 	private final JComboBox 		jcbCalculMetod; 							// combo box for the score calculation method
+	private final JLabel 			jlCalculMetodHelp;							// label calcul method help
 
 
 	/**
@@ -47,9 +52,17 @@ class CalculMethodPanel extends JPanel {
 	 */
 	CalculMethodPanel() {
 		super();
+		// combo box
 		jcbCalculMetod = new JComboBox(ScoreOperation.getPileupOperations());
 		jcbCalculMetod.setSelectedItem(defaultMethod);
-		add(jcbCalculMetod);
+
+		// tooltip
+		jlCalculMetodHelp = new JLabel(new ImageIcon(Images.getHelpImage()));
+		jlCalculMetodHelp.setToolTipText("<html>The selected operation will be used to compute the score of regions where windows overlap.<br/>" +
+				"The score of the region can be the sum, the average, the maximum or the minimum of the overlapping windows.</html>");
+
+		add(jcbCalculMetod, BorderLayout.LINE_START);
+		add(jlCalculMetodHelp, BorderLayout.LINE_END);
 		setBorder(BorderFactory.createTitledBorder("Score Calculation"));
 		setPreferredSize(new Dimension(PANEL_WIDTH, getPreferredSize().height));
 	}

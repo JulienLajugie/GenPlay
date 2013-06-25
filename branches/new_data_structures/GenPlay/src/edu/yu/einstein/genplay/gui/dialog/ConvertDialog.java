@@ -328,7 +328,7 @@ public class ConvertDialog extends JDialog {
 				binPanel = getBinPanel();
 				updateBinPanel(outputLayerType);
 				panel.add(binPanel, gbc);
-			} else if (currentLayerType == LayerType.SCW_LAYER) {
+			} else if (currentLayerType == LayerType.SIMPLE_SCW_LAYER) {
 				gbc.gridy++;
 				gbc.insets = new Insets(0, 25, 0, 0);
 				scwPanel = getScwPanel();
@@ -486,7 +486,7 @@ public class ConvertDialog extends JDialog {
 		if (scwPanel != null) {
 			boolean enable = false;
 			if ((inputLayerType != null) && (inputLayerType == LayerType.GENE_LAYER) &&
-					(outputLayerType != null) && (outputLayerType == LayerType.SCW_LAYER)) {
+					(outputLayerType != null) && (outputLayerType == LayerType.SIMPLE_SCW_LAYER)) {
 				enable = true;
 			}
 			scwPanel.setEnabled(enable);

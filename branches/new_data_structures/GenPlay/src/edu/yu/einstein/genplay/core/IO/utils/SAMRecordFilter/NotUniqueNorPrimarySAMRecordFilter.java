@@ -24,14 +24,18 @@ package edu.yu.einstein.genplay.core.IO.utils.SAMRecordFilter;
 import net.sf.samtools.SAMRecord;
 
 /**
- * Filters out {@link SAMRecord} that are not uniquely aligned
+ * Filters out {@link SAMRecord} that are not uniquely aligned and that are not primary alignments
  * @author Julien Lajugie
  */
 public class NotUniqueNorPrimarySAMRecordFilter implements SAMRecordFilter {
 
 	@Override
 	public SAMRecord applyFilter(SAMRecord samRecord) {
-		String typeBWAFlag = (String) samRecord.getAttribute("XT");
-		return ((typeBWAFlag != null) && typeBWAFlag.equalsIgnoreCase("U")) ? samRecord : null;
+		Character typeBWAFlag = (Character) samRecord.getAttribute("XT");
+		if (samRecord.getNotPrimaryAlignmentFlag()) {
+			return ((typeBWAFlag != null) && (typeBWAFlag == 'U')) ? samRecord : null;
+		} else {
+			return samRecord;
+		}
 	}
 }

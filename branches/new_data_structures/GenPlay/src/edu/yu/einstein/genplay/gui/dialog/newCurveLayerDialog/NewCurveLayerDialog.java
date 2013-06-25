@@ -41,8 +41,6 @@ import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
 import edu.yu.einstein.genplay.gui.dialog.genomeSelectionPanel.GenomeSelectionPanel;
-import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
-import edu.yu.einstein.genplay.gui.track.layer.SimpleSCWLayer;
 import edu.yu.einstein.genplay.util.Images;
 
 
@@ -78,31 +76,10 @@ public class NewCurveLayerDialog extends JDialog {
 
 
 	/**
-	 * Creates a {@link NewCurveLayerDialog} for {@link BinLayer}
-	 * @param extractor
-	 * @return a new curve dialog
-	 */
-	public static NewCurveLayerDialog createNewBinLayerDialog(Extractor extractor) {
-		return new NewCurveLayerDialog(true, extractor);
-	}
-
-
-	/**
-	 * Creates a {@link NewCurveLayerDialog} for {@link SimpleSCWLayer}
-	 * @param extractor
-	 * @return a new curve dialog
-	 */
-	public static NewCurveLayerDialog createNewSimpleSCWLayerDialog(Extractor extractor) {
-		return new NewCurveLayerDialog(false, extractor);
-	}
-
-
-	/**
 	 * Creates an instance of {@link NewCurveLayerDialog}
-	 * @param isBinSizeNeeded true if the binsize need to be asked
 	 * @param extractor {@link Extractor} that will be configured by this dialog
 	 */
-	private NewCurveLayerDialog(boolean isBinSizeNeeded, Extractor extractor) {
+	public NewCurveLayerDialog(Extractor extractor) {
 		super();
 		// we don't need to select method of calculation for SAM files
 		// (it's always addition because the reads have no scores)
@@ -115,11 +92,7 @@ public class NewCurveLayerDialog extends JDialog {
 		// create panels
 		layerNamePanel = new LayerNamePanel(extractor.getDataName());
 		chromoSelectionPanel = new ChromoSelectionPanel();
-		if (isBinSizeNeeded) {
-			binSizePanel = new BinSizePanel();
-		} else {
-			binSizePanel = null;
-		}
+		binSizePanel = new BinSizePanel();
 		if (isStrandNeeded) {
 			strandSelectionPanel = new StrandSelectionPanel();
 			readDefinitionPanel = new ReadDefinitionPanel();
@@ -201,10 +174,8 @@ public class NewCurveLayerDialog extends JDialog {
 		c.weighty = 1;
 		add(layerNamePanel, c);
 
-		if (isBinSizeNeeded) {
-			c.gridy++;
-			add(binSizePanel, c);
-		}
+		c.gridy++;
+		add(binSizePanel, c);
 
 		if (isMethodNeeded) {
 			c.gridy++;
@@ -352,6 +323,14 @@ public class NewCurveLayerDialog extends JDialog {
 	 */
 	public boolean isAllReadsSelected() {
 		return samPanel.isAllReadsSelected();
+	}
+
+
+	/**
+	 * @return true if the create bin list option is selected
+	 */
+	public boolean isCreateBinListSelected() {
+		return binSizePanel.isCreateBinListSelected();
 	}
 
 

@@ -96,7 +96,7 @@ public class LAConvert<T extends GenomicListView<?>> extends TrackListActionOper
 				newLayer = new GeneLayer(resultTrack, (GeneList) actionResult, layerName);
 			} else if (layerType == LayerType.BIN_LAYER) {
 				newLayer = new BinLayer(resultTrack, (BinList) actionResult, layerName);
-			} else if (layerType == LayerType.SCW_LAYER) {
+			} else if (layerType == LayerType.SIMPLE_SCW_LAYER) {
 				newLayer = new SimpleSCWLayer(resultTrack, (SCWList) actionResult, layerName);
 			} else if (layerType == LayerType.MASK_LAYER) {
 				newLayer = new MaskLayer(resultTrack, (SCWList) actionResult, layerName);
@@ -121,7 +121,7 @@ public class LAConvert<T extends GenomicListView<?>> extends TrackListActionOper
 			if (layerType == LayerType.BIN_LAYER) {
 				binSize = dialog.getBinSize();
 				method = dialog.getBinScoreCalculationMethod();
-			} else if (layerType == LayerType.SCW_LAYER) {
+			} else if (layerType == LayerType.SIMPLE_SCW_LAYER) {
 				method = dialog.getSCWScoreCalculationMethod();
 			}
 			resultTrack = dialog.getOutputTrack();

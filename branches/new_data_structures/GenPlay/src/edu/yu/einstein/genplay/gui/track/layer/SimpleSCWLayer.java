@@ -71,7 +71,7 @@ public class SimpleSCWLayer extends AbstractSCWLayer<SCWList> implements Layer<S
 
 	@Override
 	public LayerType getType() {
-		return LayerType.SCW_LAYER;
+		return LayerType.SIMPLE_SCW_LAYER;
 	}
 
 

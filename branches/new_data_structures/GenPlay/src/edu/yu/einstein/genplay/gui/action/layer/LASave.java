@@ -83,7 +83,7 @@ public class LASave extends TrackListActionWorker<Void> {
 				filters = Utils.getWritableBinListFileFilters();
 			} else if (selectedLayer.getType() == LayerType.GENE_LAYER) {
 				filters = Utils.getWritableGeneFileFilters();
-			} else if ((selectedLayer.getType() == LayerType.SCW_LAYER) || (selectedLayer.getType() == LayerType.MASK_LAYER)) {
+			} else if ((selectedLayer.getType() == LayerType.SIMPLE_SCW_LAYER) || (selectedLayer.getType() == LayerType.MASK_LAYER)) {
 				filters = Utils.getWritableSCWFileFilter();
 			} else {
 				// case where we don't know how to save the type of the selected track

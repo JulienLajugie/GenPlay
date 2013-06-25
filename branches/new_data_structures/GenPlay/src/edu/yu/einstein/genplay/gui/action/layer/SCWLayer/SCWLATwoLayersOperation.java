@@ -104,7 +104,7 @@ public final class SCWLATwoLayersOperation extends TrackListActionOperationWorke
 		if (selectedLayer != null) {
 			LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
 			layerChooserDialog.setLayers(getTrackListPanel().getModel().getAllLayers());
-			LayerType[] selectableLayers = {LayerType.BIN_LAYER, LayerType.SCW_LAYER, LayerType.MASK_LAYER};
+			LayerType[] selectableLayers = {LayerType.BIN_LAYER, LayerType.SIMPLE_SCW_LAYER, LayerType.MASK_LAYER};
 			layerChooserDialog.setSelectableLayerTypes(selectableLayers);
 			layerChooserDialog.setMultiselectable(false);
 			if (layerChooserDialog.showDialog(getRootPane(), "Select 2nd Layer") == LayerChooserDialog.APPROVE_OPTION) {

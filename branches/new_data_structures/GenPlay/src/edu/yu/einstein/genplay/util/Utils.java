@@ -376,15 +376,6 @@ public final class Utils {
 
 
 	/**
-	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as BinList
-	 */
-	public final static FileFilter[] getReadableBinListFileFilters() {
-		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new GTFFilter(), new WiggleFilter(), new PairFilter(), new ElandExtendedFilter(), new PSLFilter(), new SAMFilter(), new BAMFilter()};
-		return filters;
-	}
-
-
-	/**
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as GeneList
 	 */
 	public final static FileFilter[] getReadableGeneFileFilters() {
@@ -415,7 +406,7 @@ public final class Utils {
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as SCWList
 	 */
 	public final static FileFilter[] getReadableSCWFileFilters() {
-		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new GTFFilter(), new WiggleFilter(), new PSLFilter(), new SAMFilter(), new BAMFilter()};
+		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new GTFFilter(), new WiggleFilter(), new PairFilter(), new ElandExtendedFilter(), new PSLFilter(), new SAMFilter(), new BAMFilter()};
 		return filters;
 	}
 

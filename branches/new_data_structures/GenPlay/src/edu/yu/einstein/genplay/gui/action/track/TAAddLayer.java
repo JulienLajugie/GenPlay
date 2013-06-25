@@ -91,9 +91,6 @@ public class TAAddLayer extends TrackListAction {
 					layerTypes[0]);
 			if (selectedLayerType != null) {
 				switch (selectedLayerType) {
-				case BIN_LAYER:
-					new TAAddBinLayer().actionPerformed(evt);
-					break;
 				case SCW_LAYER:
 					new TAAddSCWLayer().actionPerformed(evt);
 					break;
@@ -126,10 +123,10 @@ public class TAAddLayer extends TrackListAction {
 	 */
 	private LayerType[] getLayerTypes () {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			LayerType[] layerTypes = {LayerType.BIN_LAYER, LayerType.SCW_LAYER, LayerType.GENE_LAYER, LayerType.REPEAT_FAMILY_LAYER, LayerType.NUCLEOTIDE_LAYER, LayerType.VARIANT_LAYER, LayerType.MASK_LAYER};
+			LayerType[] layerTypes = {LayerType.SCW_LAYER, LayerType.GENE_LAYER, LayerType.REPEAT_FAMILY_LAYER, LayerType.NUCLEOTIDE_LAYER, LayerType.VARIANT_LAYER, LayerType.MASK_LAYER};
 			return layerTypes;
 		}
-		LayerType[] layerTypes = {LayerType.BIN_LAYER, LayerType.SCW_LAYER, LayerType.GENE_LAYER, LayerType.REPEAT_FAMILY_LAYER, LayerType.NUCLEOTIDE_LAYER, LayerType.MASK_LAYER};
+		LayerType[] layerTypes = {LayerType.SCW_LAYER, LayerType.GENE_LAYER, LayerType.REPEAT_FAMILY_LAYER, LayerType.NUCLEOTIDE_LAYER, LayerType.MASK_LAYER};
 		return layerTypes;
 	}
 }

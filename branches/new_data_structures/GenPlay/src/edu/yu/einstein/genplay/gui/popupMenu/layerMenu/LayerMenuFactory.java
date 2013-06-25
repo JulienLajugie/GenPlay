@@ -49,7 +49,7 @@ public class LayerMenuFactory {
 			return null;
 		case REPEAT_FAMILY_LAYER:
 			return new RepeatLayerMenu(layer);
-		case SCW_LAYER:
+		case SIMPLE_SCW_LAYER:
 			return new SCWLayerMenu(layer);
 		case VARIANT_LAYER:
 			return new VariantLayerMenu(layer);

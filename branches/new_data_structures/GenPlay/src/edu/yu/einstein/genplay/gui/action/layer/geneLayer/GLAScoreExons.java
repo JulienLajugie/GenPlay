@@ -81,7 +81,7 @@ public class GLAScoreExons  extends TrackListActionOperationWorker<GeneList> {
 	public Operation<GeneList> initializeOperation() throws Exception {
 		selectedLayer = (GeneLayer) getValue("Layer");
 		if (selectedLayer != null) {
-			LayerType[] availableLayerTypes = {LayerType.BIN_LAYER, LayerType.SCW_LAYER};
+			LayerType[] availableLayerTypes = {LayerType.BIN_LAYER, LayerType.SIMPLE_SCW_LAYER};
 			Layer<?>[] scwLayers = Utils.getLayers(getTrackListPanel().getModel().getTracks(), availableLayerTypes);
 			if ((scwLayers == null) || (scwLayers.length == 0)) {
 				JOptionPane.showMessageDialog(getRootPane(), "You need to load at least one Fixed or Variable Window layer before using this operation", "Warning", JOptionPane.WARNING_MESSAGE);
