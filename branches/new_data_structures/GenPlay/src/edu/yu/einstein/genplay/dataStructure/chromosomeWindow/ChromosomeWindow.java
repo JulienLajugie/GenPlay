@@ -26,6 +26,8 @@ import java.io.Serializable;
 
 /**
  * A window on a chromosome or a scaffold with a start and stop position (in bp).
+ * The window interval is left closed, right open: [start, stop[
+ * @author Julien Lajugie
  * @author Nicolas Fourel
  */
 public interface ChromosomeWindow extends Serializable, Comparable<ChromosomeWindow> {

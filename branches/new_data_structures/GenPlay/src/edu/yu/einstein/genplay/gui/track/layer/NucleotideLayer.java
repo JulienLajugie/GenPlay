@@ -144,11 +144,11 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 						//int nucleoWith = projectWindow.twoGenomePosToScreenWidth(position, position + 1);
 						int nucleoWith = projectWindow.genomeToScreenPosition(position + 1) - x;
 						// select a different color for each type of base
+						Color nucleoColor = Colors.nucleotideToColor(nucleotide);
 						if ((baseUnderMouseIndex != null) && (index == baseUnderMouseIndex)) {
-							g.setColor(Colors.WHITE);
-						} else {
-							g.setColor(Colors.nucleotideToColor(nucleotide));
+							nucleoColor = Colors.addTransparency(nucleoColor, Colors.ROLLED_OVER_NUCLEOTIDE_TRANSPARENCY);
 						}
+						g.setColor(nucleoColor);
 						g.fillRect(x, 0, nucleoWith, height);
 						if (nucleoWith >= 5) {
 							g.setColor(Colors.WHITE);
@@ -261,11 +261,9 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 					Point mousePosition = e.getPoint();
 					// retrieve the list of the printed nucleotides
 					Nucleotide[] printedBases = DataScalerManager.getInstance().getScaledData(this);
-					// do nothing if there is no genes
+					// do nothing if there is no nucleotides
 					if (printedBases != null) {
-						double distance = projectWindow.screenToGenomeWidth(mousePosition.x);
-						distance = Math.floor(distance);
-						baseUnderMouseIndex = (int) distance;
+						baseUnderMouseIndex = projectWindow.screenToGenomeWidth(mousePosition.x);
 						// we repaint the track only if the gene under the mouse changed
 						if (((oldBaseUnderMouseIndex == null) && (baseUnderMouseIndex != null))
 								|| ((oldBaseUnderMouseIndex != null) && (!oldBaseUnderMouseIndex.equals(baseUnderMouseIndex)))) {

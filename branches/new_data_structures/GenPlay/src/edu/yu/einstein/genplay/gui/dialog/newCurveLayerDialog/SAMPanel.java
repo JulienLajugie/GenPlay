@@ -74,10 +74,10 @@ class SAMPanel extends JPanel {
 	private final JFormattedTextField 	jftfMappingQuality;		// input text field for the mapping quality
 	private final JLabel 				jlMappingQuality;		// label for the mapping quality
 
-	private final JLabel				jlReadsToExtract;		// label reads to extract
-	private final JRadioButton 			jrbUnique;				// radio button unique matches
-	private final JRadioButton 			jrbPrimaryAlignment;	// radio button primary alignment
-	private final JRadioButton 			jrbAllReads;			// radio all reads
+	private final JLabel				jlAlignmentsToExtract;		// label reads to extract
+	private final JRadioButton 			jrbUniqueAlignments;				// radio button unique matches
+	private final JRadioButton 			jrbPrimaryAlignments;	// radio button primary alignment
+	private final JRadioButton 			jrbAllAlignments;			// radio all reads
 	private final ButtonGroup 			readUniquenessGroup;	// group with the reads to extract radio buttons
 
 	private final JButton				jbHeader;				// button to show the header of the SAM/BAM file
@@ -86,9 +86,9 @@ class SAMPanel extends JPanel {
 	private static boolean 	isRemoveDuplicatesSelected = true;	// remove duplicates check-box default value
 	private static boolean 	isSingleEndSelected = true;			// single-end radio button default state
 	private static boolean 	isPairedEndSelected = false;		// paired-end radio button default state
-	private static boolean 	isUniqueSelected = true;			// unique radio button default state
+	private static boolean 	isUniqueAlignmentsSelected = false;			// unique radio button default state
 	private static boolean 	isPrimaryAligmentSelected = false;	// primary alignment radio button default state
-	private static boolean 	isAllReadsSelected = false;			// all reads radio button default state
+	private static boolean 	isAllAlignmentsSelected = true;			// all reads radio button default state
 
 
 	/**
@@ -98,24 +98,24 @@ class SAMPanel extends JPanel {
 		this.samExtractor = samExtractor;
 
 		// mapping quality field
-		jlMappingQuality = new JLabel("Mapping Quality ≥");
+		jlMappingQuality = new JLabel("Mapping Quality (0 - 255) ≥");
 		jftfMappingQuality = new JFormattedTextField(NumberFormat.getIntegerInstance());
 		jftfMappingQuality.setColumns(5);
 		((NumberFormatter) jftfMappingQuality.getFormatter()).setMinimum(0);
 		((NumberFormatter) jftfMappingQuality.getFormatter()).setMaximum(255);
 		jftfMappingQuality.setValue(defaultMapQual);
 
-		jlReadsToExtract = new JLabel("Choose reads to extract (BWA only):");
-		jrbUnique = new JRadioButton("Unique Reads Only");
-		jrbUnique.setSelected(isUniqueSelected);
-		jrbPrimaryAlignment = new JRadioButton("Unique Reads + Primary Alignment");
-		jrbPrimaryAlignment.setSelected(isPrimaryAligmentSelected);
-		jrbAllReads = new JRadioButton("All Reads");
-		jrbAllReads.setSelected(isAllReadsSelected);
+		jlAlignmentsToExtract = new JLabel("Choose Alignments to Extract (BWA only):");
+		jrbAllAlignments = new JRadioButton("All Alignments");
+		jrbAllAlignments.setSelected(isAllAlignmentsSelected);
+		jrbPrimaryAlignments = new JRadioButton("Unique + Primary Alignments");
+		jrbPrimaryAlignments.setSelected(isPrimaryAligmentSelected);
+		jrbUniqueAlignments = new JRadioButton("Unique Alignments Only");
+		jrbUniqueAlignments.setSelected(isUniqueAlignmentsSelected);
 		readUniquenessGroup = new ButtonGroup();
-		readUniquenessGroup.add(jrbAllReads);
-		readUniquenessGroup.add(jrbPrimaryAlignment);
-		readUniquenessGroup.add(jrbUnique);
+		readUniquenessGroup.add(jrbUniqueAlignments);
+		readUniquenessGroup.add(jrbPrimaryAlignments);
+		readUniquenessGroup.add(jrbAllAlignments);
 
 		jrbSingleEnd = new JRadioButton("Single-End Reads");
 		jrbSingleEnd.setSelected(isSingleEndSelected);
@@ -124,11 +124,11 @@ class SAMPanel extends JPanel {
 		jrbSingleEnd.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				jlReadsToExtract.setEnabled(jrbSingleEnd.isSelected());
-				jrbUnique.setEnabled(jrbSingleEnd.isSelected());
+				jlAlignmentsToExtract.setEnabled(jrbSingleEnd.isSelected());
+				jrbUniqueAlignments.setEnabled(jrbSingleEnd.isSelected());
 				jlMappingQuality.setEnabled(jrbSingleEnd.isSelected());
-				jrbPrimaryAlignment.setEnabled(jrbSingleEnd.isSelected());
-				jrbAllReads.setEnabled(jrbSingleEnd.isSelected());
+				jrbPrimaryAlignments.setEnabled(jrbSingleEnd.isSelected());
+				jrbAllAlignments.setEnabled(jrbSingleEnd.isSelected());
 				jftfMappingQuality.setEnabled(jrbSingleEnd.isSelected());
 			}
 		});
@@ -187,17 +187,17 @@ class SAMPanel extends JPanel {
 		gbc.gridy = 1;
 		gbc.gridwidth = 2;
 		gbc.insets = new Insets(10, 0, 0, 0);
-		jpSingleEndOptions.add(jlReadsToExtract, gbc);
+		jpSingleEndOptions.add(jlAlignmentsToExtract, gbc);
 
 		gbc.gridy = 2;
 		gbc.insets = new Insets(0, 0, 0, 0);
-		jpSingleEndOptions.add(jrbUnique, gbc);
+		jpSingleEndOptions.add(jrbAllAlignments, gbc);
 
 		gbc.gridy = 3;
-		jpSingleEndOptions.add(jrbPrimaryAlignment, gbc);
+		jpSingleEndOptions.add(jrbPrimaryAlignments, gbc);
 
 		gbc.gridy = 4;
-		jpSingleEndOptions.add(jrbAllReads, gbc);
+		jpSingleEndOptions.add(jrbUniqueAlignments, gbc);
 
 		setLayout(new GridBagLayout());
 		gbc = new GridBagConstraints();
@@ -277,7 +277,7 @@ class SAMPanel extends JPanel {
 	 * @return true if all the reads should be extracted
 	 */
 	boolean isAllReadsSelected() {
-		return jrbAllReads.isSelected();
+		return jrbAllAlignments.isSelected();
 	}
 
 
@@ -293,7 +293,7 @@ class SAMPanel extends JPanel {
 	 * @return true if the unique reads and the primary alignments should be extracted
 	 */
 	boolean isPrimaryAligmentSelected() {
-		return jrbPrimaryAlignment.isSelected();
+		return jrbPrimaryAlignments.isSelected();
 	}
 
 
@@ -317,7 +317,7 @@ class SAMPanel extends JPanel {
 	 * @return true if only the unique reads should be extracted
 	 */
 	boolean isUniqueSelected() {
-		return jrbUnique.isSelected();
+		return jrbUniqueAlignments.isSelected();
 	}
 
 
@@ -327,10 +327,10 @@ class SAMPanel extends JPanel {
 	void saveDefault() {
 		defaultMapQual = getMappingQuality();
 		isRemoveDuplicatesSelected = isRemoveDuplicatesSelected();
-		isAllReadsSelected = isAllReadsSelected();
+		isAllAlignmentsSelected = isAllReadsSelected();
 		isPairedEndSelected = isPairedEndSelected();
 		isPrimaryAligmentSelected = isPrimaryAligmentSelected();
 		isSingleEndSelected = isSingleEndSelected();
-		isUniqueSelected = isUniqueSelected();
+		isUniqueAlignmentsSelected = isUniqueSelected();
 	}
 }

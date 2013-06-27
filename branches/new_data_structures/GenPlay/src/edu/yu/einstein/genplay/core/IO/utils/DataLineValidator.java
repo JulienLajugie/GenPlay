@@ -71,7 +71,7 @@ public class DataLineValidator {
 
 		if (position < 0) {
 			errors += "Position (" + position + ") lower than 0";
-		} else if (position > chromosome.getLength()) {
+		} else if (position > (chromosome.getLength() + 1)) {
 			errors += "Position (" + position + ") higher than the chromosome (" + chromosome.getName() + ") length (" + chromosome.getLength() + ")";
 		}
 
@@ -90,7 +90,7 @@ public class DataLineValidator {
 
 		errors = addError(errors, getErrors(chromosome, start));
 		//errors = addError(errors, getErrors(chromosome, stop));
-		errors = addError(errors, getErrors(start, stop));
+		errors = addError(errors, getErrors(start, stop - 1));
 
 		return errors;
 	}

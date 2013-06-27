@@ -63,8 +63,8 @@ import edu.yu.einstein.genplay.util.colors.Colors;
 public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList> {
 
 	private static final long serialVersionUID = -7836987725953057426L;								// generated ID
-	private static final String ACTION_NAME = "Add Variable Window Layer";							// action name
-	private static final String DESCRIPTION = "Add a layer displaying windows of variable sizes"; 	// tooltip
+	private static final String ACTION_NAME = "Add Window Layer";									// action name
+	private static final String DESCRIPTION = "Add a layer displaying windows with a score"; 		// tooltip
 	private ScoreOperation 			scoreCalculation = null;										// method of calculation for the score
 	private Strand					strand = null;													// strand to extract
 	private int						fragmentLength = 0;												// user specified length of the fragments
@@ -100,14 +100,12 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 			if (isBinList) {
 				newLayer = new BinLayer(selectedTrack, (BinList) actionResult, name);
 				// add the history to the layer
-				history = "Bin Size = " + binSize + "bp";
+				history = "Bin Size = " + binSize + "bp, ";
 			} else {
 				newLayer = new SimpleSCWLayer(selectedTrack, actionResult, name);
 			}
 			newLayer.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Colors.GREY);
-			if (scoreCalculation != null) {
-				history += "Method of Calculation = " + scoreCalculation;
-			}
+			history += "Method of Calculation = " + scoreCalculation;
 			if (strand != null) {
 				history += ", Strand = ";
 				if (strand == Strand.FIVE) {
@@ -165,7 +163,7 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 				samExtractor.addFilter(new InvalidSAMRecordFilter());
 				if (ncld.getReadGroup() != null) {
 					samExtractor.addFilter(new ReadGroupsSAMRecordFilter(ncld.getReadGroup()));
-					samHistory += "Read Group: " + ncld.getReadGroup() + ", ";
+					samHistory += "Read Group: " + ncld.getReadGroup().getId() + ", ";
 				}
 				if (ncld.isRemoveDuplicatesSelected()) {
 					samExtractor.addFilter(new DuplicateSAMRecordFilter());

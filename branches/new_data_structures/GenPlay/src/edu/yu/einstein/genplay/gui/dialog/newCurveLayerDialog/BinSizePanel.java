@@ -49,6 +49,7 @@ class BinSizePanel extends JPanel {
 	private static final int 	SPINNER_STEP = 100; 					// step of the spinner
 	private final JCheckBox		jcbCreateBinList;						// check box that can be checked to create a bin lists
 	private final JLabel 		jlCreateBinListHelp;					// label create bin list help
+	private final JLabel		jlBinSize; 								// label bin size
 	private final JSpinner 		jsBinSize; 								// spinner for the binsize input
 	private static int 			defaultBinSize = 1000; 					// default binsize
 	private static boolean		defaultIsCreateBinListSelected;			// default state of the check box to create bin lists
@@ -59,7 +60,7 @@ class BinSizePanel extends JPanel {
 	BinSizePanel() {
 		super();
 		// check box
-		jcbCreateBinList = new JCheckBox("Score Bins");
+		jcbCreateBinList = new JCheckBox("Bin Data");
 		jcbCreateBinList.setSelected(defaultIsCreateBinListSelected);
 		jcbCreateBinList.addChangeListener(new ChangeListener() {
 			@Override
@@ -77,6 +78,8 @@ class BinSizePanel extends JPanel {
 				"If a read / window overlap more than one bin, its score is divided between the different bins proportionally to the length that overlaps each bin.<br/>" +
 				"Bin lists are generally more memory efficient and offer operations that are not available otherwise.</html>");
 
+		// label bin size
+		jlBinSize = new JLabel("Bin Size =");
 		// spinner
 		SpinnerNumberModel snm = new SpinnerNumberModel(defaultBinSize, 1, MAX_BINSIZE, SPINNER_STEP);
 		jsBinSize = new JSpinner(snm);
@@ -87,18 +90,22 @@ class BinSizePanel extends JPanel {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.LINE_START;
 		gbc.fill = GridBagConstraints.BOTH;
+		gbc.gridwidth = 2;
 		add(jcbCreateBinList, gbc);
 		gbc.fill = GridBagConstraints.NONE;
-		gbc.gridx = 1;
+		gbc.gridx = 2;
+		gbc.gridwidth = 1;
 		add(jlCreateBinListHelp, gbc);
 		gbc.anchor = GridBagConstraints.CENTER;
 		gbc.gridx = 0;
 		gbc.gridy = 1;
-		gbc.gridwidth = 2;
+		gbc.gridwidth = 1;
 		gbc.insets = new Insets(0, 0, 10, 0);
+		add(jlBinSize, gbc);
+		gbc.gridx = 1;
+		gbc.gridwidth = 2;
 		add(jsBinSize, gbc);
-
-		setBorder(BorderFactory.createTitledBorder("Bin Size"));
+		setBorder(BorderFactory.createTitledBorder("Bin"));
 	}
 
 

@@ -171,7 +171,6 @@ public class SCWListFactory {
 	}
 
 
-
 	/**
 	 * Creates a {@link BinList} from the data retrieved by the specified {@link SCWReader}.
 	 * The specified prototype determine the underlying data structure of the {@link SCWList}.

@@ -64,7 +64,7 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable, 
 	private int 							currentLineNumber;			// current line number
 	private Integer							randomLineCount = null;		// number of random lines to extract in the text file. Extract the entire file if null
 	private TreeSet<Integer> 				randomLineNumbers;			// TreeSet containing the numbers of the lines to extract (the line numbers are randomly generated)
-	private TrackLineHeader 				trackLineHeader;			// header of the track extracted from the track line
+	private final TrackLineHeader 			trackLineHeader;			// header of the track extracted from the track line
 
 
 	/**
@@ -77,6 +77,7 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable, 
 		reader = new BufferedReader(new FileReader(dataFile), BUFFER_LENGTH);
 		lineExtracted = 0;
 		lineSkipped = 0;
+		trackLineHeader = new TrackLineHeader();
 	}
 
 
@@ -99,7 +100,6 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable, 
 	 * @param currentLine a header line
 	 */
 	protected void extractHeaderLine(String currentLine) {
-		trackLineHeader = new TrackLineHeader();
 		trackLineHeader.parseTrackLine(currentLine);
 	}
 

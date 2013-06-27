@@ -155,7 +155,8 @@ public class Colors {
 	/** Color of the Blank */
 	public static final Color BLANK = Colors.GREY;
 
-
+	/** Transparency of a rolled-over nucleotide */
+	public static final int ROLLED_OVER_NUCLEOTIDE_TRANSPARENCY = 100;
 
 	//////////////////////////////////////////////// Track colors
 
@@ -202,31 +203,6 @@ public class Colors {
 
 
 	/**
-	 * Associates a color to a {@link Nucleotide}
-	 * @param nucleotide {@link Nucleotide}
-	 * @return a {@link Color}
-	 */
-	public static Color nucleotideToColor(Nucleotide nucleotide) {
-		switch (nucleotide) {
-		case ADENINE:
-			return Colors.ADENINE;
-		case CYTOSINE:
-			return Colors.CYTOSINE;
-		case GUANINE:
-			return Colors.GUANINE;
-		case THYMINE:
-			return Colors.THYMINE;
-		case ANY:
-			return Colors.ANY;
-		case BLANK:
-			return Colors.BLANK;
-		default:
-			return null;
-		}
-	}
-
-
-	/**
 	 * @return a color randomly generated
 	 */
 	public static Color generateRandomColor() {
@@ -262,6 +238,31 @@ public class Colors {
 			} else {
 				return new Color(0, 0, 200);
 			}
+		}
+	}
+
+
+	/**
+	 * Associates a color to a {@link Nucleotide}
+	 * @param nucleotide {@link Nucleotide}
+	 * @return a {@link Color}
+	 */
+	public static Color nucleotideToColor(Nucleotide nucleotide) {
+		switch (nucleotide) {
+		case ADENINE:
+			return Colors.ADENINE;
+		case CYTOSINE:
+			return Colors.CYTOSINE;
+		case GUANINE:
+			return Colors.GUANINE;
+		case THYMINE:
+			return Colors.THYMINE;
+		case ANY:
+			return Colors.ANY;
+		case BLANK:
+			return Colors.BLANK;
+		default:
+			return null;
 		}
 	}
 

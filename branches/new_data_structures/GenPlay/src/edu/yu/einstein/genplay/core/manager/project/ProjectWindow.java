@@ -82,7 +82,7 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 		} else if (doubleValue <= Integer.MIN_VALUE) {
 			return Integer.MIN_VALUE;
 		} else {
-			return (int)Math.round(doubleValue);
+			return (int) doubleValue;
 		}
 	}
 
