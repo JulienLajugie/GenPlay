@@ -28,8 +28,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import edu.yu.einstein.genplay.core.multiGenome.tabixAPI.Iterator;
-import edu.yu.einstein.genplay.core.multiGenome.tabixAPI.TabixReader;
+import net.sf.jannot.tabix.Iterator;
+import net.sf.jannot.tabix.TabixReader;
+
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.VCFColumnName;
 import edu.yu.einstein.genplay.util.Utils;

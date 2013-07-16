@@ -1,4 +1,4 @@
-package edu.yu.einstein.genplay.core.multiGenome.tabixAPI;
+package net.sf.jannot.tabix;
 
 import java.io.BufferedReader;
 import java.io.File;

@@ -42,9 +42,6 @@ import net.sf.jannot.picard.LineBlockCompressedInputStream;
 import net.sf.samtools.seekablestream.SeekableFileStream;
 import net.sf.samtools.util.BlockCompressedInputStream;
 import net.sf.samtools.util.BlockCompressedOutputStream;
-import edu.yu.einstein.genplay.core.multiGenome.tabixAPI.TIntv;
-import edu.yu.einstein.genplay.core.multiGenome.tabixAPI.TPair64;
-import edu.yu.einstein.genplay.core.multiGenome.tabixAPI.TabixReader;
 
 /**
  * Tabix writer, based on Heng Li's C implementation.

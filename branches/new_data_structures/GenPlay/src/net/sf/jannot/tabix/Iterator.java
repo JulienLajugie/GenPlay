@@ -1,8 +1,9 @@
-package edu.yu.einstein.genplay.core.multiGenome.tabixAPI;
+package net.sf.jannot.tabix;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+
 
 /**
  * This class is part of the Tabix API written by Heng Li.

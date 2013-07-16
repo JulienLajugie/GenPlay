@@ -72,17 +72,34 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 
 	/**
 	 * @param doubleValue a double value
-	 * @return an integer equals to the truncated specified double value
+	 * @return the largest integer value that is less than or equal to the argument specified double value
 	 * Returns Integer.MAX_VALUE if the specified double is greater than Integer.MAX_VALUE
 	 * Returns Integer.MIN_VALUE if the specified double is smaller than Integer.MIN_VALUE
 	 */
-	private int doubleToInt(double doubleValue) {
+	private int doubleToIntFloor(double doubleValue) {
 		if (doubleValue >= Integer.MAX_VALUE) {
 			return Integer.MAX_VALUE;
 		} else if (doubleValue <= Integer.MIN_VALUE) {
 			return Integer.MIN_VALUE;
 		} else {
-			return (int) doubleValue;
+			return (int)Math.floor(doubleValue);
+		}
+	}
+
+
+	/**
+	 * @param doubleValue a double value
+	 * @return the closest integer value to the specified double value
+	 * Returns Integer.MAX_VALUE if the specified double is greater than Integer.MAX_VALUE
+	 * Returns Integer.MIN_VALUE if the specified double is smaller than Integer.MIN_VALUE
+	 */
+	private int doubleToIntRounded(double doubleValue) {
+		if (doubleValue >= Integer.MAX_VALUE) {
+			return Integer.MAX_VALUE;
+		} else if (doubleValue <= Integer.MIN_VALUE) {
+			return Integer.MIN_VALUE;
+		} else {
+			return (int) Math.round(doubleValue);
 		}
 	}
 
@@ -102,7 +119,7 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 	 */
 	public int genomeToScreenPosition(int genomePosition) {
 		double result = (genomePosition - genomeWindow.getStart()) * xRatio;
-		return doubleToInt(result);
+		return doubleToIntRounded(result);
 	}
 
 
@@ -112,7 +129,7 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 	 */
 	public int genomeToScreenWidth(int genomeWidth) {
 		double result = genomeWidth * xRatio;
-		return doubleToInt(result);
+		return doubleToIntRounded(result);
 	}
 
 
@@ -196,7 +213,7 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 	public int screenToGenomePosition(int xScreen) {
 		double result = Math.floor(xScreen / xRatio);	// the value must be rounded the lowest int. Position 10,5 is still 10, not 11.
 		result += genomeWindow.getStart();
-		return doubleToInt(result);
+		return doubleToIntFloor(result);
 	}
 
 
@@ -206,7 +223,7 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 	 */
 	public int screenToGenomeWidth(int screenWidth) {
 		double result = screenWidth / xRatio;
-		return doubleToInt(result);
+		return doubleToIntFloor(result);
 	}
 
 

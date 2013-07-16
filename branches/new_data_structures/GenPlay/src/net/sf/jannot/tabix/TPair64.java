@@ -1,4 +1,4 @@
-package edu.yu.einstein.genplay.core.multiGenome.tabixAPI;
+package net.sf.jannot.tabix;
 
 /**
  * This class is part of the Tabix API written by Heng Li.
