@@ -64,6 +64,9 @@ public abstract class AbstractSCWLayer<T extends SCWList> extends AbstractVersio
 	/** Color of the layer */
 	private Color color;
 
+	/** Reversed of the curve color, use to print negative values */
+	transient private Color reversedColor;
+
 
 	/**
 	 * Creates an instance of {@link AbstractSCWLayer} with the same properties as the specified {@link AbstractSCWLayer}
@@ -73,6 +76,7 @@ public abstract class AbstractSCWLayer<T extends SCWList> extends AbstractVersio
 		super(abstractSCWLayer);
 		this.graphType = abstractSCWLayer.graphType;
 		this.color = abstractSCWLayer.color;
+		this.reversedColor = Colors.getReversedColor(color);
 	}
 
 
@@ -84,8 +88,9 @@ public abstract class AbstractSCWLayer<T extends SCWList> extends AbstractVersio
 	 */
 	public AbstractSCWLayer(Track track, T data, String name) {
 		super(track, data, name);
-		setGraphType(TrackConstants.DEFAULT_GRAPH_TYPE);
-		color = LayerColors.getLayerColor();
+		this.graphType = TrackConstants.DEFAULT_GRAPH_TYPE;
+		this.color = LayerColors.getLayerColor();
+		this.reversedColor = Colors.getReversedColor(color);
 	}
 
 
@@ -120,6 +125,27 @@ public abstract class AbstractSCWLayer<T extends SCWList> extends AbstractVersio
 
 
 	/**
+	 * Draws a bar on the specified graphics object with the specified coordinate
+	 * @param g graphics where to draw the bar
+	 * @param x x position of the bar
+	 * @param screenY0 y0 position on the screen
+	 * @param width width of the window
+	 * @param score score of the bar
+	 */
+	private void drawBar(Graphics g, int x, int screenY0, int width, float score) {
+		int y = getTrack().getScore().scoreToScreenPosition(score);
+		int rectHeight = y - screenY0;
+		if (score > 0) {
+			g.setColor(color);
+			g.fillRect(x, y, width, -rectHeight);
+		} else {
+			g.setColor(reversedColor);
+			g.fillRect(x, screenY0, width, rectHeight);
+		}
+	}
+
+
+	/**
 	 * Draws the layer as a bar graph
 	 * @param g {@link Graphics} on which the layer will be drawn
 	 * @param width width of the graphics to draw
@@ -129,63 +155,39 @@ public abstract class AbstractSCWLayer<T extends SCWList> extends AbstractVersio
 		if (getData() != null) {
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
 			int screenY0 = getTrack().getScore().scoreToScreenPosition(0);
-			Color reverseCurveColor;
-			if (!getColor().equals(Color.BLACK)) {
-				reverseCurveColor = new Color(getColor().getRGB() ^ 0xffffff);
-			} else {
-				reverseCurveColor = Colors.GREY;
-			}
-			reverseCurveColor = new Color(reverseCurveColor.getRed(), reverseCurveColor.getGreen(), reverseCurveColor.getBlue(), getColor().getAlpha());
 			// Retrieve the list to print
 			ListView<ScoredChromosomeWindow> listToPrint = DataScalerManager.getInstance().getScaledData(this);
 			if (listToPrint == null) {
 				getTrack().drawLoadingAnimation(g);
 			} else {
 				Integer waitingX = null;
-				Float waintingScore = null;
+				Float waitingScore = null;
 				for (ScoredChromosomeWindow currentWindow: listToPrint) {
 					float score = currentWindow.getScore();
 					if (score != 0) {
 						// we want to make sure that x is > 0
 						int x = Math.max(0, projectWindow.genomeToScreenPosition(currentWindow.getStart()));
-
 						// if the width of the precedent window was 0 we print it with a width of 1
 						// if it doesn't overlap with the current window.
-						if (waitingX != null) {
-							if (waitingX < x) {
-								int y = getTrack().getScore().scoreToScreenPosition(waintingScore);
-								int rectHeight = y - screenY0;
-								if (score > 0) {
-									g.setColor(getColor());
-									g.fillRect(waitingX, y, 1, -rectHeight);
-								} else {
-									g.setColor(reverseCurveColor);
-									g.fillRect(waitingX, screenY0, 1, rectHeight);
-								}
-							}
-							waitingX = null;
-							waintingScore = null;
+						if ((waitingX != null) && (waitingX < x)) {
+							drawBar(g, waitingX, screenY0, 1, waitingScore);
 						}
-
+						waitingX = null;
+						waitingScore = null;
 						// we want to make sure that window width is not larger than the screen width
 						int widthWindow = Math.min(width, projectWindow.genomeToScreenPosition(currentWindow.getStop()) - x);
 						if (widthWindow > 0) {
-							int y = getTrack().getScore().scoreToScreenPosition(score);
-							int rectHeight = y - screenY0;
-							if (score > 0) {
-								g.setColor(getColor());
-								g.fillRect(x, y, widthWindow, -rectHeight);
-							} else {
-								g.setColor(reverseCurveColor);
-								g.fillRect(x, screenY0, widthWindow, rectHeight);
-							}
+							drawBar(g, x, screenY0, widthWindow, score);
 						} else {
 							// if the width is less than 1 we save it for the next iteration in our list of windows to print
 							// because we will print it with a width of 1 if it doesn't overlap with the next window
 							waitingX = x;
-							waintingScore = score;
+							waitingScore = score;
 						}
 					}
+				}
+				if (waitingX != null) {
+					drawBar(g, waitingX, screenY0, 1, waitingScore);
 				}
 			}
 		}
@@ -351,6 +353,7 @@ public abstract class AbstractSCWLayer<T extends SCWList> extends AbstractVersio
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		color = (Color) in.readObject();
+		reversedColor = Colors.getReversedColor(color);
 		graphType = (GraphType) in.readObject();
 	}
 
@@ -358,6 +361,7 @@ public abstract class AbstractSCWLayer<T extends SCWList> extends AbstractVersio
 	@Override
 	public void setColor(Color color) {
 		this.color = color;
+		this.reversedColor = Colors.getReversedColor(color);
 	}
 
 

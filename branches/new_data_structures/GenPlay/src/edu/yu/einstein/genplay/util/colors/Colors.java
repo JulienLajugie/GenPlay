@@ -243,6 +243,22 @@ public class Colors {
 
 
 	/**
+	 * @param color a {@link Color}
+	 * @return a new color object that is the reversed of the specified one
+	 */
+	public static Color getReversedColor(Color color) {
+		Color reverseColor;
+		if (!color.equals(Color.BLACK)) {
+			reverseColor = new Color(color.getRGB() ^ 0xffffff);
+		} else {
+			reverseColor = Colors.GREY;
+		}
+		reverseColor = new Color(reverseColor.getRed(), reverseColor.getGreen(), reverseColor.getBlue(), color.getAlpha());
+		return reverseColor;
+	}
+
+
+	/**
 	 * Associates a color to a {@link Nucleotide}
 	 * @param nucleotide {@link Nucleotide}
 	 * @return a {@link Color}

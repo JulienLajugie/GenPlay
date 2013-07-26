@@ -107,7 +107,9 @@ public class SCWLOTwoLayers implements Operation<SCWList>, Stoppable {
 							score *= -1;
 						} else if ((scoreOperation == ScoreOperation.DIVISION) && (listOfLVIterator.getLastNextListIndex() == 1)) {
 							// A / B = A * (1 / B)
-							score = 1 / score;
+							if (score != 0) {
+								score = 1 / score;
+							}
 						}
 						gwFlattener.addWindow(currentChromosome, start, stop, score);
 					}
