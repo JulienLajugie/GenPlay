@@ -144,7 +144,10 @@ public class GraphicsPanel extends JPanel implements Serializable, ComponentList
 			// distance between the current position of the cursor and the position where the dragging started
 			int screenWidth = mouseStartDragX - e.getX();
 			// compute the corresponding genomic distance
-			double genomeWidth = projectWindow.screenToGenomeWidth(screenWidth);
+			double genomeWidth = projectWindow.screenToGenomeWidth(Math.abs(screenWidth));
+			if (screenWidth < 0) {
+				genomeWidth *= -1;
+			}
 			if ((genomeWidth >= 1) || (genomeWidth <= -1)) {
 				Chromosome chromo = projectWindow.getGenomeWindow().getChromosome();
 				int start = projectWindow.getGenomeWindow().getStart() + (int) genomeWidth;

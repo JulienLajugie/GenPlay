@@ -159,11 +159,11 @@ public class ScrollingManager {
 	 */
 	public void setScrollingIntensity(int distance) {
 		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-		double scrollingIntensityTmp = projectWindow.screenToGenomeWidth(distance);
-		if (scrollingIntensityTmp < 0) {
-			scrollingIntensity = (int) (scrollingIntensityTmp / 10d) + 1;
+		double scrollingIntensityTmp = projectWindow.screenToGenomeWidth(Math.abs(distance));
+		if (distance < 0) {
+			scrollingIntensity = (int) (-(scrollingIntensityTmp / 10d) - 1);
 		} else {
-			scrollingIntensity = (int) (scrollingIntensityTmp / 10d) - 1;
+			scrollingIntensity = (int) (scrollingIntensityTmp / 10d) + 1;
 		}
 	}
 }

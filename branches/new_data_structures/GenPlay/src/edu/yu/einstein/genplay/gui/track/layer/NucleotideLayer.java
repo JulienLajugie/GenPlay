@@ -137,7 +137,7 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 				Nucleotide[] nucleotides = DataScalerManager.getInstance().getScaledData(this);
 				for (int position = projectWindow.getGenomeWindow().getStart(); position <= projectWindow.getGenomeWindow().getStop(); position++) {
 					int index = position - projectWindow.getGenomeWindow().getStart();
-					if (nucleotides[index] != null) {
+					if ((index >= 0) && (nucleotides[index] != null)) {
 						Nucleotide nucleotide = nucleotides[index];
 						// compute the position on the screen
 						int x = projectWindow.genomeToScreenPosition(position);

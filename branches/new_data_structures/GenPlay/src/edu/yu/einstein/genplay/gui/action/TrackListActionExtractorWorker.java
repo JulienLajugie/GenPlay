@@ -77,6 +77,7 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 	 * @throws Exception If the exception cannot be handled
 	 */
 	private void handleProcessActionException(Exception e) throws Exception {
+		e.printStackTrace();
 		if (e instanceof ElementAddedNotSortedException) {
 			String message = "File not sorted:  " + fileToExtract.getName()
 					+ "\nThis file cannot be loaded because it is not sorted by chromosome and start position.";
