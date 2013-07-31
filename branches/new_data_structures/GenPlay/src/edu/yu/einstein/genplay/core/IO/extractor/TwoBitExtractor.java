@@ -85,6 +85,10 @@ public class TwoBitExtractor extends Extractor implements Stoppable {
 	public TwoBitExtractor(File dataFile) {
 		super(dataFile);
 		data = new ArrayList<ListView<Nucleotide>>();
+		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
+		for (int i = 0; i < projectChromosomes.size(); i++) {
+			data.add(null);
+		}
 	}
 
 
@@ -163,14 +167,11 @@ public class TwoBitExtractor extends Extractor implements Stoppable {
 					}
 					long currentPosition = twoBitFile.getFilePointer();
 					Chromosome chromosome = projectChromosomes.get(k);
-					data.add(extractChromosome(chromosome, offsets[i]));
+					data.set(k, extractChromosome(chromosome, offsets[i]));
 					twoBitFile.seek(currentPosition);
 					found = true;
 				}
 				k++;
-			}
-			if (!found) {
-				data.add(null);
 			}
 		}
 	}
