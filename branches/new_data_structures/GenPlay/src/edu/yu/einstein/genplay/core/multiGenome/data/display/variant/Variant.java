@@ -25,8 +25,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.List;
 
+import net.sf.jannot.tabix.TabixReader.Iterator;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
@@ -49,33 +49,6 @@ public abstract class Variant implements Serializable {
 	protected MGChromosomeContent chromosomeContent;
 	protected int referencePositionIndex;
 	protected int start;
-
-
-	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	protected void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(chromosomeContent);
-		out.writeInt(referencePositionIndex);
-		out.writeInt(start);
-	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	protected void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		chromosomeContent = (MGChromosomeContent) in.readObject();
-		referencePositionIndex = in.readInt();
-		start = in.readInt();
-	}
 
 
 	/**
@@ -110,10 +83,22 @@ public abstract class Variant implements Serializable {
 
 
 	/**
-	 * @return the referencePositionIndex
+	 * @return a description of the {@link Variant}
 	 */
-	public int getReferencePositionIndex() {
-		return referencePositionIndex;
+	public String getDescription () {
+		String description = "";
+		description += "INDEX: " + referencePositionIndex + "; ";
+		description += "REF: " + chromosomeContent.getPositions().get(referencePositionIndex) + "; ";
+		description += "START: " + start + ";";
+		return description;
+	}
+
+
+	/**
+	 * @return the length of the variant
+	 */
+	public int getLength() {
+		return getStop() - getStart();
 	}
 
 
@@ -122,6 +107,14 @@ public abstract class Variant implements Serializable {
 	 */
 	public int getReferenceGenomePosition() {
 		return chromosomeContent.getPositions().get(referencePositionIndex);
+	}
+
+
+	/**
+	 * @return the referencePositionIndex
+	 */
+	public int getReferencePositionIndex() {
+		return referencePositionIndex;
 	}
 
 
@@ -142,49 +135,15 @@ public abstract class Variant implements Serializable {
 
 
 	/**
-	 * @param start start position to set
-	 */
-	public void setStart (int start) {
-		this.start = start;
-	}
-
-
-	/**
 	 * @return the stop position on the meta genome
 	 */
 	public abstract int getStop ();
 
 
 	/**
-	 * @param stop stop position to set
-	 */
-	public abstract void setStop (int stop);
-
-
-	/**
 	 * @return the {@link VariantType} of the {@link Variant}
 	 */
 	public abstract VariantType getType ();
-
-
-	/**
-	 * @return a description of the {@link Variant}
-	 */
-	public String getDescription () {
-		String description = "";
-		description += "INDEX: " + referencePositionIndex + "; ";
-		description += "REF: " + chromosomeContent.getPositions().get(referencePositionIndex) + "; ";
-		description += "START: " + start + ";";
-		return description;
-	}
-
-
-	/**
-	 * @return the length of the variant
-	 */
-	public int getLength() {
-		return getStop() - getStart();
-	}
 
 
 	/**
@@ -218,20 +177,22 @@ public abstract class Variant implements Serializable {
 		Chromosome chromosome = chromosomeContent.getChromosome();
 		int referencePosition = getReferenceGenomePosition();
 		VCFFile file = ProjectManager.getInstance().getMultiGenomeProject().getFileContentManager().getFile(chromosome, chromosomeContent);
-		List<String> results = null;
+		Iterator results = null;
 
 		try {
-			results = file.getReader().query(chromosome.getName(), referencePosition - 1, referencePosition);
-		} catch (IOException e) {
+			String query = chromosome.getName() + ":" + (referencePosition - 1) + "-" + referencePosition;
+			results = file.getReader().query(query);
+		} catch (Exception e) {
 			ExceptionManager.getInstance().caughtException(e);
 		}
 
 
-		if ((results != null) && (results.size() > 0)) {
-			return new VCFLine(results.get(0), file.getHeader());
+		try {
+			String nextLine = results.next();
+			return new VCFLine(nextLine, file.getHeader());
+		} catch (IOException e) {
+			return null;
 		}
-
-		return null;
 	}
 
 
@@ -240,30 +201,6 @@ public abstract class Variant implements Serializable {
 	 */
 	public boolean isAlternative () {
 		return (this instanceof InsertionVariant) || (this instanceof DeletionVariant) || (this instanceof SNPVariant);
-	}
-
-
-	/**
-	 * @return true if the {@link Variant} is a {@link ReferenceVariant}, false otherwise
-	 */
-	public boolean isReference () {
-		return (this instanceof ReferenceVariant);
-	}
-
-
-	/**
-	 * @return true if the {@link Variant} is a {@link NoCallVariant}, false otherwise
-	 */
-	public boolean isNoCall () {
-		return (this instanceof NoCallVariant);
-	}
-
-
-	/**
-	 * @return true if the {@link Variant} is a {@link MixVariant}, false otherwise
-	 */
-	public boolean isMix () {
-		return (this instanceof MixVariant);
 	}
 
 
@@ -302,5 +239,70 @@ public abstract class Variant implements Serializable {
 		}
 
 		return result;
+	}
+
+
+	/**
+	 * @return true if the {@link Variant} is a {@link MixVariant}, false otherwise
+	 */
+	public boolean isMix () {
+		return (this instanceof MixVariant);
+	}
+
+
+	/**
+	 * @return true if the {@link Variant} is a {@link NoCallVariant}, false otherwise
+	 */
+	public boolean isNoCall () {
+		return (this instanceof NoCallVariant);
+	}
+
+
+	/**
+	 * @return true if the {@link Variant} is a {@link ReferenceVariant}, false otherwise
+	 */
+	public boolean isReference () {
+		return (this instanceof ReferenceVariant);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	protected void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		chromosomeContent = (MGChromosomeContent) in.readObject();
+		referencePositionIndex = in.readInt();
+		start = in.readInt();
+	}
+
+
+	/**
+	 * @param start start position to set
+	 */
+	public void setStart (int start) {
+		this.start = start;
+	}
+
+
+	/**
+	 * @param stop stop position to set
+	 */
+	public abstract void setStop (int stop);
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	protected void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(chromosomeContent);
+		out.writeInt(referencePositionIndex);
+		out.writeInt(start);
 	}
 }

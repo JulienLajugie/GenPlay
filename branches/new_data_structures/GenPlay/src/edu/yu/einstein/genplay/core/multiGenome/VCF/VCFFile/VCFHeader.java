@@ -21,19 +21,20 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
 
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.jannot.source.Locator;
+import net.sf.jannot.tabix.TabixReader;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAltType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderBasicType;
@@ -57,8 +58,6 @@ public class VCFHeader implements VCFGenomeIndexer, Serializable {
 	private static final long serialVersionUID = 5071204705996276780L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 
-	private BufferedReader headerReader;
-
 	private Map<String, String> 				headerInfo;			// Header main information
 	private	Map<String, Class<?>>				fieldType;			// Association between field type and java class
 	private	List<String>						fixedColumn;		// Fixed header names included in the VCF file
@@ -76,54 +75,6 @@ public class VCFHeader implements VCFGenomeIndexer, Serializable {
 
 
 	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-
-		out.writeObject(headerInfo);
-		out.writeObject(fieldType);
-		out.writeObject(fixedColumn);
-		out.writeObject(basicHeader);
-		out.writeObject(altHeader);
-		out.writeObject(filterHeader);
-		out.writeObject(infoHeader);
-		out.writeObject(formatHeader);
-		out.writeObject(columnNames);
-		out.writeObject(genomeRawNames);
-		out.writeObject(genomeNames);
-		out.writeObject(genomeMap);
-	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	@SuppressWarnings("unchecked")
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-
-		headerInfo = (Map<String, String>) in.readObject();
-		fieldType = (Map<String, Class<?>>) in.readObject();
-		fixedColumn = (List<String>) in.readObject();
-		basicHeader = (List<VCFHeaderType>) in.readObject();
-		altHeader = (List<VCFHeaderType>) in.readObject();
-		filterHeader = (List<VCFHeaderType>) in.readObject();
-		infoHeader = (ArrayList<VCFHeaderAdvancedType>) in.readObject();
-		formatHeader = (ArrayList<VCFHeaderAdvancedType>) in.readObject();
-		columnNames = (List<String>) in.readObject();
-		genomeRawNames = (List<String>) in.readObject();
-		genomeNames = (List<String>) in.readObject();
-		genomeMap = (Map<String, Integer>) in.readObject();
-	}
-
-
-	/**
 	 * Constructor of {@link VCFHeader}.
 	 */
 	protected VCFHeader () {
@@ -131,6 +82,303 @@ public class VCFHeader implements VCFGenomeIndexer, Serializable {
 		initFixedColumnList();
 		genomeNames = new ArrayList<String>();
 		genomeMap = new HashMap<String, Integer>();
+	}
+
+
+	/**
+	 * Add a genome name to the list of genome name
+	 * @param genomeName a full genome name
+	 */
+	protected void addGenomeName (String genomeName) {
+		if (!genomeNames.contains(genomeName)) {
+			genomeNames.add(genomeName);
+		}
+	}
+
+
+	/**
+	 * @return all the header type
+	 */
+	public List<VCFHeaderType> getAllHeader () {
+		List<VCFHeaderType> result = new ArrayList<VCFHeaderType>();
+
+		for (VCFHeaderType header: basicHeader) {
+			result.add(header);
+		}
+
+		for (VCFHeaderType header: altHeader) {
+			result.add(header);
+		}
+
+		for (VCFHeaderType header: filterHeader) {
+			result.add(header);
+		}
+
+		for (VCFHeaderType header: infoHeader) {
+			result.add(header);
+		}
+
+		for (VCFHeaderType header: formatHeader) {
+			result.add(header);
+		}
+
+		return result;
+	}
+
+
+	/**
+	 * @return all the header type
+	 */
+	public List<VCFHeaderType> getAllNumberHeader () {
+		List<VCFHeaderType> result = new ArrayList<VCFHeaderType>();
+
+		for (VCFHeaderType header: basicHeader) {
+			if (header.getColumnCategory() == VCFColumnName.QUAL) {
+				result.add(header);
+			}
+		}
+
+		for (VCFHeaderType header: infoHeader) {
+			VCFHeaderAdvancedType advancedHeader = (VCFHeaderAdvancedType) header;
+			if ((advancedHeader.getType() == Integer.class) || (advancedHeader.getType() == Float.class)) {
+				result.add(header);
+			}
+		}
+
+		for (VCFHeaderType header: formatHeader) {
+			VCFHeaderAdvancedType advancedHeader = (VCFHeaderAdvancedType) header;
+			if ((advancedHeader.getType() == Integer.class) || (advancedHeader.getType() == Float.class)) {
+				result.add(header);
+			}
+		}
+
+		return result;
+	}
+
+
+	/**
+	 * @return all sorted header types
+	 */
+	public List<VCFHeaderType> getAllSortedHeader () {
+		List<VCFHeaderType> result = new ArrayList<VCFHeaderType>();
+
+		for (VCFHeaderType header: basicHeader) {
+			result.add(header);
+		}
+
+		for (VCFHeaderType header: altHeader) {
+			result.add(header);
+		}
+
+		for (VCFHeaderType header: filterHeader) {
+			result.add(header);
+		}
+
+		for (VCFHeaderType header: infoHeader) {
+			if (((VCFHeaderAdvancedType)header).getType() == Boolean.class) {
+				result.add(header);
+			}
+		}
+
+		for (VCFHeaderType header: formatHeader) {
+			result.add(header);
+		}
+
+		for (VCFHeaderType header: infoHeader) {
+			if (((VCFHeaderAdvancedType)header).getType() != Boolean.class) {
+				result.add(header);
+			}
+		}
+
+		return result;
+	}
+
+
+	/**
+	 * @return all sorted header types
+	 */
+	public List<VCFHeaderType> getAllSortedNumberHeader () {
+		List<VCFHeaderType> sortedList = getAllSortedHeader();
+		List<VCFHeaderType> result = new ArrayList<VCFHeaderType>();
+
+		for (VCFHeaderType header: sortedList) {
+			if (header.getColumnCategory() == VCFColumnName.QUAL) {
+				result.add(header);
+			} else {
+				if (header instanceof VCFHeaderAdvancedType) {
+					VCFHeaderAdvancedType advancedHeader = (VCFHeaderAdvancedType) header;
+					if ((advancedHeader.getType() == Integer.class) || (advancedHeader.getType() == Float.class)) {
+						result.add(header);
+					}
+				}
+			}
+		}
+
+		return result;
+	}
+
+
+	/**
+	 * @return the altHeader
+	 */
+	public List<VCFHeaderType> getAltHeader() {
+		return altHeader;
+	}
+
+
+	/**
+	 * Looks for a ALT header using an ID.
+	 * @param id the ID
+	 * @return	the header or null
+	 */
+	public VCFHeaderType getAltHeaderFromID (String id) {
+		for (VCFHeaderType header: altHeader) {
+			if (header.getId().equals(id)) {
+				return header;
+			}
+		}
+		return null;
+	}
+
+
+	/**
+	 * @return the basicHeader
+	 */
+	public List<VCFHeaderType> getBasicHeader() {
+		return basicHeader;
+	}
+
+
+	/**
+	 * @return the columnNames
+	 */
+	public List<String> getColumnNames() {
+		return columnNames;
+	}
+
+
+	/**
+	 * @return the filterHeader
+	 */
+	public List<VCFHeaderType> getFilterHeader() {
+		return filterHeader;
+	}
+
+
+	/**
+	 * @return the fixedColumn
+	 */
+	public List<String> getFixedColumn() {
+		List<String> list = new ArrayList<String>(fixedColumn);
+		return list;
+	}
+
+
+	/**
+	 * @return the formatHeader
+	 */
+	public List<VCFHeaderAdvancedType> getFormatHeader() {
+		return formatHeader;
+	}
+
+
+	/**
+	 * Looks for a FORMAT header using an ID.
+	 * @param id the ID
+	 * @return	the header or null
+	 */
+	public VCFHeaderAdvancedType getFormatHeaderFromID (String id) {
+		for (VCFHeaderAdvancedType header: formatHeader) {
+			if (header.getId().equals(id)) {
+				return header;
+			}
+		}
+		return null;
+	}
+
+
+	/**
+	 * @return the genomeNames
+	 */
+	public List<String> getGenomeNames() {
+		return genomeNames;
+	}
+
+
+	@Override
+	public String getGenomeRawName(int index) {
+		for (String rawName: genomeMap.keySet()) {
+			if (genomeMap.get(rawName) == index) {
+				return rawName;
+			}
+		}
+		return null;
+	}
+
+
+	/**
+	 * @return the columnNames
+	 */
+	@Override
+	public List<String> getGenomeRawNames() {
+		if (genomeRawNames == null) {
+			List<String> list = new ArrayList<String>();
+			for (String s: columnNames) {
+				if (!fixedColumn.contains(s)) {
+					list.add(s);
+				}
+			}
+			Collections.sort(list);
+			genomeRawNames = list;
+		}
+		return genomeRawNames;
+	}
+
+
+	/**
+	 * @return the headerInfo
+	 */
+	public Map<String, String> getHeaderInfo() {
+		return headerInfo;
+	}
+
+
+	@Override
+	public int getIndexFromFullGenomeName(String genomeFullName) {
+		return getIndexFromRawGenomeName(FormattedMultiGenomeName.getRawName(genomeFullName));
+	}
+
+
+	@Override
+	public int getIndexFromRawGenomeName(String genomeRawName) {
+		try {
+			return genomeMap.get(genomeRawName);
+		} catch (Exception e) {
+			return -1;
+		}
+	}
+
+
+	/**
+	 * @return the infoHeader
+	 */
+	public List<VCFHeaderAdvancedType> getInfoHeader() {
+		return infoHeader;
+	}
+
+
+	/**
+	 * Looks for a INFO header using an ID.
+	 * @param id the ID
+	 * @return	the header or null
+	 */
+	public VCFHeaderAdvancedType getInfoHeaderFromID (String id) {
+		for (VCFHeaderAdvancedType header: infoHeader) {
+			if (header.getId().equals(id)) {
+				return header;
+			}
+		}
+		return null;
 	}
 
 
@@ -165,14 +413,39 @@ public class VCFHeader implements VCFGenomeIndexer, Serializable {
 
 
 	/**
+	 * This method parses the content of attributes header information.
+	 * @param line
+	 * @return the parsed line
+	 */
+	private Map<String, String> parseVCFHeaderInfo (String line) {
+		Map<String, String> info = new HashMap<String, String>();
+		String[] details = Utils.split(line, ',');
+		String detail[];
+		for (String s: details) {
+			detail = Utils.split(s, '=');
+			if ((detail.length > 1) && !detail[0].equals("Description")) {
+				info.put(detail[0], detail[1]);
+			}
+		}
+		String descriptionPattern = "Description=\"";
+		int descriptionStart = line.indexOf(descriptionPattern) + descriptionPattern.length();
+		int descriptionStop = line.indexOf("\"", descriptionStart);
+		String description = line.substring(descriptionStart, descriptionStop);
+		info.put("Description", description);
+		return info;
+	}
+
+
+	/**
 	 * This method reads and saves the vcf header information
-	 * @param reader the VCF reader
+	 * @param vcfLocator locator of the VCF file
 	 * @throws FileNotFoundException
 	 * @throws IOException
+	 * @throws URISyntaxException
 	 */
-	public void processHeader (VCFReader reader) throws FileNotFoundException, IOException {
-		headerReader = new BufferedReader(new InputStreamReader(reader.getVCFParser().getmFp()));
+	public void processHeader (Locator vcfLocator) throws FileNotFoundException, IOException, URISyntaxException {
 		boolean valid = true;
+		TabixReader reader = new TabixReader(vcfLocator);
 		headerInfo = new HashMap<String, String>();
 		basicHeader = new ArrayList<VCFHeaderType>();
 		altHeader = new ArrayList<VCFHeaderType>();
@@ -202,7 +475,7 @@ public class VCFHeader implements VCFGenomeIndexer, Serializable {
 		basicHeader.add(basicFilterHeader);
 
 		while (valid) {
-			String line = reader.getVCFParser().readLine(headerReader);
+			String line = reader.readLine();
 			if (line == null) {
 				valid = false;
 			} else {
@@ -265,308 +538,27 @@ public class VCFHeader implements VCFGenomeIndexer, Serializable {
 
 
 	/**
-	 * Looks for a ALT header using an ID.
-	 * @param id the ID
-	 * @return	the header or null
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
 	 */
-	public VCFHeaderType getAltHeaderFromID (String id) {
-		for (VCFHeaderType header: altHeader) {
-			if (header.getId().equals(id)) {
-				return header;
-			}
-		}
-		return null;
-	}
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
 
-
-	/**
-	 * This method parses the content of attributes header information.
-	 * @param line
-	 * @return the parsed line
-	 */
-	private Map<String, String> parseVCFHeaderInfo (String line) {
-		Map<String, String> info = new HashMap<String, String>();
-		String[] details = Utils.split(line, ',');
-		String detail[];
-		for (String s: details) {
-			detail = Utils.split(s, '=');
-			if ((detail.length > 1) && !detail[0].equals("Description")) {
-				info.put(detail[0], detail[1]);
-			}
-		}
-		String descriptionPattern = "Description=\"";
-		int descriptionStart = line.indexOf(descriptionPattern) + descriptionPattern.length();
-		int descriptionStop = line.indexOf("\"", descriptionStart);
-		String description = line.substring(descriptionStart, descriptionStop);
-		info.put("Description", description);
-		return info;
-	}
-
-
-	/**
-	 * Looks for a INFO header using an ID.
-	 * @param id the ID
-	 * @return	the header or null
-	 */
-	public VCFHeaderAdvancedType getInfoHeaderFromID (String id) {
-		for (VCFHeaderAdvancedType header: infoHeader) {
-			if (header.getId().equals(id)) {
-				return header;
-			}
-		}
-		return null;
-	}
-
-
-	/**
-	 * Looks for a FORMAT header using an ID.
-	 * @param id the ID
-	 * @return	the header or null
-	 */
-	public VCFHeaderAdvancedType getFormatHeaderFromID (String id) {
-		for (VCFHeaderAdvancedType header: formatHeader) {
-			if (header.getId().equals(id)) {
-				return header;
-			}
-		}
-		return null;
-	}
-
-
-	/**
-	 * Add a genome name to the list of genome name
-	 * @param genomeName a full genome name
-	 */
-	protected void addGenomeName (String genomeName) {
-		if (!genomeNames.contains(genomeName)) {
-			genomeNames.add(genomeName);
-		}
-	}
-
-
-	/**
-	 * @return the columnNames
-	 */
-	@Override
-	public List<String> getGenomeRawNames() {
-		if (genomeRawNames == null) {
-			List<String> list = new ArrayList<String>();
-			for (String s: columnNames) {
-				if (!fixedColumn.contains(s)) {
-					list.add(s);
-				}
-			}
-			Collections.sort(list);
-			genomeRawNames = list;
-		}
-		return genomeRawNames;
-	}
-
-
-	/**
-	 * @return the columnNames
-	 */
-	public List<String> getColumnNames() {
-		return columnNames;
-	}
-
-
-	/**
-	 * @return the genomeNames
-	 */
-	public List<String> getGenomeNames() {
-		return genomeNames;
-	}
-
-
-	/**
-	 * @return the fixedColumn
-	 */
-	public List<String> getFixedColumn() {
-		List<String> list = new ArrayList<String>(fixedColumn);
-		return list;
-	}
-
-
-	/**
-	 * @return the basicHeader
-	 */
-	public List<VCFHeaderType> getBasicHeader() {
-		return basicHeader;
-	}
-
-
-	/**
-	 * @return the headerInfo
-	 */
-	public Map<String, String> getHeaderInfo() {
-		return headerInfo;
-	}
-
-
-	/**
-	 * @return the altHeader
-	 */
-	public List<VCFHeaderType> getAltHeader() {
-		return altHeader;
-	}
-
-
-	/**
-	 * @return the filterHeader
-	 */
-	public List<VCFHeaderType> getFilterHeader() {
-		return filterHeader;
-	}
-
-
-	/**
-	 * @return the infoHeader
-	 */
-	public List<VCFHeaderAdvancedType> getInfoHeader() {
-		return infoHeader;
-	}
-
-
-	/**
-	 * @return the formatHeader
-	 */
-	public List<VCFHeaderAdvancedType> getFormatHeader() {
-		return formatHeader;
-	}
-
-
-	/**
-	 * @return all the header type
-	 */
-	public List<VCFHeaderType> getAllHeader () {
-		List<VCFHeaderType> result = new ArrayList<VCFHeaderType>();
-
-		for (VCFHeaderType header: basicHeader) {
-			result.add(header);
-		}
-
-		for (VCFHeaderType header: altHeader) {
-			result.add(header);
-		}
-
-		for (VCFHeaderType header: filterHeader) {
-			result.add(header);
-		}
-
-		for (VCFHeaderType header: infoHeader) {
-			result.add(header);
-		}
-
-		for (VCFHeaderType header: formatHeader) {
-			result.add(header);
-		}
-
-		return result;
-	}
-
-
-	/**
-	 * @return all sorted header types
-	 */
-	public List<VCFHeaderType> getAllSortedHeader () {
-		List<VCFHeaderType> result = new ArrayList<VCFHeaderType>();
-
-		for (VCFHeaderType header: basicHeader) {
-			result.add(header);
-		}
-
-		for (VCFHeaderType header: altHeader) {
-			result.add(header);
-		}
-
-		for (VCFHeaderType header: filterHeader) {
-			result.add(header);
-		}
-
-		for (VCFHeaderType header: infoHeader) {
-			if (((VCFHeaderAdvancedType)header).getType() == Boolean.class) {
-				result.add(header);
-			}
-		}
-
-		for (VCFHeaderType header: formatHeader) {
-			result.add(header);
-		}
-
-		for (VCFHeaderType header: infoHeader) {
-			if (((VCFHeaderAdvancedType)header).getType() != Boolean.class) {
-				result.add(header);
-			}
-		}
-
-		return result;
-	}
-
-
-	/**
-	 * @return all the header type
-	 */
-	public List<VCFHeaderType> getAllNumberHeader () {
-		List<VCFHeaderType> result = new ArrayList<VCFHeaderType>();
-
-		for (VCFHeaderType header: basicHeader) {
-			if (header.getColumnCategory() == VCFColumnName.QUAL) {
-				result.add(header);
-			}
-		}
-
-		for (VCFHeaderType header: infoHeader) {
-			VCFHeaderAdvancedType advancedHeader = (VCFHeaderAdvancedType) header;
-			if ((advancedHeader.getType() == Integer.class) || (advancedHeader.getType() == Float.class)) {
-				result.add(header);
-			}
-		}
-
-		for (VCFHeaderType header: formatHeader) {
-			VCFHeaderAdvancedType advancedHeader = (VCFHeaderAdvancedType) header;
-			if ((advancedHeader.getType() == Integer.class) || (advancedHeader.getType() == Float.class)) {
-				result.add(header);
-			}
-		}
-
-		return result;
-	}
-
-
-	/**
-	 * @return all sorted header types
-	 */
-	public List<VCFHeaderType> getAllSortedNumberHeader () {
-		List<VCFHeaderType> sortedList = getAllSortedHeader();
-		List<VCFHeaderType> result = new ArrayList<VCFHeaderType>();
-
-		for (VCFHeaderType header: sortedList) {
-			if (header.getColumnCategory() == VCFColumnName.QUAL) {
-				result.add(header);
-			} else {
-				if (header instanceof VCFHeaderAdvancedType) {
-					VCFHeaderAdvancedType advancedHeader = (VCFHeaderAdvancedType) header;
-					if ((advancedHeader.getType() == Integer.class) || (advancedHeader.getType() == Float.class)) {
-						result.add(header);
-					}
-				}
-			}
-		}
-
-		return result;
-	}
-
-
-
-	/**
-	 * Shows the main header information
-	 */
-	public void showHeaderInfo () {
-		System.out.println("===== Header information");
-		for (String key: headerInfo.keySet()) {
-			System.out.println(key + ": " + headerInfo.get(key));
-		}
+		headerInfo = (Map<String, String>) in.readObject();
+		fieldType = (Map<String, Class<?>>) in.readObject();
+		fixedColumn = (List<String>) in.readObject();
+		basicHeader = (List<VCFHeaderType>) in.readObject();
+		altHeader = (List<VCFHeaderType>) in.readObject();
+		filterHeader = (List<VCFHeaderType>) in.readObject();
+		infoHeader = (ArrayList<VCFHeaderAdvancedType>) in.readObject();
+		formatHeader = (ArrayList<VCFHeaderAdvancedType>) in.readObject();
+		columnNames = (List<String>) in.readObject();
+		genomeRawNames = (List<String>) in.readObject();
+		genomeNames = (List<String>) in.readObject();
+		genomeMap = (Map<String, Integer>) in.readObject();
 	}
 
 
@@ -583,32 +575,36 @@ public class VCFHeader implements VCFGenomeIndexer, Serializable {
 	}
 
 
-	@Override
-	public int getIndexFromRawGenomeName(String genomeRawName) {
-		try {
-			return genomeMap.get(genomeRawName);
-		} catch (Exception e) {
-			return -1;
+	/**
+	 * Shows the main header information
+	 */
+	public void showHeaderInfo () {
+		System.out.println("===== Header information");
+		for (String key: headerInfo.keySet()) {
+			System.out.println(key + ": " + headerInfo.get(key));
 		}
 	}
 
 
-	@Override
-	public int getIndexFromFullGenomeName(String genomeFullName) {
-		return getIndexFromRawGenomeName(FormattedMultiGenomeName.getRawName(genomeFullName));
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+
+		out.writeObject(headerInfo);
+		out.writeObject(fieldType);
+		out.writeObject(fixedColumn);
+		out.writeObject(basicHeader);
+		out.writeObject(altHeader);
+		out.writeObject(filterHeader);
+		out.writeObject(infoHeader);
+		out.writeObject(formatHeader);
+		out.writeObject(columnNames);
+		out.writeObject(genomeRawNames);
+		out.writeObject(genomeNames);
+		out.writeObject(genomeMap);
 	}
-
-
-	@Override
-	public String getGenomeRawName(int index) {
-		for (String rawName: genomeMap.keySet()) {
-			if (genomeMap.get(rawName) == index) {
-				return rawName;
-			}
-		}
-		return null;
-	}
-
-
-
 }

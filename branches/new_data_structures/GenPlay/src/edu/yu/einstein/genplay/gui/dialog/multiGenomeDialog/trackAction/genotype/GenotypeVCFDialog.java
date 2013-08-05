@@ -29,7 +29,6 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -170,7 +169,7 @@ public class GenotypeVCFDialog extends MultiGenomeTrackActionDialog {
 							vcfToGenotype = new VCFFile(file);
 							List<String> names = vcfToGenotype.getHeader().getGenomeRawNames();
 							genomePanel.initialize(settings.getGenomeNames(), names);
-						} catch (IOException e1) {
+						} catch (Exception e1) {
 							ExceptionManager.getInstance().caughtException(e1);
 						}
 					}

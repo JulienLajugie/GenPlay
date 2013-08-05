@@ -25,7 +25,6 @@ import java.awt.FontMetrics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -90,31 +89,54 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener, Ac
 	}
 
 
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() instanceof RawNameComboBox) {
+			RawNameComboBox box = (RawNameComboBox) e.getSource();
+			if (box.isClicked()) {
+				updateRawName(lastRow);
+			}
+		}
+	}
+
+
 	/**
-	 * initializes the different combo boxes used in the table
+	 * Adds an empty row
 	 */
-	private void initializesBoxes () {
-		TableColumn column;
+	public void addEmptyRow() {
+		VCFLoaderModel model = (VCFLoaderModel) getModel();
+		model.addEmptyRow();
+		String defaultGroupValue = MGDisplaySettings.getInstance().getVariousSettings().getDefaultGroupText();
+		if (model.getData().size() == 1) {
+			groupBox.addElement(defaultGroupValue);
+			groupBox.resetCombo();
+		}
+		model.setValueAt(defaultGroupValue, model.getData().size() - 1, VCFData.GROUP_INDEX);
+	}
 
-		// Group combo box
-		groupBox = new CustomStringComboBox();
-		groupBox.getRenderer().addCustomComboBoxListener(this);
-		column = this.getColumnModel().getColumn(VCFData.GROUP_INDEX);
-		column.setCellEditor(new DefaultCellEditor(groupBox));
 
-		// Genome combo box
-		genomeBox = new CustomStringComboBox();
-		genomeBox.getRenderer().addCustomComboBoxListener(this);
-		column = this.getColumnModel().getColumn(VCFData.NICKNAME_INDEX);
-		column.setCellEditor(new DefaultCellEditor(genomeBox));
+	@Override
+	public void customComboBoxChanged(CustomComboBoxEvent evt) {
+		Object value = evt.getElement();
+		setValueAt(value, lastRow, lastCol);
+		updateSize(value, lastCol);
 
-		// File combo box
-		fileBox = new CustomFileComboBoxMG(this);
-		fileBox.getRenderer().addCustomComboBoxListener(this);
-		ExtendedFileFilter[] filter = {new VCFFilter(), new VCFGZFilter()};
-		fileBox.setFilters(filter);
-		column = this.getColumnModel().getColumn(VCFData.FILE_INDEX);
-		column.setCellEditor(new DefaultCellEditor(fileBox));
+		if ((lastCol == VCFData.FILE_INDEX) && !value.toString().equals(CustomComboBox.ADD_TEXT)) {
+			String filePath = value.toString();
+			List<String> rawGenomeNames = null;
+			if (temporaryFileAndGenomeNameMap.containsKey(filePath)) {
+				rawGenomeNames = temporaryFileAndGenomeNameMap.get(filePath);
+			} else {
+				File file = new File(value.toString());
+				VCFFile vcfFile = getVCFFile(file);
+				rawGenomeNames = vcfFile.getHeader().getGenomeRawNames();
+				temporaryFileAndGenomeNameMap.put(filePath, rawGenomeNames);
+			}
+			if (rawGenomeNames != null) {
+				setValueAt(rawGenomeNames.get(0), lastRow, VCFData.RAW_INDEX);
+				updateRawName(lastRow);
+			}
+		}
 	}
 
 
@@ -144,6 +166,14 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener, Ac
 		default:
 			return super.getCellEditor(row, column);
 		}
+	}
+
+
+	/**
+	 * @return the data
+	 */
+	public List<VCFData> getData() {
+		return ((VCFLoaderModel)getModel()).getData();
 	}
 
 
@@ -179,25 +209,51 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener, Ac
 
 
 	/**
-	 * Adds an empty row
+	 * @param file
+	 * @return the existing VCF file (if exists) or a new VCF File
 	 */
-	public void addEmptyRow() {
-		VCFLoaderModel model = (VCFLoaderModel) getModel();
-		model.addEmptyRow();
-		String defaultGroupValue = MGDisplaySettings.getInstance().getVariousSettings().getDefaultGroupText();
-		if (model.getData().size() == 1) {
-			groupBox.addElement(defaultGroupValue);
-			groupBox.resetCombo();
+	public VCFFile getVCFFile (File file) {
+		for (VCFFile vcfFile: vcfFileList) {
+			if (vcfFile.getFile().getAbsoluteFile().equals(file.getAbsoluteFile())) {
+				return vcfFile;
+			}
 		}
-		model.setValueAt(defaultGroupValue, model.getData().size() - 1, VCFData.GROUP_INDEX);
+		VCFFile vcfFile = null;
+		try {
+			vcfFile = new VCFFile(file);
+		} catch (Exception e) {
+			ExceptionManager.getInstance().caughtException(e);
+		}
+		vcfFileList.add(vcfFile);
+		return vcfFile;
 	}
 
 
 	/**
-	 * @return the data
+	 * initializes the different combo boxes used in the table
 	 */
-	public List<VCFData> getData() {
-		return ((VCFLoaderModel)getModel()).getData();
+	private void initializesBoxes () {
+		TableColumn column;
+
+		// Group combo box
+		groupBox = new CustomStringComboBox();
+		groupBox.getRenderer().addCustomComboBoxListener(this);
+		column = getColumnModel().getColumn(VCFData.GROUP_INDEX);
+		column.setCellEditor(new DefaultCellEditor(groupBox));
+
+		// Genome combo box
+		genomeBox = new CustomStringComboBox();
+		genomeBox.getRenderer().addCustomComboBoxListener(this);
+		column = getColumnModel().getColumn(VCFData.NICKNAME_INDEX);
+		column.setCellEditor(new DefaultCellEditor(genomeBox));
+
+		// File combo box
+		fileBox = new CustomFileComboBoxMG(this);
+		fileBox.getRenderer().addCustomComboBoxListener(this);
+		ExtendedFileFilter[] filter = {new VCFFilter(), new VCFGZFilter()};
+		fileBox.setFilters(filter);
+		column = getColumnModel().getColumn(VCFData.FILE_INDEX);
+		column.setCellEditor(new DefaultCellEditor(fileBox));
 	}
 
 
@@ -230,27 +286,16 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener, Ac
 	}
 
 
-	@Override
-	public void customComboBoxChanged(CustomComboBoxEvent evt) {
-		Object value = evt.getElement();
-		setValueAt(value, lastRow, lastCol);
-		updateSize(value, lastCol);
-
-		if ((lastCol == VCFData.FILE_INDEX) && !value.toString().equals(CustomComboBox.ADD_TEXT)) {
-			String filePath = value.toString();
-			List<String> rawGenomeNames = null;
-			if (temporaryFileAndGenomeNameMap.containsKey(filePath)) {
-				rawGenomeNames = temporaryFileAndGenomeNameMap.get(filePath);
-			} else {
-				File file = new File(value.toString());
-				VCFFile vcfFile = getVCFFile(file);
-				rawGenomeNames = vcfFile.getHeader().getGenomeRawNames();
-				temporaryFileAndGenomeNameMap.put(filePath, rawGenomeNames);
-			}
-			if (rawGenomeNames != null) {
-				setValueAt(rawGenomeNames.get(0), lastRow, VCFData.RAW_INDEX);
-				updateRawName(lastRow);
-			}
+	/**
+	 * Updates the nickname box in a row according to the selected raw name of the same row
+	 * @param row	a row
+	 */
+	private void updateRawName (int row) {
+		String rawName = (String) getValueAt(row, VCFData.RAW_INDEX);;
+		if ((rawName != null) && !rawName.isEmpty()) {
+			genomeBox.addElement(rawName);
+			genomeBox.resetCombo();
+			((VCFLoaderModel) getModel()).setValueAt(rawName, row, VCFData.NICKNAME_INDEX);
 		}
 	}
 
@@ -267,52 +312,6 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener, Ac
 		if (colWidth < width) {
 			getColumnModel().getColumn(column).setPreferredWidth(width);
 		}
-	}
-
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() instanceof RawNameComboBox) {
-			RawNameComboBox box = (RawNameComboBox) e.getSource();
-			if (box.isClicked()) {
-				updateRawName(lastRow);
-			}
-		}
-	}
-
-
-	/**
-	 * Updates the nickname box in a row according to the selected raw name of the same row
-	 * @param row	a row
-	 */
-	private void updateRawName (int row) {
-		String rawName = (String) getValueAt(row, VCFData.RAW_INDEX);;
-		if ((rawName != null) && !rawName.isEmpty()) {
-			genomeBox.addElement(rawName);
-			genomeBox.resetCombo();
-			((VCFLoaderModel) getModel()).setValueAt(rawName, row, VCFData.NICKNAME_INDEX);
-		}
-	}
-
-
-	/**
-	 * @param file
-	 * @return the existing VCF file (if exists) or a new VCF File
-	 */
-	public VCFFile getVCFFile (File file) {
-		for (VCFFile vcfFile: vcfFileList) {
-			if (vcfFile.getFile().getAbsoluteFile().equals(file.getAbsoluteFile())) {
-				return vcfFile;
-			}
-		}
-		VCFFile vcfFile = null;
-		try {
-			vcfFile = new VCFFile(file);
-		} catch (IOException e) {
-			ExceptionManager.getInstance().caughtException(e);
-		}
-		vcfFileList.add(vcfFile);
-		return vcfFile;
 	}
 
 }
