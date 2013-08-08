@@ -64,6 +64,22 @@ public class AssemblyListLoader {
 
 
 	/**
+	 * Add a clade to the clade list
+	 * If the clade is already existing, this method will try to add the genome.
+	 * @param clade
+	 */
+	protected void addClade (Clade clade) {
+		if (!cladeList.containsKey(clade.getName())){
+			cladeList.put(clade.getName(), clade);
+		} else {
+			for (Genome genome: clade.getGenomeList().values()){
+				cladeList.get(clade.getName()).addGenome(genome);
+			}
+		}
+	}
+
+
+	/**
 	 * This method read all XML files defined to build a list of clade.
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
@@ -82,6 +98,14 @@ public class AssemblyListLoader {
 			addClade(genomeParser.getClade());
 			xml.close();
 		}
+	}
+
+
+	/**
+	 * @return the clade list
+	 */
+	public Map<String, Clade> getCladeList() {
+		return cladeList;
 	}
 
 
@@ -132,6 +156,7 @@ public class AssemblyListLoader {
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("mammal_rabbit_2009_04_Broad_oryCun2.xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("mammal_rat_2003_06_Baylor_3.1_rn3.xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("mammal_rat_2004_11_Baylor_3.4_rn4.xml"));
+		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("mammal_rat_2012_03_RGSC_5.0_rn5.xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("mammal_rhesus_2006_01_MGSC_Merged_1.0_rheMac2.xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("nematode_c. brenneri_2007_01_WUGSC_4.0_caePb1.xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("nematode_c. brenneri_2008_02_WUGSC_6.0.1_caePb2.xml"));
@@ -174,29 +199,4 @@ public class AssemblyListLoader {
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("virus_herpesvirus_herpesvirus7(51874225)_2010_04.xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("virus_herpesvirus_herpesvirus8(139472801)_2010_04.xml"));
 	}
-
-
-	/**
-	 * @return the clade list
-	 */
-	public Map<String, Clade> getCladeList() {
-		return cladeList;
-	}
-
-
-	/**
-	 * Add a clade to the clade list
-	 * If the clade is already existing, this method will try to add the genome.
-	 * @param clade
-	 */
-	protected void addClade (Clade clade) {
-		if (!cladeList.containsKey(clade.getName())){
-			cladeList.put(clade.getName(), clade);
-		} else {
-			for (Genome genome: clade.getGenomeList().values()){
-				cladeList.get(clade.getName()).addGenome(genome);
-			}
-		}
-	}
-
 }
