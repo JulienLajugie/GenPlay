@@ -18,7 +18,9 @@ import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromo
 
 
 /**
- * Combines the scores of the C and G sites
+ * Generates a new {@link SCWList} containing only the values on CG sub sequences.
+ * The result is a list of windows covering the CG sequence and having the sum of the
+ * score on the C and on the G base
  * @author Julien Lajugie
  */
 public class SCWLOCombineCsAndGs implements Operation<SCWList> {
@@ -60,13 +62,28 @@ public class SCWLOCombineCsAndGs implements Operation<SCWList> {
 								start--;
 							}
 							int stop = Math.min(currentList.get(i).getStop(), chromosome.getLength() - 1);
-							for (int currentPosition = start; currentPosition < stop; currentPosition++) {
-
+							int currentPosition;
+							for (currentPosition = start; currentPosition < stop; currentPosition++) {
 								if (isCG(chromosome, currentPosition)) {
-
+									int cPosition = currentPosition;
+									int gPosition = currentPosition + 1;
+									float score = 0;
+									if (cPosition >= currentList.get(i).getStart()) {
+										score += currentList.get(i).getScore();
+									}
+									if (gPosition < currentList.get(i).getStop()) {
+										score += currentList.get(i).getScore();
+									} else if (((i + 1) < currentList.size()) && (gPosition == currentList.get(i + 1).getStart())) {
+										score += currentList.get(i + 1).getScore();
+									}
+									if (score != 0) {
+										resultListBuilder.addElementToBuild(chromosome, cPosition, gPosition + 1, score);
+									}
+									currentPosition++; // skip the G
 								}
 
 							}
+							lastStop = currentPosition;
 						}
 					}
 					// tell the operation pool that a chromosome is done
@@ -84,13 +101,13 @@ public class SCWLOCombineCsAndGs implements Operation<SCWList> {
 
 	@Override
 	public String getDescription() {
-		return "Operation: Combine Cs and Gs methylation profiles";
+		return "Operation: Compute CG methylation profiles";
 	}
 
 
 	@Override
 	public String getProcessingDescription() {
-		return "Combining Cs and Gs methylation profiles";
+		return "Computing CG methylation profile";
 	}
 
 
@@ -110,6 +127,7 @@ public class SCWLOCombineCsAndGs implements Operation<SCWList> {
 		Nucleotide nextBase = referenceSequence.get(chromosome, currentPosition + 1);
 		return (currentBase == Nucleotide.CYTOSINE) && (nextBase == Nucleotide.GUANINE);
 	}
+
 
 	@Override
 	public void stop() {

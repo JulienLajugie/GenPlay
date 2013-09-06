@@ -26,6 +26,7 @@ import javax.swing.Action;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.gui.action.layer.LAConvert;
 import edu.yu.einstein.genplay.gui.action.layer.LASave;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLACombineCsAndGs;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAFilter;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAIndex;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLALog;
@@ -74,6 +75,8 @@ public class SCWLayerMenu extends AbstractLayerMenu {
 				new SCWLATransfrag(),
 				null,
 				new SCWLAScoreDistribution(),
+				null,
+				new SCWLACombineCsAndGs(),
 				null,
 				new LAConvert<GenomicListView<?>>(),
 				new LASave()
