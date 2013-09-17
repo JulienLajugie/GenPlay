@@ -77,7 +77,7 @@ public class ProjectRecording {
 	/**
 	 * Closes input streams
 	 */
-	private void closeStreams() {
+	public void closeStreams() {
 		try {
 			ois.close();
 		} catch (IOException e) {
@@ -90,10 +90,12 @@ public class ProjectRecording {
 			ExceptionManager.getInstance().caughtException(e);
 		}
 
-		try {
-			fis.close();
-		} catch (IOException e) {
-			ExceptionManager.getInstance().caughtException(e);
+		if (fis != null) {
+			try {
+				fis.close();
+			} catch (IOException e) {
+				ExceptionManager.getInstance().caughtException(e);
+			}
 		}
 
 		ois = null;
@@ -127,7 +129,6 @@ public class ProjectRecording {
 			try {
 				trackList = (Track[]) ois.readObject();
 				trackListReadyToLoad = false;
-				closeStreams();
 			} catch (IOException e) {
 				ExceptionManager.getInstance().caughtException(e);
 			} catch (ClassNotFoundException e) {

@@ -24,7 +24,6 @@ package edu.yu.einstein.genplay.gui.action.project;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 
 import javax.swing.AbstractAction;
@@ -192,14 +191,6 @@ public final class PAInitManagers extends AbstractAction {
 					}
 				}
 			}
-			if (inputStream != null) {
-				try {
-					inputStream.close();
-				} catch (IOException e) {
-					inputStream = null;
-					ExceptionManager.getInstance().caughtException(e);
-				}
-			}
 		}
 		if (error != null) {
 			System.err.println("PAInitManagers.actionPerformed() Errors:\n" + error);
@@ -232,7 +223,7 @@ public final class PAInitManagers extends AbstractAction {
 		String[] invalidPaths = new String[paths.length];
 
 		for (int i = 0; i < invalidPaths.length; i++) {
-			if (!isValidFile(paths[i])) {
+			if (!isValidFile(paths[i], false)) {
 				invalidPaths[i] = paths[i];
 			} else {
 				invalidPaths[i] = null;
@@ -250,7 +241,7 @@ public final class PAInitManagers extends AbstractAction {
 	private int getNumberOfInvalidFiles (String[] paths) {
 		int cpt = 0;
 		for (int i = 0; i < paths.length; i++) {
-			if (!isValidFile(paths[i])) {
+			if (!isValidFile(paths[i], true)) {
 				cpt++;
 			}
 		}
@@ -281,9 +272,13 @@ public final class PAInitManagers extends AbstractAction {
 
 	/**
 	 * @param path file path
+	 * @param skipNull allow to skip path that are null.
 	 * @return true if the file is valid
 	 */
-	private boolean isValidFile (String path) {
+	private boolean isValidFile (String path, boolean skipNull) {
+		if ((path == null) && skipNull) {
+			return true;
+		}
 		if (path != null) {
 			File file = new File(path);
 			return file.exists();

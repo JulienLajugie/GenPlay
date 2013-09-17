@@ -32,6 +32,7 @@ import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 
 import edu.yu.einstein.genplay.util.Utils;
@@ -183,7 +184,16 @@ abstract public class EditingPanel<K> extends JPanel {
 	 * @return the height of the string according to the current font
 	 */
 	protected int getStringHeight () {
-		return getFontMetrics(getFont()).getHeight() + 3;
+		return getFontMetrics(getFont()).getHeight() + 5;
+	}
+
+
+	/**
+	 * @return the height of a radio box
+	 */
+	protected int getRadioHeight () {
+		JRadioButton radio = new JRadioButton("A");
+		return radio.getPreferredSize().height;
 	}
 
 
@@ -213,6 +223,7 @@ abstract public class EditingPanel<K> extends JPanel {
 			scrollPanelHeight = CONTENT_HEIGHT;
 		} else {
 			contentPanelHeight = height;
+			//scrollPanelHeight = height;
 			scrollPanelHeight = CONTENT_HEIGHT;
 		}
 

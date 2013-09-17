@@ -60,7 +60,6 @@ public class EditingDialogManagerForVariants implements EditingDialogManagerInte
 		variationTypeEditingPanel = new VariationTypeEditingPanel();
 		genomeEditingPanel.addPanelListener(variationTypeEditingPanel);
 
-
 		// List of editing panel
 		editingPanelList = new ArrayList<EditingPanel<?>>();
 		editingPanelList.add(genomeEditingPanel);

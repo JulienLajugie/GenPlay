@@ -96,6 +96,7 @@ public class Launcher {
 	 * This constant can be set to a project file path in the resource folder of the jar.
 	 * In this case this project will be directly loaded when GenPlay starts.
 	 */
+	//private static final String DEMO_PROJECT_PATH = "edu/yu/einstein/genplay/resource/project_name.gen";
 	private static final String DEMO_PROJECT_PATH = null;
 
 
@@ -255,7 +256,7 @@ public class Launcher {
 	 * the path to this file must be specified in the DEMO_PROJECT_PATH constant
 	 */
 	private static void startDemoProject() {
-		InputStream is = MainFrame.getInstance().getClass().getClassLoader().getResourceAsStream(DEMO_PROJECT_PATH);
+		InputStream is = ProjectFrame.getInstance().getClass().getClassLoader().getResourceAsStream(DEMO_PROJECT_PATH);
 
 		try {
 			loadFile(is);

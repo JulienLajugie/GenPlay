@@ -143,7 +143,7 @@ public class GenomeEditingPanel extends EditingPanel<List<String>> implements Ac
 			gbc.gridy++;
 		}
 		int width = getMaxStringLength(paths);
-		int height = getStringHeight() * genomeNames.size();
+		int height = getRadioHeight() * radios.length;
 
 		setNewContentPanel(content);
 

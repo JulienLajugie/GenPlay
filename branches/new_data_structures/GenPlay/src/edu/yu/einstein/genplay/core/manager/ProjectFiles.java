@@ -156,16 +156,19 @@ public class ProjectFiles {
 			return path;
 		}
 		int oldPathIndex = -1;
+		path = createPlatformIndependantFileName(path);
 		for (int i = 0; i < currentFiles.length; i++) {
-			path = createPlatformIndependantFileName(path);
 			String currentFile = createPlatformIndependantFileName(currentFiles[i]);
 			if (currentFile.equals(path)) {
 				oldPathIndex = i;
 				break;
 			}
 		}
+
 		if (oldPathIndex >= 0) {
-			return newFiles[oldPathIndex];
+			if (newFiles[oldPathIndex] != null) {
+				return newFiles[oldPathIndex];
+			}
 		}
 		return path;
 	}

@@ -83,6 +83,7 @@ public class InvalidFileDialog extends JDialog {
 	private JPanel 					validationPanel;									// the validation panel
 	private final String[] 			files;												// the input files
 	private CustomFileComboBox[] 	correctedFiles;										// the array of combo box containing the corrected files
+	private final int 				invalidFileNumber;
 
 
 	/**
@@ -91,6 +92,8 @@ public class InvalidFileDialog extends JDialog {
 	 */
 	public InvalidFileDialog (String[] files) {
 		this.files = files;
+
+		invalidFileNumber = getNumberOfInvalidFile();
 
 		// Dimensions
 		updateDimensions();
@@ -120,16 +123,33 @@ public class InvalidFileDialog extends JDialog {
 
 
 	/**
+	 * Calculate the number of invalid files
+	 * @return the number of invalid files.
+	 */
+	private int getNumberOfInvalidFile () {
+		int result = 0;
+		for (String path: files) {
+			if (path != null) {
+				result++;
+			}
+		}
+		return result;
+	}
+
+
+	/**
 	 * @return the array of corrected paths
 	 */
 	public String[] getCorrectedPaths () {
 		String[] correctedPaths = new String[files.length];
 
-		for (int i = 0; i < correctedFiles.length; i++) {
-			if ((correctedFiles != null) && !correctedFiles[i].getSelectedItem().equals(CustomComboBox.ADD_TEXT)) {
-				correctedPaths[i] = ((File) correctedFiles[i].getSelectedItem()).getPath();
-			} else {
-				correctedPaths[i] = null;
+		if (correctedFiles != null) {
+			for (int i = 0; i < correctedFiles.length; i++) {
+				if ((correctedFiles[i] != null) && !correctedFiles[i].getSelectedItem().equals(CustomComboBox.ADD_TEXT)) {
+					correctedPaths[i] = ((File) correctedFiles[i].getSelectedItem()).getPath();
+				} else {
+					correctedPaths[i] = null;
+				}
 			}
 		}
 
@@ -196,9 +216,11 @@ public class InvalidFileDialog extends JDialog {
 		JPanel p = new JPanel();
 		FontMetrics fm = getFontMetrics(p.getFont());
 		for (String path: files) {
-			int pathLength = fm.stringWidth(path);
-			if (pathLength > result) {
-				result = pathLength;
+			if (path != null) {
+				int pathLength = fm.stringWidth(path);
+				if (pathLength > result) {
+					result = pathLength;
+				}
 			}
 		}
 		return result;
@@ -286,7 +308,7 @@ public class InvalidFileDialog extends JDialog {
 	 */
 	private void updateDimensions () {
 		dialogWidth = (int) ((getMaxLength() * 1.3) + (inset * 2));
-		int numberOfLines = files.length * 2;
+		int numberOfLines = invalidFileNumber * 2;
 		filePanelHeight = (lineHeight + (2 * inset)) * numberOfLines;
 		dialogHeight = titlePanelHeight + filePanelHeight + validationPanelHeight;
 	}

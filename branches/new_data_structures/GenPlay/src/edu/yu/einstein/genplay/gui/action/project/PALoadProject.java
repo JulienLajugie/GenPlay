@@ -107,6 +107,9 @@ public class PALoadProject extends TrackListActionWorker<Track[]> {
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
 				MGDisplaySettings.getInstance().restoreGenomeCoordinate();
 			}
+
+			// Finally closes all opened streams
+			RecordingManager.getInstance().getProjectRecording().closeStreams();
 		}
 
 		if (latch != null) {
