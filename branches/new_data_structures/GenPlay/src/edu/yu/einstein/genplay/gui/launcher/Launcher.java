@@ -29,6 +29,8 @@ import java.util.concurrent.CountDownLatch;
 import javax.swing.JOptionPane;
 import javax.swing.ToolTipManager;
 
+import com.apple.eawt.Application;
+
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
@@ -98,7 +100,6 @@ public class Launcher {
 	 */
 
 	//private static final String DEMO_PROJECT_PATH = "edu/yu/einstein/genplay/resource/project_name.gen";
-	//private static final String DEMO_PROJECT_PATH = "edu/yu/einstein/genplay/resource/Timing_&_NS_Profiles.gen";
 	private static final String DEMO_PROJECT_PATH = null;
 
 
@@ -213,6 +214,11 @@ public class Launcher {
 	 * screen will be skipped and the project file will be directly loaded
 	 */
 	public static void main(final String[] args) {
+		// Handle mac-specific events (if we're running under OS X).
+		Application macApplication = Application.getApplication();
+		final OSXHandler osxHandler = new OSXHandler();
+		macApplication.setOpenFileHandler(osxHandler);
+
 		// Initialize the exception manager
 		initializeExceptionManagement();
 		// set the tooltip properties
@@ -240,7 +246,10 @@ public class Launcher {
 			public void run() {
 				// if the DEMO_PROJECT_PATH constant has been set it means that we're starting a demo project
 				boolean isDemo = (DEMO_PROJECT_PATH != null);
-				if (isDemo) {
+				// mac only
+				if (osxHandler.getFileToOpen() != null) {
+					startProjectFromFile(osxHandler.getFileToOpen());
+				} else if (isDemo) {
 					startDemoProject();
 				} else if (args.length == 1) { // if a project file path has been specified to the main method we load this file
 					File file = new File(args[0]);
@@ -298,5 +307,4 @@ public class Launcher {
 			System.out.println(file.getPath());
 		}
 	}
-
 }
