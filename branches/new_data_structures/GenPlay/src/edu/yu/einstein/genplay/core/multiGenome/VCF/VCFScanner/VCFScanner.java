@@ -104,7 +104,7 @@ public abstract class VCFScanner {
 					receiver.processLine(line);
 				}
 			} else {
-				DataLineException exception = new DataLineException("The line seems to be missing elements.", DataLineException.SKIP_PROCESS);
+				DataLineException exception = new DataLineException("The line " + lineNumber + " seems to be missing elements.", DataLineException.SKIP_PROCESS);
 				exception.setFile(vcfFile.getFile());
 				exception.setLine(line.getMergedElements());
 				exception.setLineNumber(lineNumber);

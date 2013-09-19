@@ -21,8 +21,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -33,8 +35,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.jannot.source.Locator;
-import net.sf.jannot.tabix.TabixReader;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAltType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderBasicType;
@@ -57,6 +57,8 @@ public class VCFHeader implements VCFGenomeIndexer, Serializable {
 	/** Default generated serial version ID */
 	private static final long serialVersionUID = 5071204705996276780L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
+
+	private BufferedReader headerReader;
 
 	private Map<String, String> 				headerInfo;			// Header main information
 	private	Map<String, Class<?>>				fieldType;			// Association between field type and java class
@@ -438,14 +440,14 @@ public class VCFHeader implements VCFGenomeIndexer, Serializable {
 
 	/**
 	 * This method reads and saves the vcf header information
-	 * @param vcfLocator locator of the VCF file
+	 * @param reader the VCF file reader
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 * @throws URISyntaxException
 	 */
-	public void processHeader (Locator vcfLocator) throws FileNotFoundException, IOException, URISyntaxException {
+	public void processHeader (VCFReader reader) throws FileNotFoundException, IOException, URISyntaxException {
+		headerReader = new BufferedReader(new InputStreamReader(reader.getVCFParser().getmFp()));
 		boolean valid = true;
-		TabixReader reader = new TabixReader(vcfLocator);
 		headerInfo = new HashMap<String, String>();
 		basicHeader = new ArrayList<VCFHeaderType>();
 		altHeader = new ArrayList<VCFHeaderType>();
@@ -475,7 +477,7 @@ public class VCFHeader implements VCFGenomeIndexer, Serializable {
 		basicHeader.add(basicFilterHeader);
 
 		while (valid) {
-			String line = reader.readLine();
+			String line = reader.getVCFParser().readLine(headerReader);
 			if (line == null) {
 				valid = false;
 			} else {

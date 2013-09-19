@@ -150,9 +150,10 @@ public final class PAInitManagers extends AbstractAction {
 							// Gets the files dependant to the project
 							formerPaths = projectInformation.getProjectFiles();
 
-							if (formerPaths != null) {									// if the project is file dependant
+							if (formerPaths != null) {									// if the project is file dependent
 								invalidPaths = getInvalidPath(formerPaths);				// we get the invalid files
 								if (hasInvalidFiles()) {		// if some invalid files exist,
+
 
 									// Warn the user about the .gz and .gz.tbi files
 									if (!projectInformation.isSingleProject()) {

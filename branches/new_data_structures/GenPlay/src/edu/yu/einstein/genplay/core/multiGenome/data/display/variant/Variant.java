@@ -25,8 +25,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.List;
 
-import net.sf.jannot.tabix.TabixReader.Iterator;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
@@ -177,22 +177,20 @@ public abstract class Variant implements Serializable {
 		Chromosome chromosome = chromosomeContent.getChromosome();
 		int referencePosition = getReferenceGenomePosition();
 		VCFFile file = ProjectManager.getInstance().getMultiGenomeProject().getFileContentManager().getFile(chromosome, chromosomeContent);
-		Iterator results = null;
+		List<String> results = null;
 
 		try {
-			String query = chromosome.getName() + ":" + (referencePosition - 1) + "-" + referencePosition;
-			results = file.getReader().query(query);
-		} catch (Exception e) {
+			results = file.getReader().query(chromosome.getName(), referencePosition - 1, referencePosition);
+		} catch (IOException e) {
 			ExceptionManager.getInstance().caughtException(e);
 		}
 
 
-		try {
-			String nextLine = results.next();
-			return new VCFLine(nextLine, file.getHeader());
-		} catch (IOException e) {
-			return null;
+		if ((results != null) && (results.size() > 0)) {
+			return new VCFLine(results.get(0), file.getHeader());
 		}
+
+		return null;
 	}
 
 

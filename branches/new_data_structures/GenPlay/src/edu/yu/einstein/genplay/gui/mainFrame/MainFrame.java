@@ -96,10 +96,10 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 
 	private static final long serialVersionUID = -4637394760647080396L; // generated ID
 	/** GenPlay version number */
-	public static final int VERSION_NUMBER = 970; 						// GenPlay version
+	public static final int VERSION_NUMBER = 972; 						// GenPlay version
 
 	/** Title of the application */
-	public static final String 		APPLICATION_TITLE = "GenPlay, Einstein Genome Analyzer (v" + VERSION_NUMBER + " - NDS Beta)";
+	public static final String 		APPLICATION_TITLE = "GenPlay, Einstein Genome Analyzer (v" + VERSION_NUMBER + ")";
 	private final static Dimension 	WINDOW_DEFAULT_SIZE = new Dimension(800, 600);	// default size of the application
 	private final static Dimension 	WINDOW_MINIMUM_SIZE = new Dimension(200, 150); 	// minimum size of the application
 	private static 	MainFrame 		instance = null; 	// instance of the singleton MainFrame

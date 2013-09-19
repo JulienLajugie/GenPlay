@@ -32,8 +32,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.jannot.source.Locator;
-import net.sf.jannot.tabix.TabixReader;
 import edu.yu.einstein.genplay.core.manager.ProjectFiles;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
@@ -57,9 +55,8 @@ public class VCFFile implements Serializable {
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 
 	private File 								file;				// VCF file
-	private transient Locator					vcfLocator;			// locator of the VCF file
 	private VCFHeader 							header;				// Information about the header
-	private TabixReader 						reader;				// Reader for the VCF file
+	private VCFReader 							reader;				// Reader for the VCF file
 	private VCFFileFullStatistic				statistics;			// VCF file statistics
 	private Map<String, List<VariantType>>		variantTypeList;	// List of the different variant type contained in the VCF file and sorted by genome name
 	private List<Integer>						positionList;		// reference genome position array (indexes match with the boolean list of filters)
@@ -74,16 +71,16 @@ public class VCFFile implements Serializable {
 	 */
 	public VCFFile (File file) throws IOException, URISyntaxException {
 		this.file = file;
-		vcfLocator = new Locator(file.getAbsolutePath());
 		positionList = null;
 		variantTypeList = new HashMap<String, List<VariantType>>();
 
-		reader = new TabixReader(vcfLocator);
+		reader = new VCFReader();
 		header = new VCFHeader();
 		statistics = new VCFFileFullStatistic();
 
 		indexVCFFile();
-		header.processHeader(vcfLocator);
+		header.processHeader(reader);
+		reader.setColumnNames(header.getColumnNames());
 
 		chromosomeOfList = null;
 	}
@@ -279,7 +276,7 @@ public class VCFFile implements Serializable {
 	/**
 	 * @return the reader
 	 */
-	public TabixReader getReader() {
+	public VCFReader getReader() {
 		return reader;
 	}
 
@@ -312,8 +309,10 @@ public class VCFFile implements Serializable {
 	private void indexVCFFile () throws IOException, URISyntaxException {
 		if (!isVCFIndexed ()) {
 			file = ProjectFiles.getInstance().getValidFileOf(file);
-			vcfLocator = new Locator(file.getAbsolutePath());
-			reader = new TabixReader(vcfLocator);
+			if (reader == null) {
+				reader = new VCFReader();
+			}
+			reader.indexVCFFile(file);
 		}
 	}
 
@@ -345,7 +344,7 @@ public class VCFFile implements Serializable {
 	 * @return true if the VCF is indexed
 	 */
 	private boolean isVCFIndexed () {
-		if (reader != null) {
+		if ((reader != null) && (reader.getVCFParser() != null)) {
 			return true;
 		}
 		return false;
@@ -368,8 +367,8 @@ public class VCFFile implements Serializable {
 		variantTypeList = (Map<String, List<VariantType>>) in.readObject();
 		positionList = (List<Integer>) in.readObject();
 		chromosomeOfList = (Chromosome) in.readObject();
-		vcfLocator = new Locator(file.getAbsolutePath());
 		indexVCFFile(); // recreate the tabix reader
+		reader.setColumnNames(header.getColumnNames());
 	}
 
 

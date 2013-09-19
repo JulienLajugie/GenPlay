@@ -106,15 +106,21 @@ public class VCFLine implements Serializable {
 
 
 	/**
-	 * @return true if all elelements are present and not empty, false otherwise
+	 * @return true if all elements are present and not empty, false otherwise
 	 */
 	public boolean isIntegrityValid () {
 		boolean valid = true;
-		for (String element: elements) {
-			if ((element == null) || element.isEmpty()) {
+		for (int i = 0; i < elements.length; i++) {
+			String element = elements[i];
+			if ((i != 7) && ((element == null) || element.isEmpty())) {
 				valid = false;
 			}
 		}
+		/*for (String element: elements) {
+			if ((element == null) || element.isEmpty()) {
+				valid = false;
+			}
+		}*/
 		return valid;
 	}
 

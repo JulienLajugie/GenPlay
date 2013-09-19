@@ -23,7 +23,7 @@ package edu.yu.einstein.genplay.core.multiGenome.operation.convert;
 
 import java.io.File;
 
-import net.sf.jannot.source.Locator;
+import net.sf.jannot.tabix.TabixConfiguration;
 import net.sf.jannot.tabix.TabixWriter;
 import edu.yu.einstein.genplay.util.Utils;
 
@@ -55,9 +55,8 @@ public class MGOTBIIndex {
 		if (Utils.getExtension(bgzFile).equals("gz")) {
 			tbiFile = new File(bgzFile.getPath() + ".tbi");
 			tbiFile.createNewFile();
-			Locator tbiLocator = new Locator(tbiFile.getPath());
-			TabixWriter writer = new TabixWriter(tbiLocator, TabixWriter.VCF_CONF);
-			writer.createIndex(tbiLocator);
+			TabixWriter writer = new TabixWriter(bgzFile, TabixConfiguration.VCF_CONF);
+			writer.createIndex(tbiFile);
 			return true;
 		} else {
 			return false;

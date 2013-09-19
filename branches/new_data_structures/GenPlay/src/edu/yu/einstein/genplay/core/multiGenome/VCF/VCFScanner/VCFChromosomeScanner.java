@@ -22,12 +22,13 @@
 package edu.yu.einstein.genplay.core.multiGenome.VCF.VCFScanner;
 
 import java.io.IOException;
+import java.util.List;
 
-import net.sf.jannot.tabix.TabixReader.Iterator;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 
 /**
  * See the {@link VCFScanner} description for further information on scanners.
@@ -41,8 +42,9 @@ import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
  */
 public class VCFChromosomeScanner extends VCFScanner {
 
-	private Iterator 		result;		// The full list of lines returned by the Tabix API.
+	private List<String> 	result;		// The full list of lines returned by the Tabix API.
 	private VCFLine 		line;		// The current line in process.
+	private int 			index;		// The index of the line in the list of result.
 
 
 	/**
@@ -54,6 +56,7 @@ public class VCFChromosomeScanner extends VCFScanner {
 	public VCFChromosomeScanner (VCFScannerReceiver receiver, VCFFile vcfFile) throws IOException {
 		super(receiver, vcfFile);
 		result = null;
+		index = 0;
 	}
 
 
@@ -61,6 +64,7 @@ public class VCFChromosomeScanner extends VCFScanner {
 	protected void endScan() {
 		result = null;
 		line = null;
+		index = 0;
 	}
 
 
@@ -68,10 +72,9 @@ public class VCFChromosomeScanner extends VCFScanner {
 	 * @return the current {@link VCFLine} being processed
 	 */
 	private VCFLine getCurrentLine () {
-		try {
-			String nextLine = result.next();
-			line = new VCFLine(nextLine, vcfFile.getHeader());
-		} catch (IOException e) {
+		if (index < result.size()) {
+			line = new VCFLine(result.get(index), vcfFile.getHeader());
+		} else {
 			line = null;
 		}
 		return line;
@@ -81,14 +84,18 @@ public class VCFChromosomeScanner extends VCFScanner {
 	@Override
 	protected VCFLine getFirstLine() {
 		Chromosome chromosome = ProjectManager.getInstance().getProjectWindow().getGenomeWindow().getChromosome();
-		String query = chromosome.getName() + ":0-" + chromosome.getLength();
-		result = vcfFile.getReader().query(query);
+		try {
+			result = vcfFile.getReader().query(chromosome.getName(), 0, chromosome.getLength());
+		} catch (IOException e) {
+			ExceptionManager.getInstance().caughtException(e);
+		}
 		return getCurrentLine();
 	}
 
 
 	@Override
 	protected VCFLine getNextLine() {
+		index++;
 		return getCurrentLine();
 	}
 }
