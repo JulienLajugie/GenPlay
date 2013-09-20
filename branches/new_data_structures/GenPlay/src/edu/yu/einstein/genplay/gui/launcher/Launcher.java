@@ -164,6 +164,14 @@ public class Launcher {
 
 
 	/**
+	 * @return true if the computer running GenPlay is a mac
+	 */
+	private static boolean isMac() {
+		return System.getProperty("os.name").toLowerCase().indexOf("mac") >= 0;
+	}
+
+
+	/**
 	 * Loads a file using a file object.
 	 * First initializes the managers and then load the file.
 	 * @param file the file
@@ -214,10 +222,12 @@ public class Launcher {
 	 * screen will be skipped and the project file will be directly loaded
 	 */
 	public static void main(final String[] args) {
-		// Handle mac-specific events (if we're running under OS X).
-		Application macApplication = Application.getApplication();
 		final OSXHandler osxHandler = new OSXHandler();
-		macApplication.setOpenFileHandler(osxHandler);
+		if (isMac()) {
+			// Handle mac-specific events (if we're running under OS X).
+			Application macApplication = Application.getApplication();
+			macApplication.setOpenFileHandler(osxHandler);
+		}
 
 		// Initialize the exception manager
 		initializeExceptionManagement();
