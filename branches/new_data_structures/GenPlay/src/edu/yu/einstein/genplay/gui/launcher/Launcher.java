@@ -61,7 +61,6 @@ public class Launcher {
 	 * This is why both processes are within a same thread managing a waiting time between them.
 	 * 
 	 * @author Nicolas Fourel
-	 * @version 0.1
 	 */
 	private static class LoadingThread extends Thread {
 
@@ -99,7 +98,7 @@ public class Launcher {
 	 * In this case this project will be directly loaded when GenPlay starts.
 	 */
 
-	//private static final String DEMO_PROJECT_PATH = "edu/yu/einstein/genplay/resource/project_name.gen";
+	//private static final String DEMO_PROJECT_PATH = "edu/yu/einstein/genplay/resource/GenPlay_Timing_and NS_profiles.gen";
 	private static final String DEMO_PROJECT_PATH = null;
 
 

@@ -26,6 +26,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Calendar;
@@ -33,6 +34,7 @@ import java.util.GregorianCalendar;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 import edu.yu.einstein.genplay.core.manager.ProjectFiles;
@@ -129,6 +131,10 @@ public class ProjectRecording {
 			try {
 				trackList = (Track[]) ois.readObject();
 				trackListReadyToLoad = false;
+			} catch (InvalidClassException e) {
+				String invalidJREMessage = "<html><center>The project you are trying to load was saved using a Java Runtime Environment (JRE) that is not compatible with the JRE currently installed on your computer.<br/>";
+				invalidJREMessage += "Please refer to the FAQ page at <a href=\"http://genplay.einstein.yu.edu\">http://genplay.einstein.yu.edu</a> for additional information.</center></html>";
+				JOptionPane.showMessageDialog(MainFrame.getInstance().getRootPane(), invalidJREMessage, "Invalid Java Runtime Environment", JOptionPane.WARNING_MESSAGE);
 			} catch (IOException e) {
 				ExceptionManager.getInstance().caughtException(e);
 			} catch (ClassNotFoundException e) {

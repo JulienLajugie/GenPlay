@@ -28,7 +28,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.text.NumberFormat;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -76,14 +75,15 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 	ZoomPanel() {
 		projectZoom = ProjectManager.getInstance().getProjectZoom();
 		projectWindow = ProjectManager.getInstance().getProjectWindow();
-		jlZoom = new JLabel("Size: " + NumberFormats.getPositionFormat().format(projectWindow.getGenomeWindow().getSize()));
+		jlZoom = new JLabel();
+		setZoomLabel(projectWindow.getGenomeWindow().getSize());
 		jbMinus = new JButton("-");
 		jbMinus.setMargin(new Insets(0, 3, 0, 3));
 		jbMinus.setFocusPainted(false);
 		jbMinus.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				zoomChanged(projectZoom.getNextZoomIn(projectWindow.getGenomeWindow().getSize()));
+				zoomChanged(projectZoom.getNextZoomOut(projectWindow.getGenomeWindow().getSize()));
 			}
 		});
 
@@ -93,7 +93,7 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 		jbPlus.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				zoomChanged(projectZoom.getNextZoomOut(projectWindow.getGenomeWindow().getSize()));
+				zoomChanged(projectZoom.getNextZoomIn(projectWindow.getGenomeWindow().getSize()));
 			}
 		});
 
@@ -160,7 +160,7 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 	public void genomeWindowChanged(GenomeWindowEvent evt) {
 		// we notify the gui
 		int currentZoom = evt.getNewWindow().getSize();
-		jlZoom.setText("Size: " + NumberFormat.getInstance().format(currentZoom));
+		setZoomLabel(currentZoom);
 		// if the chromosome changes we change the maximum zoom
 		if (evt.getNewWindow().getChromosome() != evt.getOldWindow().getChromosome()) {
 			int	oldMaximumZoom = evt.getOldWindow().getChromosome().getLength() * 2;
@@ -191,6 +191,15 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 				zoomChanged(projectZoom.getNextZoomOut(currentZoom));
 			}
 		}
+	}
+
+
+	/**
+	 * Sets the text of the zoom label
+	 */
+	private void setZoomLabel(int zoom) {
+		String text = "Size: " + NumberFormats.getPositionFormat().format(zoom) + "bp";
+		jlZoom.setText(text);
 	}
 
 
