@@ -87,6 +87,7 @@ public class SCWLOCombineCsAndGs implements Operation<SCWList> {
 						}
 					}
 					// tell the operation pool that a chromosome is done
+					System.out.println(chromosome.getName());
 					op.notifyDone();
 					return null;
 				}

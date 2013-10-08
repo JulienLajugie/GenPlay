@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -235,6 +235,7 @@ public class URRManager<T extends Serializable> implements Serializable {
 	 * @throws IOException
 	 */
 	public void set(T newObject) throws IOException {
+		// FIXME urrmanager.set should be in a separate thread because it freezes the interface after an action performed on a big track
 		if (newObject != null) {
 			ByteArrayOutputStream oldBaos = null;
 			// if it's the first operation

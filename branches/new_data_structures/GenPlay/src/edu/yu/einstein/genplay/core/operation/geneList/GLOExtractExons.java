@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -24,6 +24,7 @@ package edu.yu.einstein.genplay.core.operation.geneList;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -94,12 +95,17 @@ public class GLOExtractExons implements Operation<GeneList> {
 				@Override
 				public Void call() throws Exception {
 					if (currentList != null) {
+						List<Gene> geneListTmp = new ArrayList<Gene>();
 						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 							Gene currentGene = currentList.get(j);
 							List<Gene> extractedExons = extractExons(currentGene, exonOption);
 							for (Gene extractedExon: extractedExons) {
-								resultListBuilder.addElementToBuild(chromosome, extractedExon);
+								geneListTmp.add(extractedExon);
 							}
+						}
+						Collections.sort(geneListTmp);
+						for (Gene currentGene: geneListTmp) {
+							resultListBuilder.addElementToBuild(chromosome, currentGene);
 						}
 					}
 					// tell the operation pool that a chromosome is done
@@ -134,7 +140,7 @@ public class GLOExtractExons implements Operation<GeneList> {
 
 
 	/**
-	 * 
+	 *
 	 * @param gene
 	 * @param exonOption
 	 * @return
