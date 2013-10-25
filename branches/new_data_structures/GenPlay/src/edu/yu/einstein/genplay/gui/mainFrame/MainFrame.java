@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -96,7 +96,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 
 	private static final long serialVersionUID = -4637394760647080396L; // generated ID
 	/** GenPlay version number */
-	public static final int VERSION_NUMBER = 976; 						// GenPlay version
+	public static final int VERSION_NUMBER = 978; 						// GenPlay version
 
 	/** Title of the application */
 	public static final String 		APPLICATION_TITLE = "GenPlay, Einstein Genome Analyzer (v" + VERSION_NUMBER + ")";

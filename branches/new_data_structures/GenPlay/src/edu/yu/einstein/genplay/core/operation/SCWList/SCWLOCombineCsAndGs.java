@@ -1,13 +1,8 @@
 package edu.yu.einstein.genplay.core.operation.SCWList;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.concurrent.Callable;
-
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
-import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.Nucleotide;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
@@ -44,58 +39,42 @@ public class SCWLOCombineCsAndGs implements Operation<SCWList> {
 	@Override
 	public SCWList compute() throws Exception {
 		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
-		final OperationPool op = OperationPool.getInstance();
-		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
 		final SCWListBuilder resultListBuilder = new SCWListBuilder(inputList);
 
 		for (final Chromosome chromosome: projectChromosomes) {
 			final ListView<ScoredChromosomeWindow> currentList = inputList.get(chromosome);
-			Callable<Void> currentThread = new Callable<Void>() {
-
-				@Override
-				public Void call() throws Exception {
-					if ((currentList != null) && (currentList.size() != 0)) {
-						int lastStop = 0;
-						for (int i = 0; (i < currentList.size()) && !stopped; i++) {
-							int start = currentList.get(i).getStart();
-							if ((start - 1) >= lastStop) {
-								start--;
+			if ((currentList != null) && (currentList.size() != 0)) {
+				int lastStop = 0;
+				for (int i = 0; (i < currentList.size()) && !stopped; i++) {
+					int start = currentList.get(i).getStart();
+					if ((start - 1) >= lastStop) {
+						start--;
+					}
+					int stop = Math.min(currentList.get(i).getStop(), chromosome.getLength() - 1);
+					int currentPosition;
+					for (currentPosition = start; currentPosition < stop; currentPosition++) {
+						if (isCG(chromosome, currentPosition)) {
+							int cPosition = currentPosition;
+							int gPosition = currentPosition + 1;
+							float score = 0;
+							if (cPosition >= currentList.get(i).getStart()) {
+								score += currentList.get(i).getScore();
 							}
-							int stop = Math.min(currentList.get(i).getStop(), chromosome.getLength() - 1);
-							int currentPosition;
-							for (currentPosition = start; currentPosition < stop; currentPosition++) {
-								if (isCG(chromosome, currentPosition)) {
-									int cPosition = currentPosition;
-									int gPosition = currentPosition + 1;
-									float score = 0;
-									if (cPosition >= currentList.get(i).getStart()) {
-										score += currentList.get(i).getScore();
-									}
-									if (gPosition < currentList.get(i).getStop()) {
-										score += currentList.get(i).getScore();
-									} else if (((i + 1) < currentList.size()) && (gPosition == currentList.get(i + 1).getStart())) {
-										score += currentList.get(i + 1).getScore();
-									}
-									if (score != 0) {
-										resultListBuilder.addElementToBuild(chromosome, cPosition, gPosition + 1, score);
-									}
-									currentPosition++; // skip the G
-								}
-
+							if (gPosition < currentList.get(i).getStop()) {
+								score += currentList.get(i).getScore();
+							} else if (((i + 1) < currentList.size()) && (gPosition == currentList.get(i + 1).getStart())) {
+								score += currentList.get(i + 1).getScore();
 							}
-							lastStop = currentPosition;
+							if (score != 0) {
+								resultListBuilder.addElementToBuild(chromosome, cPosition, gPosition + 1, score);
+							}
+							currentPosition++; // skip the G
 						}
 					}
-					// tell the operation pool that a chromosome is done
-					System.out.println(chromosome.getName());
-					op.notifyDone();
-					return null;
+					lastStop = currentPosition;
 				}
-			};
-
-			threadList.add(currentThread);
+			}
 		}
-		op.startPool(threadList);
 		return resultListBuilder.getSCWList();
 	}
 

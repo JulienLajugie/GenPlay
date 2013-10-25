@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -59,7 +59,7 @@ public class Launcher {
 	 * This class loads the rest of the project (multigenome manager and the tracks).
 	 * The loading of the Multi Genome manager has to be done before the loading of the tracks.
 	 * This is why both processes are within a same thread managing a waiting time between them.
-	 * 
+	 *
 	 * @author Nicolas Fourel
 	 */
 	private static class LoadingThread extends Thread {
@@ -98,7 +98,7 @@ public class Launcher {
 	 * In this case this project will be directly loaded when GenPlay starts.
 	 */
 
-	//private static final String DEMO_PROJECT_PATH = "edu/yu/einstein/genplay/resource/GenPlay_Timing_and NS_profiles.gen";
+	//private static final String DEMO_PROJECT_PATH = "edu/yu/einstein/genplay/resource/MethylPhase_Demo_H19_Region.gen";
 	private static final String DEMO_PROJECT_PATH = null;
 
 
@@ -243,7 +243,7 @@ public class Launcher {
 		 * at javax.swing.plaf.basic.BasicProgressBarUI.paintDeterminate(Unknown Source)
 		 * at javax.swing.plaf.metal.MetalProgressBarUI.paintDeterminate(Unknown Source)
 		 * at javax.swing.plaf.basic.BasicProgressBarUI.paint(Unknown Source)
-		 * 
+		 *
 		 * Found on several website:
 		 * You are probably here, because you searched for the line above in a search engine.
 		 * If you are a Java-Programmer and you get this problem, here is the solution:
