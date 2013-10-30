@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -43,6 +43,7 @@ import net.sf.samtools.SAMRecordIterator;
 import edu.yu.einstein.genplay.core.IO.dataReader.ChromosomeWindowReader;
 import edu.yu.einstein.genplay.core.IO.dataReader.DataReader;
 import edu.yu.einstein.genplay.core.IO.dataReader.SCWReader;
+import edu.yu.einstein.genplay.core.IO.dataReader.StrandReader;
 import edu.yu.einstein.genplay.core.IO.utils.StrandedExtractorOptions;
 import edu.yu.einstein.genplay.core.IO.utils.SAMRecordFilter.SAMRecordFilter;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
@@ -51,6 +52,8 @@ import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.dataStructure.enums.Strand;
+import edu.yu.einstein.genplay.dataStructure.gene.Gene;
+import edu.yu.einstein.genplay.dataStructure.gene.SimpleGene;
 import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
 
 
@@ -58,7 +61,7 @@ import edu.yu.einstein.genplay.exception.exceptions.DataLineException;
  * Extractor that extract data from a SAM / BAM file
  * @author Julien Lajugie
  */
-public class SAMExtractor extends Extractor implements DataReader, ChromosomeWindowReader, SCWReader, StrandedExtractor {
+public class SAMExtractor extends Extractor implements DataReader, ChromosomeWindowReader, SCWReader, StrandReader, StrandedExtractor {
 
 
 	/**
@@ -102,8 +105,9 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 	private boolean									isPairedMode;						// true if the extractor is in pair end mode
 	private Chromosome 								chromosome;							// chromosome of the last record read (a record has exactly one chromosome)
 	private final Queue<Integer>					startQueue;							// queue containing the start positions of the last record read (a record can have more than one start if split)
-	private final Queue<Integer>					stopQueue;							// queue containing the stop position of the last record read (a record can have more than one stop if split)
-	private final NavigableSet<ChromosomeWindow>	waitingAlignmentBlocks;				// set containing the alignment blocks sorted by start position
+	private final Queue<Integer>					stopQueue;							// queue containing the stop positions of the last record read (a record can have more than one stop if split)
+	private final Queue<Strand>						strandQueue;						// queue containing the strands of the last record read (a record can have more than one stop if split)
+	private final NavigableSet<Gene>				waitingAlignmentBlocks;				// set containing the alignment blocks sorted by start position
 	private boolean 								lastChromosomeJustFlushed = false;	// true if the waiting list of the last chromosome was just flushed
 
 
@@ -119,8 +123,9 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 		iterator = samReader.iterator();
 		startQueue = new ConcurrentLinkedQueue<Integer>();
 		stopQueue = new ConcurrentLinkedQueue<Integer>();
+		strandQueue = new ConcurrentLinkedQueue<Strand>();
 		recordFilters = new ArrayList<SAMRecordFilter>();
-		waitingAlignmentBlocks = new TreeSet<ChromosomeWindow>(new NeverEqualChromosomeWindowStartComparator());
+		waitingAlignmentBlocks = new TreeSet<Gene>(new NeverEqualChromosomeWindowStartComparator());
 	}
 
 
@@ -141,7 +146,7 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 		// if we are in a multi-genome project, we compute the position on the meta genome
 		start = getRealGenomePosition(chromosome, start);
 		stop = getRealGenomePosition(chromosome, stop);
-		waitingAlignmentBlocks.add(new SimpleChromosomeWindow(start, stop));
+		waitingAlignmentBlocks.add(new SimpleGene(null, strand, start, stop, 0, null));
 	}
 
 
@@ -178,9 +183,10 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 	private void flushWaitingAlignments(int position) {
 		ChromosomeWindow chromosomeWindow = new SimpleChromosomeWindow(position, position + 1);
 		while (!waitingAlignmentBlocks.isEmpty() && (waitingAlignmentBlocks.first().compareTo(chromosomeWindow) <= 0)) {
-			ChromosomeWindow removedWaitingBlock = waitingAlignmentBlocks.pollFirst();
+			Gene removedWaitingBlock = waitingAlignmentBlocks.pollFirst();
 			startQueue.add(removedWaitingBlock.getStart());
 			stopQueue.add(removedWaitingBlock.getStop());
+			strandQueue.add(removedWaitingBlock.getStrand());
 		}
 	}
 
@@ -240,6 +246,12 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 
 
 	@Override
+	public Strand getStrand() {
+		return strandQueue.peek();
+	}
+
+
+	@Override
 	public StrandedExtractorOptions getStrandedExtractorOptions() {
 		return strandOptions;
 	}
@@ -285,6 +297,7 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 			if ((stop - start) > 0) {
 				startQueue.add(start);
 				stopQueue.add(stop);
+				strandQueue.add(strand);
 				return true;
 			}
 		}
@@ -340,10 +353,14 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 			// add the first alignment block to the start and stop list ready to be retrieved
 			startQueue.add(start);
 			stopQueue.add(stop);
+			strandQueue.add(strand);
 
 			// add the other blocks to the waiting list to make sure that they will be retrieved in sorted order
+			// if the strand option has been specified we don't consider the other blocks
+			if (strandOptions == null) {
 			for (int i = 1; i < alignmentBlocks.size(); i++) {
 				addBlockToWaitingList(alignmentBlocks.get(i), strand);
+			}
 			}
 			return true;
 		}
@@ -360,6 +377,7 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 		if (!startQueue.isEmpty()) {
 			startQueue.poll();
 			stopQueue.poll();
+			strandQueue.poll();
 			// nothing to do if there still some items in the queues
 			if (!startQueue.isEmpty()) {
 				return true;
