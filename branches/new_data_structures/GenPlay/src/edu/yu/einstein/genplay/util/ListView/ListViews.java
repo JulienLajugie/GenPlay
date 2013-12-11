@@ -22,7 +22,6 @@
 package edu.yu.einstein.genplay.util.ListView;
 
 import java.util.Comparator;
-import java.util.List;
 
 import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
 
@@ -59,7 +58,7 @@ public class ListViews {
 	 *         integers), or the search key is not mutually comparable
 	 *         with the elements of the list.
 	 */
-	public static <T> int binarySearch(List<? extends Comparable<? super T>> list, T key) {
+	public static <T> int binarySearch(ListView<? extends Comparable<? super T>> list, T key) {
 		int low = 0;
 		int high = list.size()-1;
 
