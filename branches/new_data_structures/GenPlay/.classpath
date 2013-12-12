@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/Java SE 7 (MacOS X Default)"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/java-6-openjdk-amd64"/>
 	<classpathentry kind="lib" path="externalJars/mail_V1.4.7.jar"/>
 	<classpathentry kind="lib" path="externalJars/sam_V1.96.jar"/>
 	<classpathentry kind="lib" path="externalJars/jannot_genplay_v1.0.jar"/>
 	<classpathentry kind="lib" path="externalJars/AppleJavaExtensions.jar"/>
-	<classpathentry kind="lib" path="externalJars/colt.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
