@@ -45,6 +45,7 @@ import edu.yu.einstein.genplay.gui.event.operationProgressEvent.OperationProgres
 public final class OperationPool implements OperationProgressEventsGenerator {
 
 	private static OperationPool 	instance = null;	// unique instance of this singleton class
+
 	/**
 	 * @return an instance of the singleton class {@link OperationPool}
 	 */
@@ -54,10 +55,9 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 		}
 		return instance;
 	}
-	private ExecutorService 		executor = null;	// thread executor
 
-
-	private final List<OperationProgressListener> progressListeners; // list of progress listeners
+	private final ExecutorService 					executor;	// thread executor
+	private final List<OperationProgressListener> 	progressListeners; // list of progress listeners
 
 
 	/**
@@ -67,6 +67,8 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 	private OperationPool(ProjectChromosomes projectChromosomes) {
 		super();
 		progressListeners = new ArrayList<OperationProgressListener>();
+		int nbProcessor = Runtime.getRuntime().availableProcessors();
+		executor = Executors.newFixedThreadPool(nbProcessor);
 	}
 
 
@@ -121,8 +123,6 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 	 */
 	public synchronized <T> List<T> startPool(Collection<? extends Callable<T>> threads) throws InterruptedException, ExecutionException {
 		ProjectChromosomes projectChromosomes = ProjectManager.getInstance().getProjectChromosomes();
-		int nbProcessor = Runtime.getRuntime().availableProcessors();
-		executor = Executors.newFixedThreadPool(nbProcessor);
 		// notify the listeners that the operation starts
 		notifyProgressListeners(OperationProgressEvent.STARTING, 0d);
 		// list of futur for the result of the callables
