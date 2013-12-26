@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -31,7 +31,6 @@ import javax.swing.JOptionPane;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.SCWList.SCWLOScoreDistribution;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
-import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotData;
 import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotPane;
@@ -131,7 +130,7 @@ public final class SCWLAScoreDistribution extends TrackListActionOperationWorker
 						selectedLayers[0] =	(AbstractSCWLayer<?>) scwLayers[0];
 					}
 					if ((selectedLayers != null)) {
-						SCWList[] scwListArray = new SimpleSCWList[selectedLayers.length];
+						SCWList[] scwListArray = new SCWList[selectedLayers.length];
 						for (int i = 0; i < selectedLayers.length; i++) {
 							scwListArray[i] = selectedLayers[i].getData();
 						}
