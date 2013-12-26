@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -59,7 +59,7 @@ public class PrimitiveList<T> extends AbstractList<T> implements Cloneable, Seri
 	private static final int DEFAULT_SUBARRAY_SIZE = 5000;
 
 	/** Precision of the data of the project */
-	private transient static ScorePrecision scorePrecision = ScorePrecision.PRECISION_16BIT;
+	private transient static ScorePrecision scorePrecision = ScorePrecision.PRECISION_32BIT;
 
 	/**
 	 * Sets the score precision of the project
