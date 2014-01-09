@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -56,8 +56,8 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 		return instance;
 	}
 
-	private final ExecutorService 					executor;	// thread executor
-	private final List<OperationProgressListener> 	progressListeners; // list of progress listeners
+	private ExecutorService 						executor;			// thread executor
+	private final List<OperationProgressListener> 	progressListeners; 	// list of progress listeners
 
 
 	/**
@@ -67,8 +67,7 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 	private OperationPool(ProjectChromosomes projectChromosomes) {
 		super();
 		progressListeners = new ArrayList<OperationProgressListener>();
-		int nbProcessor = Runtime.getRuntime().availableProcessors();
-		executor = Executors.newFixedThreadPool(nbProcessor);
+		initExecutorService();
 	}
 
 
@@ -82,6 +81,15 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 	public OperationProgressListener[] getOperationProgressListeners() {
 		OperationProgressListener[] listeners = new OperationProgressListener[progressListeners.size()];
 		return progressListeners.toArray(listeners);
+	}
+
+
+	/**
+	 * Creates a thread pool containing one thread per processor
+	 */
+	private void initExecutorService() {
+		int nbProcessor = Runtime.getRuntime().availableProcessors();
+		executor = Executors.newFixedThreadPool(nbProcessor);
 	}
 
 
@@ -184,6 +192,7 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 		if ((executor != null) && (!executor.isShutdown()) && (!executor.isTerminated())) {
 			executor.shutdownNow();
 			notifyAll();
+			initExecutorService();
 		}
 	}
 }

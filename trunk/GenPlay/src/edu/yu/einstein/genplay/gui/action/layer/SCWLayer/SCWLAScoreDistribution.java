@@ -122,7 +122,7 @@ public final class SCWLAScoreDistribution extends TrackListActionOperationWorker
 						layerChooserDialog.setLayers(getTrackListPanel().getModel().getAllLayers());
 						layerChooserDialog.setSelectableLayerTypes(availableLayerTypes);
 						layerChooserDialog.setMultiselectable(true);
-						if (layerChooserDialog.showDialog(getRootPane(), "Select Layers to Paste") == LayerChooserDialog.APPROVE_OPTION) {
+						if (layerChooserDialog.showDialog(getRootPane(), "Select Layers") == LayerChooserDialog.APPROVE_OPTION) {
 							selectedLayers = layerChooserDialog.getSelectedLayers().toArray(new AbstractSCWLayer[0]);
 						}
 					} else {
