@@ -220,7 +220,7 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 		int selectedTrackIndex = getModel().indexOf(selectedTrack);
 		for (int i = 0; i < trackList.length; i++) {
 			trackList[i].setNumber(i + 1);
-			jpTrackList.add(trackList[i]);
+			jpTrackList.add(trackList[i].getTrackPanel());
 			trackList[i].addTrackListener(this);
 		}
 		if (selectedTrackIndex == -1) {
@@ -341,8 +341,9 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 		lockTrackHandles();
 		if (getMousePosition() != null) {
 			for (Track currentTrack : getModel().getTracks()) {
-				int currentTrackTop = currentTrack.getY() - getVerticalScrollBar().getValue();
-				int currentrackBottom = (currentTrack.getY() + currentTrack.getHeight()) - getVerticalScrollBar().getValue();
+				JPanel currentTrackPanel = currentTrack.getTrackPanel();
+				int currentTrackTop = currentTrackPanel.getY() - getVerticalScrollBar().getValue();
+				int currentrackBottom = (currentTrackPanel.getY() + currentTrackPanel.getHeight()) - getVerticalScrollBar().getValue();
 				if ((getMousePosition().y > currentTrackTop) && (getMousePosition().y < currentrackBottom) && (draggedOverTrack != currentTrack)) {
 					if (draggedOverTrack != null) {
 						draggedOverTrack.setBorder(TrackConstants.REGULAR_BORDER);
@@ -368,8 +369,8 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 		int preferredHeight = ProjectManager.getInstance().getProjectConfiguration().getTrackHeight();
 		Track[] trackList = getModel().getTracks();
 		for(int i = 0; i < trackList.length; i++) {
+			trackList[i].setDefaultHeight(preferredHeight);
 			trackList[i].setPreferredHeight(preferredHeight);
-			((Track) jpTrackList.getComponent(i)).setPreferredHeight(preferredHeight);
 		}
 		revalidate();
 	}

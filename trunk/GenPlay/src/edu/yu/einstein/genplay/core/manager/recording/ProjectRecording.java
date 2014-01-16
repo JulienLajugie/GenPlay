@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -135,6 +135,7 @@ public class ProjectRecording {
 				String invalidJREMessage = "<html><center>The project you are trying to load was saved using a Java Runtime Environment (JRE) that is not compatible with the JRE currently installed on your computer.<br/>";
 				invalidJREMessage += "Please refer to the FAQ page at <a href=\"http://genplay.einstein.yu.edu\">http://genplay.einstein.yu.edu</a> for additional information.</center></html>";
 				JOptionPane.showMessageDialog(MainFrame.getInstance().getRootPane(), invalidJREMessage, "Invalid Java Runtime Environment", JOptionPane.WARNING_MESSAGE);
+				e.printStackTrace();
 			} catch (IOException e) {
 				ExceptionManager.getInstance().caughtException(e);
 			} catch (ClassNotFoundException e) {

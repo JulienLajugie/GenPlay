@@ -47,30 +47,21 @@ import edu.yu.einstein.genplay.util.colors.Colors;
  * A list of drawers can be registered an instance of this class in order
  * to draw on the {@link Graphics} context of this panel.
  * The first elements of the list of drawers draw first.
+ * <br/><b>Warning:</b> Serialized objects of this class will not be compatible between different implementation of the JVM
  * @author Julien Lajugie
  */
-public class GraphicsPanel extends JPanel implements Serializable, ComponentListener, MouseListener, MouseMotionListener, MouseWheelListener {
+public final class GraphicsPanel extends JPanel implements Serializable, ComponentListener, MouseListener, MouseMotionListener, MouseWheelListener {
 
-	private static final long 	serialVersionUID = -1133983320644609161L;	// generated ID
-	private transient int 		mouseStartDragX = -1;						// position of the mouse when start dragging
-	private Drawer[]			drawers;									// drawers that can draw on this panel
+	private static final long serialVersionUID = 4936439650634531249L;
+	private int 			mouseStartDragX = -1;	// position of the mouse when start dragging
+	private Drawer[]		drawers;				// drawers that can draw on this panel
 
 
 	/**
 	 * Creates an instance of {@link GraphicsPanel}
 	 */
 	public GraphicsPanel() {
-		this(null);
-	}
-
-
-	/**
-	 * Creates an instance of {@link GraphicsPanel}
-	 * @param drawers drawers that can drawn on this panel
-	 */
-	public GraphicsPanel(Drawer[] drawers) {
 		super();
-		this.drawers = drawers;
 		setBackground(Colors.TRACK_BACKGROUND);
 		addComponentListener(this);
 		addMouseListener(this);

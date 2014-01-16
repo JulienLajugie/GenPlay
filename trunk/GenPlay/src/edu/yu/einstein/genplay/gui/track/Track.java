@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -23,6 +23,8 @@ package edu.yu.einstein.genplay.gui.track;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.MouseListener;
@@ -37,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
@@ -60,15 +63,17 @@ import edu.yu.einstein.genplay.util.Images;
  * A track contains two subcomponents: the track handle and the graphics panel showing the data
  * @author Julien Lajugie
  */
-public final class Track extends JPanel implements Serializable, GenomeWindowListener, TrackListener, TrackEventsGenerator, ListDataListener {
+public final class Track implements Serializable, GenomeWindowListener, TrackListener, TrackEventsGenerator, ListDataListener {
 
 	private static final long 				serialVersionUID = 818958034840761257L;	// generated ID
 	private static final int  				SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
 	private transient List<TrackListener>	trackListeners;							// list of track listeners
 	private transient int 					defaultHeight;							// default height of a track
+	private transient JPanel				trackPanel;								// panel containing the track
+	private transient HandlePanel			handlePanel;							// handle panel of the track
+	private transient GraphicsPanel			graphicsPanel;							// graphics panel of the track
+	private String							trackName;								// name of the track
 	private int								trackNumber;							// number of the track
-	private HandlePanel						handlePanel;							// handle panel of the track
-	private GraphicsPanel					graphicsPanel;							// graphics panel of the track
 	private BackgroundLayer					backgroundLayer;						// background layer of the track (with the vertical and horizontal lines)
 	private ForegroundLayer 				foregroundLayer;						// foreground layer of the track (with the track name and the multi genome legend)
 	private TrackModel 						layers;									// layers of the track
@@ -83,31 +88,26 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 	public Track(int trackNumber) {
 		super();
 
-		setMinimumSize(new Dimension(getMinimumSize().width, TrackConstants.MINIMUM_HEIGHT));
-		setMaximumSize(new Dimension(getMaximumSize().width, TrackConstants.MAXIMUM_HEIGHT));
-
 		// create the panels
+		trackPanel = new JPanel();
 		handlePanel = new HandlePanel(trackNumber);
 		graphicsPanel = new GraphicsPanel();
-
-		// add the panels
-		BorderLayout layout = new BorderLayout();
-		setLayout(layout);
-		add(handlePanel, BorderLayout.LINE_START);
-		add(graphicsPanel, BorderLayout.CENTER);
-
-		// sets the track number
-		setNumber(trackNumber);
 
 		// initializes the foreground and background drawer
 		backgroundLayer = new BackgroundLayer(this);
 		foregroundLayer = new ForegroundLayer(this);
 
-		// we update the list of drawers registered to the graphics panel
-		updateGraphicsPanelDrawers();
+		// set the track number
+		this.trackNumber = trackNumber;
 
-		// initialize the track
-		init();
+		// set the track score
+		score = new TrackScore(this);
+
+		// initializes the layer list
+		layers = new TrackModel();
+		layers.addListDataListener(this);
+
+		initTrack();
 	}
 
 
@@ -142,7 +142,7 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 		Image image = Images.getLoadingImage();
 		int x = (graphicsPanel.getWidth() - image.getWidth(null)) / 2;
 		int y = (graphicsPanel.getHeight() - image.getHeight(null)) / 2;
-		g.drawImage(image, x, y, this);
+		g.drawImage(image, x, y, trackPanel);
 	}
 
 
@@ -179,6 +179,24 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 
 
 	/**
+	 * @param font
+	 * @return the font metrics of the specified font
+	 */
+	public FontMetrics getFontMetrics() {
+		return trackPanel.getGraphics().getFontMetrics();
+	}
+
+
+	/**
+	 * @param font
+	 * @return the font metrics of the specified font
+	 */
+	public FontMetrics getFontMetrics(Font font) {
+		return trackPanel.getFontMetrics(font);
+	}
+
+
+	/**
 	 * @return the foreground layer of the track
 	 */
 	public Layer<ForegroundData> getForegroundLayer() {
@@ -191,6 +209,14 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 	 */
 	public GraphicsPanel getGraphicsPanel() {
 		return graphicsPanel;
+	}
+
+
+	/**
+	 * @return the height of the track panel. Shortcut for getTrackPanel().getHeight()
+	 */
+	public int getHeight() {
+		return trackPanel.getHeight();
 	}
 
 
@@ -216,12 +242,12 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 	/**
 	 * @return the name of the track
 	 */
-	@Override
 	public String getName() {
-		if (super.getName() != null) {
-			return super.getName();
-		} else {
+		if (trackName == null) {
+			// default track name if it hasn't been set
 			return new String(TrackConstants.NAME_PREFIX + getNumber());
+		} else {
+			return trackName;
 		}
 	}
 
@@ -250,10 +276,35 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 
 
 	/**
+	 * @return the top level panel of the track
+	 */
+	public JPanel getTrackPanel() {
+		return trackPanel;
+	}
+
+
+	/**
 	 * Initialize the track
 	 * @param trackNumber number of the track
 	 */
-	private void init() {
+	private void initTrack() {
+
+		// set the minimum and maximum height of the track
+		trackPanel.setMinimumSize(new Dimension(trackPanel.getMinimumSize().width, TrackConstants.MINIMUM_HEIGHT));
+		trackPanel.setMaximumSize(new Dimension(trackPanel.getMaximumSize().width, TrackConstants.MAXIMUM_HEIGHT));
+
+		// add the panels
+		BorderLayout layout = new BorderLayout();
+		trackPanel.setLayout(layout);
+		trackPanel.add(handlePanel, BorderLayout.LINE_START);
+		trackPanel.add(graphicsPanel, BorderLayout.CENTER);
+
+		// sets the track number
+		setNumber(trackNumber);
+
+		// we update the list of drawers registered to the graphics panel
+		updateGraphicsPanelDrawers();
+
 		// register itself to the handle so the track can be notified when there is an action on the handle
 		handlePanel.addTrackListener(this);
 
@@ -263,20 +314,11 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 		setDefaultHeight(defaultHeight);
 		setPreferredHeight(defaultHeight);
 
-		setName(null);
-
-		// set the track score
-		score = new TrackScore(this);
-
 		// set the border of the track
-		setBorder(TrackConstants.REGULAR_BORDER);
+		trackPanel.setBorder(TrackConstants.REGULAR_BORDER);
 
 		// create list of track listener
 		trackListeners = new ArrayList<TrackListener>();
-
-		// initializes the layer list
-		layers = new TrackModel();
-		layers.addListDataListener(this);
 	}
 
 
@@ -311,7 +353,7 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 	 * Locks the track handle
 	 */
 	public void lockHandle() {
-		handlePanel.setEnabled(false);
+		handlePanel.lock();
 	}
 
 
@@ -338,10 +380,10 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		trackNumber = in.readInt();
-		handlePanel = (HandlePanel) in.readObject();
-		graphicsPanel = (GraphicsPanel) in.readObject();
-		// initialize the track
-		init();
+		// recreate panels
+		trackPanel = new JPanel();
+		handlePanel = new HandlePanel(trackNumber);
+		graphicsPanel = new GraphicsPanel();
 		// set the background and foreground layers
 		backgroundLayer = (BackgroundLayer) in.readObject();
 		backgroundLayer.setTrack(this);
@@ -357,16 +399,29 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 				currentLayer.setTrack(this);
 			}
 			setActiveLayer((Layer<?>) in.readObject());
+		} else {
+			layers = new TrackModel();
+			layers.addListDataListener(this);
 		}
 		score = (TrackScore) in.readObject();
-		updateGraphicsPanelDrawers();
-		//ProjectManager.getInstance().getProjectWindow().setTrackWidth(graphicsPanel.getWidth());
+		// initialize the track
+		initTrack();
+		// restore the height of the track
+		setPreferredHeight(in.readInt());
 	}
 
 
 	@Override
 	public void removeTrackListener(TrackListener trackListener) {
 		trackListeners.remove(trackListener);
+	}
+
+
+	/**
+	 * Repaints the track panel and all its components
+	 */
+	public void repaint() {
+		trackPanel.repaint();
 	}
 
 
@@ -412,6 +467,15 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 
 
 	/**
+	 * Sets the border of the track.
+	 * @param border
+	 */
+	public void setBorder(Border border) {
+		getTrackPanel().setBorder(border);
+	}
+
+
+	/**
 	 * Sets the default height of the track
 	 * @param defaultHeight default height to set
 	 */
@@ -420,13 +484,12 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 	}
 
 
-	@Override
+	/**
+	 * Sets the name of the track
+	 * @param name
+	 */
 	public void setName(String name) {
-		String defaultName = TrackConstants.NAME_PREFIX + getNumber();
-		// we don't set the name if it's the default track name
-		if ((name != null) && !name.equals(defaultName)) {
-			super.setName(name);
-		}
+		trackName = name;
 	}
 
 
@@ -446,9 +509,9 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 	 */
 	public void setPreferredHeight(int preferredHeight) {
 		// update the dimension of the track panel
-		Dimension trackDimension = new Dimension(getPreferredSize().width, preferredHeight);
-		setPreferredSize(trackDimension);
-		revalidate();
+		Dimension trackDimension = new Dimension(trackPanel.getPreferredSize().width, preferredHeight);
+		trackPanel.setPreferredSize(trackDimension);
+		trackPanel.revalidate();
 	}
 
 
@@ -489,7 +552,7 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 	 * Unlocks the track handle
 	 */
 	public void unlockHandle() {
-		handlePanel.setEnabled(true);
+		handlePanel.unlock();
 	}
 
 
@@ -527,8 +590,6 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeInt(trackNumber);
-		out.writeObject(handlePanel);
-		out.writeObject(graphicsPanel);
 		out.writeObject(backgroundLayer);
 		out.writeObject(foregroundLayer);
 		// write the number of layers
@@ -544,5 +605,7 @@ public final class Track extends JPanel implements Serializable, GenomeWindowLis
 			out.writeObject(activeLayer);
 		}
 		out.writeObject(score);
+		// save the height of the track
+		out.writeInt(trackPanel.getHeight());
 	}
 }

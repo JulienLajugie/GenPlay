@@ -96,7 +96,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 
 	private static final long serialVersionUID = -4637394760647080396L; // generated ID
 	/** GenPlay version number */
-	public static final int VERSION_NUMBER = 979; 						// GenPlay version
+	public static final int VERSION_NUMBER = 997; 						// GenPlay version
 
 	/** Title of the application */
 	public static final String 		APPLICATION_TITLE = "GenPlay, Einstein Genome Analyzer (v" + VERSION_NUMBER + ")";
@@ -170,7 +170,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.weightx = 1;
 		gbc.weighty = 0;
-		add(ruler, gbc);
+		add(ruler.getRulerPanel(), gbc);
 
 		gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.BOTH;

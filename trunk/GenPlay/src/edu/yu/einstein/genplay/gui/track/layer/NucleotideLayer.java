@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -48,23 +48,22 @@ import edu.yu.einstein.genplay.gui.track.TrackConstants;
 import edu.yu.einstein.genplay.util.Utils;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
-
 /**
  * Layer displaying a mask
+ * 
  * @author Julien Lajugie
  */
 public class NucleotideLayer extends AbstractLayer<NucleotideList> implements Layer<NucleotideList>, MouseMotionListener, MouseListener {
 
-	private static final long 	serialVersionUID = 3779631846077486596L;// generated ID
-	private static final int 				NUCLEOTIDE_HEIGHT = 10;		// y position of the nucleotides on the track
-	private transient Integer				maxBaseWidth = null;		// size on the screen of the widest base to display (in pixels)
-	private transient Integer 				baseUnderMouseIndex = null;	// index of the base under the mouse
-	private transient boolean				nucleotidePrinted = false;	// true if the nucleotide are printed
-
+	private static final long serialVersionUID = 3779631846077486596L;// generated ID
+	private static final int NUCLEOTIDE_HEIGHT = 10; // y position of the nucleotides on the track
+	private transient Integer maxBaseWidth = null; // size on the screen of the widest base to display (in pixels)
+	private transient Integer baseUnderMouseIndex = null; // index of the base under the mouse
+	private transient boolean nucleotidePrinted = false; // true if the nucleotide are printed
 
 	/**
-	 * Creates an instance of {@link NucleotideLayer} with the same properties as the specified {@link NucleotideLayer}.
-	 * The copy of the data is shallow.
+	 * Creates an instance of {@link NucleotideLayer} with the same properties as the specified {@link NucleotideLayer}. The copy of the data is shallow.
+	 * 
 	 * @param nucleotideLayer
 	 */
 	private NucleotideLayer(NucleotideLayer nucleotideLayer) {
@@ -74,24 +73,25 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 		nucleotidePrinted = nucleotideLayer.nucleotidePrinted;
 	}
 
-
 	/**
 	 * Creates an instance of a {@link NucleotideLayer}
-	 * @param track track containing the layer
-	 * @param data data of the layer
-	 * @param name name of the layer
+	 * 
+	 * @param track
+	 *            track containing the layer
+	 * @param data
+	 *            data of the layer
+	 * @param name
+	 *            name of the layer
 	 */
 	public NucleotideLayer(Track track, NucleotideList data, String name) {
 		super(track, data, name);
 		maxBaseWidth = computeMaximumBaseWidth();
 	}
 
-
 	@Override
 	public NucleotideLayer clone() {
 		return new NucleotideLayer(this);
 	}
-
 
 	/**
 	 * @return the maximum width in pixel that a base can take up
@@ -99,13 +99,12 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 	private int computeMaximumBaseWidth() {
 		int maxWidth = 0;
 		// compute the length in pixels of the widest base to display
-		String[] bases = {"N", "A", "C", "G", "T"};
-		for (String currBase: bases) {
+		String[] bases = { "N", "A", "C", "G", "T" };
+		for (String currBase : bases) {
 			maxWidth = Math.max(maxWidth, getTrack().getFontMetrics(TrackConstants.FONT_DEFAULT).stringWidth(currBase));
 		}
 		return maxWidth;
 	}
-
 
 	@Override
 	public void draw(Graphics g, int width, int height) {
@@ -123,12 +122,15 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 		}
 	}
 
-
 	/**
 	 * Draws the backgrounds of the nucleotide
-	 * @param g {@link Graphics}
-	 * @param width with of the {@link Graphics} to paint
-	 * @param height height of the {@link Graphics} to paint
+	 * 
+	 * @param g
+	 *            {@link Graphics}
+	 * @param width
+	 *            with of the {@link Graphics} to paint
+	 * @param height
+	 *            height of the {@link Graphics} to paint
 	 */
 	private void drawNucleotideBackgrounds(Graphics g, int width, int height) {
 		if (getData() != null) {
@@ -141,7 +143,7 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 						Nucleotide nucleotide = nucleotides[index];
 						// compute the position on the screen
 						int x = projectWindow.genomeToScreenPosition(position);
-						//int nucleoWith = projectWindow.twoGenomePosToScreenWidth(position, position + 1);
+						// int nucleoWith = projectWindow.twoGenomePosToScreenWidth(position, position + 1);
 						int nucleoWith = projectWindow.genomeToScreenPosition(position + 1) - x;
 						// select a different color for each type of base
 						Color nucleoColor = Colors.nucleotideToColor(nucleotide);
@@ -163,12 +165,14 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 		}
 	}
 
-
 	/**
 	 * Draws the letter of the nucleotides
+	 * 
 	 * @param g
-	 * @param width with of the {@link Graphics} to paint
-	 * @param height height of the {@link Graphics} to paint
+	 * @param width
+	 *            with of the {@link Graphics} to paint
+	 * @param height
+	 *            height of the {@link Graphics} to paint
 	 */
 	private void drawNucleotideLetters(Graphics g, int width, int height) {
 		if (getData() != null) {
@@ -201,16 +205,14 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 		}
 	}
 
-
 	@Override
 	public LayerType getType() {
 		return LayerType.NUCLEOTIDE_LAYER;
 	}
 
-
 	@Override
-	public void mouseClicked(MouseEvent e) {}
-
+	public void mouseClicked(MouseEvent e) {
+	}
 
 	/**
 	 * Resets the tooltip and the highlighted base when the mouse is dragged
@@ -226,10 +228,9 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 		}
 	}
 
-
 	@Override
-	public void mouseEntered(MouseEvent e) {}
-
+	public void mouseEntered(MouseEvent e) {
+	}
 
 	/**
 	 * Resets the tooltip and the highlighted base when the mouse exits the track
@@ -238,11 +239,10 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 	public void mouseExited(MouseEvent e) {
 		if (baseUnderMouseIndex != null) {
 			baseUnderMouseIndex = null;
-			getTrack().setToolTipText(null);
+			getTrack().getGraphicsPanel().setToolTipText(null);
 			getTrack().repaint();
 		}
 	}
-
 
 	/**
 	 * Sets the tooltip and the base with the mouse over when the mouse move
@@ -250,7 +250,7 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		if (isVisible() && (getData() != null)) {
-			getTrack().setToolTipText("");
+			getTrack().getGraphicsPanel().setToolTipText("");
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
 			Integer oldBaseUnderMouseIndex = baseUnderMouseIndex;
 			baseUnderMouseIndex = null;
@@ -265,8 +265,7 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 					if (printedBases != null) {
 						baseUnderMouseIndex = projectWindow.screenToGenomeWidth(mousePosition.x);
 						// we repaint the track only if the gene under the mouse changed
-						if (((oldBaseUnderMouseIndex == null) && (baseUnderMouseIndex != null))
-								|| ((oldBaseUnderMouseIndex != null) && (!oldBaseUnderMouseIndex.equals(baseUnderMouseIndex)))) {
+						if (((oldBaseUnderMouseIndex == null) && (baseUnderMouseIndex != null)) || ((oldBaseUnderMouseIndex != null) && (!oldBaseUnderMouseIndex.equals(baseUnderMouseIndex)))) {
 							getTrack().repaint();
 						}
 					}
@@ -274,24 +273,24 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 				if (baseUnderMouseIndex != null) {
 					Nucleotide nucleotide = DataScalerManager.getInstance().getScaledData(this)[baseUnderMouseIndex];
 					if (nucleotide != null) {
-						getTrack().setToolTipText(nucleotide.name());
+						getTrack().getGraphicsPanel().setToolTipText(nucleotide.name());
 					}
 				}
 			}
 		}
 	}
 
+	@Override
+	public void mousePressed(MouseEvent e) {
+	}
 
 	@Override
-	public void mousePressed(MouseEvent e) {}
-
-
-	@Override
-	public void mouseReleased(MouseEvent e) {}
-
+	public void mouseReleased(MouseEvent e) {
+	}
 
 	/**
 	 * Method used for unserialization
+	 * 
 	 * @param in
 	 * @throws IOException
 	 * @throws ClassNotFoundException
@@ -303,14 +302,13 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 		twoBitSequenceListUnserialization();
 	}
 
-
 	/**
 	 * Handle the unserialization of a {@link TwoBitSequenceList}.
 	 */
 	private void twoBitSequenceListUnserialization() {
 		// if the data is a TwoBitSequenceList we want to make sure
 		// that the file is still at the same location than when
-		// the save was made.  If not we need to ask the user for the new location.
+		// the save was made. If not we need to ask the user for the new location.
 		if (getData() instanceof TwoBitSequenceList) {
 			TwoBitSequenceList twoBitData = ((TwoBitSequenceList) getData());
 			try {
@@ -321,9 +319,7 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 				String filePath = twoBitData.getDataFilePath();
 				// since the track can be null we need to get the project root pane
 				Component rootPane = MainFrame.getInstance().getRootPane();
-				int dialogRes = JOptionPane.showConfirmDialog(rootPane,
-						"The file " + filePath + " cannot be found\nPlease locate the file or press cancel to delete the Sequence Track",
-						"File Not Found", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+				int dialogRes = JOptionPane.showConfirmDialog(rootPane, "The file " + filePath + " cannot be found\nPlease locate the file or press cancel to delete the Sequence Track", "File Not Found", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 				if (dialogRes == JOptionPane.OK_OPTION) {
 					String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
 					File selectedFile = Utils.chooseFileToLoad(rootPane, "Load Sequence Track", defaultDirectory, Utils.getReadableSequenceFileFilters(), true);

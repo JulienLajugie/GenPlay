@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -30,9 +30,6 @@ import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,39 +44,31 @@ import edu.yu.einstein.genplay.util.colors.Colors;
 
 /**
  * The handle of a track
+ * <br/><b>Warning:</b> Serialized objects of this class will not be compatible between different implementation of the JVM
  * @author Julien Lajugie
- * @version 0.1
  */
-public final class HandlePanel extends JPanel implements MouseListener, MouseMotionListener, TrackEventsGenerator {
+final class HandlePanel extends JPanel implements MouseListener, MouseMotionListener, TrackEventsGenerator {
 
-	private static final long 	serialVersionUID = -1789820124134205454L;// generated ID
-	private static final int 	SAVED_FORMAT_VERSION_NUMBER = 0;// saved format version
-	private static final int 	HANDLE_WIDTH = 50;				// width of the handle
-	private static final int 	MOVE_RESIZE_ZONE_HEIGHT = 10;	// height of the resize zone
-	private static final String FONT_NAME = "ARIAL";			// name of the font
-	private static final int 	FONT_SIZE = 12;					// size of the font
-	private transient int 		startDragY = 0; 				// height of the mouse when start dragging
-	private transient int		newHeight = 0;					// seize of the track after resizing by dragging
-	private transient boolean 	isTrackDragged = false;			// true if the user is dragging the track
-	private transient boolean	isSelected = false;				// true if the track is selected
-	private int					number;							// number of the track
-	private JLabel 				jlNumber;						// label with the number of the track
-	private List<TrackListener> trackListeners;					// list of track listeners
-
-
-	/**
-	 * Default constructor. Creates an instance of {@link HandlePanel}
-	 */
-	public HandlePanel() {
-		this(0);
-	}
+	private static final long serialVersionUID = -1942543548154386009L;		// generated serial ID
+	private static final int 				HANDLE_WIDTH = 50;				// width of the handle
+	private static final int 				MOVE_RESIZE_ZONE_HEIGHT = 10;	// height of the resize zone
+	private static final String 			FONT_NAME = "ARIAL";			// name of the font
+	private static final int 				FONT_SIZE = 12;					// size of the font
+	private final JLabel					jlNumber;						// label with the number of the track
+	private final List<TrackListener> 		trackListeners;					// list of track listeners
+	private int 							startDragY = 0; 				// height of the mouse when start dragging
+	private int								newHeight = 0;					// seize of the track after resizing by dragging
+	private boolean 						isTrackDragged = false;			// true if the user is dragging the track
+	private boolean							isSelected = false;				// true if the track is selected
+	private int								number;							// number of the track
 
 
 	/**
 	 * Creates an instance of {@link HandlePanel}
 	 * @param number number of the track
 	 */
-	public HandlePanel(int number) {
+	HandlePanel(int number) {
+		this.number = number;
 		setBackground(Colors.TRACK_HANDLE_BACKGROUND);
 		setPreferredSize(new Dimension(HANDLE_WIDTH - 1, 0));
 
@@ -89,7 +78,6 @@ public final class HandlePanel extends JPanel implements MouseListener, MouseMot
 		addMouseMotionListener(this);
 
 		// Creates and add the number of the track
-		this.number = number;
 		jlNumber = new JLabel(Integer.toString(number));
 		jlNumber.setFont(new Font(FONT_NAME, Font.PLAIN, FONT_SIZE));
 
@@ -111,7 +99,7 @@ public final class HandlePanel extends JPanel implements MouseListener, MouseMot
 	/**
 	 * @return the height of the resizing when the handle is dragged
 	 */
-	public int getNewHeight() {
+	int getNewHeight() {
 		return newHeight;
 	}
 
@@ -119,7 +107,7 @@ public final class HandlePanel extends JPanel implements MouseListener, MouseMot
 	/**
 	 * @return the number of the track
 	 */
-	public int getNumber() {
+	int getNumber() {
 		return number;
 	}
 
@@ -134,7 +122,7 @@ public final class HandlePanel extends JPanel implements MouseListener, MouseMot
 	/**
 	 * @return true if the track is selected
 	 */
-	public boolean isSelected() {
+	boolean isSelected() {
 		return isSelected;
 	}
 
@@ -142,7 +130,7 @@ public final class HandlePanel extends JPanel implements MouseListener, MouseMot
 	/**
 	 * Locks the handle
 	 */
-	public void lock() {
+	void lock() {
 		setEnabled(false);
 	}
 
@@ -266,25 +254,6 @@ public final class HandlePanel extends JPanel implements MouseListener, MouseMot
 	}
 
 
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		number = in.readInt();
-		jlNumber = (JLabel) in.readObject();
-		startDragY = 0;
-		newHeight = 0;
-		isSelected = false;
-		isTrackDragged = false;
-		trackListeners = new ArrayList<TrackListener>();
-		setBackground(Colors.TRACK_HANDLE_BACKGROUND);
-	}
-
-
 	@Override
 	public void removeTrackListener(TrackListener trackListener) {
 		trackListeners.remove(trackListener);
@@ -294,7 +263,7 @@ public final class HandlePanel extends JPanel implements MouseListener, MouseMot
 	/**
 	 * @param number the number of the track to set
 	 */
-	public void setNumber(int number) {
+	void setNumber(int number) {
 		this.number = number;
 		jlNumber.setText(Integer.toString(number));
 	}
@@ -303,7 +272,7 @@ public final class HandlePanel extends JPanel implements MouseListener, MouseMot
 	/**
 	 * @param selected the value to set
 	 */
-	public void setSelected(boolean selected) {
+	void setSelected(boolean selected) {
 		if (selected != isSelected()) {
 			isSelected = selected;
 			if (selected) {
@@ -320,24 +289,12 @@ public final class HandlePanel extends JPanel implements MouseListener, MouseMot
 	/**
 	 * Unlocks the handle
 	 */
-	public void unlock() {
+	void unlock() {
 		setEnabled(true);
 		if (isSelected) {
 			setBackground(Colors.TRACK_HANDLE_ROLLOVER);
 		} else {
 			setBackground(Colors.TRACK_HANDLE_BACKGROUND);
 		}
-	}
-
-
-	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeInt(number);
-		out.writeObject(jlNumber);
 	}
 }

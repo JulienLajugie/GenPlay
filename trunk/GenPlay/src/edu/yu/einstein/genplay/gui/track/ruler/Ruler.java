@@ -48,14 +48,14 @@ import edu.yu.einstein.genplay.util.colors.Colors;
  * Ruler that shows the positions of the current genome window and contains the project option button
  * @author Julien Lajugie
  */
-public class Ruler extends JPanel implements GenomeWindowListener {
+public class Ruler implements GenomeWindowListener {
 
-	private static final long serialVersionUID = -5243446035761988387L; // Generated ID
-	private static final int 			HANDLE_WIDTH = 50;				// Width of the track handle
-	private static final int 			TRACKS_SCROLL_WIDTH = 17;		// Width of the scroll bar
-	private static final int 			RULER_HEIGHT = 20;				// Height of the ruler
-	private final GraphicsPanel			rulerGraphics;					// Graphics part
-	private final JButton 				rulerButton;					// button of the ruler
+	private static final int 		HANDLE_WIDTH = 50;					// Width of the track handle
+	private static final int 		TRACKS_SCROLL_WIDTH = 17;			// Width of the scroll bar
+	private static final int 		RULER_HEIGHT = 20;					// Height of the ruler
+	private final GraphicsPanel		rulerGraphics;						// Graphics part
+	private final JPanel			rulerPanel;							// top container
+	private final JButton 			rulerButton;						// button of the ruler
 
 
 	/**
@@ -63,11 +63,12 @@ public class Ruler extends JPanel implements GenomeWindowListener {
 	 */
 	public Ruler() {
 		super();
+		rulerPanel = new JPanel();
 		rulerGraphics = new GraphicsPanel();
 		initGraphics();
 		rulerButton = new JButton();
 		initButton();
-		setLayout(new GridBagLayout());
+		rulerPanel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.insets = new Insets(0, 0, 0, 0);
@@ -75,7 +76,7 @@ public class Ruler extends JPanel implements GenomeWindowListener {
 		gbc.gridy = 0;
 		gbc.weightx = 0;
 		gbc.weighty = 1;
-		add(rulerButton, gbc);
+		rulerPanel.add(rulerButton, gbc);
 		gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.insets = new Insets(0, 0, 0, TRACKS_SCROLL_WIDTH);
@@ -83,8 +84,8 @@ public class Ruler extends JPanel implements GenomeWindowListener {
 		gbc.gridy = 0;
 		gbc.weightx = 1;
 		gbc.weighty = 1;
-		add(rulerGraphics, gbc);
-		setMinimumSize(new Dimension(getPreferredSize().width, RULER_HEIGHT));
+		rulerPanel.add(rulerGraphics, gbc);
+		rulerPanel.setMinimumSize(new Dimension(rulerPanel.getPreferredSize().width, RULER_HEIGHT));
 		// register the ruler to the project window manager so the ruler can be notified when the project window changes
 		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
 		projectWindow.addGenomeWindowListener(this);
@@ -103,7 +104,7 @@ public class Ruler extends JPanel implements GenomeWindowListener {
 	public BufferedImage getImage() {
 		BufferedImage image = new BufferedImage(rulerGraphics.getWidth(), rulerGraphics.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		Graphics g = image.getGraphics();
-		rulerGraphics.paintComponent(g);
+		rulerGraphics.paint(g);
 		return image;
 	}
 
@@ -113,6 +114,14 @@ public class Ruler extends JPanel implements GenomeWindowListener {
 	 */
 	public JButton getOptionButton() {
 		return rulerButton;
+	}
+
+
+	/**
+	 * @return the panel that contains the ruler
+	 */
+	public JPanel getRulerPanel() {
+		return rulerPanel;
 	}
 
 

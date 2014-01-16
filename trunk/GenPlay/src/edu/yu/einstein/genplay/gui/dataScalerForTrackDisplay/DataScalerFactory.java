@@ -46,7 +46,7 @@ class DataScalerFactory {
 		case BIN_LAYER:
 			return new BinListScaler((BinList) layer.getData());
 		case GENE_LAYER:
-			FontMetrics fontMetrics = layer.getTrack().getGraphicsPanel().getGraphics().getFontMetrics();
+			FontMetrics fontMetrics = layer.getTrack().getFontMetrics();
 			return new GeneListScaler((GeneList) layer.getData(), fontMetrics);
 		case MASK_LAYER:
 			return new MaskSCWLScaler((SCWList) layer.getData());
