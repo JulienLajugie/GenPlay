@@ -1,24 +1,25 @@
 /*******************************************************************************
- *     GenPlay, Einstein Genome Analyzer
- *     Copyright (C) 2009, 2011 Albert Einstein College of Medicine
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
- *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
- *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
- *     Website: <http://genplay.einstein.yu.edu>
- *******************************************************************************/
+ * GenPlay, Einstein Genome Analyzer
+ * Copyright (C) 2009, 2014 Albert Einstein College of Medicine
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Authors: Julien Lajugie <julien.lajugie@einstein.yu.edu>
+ *          Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
+ *          Eric Bouhassira <eric.bouhassira@einstein.yu.edu>
+ * 
+ * Website: <http://genplay.einstein.yu.edu>
+ ******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLoader;
 
 import java.io.File;
@@ -56,9 +57,43 @@ public class VCFLoaderModel extends AbstractTableModel {
 	}
 
 
+	/**
+	 * Adds an empty row
+	 */
+	protected void addEmptyRow() {
+		VCFData newData = new VCFData();
+		data.add(newData);
+		fireTableRowsInserted(
+				data.size() - 1,
+				data.size() - 1);
+		fireTableRowsUpdated(data.size() - 1, data.size() - 1);
+	}
+
+
+	/**
+	 * Deletes a row
+	 * @param row the row number
+	 */
+	public void deleteRow(int row) {
+		data.remove(row);
+		fireTableRowsDeleted(row, row);
+	}
+
+
 	@Override
-	public String getColumnName(int col) {
-		return columnNames[col];
+	public Class<?> getColumnClass(int column) {
+		switch (column) {
+		case VCFData.FILE_INDEX:
+			return File.class;
+		case VCFData.RAW_INDEX:
+			return String.class;
+		case VCFData.NICKNAME_INDEX:
+			return String.class;
+		case VCFData.GROUP_INDEX:
+			return String.class;
+		default:
+			return Object.class;
+		}
 	}
 
 
@@ -69,8 +104,52 @@ public class VCFLoaderModel extends AbstractTableModel {
 
 
 	@Override
+	public String getColumnName(int col) {
+		return columnNames[col];
+	}
+
+
+	/**
+	 * @return the data
+	 */
+	public List<VCFData> getData() {
+		return data;
+	}
+
+
+	@Override
 	public int getRowCount() {
 		return data.size();
+	}
+
+
+	@Override
+	public Object getValueAt(int row, int col) {
+		VCFData vCFData = data.get(row);
+		switch (col) {
+		case VCFData.FILE_INDEX:
+			return vCFData.getFile();
+		case VCFData.RAW_INDEX:
+			return vCFData.getRaw();
+		case VCFData.NICKNAME_INDEX:
+			return vCFData.getNickname();
+		case VCFData.GROUP_INDEX:
+			return vCFData.getGroup();
+		default:
+			return new Object();
+		}
+	}
+
+
+	/**
+	 * Initializes the column names
+	 */
+	private void initializeColumnNames () {
+		columnNames = new String[4];
+		columnNames[0] = VCFData.FILE_NAME;
+		columnNames[1] = VCFData.RAW_NAME;
+		columnNames[2] = VCFData.NICKNAME;
+		columnNames[3] = VCFData.GROUP_NAME;
 	}
 
 
@@ -88,20 +167,16 @@ public class VCFLoaderModel extends AbstractTableModel {
 	}
 
 
-	@Override
-	public Object getValueAt(int row, int col) {
-		VCFData vCFData = data.get(row);
-		switch (col) {
-		case VCFData.FILE_INDEX:
-			return vCFData.getFile();
-		case VCFData.RAW_INDEX:
-			return vCFData.getRaw();	
-		case VCFData.NICKNAME_INDEX:
-			return vCFData.getNickname();
-		case VCFData.GROUP_INDEX:
-			return vCFData.getGroup();
-		default:
-			return new Object();
+	/**
+	 * @param data the data to set
+	 */
+	public void setData(List<VCFData> data) {
+		this.data = data;
+		for (int row = 0; row <data.size(); row++) {
+			fireTableCellUpdated(row, VCFData.FILE_INDEX);
+			fireTableCellUpdated(row, VCFData.RAW_INDEX);
+			fireTableCellUpdated(row, VCFData.NICKNAME_INDEX);
+			fireTableCellUpdated(row, VCFData.GROUP_INDEX);
 		}
 	}
 
@@ -132,80 +207,6 @@ public class VCFLoaderModel extends AbstractTableModel {
 			}
 			fireTableCellUpdated(row, col);
 		}
-	}
-
-
-	@Override
-	public Class<?> getColumnClass(int column) {
-		switch (column) {
-		case VCFData.FILE_INDEX:
-			return File.class;
-		case VCFData.RAW_INDEX:
-			return String.class;
-		case VCFData.NICKNAME_INDEX:
-			return String.class;
-		case VCFData.GROUP_INDEX:
-			return String.class;
-		default:
-			return Object.class;
-		}
-	}
-
-
-	/**
-	 * Adds an empty row
-	 */
-	protected void addEmptyRow() {
-		VCFData newData = new VCFData();
-		data.add(newData);
-		fireTableRowsInserted(
-				data.size() - 1,
-				data.size() - 1);
-		fireTableRowsUpdated(data.size() - 1, data.size() - 1);
-	}
-
-
-	/**
-	 * Deletes a row
-	 * @param row the row number
-	 */
-	public void deleteRow(int row) {
-		data.remove(row);
-		fireTableRowsDeleted(row, row);
-	}
-
-
-	/**
-	 * @return the data
-	 */
-	public List<VCFData> getData() {
-		return data;
-	}
-
-
-	/**
-	 * @param data the data to set
-	 */
-	public void setData(List<VCFData> data) {
-		this.data = data;
-		for (int row = 0; row <data.size(); row++) {
-			fireTableCellUpdated(row, VCFData.FILE_INDEX);
-			fireTableCellUpdated(row, VCFData.RAW_INDEX);
-			fireTableCellUpdated(row, VCFData.NICKNAME_INDEX);
-			fireTableCellUpdated(row, VCFData.GROUP_INDEX);
-		}
-	}
-
-
-	/**
-	 * Initializes the column names
-	 */
-	private void initializeColumnNames () {
-		columnNames = new String[4];
-		columnNames[0] = VCFData.FILE_NAME;
-		columnNames[1] = VCFData.RAW_NAME;
-		columnNames[2] = VCFData.NICKNAME;
-		columnNames[3] = VCFData.GROUP_NAME;
 	}
 
 }

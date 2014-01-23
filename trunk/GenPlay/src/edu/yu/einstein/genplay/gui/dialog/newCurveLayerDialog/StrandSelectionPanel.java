@@ -1,24 +1,25 @@
 /*******************************************************************************
- *     GenPlay, Einstein Genome Analyzer
- *     Copyright (C) 2009, 2011 Albert Einstein College of Medicine
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
- *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
- *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
- *     Website: <http://genplay.einstein.yu.edu>
- *******************************************************************************/
+ * GenPlay, Einstein Genome Analyzer
+ * Copyright (C) 2009, 2014 Albert Einstein College of Medicine
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Authors: Julien Lajugie <julien.lajugie@einstein.yu.edu>
+ *          Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
+ *          Eric Bouhassira <eric.bouhassira@einstein.yu.edu>
+ * 
+ * Website: <http://genplay.einstein.yu.edu>
+ ******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.newCurveLayerDialog;
 
 import java.awt.GridBagConstraints;
@@ -41,14 +42,14 @@ class StrandSelectionPanel extends JPanel {
 
 	private static final long serialVersionUID = -2426572515664231706L;	//generated ID
 	private final JRadioButton			jrPlus;							// 5' Strand radio button
-	private final JRadioButton			jrMinus;						// 3' Strand radio button 
+	private final JRadioButton			jrMinus;						// 3' Strand radio button
 	private final JRadioButton			jrBoth;							// both strands radio button
 	private final ButtonGroup			strandRadioGroup;				// group for the strand radio buttons
-	private static boolean				jrPlusDefaultState = false;	 	// default selection state of the 5' button 
+	private static boolean				jrPlusDefaultState = false;	 	// default selection state of the 5' button
 	private static boolean				jrMinusDefaultState = false;	// default selection state of the 3' button
 	private static boolean				jrBothDefaultState = true;		// default selection state of the both button
 
-	
+
 	/**
 	 * Creates an instance of {@link StrandSelectionPanel}
 	 */
@@ -68,24 +69,24 @@ class StrandSelectionPanel extends JPanel {
 
 		// add the components
 		setLayout(new GridBagLayout());
-		
+
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridwidth = 3;
 		c.anchor = GridBagConstraints.LINE_START;
 		add(jrPlus, c);
-		
+
 		c = new GridBagConstraints();
 		c.gridwidth = 3;
 		c.gridy = 1;
 		c.anchor = GridBagConstraints.LINE_START;
 		add(jrMinus, c);
-		
+
 		c = new GridBagConstraints();
-		c.gridwidth = 3;		
+		c.gridwidth = 3;
 		c.gridy = 2;
 		c.anchor = GridBagConstraints.LINE_START;
 		add(jrBoth, c);
-		
+
 		setBorder(BorderFactory.createTitledBorder("Strand"));
 	}
 
@@ -102,8 +103,8 @@ class StrandSelectionPanel extends JPanel {
 			return null;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Saves the selected state of the radio buttons
 	 */

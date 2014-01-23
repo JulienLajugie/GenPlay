@@ -1,24 +1,25 @@
 /*******************************************************************************
- *     GenPlay, Einstein Genome Analyzer
- *     Copyright (C) 2009, 2011 Albert Einstein College of Medicine
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
- *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
- *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
- *     Website: <http://genplay.einstein.yu.edu>
- *******************************************************************************/
+ * GenPlay, Einstein Genome Analyzer
+ * Copyright (C) 2009, 2014 Albert Einstein College of Medicine
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Authors: Julien Lajugie <julien.lajugie@einstein.yu.edu>
+ *          Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
+ *          Eric Bouhassira <eric.bouhassira@einstein.yu.edu>
+ * 
+ * Website: <http://genplay.einstein.yu.edu>
+ ******************************************************************************/
 package edu.yu.einstein.genplay.gui.projectFrame.newProject;
 
 import java.awt.Dimension;
@@ -36,17 +37,17 @@ import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
  * This class shows information about the loaded VCF:
  * 	- group number
  *  - genome number
- *  - VCF file number 
+ *  - VCF file number
  * @author Nicolas Fourel
  * @version 0.1
  */
 public class MultiGenomeInformationPanel extends JPanel {
 
 	private static final long serialVersionUID = 6394382682521718513L;
-	
+
 	private static final Dimension LABEL_DIM = new Dimension(100, 25);	// Label name dimension
 	private static final Dimension VALUE_DIM = new Dimension(20, 20);	// label value dimension
-	
+
 	protected static int GROUP_NUMBER = 0;
 	protected static int GENOME_NUMBER = 0;
 	protected static int FILE_NUMBER = 0;
@@ -54,25 +55,35 @@ public class MultiGenomeInformationPanel extends JPanel {
 	private static 	JLabel groupValue;	// group value label
 	private static 	JLabel genomeValue;	// genome value label
 	private static	JLabel vcfValue;	// VCF file value label
-	private 		JLabel groupLabel;	// group name label
-	private 		JLabel genomeLabel;	// genome name label
-	private 		JLabel vcfLabel;	// VCF name label
-	
-	
-	
+	/**
+	 * Updates the information.
+	 */
+	public static void refreshInformation () {
+		groupValue.setText("" + GROUP_NUMBER);
+		genomeValue.setText("" + GENOME_NUMBER);
+		vcfValue.setText("" + FILE_NUMBER);
+	}
+	private final 		JLabel groupLabel;	// group name label
+	private final 		JLabel genomeLabel;	// genome name label
+
+
+
+	private final 		JLabel vcfLabel;	// VCF name label
+
+
 	/**
 	 * Constructor of {@link MultiGenomeInformationPanel}
 	 */
 	protected  MultiGenomeInformationPanel () {
-		
+
 		Dimension paneDim = new Dimension(ProjectFrame.VCF_DIM.width, 70);
 		setSize(paneDim);
 		setMinimumSize(paneDim);
 		setMaximumSize(paneDim);
 		setPreferredSize(paneDim);
-		
+
 		setBackground(ProjectFrame.VCF_COLOR);
-		
+
 		// Label
 		groupLabel = new JLabel("Group :");
 		genomeLabel = new JLabel("Genome :");
@@ -80,7 +91,7 @@ public class MultiGenomeInformationPanel extends JPanel {
 		setLabelSize(groupLabel, LABEL_DIM);
 		setLabelSize(genomeLabel, LABEL_DIM);
 		setLabelSize(vcfLabel, LABEL_DIM);
-		
+
 		// Value
 		groupValue = new JLabel("0");
 		genomeValue = new JLabel("0");
@@ -88,14 +99,14 @@ public class MultiGenomeInformationPanel extends JPanel {
 		setLabelSize(groupValue, VALUE_DIM);
 		setLabelSize(genomeValue, VALUE_DIM);
 		setLabelSize(vcfValue, VALUE_DIM);
-		
+
 		GridBagLayout gbl = new GridBagLayout();
 		GridBagConstraints gbc = new GridBagConstraints();
 		Insets labelInsets = new Insets(0, 0, 3, 0);
 		Insets valueInsets = new Insets(0, 0, 3, 0);
 		setLayout(gbl);
-		
-		
+
+
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.insets = labelInsets;
@@ -104,7 +115,7 @@ public class MultiGenomeInformationPanel extends JPanel {
 		gbc.gridy = 0;
 		gbc.insets = valueInsets;
 		add(groupValue, gbc);
-		
+
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.insets = labelInsets;
@@ -113,7 +124,7 @@ public class MultiGenomeInformationPanel extends JPanel {
 		gbc.gridy = 1;
 		gbc.insets = valueInsets;
 		add(genomeValue, gbc);
-		
+
 		gbc.gridx = 0;
 		gbc.gridy = 2;
 		gbc.insets = labelInsets;
@@ -122,10 +133,10 @@ public class MultiGenomeInformationPanel extends JPanel {
 		gbc.gridy = 2;
 		gbc.insets = valueInsets;
 		add(vcfValue, gbc);
-		
+
 	}
-	
-	
+
+
 	/**
 	 * Sets the size of a label
 	 * @param label	the label
@@ -137,15 +148,5 @@ public class MultiGenomeInformationPanel extends JPanel {
 		label.setMaximumSize(dim);
 		label.setPreferredSize(dim);
 	}
-	
 
-	/**
-	 * Updates the information.
-	 */
-	public static void refreshInformation () {
-		groupValue.setText("" + GROUP_NUMBER);
-		genomeValue.setText("" + GENOME_NUMBER);
-		vcfValue.setText("" + FILE_NUMBER);
-	}
-	
 }

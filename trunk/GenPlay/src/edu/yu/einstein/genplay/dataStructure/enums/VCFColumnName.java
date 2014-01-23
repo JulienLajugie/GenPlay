@@ -1,24 +1,25 @@
 /*******************************************************************************
- *     GenPlay, Einstein Genome Analyzer
- *     Copyright (C) 2009, 2011 Albert Einstein College of Medicine
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
- *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
- *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
- *     Website: <http://genplay.einstein.yu.edu>
- *******************************************************************************/
+ * GenPlay, Einstein Genome Analyzer
+ * Copyright (C) 2009, 2014 Albert Einstein College of Medicine
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Authors: Julien Lajugie <julien.lajugie@einstein.yu.edu>
+ *          Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
+ *          Eric Bouhassira <eric.bouhassira@einstein.yu.edu>
+ * 
+ * Website: <http://genplay.einstein.yu.edu>
+ ******************************************************************************/
 package edu.yu.einstein.genplay.dataStructure.enums;
 
 
@@ -28,7 +29,7 @@ package edu.yu.einstein.genplay.dataStructure.enums;
  * @version 0.1
  */
 public enum VCFColumnName {
-	
+
 	/**
 	 * For the CHROM column name
 	 */
@@ -65,26 +66,8 @@ public enum VCFColumnName {
 	 * For the FORMAT column name
 	 */
 	FORMAT ("FORMAT");
-	
-	
-	private final String name; // String representing the indel 
-	
-	
-	/**
-	 * Private constructor. Creates an instance of {@link VCFColumnName}
-	 * @param name
-	 */
-	private VCFColumnName(String name) {
-		this.name = name;
-	}
-	
-	
-	@Override
-	public String toString() {
-		return name;
-	}
-	
-	
+
+
 	/**
 	 * @param s the string
 	 * @return the {@link VCFColumnName} associated to the string, null otherwise
@@ -111,5 +94,23 @@ public enum VCFColumnName {
 		}
 		return null;
 	}
-	
+
+
+	private final String name; // String representing the indel
+
+
+	/**
+	 * Private constructor. Creates an instance of {@link VCFColumnName}
+	 * @param name
+	 */
+	private VCFColumnName(String name) {
+		this.name = name;
+	}
+
+
+	@Override
+	public String toString() {
+		return name;
+	}
+
 }

@@ -1,24 +1,25 @@
 /*******************************************************************************
- *     GenPlay, Einstein Genome Analyzer
- *     Copyright (C) 2009, 2011 Albert Einstein College of Medicine
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
- *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
- *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
- *     Website: <http://genplay.einstein.yu.edu>
- *******************************************************************************/
+ * GenPlay, Einstein Genome Analyzer
+ * Copyright (C) 2009, 2014 Albert Einstein College of Medicine
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Authors: Julien Lajugie <julien.lajugie@einstein.yu.edu>
+ *          Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
+ *          Eric Bouhassira <eric.bouhassira@einstein.yu.edu>
+ * 
+ * Website: <http://genplay.einstein.yu.edu>
+ ******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties;
 
 import javax.swing.table.AbstractTableModel;
@@ -36,8 +37,8 @@ public class MGDialogTableModel extends AbstractTableModel {
 	private static final long serialVersionUID = 3478197435828366331L;
 
 
-	private String[] columnNames;	// column names
-	private Object[][] data;		// list of data
+	private final String[] columnNames;	// column names
+	private final Object[][] data;		// list of data
 
 
 	/**
@@ -52,8 +53,9 @@ public class MGDialogTableModel extends AbstractTableModel {
 
 
 	@Override
-	public String getColumnName(int col) {
-		return columnNames[col];
+	public Class<?> getColumnClass(int column) {
+		return String.class;
+		//return getValueAt(0, column).getClass();
 	}
 
 
@@ -64,14 +66,22 @@ public class MGDialogTableModel extends AbstractTableModel {
 
 
 	@Override
-	public int getRowCount() {
-		return data.length;
+	public String getColumnName(int col) {
+		return columnNames[col];
+	}
+
+
+	/**
+	 * @return the data
+	 */
+	public Object[][] getData() {
+		return data;
 	}
 
 
 	@Override
-	public boolean isCellEditable(int row, int col)	{
-		return false;
+	public int getRowCount() {
+		return data.length;
 	}
 
 
@@ -82,24 +92,15 @@ public class MGDialogTableModel extends AbstractTableModel {
 
 
 	@Override
-	public void setValueAt(Object value, int row, int col) {
-		data[row][col] = value;
-        fireTableCellUpdated(row, col);
+	public boolean isCellEditable(int row, int col)	{
+		return false;
 	}
 
 
 	@Override
-	public Class<?> getColumnClass(int column) {
-		return String.class;
-		//return getValueAt(0, column).getClass();
-	}
-
-
-	/**
-	 * @return the data
-	 */
-	public Object[][] getData() {
-		return data;
+	public void setValueAt(Object value, int row, int col) {
+		data[row][col] = value;
+		fireTableCellUpdated(row, col);
 	}
 
 }

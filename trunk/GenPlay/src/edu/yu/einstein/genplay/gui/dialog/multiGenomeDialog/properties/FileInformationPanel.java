@@ -1,24 +1,25 @@
 /*******************************************************************************
- *     GenPlay, Einstein Genome Analyzer
- *     Copyright (C) 2009, 2011 Albert Einstein College of Medicine
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
- *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
- *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
- *     Website: <http://genplay.einstein.yu.edu>
- *******************************************************************************/
+ * GenPlay, Einstein Genome Analyzer
+ * Copyright (C) 2009, 2014 Albert Einstein College of Medicine
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Authors: Julien Lajugie <julien.lajugie@einstein.yu.edu>
+ *          Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
+ *          Eric Bouhassira <eric.bouhassira@einstein.yu.edu>
+ * 
+ * Website: <http://genplay.einstein.yu.edu>
+ ******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties;
 
 import java.awt.GridBagConstraints;
@@ -231,42 +232,6 @@ class FileInformationPanel extends JPanel {
 	 * - column names
 	 * - data from header values
 	 * Then, it uses the another method in order to create the table into a panel and return it.
-	 * [This method is specific for simple header type.]
-	 * 
-	 * @param list	list of header
-	 * @return		a panel that contains a table using headers information
-	 */
-	private JPanel getVCFHeaderTypePanel (List<VCFHeaderType> list) {
-		if (list.size() > 0) {
-
-			// Column names
-			String[] columnNames = {"ID", "Description"};
-
-			// Initializes data
-			Object[][] data = new Object[list.size()][columnNames.length];
-
-			// Fills data
-			int rowIndex = 0;
-			for (VCFHeaderType header: list) {
-				data[rowIndex][0] = header.getId();
-				data[rowIndex][1] = header.getDescription();
-				rowIndex++;
-			}
-
-			// Returns the panel that contains the table
-			return Utils.getTablePanel(columnNames, data);
-		} else {
-			return Utils.getNoInformationPanel();
-		}
-	}
-
-
-	/**
-	 * Creates a panel that contains a table from header type.
-	 * It defines first:
-	 * - column names
-	 * - data from header values
-	 * Then, it uses the another method in order to create the table into a panel and return it.
 	 * [This method is specific for advanced header type.]
 	 * 
 	 * @param list	list of header
@@ -300,6 +265,42 @@ class FileInformationPanel extends JPanel {
 				}
 				data[rowIndex][2] = typeString;
 				data[rowIndex][3] = header.getDescription();
+				rowIndex++;
+			}
+
+			// Returns the panel that contains the table
+			return Utils.getTablePanel(columnNames, data);
+		} else {
+			return Utils.getNoInformationPanel();
+		}
+	}
+
+
+	/**
+	 * Creates a panel that contains a table from header type.
+	 * It defines first:
+	 * - column names
+	 * - data from header values
+	 * Then, it uses the another method in order to create the table into a panel and return it.
+	 * [This method is specific for simple header type.]
+	 * 
+	 * @param list	list of header
+	 * @return		a panel that contains a table using headers information
+	 */
+	private JPanel getVCFHeaderTypePanel (List<VCFHeaderType> list) {
+		if (list.size() > 0) {
+
+			// Column names
+			String[] columnNames = {"ID", "Description"};
+
+			// Initializes data
+			Object[][] data = new Object[list.size()][columnNames.length];
+
+			// Fills data
+			int rowIndex = 0;
+			for (VCFHeaderType header: list) {
+				data[rowIndex][0] = header.getId();
+				data[rowIndex][1] = header.getDescription();
 				rowIndex++;
 			}
 

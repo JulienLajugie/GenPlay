@@ -1,24 +1,25 @@
 /*******************************************************************************
- *     GenPlay, Einstein Genome Analyzer
- *     Copyright (C) 2009, 2011 Albert Einstein College of Medicine
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
- *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
- *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
- *     Website: <http://genplay.einstein.yu.edu>
- *******************************************************************************/
+ * GenPlay, Einstein Genome Analyzer
+ * Copyright (C) 2009, 2014 Albert Einstein College of Medicine
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Authors: Julien Lajugie <julien.lajugie@einstein.yu.edu>
+ *          Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
+ *          Eric Bouhassira <eric.bouhassira@einstein.yu.edu>
+ * 
+ * Website: <http://genplay.einstein.yu.edu>
+ ******************************************************************************/
 package edu.yu.einstein.genplay.gui.customComponent.customComboBox;
 
 import java.awt.BorderLayout;
@@ -57,15 +58,45 @@ import edu.yu.einstein.genplay.util.Images;
 public class CustomComboBoxRenderer implements ListCellRenderer, CustomComboBoxEventsGenerator {
 
 	private final 	List<CustomComboBoxListener> 	listenerList;		// list of GenomeWindowListener
-	private 		CustomComboBoxRenderer 			instance;			// instance of the class, needed for the CustomComboBoxEventsGenerator.
+	private final 		CustomComboBoxRenderer 			instance;			// instance of the class, needed for the CustomComboBoxEventsGenerator.
 	private 		int 							x;					// x position of the mouse
 
 	/**
 	 * Constructor of {@link CustomComboBoxRenderer}
 	 */
 	public CustomComboBoxRenderer () {
-		this.listenerList = new ArrayList<CustomComboBoxListener>();
-		this.instance = this;
+		listenerList = new ArrayList<CustomComboBoxListener>();
+		instance = this;
+	}
+
+
+	@Override
+	public void addCustomComboBoxListener(
+			CustomComboBoxListener customComboBoxListener) {
+		listenerList.add(customComboBoxListener);
+		//System.out.println(customComboBoxListener.toString());
+	}
+
+
+	@Override
+	public CustomComboBoxListener[] getCustomComboBoxListeners() {
+		CustomComboBoxListener[] customComboBoxListeners = new CustomComboBoxListener[listenerList.size()];
+		return listenerList.toArray(customComboBoxListeners);
+	}
+
+
+	/**
+	 * Creates a square icon using the given path
+	 * @param path	icon path
+	 * @param side	size of the side
+	 * @return		the icon
+	 */
+	private ImageIcon getIcon (Image image, int side) {
+		//ImageIcon icon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().getResource(path)));
+		//Image img = icon.getImage();
+		Image newImg = image.getScaledInstance(side, side, Image.SCALE_SMOOTH);
+		ImageIcon icon = new ImageIcon(newImg);
+		return icon;
 	}
 
 
@@ -95,7 +126,7 @@ public class CustomComboBoxRenderer implements ListCellRenderer, CustomComboBoxE
 					if (x < list.getWidth()) {
 						action = CustomComboBoxEvent.ADD_ACTION;
 					}
-				} else {													// if not,	
+				} else {													// if not,
 					if (x < side) {											// user clicked on the left button (edit)
 						action = CustomComboBoxEvent.REPLACE_ACTION;		// the item must be replaced
 					} else if ( x < (side * 2)) {							// user clicked on the right button (delete)
@@ -136,7 +167,7 @@ public class CustomComboBoxRenderer implements ListCellRenderer, CustomComboBoxE
 				label.setFont(font);									// sets the font to the label
 				JPanel buttonPanel = new JPanel();						// creates a new panel for buttons
 				int side = getSide(list);								// gets the side of a button (button is square)
-				Insets buttonInset = new Insets(0, 0, 0, 0);			// button insets are set to 0 
+				Insets buttonInset = new Insets(0, 0, 0, 0);			// button insets are set to 0
 
 				if (text.equals(CustomComboBox.ADD_TEXT)) {				// if the value is the one related to the adding action
 					// Sets the panel
@@ -186,21 +217,6 @@ public class CustomComboBoxRenderer implements ListCellRenderer, CustomComboBoxE
 
 
 	/**
-	 * Creates a square icon using the given path 
-	 * @param path	icon path
-	 * @param side	size of the side
-	 * @return		the icon
-	 */
-	private ImageIcon getIcon (Image image, int side) {
-		//ImageIcon icon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().getResource(path)));
-		//Image img = icon.getImage();
-		Image newImg = image.getScaledInstance(side, side, Image.SCALE_SMOOTH);
-		ImageIcon icon = new ImageIcon(newImg);
-		return icon;
-	}
-
-
-	/**
 	 * Calculation of the button side size according to the size of the list.
 	 * The side is equal to the height of a line of the list.
 	 * @param list	the list
@@ -208,21 +224,6 @@ public class CustomComboBoxRenderer implements ListCellRenderer, CustomComboBoxE
 	 */
 	private int getSide (JList list) {
 		return (list.getHeight() / list.getModel().getSize());
-	}
-
-
-	@Override
-	public void addCustomComboBoxListener(
-			CustomComboBoxListener customComboBoxListener) {
-		listenerList.add(customComboBoxListener);
-		//System.out.println(customComboBoxListener.toString());
-	}
-
-
-	@Override
-	public CustomComboBoxListener[] getCustomComboBoxListeners() {
-		CustomComboBoxListener[] customComboBoxListeners = new CustomComboBoxListener[listenerList.size()];
-		return listenerList.toArray(customComboBoxListeners);
 	}
 
 

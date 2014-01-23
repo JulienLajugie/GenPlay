@@ -1,24 +1,25 @@
 /*******************************************************************************
- *     GenPlay, Einstein Genome Analyzer
- *     Copyright (C) 2009, 2011 Albert Einstein College of Medicine
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
- *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
- *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
- *     Website: <http://genplay.einstein.yu.edu>
- *******************************************************************************/
+ * GenPlay, Einstein Genome Analyzer
+ * Copyright (C) 2009, 2014 Albert Einstein College of Medicine
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Authors: Julien Lajugie <julien.lajugie@einstein.yu.edu>
+ *          Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
+ *          Eric Bouhassira <eric.bouhassira@einstein.yu.edu>
+ * 
+ * Website: <http://genplay.einstein.yu.edu>
+ ******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.optionDialog;
 
 import java.io.File;
@@ -42,7 +43,7 @@ abstract class OptionPanel extends JPanel {
 	private static final long serialVersionUID = 4821469631755757767L; 	// Generated ID
 	final ProjectConfiguration projectConfiguration; 			// ConfigurationManager
 
-	
+
 	/**
 	 * Constructor. Creates an instance of {@link OptionPanel}
 	 * @param name name of the category of configuration
@@ -50,20 +51,10 @@ abstract class OptionPanel extends JPanel {
 	OptionPanel(String name) {
 		super();
 		setName(name);
-		this.projectConfiguration = ProjectManager.getInstance().getProjectConfiguration();
+		projectConfiguration = ProjectManager.getInstance().getProjectConfiguration();
 	}
 
-	
-	/**
-	 * Override of toString use for the JTree in order to set the name of a
-	 * category.
-	 */
-	@Override
-	public String toString() {
-		return getName();
-	}
 
-	
 	/**
 	 * Open a file choose and set the text field with the chosen value
 	 * @param title title of the open dialog
@@ -93,5 +84,15 @@ abstract class OptionPanel extends JPanel {
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			textField.setText(jfc.getSelectedFile().toString());
 		}
+	}
+
+
+	/**
+	 * Override of toString use for the JTree in order to set the name of a
+	 * category.
+	 */
+	@Override
+	public String toString() {
+		return getName();
 	}
 }

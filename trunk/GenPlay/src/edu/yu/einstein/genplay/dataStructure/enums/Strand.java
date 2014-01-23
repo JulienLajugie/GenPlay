@@ -1,24 +1,25 @@
 /*******************************************************************************
- *     GenPlay, Einstein Genome Analyzer
- *     Copyright (C) 2009, 2011 Albert Einstein College of Medicine
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
- *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
- *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
- *     Website: <http://genplay.einstein.yu.edu>
- *******************************************************************************/
+ * GenPlay, Einstein Genome Analyzer
+ * Copyright (C) 2009, 2014 Albert Einstein College of Medicine
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Authors: Julien Lajugie <julien.lajugie@einstein.yu.edu>
+ *          Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
+ *          Eric Bouhassira <eric.bouhassira@einstein.yu.edu>
+ * 
+ * Website: <http://genplay.einstein.yu.edu>
+ ******************************************************************************/
 package edu.yu.einstein.genplay.dataStructure.enums;
 
 import java.util.EnumSet;
@@ -39,16 +40,16 @@ public enum Strand {
 	 * 3' strand
 	 */
 	THREE ('-', 'R');
-	
-	
+
+
 	private final char 							symbol1;		// symbol representing the strand (+ or -)
 	private final char 							symbol2;		// symbol representing the strand (F or R)
-	private static final Map<Character, Strand> LOOKUP1 = 
-		new HashMap<Character, Strand>();						// Map associating the Strand symbol 1 to a Strand
-	private static final Map<Character, Strand> LOOKUP2 = 
-		new HashMap<Character, Strand>();						// Map associating the Strand symbol 2 to a Strand
-	
-	
+	private static final Map<Character, Strand> LOOKUP1 =
+			new HashMap<Character, Strand>();						// Map associating the Strand symbol 1 to a Strand
+	private static final Map<Character, Strand> LOOKUP2 =
+			new HashMap<Character, Strand>();						// Map associating the Strand symbol 2 to a Strand
+
+
 	/**
 	 * Fills the Map with all the different values of Strand
 	 */
@@ -59,7 +60,21 @@ public enum Strand {
 		}
 	}
 
-	
+
+	/**
+	 * @param strandSymbol '+' or '-' or 'F' or 'R'
+	 * @return the {@link Strand} associated to the parameter. Null if none.
+	 */
+	public static Strand get(char strandSymbol) {
+		Strand result = LOOKUP1.get(strandSymbol);
+		if (result != null) {
+			return result;
+		} else {
+			return LOOKUP2.get(strandSymbol);
+		}
+	}
+
+
 	/**
 	 * Private constructor. Creates an instance of {@link Strand}
 	 * @param symbol1 character representing the strand (+ or -)
@@ -76,20 +91,6 @@ public enum Strand {
 	 */
 	@Override
 	public String toString(){
-		return Character.toString(symbol1);		
-	}
-
-
-	/**
-	 * @param strandSymbol '+' or '-' or 'F' or 'R'  
-	 * @return the {@link Strand} associated to the parameter. Null if none.
-	 */
-	public static Strand get(char strandSymbol) {
-		Strand result = LOOKUP1.get(strandSymbol);
-		if (result != null) {
-			return result;
-		} else {
-			return LOOKUP2.get(strandSymbol);			
-		}
+		return Character.toString(symbol1);
 	}
 }

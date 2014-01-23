@@ -1,24 +1,25 @@
 /*******************************************************************************
- *     GenPlay, Einstein Genome Analyzer
- *     Copyright (C) 2009, 2011 Albert Einstein College of Medicine
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
- *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
- *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
- *     Website: <http://genplay.einstein.yu.edu>
- *******************************************************************************/
+ * GenPlay, Einstein Genome Analyzer
+ * Copyright (C) 2009, 2014 Albert Einstein College of Medicine
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Authors: Julien Lajugie <julien.lajugie@einstein.yu.edu>
+ *          Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
+ *          Eric Bouhassira <eric.bouhassira@einstein.yu.edu>
+ * 
+ * Website: <http://genplay.einstein.yu.edu>
+ ******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.peakFinderDialog.islandPanel;
 
 import java.awt.Dimension;
@@ -39,25 +40,25 @@ import edu.yu.einstein.genplay.core.operation.binList.peakFinder.IslandFinder;
  * @version 0.1
  */
 final class IslandDialogOutput extends IslandDialogFieldset{
-	
+
 	private static final long serialVersionUID = -1616307602412859645L;
-	
+
 	//Constant values
 	private static final int NAME_WIDTH = (int)Math.round(IslandDialogFieldset.FIELDSET_WIDTH * 0.35);
 	private static final int GARBAGE_WIDTH = (int)Math.round(IslandDialogFieldset.FIELDSET_WIDTH * 0.40);
-	
+
 	//Storage values
 	protected static boolean 	FilteredStore;
 	protected static boolean 	IFScoreStore;
 	protected static boolean 	SummitStore;
-	
+
 	//Graphics elements
-	private final JLabel					jlResultType;					// label for result type 
+	private final JLabel					jlResultType;					// label for result type
 	private final JCheckBox					jcbIFScore;						// check box to choose Island Finder Score output value
 	private final JCheckBox					jcbFiltered;					// check box to choose original date filtered output value
 	private final JCheckBox					jcbSummit;						// check box to choose summit of the island output
-	
-	
+
+
 	/**
 	 * Constructor for IslandDialogOutput
 	 * @param title		fieldset title
@@ -65,39 +66,39 @@ final class IslandDialogOutput extends IslandDialogFieldset{
 	 */
 	IslandDialogOutput(String title, IslandFinder island) {
 		super(title, island);
-		
+
 		//Set "window size" information
-		this.jlResultType = new JLabel("Result Type");
-		this.jcbFiltered = new JCheckBox("Start values");
-		this.jcbIFScore = new JCheckBox("Island score");
-		this.jcbSummit = new JCheckBox("Island Summit");
-		
+		jlResultType = new JLabel("Result Type");
+		jcbFiltered = new JCheckBox("Start values");
+		jcbIFScore = new JCheckBox("Island score");
+		jcbSummit = new JCheckBox("Island Summit");
+
 		//Dimension
-		this.jlResultType.setPreferredSize(new Dimension(IslandDialogOutput.NAME_WIDTH, IslandDialogFieldset.LINE_HEIGHT));
-		this.jcbFiltered.setPreferredSize(new Dimension(IslandDialogOutput.GARBAGE_WIDTH, IslandDialogFieldset.LINE_HEIGHT));
-		this.jcbIFScore.setPreferredSize(new Dimension(IslandDialogOutput.GARBAGE_WIDTH, IslandDialogFieldset.LINE_HEIGHT));
-		this.jcbSummit.setPreferredSize(new Dimension(IslandDialogOutput.GARBAGE_WIDTH, IslandDialogFieldset.LINE_HEIGHT));
-		
+		jlResultType.setPreferredSize(new Dimension(IslandDialogOutput.NAME_WIDTH, IslandDialogFieldset.LINE_HEIGHT));
+		jcbFiltered.setPreferredSize(new Dimension(IslandDialogOutput.GARBAGE_WIDTH, IslandDialogFieldset.LINE_HEIGHT));
+		jcbIFScore.setPreferredSize(new Dimension(IslandDialogOutput.GARBAGE_WIDTH, IslandDialogFieldset.LINE_HEIGHT));
+		jcbSummit.setPreferredSize(new Dimension(IslandDialogOutput.GARBAGE_WIDTH, IslandDialogFieldset.LINE_HEIGHT));
+
 		//Set selected boxes
-		this.jcbFiltered.setSelected(this.getBoolStoredValue(FilteredStore, false));
-		this.jcbIFScore.setSelected(this.getBoolStoredValue(IFScoreStore, false));
-		this.jcbSummit.setSelected(this.getBoolStoredValue(SummitStore, false));
-		
+		jcbFiltered.setSelected(getBoolStoredValue(FilteredStore, false));
+		jcbIFScore.setSelected(getBoolStoredValue(IFScoreStore, false));
+		jcbSummit.setSelected(getBoolStoredValue(SummitStore, false));
+
 		//Tool Tip Text
 		String sResultType = "Output result type";
 		String sFiltered = "Windows value will be the windows value";
 		String sIFScore = "Windows value will be the island score";
 		String sSummit = "Windows value will be the island summit";
-		this.jlResultType.setToolTipText(sResultType);
-		this.jcbFiltered.setToolTipText(sFiltered);
-		this.jcbIFScore.setToolTipText(sIFScore);
-		this.jcbSummit.setToolTipText(sSummit);
-		
+		jlResultType.setToolTipText(sResultType);
+		jcbFiltered.setToolTipText(sFiltered);
+		jcbIFScore.setToolTipText(sIFScore);
+		jcbSummit.setToolTipText(sSummit);
+
 		//Layout
-		this.setLayout(new GridBagLayout());
+		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		Insets gbcInsets = new Insets (IslandDialogFieldset.LINE_TOP_INSET_HEIGHT, 0, IslandDialogFieldset.LINE_BOTTOM_INSET_HEIGHT, 0);
-		
+
 		//jlResultType
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -106,7 +107,7 @@ final class IslandDialogOutput extends IslandDialogFieldset{
 		gbc.fill = GridBagConstraints.WEST;
 		gbc.insets = gbcInsets;
 		add(jlResultType, gbc);
-		
+
 		//jcbFiltered
 		gbc.gridx = 2;
 		gbc.gridy = 0;
@@ -115,7 +116,7 @@ final class IslandDialogOutput extends IslandDialogFieldset{
 		gbc.fill = GridBagConstraints.WEST;
 		gbc.insets = gbcInsets;
 		add(jcbFiltered, gbc);
-		
+
 		//jcbIFScore
 		gbc.gridx = 2;
 		gbc.gridy = 1;
@@ -124,7 +125,7 @@ final class IslandDialogOutput extends IslandDialogFieldset{
 		gbc.fill = GridBagConstraints.WEST;
 		gbc.insets = new Insets (0, 0, IslandDialogFieldset.LINE_BOTTOM_INSET_HEIGHT, 0);
 		add(jcbIFScore, gbc);
-		
+
 		//jcbSummit
 		gbc.gridx = 2;
 		gbc.gridy = 2;
@@ -133,11 +134,16 @@ final class IslandDialogOutput extends IslandDialogFieldset{
 		gbc.fill = GridBagConstraints.WEST;
 		gbc.insets = new Insets (0, 0, IslandDialogFieldset.LINE_BOTTOM_INSET_HEIGHT, 0);
 		add(jcbSummit, gbc);
-		
+
 		// Dimension
-		this.setRows(gbc.gridy + 1);
-		
-		this.setVisible(true);
+		setRows(gbc.gridy + 1);
+
+		setVisible(true);
+	}
+
+	//Getters for selected checkboxes
+	protected boolean filteredSelected () {
+		return jcbFiltered.isSelected();
 	}
 
 	/**
@@ -154,18 +160,13 @@ final class IslandDialogOutput extends IslandDialogFieldset{
 			return initial;
 		}
 	}
-	
-	//Getters for selected checkboxes
-	protected boolean filteredSelected () {
-		return this.jcbFiltered.isSelected();
-	}
-	
+
 	protected boolean IFScoreSelected () {
-		return this.jcbIFScore.isSelected();
+		return jcbIFScore.isSelected();
 	}
-	
+
 	protected boolean summitScoreSelected () {
-		return this.jcbSummit.isSelected();
+		return jcbSummit.isSelected();
 	}
-	
+
 }

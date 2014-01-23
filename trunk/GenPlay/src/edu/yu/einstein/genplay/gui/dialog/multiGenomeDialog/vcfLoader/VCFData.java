@@ -1,24 +1,25 @@
 /*******************************************************************************
- *     GenPlay, Einstein Genome Analyzer
- *     Copyright (C) 2009, 2011 Albert Einstein College of Medicine
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
- *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
- *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
- *     Website: <http://genplay.einstein.yu.edu>
- *******************************************************************************/
+ * GenPlay, Einstein Genome Analyzer
+ * Copyright (C) 2009, 2014 Albert Einstein College of Medicine
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Authors: Julien Lajugie <julien.lajugie@einstein.yu.edu>
+ *          Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
+ *          Eric Bouhassira <eric.bouhassira@einstein.yu.edu>
+ * 
+ * Website: <http://genplay.einstein.yu.edu>
+ ******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLoader;
 
 import java.io.File;
@@ -40,7 +41,7 @@ public class VCFData {
 	public static final int NICKNAME_INDEX 	= 2;
 	/** Index used for Group column */
 	public static final int GROUP_INDEX		= 3;
-	
+
 	/** Name used for VCF file column */
 	public static final String FILE_NAME 	= "File";
 	/** Name used for Raw name column */
@@ -49,7 +50,7 @@ public class VCFData {
 	public static final String NICKNAME 	= "Nickname";
 	/** Name used for Group column */
 	public static final String GROUP_NAME	= "Group";
-	
+
 
 	private String 	group;		// name of the group
 	private String 	nickname;	// simplified name of the genome
@@ -61,10 +62,10 @@ public class VCFData {
 	 * Constructor of {@link VCFData}
 	 */
 	public VCFData () {
-		this.group = "";
-		this.nickname = "";
-		this.file = null;
-		this.raw = "";
+		group = "";
+		nickname = "";
+		file = null;
+		raw = "";
 	}
 
 
@@ -90,72 +91,24 @@ public class VCFData {
 	public String getErrors () {
 		String error = "";
 
-		if (this.group.equals("")) {
+		if (group.equals("")) {
 			error += GROUP_NAME + "; ";
 		}
-		if (this.nickname.equals("")) {
+		if (nickname.equals("")) {
 			error += NICKNAME + "; ";
 		}
-		if (file == null || !file.isFile()) {
+		if ((file == null) || !file.isFile()) {
 			error += FILE_NAME + "; ";
 		}
-		if (this.raw.equals("")) {
+		if (raw.equals("")) {
 			error += RAW_NAME + "; ";
 		}
-		
+
 		if (error.length() > 0) {
 			return error;
 		} else {
 			return null;
 		}
-	}
-
-
-	/**
-	 * @return the group
-	 */
-	public String getGroup() {
-		return group;
-	}
-
-
-	/**
-	 * @param group the group to set
-	 */
-	public void setGroup(String group) {
-		this.group = group;
-	}
-
-
-	/**
-	 * @return the nickname
-	 */
-	public String getNickname() {
-		return nickname;
-	}
-
-
-	/**
-	 * @param nickname the nickname to set
-	 */
-	public void setNickname(String nickname) {
-		this.nickname = nickname;
-	}
-
-
-	/**
-	 * @return the raw
-	 */
-	public String getRaw() {
-		return raw;
-	}
-
-
-	/**
-	 * @param raw the raw to set
-	 */
-	public void setRaw(String raw) {
-		this.raw = raw;
 	}
 
 
@@ -168,10 +121,58 @@ public class VCFData {
 
 
 	/**
+	 * @return the group
+	 */
+	public String getGroup() {
+		return group;
+	}
+
+
+	/**
+	 * @return the nickname
+	 */
+	public String getNickname() {
+		return nickname;
+	}
+
+
+	/**
+	 * @return the raw
+	 */
+	public String getRaw() {
+		return raw;
+	}
+
+
+	/**
 	 * @param file the file to set
 	 */
 	public void setFile(File file) {
 		this.file = file;
+	}
+
+
+	/**
+	 * @param group the group to set
+	 */
+	public void setGroup(String group) {
+		this.group = group;
+	}
+
+
+	/**
+	 * @param nickname the nickname to set
+	 */
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+
+
+	/**
+	 * @param raw the raw to set
+	 */
+	public void setRaw(String raw) {
+		this.raw = raw;
 	}
 
 

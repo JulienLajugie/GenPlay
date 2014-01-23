@@ -1,24 +1,25 @@
 /*******************************************************************************
- *     GenPlay, Einstein Genome Analyzer
- *     Copyright (C) 2009, 2011 Albert Einstein College of Medicine
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
- *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
- *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
- *     Website: <http://genplay.einstein.yu.edu>
- *******************************************************************************/
+ * GenPlay, Einstein Genome Analyzer
+ * Copyright (C) 2009, 2014 Albert Einstein College of Medicine
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Authors: Julien Lajugie <julien.lajugie@einstein.yu.edu>
+ *          Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
+ *          Eric Bouhassira <eric.bouhassira@einstein.yu.edu>
+ * 
+ * Website: <http://genplay.einstein.yu.edu>
+ ******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.editing;
 
 import java.awt.GridBagConstraints;
@@ -49,7 +50,7 @@ public class MultiGenomeEditingPanel extends EditingPanel<List<String>> implemen
 
 	private VCFFile file;
 	private VCFHeaderType header;
-	private boolean formatHeaderDependant;
+	private final boolean formatHeaderDependant;
 
 
 	/**
@@ -66,39 +67,17 @@ public class MultiGenomeEditingPanel extends EditingPanel<List<String>> implemen
 
 
 	@Override
-	protected void initializeContentPanel() {}
+	public void actionPerformed(ActionEvent arg0) {
+		List<String> selectedGenomes = getSelectedGenomes();
+		List<String> previousGenomes = null;
 
+		if (element != null) {
+			previousGenomes = element;
+		}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public void update(Object object) {
-		if (object instanceof List<?>) {
-			if (((List<?>)object).size() > 0 && ((List<?>)object).get(0) instanceof String) {
-				createPanel((List<String>)object);
-			}
-		} else if (object instanceof VCFFile) {
-			VCFFile file = getVCFFile(object);
-			if (file == null) {
-				boxes = null;
-				resetContentPanel();
-			} else {
-				if (!file.equals(this.file)) {
-					this.file = file;
-					createPanel(file.getHeader().getGenomeNames());
-				}
-			}
-		} else if (boxes != null && object instanceof VCFHeaderType) {
-			VCFHeaderType header = (VCFHeaderType) object;
-			if (header.getColumnCategory() == VCFColumnName.FORMAT) {
-				for (JCheckBox box: boxes) {
-					box.setEnabled(true);
-				}
-			} else {
-				for (JCheckBox box: boxes) {
-					box.setEnabled(false);
-				}
-			}
-			this.header = header;
+		ListComparator<String> comparator = new ListComparator<String>();
+		if (comparator.areDifferent(previousGenomes, selectedGenomes)) {
+			setElement(selectedGenomes);
 		}
 	}
 
@@ -144,49 +123,21 @@ public class MultiGenomeEditingPanel extends EditingPanel<List<String>> implemen
 	}
 
 
-	/**
-	 * If FORMAT header dependant and the header IS FORMAT, then the boxes must be enabled by default, disabled otherwise.
-	 * If not FORMAT header dependant, boxes are enabled.
-	 * @return true/false if the boxes must enable by default
-	 */
-	private boolean mustBeDefaultEnabled () {
+	@Override
+	public String getErrors() {
+		String errors = "";
 		if (formatHeaderDependant) {
-			if (header != null && header.getColumnCategory() == VCFColumnName.FORMAT) {
-				return true;
-			} else {
-				return false;
+			if ((header != null) && (header.getColumnCategory() == VCFColumnName.FORMAT)) {
+				if (getSelectedGenomes().size() == 0) {
+					errors += "Genome(s) selection\n";
+				}
+			}
+		} else {
+			if (getSelectedGenomes().size() == 0) {
+				errors += "Genome(s) selection\n";
 			}
 		}
-		return true;
-	}
-
-
-	/**
-	 * Tries to cast an object to a {@link VCFFile}
-	 * @param object the object to cast
-	 * @return	the casted object or null
-	 */
-	private VCFFile getVCFFile (Object object) {
-		if (object instanceof VCFFile) {
-			return (VCFFile) object;
-		}
-		return null;
-	}
-
-
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		List<String> selectedGenomes = getSelectedGenomes();
-		List<String> previousGenomes = null;
-
-		if (element != null) {
-			previousGenomes = (List<String>) element;
-		}
-
-		ListComparator<String> comparator = new ListComparator<String>();
-		if (comparator.areDifferent(previousGenomes, selectedGenomes)) {
-			setElement(selectedGenomes);
-		}
+		return errors;
 	}
 
 
@@ -206,30 +157,16 @@ public class MultiGenomeEditingPanel extends EditingPanel<List<String>> implemen
 	}
 
 
-	@Override
-	public String getErrors() {
-		String errors = "";
-		if (formatHeaderDependant) {
-			if (header != null && header.getColumnCategory() == VCFColumnName.FORMAT) {
-				if (getSelectedGenomes().size() == 0) {
-					errors += "Genome(s) selection\n";
-				}
-			}
-		} else {
-			if (getSelectedGenomes().size() == 0) {
-				errors += "Genome(s) selection\n";
-			}
+	/**
+	 * Tries to cast an object to a {@link VCFFile}
+	 * @param object the object to cast
+	 * @return	the casted object or null
+	 */
+	private VCFFile getVCFFile (Object object) {
+		if (object instanceof VCFFile) {
+			return (VCFFile) object;
 		}
-		return errors;
-	}
-
-
-	@Override
-	public void reset() {
-		resetContentPanel();
-		element = null;
-		file = null;
-		header = null;
+		return null;
 	}
 
 
@@ -244,6 +181,70 @@ public class MultiGenomeEditingPanel extends EditingPanel<List<String>> implemen
 				}
 			}
 			setElement(element);
+		}
+	}
+
+
+	@Override
+	protected void initializeContentPanel() {}
+
+
+	/**
+	 * If FORMAT header dependant and the header IS FORMAT, then the boxes must be enabled by default, disabled otherwise.
+	 * If not FORMAT header dependant, boxes are enabled.
+	 * @return true/false if the boxes must enable by default
+	 */
+	private boolean mustBeDefaultEnabled () {
+		if (formatHeaderDependant) {
+			if ((header != null) && (header.getColumnCategory() == VCFColumnName.FORMAT)) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		return true;
+	}
+
+
+	@Override
+	public void reset() {
+		resetContentPanel();
+		element = null;
+		file = null;
+		header = null;
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void update(Object object) {
+		if (object instanceof List<?>) {
+			if ((((List<?>)object).size() > 0) && (((List<?>)object).get(0) instanceof String)) {
+				createPanel((List<String>)object);
+			}
+		} else if (object instanceof VCFFile) {
+			VCFFile file = getVCFFile(object);
+			if (file == null) {
+				boxes = null;
+				resetContentPanel();
+			} else {
+				if (!file.equals(this.file)) {
+					this.file = file;
+					createPanel(file.getHeader().getGenomeNames());
+				}
+			}
+		} else if ((boxes != null) && (object instanceof VCFHeaderType)) {
+			VCFHeaderType header = (VCFHeaderType) object;
+			if (header.getColumnCategory() == VCFColumnName.FORMAT) {
+				for (JCheckBox box: boxes) {
+					box.setEnabled(true);
+				}
+			} else {
+				for (JCheckBox box: boxes) {
+					box.setEnabled(false);
+				}
+			}
+			this.header = header;
 		}
 	}
 }

@@ -1,24 +1,25 @@
 /*******************************************************************************
- *     GenPlay, Einstein Genome Analyzer
- *     Copyright (C) 2009, 2011 Albert Einstein College of Medicine
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
- *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
- *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
- *     Website: <http://genplay.einstein.yu.edu>
- *******************************************************************************/
+ * GenPlay, Einstein Genome Analyzer
+ * Copyright (C) 2009, 2014 Albert Einstein College of Medicine
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Authors: Julien Lajugie <julien.lajugie@einstein.yu.edu>
+ *          Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
+ *          Eric Bouhassira <eric.bouhassira@einstein.yu.edu>
+ * 
+ * Website: <http://genplay.einstein.yu.edu>
+ ******************************************************************************/
 package edu.yu.einstein.genplay.dataStructure.enums;
 
 import java.util.EnumSet;
@@ -32,7 +33,7 @@ import java.util.Map;
  * @version 0.1
  */
 public enum Nucleotide {
-	
+
 	/**
 	 * Thymine
 	 */
@@ -96,7 +97,7 @@ public enum Nucleotide {
 	/**
 	 * Not T (A or C or G)
 	 */
-	NOT_T 		((byte)14,	'V', "Not T", 				"A or C or G"),	
+	NOT_T 		((byte)14,	'V', "Not T", 				"A or C or G"),
 	/**
 	 * Gap (Gap of indeterminate length)
 	 */
@@ -106,33 +107,18 @@ public enum Nucleotide {
 	 */
 	BLANK 		((byte)16, 	'X', "Blank", 				"Blank of synchronization");
 
-	
+
 	private final byte 								value;			// byte value of a nucleotide
-	private final char 								code;			// code of a nucleotide 
+	private final char 								code;			// code of a nucleotide
 	private final String 							name;			// name of a nucleotide
 	private final String 							description;	// description of a nucleotide
 	private Nucleotide 								complement;		// base complement
-	private static final Map<Byte, Nucleotide> 		LOOKUP_VALUE = 
-		new HashMap<Byte, Nucleotide>();							// map of the byte values for lookup
-	private static final Map<Character, Nucleotide>	LOOKUP_CODE = 
-		new HashMap<Character, Nucleotide>();						// map of the codes for lookup
-	
-	
-	/**
-	 * Private constructor. Creates an instance of {@link Nucleotide}
-	 * @param value byte value of the nucleotide
-	 * @param code code of the nucleotide
-	 * @param name name of the nucleotide
-	 * @param description description of the nucleotide
-	 */
-	private Nucleotide(byte value, char code, String name, String description) {
-		this.value = value;
-		this.code = code;
-		this.name = name;
-		this.description = description;
-	}
-	
-	
+	private static final Map<Byte, Nucleotide> 		LOOKUP_VALUE =
+			new HashMap<Byte, Nucleotide>();							// map of the byte values for lookup
+	private static final Map<Character, Nucleotide>	LOOKUP_CODE =
+			new HashMap<Character, Nucleotide>();						// map of the codes for lookup
+
+
 	// fill the complement field with the complement base
 	static {
 		ADENINE.complement = THYMINE;
@@ -153,9 +139,9 @@ public enum Nucleotide {
 		ANY.complement = ANY;
 		GAP.complement = null;
 	}
-	
-	
-	// fill the maps for lookup 
+
+
+	// fill the maps for lookup
 	static {
 		for(Nucleotide currentNucleotide : EnumSet.allOf(Nucleotide.class)) {
 			// don't fill with the byte value of URACIL because it's the same value as the one for THYMINE
@@ -164,54 +150,6 @@ public enum Nucleotide {
 			}
 			LOOKUP_CODE.put(currentNucleotide.code, currentNucleotide);
 		}
-	}
-
-	
-	/**
-	 * Returns the string representation of a {@link Nucleotide} which is also its code
-	 */
-	@Override
-	public String toString() {
-		return String.valueOf(code);
-	}
-
-	/**
-	 * @return the byte value of the {@link Nucleotide}
-	 */
-	public final byte getValue() {
-		return value;
-	}
-
-
-	/**
-	 * @return the code of the {@link Nucleotide}
-	 */
-	public final char getCode() {
-		return code;
-	}
-
-
-	/**
-	 * @return the name of the {@link Nucleotide}
-	 */
-	public final String getName() {
-		return name;
-	}
-
-
-	/**
-	 * @return the description of the {@link Nucleotide}
-	 */
-	public final String getDescription() {
-		return description;
-	}
-
-
-	/**
-	 * @return the complement of the {@link Nucleotide}
-	 */
-	public final Nucleotide getComplement() {
-		return complement;
 	}
 
 
@@ -230,5 +168,68 @@ public enum Nucleotide {
 	 */
 	public static Nucleotide get(char code) {
 		return LOOKUP_CODE.get(code);
+	}
+
+	/**
+	 * Private constructor. Creates an instance of {@link Nucleotide}
+	 * @param value byte value of the nucleotide
+	 * @param code code of the nucleotide
+	 * @param name name of the nucleotide
+	 * @param description description of the nucleotide
+	 */
+	private Nucleotide(byte value, char code, String name, String description) {
+		this.value = value;
+		this.code = code;
+		this.name = name;
+		this.description = description;
+	}
+
+
+	/**
+	 * @return the code of the {@link Nucleotide}
+	 */
+	public final char getCode() {
+		return code;
+	}
+
+
+	/**
+	 * @return the complement of the {@link Nucleotide}
+	 */
+	public final Nucleotide getComplement() {
+		return complement;
+	}
+
+
+	/**
+	 * @return the description of the {@link Nucleotide}
+	 */
+	public final String getDescription() {
+		return description;
+	}
+
+
+	/**
+	 * @return the name of the {@link Nucleotide}
+	 */
+	public final String getName() {
+		return name;
+	}
+
+
+	/**
+	 * @return the byte value of the {@link Nucleotide}
+	 */
+	public final byte getValue() {
+		return value;
+	}
+
+
+	/**
+	 * Returns the string representation of a {@link Nucleotide} which is also its code
+	 */
+	@Override
+	public String toString() {
+		return String.valueOf(code);
 	}
 }

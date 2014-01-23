@@ -1,24 +1,25 @@
 /*******************************************************************************
- *     GenPlay, Einstein Genome Analyzer
- *     Copyright (C) 2009, 2011 Albert Einstein College of Medicine
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
- *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
- *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
- *     Website: <http://genplay.einstein.yu.edu>
- *******************************************************************************/
+ * GenPlay, Einstein Genome Analyzer
+ * Copyright (C) 2009, 2014 Albert Einstein College of Medicine
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Authors: Julien Lajugie <julien.lajugie@einstein.yu.edu>
+ *          Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
+ *          Eric Bouhassira <eric.bouhassira@einstein.yu.edu>
+ * 
+ * Website: <http://genplay.einstein.yu.edu>
+ ******************************************************************************/
 package edu.yu.einstein.genplay.gui.statusBar;
 
 import java.awt.Color;
@@ -37,13 +38,13 @@ import edu.yu.einstein.genplay.util.colors.Colors;
  * @version 0.1
  */
 final class StopButton extends JButton implements ActionListener {
-	
-	private static final long serialVersionUID = 8260242568878040712L; 		// generated ID	
+
+	private static final long serialVersionUID = 8260242568878040712L; 		// generated ID
 	private static final Color ENABLED_COLOR = Colors.RED;		// color of the button when enabled
 	private static final Color DISABLED_COLOR = new Color(200, 175, 175);	// color of the button when disabled
 	private Stoppable stoppable = null;	// stoppable to stop when the button is clicked
-	
-	
+
+
 	/**
 	 * Creates an instance of a {@link StopButton}
 	 */
@@ -55,18 +56,18 @@ final class StopButton extends JButton implements ActionListener {
 		addActionListener(this);
 	}
 
-	
+
 	/**
-	 * Sets the stoppable to stop when the button is clicked.
-	 * Disables the button if the stoppable is null 
-	 * @param stoppable a {@link Stoppable}
+	 * Stops the stoppable when the button is clicked if the stoppable is not null.
 	 */
-	void setStoppable(Stoppable stoppable) {
-		this.stoppable = stoppable;
-		setEnabled(stoppable != null);		
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (stoppable != null) {
+			stoppable.stop();
+		}
 	}
-	
-	
+
+
 	/**
 	 * Changes the color of the button when the enabled state changes
 	 */
@@ -77,17 +78,17 @@ final class StopButton extends JButton implements ActionListener {
 		} else {
 			setBackground(DISABLED_COLOR);
 		}
-		super.setEnabled(b);		
+		super.setEnabled(b);
 	}
 
 
 	/**
-	 * Stops the stoppable when the button is clicked if the stoppable is not null.
+	 * Sets the stoppable to stop when the button is clicked.
+	 * Disables the button if the stoppable is null
+	 * @param stoppable a {@link Stoppable}
 	 */
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if (stoppable != null) {
-			stoppable.stop();
-		}
+	void setStoppable(Stoppable stoppable) {
+		this.stoppable = stoppable;
+		setEnabled(stoppable != null);
 	}
 }

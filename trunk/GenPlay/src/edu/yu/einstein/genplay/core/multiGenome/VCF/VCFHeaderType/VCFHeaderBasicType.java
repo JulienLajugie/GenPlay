@@ -1,24 +1,25 @@
 /*******************************************************************************
- *     GenPlay, Einstein Genome Analyzer
- *     Copyright (C) 2009, 2011 Albert Einstein College of Medicine
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
- *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
- *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
- *     Website: <http://genplay.einstein.yu.edu>
- *******************************************************************************/
+ * GenPlay, Einstein Genome Analyzer
+ * Copyright (C) 2009, 2014 Albert Einstein College of Medicine
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Authors: Julien Lajugie <julien.lajugie@einstein.yu.edu>
+ *          Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
+ *          Eric Bouhassira <eric.bouhassira@einstein.yu.edu>
+ * 
+ * Website: <http://genplay.einstein.yu.edu>
+ ******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType;
 
 import java.io.IOException;
@@ -45,18 +46,58 @@ public class VCFHeaderBasicType implements VCFHeaderType, VCFHeaderElementRecord
 	private	VCFColumnName columnCategory;
 	private String description; 	// field description
 	private List<Object> elements;
-	
-	
+
+
+	@Override
+	public boolean acceptMoreElements() {
+		if (elements.size() <= VCFHeaderType.ELEMENT_LIMIT) {
+			return true;
+		}
+		return false;
+	}
+
+
+	@Override
+	public void addElement(Object element) {
+		if (elements == null) {
+			elements = new ArrayList<Object>();
+		}
+		if (!elements.contains(element)) {
+			elements.add(element);
+		}
+	}
+
+
+	@Override
+	public String getAsOriginalLine() {
+		return "";
+	}
+
+
+	@Override
+	public VCFColumnName getColumnCategory() {
+		return columnCategory;
+	}
+
+
+	@Override
+	public String getDescription() {
+		return description;
+	}
+
+
 	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
+	 * @return the values found for this header ID
 	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(columnCategory);
-		out.writeObject(description);
-		out.writeObject(elements);
+	@Override
+	public List<Object> getElements () {
+		return elements;
+	}
+
+
+	@Override
+	public String getId() {
+		return null;
 	}
 
 
@@ -71,13 +112,7 @@ public class VCFHeaderBasicType implements VCFHeaderType, VCFHeaderElementRecord
 		in.readInt();
 		columnCategory = (VCFColumnName) in.readObject();
 		description = (String) in.readObject();
-		elements = (List<Object>) in.readObject();	
-	}
-	
-	
-	@Override
-	public VCFColumnName getColumnCategory() {
-		return columnCategory;
+		elements = (List<Object>) in.readObject();
 	}
 
 
@@ -85,66 +120,33 @@ public class VCFHeaderBasicType implements VCFHeaderType, VCFHeaderElementRecord
 	public void setColumnCategory(VCFColumnName columnCategory) {
 		this.columnCategory = columnCategory;
 	}
-	
-	
-	@Override
-	public String getId() {
-		return null;
-	}
 
-	
-	@Override
-	public void setId(String id) {}
 
-	
-	@Override
-	public String getDescription() {
-		return description;
-	}
-
-	
 	@Override
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
-	
-	@Override
-	public void addElement(Object element) {
-		if (elements == null) {
-			elements = new ArrayList<Object>();
-		}
-		if (!elements.contains(element)) {
-			elements.add(element);
-		}
-	}
-	
-	
-	/**
-	 * @return the values found for this header ID
-	 */
-	public List<Object> getElements () {
-		return elements;
-	}
-
 
 	@Override
-	public boolean acceptMoreElements() {
-		if (elements.size() <= VCFHeaderType.ELEMENT_LIMIT) {
-			return true;
-		}
-		return false;
-	}
-	
-	
+	public void setId(String id) {}
+
+
 	@Override
 	public String toString () {
 		return getColumnCategory() + ": " + description;
 	}
-	
-	
-	@Override
-	public String getAsOriginalLine() {
-		return "";
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(columnCategory);
+		out.writeObject(description);
+		out.writeObject(elements);
 	}
 }
