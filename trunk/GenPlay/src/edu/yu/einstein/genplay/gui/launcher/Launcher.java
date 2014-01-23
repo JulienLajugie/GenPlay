@@ -98,7 +98,7 @@ public class Launcher {
 	 * In this case this project will be directly loaded when GenPlay starts.
 	 */
 
-	//private static final String DEMO_PROJECT_PATH = "edu/yu/einstein/genplay/resource/MethylPhase_Demo_H19_Region.gen";
+	//private static final String DEMO_PROJECT_PATH = "edu/yu/einstein/genplay/resource/MethylPhase_Demo_H19_Region.gpf";
 	private static final String DEMO_PROJECT_PATH = null;
 
 

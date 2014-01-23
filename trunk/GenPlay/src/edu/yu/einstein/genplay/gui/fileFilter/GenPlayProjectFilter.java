@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -33,9 +33,9 @@ public class GenPlayProjectFilter extends ExtendedFileFilter {
 
 	private static final long serialVersionUID = 3191118665245397752L; // generated ID
 	/** Valid extensions */
-	public static final String[] EXTENSIONS = {"gen"};
+	public static final String[] EXTENSIONS = {"gpf"};
 	/** File type description */
-	public static final String DESCRIPTION = "GenPlay Project Files (*.gen)";
+	public static final String DESCRIPTION = "GenPlay Project Files (*.gpf)";
 
 
 	/**

@@ -101,7 +101,7 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 		jfc.addChoosableFileFilter(filters[0]);
 		jfc.setFileFilter(filters[0]);
 		jfc.setAcceptAllFileFilterUsed(false);
-		File f = new File(ProjectManager.getInstance().getProjectName().concat(".gen"));
+		File f = new File(ProjectManager.getInstance().getProjectName().concat(".gpf"));
 		jfc.setSelectedFile(f);
 		int returnVal = jfc.showSaveDialog(trackListPanel.getRootPane());
 		if (returnVal == JFileChooser.APPROVE_OPTION) {

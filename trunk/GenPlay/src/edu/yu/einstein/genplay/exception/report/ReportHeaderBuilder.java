@@ -46,7 +46,7 @@ class ReportHeaderBuilder {
 
 		report += ReportBuilder.getTitle("GenPlay");
 
-		report += ReportBuilder.getInformation("Version", MainFrame.VERSION_NUMBER);
+		report += ReportBuilder.getInformation("Version", MainFrame.GENPLAY_VERSION);
 
 		String look = null;
 		try {

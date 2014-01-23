@@ -94,15 +94,32 @@ import edu.yu.einstein.genplay.util.Images;
  */
 public final class MainFrame extends JFrame implements GenomeWindowListener, ActionListener {
 
-	private static final long serialVersionUID = -4637394760647080396L; // generated ID
-	/** GenPlay version number */
-	public static final int VERSION_NUMBER = 997; 						// GenPlay version
+	/** Generated ID */
+	private static final long serialVersionUID = -4637394760647080396L;
+
+	/** Major version of GenPlay */
+	private static final int VERSION_MAJOR = 1;
+
+	/** Minor version of GenPlay */
+	private static final int VERSION_MINOR = 0;
+
+	/** Build version of GenPlay */
+	private static final int VERSION_BUILD = 0;
+
+	/** GenPlay version */
+	public static final String GENPLAY_VERSION = VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_BUILD;
 
 	/** Title of the application */
-	public static final String 		APPLICATION_TITLE = "GenPlay, Einstein Genome Analyzer (v" + VERSION_NUMBER + ")";
-	private final static Dimension 	WINDOW_DEFAULT_SIZE = new Dimension(800, 600);	// default size of the application
-	private final static Dimension 	WINDOW_MINIMUM_SIZE = new Dimension(200, 150); 	// minimum size of the application
-	private static 	MainFrame 		instance = null; 	// instance of the singleton MainFrame
+	public static final String APPLICATION_TITLE = "GenPlay, Einstein Genome Analyzer (v" + GENPLAY_VERSION + ")";
+
+	/** Default size of the application */
+	private final static Dimension WINDOW_DEFAULT_SIZE = new Dimension(800, 600);
+
+	/** Minimum size of the application */
+	private final static Dimension WINDOW_MINIMUM_SIZE = new Dimension(200, 150);
+
+	/** Instance of the singleton MainFrame */
+	private static 	MainFrame instance = null;
 
 
 	/**
