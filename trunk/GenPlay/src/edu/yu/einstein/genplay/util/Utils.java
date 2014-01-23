@@ -449,6 +449,23 @@ public final class Utils {
 
 
 	/**
+	 * @return true if the software is a windows installation (ie: the plateform is windows and there is an exe file).
+	 */
+	public static boolean isWindowsInstall() {
+		File genPlayExe = new File("GenPlay.exe");
+		return isWindowsOS() && genPlayExe.exists();
+	}
+
+
+	/**
+	 * @return true if the OS running the program is Windows, false otherwise
+	 */
+	public static boolean isWindowsOS() {
+		return System.getProperty("os.name").toLowerCase().indexOf("windows") != -1;
+	}
+
+
+	/**
 	 * Returns the logarithm of a double value. The logarithm is computed in the specified base
 	 * @param logBase
 	 * @param value value to l

@@ -51,6 +51,7 @@ import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.action.multiGenome.properties.MGARefresh;
 import edu.yu.einstein.genplay.gui.action.project.PAAbout;
+import edu.yu.einstein.genplay.gui.action.project.PACheckForUpdates;
 import edu.yu.einstein.genplay.gui.action.project.PACopyCurrentPosition;
 import edu.yu.einstein.genplay.gui.action.project.PAExit;
 import edu.yu.einstein.genplay.gui.action.project.PAFullScreen;
@@ -105,7 +106,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 	private static final int VERSION_MINOR = 0;
 
 	/** Build version of GenPlay */
-	private static final int VERSION_BUILD = 0;
+	private static final int VERSION_BUILD = 1;
 
 	/** GenPlay version */
 	public static final String GENPLAY_VERSION = VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_BUILD;
@@ -341,6 +342,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 	 */
 	private void setActionMap() {
 		// Add project actions to action map
+		getRootPane().getActionMap().put(PACheckForUpdates.ACTION_KEY, new PACheckForUpdates());
 		getRootPane().getActionMap().put(PAAbout.ACTION_KEY, new PAAbout(getRootPane()));
 		getRootPane().getActionMap().put(PAExit.ACTION_KEY, new PAExit(this));
 		getRootPane().getActionMap().put(PAFullScreen.ACTION_KEY, new PAFullScreen(this));
@@ -393,6 +395,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 	 * Sets the input map. This map contain the short cuts of the applications.
 	 */
 	private void setInputMap() {
+		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PACheckForUpdates.ACCELERATOR,PACheckForUpdates.ACTION_KEY);
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAExit.ACCELERATOR, PAExit.ACTION_KEY);
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAFullScreen.ACCELERATOR, PAFullScreen.ACTION_KEY);
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAHelp.ACCELERATOR, PAHelp.ACTION_KEY);

@@ -32,16 +32,14 @@ import javax.swing.KeyStroke;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 
 
-
 /**
  * Toggles the application fullscreen mode on/off
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class PAFullScreen extends AbstractAction {
 
 	private static final long serialVersionUID = 3794203118454011414L; 	// generated ID
-	private static final int 		MNEMONIC = KeyEvent.VK_U; 			// mnemonic key
+	private static final int 		MNEMONIC = KeyEvent.VK_F; 			// mnemonic key
 	private static final String 	ACTION_NAME = "Full Screen";		// action name
 	private final MainFrame 		mainFrame;							// main frame of the application
 

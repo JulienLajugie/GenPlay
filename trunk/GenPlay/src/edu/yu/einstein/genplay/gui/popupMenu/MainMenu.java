@@ -28,6 +28,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
 import edu.yu.einstein.genplay.gui.action.project.PAAbout;
+import edu.yu.einstein.genplay.gui.action.project.PACheckForUpdates;
 import edu.yu.einstein.genplay.gui.action.project.PAExit;
 import edu.yu.einstein.genplay.gui.action.project.PAFullScreen;
 import edu.yu.einstein.genplay.gui.action.project.PAHelp;
@@ -39,11 +40,9 @@ import edu.yu.einstein.genplay.gui.action.project.PASaveProject;
 import edu.yu.einstein.genplay.gui.action.project.PAWarningReport;
 
 
-
 /**
  * Main menu of the application
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class MainMenu extends JPopupMenu {
 
@@ -59,6 +58,7 @@ public final class MainMenu extends JPopupMenu {
 	private final JMenuItem jmiHelp;			// help
 	private final JMenuItem jmiAbout;			// about
 	private final JMenuItem jmiExit;			// exit
+	private final JMenuItem jmiUpdate;			// update
 
 
 	/**
@@ -75,6 +75,7 @@ public final class MainMenu extends JPopupMenu {
 		jmiErrorReport = new JMenuItem(actionMap.get(PAWarningReport.ACTION_KEY));
 		jmiOption = new JMenuItem(actionMap.get(PAOption.ACTION_KEY));
 		jmiRNAToDNAPos = new JMenuItem(actionMap.get(PARNAPosToDNAPos.ACTION_KEY));
+		jmiUpdate = new JMenuItem(actionMap.get(PACheckForUpdates.ACTION_KEY));
 		jmiHelp = new JMenuItem(actionMap.get(PAHelp.ACTION_KEY));
 		jmiAbout = new JMenuItem(actionMap.get(PAAbout.ACTION_KEY));
 		jmiExit = new JMenuItem(actionMap.get(PAExit.ACTION_KEY));
@@ -89,6 +90,9 @@ public final class MainMenu extends JPopupMenu {
 		addSeparator();
 		add(jmiRNAToDNAPos);
 		addSeparator();
+		if (PACheckForUpdates.isUpdaterAvailable()) {
+			add(jmiUpdate);
+		}
 		add(jmiHelp);
 		add(jmiAbout);
 		addSeparator();

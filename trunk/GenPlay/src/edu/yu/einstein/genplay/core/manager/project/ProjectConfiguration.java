@@ -25,6 +25,8 @@ package edu.yu.einstein.genplay.core.manager.project;
 import java.io.File;
 import java.io.Serializable;
 
+import edu.yu.einstein.genplay.util.Utils;
+
 /**
  * Class containing the project
  * @author Julien Lajugie
@@ -142,10 +144,13 @@ public final class ProjectConfiguration implements Serializable {
 	 * @return the temporary directory path
 	 */
 	public String getTemporaryDirectory () {
-		if (isWindowsPlatform()) {
+		if (Utils.isWindowsOS()) {
+			// windows from jar
 			return System.getProperty("java.io.tmpdir");
+		} else {
+			// POSIX like systems
+			return System.getProperty("user.home") + "/.genplay/";
 		}
-		return System.getProperty("user.home") + "/.genplay/";
 	}
 
 
@@ -194,18 +199,6 @@ public final class ProjectConfiguration implements Serializable {
 	 */
 	public boolean isResetTrack() {
 		return resetTrack;
-	}
-
-
-	/**
-	 * @return true if the user is working under Windows, false otherwise (-> Unix)
-	 */
-	private boolean isWindowsPlatform () {
-		String osName = System.getProperty("os.name");
-		if ((osName.length() > 7) && osName.substring(0, 7).toUpperCase().equals("WINDOWS")) {
-			return true;
-		}
-		return false;
 	}
 
 
