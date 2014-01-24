@@ -46,6 +46,7 @@ import edu.yu.einstein.genplay.gui.action.project.PAInitManagers;
 import edu.yu.einstein.genplay.gui.action.project.PALoadProject;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -164,14 +165,6 @@ public class Launcher {
 
 
 	/**
-	 * @return true if the computer running GenPlay is a mac
-	 */
-	private static boolean isMac() {
-		return System.getProperty("os.name").toLowerCase().indexOf("mac") >= 0;
-	}
-
-
-	/**
 	 * Loads a file using a file object.
 	 * First initializes the managers and then load the file.
 	 * @param file the file
@@ -223,7 +216,7 @@ public class Launcher {
 	 */
 	public static void main(final String[] args) {
 		final OSXHandler osxHandler = new OSXHandler();
-		if (isMac()) {
+		if (Utils.isMacOS()) {
 			// Handle mac-specific events (if we're running under OS X).
 			Application macApplication = Application.getApplication();
 			macApplication.setOpenFileHandler(osxHandler);

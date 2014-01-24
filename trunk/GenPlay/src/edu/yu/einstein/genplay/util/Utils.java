@@ -256,7 +256,7 @@ public final class Utils {
 	 * @return the configuration directory
 	 */
 	public static String getConfigurationDirectoryPath() {
-		if (Utils.isWindowsOS()) {
+		if (isWindowsOS()) {
 			// windows system
 			return getTmpDirectoryPath();
 		} else {
@@ -471,6 +471,23 @@ public final class Utils {
 	public final static FileFilter[] getWritableSCWFileFilter() {
 		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedGraphWith0Filter(), new BedFilter(), new GFFFilter()};
 		return filters;
+	}
+
+
+	/**
+	 * @return true if the software is a mac installation (ie: the plateform is mac and there is an content directory).
+	 */
+	public static boolean isMacInstall() {
+		File genPlayApp = new File("GenPlay.app");
+		return isMacOS() && genPlayApp.exists();
+	}
+
+
+	/**
+	 * @return true if the computer running GenPlay is a mac, false otherwise
+	 */
+	public static boolean isMacOS() {
+		return System.getProperty("os.name").toLowerCase().indexOf("mac") >= 0;
 	}
 
 

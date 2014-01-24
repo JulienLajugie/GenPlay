@@ -81,6 +81,7 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 	private final int 					undoCount; 			// undo count
 	private final boolean				resetTrack;			// reset track feature
 	private final boolean				legend;				// show legend (multi genome)
+	private MemoryOptionPanel memoryOptionPanel = null;		// panel for the install version of GenPlay on OSX to modify the max memory
 	private int 			approved = CANCEL_OPTION; 		// Equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
 
 
@@ -152,6 +153,10 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 						cm.setDASServerListFile(cm.getDASServerListFile());
 						DASServerListWriter dasServerListWriter = new DASServerListWriter();
 						dasServerListWriter.write(DASOptionPanel.tableData, cm.getDASServerListFile());
+					}
+					// if the memory option panel exist we write changes if needed
+					if (memoryOptionPanel != null) {
+						memoryOptionPanel.writeNewPList();
 					}
 				} catch (IOException er) {
 					JOptionPane.showMessageDialog(getRootPane(), "Error while saving the configuration", "Error", JOptionPane.ERROR_MESSAGE);
@@ -232,14 +237,24 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 		category = new DefaultMutableTreeNode(new GeneralOptionPanel());
 		top.add(category);
 
-		//category = new DefaultMutableTreeNode(new ConfigFileOptionPanel());
-		//top.add(category);
 
 		category = new DefaultMutableTreeNode(new TrackOptionPanel());
 		top.add(category);
 
 		category = new DefaultMutableTreeNode(new DASOptionPanel());
 		top.add(category);
+
+		if(Utils.isMacInstall()) {
+			try {
+				memoryOptionPanel = new MemoryOptionPanel();
+				if (memoryOptionPanel != null) {
+					category = new DefaultMutableTreeNode(memoryOptionPanel);
+					top.add(category);
+				}
+			} catch (IOException e) {
+				// do nothing
+			}
+		}
 
 		category = new DefaultMutableTreeNode(new RestoreOptionPanel());
 		top.add(category);
