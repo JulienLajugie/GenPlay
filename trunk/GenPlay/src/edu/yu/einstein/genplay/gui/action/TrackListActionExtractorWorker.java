@@ -24,8 +24,12 @@ package edu.yu.einstein.genplay.gui.action;
 
 import java.io.File;
 
+import javax.swing.JOptionPane;
+
 import edu.yu.einstein.genplay.core.IO.extractor.Extractor;
 import edu.yu.einstein.genplay.core.IO.extractor.ExtractorFactory;
+import edu.yu.einstein.genplay.core.IO.extractor.StrandedExtractor;
+import edu.yu.einstein.genplay.core.IO.fileSorter.ExternalSortAdapter;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.ElementAddedNotSortedException;
@@ -33,6 +37,7 @@ import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
 import edu.yu.einstein.genplay.gui.dialog.exceptionDialog.WarningReportDialog;
 import edu.yu.einstein.genplay.gui.event.invalidDataEvent.InvalidDataListener;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -102,6 +107,40 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 	}
 
 
+	/**
+	 * Asks the user if he wants to sort the input file.
+	 * @return the result from {@link #generateList()} if the file can be sorted, null otherwise
+	 * @throws Exception
+	 */
+	private T handleUnsortedFile() throws Exception {
+		File sortedFile = ExternalSortAdapter.generateOutputFile(fileToExtract);
+		int answer = JOptionPane.showConfirmDialog(getRootPane(), "GenPlay cannot load the selected file because it is not sorted.\n"
+				+ "Do you want GenPlay to sort the file?\n"
+				+ "(This will generate a new file with a .sorted prefix)", "Sort File", JOptionPane.YES_NO_OPTION);
+		if (answer == JOptionPane.YES_OPTION) {
+			if (!Utils.cancelBecauseFileExist(getRootPane(), sortedFile)) {
+				notifyActionStart("Sorting File", 1, false);
+				ExternalSortAdapter.externalSortGenomicFile(fileToExtract);
+				fileToExtract = sortedFile;
+				Extractor newExtractor = ExtractorFactory.getExtractor(fileToExtract);
+				newExtractor.addInvalidDataListener(this);
+				newExtractor.addOperationProgressListener(this);
+				newExtractor.setGenomeName(genomeName);
+				newExtractor.setAlleleType(alleleType);
+				newExtractor.setChromosomeSelector(extractor.getChromosomeSelector());
+				newExtractor.setFirstBasePosition(extractor.getFirstBasePosition());
+				if (extractor instanceof StrandedExtractor) {
+					((StrandedExtractor) newExtractor).setStrandedExtractorOptions(((StrandedExtractor) extractor).getStrandedExtractorOptions());
+				}
+				extractor = newExtractor;
+				return generateList();
+			}
+		}
+		stop();
+		return null;
+	}
+
+
 	@Override
 	public void invalidDataExtracted(String invalidDataMessage) {
 		showWarningMessage(invalidDataMessage);
@@ -123,7 +162,11 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 						extractor.setGenomeName(genomeName);
 						extractor.setAlleleType(alleleType);
 					}
-					return generateList();
+					try {
+						return generateList();
+					} catch (ElementAddedNotSortedException e) {
+						return handleUnsortedFile();
+					}
 				}
 			} catch (Exception e) {
 				if (extractor != null) {
