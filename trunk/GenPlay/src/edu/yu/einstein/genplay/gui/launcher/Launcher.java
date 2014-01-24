@@ -227,7 +227,10 @@ public class Launcher {
 			macApplication.setOpenFileHandler(OSXHandler.getInstance());
 			macApplication.setDockIconImage(Images.getApplicationImage());
 		}
-
+		// load the application settings
+		try {
+			RecordingManager.getInstance().getApplicationRecording().loadConfigurationFile();
+		} catch (Exception e) {}
 		// Initialize the exception manager
 		initializeExceptionManagement();
 		// set the tooltip properties
@@ -258,6 +261,7 @@ public class Launcher {
 				// mac only
 				if (OSXHandler.getInstance().getFileToOpen() != null) {
 					startProjectFromFile(OSXHandler.getInstance().getFileToOpen());
+
 				} else if (isDemo) {
 					startDemoProject();
 				} else if (args.length == 1) { // if a project file path has been specified to the main method we load this file
@@ -292,12 +296,6 @@ public class Launcher {
 	private static void startProjectFrame() {
 		//Welcome screen initialization
 		ProjectFrame projectFrame = ProjectFrame.getInstance();
-		// load the application settings
-		try {
-			RecordingManager.getInstance().getApplicationRecording().loadConfigurationFile();
-		} catch (Exception e) {
-			// do nothing if the configuration file is not found
-		}
 		//Create a new thread to display the welcome screen
 		projectFrame.initScreen();
 	}

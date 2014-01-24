@@ -25,6 +25,8 @@ package edu.yu.einstein.genplay.core.manager.project;
 import java.io.File;
 import java.io.Serializable;
 
+import javax.swing.UIManager;
+
 import edu.yu.einstein.genplay.util.Utils;
 
 /**
@@ -45,6 +47,7 @@ public final class ProjectConfiguration implements Serializable {
 	private static final String DEFAULT_DEFAULT_DIRECTORY = ""; 			// default directory
 	private static final String DEFAULT_LOOK_AND_FEEL =
 			"javax.swing.plaf.metal.MetalLookAndFeel";						// default look and feel
+	//private static final String DEFAULT_MAC_LOOK_AND_FEEL =
 
 	private static final int DEFAULT_TRACK_COUNT 	= 50; 					// default number of track
 	private static final int DEFAULT_TRACK_HEIGHT 	= 100; 					// default track height
@@ -57,7 +60,6 @@ public final class ProjectConfiguration implements Serializable {
 	private static final boolean DEFAULT_RESET_TRACK 	= true; 			// default value of reset track
 	private static final boolean DEFAULT_CACHE_TRACK 	= true; 			// default value of cache track
 	private static final boolean DEFAULT_SHOW_LEGEND 	= true; 			// default value of show legend
-
 
 	private static String CONFIG_FILE_NAME = "GenPlay_config.cfg"; 			// the config file
 
@@ -194,7 +196,11 @@ public final class ProjectConfiguration implements Serializable {
 		defaultDirectory = DEFAULT_DEFAULT_DIRECTORY;
 		dasServerListFile = getDefaultDASServerFileAbsolutePath();
 		new File(dasServerListFile).delete();
-		lookAndFeel = DEFAULT_LOOK_AND_FEEL;
+		if (Utils.isMacOS()) {
+			lookAndFeel = UIManager.getSystemLookAndFeelClassName();
+		} else {
+			lookAndFeel = DEFAULT_LOOK_AND_FEEL;
+		}
 		trackCount = DEFAULT_TRACK_COUNT;
 		trackHeight = DEFAULT_TRACK_HEIGHT;
 		undoCount = DEFAULT_UNDO_COUNT;
