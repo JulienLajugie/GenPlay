@@ -87,6 +87,17 @@ public final class SimpleChromosomeWindow extends AbstractChromosomeWindow imple
 
 
 	/**
+	 * Creates an instance of {@link SimpleChromosomeWindow} from a String representing the start position and a string representing the stop position.
+	 * @param startStr string representing the start position
+	 * @param stopStr string representing the stop position
+	 * @throws ChromosomeWindowException
+	 */
+	public SimpleChromosomeWindow(String startStr, String stopStr) throws ChromosomeWindowException {
+		this(startStr + "-" + stopStr);
+	}
+
+
+	/**
 	 * @return the start
 	 */
 	@Override

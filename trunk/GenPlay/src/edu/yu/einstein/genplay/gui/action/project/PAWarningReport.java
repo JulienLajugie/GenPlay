@@ -43,7 +43,7 @@ public final class PAWarningReport extends AbstractAction {
 
 	private static final long serialVersionUID = -7328322178569010171L; // generated ID
 	private static final int 		MNEMONIC = KeyEvent.VK_E;			// mnemonic key
-	private static final String 	ACTION_NAME = "Warnings report";	// action name
+	private static final String 	ACTION_NAME = "Warnings Report";	// action name
 	private final MainFrame 		mainFrame;							// main frame of the application
 
 

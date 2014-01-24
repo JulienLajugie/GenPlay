@@ -32,6 +32,7 @@ import java.io.IOException;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectConfiguration;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -88,7 +89,7 @@ public class ApplicationRecording {
 		BufferedReader reader = null;
 		try {
 			ProjectConfiguration projectConfiguration = ProjectManager.getInstance().getProjectConfiguration();
-			File dir = new File(projectConfiguration.getTemporaryDirectory());
+			File dir = new File(Utils.getConfigurationDirectoryPath());
 			dir.mkdirs();
 			File configFile = new File(projectConfiguration.getConfigFileAbsolutePath());
 			//File configFile = new File(WINDOW_TEMP_DIR, CONFIG_FILE);
@@ -114,7 +115,7 @@ public class ApplicationRecording {
 		BufferedWriter writer = null;
 		try {
 			ProjectConfiguration projectConfiguration = ProjectManager.getInstance().getProjectConfiguration();
-			File dir = new File(projectConfiguration.getTemporaryDirectory());
+			File dir = new File(Utils.getConfigurationDirectoryPath());
 			dir.mkdirs();
 			File configFile = new File(projectConfiguration.getConfigFileAbsolutePath());
 			writer = new BufferedWriter(new FileWriter(configFile));
@@ -141,5 +142,4 @@ public class ApplicationRecording {
 			}
 		}
 	}
-
 }

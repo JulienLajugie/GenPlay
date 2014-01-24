@@ -45,7 +45,7 @@ public class ChromosomeComparator implements Comparator<Chromosome> {
 	}
 
 
-	private int compareChromosomeName(String chromosomeName1, String chromosomeName2) {
+	public int compareChromosomeName(String chromosomeName1, String chromosomeName2) {
 		chromosomeName1 = chromosomeName1.toLowerCase();
 		chromosomeName2 = chromosomeName2.toLowerCase();
 
@@ -126,39 +126,12 @@ public class ChromosomeComparator implements Comparator<Chromosome> {
 
 
 	/**
-	 * Initializes the character score array
+	 * @param s				the string
+	 * @param startIndex	the start index
+	 * @return				the integer part of the string, null otherwise
 	 */
-	private void initCharScore () {
-		charScore = new HashMap<Character, Integer>();
-		charScore.put('x', 0);
-		charScore.put('y', 1);
-		charScore.put('m', 2);
-		charScore.put('_', 3);
-	}
-
-
-	/**
-	 * @param s the chromosome name
-	 * @return	true if it starts with "chr", false otherwise.
-	 */
-	private boolean startsWithCHR (String s) {
-		return isPatternPresent(s, "chr", 0, 3);
-	}
-
-
-	/**
-	 * @param text			the string to look in
-	 * @param pattern		the pattern to look with
-	 * @param startIndex	the start position in the string
-	 * @param stopIndex		the stop position in the string
-	 * @return				true if the pattern is presents, false otherwise.
-	 */
-	private boolean isPatternPresent (String text, String pattern, int startIndex, int stopIndex) {
-		if (stopIndex < text.length()) {
-			return text.substring(startIndex, stopIndex).toLowerCase().equals(pattern);
-		} else {
-			return false;
-		}
+	private Integer getInteger (String s, int startIndex) {
+		return getInteger(s, startIndex, s.length());
 	}
 
 
@@ -176,16 +149,6 @@ public class ChromosomeComparator implements Comparator<Chromosome> {
 			result = null;
 		}
 		return result;
-	}
-
-
-	/**
-	 * @param s				the string
-	 * @param startIndex	the start index
-	 * @return				the integer part of the string, null otherwise
-	 */
-	private Integer getInteger (String s, int startIndex) {
-		return getInteger(s, startIndex, s.length());
 	}
 
 
@@ -215,6 +178,43 @@ public class ChromosomeComparator implements Comparator<Chromosome> {
 			return index;
 		}
 		return null;
+	}
+
+
+	/**
+	 * Initializes the character score array
+	 */
+	private void initCharScore () {
+		charScore = new HashMap<Character, Integer>();
+		charScore.put('x', 0);
+		charScore.put('y', 1);
+		charScore.put('m', 2);
+		charScore.put('_', 3);
+	}
+
+
+	/**
+	 * @param text			the string to look in
+	 * @param pattern		the pattern to look with
+	 * @param startIndex	the start position in the string
+	 * @param stopIndex		the stop position in the string
+	 * @return				true if the pattern is presents, false otherwise.
+	 */
+	private boolean isPatternPresent (String text, String pattern, int startIndex, int stopIndex) {
+		if (stopIndex < text.length()) {
+			return text.substring(startIndex, stopIndex).toLowerCase().equals(pattern);
+		} else {
+			return false;
+		}
+	}
+
+
+	/**
+	 * @param s the chromosome name
+	 * @return	true if it starts with "chr", false otherwise.
+	 */
+	private boolean startsWithCHR (String s) {
+		return isPatternPresent(s, "chr", 0, 3);
 	}
 
 }

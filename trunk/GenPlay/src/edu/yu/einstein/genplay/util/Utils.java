@@ -153,7 +153,6 @@ public final class Utils {
 	}
 
 
-
 	/**
 	 * Opens a dialog box asking the user to choose a file to load
 	 * @param parentComponent determines the Frame in which the dialog is displayed; if null, or if the parentComponent has no Frame, a default Frame is used
@@ -187,6 +186,7 @@ public final class Utils {
 			return null;
 		}
 	}
+
 
 
 	/**
@@ -245,6 +245,22 @@ public final class Utils {
 	 */
 	public final static void garbageCollect() {
 		System.gc();
+	}
+
+
+	/**
+	 * If the user is using Windows, the configuration directory is the temporary one (eg: C:\Users\USER\AppData\Local\Temp)
+	 * If the user is using POSIX like platform, the configuration directory is $HOME/.genplay
+	 * @return the configuration directory
+	 */
+	public static String getConfigurationDirectoryPath() {
+		if (Utils.isWindowsOS()) {
+			// windows system
+			return getTmpDirectoryPath();
+		} else {
+			// POSIX like systems
+			return System.getProperty("user.home") + "/.genplay/";
+		}
 	}
 
 
@@ -422,6 +438,14 @@ public final class Utils {
 
 
 	/**
+	 * @return the location of the temporary directory
+	 */
+	public static String getTmpDirectoryPath() {
+		return System.getProperty("java.io.tmpdir");
+	}
+
+
+	/**
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be saved as BinList
 	 */
 	public final static FileFilter[] getWritableBinListFileFilters() {
@@ -521,7 +545,9 @@ public final class Utils {
 			}
 			list.add(s.substring(pos));
 		}
-
+		if (list.isEmpty()) {
+			return null;
+		}
 		int size = list.size();
 		if (list.get(size - 1).isEmpty()) {
 			size--;

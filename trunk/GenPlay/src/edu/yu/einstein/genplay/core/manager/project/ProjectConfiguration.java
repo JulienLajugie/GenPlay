@@ -85,7 +85,7 @@ public final class ProjectConfiguration implements Serializable {
 	 * @return the absolute path of the configuration file
 	 */
 	public String getConfigFileAbsolutePath () {
-		return getTemporaryDirectory() + CONFIG_FILE_NAME;
+		return Utils.getConfigurationDirectoryPath() + CONFIG_FILE_NAME;
 	}
 
 
@@ -101,7 +101,7 @@ public final class ProjectConfiguration implements Serializable {
 	 * @return the absolute path of the log file
 	 */
 	private String getDefaultDASServerFileAbsolutePath () {
-		return getTemporaryDirectory() + DEFAULT_DAS_SERVER_FILE_NAME;
+		return Utils.getConfigurationDirectoryPath() + DEFAULT_DAS_SERVER_FILE_NAME;
 	}
 
 
@@ -133,25 +133,10 @@ public final class ProjectConfiguration implements Serializable {
 	 * @return the absolute path of the log file
 	 */
 	public String getRecentProjectsAbsolutePath () {
-		return getTemporaryDirectory() + DEFAULT_RECENT_PROJECT_FILE_NAME;
+		return Utils.getConfigurationDirectoryPath() + DEFAULT_RECENT_PROJECT_FILE_NAME;
 	}
 
 
-	/**
-	 * Checks if the user is working under Windows or not (-> Unix).
-	 * If the user is using Windows, the temporary directory is the default one (eg: C:\Users\USER\AppData\Local\Temp)
-	 * If the user is using Unix platform, the temporary directory is its working directory
-	 * @return the temporary directory path
-	 */
-	public String getTemporaryDirectory () {
-		if (Utils.isWindowsOS()) {
-			// windows from jar
-			return System.getProperty("java.io.tmpdir");
-		} else {
-			// POSIX like systems
-			return System.getProperty("user.home") + "/.genplay/";
-		}
-	}
 
 
 	/**

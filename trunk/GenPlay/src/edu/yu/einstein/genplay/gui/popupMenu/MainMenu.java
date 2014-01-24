@@ -37,6 +37,7 @@ import edu.yu.einstein.genplay.gui.action.project.PANewProject;
 import edu.yu.einstein.genplay.gui.action.project.PAOption;
 import edu.yu.einstein.genplay.gui.action.project.PARNAPosToDNAPos;
 import edu.yu.einstein.genplay.gui.action.project.PASaveProject;
+import edu.yu.einstein.genplay.gui.action.project.PASortFile;
 import edu.yu.einstein.genplay.gui.action.project.PAWarningReport;
 
 
@@ -54,11 +55,12 @@ public final class MainMenu extends JPopupMenu {
 	private final JMenuItem jmiFullScreen;		// full screen
 	private final JMenuItem jmiErrorReport;		// option
 	private final JMenuItem jmiOption;			// option
+	private final JMenuItem jmiSortFile;		// sort file
 	private final JMenuItem jmiRNAToDNAPos;		// option
+	private final JMenuItem jmiUpdate;			// update
 	private final JMenuItem jmiHelp;			// help
 	private final JMenuItem jmiAbout;			// about
 	private final JMenuItem jmiExit;			// exit
-	private final JMenuItem jmiUpdate;			// update
 
 
 	/**
@@ -75,6 +77,7 @@ public final class MainMenu extends JPopupMenu {
 		jmiErrorReport = new JMenuItem(actionMap.get(PAWarningReport.ACTION_KEY));
 		jmiOption = new JMenuItem(actionMap.get(PAOption.ACTION_KEY));
 		jmiRNAToDNAPos = new JMenuItem(actionMap.get(PARNAPosToDNAPos.ACTION_KEY));
+		jmiSortFile = new JMenuItem(actionMap.get(PASortFile.ACTION_KEY));
 		jmiUpdate = new JMenuItem(actionMap.get(PACheckForUpdates.ACTION_KEY));
 		jmiHelp = new JMenuItem(actionMap.get(PAHelp.ACTION_KEY));
 		jmiAbout = new JMenuItem(actionMap.get(PAAbout.ACTION_KEY));
@@ -88,6 +91,7 @@ public final class MainMenu extends JPopupMenu {
 		add(jmiErrorReport);
 		add(jmiOption);
 		addSeparator();
+		add(jmiSortFile);
 		add(jmiRNAToDNAPos);
 		addSeparator();
 		if (PACheckForUpdates.isUpdaterAvailable()) {

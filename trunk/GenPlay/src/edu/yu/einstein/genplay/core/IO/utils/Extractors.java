@@ -178,6 +178,10 @@ public class Extractors {
 		if (line.charAt(0) == '#') {
 			return true;
 		}
+		// sam comment line
+		if (line.charAt(0) == '@') {
+			return true;
+		}
 		// track line
 		if ((line.length() >= 5) && (line.substring(0, 5).equalsIgnoreCase("track"))) {
 			return true;

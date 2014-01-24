@@ -38,7 +38,6 @@ import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.fileFilter.ExtendedFileFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.GenPlayProjectFilter;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
-import edu.yu.einstein.genplay.gui.trackList.TrackListPanel;
 import edu.yu.einstein.genplay.util.Utils;
 
 /**
@@ -53,7 +52,6 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 	private static final String 	DESCRIPTION = "Save the project into a file"; 	// tooltip
 	private static final int 		MNEMONIC = KeyEvent.VK_S; 						// mnemonic key
 	private static final String 	ACTION_NAME = "Save Project"; 					// action name
-	private final TrackListPanel 	trackListPanel; 		// track list containing the project to save
 	private File 					selectedFile; 									// selected file
 
 	/**
@@ -70,12 +68,9 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 
 	/**
 	 * Creates an instance of {@link PASaveProject}
-	 * 
-	 * @param trackListPanel singleton TrackList of the project
 	 */
-	public PASaveProject(TrackListPanel trackListPanel) {
+	public PASaveProject() {
 		super();
-		this.trackListPanel = trackListPanel;
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -104,15 +99,15 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 		jfc.setAcceptAllFileFilterUsed(false);
 		File f = new File(ProjectManager.getInstance().getProjectName().concat(".gpf"));
 		jfc.setSelectedFile(f);
-		int returnVal = jfc.showSaveDialog(trackListPanel.getRootPane());
+		int returnVal = jfc.showSaveDialog(getRootPane());
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			ExtendedFileFilter selectedFilter = (ExtendedFileFilter) jfc.getFileFilter();
 			if (selectedFilter != null) {
 				selectedFile = Utils.addExtension(jfc.getSelectedFile(), selectedFilter.getExtensions()[0]);
 			} else {
-				selectedFile = Utils.addExtension(jfc.getSelectedFile(), "gen");
+				selectedFile = Utils.addExtension(jfc.getSelectedFile(), "gpf");
 			}
-			if (!Utils.cancelBecauseFileExist(trackListPanel.getRootPane(), selectedFile)) {
+			if (!Utils.cancelBecauseFileExist(getRootPane(), selectedFile)) {
 				notifyActionStart("Saving Project", 1, false);
 				String projectName = Utils.getFileNameWithoutExtension(selectedFile);
 				ProjectManager.getInstance().setProjectName(projectName);

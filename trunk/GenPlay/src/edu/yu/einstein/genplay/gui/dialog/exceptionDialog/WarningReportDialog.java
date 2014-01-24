@@ -128,18 +128,19 @@ public class WarningReportDialog extends JDialog {
 		String indent = getIndent(prefix);
 
 		String[] array = Utils.split(message, '\n');
-		for (int i = 0; i < array.length; i++) {
-			switch (i) {
-			case 0:
-				text += prefix;
-				break;
-			default:
-				text += indent;
-				break;
+		if (array != null) {
+			for (int i = 0; i < array.length; i++) {
+				switch (i) {
+				case 0:
+					text += prefix;
+					break;
+				default:
+					text += indent;
+					break;
+				}
+				text += array[i] + "\n";
 			}
-			text += array[i] + "\n";
 		}
-
 		return text;
 	}
 

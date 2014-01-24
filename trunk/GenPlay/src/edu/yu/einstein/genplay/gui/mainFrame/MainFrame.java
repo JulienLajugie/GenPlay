@@ -65,6 +65,7 @@ import edu.yu.einstein.genplay.gui.action.project.PANewProject;
 import edu.yu.einstein.genplay.gui.action.project.PAOption;
 import edu.yu.einstein.genplay.gui.action.project.PARNAPosToDNAPos;
 import edu.yu.einstein.genplay.gui.action.project.PASaveProject;
+import edu.yu.einstein.genplay.gui.action.project.PASortFile;
 import edu.yu.einstein.genplay.gui.action.project.PAWarningReport;
 import edu.yu.einstein.genplay.gui.action.project.PAZoomIn;
 import edu.yu.einstein.genplay.gui.action.project.PAZoomOut;
@@ -342,6 +343,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 	 */
 	private void setActionMap() {
 		// Add project actions to action map
+		getRootPane().getActionMap().put(PASortFile.ACTION_KEY, new PASortFile());
 		getRootPane().getActionMap().put(PACheckForUpdates.ACTION_KEY, new PACheckForUpdates());
 		getRootPane().getActionMap().put(PAAbout.ACTION_KEY, new PAAbout(getRootPane()));
 		getRootPane().getActionMap().put(PAExit.ACTION_KEY, new PAExit(this));
@@ -350,7 +352,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		getRootPane().getActionMap().put(PALoadProject.ACTION_KEY, new PALoadProject());
 		getRootPane().getActionMap().put(PANewProject.ACTION_KEY, new PANewProject());
 		getRootPane().getActionMap().put(PAOption.ACTION_KEY, new PAOption(this));
-		getRootPane().getActionMap().put(PASaveProject.ACTION_KEY, new PASaveProject(trackListPanel));
+		getRootPane().getActionMap().put(PASaveProject.ACTION_KEY, new PASaveProject());
 		getRootPane().getActionMap().put(PAMoveLeft.ACTION_KEY, new PAMoveLeft());
 		getRootPane().getActionMap().put(PAMoveFarLeft.ACTION_KEY, new PAMoveFarLeft());
 		getRootPane().getActionMap().put(PAMoveRight.ACTION_KEY, new PAMoveRight());
@@ -395,6 +397,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 	 * Sets the input map. This map contain the short cuts of the applications.
 	 */
 	private void setInputMap() {
+		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PASortFile.ACCELERATOR,PASortFile.ACTION_KEY);
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PACheckForUpdates.ACCELERATOR,PACheckForUpdates.ACTION_KEY);
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAExit.ACCELERATOR, PAExit.ACTION_KEY);
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAFullScreen.ACCELERATOR, PAFullScreen.ACTION_KEY);
