@@ -88,6 +88,8 @@ public class BLAConcatenate extends TrackListActionWorker<Void> {
 				// save dialog
 				String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
 				JFileChooser jfc = new JFileChooser(defaultDirectory);
+				// redundant on Windows and Linux but needed for OSX
+				jfc.setSelectedFile(new File(defaultDirectory));
 				jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				jfc.setDialogTitle("Save As");
 				jfc.setSelectedFile(new File(".txt"));

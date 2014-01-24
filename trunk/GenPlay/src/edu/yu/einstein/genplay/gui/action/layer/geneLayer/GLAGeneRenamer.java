@@ -67,12 +67,22 @@ public class GLAGeneRenamer extends TrackListActionOperationWorker<GeneList>{
 
 
 	@Override
+	protected void doAtTheEnd(GeneList actionResult) {
+		if (actionResult != null) {
+			selectedLayer.setData(actionResult, operation.getDescription());
+		}
+	}
+
+
+	@Override
 	public Operation<GeneList> initializeOperation() throws Exception {
 		selectedLayer = (GeneLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			GeneList geneList = selectedLayer.getData();
 			String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
 			JFileChooser jfc = new JFileChooser(defaultDirectory);
+			// redundant in Windows and Linux but needed for OSX
+			jfc.setSelectedFile(new File(defaultDirectory));
 			jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			int retVal = jfc.showOpenDialog(getRootPane());
 			if (retVal == JFileChooser.APPROVE_OPTION) {
@@ -82,13 +92,5 @@ public class GLAGeneRenamer extends TrackListActionOperationWorker<GeneList>{
 			}
 		}
 		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(GeneList actionResult) {
-		if (actionResult != null) {
-			selectedLayer.setData(actionResult, operation.getDescription());
-		}
 	}
 }

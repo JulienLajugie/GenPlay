@@ -81,8 +81,11 @@ class MultiGenomePanel extends JPanel {
 		setVisible(false);
 
 		//Create a file chooser
+		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
 		fc = new JFileChooser();
-		fc.setCurrentDirectory(new File(ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory()));
+		fc.setCurrentDirectory(new File(defaultDirectory));
+		// redundant on Windows and Linux but needed for OSX
+		fc.setSelectedFile(new File(defaultDirectory));
 		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fc.setFileFilter(new XMLFilter());
 
@@ -159,6 +162,81 @@ class MultiGenomePanel extends JPanel {
 
 
 	/**
+	 * Adds data to the current list.
+	 * Case of importing data.
+	 * (importing do not erase current settings but add new ones!)
+	 * @param newData
+	 */
+	private void addData (List<VCFData> newData) {
+		if (data == null) {
+			data = new ArrayList<VCFData>();
+		}
+		for (VCFData vcfData: newData) {
+			data.add(vcfData);
+		}
+	}
+
+
+	/**
+	 * Closes the XML stream
+	 * @param xml
+	 */
+	private void closeXML (FileInputStream xml) {
+		if (xml != null) {
+			try {
+				xml.close();
+			} catch (IOException e) {
+				ExceptionManager.getInstance().caughtException(e);
+			}
+		}
+	}
+
+
+	/**
+	 * Exports a XML file settings
+	 */
+	private void exportXML () {
+		if (data.size() > 0) {
+			int returnVal = fc.showSaveDialog(getRootPane());
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				File file = fc.getSelectedFile();
+				file = Utils.addExtension(file, XMLFilter.EXTENSIONS[0]);
+				SettingsHandler xmlParser = new SettingsHandler(file);
+				xmlParser.setData(data);
+				xmlParser.write();
+			} else if (returnVal == JFileChooser.ERROR_OPTION) {
+				JOptionPane.showMessageDialog(getRootPane(), "Please select a valid XML file", "Invalid XML selection", JOptionPane.WARNING_MESSAGE);
+			}
+		} else {
+			JOptionPane.showMessageDialog(getRootPane(), "No setting has been found", "Settings export process", JOptionPane.WARNING_MESSAGE);
+		}
+	}
+
+
+	/**
+	 * @return the data object
+	 */
+	private List<VCFData> getData () {
+		List<VCFData> newData = new ArrayList<VCFData>();
+		if (data == null) {
+			data = new ArrayList<VCFData>();
+		}
+		for (VCFData vcfData: data) {
+			newData.add(vcfData);
+		}
+		return newData;
+	}
+
+
+	/**
+	 * @return the mapping between genome full names and their readers.
+	 */
+	protected Map<String, List<VCFFile>> getGenomeFileAssociation ()  {
+		return genomeFileAssociation;
+	}
+
+
+	/**
 	 * Imports a XML file settings
 	 */
 	private void importXML () {
@@ -207,86 +285,6 @@ class MultiGenomePanel extends JPanel {
 
 
 	/**
-	 * Closes the XML stream
-	 * @param xml
-	 */
-	private void closeXML (FileInputStream xml) {
-		if (xml != null) {
-			try {
-				xml.close();
-			} catch (IOException e) {
-				ExceptionManager.getInstance().caughtException(e);
-			}
-		}
-	}
-
-
-	/**
-	 * Exports a XML file settings
-	 */
-	private void exportXML () {
-		if (data.size() > 0) {
-			int returnVal = fc.showSaveDialog(getRootPane());
-			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				File file = fc.getSelectedFile();
-				file = Utils.addExtension(file, XMLFilter.EXTENSIONS[0]);
-				SettingsHandler xmlParser = new SettingsHandler(file);
-				xmlParser.setData(data);
-				xmlParser.write();
-			} else if (returnVal == JFileChooser.ERROR_OPTION) {
-				JOptionPane.showMessageDialog(getRootPane(), "Please select a valid XML file", "Invalid XML selection", JOptionPane.WARNING_MESSAGE);
-			}
-		} else {
-			JOptionPane.showMessageDialog(getRootPane(), "No setting has been found", "Settings export process", JOptionPane.WARNING_MESSAGE);
-		}
-	}
-
-
-	/**
-	 * Adds data to the current list.
-	 * Case of importing data.
-	 * (importing do not erase current settings but add new ones!)
-	 * @param newData
-	 */
-	private void addData (List<VCFData> newData) {
-		if (data == null) {
-			data = new ArrayList<VCFData>();
-		}
-		for (VCFData vcfData: newData) {
-			data.add(vcfData);
-		}
-	}
-
-
-	/**
-	 * Sets the data object.
-	 * After VCF loader dialog validation.
-	 * @param newData	new data
-	 */
-	private void setData (List<VCFData> newData) {
-		data = new ArrayList<VCFData>();
-		for (VCFData vcfData: newData) {
-			data.add(vcfData);
-		}
-	}
-
-
-	/**
-	 * @return the data object
-	 */
-	private List<VCFData> getData () {
-		List<VCFData> newData = new ArrayList<VCFData>();
-		if (data == null) {
-			data = new ArrayList<VCFData>();
-		}
-		for (VCFData vcfData: data) {
-			newData.add(vcfData);
-		}
-		return newData;
-	}
-
-
-	/**
 	 * Initializes the genome/file map association.
 	 * Updates also the statistical information and refreshes the panel.
 	 */
@@ -318,6 +316,27 @@ class MultiGenomePanel extends JPanel {
 		}
 		System.out.println(info);
 	}*/
+
+
+	/**
+	 * @return true if the multi genome project is valid
+	 */
+	protected boolean isValidMultigenomeProject () {
+		return vcfLoaderDialog.areValidSettings();
+	}
+
+
+	/**
+	 * Sets the data object.
+	 * After VCF loader dialog validation.
+	 * @param newData	new data
+	 */
+	private void setData (List<VCFData> newData) {
+		data = new ArrayList<VCFData>();
+		for (VCFData vcfData: newData) {
+			data.add(vcfData);
+		}
+	}
 
 
 	/**
@@ -357,22 +376,6 @@ class MultiGenomePanel extends JPanel {
 		MultiGenomeInformationPanel.GENOME_NUMBER = genomeList.size();
 		MultiGenomeInformationPanel.FILE_NUMBER = fileGenome.size();
 		MultiGenomeInformationPanel.refreshInformation();
-	}
-
-
-	/**
-	 * @return the mapping between genome full names and their readers.
-	 */
-	protected Map<String, List<VCFFile>> getGenomeFileAssociation ()  {
-		return genomeFileAssociation;
-	}
-
-
-	/**
-	 * @return true if the multi genome project is valid
-	 */
-	protected boolean isValidMultigenomeProject () {
-		return vcfLoaderDialog.areValidSettings();
 	}
 
 }

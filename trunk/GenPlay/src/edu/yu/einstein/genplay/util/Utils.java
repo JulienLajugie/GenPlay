@@ -164,6 +164,8 @@ public final class Utils {
 	 */
 	public final static File chooseFileToLoad(Component parentComponent, String title, String defaultDirectory, FileFilter[] choosableFileFilters, boolean allFiles) {
 		JFileChooser jfc = new JFileChooser(defaultDirectory);
+		// redundant in Windows and Linux but needed for OSX
+		jfc.setSelectedFile(new File(defaultDirectory));
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		jfc.setDialogTitle(title);
 		for (FileFilter currentFilter: choosableFileFilters) {

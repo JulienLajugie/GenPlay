@@ -81,33 +81,6 @@ public final class TASaveAsImage extends TrackListActionWorker<Void> {
 	}
 
 
-	@Override
-	protected Void processAction() throws Exception {
-		Track selectedTrack = getTrackListPanel().getSelectedTrack();
-		if (selectedTrack != null) {
-			JFileChooser saveFC = new JFileChooser(ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory());
-			saveFC.setFileSelectionMode(JFileChooser.FILES_ONLY);
-			FileNameExtensionFilter filter = new FileNameExtensionFilter("PNG file (*.PNG)", "png");
-			saveFC.setFileFilter(filter);
-			saveFC.setDialogTitle("Save track " + selectedTrack.getName() + " as a PNG image");
-			saveFC.setSelectedFile(new File(selectedTrack.getName() + ".png"));
-			int returnVal = saveFC.showSaveDialog(getRootPane());
-			if(returnVal == JFileChooser.APPROVE_OPTION) {
-				File file = Utils.addExtension(saveFC.getSelectedFile(), "png");
-				if (!Utils.cancelBecauseFileExist(getRootPane(), file)) {
-					notifyActionStart("Saving Track #" + selectedTrack.getNumber() + " As Image", 1, false);
-					try {
-						ImageIO.write(createImage(selectedTrack), "PNG", file);
-					}catch(Exception e) {
-						ExceptionManager.getInstance().caughtException(Thread.currentThread(), e, "Error while saving the tracks as an image");
-					}
-				}
-			}
-		}
-		return null;
-	}
-
-
 	/**
 	 * @param selectedTrack selected track in the track panel
 	 * @return the screen shot of the selected track with the ruler on top to show the positions
@@ -131,5 +104,35 @@ public final class TASaveAsImage extends TrackListActionWorker<Void> {
 		g.setColor(Color.BLACK);
 		g.drawLine(0, rulerHeight, imageWidth, rulerHeight);
 		return image;
+	}
+
+
+	@Override
+	protected Void processAction() throws Exception {
+		Track selectedTrack = getTrackListPanel().getSelectedTrack();
+		if (selectedTrack != null) {
+			String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
+			final JFileChooser saveFC = new JFileChooser(defaultDirectory);
+			// redundant in Windows and Linux but needed for OSX
+			saveFC.setSelectedFile(new File(defaultDirectory));
+			saveFC.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("PNG file (*.PNG)", "png");
+			saveFC.setFileFilter(filter);
+			saveFC.setDialogTitle("Save track " + selectedTrack.getName() + " as a PNG image");
+			saveFC.setSelectedFile(new File(selectedTrack.getName() + ".png"));
+			int returnVal = saveFC.showSaveDialog(getRootPane());
+			if(returnVal == JFileChooser.APPROVE_OPTION) {
+				File file = Utils.addExtension(saveFC.getSelectedFile(), "png");
+				if (!Utils.cancelBecauseFileExist(getRootPane(), file)) {
+					notifyActionStart("Saving Track #" + selectedTrack.getNumber() + " As Image", 1, false);
+					try {
+						ImageIO.write(createImage(selectedTrack), "PNG", file);
+					}catch(Exception e) {
+						ExceptionManager.getInstance().caughtException(Thread.currentThread(), e, "Error while saving the tracks as an image");
+					}
+				}
+			}
+		}
+		return null;
 	}
 }

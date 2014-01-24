@@ -90,7 +90,10 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 
 	@Override
 	protected Boolean processAction() throws Exception {
-		final JFileChooser jfc = new JFileChooser(ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory());
+		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
+		final JFileChooser jfc = new JFileChooser(defaultDirectory);
+		// redundant on Windows and Linux but needed for OSX
+		jfc.setSelectedFile(new File(defaultDirectory));
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		jfc.setDialogTitle("Save Project");
 		FileFilter[] filters = { new GenPlayProjectFilter() };

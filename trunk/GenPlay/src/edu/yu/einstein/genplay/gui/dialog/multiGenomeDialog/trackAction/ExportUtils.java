@@ -48,7 +48,9 @@ public class ExportUtils {
 	 */
 	public static File getFile (FileFilter[] filters, boolean open) {
 		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
-		JFileChooser jfc = new JFileChooser(defaultDirectory);
+		final JFileChooser jfc = new JFileChooser(defaultDirectory);
+		// redundant in Windows and Linux but needed for OSX
+		jfc.setSelectedFile(new File(defaultDirectory));
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		jfc.setDialogTitle("Select an output file");
 		for (FileFilter currentFilter: filters) {

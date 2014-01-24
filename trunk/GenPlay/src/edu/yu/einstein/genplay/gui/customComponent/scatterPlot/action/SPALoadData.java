@@ -70,8 +70,10 @@ public class SPALoadData extends ScatterPlotAction {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		String defaultDirectoryPath = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
-		JFileChooser jfc = new JFileChooser(defaultDirectoryPath);
+		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
+		final JFileChooser jfc = new JFileChooser(defaultDirectory);
+		// redundant in Windows and Linux but needed for OSX
+		jfc.setSelectedFile(new File(defaultDirectory));
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV file (*.csv)", "csv");
 		jfc.setFileFilter(filter);

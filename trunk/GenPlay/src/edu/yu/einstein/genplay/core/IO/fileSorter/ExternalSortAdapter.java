@@ -42,6 +42,10 @@ import edu.yu.einstein.genplay.util.Utils;
  */
 public class ExternalSortAdapter {
 
+	/**
+	 * Comparator for genomic files. Compare the chromosome, start and stop positions found at the specied indexes
+	 * @author Julien Lajugie
+	 */
 	private static class GenomicFileLineComparator implements Comparator<String> {
 
 		private static ChromosomeComparator chromosomeComparator = new ChromosomeComparator(); // comparator for chromosomes
@@ -72,7 +76,14 @@ public class ExternalSortAdapter {
 
 			String[] splitLine1 = Utils.splitWithTab(o1);
 			String[] splitLine2 = Utils.splitWithTab(o2);
-			int cmp = chromosomeComparator.compareChromosomeName(splitLine1[chromoFieldIndex], splitLine1[startFieldIndex]);
+			int cmp;
+			try {
+				cmp = chromosomeComparator.compareChromosomeName(splitLine1[chromoFieldIndex], splitLine2[chromoFieldIndex]);
+			} catch (Exception e) {
+				// if the chromosome comparator doesn't work we use a string cpmparator
+				cmp = new StringComparator().compare(splitLine1[chromoFieldIndex], splitLine2[chromoFieldIndex]);
+			}
+			// if the chromosomes are equals we compare the positions
 			if (cmp == 0) {
 				try {
 					ChromosomeWindow cw1 = new SimpleChromosomeWindow(splitLine1[startFieldIndex], splitLine1[stopFieldIndex]);

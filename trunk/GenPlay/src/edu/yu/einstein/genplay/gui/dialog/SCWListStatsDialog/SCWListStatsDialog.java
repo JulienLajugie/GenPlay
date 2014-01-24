@@ -186,7 +186,10 @@ public class SCWListStatsDialog extends JDialog {
 	 * Saves the statistics in a file
 	 */
 	private void saveStats(JTable jtStats) {
-		JFileChooser saveFC = new JFileChooser(ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory());
+		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
+		final JFileChooser saveFC = new JFileChooser(defaultDirectory);
+		// redundant in Windows and Linux but needed for OSX
+		saveFC.setSelectedFile(new File(defaultDirectory));
 		saveFC.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("TSV file (*.TSV)", "tsv");
 		saveFC.setFileFilter(filter);

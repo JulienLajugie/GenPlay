@@ -93,6 +93,8 @@ public final class PARNAPosToDNAPos extends TrackListActionWorker<Void> {
 
 				if (rtddResult == RNAPosToDNAPosOutputFileTypeDialog.APPROVE_OPTION) {
 					JFileChooser jfc = new JFileChooser(ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory());
+					// redundant in Windows and Linux but needed for OSX
+					jfc.setSelectedFile(new File(defaultDirectory));
 					jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 					jfc.setDialogTitle("Select Output BGR File");
 					jfc.addChoosableFileFilter(new BedGraphFilter());
