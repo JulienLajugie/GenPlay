@@ -22,7 +22,7 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.project;
 
-import java.awt.event.InputEvent;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.security.InvalidParameterException;
@@ -54,7 +54,7 @@ public class PASortFile extends TrackListActionWorker<Boolean> {
 	/**
 	 * action accelerator {@link KeyStroke}
 	 */
-	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK);
+	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_R, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
 
 
 	/**

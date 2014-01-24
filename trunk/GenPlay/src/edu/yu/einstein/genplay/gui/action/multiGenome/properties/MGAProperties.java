@@ -22,8 +22,8 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.multiGenome.properties;
 
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
@@ -59,7 +59,7 @@ public final class MGAProperties extends TrackListAction{
 	/**
 	 * action accelerator {@link KeyStroke}
 	 */
-	public static final KeyStroke 	ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_DOWN_MASK);
+	public static final KeyStroke 	ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_P, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
 
 
 	/**

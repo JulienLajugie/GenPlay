@@ -22,7 +22,7 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.track;
 
-import java.awt.event.InputEvent;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 
 import javax.swing.ActionMap;
@@ -49,7 +49,7 @@ public final class TACopy extends TrackListActionWorker<Void> {
 	/**
 	 * action accelerator {@link KeyStroke}
 	 */
-	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK);
+	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_C, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
 
 
 	/**

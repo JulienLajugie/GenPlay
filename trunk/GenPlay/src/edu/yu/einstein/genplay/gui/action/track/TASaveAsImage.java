@@ -24,6 +24,7 @@ package edu.yu.einstein.genplay.gui.action.track;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Toolkit;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -65,7 +66,7 @@ public final class TASaveAsImage extends TrackListActionWorker<Void> {
 	/**
 	 * action accelerator {@link KeyStroke}
 	 */
-	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK);
+	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() | InputEvent.SHIFT_DOWN_MASK);
 
 
 	/**

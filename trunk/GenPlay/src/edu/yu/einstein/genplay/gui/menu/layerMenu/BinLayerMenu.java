@@ -20,14 +20,13 @@
  * 
  * Website: <http://genplay.einstein.yu.edu>
  ******************************************************************************/
-package edu.yu.einstein.genplay.gui.popupMenu.layerMenu;
+package edu.yu.einstein.genplay.gui.menu.layerMenu;
 
 import javax.swing.Action;
 
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.gui.action.layer.LAConvert;
 import edu.yu.einstein.genplay.gui.action.layer.LASave;
-import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLACombineCsAndGs;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAFilter;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAIndex;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLALog;
@@ -36,25 +35,31 @@ import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLANormalizeStandardS
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAOperationWithConstant;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAScoreDistribution;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAShowStatistics;
-import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLATransfrag;
 import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLATwoLayersOperation;
+import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAConcatenate;
+import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLACorrelate;
+import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLADensity;
+import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAFindPeaks;
+import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLAIntervalsScoring;
+import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLASmooth;
+import edu.yu.einstein.genplay.gui.action.layer.binlayer.BLATransfrag;
+import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
-import edu.yu.einstein.genplay.gui.track.layer.SimpleSCWLayer;
 
 /**
- * Menu containing all the actions available for a {@link SimpleSCWLayer}
+ * Menu containing all the actions available for a {@link BinLayer}
  * @author Julien Lajugie
  */
-public class SCWLayerMenu extends AbstractLayerMenu {
+public class BinLayerMenu extends AbstractLayerMenu {
 
-	private static final long serialVersionUID = 1160366801758520827L; // generated serial ID
+	private static final long serialVersionUID = -3827457549561342225L; // generated ID
 
 
 	/**
-	 * Creates an instance of {@link SCWLayerMenu}
-	 * @param layer
+	 * Creates an instance of {@link BinLayerMenu}
+	 * @param layer the layer for the action
 	 */
-	public SCWLayerMenu(Layer<?> layer) {
+	public BinLayerMenu(Layer<?> layer) {
 		super(layer);
 	}
 
@@ -65,6 +70,8 @@ public class SCWLayerMenu extends AbstractLayerMenu {
 				new SCWLAOperationWithConstant(),
 				new SCWLATwoLayersOperation(),
 				null,
+				new BLASmooth(),
+				null,
 				new SCWLAIndex(),
 				new SCWLALog(),
 				new SCWLANormalize(),
@@ -73,11 +80,15 @@ public class SCWLayerMenu extends AbstractLayerMenu {
 				new SCWLAShowStatistics(),
 				null,
 				new SCWLAFilter(),
-				new SCWLATransfrag(),
+				new BLAFindPeaks(),
+				new BLATransfrag(),
 				null,
 				new SCWLAScoreDistribution(),
+				new BLACorrelate(),
 				null,
-				new SCWLACombineCsAndGs(),
+				new BLADensity(),
+				new BLAIntervalsScoring(),
+				new BLAConcatenate(),
 				null,
 				new LAConvert<GenomicListView<?>>(),
 				new LASave()

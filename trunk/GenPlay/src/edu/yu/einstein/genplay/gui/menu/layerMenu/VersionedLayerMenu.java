@@ -20,7 +20,7 @@
  * 
  * Website: <http://genplay.einstein.yu.edu>
  ******************************************************************************/
-package edu.yu.einstein.genplay.gui.popupMenu.layerMenu;
+package edu.yu.einstein.genplay.gui.menu.layerMenu;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;

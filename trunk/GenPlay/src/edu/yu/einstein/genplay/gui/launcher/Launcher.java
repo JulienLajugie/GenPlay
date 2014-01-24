@@ -40,12 +40,14 @@ import edu.yu.einstein.genplay.dataStructure.genome.Clade;
 import edu.yu.einstein.genplay.dataStructure.genome.Genome;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
+import edu.yu.einstein.genplay.gui.OSXIntegration.OSXHandler;
 import edu.yu.einstein.genplay.gui.action.multiGenome.synchronization.MGASynchronizing;
 import edu.yu.einstein.genplay.gui.action.project.PAInitMGManager;
 import edu.yu.einstein.genplay.gui.action.project.PAInitManagers;
 import edu.yu.einstein.genplay.gui.action.project.PALoadProject;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
+import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -215,11 +217,15 @@ public class Launcher {
 	 * screen will be skipped and the project file will be directly loaded
 	 */
 	public static void main(final String[] args) {
-		final OSXHandler osxHandler = new OSXHandler();
+		// set the menu bar for OSX
+		System.setProperty("apple.laf.useScreenMenuBar", "true");
+		// set the application name for OSX
+		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "GenPlay");
 		if (Utils.isMacOS()) {
 			// Handle mac-specific events (if we're running under OS X).
 			Application macApplication = Application.getApplication();
-			macApplication.setOpenFileHandler(osxHandler);
+			macApplication.setOpenFileHandler(OSXHandler.getInstance());
+			macApplication.setDockIconImage(Images.getApplicationImage());
 		}
 
 		// Initialize the exception manager
@@ -250,8 +256,8 @@ public class Launcher {
 				// if the DEMO_PROJECT_PATH constant has been set it means that we're starting a demo project
 				boolean isDemo = (DEMO_PROJECT_PATH != null);
 				// mac only
-				if (osxHandler.getFileToOpen() != null) {
-					startProjectFromFile(osxHandler.getFileToOpen());
+				if (OSXHandler.getInstance().getFileToOpen() != null) {
+					startProjectFromFile(OSXHandler.getInstance().getFileToOpen());
 				} else if (isDemo) {
 					startDemoProject();
 				} else if (args.length == 1) { // if a project file path has been specified to the main method we load this file

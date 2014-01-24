@@ -22,8 +22,8 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.multiGenome.VCFAction;
 
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 
@@ -63,7 +63,7 @@ public final class MGAVCFToTBI extends TrackListAction {
 	/**
 	 * action accelerator {@link KeyStroke}
 	 */
-	public static final KeyStroke 	ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_DOWN_MASK);
+	public static final KeyStroke 	ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_P, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
 
 
 	/**
@@ -141,6 +141,30 @@ public final class MGAVCFToTBI extends TrackListAction {
 
 
 	/**
+	 * @return the bgzipFile
+	 */
+	public File getBgzipFile() {
+		return bgzipFile;
+	}
+
+
+	/**
+	 * @return the tbiFile
+	 */
+	public File getTbiFile() {
+		return tbiFile;
+	}
+
+
+	/**
+	 * @return the vcfFile
+	 */
+	public File getVcfFile() {
+		return vcfFile;
+	}
+
+
+	/**
 	 * Index the compressed VCF with Tabix
 	 * @throws Exception
 	 */
@@ -168,29 +192,5 @@ public final class MGAVCFToTBI extends TrackListAction {
 	 */
 	public void setLoadingPassBy(boolean loadingPassBy) {
 		this.loadingPassBy = loadingPassBy;
-	}
-
-
-	/**
-	 * @return the vcfFile
-	 */
-	public File getVcfFile() {
-		return vcfFile;
-	}
-
-
-	/**
-	 * @return the bgzipFile
-	 */
-	public File getBgzipFile() {
-		return bgzipFile;
-	}
-
-
-	/**
-	 * @return the tbiFile
-	 */
-	public File getTbiFile() {
-		return tbiFile;
 	}
 }

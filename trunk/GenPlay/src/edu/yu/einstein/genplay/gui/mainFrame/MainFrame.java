@@ -43,12 +43,15 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
+import com.apple.eawt.Application;
+
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
+import edu.yu.einstein.genplay.gui.OSXIntegration.OSXHandler;
 import edu.yu.einstein.genplay.gui.action.multiGenome.properties.MGARefresh;
 import edu.yu.einstein.genplay.gui.action.project.PAAbout;
 import edu.yu.einstein.genplay.gui.action.project.PACheckForUpdates;
@@ -82,12 +85,14 @@ import edu.yu.einstein.genplay.gui.controlPanel.ControlPanel;
 import edu.yu.einstein.genplay.gui.dialog.optionDialog.OptionDialog;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
-import edu.yu.einstein.genplay.gui.popupMenu.MainMenu;
+import edu.yu.einstein.genplay.gui.menu.MainMenu;
+import edu.yu.einstein.genplay.gui.menu.MenuBar;
 import edu.yu.einstein.genplay.gui.statusBar.StatusBar;
 import edu.yu.einstein.genplay.gui.track.ruler.Ruler;
 import edu.yu.einstein.genplay.gui.trackList.TrackListModel;
 import edu.yu.einstein.genplay.gui.trackList.TrackListPanel;
 import edu.yu.einstein.genplay.util.Images;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -222,6 +227,19 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		setActionMap();
 		// add shortcuts
 		setInputMap();
+		// add menu bar
+
+		if (Utils.isMacOS()) {
+			// add a menu bar for OSX
+			Application macApplication = Application.getApplication();
+			setJMenuBar(new MenuBar(getRootPane().getActionMap()));
+			// integration of the menu bar in OSX
+			macApplication.setDefaultMenuBar(getJMenuBar());
+			macApplication.setAboutHandler(OSXHandler.getInstance());
+			macApplication.setPreferencesHandler(OSXHandler.getInstance());
+			macApplication.setQuitHandler(OSXHandler.getInstance());
+		}
+
 		// customise the look and feel
 		customizeLookAndFeel();
 		// set the look and feel

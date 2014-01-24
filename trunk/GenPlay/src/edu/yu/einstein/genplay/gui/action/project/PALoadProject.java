@@ -22,7 +22,7 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.project;
 
-import java.awt.event.InputEvent;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.concurrent.CountDownLatch;
@@ -62,7 +62,7 @@ public class PALoadProject extends TrackListActionWorker<Track[]> {
 	/**
 	 * action accelerator {@link KeyStroke}
 	 */
-	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.CTRL_DOWN_MASK);
+	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_L, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
 
 	/**
 	 * key of the action in the {@link ActionMap}

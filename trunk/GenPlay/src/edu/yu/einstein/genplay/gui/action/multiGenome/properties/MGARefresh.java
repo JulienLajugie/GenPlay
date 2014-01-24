@@ -22,8 +22,8 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.multiGenome.properties;
 
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,68 +60,74 @@ import edu.yu.einstein.genplay.util.Utils;
  */
 public final class MGARefresh extends TrackListAction {
 
-	private static final 	long serialVersionUID = -6475180772964541278L; 			// generated ID
-	private static final 	String ACTION_NAME = "Multi Genome Properties";			// action name
-	private static final 	String DESCRIPTION = "Shows the project properties"; 	// tooltip
-	private static final 	int 	MNEMONIC = KeyEvent.VK_P; 						// mnemonic key
-	private List<MGFilter> previousFilterList;
-
 	/**
-	 * action accelerator {@link KeyStroke}
+	 * The filter thread class.
+	 * This class starts the filter action.
+	 * 
+	 * @author Nicolas Fourel
+	 * @version 0.1
 	 */
-	public static final KeyStroke 	ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_DOWN_MASK);
+	private class FilterThread extends Thread {
+
+		MGAFilters multigenomeFilters;
 
 
-	/**
-	 * key of the action in the {@link ActionMap}
-	 */
-	public static final String ACTION_KEY = "PAMultiGenomeProperties";
+		public FilterThread () {
+			multigenomeFilters = new MGAFilters();
+		}
 
+		/**
+		 * @return true if the thread has to be started, false if no need
+		 */
+		public boolean hasToBeStarted () {
+			return multigenomeFilters.hasToBeProcessed();
+		}
 
-	/**
-	 * Creates an instance of {@link MGARefresh}
-	 */
-	public MGARefresh() {
-		super();
-		putValue(NAME, ACTION_NAME);
-		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
-		putValue(SHORT_DESCRIPTION, DESCRIPTION);
-		putValue(MNEMONIC_KEY, MNEMONIC);
-		previousFilterList = new ArrayList<MGFilter>();
-	}
+		@Override
+		public void run() {
+			multigenomeFilters.actionPerformed(null);
+			previousFilterList = null;
+		}
 
+		/**
+		 * @param latch the latch to set
+		 */
+		public void setLatch(CountDownLatch latch) {
+			multigenomeFilters.setLatch(latch);
+		}
 
-	/**
-	 * Shows the Multi Genome Project Properties dialog
-	 */
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		if (ProjectManager.getInstance().isMultiGenomeProject()) {		// if it is a multi genome project
-			UpdateThread thread = new UpdateThread();					// if it is approved (OK button), we create the thread running the content of a DoAtTheEnd-like method
-			thread.start();												// we start the thread
+		/**
+		 * @param previousFilterList the previousFilterList to set
+		 */
+		public void setPreviousFilterList(List<MGFilter> previousFilterList) {
+			multigenomeFilters.setPreviousFilterList(previousFilterList);
 		}
 	}
-
-
 	/**
-	 * @return the previousFilterList
+	 * The track update thread class.
+	 * This class starts the Track Update action.
+	 * 
+	 * @author Nicolas Fourel
+	 * @version 0.1
 	 */
-	public List<MGFilter> getPreviousFilterList() {
-		return previousFilterList;
+	private class TrackThread extends Thread {
+
+		CountDownLatch latch = null;	// CountDownLatch object for synchronizing threads
+
+		@Override
+		public void run() {
+			MGATrackDisplayRefresh updateTrackThread = new MGATrackDisplayRefresh();
+			updateTrackThread.setLatch(latch);
+			updateTrackThread.actionPerformed(null);
+		}
+
+		/**
+		 * @param latch the latch to set
+		 */
+		public void setLatch(CountDownLatch latch) {
+			this.latch = latch;
+		}
 	}
-
-
-	/**
-	 * @param previousFilterList the previousFilterList to set
-	 */
-	public void setPreviousFilterList(List<MGFilter> previousFilterList) {
-		this.previousFilterList = previousFilterList;
-	}
-
-
-
-	/////////////////////////////////////////////////////////////////////// DoAtTheEndThread class
-
 	/**
 	 * Thread running the content of the DoAtTheEnd-like method.
 	 * That method is running two other actions {@link MGASNP} and {@link MGAFilters}
@@ -135,20 +141,6 @@ public final class MGARefresh extends TrackListAction {
 	 * @version 0.1
 	 */
 	private class UpdateThread extends Thread {
-
-		private void setTrackLock (boolean lock) {
-			// Update tracks
-			LayerType[] filter = {LayerType.VARIANT_LAYER};
-			List<Layer<?>> allLayers = MainFrame.getInstance().getTrackListPanel().getModel().getAllLayers();
-			List<Layer<?>> layers = Utils.getLayers(allLayers, filter);
-			for (Layer<?> layer: layers) {
-				if (lock) {
-					((VariantLayer)layer).getGenomeDrawer().lockPainting();
-				} else {
-					((VariantLayer)layer).getGenomeDrawer().unlockPainting();
-				}
-			}
-		}
 
 		private void repaintTrack () {
 			// Update tracks
@@ -199,6 +191,70 @@ public final class MGARefresh extends TrackListAction {
 			setTrackLock(false);
 			repaintTrack();
 		}
+
+		private void setTrackLock (boolean lock) {
+			// Update tracks
+			LayerType[] filter = {LayerType.VARIANT_LAYER};
+			List<Layer<?>> allLayers = MainFrame.getInstance().getTrackListPanel().getModel().getAllLayers();
+			List<Layer<?>> layers = Utils.getLayers(allLayers, filter);
+			for (Layer<?> layer: layers) {
+				if (lock) {
+					((VariantLayer)layer).getGenomeDrawer().lockPainting();
+				} else {
+					((VariantLayer)layer).getGenomeDrawer().unlockPainting();
+				}
+			}
+		}
+	}
+	private static final 	long serialVersionUID = -6475180772964541278L; 			// generated ID
+	private static final 	String ACTION_NAME = "Multi Genome Properties";			// action name
+
+	private static final 	String DESCRIPTION = "Shows the project properties"; 	// tooltip
+
+
+	private static final 	int 	MNEMONIC = KeyEvent.VK_P; 						// mnemonic key
+
+
+	private List<MGFilter> previousFilterList;
+
+
+	/**
+	 * action accelerator {@link KeyStroke}
+	 */
+	public static final KeyStroke 	ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_P, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+
+
+	/**
+	 * key of the action in the {@link ActionMap}
+	 */
+	public static final String ACTION_KEY = "PAMultiGenomeProperties";
+
+
+	/**
+	 * Creates an instance of {@link MGARefresh}
+	 */
+	public MGARefresh() {
+		super();
+		putValue(NAME, ACTION_NAME);
+		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
+		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(MNEMONIC_KEY, MNEMONIC);
+		previousFilterList = new ArrayList<MGFilter>();
+	}
+
+
+
+	/////////////////////////////////////////////////////////////////////// DoAtTheEndThread class
+
+	/**
+	 * Shows the Multi Genome Project Properties dialog
+	 */
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {		// if it is a multi genome project
+			UpdateThread thread = new UpdateThread();					// if it is approved (OK button), we create the thread running the content of a DoAtTheEnd-like method
+			thread.start();												// we start the thread
+		}
 	}
 
 
@@ -206,47 +262,10 @@ public final class MGARefresh extends TrackListAction {
 	/////////////////////////////////////////////////////////////////////// FilterThread class
 
 	/**
-	 * The filter thread class.
-	 * This class starts the filter action.
-	 * 
-	 * @author Nicolas Fourel
-	 * @version 0.1
+	 * @return the previousFilterList
 	 */
-	private class FilterThread extends Thread {
-
-		MGAFilters multigenomeFilters;
-
-
-		public FilterThread () {
-			multigenomeFilters = new MGAFilters();
-		}
-
-		@Override
-		public void run() {
-			multigenomeFilters.actionPerformed(null);
-			previousFilterList = null;
-		}
-
-		/**
-		 * @return true if the thread has to be started, false if no need
-		 */
-		public boolean hasToBeStarted () {
-			return multigenomeFilters.hasToBeProcessed();
-		}
-
-		/**
-		 * @param latch the latch to set
-		 */
-		public void setLatch(CountDownLatch latch) {
-			multigenomeFilters.setLatch(latch);
-		}
-
-		/**
-		 * @param previousFilterList the previousFilterList to set
-		 */
-		public void setPreviousFilterList(List<MGFilter> previousFilterList) {
-			multigenomeFilters.setPreviousFilterList(previousFilterList);
-		}
+	public List<MGFilter> getPreviousFilterList() {
+		return previousFilterList;
 	}
 
 
@@ -254,29 +273,10 @@ public final class MGARefresh extends TrackListAction {
 	/////////////////////////////////////////////////////////////////////// TrackThread class
 
 	/**
-	 * The track update thread class.
-	 * This class starts the Track Update action.
-	 * 
-	 * @author Nicolas Fourel
-	 * @version 0.1
+	 * @param previousFilterList the previousFilterList to set
 	 */
-	private class TrackThread extends Thread {
-
-		CountDownLatch latch = null;	// CountDownLatch object for synchronizing threads
-
-		/**
-		 * @param latch the latch to set
-		 */
-		public void setLatch(CountDownLatch latch) {
-			this.latch = latch;
-		}
-
-		@Override
-		public void run() {
-			MGATrackDisplayRefresh updateTrackThread = new MGATrackDisplayRefresh();
-			updateTrackThread.setLatch(latch);
-			updateTrackThread.actionPerformed(null);
-		}
+	public void setPreviousFilterList(List<MGFilter> previousFilterList) {
+		this.previousFilterList = previousFilterList;
 	}
 
 }

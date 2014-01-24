@@ -20,7 +20,7 @@
  * 
  * Website: <http://genplay.einstein.yu.edu>
  ******************************************************************************/
-package edu.yu.einstein.genplay.gui.popupMenu;
+package edu.yu.einstein.genplay.gui.menu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,7 @@ import edu.yu.einstein.genplay.gui.action.track.TAInsert;
 import edu.yu.einstein.genplay.gui.action.track.TAPaste;
 import edu.yu.einstein.genplay.gui.action.track.TASaveAsImage;
 import edu.yu.einstein.genplay.gui.action.track.TATrackSettings;
-import edu.yu.einstein.genplay.gui.popupMenu.layerMenu.LayerMenuFactory;
+import edu.yu.einstein.genplay.gui.menu.layerMenu.LayerMenuFactory;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.trackList.TrackListActionMap;

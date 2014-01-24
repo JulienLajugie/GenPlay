@@ -27,7 +27,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.InputEvent;
+import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -202,7 +202,7 @@ final class HandlePanel extends JPanel implements MouseListener, MouseMotionList
 	public void mouseMoved(MouseEvent arg0) {
 		if (isEnabled()) {
 			if ((getHeight() - arg0.getY()) <= MOVE_RESIZE_ZONE_HEIGHT) {
-				if (arg0.getModifiers() == InputEvent.CTRL_DOWN_MASK) {
+				if (arg0.getModifiers() == Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) {
 					setCursor(new Cursor(Cursor.MOVE_CURSOR));
 				} else {
 					setCursor(new Cursor(Cursor.N_RESIZE_CURSOR));

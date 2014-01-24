@@ -41,7 +41,7 @@ import edu.yu.einstein.genplay.gui.action.track.TATrackSettings;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEvent;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventType;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackListener;
-import edu.yu.einstein.genplay.gui.popupMenu.TrackMenu;
+import edu.yu.einstein.genplay.gui.menu.TrackMenu;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackConstants;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;

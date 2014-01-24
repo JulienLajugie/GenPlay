@@ -22,7 +22,7 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.project;
 
-import java.awt.event.InputEvent;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.io.File;
 
@@ -57,7 +57,7 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 	/**
 	 * action accelerator {@link KeyStroke}
 	 */
-	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK);
+	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
 
 
 	/**

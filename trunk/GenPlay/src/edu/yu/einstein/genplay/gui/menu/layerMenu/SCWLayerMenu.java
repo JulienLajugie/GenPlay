@@ -20,32 +20,41 @@
  * 
  * Website: <http://genplay.einstein.yu.edu>
  ******************************************************************************/
-package edu.yu.einstein.genplay.gui.popupMenu.layerMenu;
+package edu.yu.einstein.genplay.gui.menu.layerMenu;
 
 import javax.swing.Action;
 
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.gui.action.layer.LAConvert;
 import edu.yu.einstein.genplay.gui.action.layer.LASave;
-import edu.yu.einstein.genplay.gui.action.layer.maskLayer.MLAApplyMask;
-import edu.yu.einstein.genplay.gui.action.layer.maskLayer.MLAInvertMask;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLACombineCsAndGs;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAFilter;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAIndex;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLALog;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLANormalize;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLANormalizeStandardScore;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAOperationWithConstant;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAScoreDistribution;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLAShowStatistics;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLATransfrag;
+import edu.yu.einstein.genplay.gui.action.layer.SCWLayer.SCWLATwoLayersOperation;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
-import edu.yu.einstein.genplay.gui.track.layer.MaskLayer;
+import edu.yu.einstein.genplay.gui.track.layer.SimpleSCWLayer;
 
 /**
- * Menu containing all the actions available for a {@link MaskLayer}
+ * Menu containing all the actions available for a {@link SimpleSCWLayer}
  * @author Julien Lajugie
  */
-public class MaskLayerMenu extends AbstractLayerMenu {
+public class SCWLayerMenu extends AbstractLayerMenu {
 
-	private static final long serialVersionUID = -9125382499402284968L; // generated ID
+	private static final long serialVersionUID = 1160366801758520827L; // generated serial ID
 
 
 	/**
-	 * Creates an instance of {@link MaskLayerMenu}
+	 * Creates an instance of {@link SCWLayerMenu}
 	 * @param layer
 	 */
-	public MaskLayerMenu(Layer<?> layer) {
+	public SCWLayerMenu(Layer<?> layer) {
 		super(layer);
 	}
 
@@ -53,8 +62,22 @@ public class MaskLayerMenu extends AbstractLayerMenu {
 	@Override
 	protected Action[] getLayerMenuActions() {
 		Action[] actions = {
-				new MLAApplyMask(),
-				new MLAInvertMask(),
+				new SCWLAOperationWithConstant(),
+				new SCWLATwoLayersOperation(),
+				null,
+				new SCWLAIndex(),
+				new SCWLALog(),
+				new SCWLANormalize(),
+				new SCWLANormalizeStandardScore(),
+				null,
+				new SCWLAShowStatistics(),
+				null,
+				new SCWLAFilter(),
+				new SCWLATransfrag(),
+				null,
+				new SCWLAScoreDistribution(),
+				null,
+				new SCWLACombineCsAndGs(),
 				null,
 				new LAConvert<GenomicListView<?>>(),
 				new LASave()

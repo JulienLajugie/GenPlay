@@ -20,36 +20,42 @@
  * 
  * Website: <http://genplay.einstein.yu.edu>
  ******************************************************************************/
-package edu.yu.einstein.genplay.gui.launcher;
+package edu.yu.einstein.genplay.gui.menu.layerMenu;
 
-import java.io.File;
+import javax.swing.JMenu;
 
-import com.apple.eawt.AppEvent.OpenFilesEvent;
-import com.apple.eawt.OpenFilesHandler;
+import edu.yu.einstein.genplay.gui.track.layer.Layer;
 
 /**
- * Handle the opening of a GenPlay project file in Mac OSX when the user
- * launched GenPlay by double clicking on a project file
+ * Factory that creates a {@link JMenu} that inherit from {@link AbstractLayerMenu} with the actions for the specified layer
  * @author Julien Lajugie
  */
-class OSXHandler implements OpenFilesHandler {
+public class LayerMenuFactory {
 
 	/**
-	 * GenPlay project file to open in Mac OSX if the user
-	 * launched GenPlay by double clicking on a project file
+	 * Creates a {@link JMenu} that inherit from {@link AbstractLayerMenu} with the actions for the specified layer
+	 * @param layer a {@link Layer}
+	 * @return a
+	 * @throws IllegalArgumentException
 	 */
-	private File fileToOpen = null;
-
-	/**
-	 * @return the GenPlay project file to open in Mac OSX if the user
-	 * launched GenPlay by double clicking on a project file
-	 */
-	File getFileToOpen() {
-		return fileToOpen;
-	}
-
-	@Override
-	public void openFiles(OpenFilesEvent openFilesEvent) {
-		fileToOpen = openFilesEvent.getFiles().get(0);
+	public static AbstractLayerMenu createLayerMenu(Layer<?> layer) {
+		switch (layer.getType()) {
+		case BIN_LAYER:
+			return new BinLayerMenu(layer);
+		case GENE_LAYER:
+			return new GeneLayerMenu(layer);
+		case MASK_LAYER:
+			return new MaskLayerMenu(layer);
+		case NUCLEOTIDE_LAYER:
+			return null;
+		case REPEAT_FAMILY_LAYER:
+			return new RepeatLayerMenu(layer);
+		case SIMPLE_SCW_LAYER:
+			return new SCWLayerMenu(layer);
+		case VARIANT_LAYER:
+			return new VariantLayerMenu(layer);
+		default :
+			return null;
+		}
 	}
 }

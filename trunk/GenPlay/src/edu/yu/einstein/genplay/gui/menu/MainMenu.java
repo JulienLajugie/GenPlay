@@ -20,7 +20,7 @@
  * 
  * Website: <http://genplay.einstein.yu.edu>
  ******************************************************************************/
-package edu.yu.einstein.genplay.gui.popupMenu;
+package edu.yu.einstein.genplay.gui.menu;
 
 import javax.swing.Action;
 import javax.swing.ActionMap;
@@ -69,7 +69,6 @@ public final class MainMenu extends JPopupMenu {
 	 */
 	public MainMenu(ActionMap actionMap) {
 		super("Main Menu");
-
 		jmiNewProject = new JMenuItem(actionMap.get(PANewProject.ACTION_KEY));
 		jmiLoadProject = new JMenuItem(actionMap.get(PALoadProject.ACTION_KEY));
 		jmiSaveProject = new JMenuItem(actionMap.get(PASaveProject.ACTION_KEY));

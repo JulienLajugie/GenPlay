@@ -22,7 +22,7 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.layer.geneLayer;
 
-import java.awt.event.InputEvent;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 
 import javax.swing.ActionMap;
@@ -50,7 +50,7 @@ public final class GLASearchGene extends TrackListActionWorker<Void> {
 	/**
 	 * action accelerator {@link KeyStroke}
 	 */
-	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.CTRL_DOWN_MASK);
+	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_F, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
 
 
 	/**
@@ -72,6 +72,10 @@ public final class GLASearchGene extends TrackListActionWorker<Void> {
 
 
 	@Override
+	protected void doAtTheEnd(Void actionResult) {}
+
+
+	@Override
 	protected Void processAction() throws Exception {
 		GeneLayer selectedLayer = (GeneLayer) getValue("Layer");
 		if (selectedLayer != null) {
@@ -80,8 +84,4 @@ public final class GLASearchGene extends TrackListActionWorker<Void> {
 		}
 		return null;
 	}
-
-
-	@Override
-	protected void doAtTheEnd(Void actionResult) {}
 }

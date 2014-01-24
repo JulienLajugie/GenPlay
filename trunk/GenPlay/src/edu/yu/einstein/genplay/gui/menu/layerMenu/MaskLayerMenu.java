@@ -20,42 +20,45 @@
  * 
  * Website: <http://genplay.einstein.yu.edu>
  ******************************************************************************/
-package edu.yu.einstein.genplay.gui.popupMenu.layerMenu;
+package edu.yu.einstein.genplay.gui.menu.layerMenu;
 
-import javax.swing.JMenu;
+import javax.swing.Action;
 
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
+import edu.yu.einstein.genplay.gui.action.layer.LAConvert;
+import edu.yu.einstein.genplay.gui.action.layer.LASave;
+import edu.yu.einstein.genplay.gui.action.layer.maskLayer.MLAApplyMask;
+import edu.yu.einstein.genplay.gui.action.layer.maskLayer.MLAInvertMask;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
+import edu.yu.einstein.genplay.gui.track.layer.MaskLayer;
 
 /**
- * Factory that creates a {@link JMenu} that inherit from {@link AbstractLayerMenu} with the actions for the specified layer
+ * Menu containing all the actions available for a {@link MaskLayer}
  * @author Julien Lajugie
  */
-public class LayerMenuFactory {
+public class MaskLayerMenu extends AbstractLayerMenu {
+
+	private static final long serialVersionUID = -9125382499402284968L; // generated ID
+
 
 	/**
-	 * Creates a {@link JMenu} that inherit from {@link AbstractLayerMenu} with the actions for the specified layer
-	 * @param layer a {@link Layer}
-	 * @return a
-	 * @throws IllegalArgumentException
+	 * Creates an instance of {@link MaskLayerMenu}
+	 * @param layer
 	 */
-	public static AbstractLayerMenu createLayerMenu(Layer<?> layer) {
-		switch (layer.getType()) {
-		case BIN_LAYER:
-			return new BinLayerMenu(layer);
-		case GENE_LAYER:
-			return new GeneLayerMenu(layer);
-		case MASK_LAYER:
-			return new MaskLayerMenu(layer);
-		case NUCLEOTIDE_LAYER:
-			return null;
-		case REPEAT_FAMILY_LAYER:
-			return new RepeatLayerMenu(layer);
-		case SIMPLE_SCW_LAYER:
-			return new SCWLayerMenu(layer);
-		case VARIANT_LAYER:
-			return new VariantLayerMenu(layer);
-		default :
-			return null;
-		}
+	public MaskLayerMenu(Layer<?> layer) {
+		super(layer);
+	}
+
+
+	@Override
+	protected Action[] getLayerMenuActions() {
+		Action[] actions = {
+				new MLAApplyMask(),
+				new MLAInvertMask(),
+				null,
+				new LAConvert<GenomicListView<?>>(),
+				new LASave()
+		};
+		return actions;
 	}
 }
