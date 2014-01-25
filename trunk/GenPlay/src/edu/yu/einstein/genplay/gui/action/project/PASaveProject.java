@@ -100,7 +100,7 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 		jfc.addChoosableFileFilter(filters[0]);
 		jfc.setFileFilter(filters[0]);
 		jfc.setAcceptAllFileFilterUsed(false);
-		File f = new File(ProjectManager.getInstance().getProjectName().concat(".gpf"));
+		File f = new File(ProjectManager.getInstance().getProjectName().concat(".gppf"));
 		jfc.setSelectedFile(f);
 		int returnVal = jfc.showSaveDialog(getRootPane());
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -108,7 +108,7 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 			if (selectedFilter != null) {
 				selectedFile = Utils.addExtension(jfc.getSelectedFile(), selectedFilter.getExtensions()[0]);
 			} else {
-				selectedFile = Utils.addExtension(jfc.getSelectedFile(), "gpf");
+				selectedFile = Utils.addExtension(jfc.getSelectedFile(), "gppf");
 			}
 			if (!Utils.cancelBecauseFileExist(getRootPane(), selectedFile)) {
 				notifyActionStart("Saving Project", 1, false);

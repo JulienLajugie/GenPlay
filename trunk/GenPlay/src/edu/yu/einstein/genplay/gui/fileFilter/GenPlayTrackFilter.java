@@ -33,9 +33,9 @@ public class GenPlayTrackFilter extends ExtendedFileFilter {
 
 	private static final long serialVersionUID = -6793213280985177191L; // generated ID
 	/** Valid extensions */
-	public static final String[] EXTENSIONS = {"gplt"};
+	public static final String[] EXTENSIONS = {"gptf"};
 	/** File type description */
-	public static final String DESCRIPTION = "GenPlay Track Files (*.gplt)";
+	public static final String DESCRIPTION = "GenPlay Track Files (*.gptf)";
 
 
 	/**
