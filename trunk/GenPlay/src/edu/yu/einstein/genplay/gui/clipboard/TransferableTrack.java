@@ -133,7 +133,7 @@ public class TransferableTrack implements Transferable, Serializable {
 	private File writeSerializedData() {
 		ObjectOutputStream oos = null;
 		try {
-			File tmpFile = File.createTempFile("genplayTmpTrack", ".gptf");
+			File tmpFile = File.createTempFile(trackToTransfer.getName(), ".gptf");
 			FileOutputStream out = new FileOutputStream(tmpFile);
 			oos = new ObjectOutputStream(out);
 			oos.writeObject(this);
