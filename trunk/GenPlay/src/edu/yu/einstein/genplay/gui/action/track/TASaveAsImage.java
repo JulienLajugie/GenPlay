@@ -70,23 +70,10 @@ public final class TASaveAsImage extends TrackListActionWorker<Void> {
 
 
 	/**
-	 * Creates an instance of {@link TASaveAsImage}
-	 */
-	public TASaveAsImage() {
-		super();
-		putValue(NAME, ACTION_NAME);
-		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
-		putValue(SHORT_DESCRIPTION, DESCRIPTION);
-		putValue(MNEMONIC_KEY, MNEMONIC);
-		putValue(ACCELERATOR_KEY, ACCELERATOR);
-	}
-
-
-	/**
 	 * @param selectedTrack selected track in the track panel
 	 * @return the screen shot of the selected track with the ruler on top to show the positions
 	 */
-	private BufferedImage createImage(Track selectedTrack) {
+	public static BufferedImage createImage(Track selectedTrack) {
 		// retrieve the image of the ruler
 		BufferedImage rulerImage = MainFrame.getInstance().getRuler().getImage();
 		// retrieve the image of the selected track
@@ -105,6 +92,19 @@ public final class TASaveAsImage extends TrackListActionWorker<Void> {
 		g.setColor(Color.BLACK);
 		g.drawLine(0, rulerHeight, imageWidth, rulerHeight);
 		return image;
+	}
+
+
+	/**
+	 * Creates an instance of {@link TASaveAsImage}
+	 */
+	public TASaveAsImage() {
+		super();
+		putValue(NAME, ACTION_NAME);
+		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
+		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(MNEMONIC_KEY, MNEMONIC);
+		putValue(ACCELERATOR_KEY, ACCELERATOR);
 	}
 
 

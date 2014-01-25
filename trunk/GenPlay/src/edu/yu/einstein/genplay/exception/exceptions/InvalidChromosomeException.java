@@ -26,7 +26,6 @@ package edu.yu.einstein.genplay.exception.exceptions;
 /**
  * The InvalidChromosomeException class is thrown when a Chromosome is not valid.
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class InvalidChromosomeException extends RuntimeException {
 

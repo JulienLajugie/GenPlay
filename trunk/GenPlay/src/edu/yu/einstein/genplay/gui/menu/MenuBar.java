@@ -120,7 +120,8 @@ public class MenuBar extends JMenuBar {
 				boolean isTrackSelected = MainFrame.getInstance().getTrackListPanel().getSelectedTrack() != null;
 				jmiCopy.setEnabled(isTrackSelected);
 				jmiCut.setEnabled(isTrackSelected);
-				jmiPaste.setEnabled(isTrackSelected);
+				boolean isPasteEnable = MainFrame.getInstance().getTrackListPanel().isPasteEnable();
+				jmiPaste.setEnabled(isTrackSelected && isPasteEnable);
 				jmiInsert.setEnabled(isTrackSelected);
 				jmiDelete.setEnabled(isTrackSelected);
 			}

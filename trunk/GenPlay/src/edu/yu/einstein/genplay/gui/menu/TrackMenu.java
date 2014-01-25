@@ -40,6 +40,7 @@ import edu.yu.einstein.genplay.gui.action.track.TAInsert;
 import edu.yu.einstein.genplay.gui.action.track.TAPaste;
 import edu.yu.einstein.genplay.gui.action.track.TASaveAsImage;
 import edu.yu.einstein.genplay.gui.action.track.TATrackSettings;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.menu.layerMenu.LayerMenuFactory;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
@@ -130,6 +131,8 @@ public class TrackMenu extends JPopupMenu implements PopupMenuListener {
 	@Override
 	public void popupMenuWillBecomeVisible(PopupMenuEvent evt) {
 		if (selectedTrack != null) {
+			boolean isPasteEnable = MainFrame.getInstance().getTrackListPanel().isPasteEnable();
+			TrackListActionMap.getActionMap().get(TAPaste.ACTION_KEY).setEnabled(isPasteEnable);
 			Layer<?>[] trackLayers = selectedTrack.getLayers().getLayers();
 			if (trackLayers != null) {
 				int lastIndex = getComponentCount();

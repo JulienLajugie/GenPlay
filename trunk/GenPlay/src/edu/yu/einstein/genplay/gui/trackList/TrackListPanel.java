@@ -24,6 +24,10 @@ package edu.yu.einstein.genplay.gui.trackList;
 
 import java.awt.Component;
 import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
 import java.io.Serializable;
 
 import javax.swing.BoxLayout;
@@ -38,6 +42,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectConfiguration;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.action.track.TATrackSettings;
+import edu.yu.einstein.genplay.gui.clipboard.TransferableTrack;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEvent;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventType;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackListener;
@@ -60,7 +65,6 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 	private final static int 	SCROLL_BAR_UNIT_INCREMENT = 15; 			// unit increment for the scroll bar
 	private static final long 	serialVersionUID = -5070245121955382857L; 	// generated serial ID
 
-	private transient Track 		copiedTrack = null; 		// list of the tracks in the clipboard
 	private transient Track 		draggedOverTrack = null;	// track rolled over by the dragged track, null if none
 	private transient Track 		draggedTrack = null; 		// dragged track, null if none
 	private transient Track 		selectedTrack = null; 		// track selected
@@ -95,15 +99,6 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 		rebuildPanel();
 	}
 
-	/**
-	 * Copies the selected track.
-	 */
-	public void copyTrack() {
-		if (selectedTrack != null) {
-			copiedTrack = selectedTrack;
-		}
-	}
-
 
 	/**
 	 * Cuts the selected track
@@ -111,21 +106,12 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 	public void cutTrack() {
 		if (selectedTrack != null) {
 			try {
-				copiedTrack = selectedTrack;
 				getModel().deleteTrack(selectedTrack);
 				selectedTrack = null;
 			} catch (Exception e) {
 				ExceptionManager.getInstance().caughtException(Thread.currentThread(), e, "Error while cutting the track");
 			}
 		}
-	}
-
-
-	/**
-	 * @return the copied track
-	 */
-	public Track getCopiedTrack() {
-		return copiedTrack;
 	}
 
 
@@ -189,7 +175,21 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 	 * @return true if there is a track to paste
 	 */
 	public boolean isPasteEnable() {
-		return (copiedTrack != null);
+		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+		Transferable clipboardContent = clipboard.getContents(this);
+		DataFlavor[] flavors = clipboardContent.getTransferDataFlavors();
+		int i = 0;
+		boolean isPasteEnabled = false;
+		while ((i < flavors.length) && !isPasteEnabled) {
+			if (flavors[i].match(TransferableTrack.trackDataFlavor)) {
+				isPasteEnabled = true;
+			} else if (flavors[i].match(DataFlavor.javaFileListFlavor)) {
+				isPasteEnabled = true;
+				// TODO check that the file type is really loadable in genplay
+			}
+			i++;
+		}
+		return isPasteEnabled;
 	}
 
 
@@ -345,7 +345,13 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 				JPanel currentTrackPanel = currentTrack.getTrackPanel();
 				int currentTrackTop = currentTrackPanel.getY() - getVerticalScrollBar().getValue();
 				int currentrackBottom = (currentTrackPanel.getY() + currentTrackPanel.getHeight()) - getVerticalScrollBar().getValue();
-				if ((getMousePosition().y > currentTrackTop) && (getMousePosition().y < currentrackBottom) && (draggedOverTrack != currentTrack)) {
+				int mouseY = -1;
+				synchronized (this) {
+					if (getMousePosition() != null) {
+						mouseY = getMousePosition().y;
+					}
+				}
+				if ((mouseY != -1) && (mouseY > currentTrackTop) && (mouseY < currentrackBottom) && (draggedOverTrack != currentTrack)) {
 					if (draggedOverTrack != null) {
 						draggedOverTrack.setBorder(TrackConstants.REGULAR_BORDER);
 					}

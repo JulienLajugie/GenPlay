@@ -23,22 +23,24 @@
 package edu.yu.einstein.genplay.gui.action.track;
 
 import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.KeyEvent;
 
 import javax.swing.ActionMap;
 import javax.swing.KeyStroke;
 
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
+import edu.yu.einstein.genplay.gui.clipboard.TransferableTrack;
 import edu.yu.einstein.genplay.gui.track.Track;
-
 
 
 /**
  * Cuts the selected track
  * @author Julien Lajugie
- * @version 0.1
  */
-public final class TACut extends TrackListActionWorker<Void> {
+public final class TACut extends TrackListActionWorker<Void> implements ClipboardOwner{
 
 	private static final long serialVersionUID = 5387375446702872880L;  // generated ID
 	private static final String ACTION_NAME = "Cut"; 					// action name
@@ -72,10 +74,17 @@ public final class TACut extends TrackListActionWorker<Void> {
 
 
 	@Override
+	public void lostOwnership(Clipboard clipboard, Transferable contents) {}
+
+
+	@Override
 	protected Void processAction() throws Exception {
 		Track selectedTrack = getTrackListPanel().getSelectedTrack();
 		if (selectedTrack != null) {
 			notifyActionStart("Cutting Track #" + selectedTrack.getNumber(), 1, false);
+			Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+			Transferable data = new TransferableTrack(selectedTrack);
+			clipboard.setContents(data, this);
 			getTrackListPanel().cutTrack();
 		}
 		return null;
