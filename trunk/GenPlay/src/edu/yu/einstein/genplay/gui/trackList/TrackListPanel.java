@@ -181,7 +181,7 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 		int i = 0;
 		boolean isPasteEnabled = false;
 		while ((i < flavors.length) && !isPasteEnabled) {
-			if (flavors[i].match(TransferableTrack.trackDataFlavor)) {
+			if (flavors[i].match(TransferableTrack.TRACK_FLAVOR)) {
 				isPasteEnabled = true;
 			} else if (flavors[i].match(DataFlavor.javaFileListFlavor)) {
 				isPasteEnabled = true;

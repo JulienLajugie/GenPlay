@@ -121,6 +121,7 @@ public class TrackMenu extends JPopupMenu implements PopupMenuListener {
 			layerMenus.clear();
 			remove(layerMenusSeparator);
 		}
+		TrackListActionMap.getActionMap().get(TAPaste.ACTION_KEY).setEnabled(true);
 		selectedTrack = null;
 	}
 

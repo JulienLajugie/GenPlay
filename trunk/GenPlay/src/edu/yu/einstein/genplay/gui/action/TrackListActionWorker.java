@@ -33,6 +33,7 @@ import javax.swing.SwingWorker;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
+import edu.yu.einstein.genplay.gui.dialog.exceptionDialog.WarningReportDialog;
 import edu.yu.einstein.genplay.gui.event.operationProgressEvent.OperationProgressEvent;
 import edu.yu.einstein.genplay.gui.event.operationProgressEvent.OperationProgressListener;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
@@ -81,6 +82,9 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 				OperationPool.getInstance().removeOperationProgressListener(TrackListActionWorker.this);
 				getTrackListPanel().unlockTrackHandles();
 				getTrackListPanel().setEnabled(true);
+				if ((!WarningReportDialog.getInstance().isVisible())) {
+					MainFrame.getInstance().setVisible(true);
+				}
 			}
 		}
 	}

@@ -142,7 +142,7 @@ public final class TAPaste extends TrackListActionWorker<Void> {
 		Track copiedTrack = null;
 		while ((i < flavors.length) && (copiedTrack == null)) {
 			TransferableTrack transTrack = null;
-			if (flavors[i].match(TransferableTrack.trackDataFlavor)) {
+			if (flavors[i].match(TransferableTrack.TRACK_FLAVOR)) {
 				transTrack = (TransferableTrack) clipboardContent.getTransferData(flavors[i]);
 			} else if (flavors[i].match(DataFlavor.javaFileListFlavor)) {
 				transTrack = retrieveTrackFromFile(clipboardContent.getTransferData(flavors[i]));
