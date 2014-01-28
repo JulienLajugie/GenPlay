@@ -33,7 +33,6 @@ import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
 import edu.yu.einstein.genplay.core.IO.fileSorter.ExternalSortAdapter;
-import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.exceptionDialog.WarningReportDialog;
 import edu.yu.einstein.genplay.util.Utils;
@@ -86,10 +85,8 @@ public class PASortFile extends TrackListActionWorker<Boolean> {
 
 	@Override
 	protected Boolean processAction() throws Exception {
-		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
-		final JFileChooser jfc = new JFileChooser(defaultDirectory);
-		// redundant on Windows and Linux but needed for OSX
-		jfc.setSelectedFile(new File(defaultDirectory));
+		final JFileChooser jfc = new JFileChooser();
+		Utils.setFileChooserSelectedDirectory(jfc);
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		jfc.setDialogTitle("Sort File");
 		jfc.setAcceptAllFileFilterUsed(true);

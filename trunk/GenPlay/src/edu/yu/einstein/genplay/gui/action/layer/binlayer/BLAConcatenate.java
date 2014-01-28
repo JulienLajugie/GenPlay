@@ -29,7 +29,6 @@ import javax.swing.ActionMap;
 import javax.swing.JFileChooser;
 
 import edu.yu.einstein.genplay.core.IO.writer.binListWriter.ConcatenateBinListWriter;
-import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
@@ -86,10 +85,8 @@ public class BLAConcatenate extends TrackListActionWorker<Void> {
 			List<Layer<?>> selectedLayers = layerChooserDialog.getSelectedLayers();
 			if ((selectedLayers != null) && !selectedLayers.isEmpty()) {
 				// save dialog
-				String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
-				JFileChooser jfc = new JFileChooser(defaultDirectory);
-				// redundant on Windows and Linux but needed for OSX
-				jfc.setSelectedFile(new File(defaultDirectory));
+				JFileChooser jfc = new JFileChooser();
+				Utils.setFileChooserSelectedDirectory(jfc);
 				jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				jfc.setDialogTitle("Save As");
 				jfc.setSelectedFile(new File(".txt"));

@@ -27,7 +27,6 @@ import java.io.File;
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.IO.dataReader.GeneReader;
-import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneListFactory;
@@ -114,8 +113,7 @@ public final class TAAddGeneLayer extends TrackListActionExtractorWorker<GeneLis
 
 	@Override
 	protected File retrieveFileToExtract() {
-		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
-		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Gene File", defaultDirectory, Utils.getReadableGeneFileFilters(), true);
+		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Gene File", Utils.getReadableGeneFileFilters(), true);
 		if (selectedFile != null) {
 			return selectedFile;
 		}

@@ -28,7 +28,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 
-import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.gui.customComponent.customComboBox.customComboBoxEvent.CustomComboBoxEvent;
 import edu.yu.einstein.genplay.gui.fileFilter.ExtendedFileFilter;
 import edu.yu.einstein.genplay.util.Utils;
@@ -58,7 +57,7 @@ public class CustomFileComboBox extends CustomComboBox<File> {
 	public CustomFileComboBox () {
 		//Create a file chooser
 		fc = new JFileChooser();
-		fc.setCurrentDirectory(new File(ConfigurationManager.getInstance().getDefaultDirectory()));
+		Utils.setFileChooserSelectedDirectory(fc);
 		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fc.setAcceptAllFileFilterUsed(false);
 		fc.setDialogTitle("Select a file");
@@ -168,8 +167,7 @@ public class CustomFileComboBox extends CustomComboBox<File> {
 	 */
 	@Override
 	protected void replaceAction (File element) {
-		File newElement = Utils.chooseFileToLoad(getRootPane(), "Select a file", ConfigurationManager.getInstance().getDefaultDirectory(), filters, false);
-
+		File newElement = Utils.chooseFileToLoad(getRootPane(), "Select a file", filters, false);
 		if (newElement != null) {
 			elements.remove(element);
 			addElement(newElement);

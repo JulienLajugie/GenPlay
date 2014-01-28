@@ -31,7 +31,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotData;
 import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotPane;
@@ -73,8 +72,8 @@ public class SPASaveData extends ScatterPlotAction {
 			selectedData = (ScatterPlotData) JOptionPane.showInputDialog(getScatterPlotPane(), "Select a graph", "Choose Color", JOptionPane.PLAIN_MESSAGE, null, graphNames, graphNames[0]);
 		}
 		if (selectedData != null) {
-			String defaultDirectoryPath = ConfigurationManager.getInstance().getDefaultDirectory();
-			JFileChooser jfc = new JFileChooser(defaultDirectoryPath);
+			JFileChooser jfc = new JFileChooser();
+			Utils.setFileChooserSelectedDirectory(jfc);
 			jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			FileNameExtensionFilter filter = new FileNameExtensionFilter("TSV file (*.tsv)", "tsv");
 			jfc.setFileFilter(filter);

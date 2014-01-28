@@ -56,11 +56,22 @@ public final class HistoryDialog extends JDialog {
 	private static final long serialVersionUID = 9059804292908454294L; // generated ID
 	private static final Dimension HISTORY_FRAME_DIMENSION =
 			new Dimension(500, 300);							// dimension of the frame
+	/**
+	 * Show the history dialog box
+	 * @param parent parent component
+	 * @param trackName name of a curve
+	 * @param history history of a curve
+	 */
+	public static void showHistoryDialog(Component parent, String trackName, History history) {
+		new HistoryDialog(parent, trackName, history).setVisible(true);
+	}
 	private final JList 		jlHistory;					// list containing the history
 	private final JScrollPane   jspHistory;					// scroll pane containing the history list
 	private final JButton 		jbSave;						// save button
 	private final JButton 		jbClose;					// close button
 	private final String 		trackName;					// name of a curve
+
+
 	private final History 		history;					// history of a curve
 
 
@@ -90,6 +101,23 @@ public final class HistoryDialog extends JDialog {
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(parent);
 		getRootPane().setDefaultButton(jbClose);
+	}
+
+
+	/**
+	 * Asks if the user wants to replace a file if this file already exists.
+	 * @param f A file.
+	 * @return True if the user wants to cancel. False otherwise.
+	 */
+	private boolean cancelBecauseFileExist(File f) {
+		if (f.exists()) {
+			int res = JOptionPane.showConfirmDialog(getRootPane(), "The file " + f.getName() + " already exists. Do you want to replace the existing file?", "File already exists", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null);
+			if (res == JOptionPane.NO_OPTION) {
+				return true;
+			}
+		}
+		f.delete();
+		return false;
 	}
 
 
@@ -145,6 +173,7 @@ public final class HistoryDialog extends JDialog {
 	public void saveHistory() {
 		JFileChooser jfc = new JFileChooser();
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		Utils.setFileChooserSelectedDirectory(jfc);
 		jfc.setDialogTitle("Save " + trackName + " history");
 		FileNameExtensionFilter webPageFilter = new FileNameExtensionFilter("Web Pages", "html", "htm");
 		jfc.addChoosableFileFilter(webPageFilter);
@@ -161,33 +190,5 @@ public final class HistoryDialog extends JDialog {
 				}
 			}
 		}
-	}
-
-
-	/**
-	 * Asks if the user wants to replace a file if this file already exists.
-	 * @param f A file.
-	 * @return True if the user wants to cancel. False otherwise.
-	 */
-	private boolean cancelBecauseFileExist(File f) {
-		if (f.exists()) {
-			int res = JOptionPane.showConfirmDialog(getRootPane(), "The file " + f.getName() + " already exists. Do you want to replace the existing file?", "File already exists", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null);
-			if (res == JOptionPane.NO_OPTION) {
-				return true;
-			}
-		}
-		f.delete();
-		return false;
-	}
-
-
-	/**
-	 * Show the history dialog box
-	 * @param parent parent component
-	 * @param trackName name of a curve
-	 * @param history history of a curve
-	 */
-	public static void showHistoryDialog(Component parent, String trackName, History history) {
-		new HistoryDialog(parent, trackName, history).setVisible(true);
 	}
 }

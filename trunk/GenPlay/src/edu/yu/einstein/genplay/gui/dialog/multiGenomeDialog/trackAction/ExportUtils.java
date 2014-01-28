@@ -29,7 +29,6 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
-import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.gui.fileFilter.ExtendedFileFilter;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.util.Utils;
@@ -47,10 +46,8 @@ public class ExportUtils {
 	 * @return a file to export the VCF
 	 */
 	public static File getFile (FileFilter[] filters, boolean open) {
-		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
-		final JFileChooser jfc = new JFileChooser(defaultDirectory);
-		// redundant in Windows and Linux but needed for OSX
-		jfc.setSelectedFile(new File(defaultDirectory));
+		final JFileChooser jfc = new JFileChooser();
+		Utils.setFileChooserSelectedDirectory(jfc);
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		jfc.setDialogTitle("Select an output file");
 		for (FileFilter currentFilter: filters) {

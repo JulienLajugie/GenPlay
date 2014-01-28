@@ -27,7 +27,6 @@ import java.io.File;
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.IO.extractor.TwoBitExtractor;
-import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.nucleotideList.TwoBitSequenceList;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
@@ -110,8 +109,7 @@ public class TAAddNucleotideLayer extends TrackListActionExtractorWorker<TwoBitS
 
 	@Override
 	protected File retrieveFileToExtract() {
-		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
-		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load DNA Sequence File", defaultDirectory, Utils.getReadableSequenceFileFilters(), true);
+		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load DNA Sequence File", Utils.getReadableSequenceFileFilters(), true);
 		if (selectedFile != null) {
 			return selectedFile;
 		}

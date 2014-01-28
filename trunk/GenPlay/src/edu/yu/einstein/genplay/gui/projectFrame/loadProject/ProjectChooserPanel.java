@@ -33,7 +33,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 
-import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.gui.fileFilter.GenPlayProjectFilter;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 import edu.yu.einstein.genplay.util.Utils;
@@ -88,9 +87,8 @@ class ProjectChooserPanel extends JPanel {
 		chooseProject.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
 				FileFilter[] fileFilters = {new GenPlayProjectFilter()};
-				File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Project", defaultDirectory, fileFilters, true);
+				File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Project", fileFilters, true);
 				if (selectedFile != null) {
 					path.setText(selectedFile.getPath());
 					getProjectListPanel().setButtonOther(selectedFile);

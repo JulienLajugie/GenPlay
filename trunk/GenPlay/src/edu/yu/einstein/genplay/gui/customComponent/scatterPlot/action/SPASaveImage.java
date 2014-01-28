@@ -31,7 +31,6 @@ import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotPane;
 import edu.yu.einstein.genplay.util.Utils;
@@ -48,7 +47,7 @@ public class SPASaveImage extends ScatterPlotAction {
 	private static final long serialVersionUID = -8313148262612777559L;	// generated ID
 	private static final String 	ACTION_NAME = "Save As Image";		// action name
 	private static final String 	DESCRIPTION =
-			"Save the chart as a PNG image";								// tooltip
+			"Save the chart as a PNG image";							// tooltip
 
 
 	/**
@@ -64,10 +63,8 @@ public class SPASaveImage extends ScatterPlotAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
-		final JFileChooser jfc = new JFileChooser(defaultDirectory);
-		// redundant in Windows and Linux but needed for OSX
-		jfc.setSelectedFile(new File(defaultDirectory));
+		final JFileChooser jfc = new JFileChooser();
+		Utils.setFileChooserSelectedDirectory(jfc);
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("PNG file (*.PNG)", "png");
 		jfc.setFileFilter(filter);

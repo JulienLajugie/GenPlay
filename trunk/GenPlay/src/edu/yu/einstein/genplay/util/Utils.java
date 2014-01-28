@@ -34,6 +34,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileFilter;
 
+import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
@@ -157,15 +158,13 @@ public final class Utils {
 	 * Opens a dialog box asking the user to choose a file to load
 	 * @param parentComponent determines the Frame in which the dialog is displayed; if null, or if the parentComponent has no Frame, a default Frame is used
 	 * @param title title of the open dialog
-	 * @param defaultDirectory default directory
 	 * @param choosableFileFilters {@link FileFilter} available
 	 * @param allFiles allow the selection of every kind of file if true, disable the all file selection if false
 	 * @return a file to load
 	 */
-	public final static File chooseFileToLoad(Component parentComponent, String title, String defaultDirectory, FileFilter[] choosableFileFilters, boolean allFiles) {
-		JFileChooser jfc = new JFileChooser(defaultDirectory);
-		// redundant in Windows and Linux but needed for OSX
-		jfc.setSelectedFile(new File(defaultDirectory));
+	public final static File chooseFileToLoad(Component parentComponent, String title, FileFilter[] choosableFileFilters, boolean allFiles) {
+		JFileChooser jfc = new JFileChooser();
+		setFileChooserSelectedDirectory(jfc);
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		jfc.setDialogTitle(title);
 		for (FileFilter currentFilter: choosableFileFilters) {
@@ -188,7 +187,6 @@ public final class Utils {
 			return null;
 		}
 	}
-
 
 
 	/**
@@ -544,6 +542,20 @@ public final class Utils {
 			right--;
 		}
 		return b;
+	}
+
+
+	/**
+	 * Sets the specified {@link JFileChooser} to the default directory
+	 * @param jfc
+	 */
+	public static void setFileChooserSelectedDirectory(JFileChooser jfc) {
+		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
+		if (isMacOS()) {
+			jfc.setSelectedFile(new File(defaultDirectory));
+		} else {
+			jfc.setCurrentDirectory(new File(defaultDirectory));
+		}
 	}
 
 
