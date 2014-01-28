@@ -25,11 +25,9 @@ package edu.yu.einstein.genplay.gui.clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -54,16 +52,7 @@ public class TransferableTrack implements Transferable, Serializable {
 	public static final DataFlavor TRACK_FLAVOR = new DataFlavor(TransferableTrack.class, "GenPlay Track");
 
 	/** URI list flavor*/
-	public static DataFlavor URILIST_FLAVOR = null;
-
-	/** X file list flavor */
-	public static DataFlavor XFILELIST_FLAVOR = null;
-
-	/** Gnome file list flavor */
-	public static DataFlavor GNOMEFILELIST_FLAVOR = null;
-
-	/** KDE file list flavor */
-	public static DataFlavor KDEFILELIST_FLAVOR = null;
+	public static DataFlavor uriListFlavor = null;
 
 	private final Track 	trackToTransfer;	// track to transfer
 	private final String 	assemblyName;		// assembly of the track to transfer
@@ -71,11 +60,8 @@ public class TransferableTrack implements Transferable, Serializable {
 	// create the flavor
 	static {
 		try {
-			URILIST_FLAVOR = new DataFlavor( "text/uri-list" );
-			XFILELIST_FLAVOR = new DataFlavor( "application/x-java-file-list" );
-			GNOMEFILELIST_FLAVOR = new DataFlavor( "x-special/gnome-copied-files" );
-			KDEFILELIST_FLAVOR = new DataFlavor( "application/x-kde-cutselection" );
-		} catch (ClassNotFoundException e){e.printStackTrace();}
+			uriListFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
+		} catch (ClassNotFoundException e){} // can't happen
 	}
 
 
@@ -86,27 +72,6 @@ public class TransferableTrack implements Transferable, Serializable {
 	public TransferableTrack(Track trackToTransfer) {
 		this.trackToTransfer = trackToTransfer;
 		assemblyName = ProjectManager.getInstance().getAssembly().getName();
-	}
-
-
-	/**
-	 * @param fileList
-	 * @param action
-	 * @return an input stream with the files to transfer
-	 */
-	private InputStream fileListToInputStream(List<File> fileList, String action) {
-		String transferString = "";
-		for(File currentFile: fileList) {
-			String uriString = currentFile.toURI().toString();
-			uriString = uriString.replace("file:", "file:/");
-			transferString += uriString + "\n\r";
-		}
-		// remove last \n\r
-		transferString = transferString.substring(0, transferString.length() - 2);
-		if (action != null) {
-			transferString = action + "\n\r" + transferString;
-		}
-		return new ByteArrayInputStream(transferString.getBytes());
 	}
 
 
@@ -169,34 +134,13 @@ public class TransferableTrack implements Transferable, Serializable {
 		if (flavor.equals(TRACK_FLAVOR)) {
 			return this;
 		}
-		if (flavor.equals(URILIST_FLAVOR)) {
+		if (flavor.equals(uriListFlavor)) {
 			List<File> fileList = getDataAsFileList();
-			if (flavor.isRepresentationClassInputStream()) {
-				return fileListToInputStream(fileList, null);
-			} else {
-				return fileList;
+			if (fileList == null) {
+				return null;
 			}
-		}
-		if (flavor.equals(XFILELIST_FLAVOR)) {
-			List<File> fileList = getDataAsFileList();
 			if (flavor.isRepresentationClassInputStream()) {
-				return fileListToInputStream(fileList, null);
-			} else {
-				return fileList;
-			}		}
-		if (flavor.equals(GNOMEFILELIST_FLAVOR)) {
-			List<File> fileList = getDataAsFileList();
-			if (flavor.isRepresentationClassInputStream()) {
-				return fileListToInputStream(fileList, "copy");
-			} else {
-				return fileList;
-			}
-		}
-		if (flavor.equals(KDEFILELIST_FLAVOR)) {
-			// TODO: test with KDE
-			List<File> fileList = getDataAsFileList();
-			if (flavor.isRepresentationClassInputStream()) {
-				return fileListToInputStream(fileList, null);
+				return fileList.get(0).toURI() + "\r\n";
 			} else {
 				return fileList;
 			}
@@ -207,14 +151,12 @@ public class TransferableTrack implements Transferable, Serializable {
 
 	@Override
 	public DataFlavor[] getTransferDataFlavors() {
-		DataFlavor[] flavors = {DataFlavor.imageFlavor,
+		DataFlavor[] flavors = {
+				DataFlavor.imageFlavor,
 				DataFlavor.javaFileListFlavor,
 				DataFlavor.stringFlavor,
 				TRACK_FLAVOR,
-				URILIST_FLAVOR,
-				XFILELIST_FLAVOR,
-				GNOMEFILELIST_FLAVOR,
-				KDEFILELIST_FLAVOR};
+				uriListFlavor};
 		return flavors;
 	}
 
@@ -233,16 +175,7 @@ public class TransferableTrack implements Transferable, Serializable {
 		if (flavor == TRACK_FLAVOR) {
 			return true;
 		}
-		if (flavor == URILIST_FLAVOR) {
-			return true;
-		}
-		if (flavor == XFILELIST_FLAVOR) {
-			return true;
-		}
-		if (flavor == GNOMEFILELIST_FLAVOR) {
-			return true;
-		}
-		if (flavor == KDEFILELIST_FLAVOR) {
+		if (flavor == uriListFlavor) {
 			return true;
 		}
 		return false;

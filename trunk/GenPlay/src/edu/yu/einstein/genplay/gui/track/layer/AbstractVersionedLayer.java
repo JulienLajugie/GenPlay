@@ -28,7 +28,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import edu.yu.einstein.genplay.core.manager.URRManager;
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.History;
@@ -86,7 +86,7 @@ public abstract class AbstractVersionedLayer<T extends Serializable> extends Abs
 	public AbstractVersionedLayer(Track track, T data, String name) {
 		super(track, data, name);
 		this.history = new History();
-		this.urrManager = new URRManager<T>(ProjectManager.getInstance().getProjectConfiguration().getUndoCount(), data);
+		this.urrManager = new URRManager<T>(ConfigurationManager.getInstance().getUndoCount(), data);
 	}
 
 

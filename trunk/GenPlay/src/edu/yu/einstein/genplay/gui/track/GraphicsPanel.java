@@ -210,7 +210,7 @@ public final class GraphicsPanel extends JPanel implements Serializable, Compone
 			ProjectZoom projectZoom = ProjectManager.getInstance().getProjectZoom();
 			int newZoom = 0;
 			int weelRotation = Math.abs(e.getWheelRotation());
-			boolean isZoomIn = e.getWheelRotation() > 0;
+			boolean isZoomIn = e.getWheelRotation() < 0;
 			for (int i = 0; i < weelRotation; i++) {
 				if (isZoomIn) {
 					newZoom = projectZoom.getNextZoomIn(projectWindow.getGenomeWindow().getSize());

@@ -44,8 +44,7 @@ import javax.swing.border.Border;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectConfiguration;
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEvent;
@@ -310,8 +309,8 @@ public final class Track implements Serializable, GenomeWindowListener, TrackLis
 		handlePanel.addTrackListener(this);
 
 		// set the the default height of the track
-		ProjectConfiguration projectConfiguration = ProjectManager.getInstance().getProjectConfiguration();
-		int defaultHeight = projectConfiguration.getTrackHeight();
+		ConfigurationManager configurationManager = ConfigurationManager.getInstance();
+		int defaultHeight = configurationManager.getTrackHeight();
 		setDefaultHeight(defaultHeight);
 		setPreferredHeight(defaultHeight);
 

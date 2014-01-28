@@ -49,9 +49,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 
 import edu.yu.einstein.genplay.core.DAS.DASServerListWriter;
-import edu.yu.einstein.genplay.core.manager.project.ProjectConfiguration;
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
+import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.Utils;
@@ -66,7 +64,7 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 
 	private static final long serialVersionUID = 4050757943368845382L; // Generated ID
 	private static final Dimension OPTION_DIALOG_DIMENSION = new Dimension(600, 400); // dimension of this window
-	private final ProjectConfiguration 	cm; 				// A ConfigurationManager
+	private final ConfigurationManager 	cm; 				// A ConfigurationManager
 	private final JTree 				jt; 				// Tree
 	private final JScrollPane 			jspTreeView; 		// Scroll pane containing the tree
 	private final JPanel 				jpOption; 			// Panel containing the different panel of configuration
@@ -102,7 +100,7 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 	 */
 	public OptionDialog() {
 		super();
-		cm = ProjectManager.getInstance().getProjectConfiguration();
+		cm = ConfigurationManager.getInstance();
 		dasServerListFile = cm.getDASServerListFile();
 		defaultDirectory = cm.getDefaultDirectory();
 		lookAndFeel = cm.getLookAndFeel();
@@ -148,7 +146,7 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 				approved = APPROVE_OPTION;
 				setVisible(false);
 				try {
-					RecordingManager.getInstance().getApplicationRecording().writeConfigurationFile();
+					ConfigurationManager.getInstance().writeConfiguration();
 					if (DASOptionPanel.tableChangedFlag == true) {
 						cm.setDASServerListFile(cm.getDASServerListFile());
 						DASServerListWriter dasServerListWriter = new DASServerListWriter();

@@ -24,6 +24,7 @@ package edu.yu.einstein.genplay.core.manager.recording;
 
 
 
+
 /**
  * This class manages the project records.
  * It is organized in three different parts:
@@ -46,10 +47,8 @@ public class RecordingManager {
 		}
 		return instance;
 	}
-	private final ApplicationRecording 		applicationRecording;		// Instance of the application recording manager
+
 	private final ProjectRecording 			projectRecording;			// Instance of the project recording manager
-
-
 	private final RecentProjectRecording 	recentProjectRecording;		// Instance of the recent project recording
 
 
@@ -57,17 +56,8 @@ public class RecordingManager {
 	 * Constructor of {@link RecordingManager}
 	 */
 	private RecordingManager () {
-		applicationRecording = new ApplicationRecording();
 		projectRecording = new ProjectRecording();
 		recentProjectRecording = new RecentProjectRecording();
-	}
-
-
-	/**
-	 * @return the applicationRecording
-	 */
-	public ApplicationRecording getApplicationRecording() {
-		return applicationRecording;
 	}
 
 
@@ -85,5 +75,4 @@ public class RecordingManager {
 	public RecentProjectRecording getRecentProjectRecording() {
 		return recentProjectRecording;
 	}
-
 }

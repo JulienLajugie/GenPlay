@@ -67,7 +67,6 @@ public class ProjectManager implements Serializable {
 	private Assembly 					assembly;				// assembly name
 	private	boolean						multiGenome;			// True if it is a multi genome project, false if it is a simple genome project
 	private ScorePrecision				projectScorePrecision;	// precision of the scores of the project (16 / 32 BIT)
-	private final ProjectConfiguration 	projectConfiguration;	// Instance of the Configuration Manager
 	private final ProjectWindow			projectWindow;			// Instance of the Genome Window Manager
 	private final ProjectZoom 			projectZoom;			// Instance of the Zoom Manager
 	private final ProjectChromosomes	projectChromosomes;		// Instance of the Chromosome Manager
@@ -79,7 +78,6 @@ public class ProjectManager implements Serializable {
 	 */
 	private ProjectManager() {
 		multiGenome = false;
-		projectConfiguration = new ProjectConfiguration();
 		projectZoom = new ProjectZoom();
 		projectChromosomes = new ProjectChromosomes();
 		projectWindow = new ProjectWindow();
@@ -127,14 +125,6 @@ public class ProjectManager implements Serializable {
 	 */
 	public ProjectChromosomes getProjectChromosomes() {
 		return projectChromosomes;
-	}
-
-
-	/**
-	 * @return the Configuration Manager
-	 */
-	public ProjectConfiguration getProjectConfiguration () {
-		return projectConfiguration;
 	}
 
 

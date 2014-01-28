@@ -29,6 +29,7 @@ import java.util.List;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
+import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
@@ -49,7 +50,7 @@ public class TrackListModel implements Serializable {
 	 * @return a list of tracks
 	 */
 	private static Track[] createDefaultTrackList() {
-		int trackCount = ProjectManager.getInstance().getProjectConfiguration().getTrackCount();
+		int trackCount = ConfigurationManager.getInstance().getTrackCount();
 		Track[] tracks = new Track[trackCount];
 		for (int i = 0; i < trackCount; i++) {
 			tracks[i] = new Track(i + 1);

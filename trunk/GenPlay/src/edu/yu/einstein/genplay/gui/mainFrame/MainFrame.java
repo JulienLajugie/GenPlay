@@ -45,6 +45,7 @@ import javax.swing.WindowConstants;
 
 import com.apple.eawt.Application;
 
+import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
@@ -438,7 +439,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 	 */
 	private void setLookAndFeel() {
 		try {
-			UIManager.setLookAndFeel(ProjectManager.getInstance().getProjectConfiguration().getLookAndFeel());
+			UIManager.setLookAndFeel(ConfigurationManager.getInstance().getLookAndFeel());
 			SwingUtilities.updateComponentTreeUI(this);
 		} catch (Exception e) {
 			ExceptionManager.getInstance().caughtException(Thread.currentThread(), e, "Error while loading the look and feel specified in the config file");

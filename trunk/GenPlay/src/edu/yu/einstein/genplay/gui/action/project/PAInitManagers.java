@@ -47,7 +47,7 @@ import edu.yu.einstein.genplay.gui.dialog.invalidFileDialog.InvalidFileDialog;
  * - the project information {@link ProjectInformation}
  * - the managers {@link ProjectManager}
  * 
- * This action first reads the project information in order to validate the files related to the project wether the project is file dependant.
+ * This action first reads the project information in order to validate the files related to the project whether the project is file dependent.
  * Then, this action reads the managers.
  * 
  * This action is set either with an input stream or with a file.
@@ -193,9 +193,6 @@ public final class PAInitManagers extends AbstractAction {
 					}
 				}
 			}
-		}
-		if (error != null) {
-			System.err.println("PAInitManagers.actionPerformed() Errors:\n" + error);
 		}
 	}
 
@@ -356,5 +353,4 @@ public final class PAInitManagers extends AbstractAction {
 	public void setLoadingFromWelcomeScreen(boolean loadingFromWelcomeScreen) {
 		this.loadingFromWelcomeScreen = loadingFromWelcomeScreen;
 	}
-
 }

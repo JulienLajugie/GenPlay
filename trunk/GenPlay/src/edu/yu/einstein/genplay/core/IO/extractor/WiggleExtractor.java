@@ -127,6 +127,7 @@ public final class WiggleExtractor extends TextFileExtractor implements SCWReade
 				if (isFixedStep) {
 					score = Extractors.getFloat(splittedLine[i]);
 					if ((score == 0) || !getChromosomeSelector().isSelected(chromosome.getName())) {
+						currentPosition += currentStep;
 						return LINE_SKIPPED;
 					}
 

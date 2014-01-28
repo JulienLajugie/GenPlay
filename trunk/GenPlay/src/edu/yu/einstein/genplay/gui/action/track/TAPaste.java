@@ -32,6 +32,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -133,8 +135,9 @@ public final class TAPaste extends TrackListActionWorker<Void> {
 	 * @return retrieve the track from the clipboard if there is one
 	 * @throws UnsupportedFlavorException
 	 * @throws IOException
+	 * @throws URISyntaxException
 	 */
-	private Track retrieveTrack() throws UnsupportedFlavorException, IOException {
+	private Track retrieveTrack() throws UnsupportedFlavorException, IOException, URISyntaxException {
 		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 		Transferable clipboardContent = clipboard.getContents(this);
 		DataFlavor[] flavors = clipboardContent.getTransferDataFlavors();
@@ -145,7 +148,16 @@ public final class TAPaste extends TrackListActionWorker<Void> {
 			if (flavors[i].match(TransferableTrack.TRACK_FLAVOR)) {
 				transTrack = (TransferableTrack) clipboardContent.getTransferData(flavors[i]);
 			} else if (flavors[i].match(DataFlavor.javaFileListFlavor)) {
-				transTrack = retrieveTrackFromFile(clipboardContent.getTransferData(flavors[i]));
+				@SuppressWarnings("unchecked")
+				List<File> fileList = (List<File>) clipboardContent.getTransferData(flavors[i]);
+				if (!fileList.isEmpty()) {
+					File file = fileList.get(0);
+					transTrack = retrieveTrackFromFile(file);
+				}
+			} else if  (flavors[i].match(TransferableTrack.uriListFlavor)) {
+				String fileNameList = (String)  clipboardContent.getTransferData(flavors[i]);
+				File file = new File(new URI(fileNameList.split("\r\n")[0]));
+				transTrack = retrieveTrackFromFile(file);
 			}
 			if (transTrack != null) {
 				if (transTrack.getAssemblyName().equals(ProjectManager.getInstance().getAssembly().getName())) {
@@ -165,23 +177,19 @@ public final class TAPaste extends TrackListActionWorker<Void> {
 	 * @param fileListObj
 	 * @return retrieve a {@link TransferableTrack} from a file if the file contain a serialized TransferableTrack
 	 */
-	private TransferableTrack retrieveTrackFromFile(Object fileListObj) {
+	private TransferableTrack retrieveTrackFromFile(File file) {
 		ObjectInputStream ois = null;
 		try {
-			@SuppressWarnings("unchecked")
-			List<File> fileList = (List<File>) fileListObj;
-			if (!fileList.isEmpty()) {
-				try {
-					ExtractorFactory.getExtractor(fileList.get(0)); // throws an error if extractor type cannot be determined
-					TAAddLayer addLayerAction = new TAAddLayer();
-					addLayerAction.actionPerformed(null);
-					return null;
-				} catch (InvalidFileTypeException e) {
-					FileInputStream in = new FileInputStream(fileList.get(0));
-					ois = new ObjectInputStream(in);
-					TransferableTrack transTrack = (TransferableTrack) (ois.readObject());
-					return transTrack;
-				}
+			try {
+				ExtractorFactory.getExtractor(file); // throws an error if extractor type cannot be determined
+				TAAddLayer addLayerAction = new TAAddLayer();
+				addLayerAction.actionPerformed(null);
+				return null;
+			} catch (InvalidFileTypeException e) {
+				FileInputStream in = new FileInputStream(file);
+				ois = new ObjectInputStream(in);
+				TransferableTrack transTrack = (TransferableTrack) (ois.readObject());
+				return transTrack;
 			}
 		} catch (Exception e) { // do nothing
 			e.printStackTrace();

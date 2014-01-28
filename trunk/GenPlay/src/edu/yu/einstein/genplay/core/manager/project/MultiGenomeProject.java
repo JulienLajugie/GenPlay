@@ -80,7 +80,7 @@ public class MultiGenomeProject implements Serializable {
 	/**
 	 * Constructor of {@link MultiGenomeProject}
 	 */
-	public MultiGenomeProject () {}
+	MultiGenomeProject () {}
 
 
 	/**
@@ -224,7 +224,7 @@ public class MultiGenomeProject implements Serializable {
 
 
 	/**
-	 * Retrieves the VCF diles according to a genome name and a variant type
+	 * Retrieves the VCF files according to a genome name and a variant type
 	 * @param genomeName	the full genome name
 	 * @param type			the variant type
 	 * @return				the list of VCF files for the given genome and variant type

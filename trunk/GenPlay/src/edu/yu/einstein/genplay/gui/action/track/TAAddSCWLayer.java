@@ -38,6 +38,7 @@ import edu.yu.einstein.genplay.core.IO.utils.SAMRecordFilter.NotUniqueNorPrimary
 import edu.yu.einstein.genplay.core.IO.utils.SAMRecordFilter.NotUniqueSAMRecordFilter;
 import edu.yu.einstein.genplay.core.IO.utils.SAMRecordFilter.ReadGroupsSAMRecordFilter;
 import edu.yu.einstein.genplay.core.IO.utils.SAMRecordFilter.UnpairedSAMRecordFilter;
+import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
@@ -237,7 +238,7 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 
 	@Override
 	protected File retrieveFileToExtract() {
-		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
+		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
 		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Sequencing/Microarray Layer", defaultDirectory, Utils.getReadableSCWFileFilters(), true);
 		if (selectedFile != null) {
 			return selectedFile;

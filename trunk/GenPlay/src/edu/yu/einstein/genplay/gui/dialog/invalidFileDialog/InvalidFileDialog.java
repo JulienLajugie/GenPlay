@@ -71,7 +71,7 @@ public class InvalidFileDialog extends JDialog {
 	/** Return value when Cancel has been clicked. */
 	public static final 	int 			CANCEL_OPTION 			= 1;
 
-	private 				int				approved 				= CANCEL_OPTION;								// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
+	private 				int				approved 				= CANCEL_OPTION;	// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
 	private final 			int				inset					= 10;				// unique inset used
 	private					int				dialogWidth;								// width of the dialog
 	private					int				dialogHeight;								// height of the dialog
@@ -120,21 +120,6 @@ public class InvalidFileDialog extends JDialog {
 	 */
 	public void closeDialog () {
 		setVisible(false);
-	}
-
-
-	/**
-	 * Calculate the number of invalid files
-	 * @return the number of invalid files.
-	 */
-	private int getNumberOfInvalidFile () {
-		int result = 0;
-		for (String path: files) {
-			if (path != null) {
-				result++;
-			}
-		}
-		return result;
 	}
 
 
@@ -222,6 +207,21 @@ public class InvalidFileDialog extends JDialog {
 				if (pathLength > result) {
 					result = pathLength;
 				}
+			}
+		}
+		return result;
+	}
+
+
+	/**
+	 * Calculate the number of invalid files
+	 * @return the number of invalid files.
+	 */
+	private int getNumberOfInvalidFile () {
+		int result = 0;
+		for (String path: files) {
+			if (path != null) {
+				result++;
 			}
 		}
 		return result;

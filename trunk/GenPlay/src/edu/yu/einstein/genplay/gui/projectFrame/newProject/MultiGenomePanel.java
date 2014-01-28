@@ -45,7 +45,7 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
@@ -81,7 +81,7 @@ class MultiGenomePanel extends JPanel {
 		setVisible(false);
 
 		//Create a file chooser
-		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
+		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
 		fc = new JFileChooser();
 		fc.setCurrentDirectory(new File(defaultDirectory));
 		// redundant on Windows and Linux but needed for OSX

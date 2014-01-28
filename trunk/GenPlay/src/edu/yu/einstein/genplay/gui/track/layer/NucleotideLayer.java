@@ -36,6 +36,7 @@ import java.io.ObjectInputStream;
 
 import javax.swing.JOptionPane;
 
+import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.dataStructure.enums.Nucleotide;
@@ -322,7 +323,7 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 				Component rootPane = MainFrame.getInstance().getRootPane();
 				int dialogRes = JOptionPane.showConfirmDialog(rootPane, "The file " + filePath + " cannot be found\nPlease locate the file or press cancel to delete the Sequence Track", "File Not Found", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 				if (dialogRes == JOptionPane.OK_OPTION) {
-					String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
+					String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
 					File selectedFile = Utils.chooseFileToLoad(rootPane, "Load Sequence Track", defaultDirectory, Utils.getReadableSequenceFileFilters(), true);
 					if (selectedFile != null) {
 						try {

@@ -28,8 +28,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectConfiguration;
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 
 
 /**
@@ -41,7 +40,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 abstract class OptionPanel extends JPanel {
 
 	private static final long serialVersionUID = 4821469631755757767L; 	// Generated ID
-	final ProjectConfiguration projectConfiguration; 			// ConfigurationManager
+	final ConfigurationManager configurationManager; 			// ConfigurationManager
 
 
 	/**
@@ -51,7 +50,7 @@ abstract class OptionPanel extends JPanel {
 	OptionPanel(String name) {
 		super();
 		setName(name);
-		projectConfiguration = ProjectManager.getInstance().getProjectConfiguration();
+		configurationManager = ConfigurationManager.getInstance();
 	}
 
 
@@ -73,10 +72,10 @@ abstract class OptionPanel extends JPanel {
 			// if the current file exist we select this file
 			jfc.setSelectedFile(currentFile.getAbsoluteFile());
 		} else {
-			if ((projectConfiguration.getDefaultDirectory() != null) && (!projectConfiguration.getDefaultDirectory().equals(""))) {
+			if ((configurationManager.getDefaultDirectory() != null) && (!configurationManager.getDefaultDirectory().equals(""))) {
 				// if the current file doesn't exist but if the default
 				// directory is set we select this directory
-				jfc.setCurrentDirectory(new File(projectConfiguration.getDefaultDirectory()));
+				jfc.setCurrentDirectory(new File(configurationManager.getDefaultDirectory()));
 			}
 		}
 		jfc.setDialogTitle(title);

@@ -25,7 +25,7 @@ package edu.yu.einstein.genplay.gui.track.layer.variantLayer;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 
 
 /**
@@ -44,27 +44,6 @@ public class CacheTrack<K> {
 	 */
 	public CacheTrack () {
 		initialize();
-	}
-
-
-	/**
-	 * Initialize/Reset the cache
-	 */
-	public void initialize () {
-		map = new HashMap<Double, K>();
-	}
-
-
-	/**
-	 * Set some data for xRatio.
-	 * it will erase current data for that ratio.
-	 * @param xRatio	the xRation
-	 * @param data		the data to set
-	 */
-	public void setData (double xRatio, K data) {
-		if (isCacheEnable()) {
-			map.put(xRatio, data);
-		}
 	}
 
 
@@ -93,9 +72,30 @@ public class CacheTrack<K> {
 
 
 	/**
+	 * Initialize/Reset the cache
+	 */
+	public void initialize () {
+		map = new HashMap<Double, K>();
+	}
+
+
+	/**
 	 * @return true is cache system is enabled, false otherwise
 	 */
 	private boolean isCacheEnable () {
-		return ProjectManager.getInstance().getProjectConfiguration().isCacheTrack();
+		return ConfigurationManager.getInstance().isCacheTrack();
+	}
+
+
+	/**
+	 * Set some data for xRatio.
+	 * it will erase current data for that ratio.
+	 * @param xRatio	the xRation
+	 * @param data		the data to set
+	 */
+	public void setData (double xRatio, K data) {
+		if (isCacheEnable()) {
+			map.put(xRatio, data);
+		}
 	}
 }

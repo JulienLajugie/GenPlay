@@ -47,7 +47,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWListStats.SCWListStats;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
@@ -186,7 +186,7 @@ public class SCWListStatsDialog extends JDialog {
 	 * Saves the statistics in a file
 	 */
 	private void saveStats(JTable jtStats) {
-		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
+		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
 		final JFileChooser saveFC = new JFileChooser(defaultDirectory);
 		// redundant in Windows and Linux but needed for OSX
 		saveFC.setSelectedFile(new File(defaultDirectory));

@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 
 /**
@@ -240,7 +240,7 @@ public class URRManager<T extends Serializable> implements Serializable {
 		if (newObject != null) {
 			ByteArrayOutputStream oldBaos = null;
 			// if it's the first operation
-			if ((initialObject == null) && ProjectManager.getInstance().getProjectConfiguration().isResetTrack()) {
+			if ((initialObject == null) && ConfigurationManager.getInstance().isResetTrack()) {
 				oldBaos = serializeAndZip(currentObject);
 				setInitialObject(oldBaos);
 				oldBaos.close();
@@ -269,7 +269,7 @@ public class URRManager<T extends Serializable> implements Serializable {
 	private void setInitialObject(ByteArrayOutputStream initialObject) {
 		if (initialObject == null) {
 			this.initialObject = null;
-		} else if (ProjectManager.getInstance().getProjectConfiguration().isResetTrack()) {
+		} else if (ConfigurationManager.getInstance().isResetTrack()) {
 			this.initialObject = initialObject;
 		}
 	}

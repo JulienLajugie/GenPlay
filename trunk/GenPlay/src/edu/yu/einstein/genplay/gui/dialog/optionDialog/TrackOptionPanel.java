@@ -36,7 +36,7 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.text.NumberFormatter;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 
 /**
  * Panel of the {@link OptionDialog} that allows to configure the tracks *
@@ -76,11 +76,11 @@ final class TrackOptionPanel extends OptionPanel {
 		((NumberFormatter) jftfTrackCount.getFormatter()).setMinimum(MIN_TRACK_COUNT);
 		((NumberFormatter) jftfTrackCount.getFormatter()).setMaximum(MAX_TRACK_COUNT);
 		jftfTrackCount.setColumns(5);
-		jftfTrackCount.setValue(projectConfiguration.getTrackCount());
+		jftfTrackCount.setValue(configurationManager.getTrackCount());
 		jftfTrackCount.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
-				projectConfiguration.setTrackCount(((Number) jftfTrackCount.getValue()).intValue());
+				configurationManager.setTrackCount(((Number) jftfTrackCount.getValue()).intValue());
 			}
 		});
 
@@ -90,11 +90,11 @@ final class TrackOptionPanel extends OptionPanel {
 		((NumberFormatter) jftfTrackHeight.getFormatter()).setMinimum(MIN_TRACK_HEIGHT);
 		((NumberFormatter) jftfTrackHeight.getFormatter()).setMaximum(MAX_TRACK_HEIGHT);
 		jftfTrackHeight.setColumns(5);
-		jftfTrackHeight.setValue(projectConfiguration.getTrackHeight());
+		jftfTrackHeight.setValue(configurationManager.getTrackHeight());
 		jftfTrackHeight.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
-				projectConfiguration.setTrackHeight(((Number) jftfTrackHeight
+				configurationManager.setTrackHeight(((Number) jftfTrackHeight
 						.getValue()).intValue());
 			}
 		});
@@ -104,41 +104,41 @@ final class TrackOptionPanel extends OptionPanel {
 		((NumberFormatter) jftfUndoCount.getFormatter()).setMinimum(0);
 		((NumberFormatter) jftfUndoCount.getFormatter()).setMaximum(Integer.MAX_VALUE);
 		jftfUndoCount.setColumns(5);
-		jftfUndoCount.setValue(projectConfiguration.getUndoCount());
+		jftfUndoCount.setValue(configurationManager.getUndoCount());
 		jftfUndoCount.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
-				projectConfiguration.setUndoCount(((Number) jftfUndoCount.getValue()).intValue());
+				configurationManager.setUndoCount(((Number) jftfUndoCount.getValue()).intValue());
 			}
 		});
 
 		jlResetTrack = new JLabel("Enable reset:");
 		jcResetTrack = new JCheckBox();
-		jcResetTrack.setSelected(ProjectManager.getInstance().getProjectConfiguration().isResetTrack());
+		jcResetTrack.setSelected(ConfigurationManager.getInstance().isResetTrack());
 		jcResetTrack.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				projectConfiguration.setResetTrack(jcResetTrack.isSelected());
+				configurationManager.setResetTrack(jcResetTrack.isSelected());
 			}
 		});
 
 		jlCacheTrack = new JLabel("Enable cache:");
 		jcCacheTrack = new JCheckBox();
-		jcCacheTrack.setSelected(ProjectManager.getInstance().getProjectConfiguration().isCacheTrack());
+		jcCacheTrack.setSelected(ConfigurationManager.getInstance().isCacheTrack());
 		jcCacheTrack.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				projectConfiguration.setCacheTrack(jcCacheTrack.isSelected());
+				configurationManager.setCacheTrack(jcCacheTrack.isSelected());
 			}
 		});
 
 		jlLegend = new JLabel("Show Legend:");
 		jcLegend = new JCheckBox();
-		jcLegend.setSelected(ProjectManager.getInstance().getProjectConfiguration().isLegend());
+		jcLegend.setSelected(ConfigurationManager.getInstance().isLegend());
 		jcLegend.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				projectConfiguration.setLegend(jcLegend.isSelected());
+				configurationManager.setLegend(jcLegend.isSelected());
 			}
 		});
 

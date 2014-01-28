@@ -61,8 +61,8 @@ final class GeneralOptionPanel extends OptionPanel {
 		super("General");
 
 		jlDefaultDir = new JLabel("Default directory: ");
-		if (projectConfiguration.getDefaultDirectory() != null) {
-			jtfDefautlDir = new JTextField(new File(projectConfiguration.getDefaultDirectory()).getPath());
+		if (configurationManager.getDefaultDirectory() != null) {
+			jtfDefautlDir = new JTextField(new File(configurationManager.getDefaultDirectory()).getPath());
 		} else {
 			jtfDefautlDir = new JTextField();
 		}
@@ -73,8 +73,8 @@ final class GeneralOptionPanel extends OptionPanel {
 		jbDefaultDirBrowse.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				browse("Default Directory:", new File(projectConfiguration.getDefaultDirectory()), jtfDefautlDir, false);
-				projectConfiguration.setDefaultDirectory(jtfDefautlDir.getText());
+				browse("Default Directory:", new File(configurationManager.getDefaultDirectory()), jtfDefautlDir, false);
+				configurationManager.setDefaultDirectory(jtfDefautlDir.getText());
 			}
 		});
 
@@ -89,14 +89,14 @@ final class GeneralOptionPanel extends OptionPanel {
 		jcbLookAndFeel = new JComboBox(installedAndFeelClassNames);
 		// Select the look and feel of the configuration
 		for (int i = 0; i < lafi.length; i++) {
-			if (lafi[i].getClassName().equals(projectConfiguration.getLookAndFeel())) {
+			if (lafi[i].getClassName().equals(configurationManager.getLookAndFeel())) {
 				jcbLookAndFeel.setSelectedIndex(i);
 			}
 		}
 		jcbLookAndFeel.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
-				projectConfiguration.setLookAndFeel(UIManager.getInstalledLookAndFeels()[jcbLookAndFeel.getSelectedIndex()].getClassName());
+				configurationManager.setLookAndFeel(UIManager.getInstalledLookAndFeels()[jcbLookAndFeel.getSelectedIndex()].getClassName());
 			}
 		});
 

@@ -31,7 +31,7 @@ import java.io.ObjectOutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
 
@@ -49,28 +49,106 @@ public class RecentProjectRecording {
 
 
 	/**
-	 * This method writes the projects list content in the configuration file.
-	 * It updates the list before writing information.
+	 * Retrieve the project informations from an input file
+	 * @param inputFile
+	 * @return the {@link ProjectInformation} of the specified input file
+	 * @throws Exception
 	 */
-	public void writeProjects () {
-		updateProjectPaths();
-		String path = ProjectManager.getInstance().getProjectConfiguration().getRecentProjectsAbsolutePath();
-		File file = new File(path);
+	public ProjectInformation getProjectInformation(File inputFile) throws Exception {
 		try {
-			FileOutputStream fos = new FileOutputStream(file);
-			GZIPOutputStream gz = new GZIPOutputStream(fos);
-			ObjectOutputStream oos = new ObjectOutputStream(gz);
-			for (int i = 0; i < PROJECT_NUMBER; i++) {
-				oos.writeObject(projectPaths[i]);
-			}
-			oos.flush();
-			oos.close();
-			gz.flush();
+			FileInputStream fis = new FileInputStream(inputFile);
+			GZIPInputStream gz = new GZIPInputStream(fis);
+			ObjectInputStream ois = new ObjectInputStream(gz);
+			ProjectInformation projectInformation = (ProjectInformation) ois.readObject();
+			ois.close();
 			gz.close();
-			fos.flush();
-			fos.close();
+			fis.close();
+			return projectInformation;
 		} catch (IOException e) {
+			// a IOException is likely to be caused by a invalid file type
+			throw new InvalidFileTypeException();
+		}
+	}
+
+
+	/**
+	 * @return the projects
+	 */
+	public ProjectInformation[] getProjects() {
+		return projects;
+	}
+
+
+	/**
+	 * This methods refreshes the list of recent saved projects.
+	 * It first gets the path of the recent project and then, retrieves the project information for all of them.
+	 */
+	public void refresh () {
+		try {
+			retrieveProjectsPath();
+			retrieveProjectsInformation();
+		} catch (Exception e) {
 			ExceptionManager.getInstance().caughtException(e);
+		}
+	}
+
+
+	/**
+	 * This method retrieves all project information using retrieved project paths.
+	 * If a project path is not valid, its information will be lost.
+	 * @throws Exception
+	 */
+	private void retrieveProjectsInformation () throws Exception {
+		projects = new ProjectInformation[PROJECT_NUMBER];
+		for (int i = 0; i < PROJECT_NUMBER; i++) {
+			boolean valid = false;
+			String currentPath = projectPaths[i];
+			File file = null;
+			if (currentPath != null) {
+				file = new File(currentPath);
+				if (file.exists()) {
+					valid = true;
+				}
+			}
+			if (valid) {
+				projects[i] = getProjectInformation(file);
+			} else {
+				projects[i] = null;
+			}
+		}
+	}
+
+
+	/**
+	 * Retrieves basic information about all recent projects
+	 */
+	public void retrieveProjectsPath () {
+		String path = ConfigurationManager.getInstance().getRecentProjectsAbsolutePath();
+		File file = new File(path);
+		projectPaths = new String[PROJECT_NUMBER];
+		if (file.exists()) {
+			try {
+				FileInputStream fis = new FileInputStream(file);
+				GZIPInputStream gz = new GZIPInputStream(fis);
+				ObjectInputStream ois = new ObjectInputStream(gz);
+				for (int i = 0; i < PROJECT_NUMBER; i++) {
+					Object retrievedPath = ois.readObject();
+					if (retrievedPath != null) {
+						projectPaths[i] = (String) retrievedPath;
+					} else {
+						projectPaths[i] = null;
+					}
+				}
+				ois.close();
+				gz.close();
+				fis.close();
+			} catch (Exception e) {
+				ExceptionManager.getInstance().caughtException(e);
+			}
+		} else {
+			for (int i = 0; i < PROJECT_NUMBER; i++) {
+				projectPaths[i] = null;
+			}
 		}
 	}
 
@@ -111,107 +189,29 @@ public class RecentProjectRecording {
 
 
 	/**
-	 * This methods refreshes the list of recent saved projects.
-	 * It first gets the path of the recent project and then, retrieves the project information for all of them.
+	 * This method writes the projects list content in the configuration file.
+	 * It updates the list before writing information.
 	 */
-	public void refresh () {
+	public void writeProjects () {
+		updateProjectPaths();
+		String path = ConfigurationManager.getInstance().getRecentProjectsAbsolutePath();
+		File file = new File(path);
 		try {
-			retrieveProjectsPath();
-			retrieveProjectsInformation();
-		} catch (Exception e) {
+			FileOutputStream fos = new FileOutputStream(file);
+			GZIPOutputStream gz = new GZIPOutputStream(fos);
+			ObjectOutputStream oos = new ObjectOutputStream(gz);
+			for (int i = 0; i < PROJECT_NUMBER; i++) {
+				oos.writeObject(projectPaths[i]);
+			}
+			oos.flush();
+			oos.close();
+			gz.flush();
+			gz.close();
+			fos.flush();
+			fos.close();
+		} catch (IOException e) {
 			ExceptionManager.getInstance().caughtException(e);
 		}
-	}
-
-
-	/**
-	 * Retrieves basic information about all recent projects
-	 */
-	public void retrieveProjectsPath () {
-		String path = ProjectManager.getInstance().getProjectConfiguration().getRecentProjectsAbsolutePath();
-		File file = new File(path);
-		projectPaths = new String[PROJECT_NUMBER];
-		if (file.exists()) {
-			try {
-				FileInputStream fis = new FileInputStream(file);
-				GZIPInputStream gz = new GZIPInputStream(fis);
-				ObjectInputStream ois = new ObjectInputStream(gz);
-				for (int i = 0; i < PROJECT_NUMBER; i++) {
-					Object retrievedPath = ois.readObject();
-					if (retrievedPath != null) {
-						projectPaths[i] = (String) retrievedPath;
-					} else {
-						projectPaths[i] = null;
-					}
-				}
-				ois.close();
-				gz.close();
-				fis.close();
-			} catch (Exception e) {
-				ExceptionManager.getInstance().caughtException(e);
-			}
-		} else {
-			for (int i = 0; i < PROJECT_NUMBER; i++) {
-				projectPaths[i] = null;
-			}
-		}
-	}
-
-
-	/**
-	 * This method retrieves all project information using retrieved project paths.
-	 * If a project path is not valid, its information will be lost.
-	 * @throws Exception
-	 */
-	private void retrieveProjectsInformation () throws Exception {
-		projects = new ProjectInformation[PROJECT_NUMBER];
-		for (int i = 0; i < PROJECT_NUMBER; i++) {
-			boolean valid = false;
-			String currentPath = projectPaths[i];
-			File file = null;
-			if (currentPath != null) {
-				file = new File(currentPath);
-				if (file.exists()) {
-					valid = true;
-				}
-			}
-			if (valid) {
-				projects[i] = getProjectInformation(file);
-			} else {
-				projects[i] = null;
-			}
-		}
-	}
-
-
-	/**
-	 * Retrieve the project informations from an input file
-	 * @param inputFile
-	 * @return the {@link ProjectInformation} of the specified input file
-	 * @throws Exception
-	 */
-	public ProjectInformation getProjectInformation(File inputFile) throws Exception {
-		try {
-			FileInputStream fis = new FileInputStream(inputFile);
-			GZIPInputStream gz = new GZIPInputStream(fis);
-			ObjectInputStream ois = new ObjectInputStream(gz);
-			ProjectInformation projectInformation = (ProjectInformation) ois.readObject();
-			ois.close();
-			gz.close();
-			fis.close();
-			return projectInformation;
-		} catch (IOException e) {
-			// a IOException is likely to be caused by a invalid file type
-			throw new InvalidFileTypeException();
-		}
-	}
-
-
-	/**
-	 * @return the projects
-	 */
-	public ProjectInformation[] getProjects() {
-		return projects;
 	}
 
 }

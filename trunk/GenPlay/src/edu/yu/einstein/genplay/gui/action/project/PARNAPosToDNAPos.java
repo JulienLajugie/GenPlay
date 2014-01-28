@@ -31,7 +31,7 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import edu.yu.einstein.genplay.core.RNAPosToDNAPos.GeneRelativeToGenomePosition;
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.dataStructure.enums.RNAToDNAResultType;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.RNAPosToDNAPosOutputFileTypeDialog;
@@ -78,7 +78,7 @@ public final class PARNAPosToDNAPos extends TrackListActionWorker<Void> {
 		File fileData;
 		File fileOutput = null;
 
-		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
+		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
 		FileNameExtensionFilter textFileFilter = new FileNameExtensionFilter("Text file (*.txt)", "txt");
 		FileFilter[] fileFilters1 = { textFileFilter, new BedGraphFilter() };
 		fileData = Utils.chooseFileToLoad(parent, "Select Coverage File", defaultDirectory, fileFilters1, true);
@@ -92,7 +92,7 @@ public final class PARNAPosToDNAPos extends TrackListActionWorker<Void> {
 				outputFileType = rnaToDnaDialog.getSelectedOutputFileType();
 
 				if (rtddResult == RNAPosToDNAPosOutputFileTypeDialog.APPROVE_OPTION) {
-					JFileChooser jfc = new JFileChooser(ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory());
+					JFileChooser jfc = new JFileChooser(ConfigurationManager.getInstance().getDefaultDirectory());
 					// redundant in Windows and Linux but needed for OSX
 					jfc.setSelectedFile(new File(defaultDirectory));
 					jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);

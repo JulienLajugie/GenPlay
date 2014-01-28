@@ -176,7 +176,7 @@ public class ProjectFiles {
 
 
 	/**
-	 * @return true if the project is file dependant, false otherwise
+	 * @return true if the project is file dependent, false otherwise
 	 */
 	public boolean isFileDependant () {
 		if (currentFiles == null) {

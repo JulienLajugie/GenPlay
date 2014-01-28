@@ -38,8 +38,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectConfiguration;
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.action.track.TATrackSettings;
 import edu.yu.einstein.genplay.gui.clipboard.TransferableTrack;
@@ -186,6 +185,8 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 			} else if (flavors[i].match(DataFlavor.javaFileListFlavor)) {
 				isPasteEnabled = true;
 				// TODO check that the file type is really loadable in genplay
+			} else if (flavors[i].match(TransferableTrack.uriListFlavor)) {
+				isPasteEnabled = true;
 			}
 			i++;
 		}
@@ -256,7 +257,7 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 	 * Changes the reset layer function of the {@link VersionedLayer}.
 	 */
 	public void resetLayerChanged() {
-		boolean hasToBeDisabled = !ProjectManager.getInstance().getProjectConfiguration().isResetTrack();
+		boolean hasToBeDisabled = !ConfigurationManager.getInstance().isResetTrack();
 		if (hasToBeDisabled) {
 			for (Track currentTrack: getModel().getTracks()) {
 				for (Layer<?> currentLayer: currentTrack.getLayers()) {
@@ -315,11 +316,11 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 
 	/**
 	 * Changes the number of {@link Track} in the {@link TrackListPanel} according to
-	 * the value specified in the {@link ProjectConfiguration}
+	 * the value specified in the {@link ConfigurationManager}
 	 */
 	public void trackCountChanged() {
-		int trackCount = ProjectManager.getInstance().getProjectConfiguration().getTrackCount();
-		int preferredHeight = ProjectManager.getInstance().getProjectConfiguration().getTrackHeight();
+		int trackCount = ConfigurationManager.getInstance().getTrackCount();
+		int preferredHeight = ConfigurationManager.getInstance().getTrackHeight();
 		Track[] trackTmp = getModel().getTracks();
 		Track[] trackList = new Track[trackCount];
 		for (int i = 0; i < trackCount; i++) {
@@ -370,10 +371,10 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 
 
 	/**
-	 * Sets the height of each {@link Track} according to the value specified in the {@link ProjectConfiguration}
+	 * Sets the height of each {@link Track} according to the value specified in the {@link ConfigurationManager}
 	 */
 	public void trackHeightChanged() {
-		int preferredHeight = ProjectManager.getInstance().getProjectConfiguration().getTrackHeight();
+		int preferredHeight = ConfigurationManager.getInstance().getTrackHeight();
 		Track[] trackList = getModel().getTracks();
 		for(int i = 0; i < trackList.length; i++) {
 			trackList[i].setDefaultHeight(preferredHeight);
@@ -387,7 +388,7 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 	 * Changes the undo count of the undoable layers
 	 */
 	public void undoCountChanged() {
-		int undoCount = ProjectManager.getInstance().getProjectConfiguration().getUndoCount();
+		int undoCount = ConfigurationManager.getInstance().getUndoCount();
 		for (Track currentTrack: getModel().getTracks()) {
 			for (Layer<?> currentLayer: currentTrack.getLayers()) {
 				if (currentLayer instanceof VersionedLayer<?>) {

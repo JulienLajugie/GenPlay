@@ -68,7 +68,6 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 	private final ProjectZoom						projectZoom;		// ZoomManager
 	private final ProjectWindow						projectWindow;		// Instance of the Genome Window Manager
 
-
 	/**
 	 * Creates an instance of {@link ZoomPanel}
 	 * @param genomeWindow a {@link SimpleGenomeWindow}
@@ -79,7 +78,7 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 		jlZoom = new JLabel();
 		setZoomLabel(projectWindow.getGenomeWindow().getSize());
 		jbMinus = new JButton("-");
-		jbMinus.setMargin(new Insets(0, 3, 0, 3));
+		jbMinus.setMargin(new Insets(0, 6, 0, 6));
 		jbMinus.setFocusPainted(false);
 		jbMinus.addActionListener(new ActionListener() {
 			@Override
@@ -89,7 +88,7 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 		});
 
 		jbPlus = new JButton("+");
-		jbPlus.setMargin(new Insets(0, 3, 0, 3));
+		jbPlus.setMargin(new Insets(0, 5, 0, 5));
 		jbPlus.setFocusPainted(false);
 		jbPlus.addActionListener(new ActionListener() {
 			@Override
@@ -102,6 +101,7 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 		jsZoom = new JSlider(SwingConstants.HORIZONTAL, 0, projectZoom.getZoomIndex(maximumZoom), projectZoom.getZoomIndex(projectWindow.getGenomeWindow().getSize()));
 		jsZoom.setMinorTickSpacing(1);
 		jsZoom.setPaintTicks(true);
+		jsZoom.setInverted(true);
 		jsZoom.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {

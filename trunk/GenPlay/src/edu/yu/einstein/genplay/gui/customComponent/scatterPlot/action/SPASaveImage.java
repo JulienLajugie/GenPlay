@@ -31,7 +31,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotPane;
 import edu.yu.einstein.genplay.util.Utils;
@@ -64,7 +64,7 @@ public class SPASaveImage extends ScatterPlotAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
+		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
 		final JFileChooser jfc = new JFileChooser(defaultDirectory);
 		// redundant in Windows and Linux but needed for OSX
 		jfc.setSelectedFile(new File(defaultDirectory));

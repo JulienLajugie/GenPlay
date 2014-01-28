@@ -27,6 +27,7 @@ import java.io.File;
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.IO.dataReader.SCWReader;
+import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
@@ -110,7 +111,7 @@ public final class TAAddMaskLayer extends TrackListActionExtractorWorker<SCWList
 
 	@Override
 	protected File retrieveFileToExtract() {
-		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
+		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
 		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Mask File", defaultDirectory, Utils.getReadableMaskFileFilters(), true);
 		if (selectedFile != null) {
 			return selectedFile;

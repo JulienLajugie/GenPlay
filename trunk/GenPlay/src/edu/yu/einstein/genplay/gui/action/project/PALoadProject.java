@@ -31,6 +31,7 @@ import javax.swing.ActionMap;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 
+import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
@@ -125,7 +126,7 @@ public class PALoadProject extends TrackListActionWorker<Track[]> {
 		// managers have been successfully
 		// initialized.
 		if (!skipFileSelection) {
-			String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
+			String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
 			FileFilter[] fileFilters = { new GenPlayProjectFilter() };
 			File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Project", defaultDirectory, fileFilters, true);
 			if (selectedFile == null) {

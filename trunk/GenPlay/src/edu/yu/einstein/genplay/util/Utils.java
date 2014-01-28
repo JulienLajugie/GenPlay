@@ -258,15 +258,10 @@ public final class Utils {
 	public static String getConfigurationDirectoryPath() {
 		if (isWindowsOS()) {
 			// windows system
-			if (isWindowsInstall()) {
-				return System.getenv("APPDATA") + File.separator + "GenPlay" + File.separator;
-			} else {
-				return getTmpDirectoryPath();
-			}
-
+			return System.getenv("APPDATA") + File.separator + "GenPlay" + File.separator;
 		} else {
 			// POSIX like systems
-			return System.getProperty("user.home") + File.separator + "/.genplay/";
+			return System.getProperty("user.home") + File.separator + ".genplay" + File.separator;
 		}
 	}
 

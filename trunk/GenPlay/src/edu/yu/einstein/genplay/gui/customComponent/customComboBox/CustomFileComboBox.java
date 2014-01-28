@@ -28,7 +28,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.gui.customComponent.customComboBox.customComboBoxEvent.CustomComboBoxEvent;
 import edu.yu.einstein.genplay.gui.fileFilter.ExtendedFileFilter;
 import edu.yu.einstein.genplay.util.Utils;
@@ -58,7 +58,7 @@ public class CustomFileComboBox extends CustomComboBox<File> {
 	public CustomFileComboBox () {
 		//Create a file chooser
 		fc = new JFileChooser();
-		fc.setCurrentDirectory(new File(ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory()));
+		fc.setCurrentDirectory(new File(ConfigurationManager.getInstance().getDefaultDirectory()));
 		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fc.setAcceptAllFileFilterUsed(false);
 		fc.setDialogTitle("Select a file");
@@ -76,35 +76,16 @@ public class CustomFileComboBox extends CustomComboBox<File> {
 
 
 	/**
-	 * @return the filters
+	 * Action on the file after its selection and before its process.
+	 * By default, the method return the same file and does not verify anything.
+	 * If the class is extended, that method can be overwrited in order to validate the file selection.
+	 * See the method in the class {@link CustomFileComboBoxMG} for more example.
+	 * 
+	 * @param file the selected file
+	 * @return the verified/processed file to add or null if not valid
 	 */
-	public ExtendedFileFilter[] getFilters() {
-		return filters;
-	}
-
-
-	/**
-	 * @param filters the filters to set
-	 */
-	public void setFilters(ExtendedFileFilter[] filters) {
-		this.filters = filters;
-		for (FileFilter filter: filters) {
-			fc.addChoosableFileFilter(filter);
-		}
-	}
-
-
-	@Override
-	public void customComboBoxHasChanged(CustomComboBoxEvent evt) {
-		if (evt.getAction() == CustomComboBoxEvent.SELECT_ACTION) {
-			setSelectedItem(evt.getElement());
-		} else if (evt.getAction() == CustomComboBoxEvent.ADD_ACTION) {
-			addAction();
-		} else if (evt.getAction() == CustomComboBoxEvent.REMOVE_ACTION) {
-			removeAction((File)evt.getElement());
-		} else if (evt.getAction() == CustomComboBoxEvent.REPLACE_ACTION) {
-			replaceAction((File)evt.getElement());
-		}
+	protected File actionPostSelection (File file) {
+		return file;
 	}
 
 
@@ -130,6 +111,28 @@ public class CustomFileComboBox extends CustomComboBox<File> {
 			resetCombo();
 			setSelectedItem(element);
 		}
+	}
+
+
+	@Override
+	public void customComboBoxHasChanged(CustomComboBoxEvent evt) {
+		if (evt.getAction() == CustomComboBoxEvent.SELECT_ACTION) {
+			setSelectedItem(evt.getElement());
+		} else if (evt.getAction() == CustomComboBoxEvent.ADD_ACTION) {
+			addAction();
+		} else if (evt.getAction() == CustomComboBoxEvent.REMOVE_ACTION) {
+			removeAction((File)evt.getElement());
+		} else if (evt.getAction() == CustomComboBoxEvent.REPLACE_ACTION) {
+			replaceAction((File)evt.getElement());
+		}
+	}
+
+
+	/**
+	 * @return the filters
+	 */
+	public ExtendedFileFilter[] getFilters() {
+		return filters;
 	}
 
 
@@ -165,7 +168,7 @@ public class CustomFileComboBox extends CustomComboBox<File> {
 	 */
 	@Override
 	protected void replaceAction (File element) {
-		File newElement = Utils.chooseFileToLoad(getRootPane(), "Select a file", ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory(), filters, false);
+		File newElement = Utils.chooseFileToLoad(getRootPane(), "Select a file", ConfigurationManager.getInstance().getDefaultDirectory(), filters, false);
 
 		if (newElement != null) {
 			elements.remove(element);
@@ -177,16 +180,13 @@ public class CustomFileComboBox extends CustomComboBox<File> {
 
 
 	/**
-	 * Action on the file after its selection and before its process.
-	 * By default, the method return the same file and does not verify anything.
-	 * If the class is extended, that method can be overwrited in order to validate the file selection.
-	 * See the method in the class {@link CustomFileComboBoxMG} for more example.
-	 * 
-	 * @param file the selected file
-	 * @return the verified/processed file to add or null if not valid
+	 * @param filters the filters to set
 	 */
-	protected File actionPostSelection (File file) {
-		return file;
+	public void setFilters(ExtendedFileFilter[] filters) {
+		this.filters = filters;
+		for (FileFilter filter: filters) {
+			fc.addChoosableFileFilter(filter);
+		}
 	};
 
 }

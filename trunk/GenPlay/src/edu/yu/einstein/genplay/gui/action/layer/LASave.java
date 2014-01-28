@@ -30,6 +30,7 @@ import javax.swing.filechooser.FileFilter;
 
 import edu.yu.einstein.genplay.core.IO.writer.Writer;
 import edu.yu.einstein.genplay.core.IO.writer.WriterFactory;
+import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
@@ -75,7 +76,7 @@ public class LASave extends TrackListActionWorker<Void> {
 	protected Void processAction() throws Exception {
 		if (getTrackListPanel().getSelectedTrack() != null) {
 			Layer<?> selectedLayer = (Layer<?>) getValue("Layer");
-			String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
+			String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
 			JFileChooser jfc = new JFileChooser(defaultDirectory);
 			// redundant on Windows and Linux but needed for OSX
 			jfc.setSelectedFile(new File(defaultDirectory));

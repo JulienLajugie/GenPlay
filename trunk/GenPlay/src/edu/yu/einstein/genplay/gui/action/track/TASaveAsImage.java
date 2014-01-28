@@ -36,7 +36,7 @@ import javax.swing.JFileChooser;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
@@ -112,7 +112,7 @@ public final class TASaveAsImage extends TrackListActionWorker<Void> {
 	protected Void processAction() throws Exception {
 		Track selectedTrack = getTrackListPanel().getSelectedTrack();
 		if (selectedTrack != null) {
-			String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
+			String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
 			final JFileChooser saveFC = new JFileChooser(defaultDirectory);
 			// redundant in Windows and Linux but needed for OSX
 			saveFC.setSelectedFile(new File(defaultDirectory));

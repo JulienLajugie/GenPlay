@@ -32,8 +32,8 @@ import javax.swing.ToolTipManager;
 
 import com.apple.eawt.Application;
 
+import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.genome.Assembly;
 import edu.yu.einstein.genplay.dataStructure.genome.Clade;
@@ -229,7 +229,7 @@ public class Launcher {
 		}
 		// load the application settings
 		try {
-			RecordingManager.getInstance().getApplicationRecording().loadConfigurationFile();
+			ConfigurationManager.getInstance().loadConfiguration();
 		} catch (Exception e) {}
 		// Initialize the exception manager
 		initializeExceptionManagement();
