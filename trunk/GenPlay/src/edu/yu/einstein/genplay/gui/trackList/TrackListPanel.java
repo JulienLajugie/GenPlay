@@ -28,26 +28,34 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
 import java.io.Serializable;
 
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.TransferHandler;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
 import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
+import edu.yu.einstein.genplay.gui.action.track.TADropFile;
 import edu.yu.einstein.genplay.gui.action.track.TATrackSettings;
-import edu.yu.einstein.genplay.gui.clipboard.TransferableTrack;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEvent;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventType;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackListener;
 import edu.yu.einstein.genplay.gui.menu.TrackMenu;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackConstants;
+import edu.yu.einstein.genplay.gui.track.TransferableTrack;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.VersionedLayer;
 import edu.yu.einstein.genplay.gui.track.layer.variantLayer.MultiGenomeDrawer;
@@ -58,7 +66,7 @@ import edu.yu.einstein.genplay.gui.track.layer.variantLayer.VariantLayer;
  * Scroll panel showing a list of tracks
  * @author Julien Lajugie
  */
-public class TrackListPanel extends JScrollPane implements Serializable, TrackListener, ListDataListener {
+public class TrackListPanel extends JScrollPane implements Serializable, TrackListener, ListDataListener, DropTargetListener {
 
 	private final static int 	SCROLL_BAR_BLOCK_INCREMENT = 40; 			// block increment for the scroll bar
 	private final static int 	SCROLL_BAR_UNIT_INCREMENT = 15; 			// unit increment for the scroll bar
@@ -82,6 +90,7 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 		this.model.addListDataListener(this);
 		jpTrackList = new JPanel();
 		jpTrackList.setLayout(new BoxLayout(jpTrackList, BoxLayout.PAGE_AXIS));
+		new DropTarget(jpTrackList, this);
 		setActionMap(TrackListActionMap.getActionMap());
 		setInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW, TrackListActionMap.getInputMap(this));
 		trackMenu = new TrackMenu();
@@ -111,6 +120,50 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 				ExceptionManager.getInstance().caughtException(Thread.currentThread(), e, "Error while cutting the track");
 			}
 		}
+	}
+
+
+	@Override
+	public void dragEnter(DropTargetDragEvent dtde) {
+		// do nothing
+	}
+
+
+	@Override
+	public void dragExit(DropTargetEvent dte) {
+		draggedOverTrack.setBorder(TrackConstants.REGULAR_BORDER);
+		draggedOverTrack = null;
+		unlockTrackHandles();
+	}
+
+
+	@Override
+	public void dragOver(DropTargetDragEvent dtde) {
+		if (dtde.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+			dtde.acceptDrag(TransferHandler.COPY);
+			trackDragged();
+		}
+	}
+
+
+	@Override
+	public void drop(DropTargetDropEvent dtde) {
+		draggedOverTrack.setBorder(TrackConstants.REGULAR_BORDER);
+		unlockTrackHandles();
+		try {
+			new TADropFile(draggedOverTrack, dtde.getTransferable()).processAction();
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(getRootPane(), "The selected file cannot be loaded in GenPlay", "Cannot Drop File", JOptionPane.WARNING_MESSAGE, null);
+			e.printStackTrace();
+		}
+		draggedOverTrack = null;
+		dtde.dropComplete(true);
+	}
+
+
+	@Override
+	public void dropActionChanged(DropTargetDragEvent dtde) {
+		// do nothing
 	}
 
 
@@ -352,12 +405,12 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 						mouseY = getMousePosition().y;
 					}
 				}
-				if ((mouseY != -1) && (mouseY > currentTrackTop) && (mouseY < currentrackBottom) && (draggedOverTrack != currentTrack)) {
+				if ((mouseY != -1) && (mouseY > currentTrackTop) && (mouseY < currentrackBottom) && (currentTrack != draggedOverTrack)) {
 					if (draggedOverTrack != null) {
 						draggedOverTrack.setBorder(TrackConstants.REGULAR_BORDER);
 					}
 					draggedOverTrack = currentTrack;
-					if (draggedOverTrack == draggedTrack) {
+					if ((draggedTrack == null) || (draggedOverTrack == draggedTrack)) {
 						draggedOverTrack.setBorder(TrackConstants.DRAG_START_BORDER);
 					} else if (draggedOverTrack.getNumber() < draggedTrack.getNumber()) {
 						draggedOverTrack.setBorder(TrackConstants.DRAG_UP_BORDER);

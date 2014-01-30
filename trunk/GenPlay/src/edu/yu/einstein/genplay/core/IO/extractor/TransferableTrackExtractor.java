@@ -31,8 +31,8 @@ import com.sun.xml.internal.ws.encoding.soap.SerializationException;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.exception.exceptions.IncompatibleAssembliesException;
-import edu.yu.einstein.genplay.gui.clipboard.TransferableTrack;
 import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.track.TransferableTrack;
 
 
 /**

@@ -24,32 +24,26 @@ package edu.yu.einstein.genplay.gui.action.track;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import javax.swing.ActionMap;
-import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
 import edu.yu.einstein.genplay.core.IO.extractor.ExtractorFactory;
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
-import edu.yu.einstein.genplay.gui.clipboard.TransferableTrack;
 import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.track.TransferableTrack;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 
 
@@ -78,106 +72,22 @@ public final class TAPaste extends TrackListActionWorker<Void> {
 
 
 	/**
-	 * Creates an instance of {@link TAPaste}
-	 */
-	public TAPaste() {
-		super();
-		putValue(NAME, ACTION_NAME);
-		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
-		putValue(SHORT_DESCRIPTION, DESCRIPTION);
-		putValue(ACCELERATOR_KEY, ACCELERATOR);
-		putValue(MNEMONIC_KEY, MNEMONIC);
-	}
-
-
-	@Override
-	protected Void processAction() throws Exception {
-		Track selectedTrack = getTrackListPanel().getSelectedTrack();
-		if (selectedTrack != null) {
-			Track copiedTrack = retrieveTrack();
-			if (copiedTrack != null) {
-				// we ask the user to choose the layers to paste
-				Layer<?>[] layers = copiedTrack.getLayers().getLayers();
-				if (layers.length > 1) {
-					LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
-					layerChooserDialog.setLayers(Arrays.asList(layers));
-					// since Arrays.asList create a list that doesn't support the remove method we convert it as an ArrayList
-					layerChooserDialog.setSelectedLayers(new ArrayList<Layer<?>>(Arrays.asList(layers)));
-					layerChooserDialog.setMultiselectable(true);
-					if (layerChooserDialog.showDialog(getRootPane(), "Select Layers to Paste") == LayerChooserDialog.APPROVE_OPTION) {
-						List<Layer<?>> selectedLayerList = layerChooserDialog.getSelectedLayers();
-						Collections.reverse(selectedLayerList);
-						Layer<?>[] selectedLayers = selectedLayerList.toArray(new Layer<?>[0]);
-						if ((selectedLayers != null) && (selectedLayers.length > 0)) {
-							notifyActionStart("Pasting Clipboard on Track #" + selectedTrack.getNumber(), 1, false);
-							for (Layer<?> currentLayer: selectedLayers) {
-								Layer<?> layerToAdd = currentLayer.clone();
-								layerToAdd.setTrack(selectedTrack);
-								selectedTrack.getLayers().add(layerToAdd);
-								selectedTrack.setActiveLayer(layerToAdd);
-							}
-						}
-					}
-				} else if (layers.length == 1) {
-					notifyActionStart("Pasting Clipboard on Track #" + selectedTrack.getNumber(), 1, false);
-					Layer<?> layerToAdd = layers[0].clone();
-					layerToAdd.setTrack(selectedTrack);
-					selectedTrack.getLayers().add(layerToAdd);
-					selectedTrack.setActiveLayer(layerToAdd);
-				}
-			}
-		}
-		return null;
-	}
-
-
-	/**
-	 * @return retrieve the track from the clipboard if there is one
-	 * @throws UnsupportedFlavorException
-	 * @throws IOException
-	 * @throws URISyntaxException
-	 */
-	private Track retrieveTrack() throws UnsupportedFlavorException, IOException, URISyntaxException {
-		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-		Transferable clipboardContent = clipboard.getContents(this);
-		DataFlavor[] flavors = clipboardContent.getTransferDataFlavors();
-		int i = 0;
-		Track copiedTrack = null;
-		while ((i < flavors.length) && (copiedTrack == null)) {
-			TransferableTrack transTrack = null;
-			if (flavors[i].match(TransferableTrack.TRACK_FLAVOR)) {
-				transTrack = (TransferableTrack) clipboardContent.getTransferData(flavors[i]);
-			} else if (flavors[i].match(DataFlavor.javaFileListFlavor)) {
-				@SuppressWarnings("unchecked")
-				List<File> fileList = (List<File>) clipboardContent.getTransferData(flavors[i]);
-				if (!fileList.isEmpty()) {
-					File file = fileList.get(0);
-					transTrack = retrieveTrackFromFile(file);
-				}
-			} else if  (flavors[i].match(TransferableTrack.uriListFlavor)) {
-				String fileNameList = (String)  clipboardContent.getTransferData(flavors[i]);
-				File file = new File(new URI(fileNameList.split("\r\n")[0]));
-				transTrack = retrieveTrackFromFile(file);
-			}
-			if (transTrack != null) {
-				if (transTrack.getAssemblyName().equals(ProjectManager.getInstance().getAssembly().getName())) {
-					copiedTrack = transTrack.getTrackToTransfer();
-				} else {
-					JOptionPane.showMessageDialog(getRootPane(), "The track cannot be pasted because the source \n"
-							+ "and the target assemblies are not compatible.", "Cannot Paste Track", JOptionPane.WARNING_MESSAGE, null);
-				}
-			}
-			i++;
-		}
-		return copiedTrack;
-	}
-
-
-	/**
 	 * @param fileListObj
 	 * @return retrieve a {@link TransferableTrack} from a file if the file contain a serialized TransferableTrack
 	 */
-	private TransferableTrack retrieveTrackFromFile(File file) {
+	private static TransferableTrack retrieveTrackFromFile(File file) {
+		/*else if (flavors[i].match(DataFlavor.javaFileListFlavor)) {
+			@SuppressWarnings("unchecked")
+			List<File> fileList = (List<File>) transferable.getTransferData(flavors[i]);
+			if (!fileList.isEmpty()) {
+				File file = fileList.get(0);
+				transTrack = retrieveTrackFromFile(file);
+			}
+		} else if  (flavors[i].match(TransferableTrack.uriListFlavor)) {
+			String fileNameList = (String)  transferable.getTransferData(flavors[i]);
+			File file = new File(new URI(fileNameList.split("\r\n")[0]));
+			transTrack = retrieveTrackFromFile(file);
+		}*/
 		ObjectInputStream ois = null;
 		try {
 			try {
@@ -198,6 +108,65 @@ public final class TAPaste extends TrackListActionWorker<Void> {
 				try {
 					ois.close();
 				} catch (IOException e) {
+				}
+			}
+		}
+		return null;
+	}
+
+
+	/**
+	 * Creates an instance of {@link TAPaste}
+	 */
+	public TAPaste() {
+		super();
+		putValue(NAME, ACTION_NAME);
+		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
+		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(ACCELERATOR_KEY, ACCELERATOR);
+		putValue(MNEMONIC_KEY, MNEMONIC);
+	}
+
+
+	@Override
+	protected Void processAction() throws Exception {
+		Track selectedTrack = getTrackListPanel().getSelectedTrack();
+		notifyActionStart("Pasting Clipboard on Track #" + selectedTrack.getNumber(), 1, false);
+		if (selectedTrack != null) {
+			Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+			Transferable transferable = (Transferable) clipboard.getData(TransferableTrack.TRACK_FLAVOR);
+			if (transferable != null) {
+				Track copiedTrack = TransferableTrack.getTrackFromTransferable(transferable);
+				// TODO handle incompatible assemblies exception
+				if (copiedTrack != null) {
+					// we ask the user to choose the layers to paste
+					Layer<?>[] layers = copiedTrack.getLayers().getLayers();
+					if (layers.length > 1) {
+						LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
+						layerChooserDialog.setLayers(Arrays.asList(layers));
+						// since Arrays.asList create a list that doesn't support the remove method we convert it as an ArrayList
+						layerChooserDialog.setSelectedLayers(new ArrayList<Layer<?>>(Arrays.asList(layers)));
+						layerChooserDialog.setMultiselectable(true);
+						if (layerChooserDialog.showDialog(getRootPane(), "Select Layers to Paste") == LayerChooserDialog.APPROVE_OPTION) {
+							List<Layer<?>> selectedLayerList = layerChooserDialog.getSelectedLayers();
+							Collections.reverse(selectedLayerList);
+							Layer<?>[] selectedLayers = selectedLayerList.toArray(new Layer<?>[0]);
+							if ((selectedLayers != null) && (selectedLayers.length > 0)) {
+								for (Layer<?> currentLayer: selectedLayers) {
+									Layer<?> layerToAdd = currentLayer.clone();
+									layerToAdd.setTrack(selectedTrack);
+									selectedTrack.getLayers().add(layerToAdd);
+									selectedTrack.setActiveLayer(layerToAdd);
+								}
+							}
+						}
+					} else if (layers.length == 1) {
+						notifyActionStart("Pasting Clipboard on Track #" + selectedTrack.getNumber(), 1, false);
+						Layer<?> layerToAdd = layers[0].clone();
+						layerToAdd.setTrack(selectedTrack);
+						selectedTrack.getLayers().add(layerToAdd);
+						selectedTrack.setActiveLayer(layerToAdd);
+					}
 				}
 			}
 		}
