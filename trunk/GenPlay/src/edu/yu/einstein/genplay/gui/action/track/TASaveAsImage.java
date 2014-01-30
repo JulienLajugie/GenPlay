@@ -24,7 +24,6 @@ package edu.yu.einstein.genplay.gui.action.track;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Toolkit;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -53,7 +52,7 @@ public final class TASaveAsImage extends TrackListActionWorker<Void> {
 	private static final long serialVersionUID = -4363481310731795005L; 				// generated ID
 	private static final String ACTION_NAME = "Save as Image"; 							// action name
 	private static final String DESCRIPTION = "Save the selected track as a PNG image"; // tooltip
-	private static final int 	MNEMONIC = KeyEvent.VK_S; 								// mnemonic key
+	private static final int 	MNEMONIC = KeyEvent.VK_V; 								// mnemonic key
 
 
 	/**
@@ -65,7 +64,7 @@ public final class TASaveAsImage extends TrackListActionWorker<Void> {
 	/**
 	 * action accelerator {@link KeyStroke}
 	 */
-	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() | InputEvent.SHIFT_DOWN_MASK);
+	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.ALT_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK);
 
 
 	/**

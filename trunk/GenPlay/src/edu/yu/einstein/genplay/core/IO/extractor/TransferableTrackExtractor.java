@@ -25,51 +25,48 @@ package edu.yu.einstein.genplay.core.IO.extractor;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 
-import com.sun.xml.internal.ws.encoding.soap.SerializationException;
-
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.exception.exceptions.IncompatibleAssembliesException;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TransferableTrack;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
- * Extractor for the serialized {@link TransferableTrack}
+ * Extract a GenPlay Transferable Track File
  * @author Julien Lajugie
  */
 public class TransferableTrackExtractor extends Extractor {
 
-	/**
-	 * Creates an instance of {@link TransferableTrackExtractor}
-	 * @param dataFile
-	 * @throws SerializationException
-	 */
-	public TransferableTrackExtractor(File dataFile) throws SerializationException {
+	private int firstBasePosition = 1;
+
+	public TransferableTrackExtractor(File dataFile) {
 		super(dataFile);
 	}
 
 
 	/**
-	 * @return the track from the file
-	 * @throws IOException
+	 * @return a track from the data in the file
 	 * @throws ClassNotFoundException
-	 * @throws IncompatibleAssembliesException if the serialized track is not compatible with the project
+	 * @throws IOException
 	 */
-	public Track extractTrack() throws IOException, ClassNotFoundException, IncompatibleAssembliesException {
-		ObjectInputStream ois = null;
+	public Track extract() throws ClassNotFoundException, IOException, IncompatibleAssembliesException {
+		InputStream file = null;
+		ObjectInput input = null;
 		try {
-			FileInputStream in = new FileInputStream(getDataFile());
-			ois = new ObjectInputStream(in);
-			TransferableTrack transTrack = (TransferableTrack) (ois.readObject());
-			if (transTrack.getAssemblyName().equals(ProjectManager.getInstance().getAssembly().getName())) {
-				throw new IncompatibleAssembliesException("The assembly of the source file is not compatible with the assembly of the project");
-			}
+			file = new FileInputStream(getDataFile());
+			input = new ObjectInputStream (file);
+			TransferableTrack transTrack = (TransferableTrack) (input.readObject());
 			return transTrack.getTrackToTransfer();
 		} finally {
-			if (ois != null) {
-				ois.close();
+			if (input != null) {
+				input.close();
+			}
+			if (file != null) {
+				file.close();
 			}
 		}
 	}
@@ -77,18 +74,18 @@ public class TransferableTrackExtractor extends Extractor {
 
 	@Override
 	public int getFirstBasePosition() {
-		return 0;
+		return firstBasePosition;
 	}
 
 
 	@Override
 	protected String retrieveDataName(File dataFile) {
-		return null;
+		return Utils.getFileNameWithoutExtension(dataFile);
 	}
 
 
 	@Override
 	public void setFirstBasePosition(int firstBasePosition) {
-		// do nothing
+		this.firstBasePosition = firstBasePosition;
 	}
 }

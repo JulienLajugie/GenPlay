@@ -22,11 +22,10 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.track;
 
-import java.io.File;
-
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.IO.dataReader.RepeatReader;
+import edu.yu.einstein.genplay.core.IO.extractor.Extractor;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.repeatFamilyList.RepeatFamilyList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.repeatFamilyList.SimpleRepeatFamilyListFactory;
@@ -35,7 +34,6 @@ import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection.GenomeSelectionDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.RepeatLayer;
-import edu.yu.einstein.genplay.util.Utils;
 
 
 
@@ -57,9 +55,10 @@ public final class TAAddRepeatLayer extends TrackListActionExtractorWorker<Repea
 
 	/**
 	 * Creates an instance of {@link TAAddRepeatLayer}
+	 * @param extractor the extractor that will extract the data
 	 */
-	public TAAddRepeatLayer() {
-		super();
+	public TAAddRepeatLayer(Extractor extractor) {
+		super(extractor);
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -105,15 +104,5 @@ public final class TAAddRepeatLayer extends TrackListActionExtractorWorker<Repea
 		} catch (ClassCastException e) {
 			throw new InvalidFileTypeException();
 		}
-	}
-
-
-	@Override
-	protected File retrieveFileToExtract() {
-		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Repeat Layer", Utils.getReadableRepeatFileFilters(), true);
-		if (selectedFile != null) {
-			return selectedFile;
-		}
-		return null;
 	}
 }

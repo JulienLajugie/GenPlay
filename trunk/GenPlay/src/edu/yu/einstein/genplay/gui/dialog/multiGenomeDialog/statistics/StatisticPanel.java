@@ -25,7 +25,6 @@ package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.statistics;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
@@ -151,7 +150,7 @@ public class StatisticPanel extends JPanel {
 
 
 	private void copyToClipboard (String info) {
-		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+		Clipboard clipboard = edu.yu.einstein.genplay.util.Utils.getClipboard();
 		clipboard.setContents(new StringSelection(info), null);
 	}
 

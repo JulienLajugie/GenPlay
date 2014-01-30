@@ -60,8 +60,7 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 		@Override
 		final protected T doInBackground() throws Exception {
 			OperationPool.getInstance().addOperationProgressListener(TrackListActionWorker.this);
-			getTrackListPanel().lockTrackHandles();
-			getTrackListPanel().setEnabled(false);
+			MainFrame.getInstance().lock();
 			return processAction();
 		}
 
@@ -80,8 +79,7 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 				}
 			} finally {
 				OperationPool.getInstance().removeOperationProgressListener(TrackListActionWorker.this);
-				getTrackListPanel().unlockTrackHandles();
-				getTrackListPanel().setEnabled(true);
+				MainFrame.getInstance().unlock();
 				if ((!WarningReportDialog.getInstance().isVisible())) {
 					MainFrame.getInstance().setVisible(true);
 				}

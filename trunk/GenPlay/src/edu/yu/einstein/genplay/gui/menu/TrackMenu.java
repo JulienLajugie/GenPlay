@@ -37,8 +37,9 @@ import edu.yu.einstein.genplay.gui.action.track.TACopy;
 import edu.yu.einstein.genplay.gui.action.track.TACut;
 import edu.yu.einstein.genplay.gui.action.track.TADelete;
 import edu.yu.einstein.genplay.gui.action.track.TAInsert;
-import edu.yu.einstein.genplay.gui.action.track.TAPaste;
+import edu.yu.einstein.genplay.gui.action.track.TAPasteOrDrop;
 import edu.yu.einstein.genplay.gui.action.track.TASaveAsImage;
+import edu.yu.einstein.genplay.gui.action.track.TASaveTrack;
 import edu.yu.einstein.genplay.gui.action.track.TATrackSettings;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.menu.layerMenu.LayerMenuFactory;
@@ -65,11 +66,12 @@ public class TrackMenu extends JPopupMenu implements PopupMenuListener {
 		null,
 		TACopy.ACTION_KEY,
 		TACut.ACTION_KEY,
-		TAPaste.ACTION_KEY,
+		TAPasteOrDrop.ACTION_KEY,
 		null,
 		TAInsert.ACTION_KEY,
 		TADelete.ACTION_KEY,
 		null,
+		TASaveTrack.ACTION_KEY,
 		TASaveAsImage.ACTION_KEY,
 		null,
 		TATrackSettings.ACTION_KEY
@@ -121,7 +123,7 @@ public class TrackMenu extends JPopupMenu implements PopupMenuListener {
 			layerMenus.clear();
 			remove(layerMenusSeparator);
 		}
-		TrackListActionMap.getActionMap().get(TAPaste.ACTION_KEY).setEnabled(true);
+		TrackListActionMap.getActionMap().get(TAPasteOrDrop.ACTION_KEY).setEnabled(true);
 		selectedTrack = null;
 	}
 
@@ -133,7 +135,7 @@ public class TrackMenu extends JPopupMenu implements PopupMenuListener {
 	public void popupMenuWillBecomeVisible(PopupMenuEvent evt) {
 		if (selectedTrack != null) {
 			boolean isPasteEnable = MainFrame.getInstance().getTrackListPanel().isPasteEnable();
-			TrackListActionMap.getActionMap().get(TAPaste.ACTION_KEY).setEnabled(isPasteEnable);
+			TrackListActionMap.getActionMap().get(TAPasteOrDrop.ACTION_KEY).setEnabled(isPasteEnable);
 			Layer<?>[] trackLayers = selectedTrack.getLayers().getLayers();
 			if (trackLayers != null) {
 				int lastIndex = getComponentCount();

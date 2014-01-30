@@ -25,15 +25,27 @@ package edu.yu.einstein.genplay.gui.action.track;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.IO.dataReader.GeneReader;
+import edu.yu.einstein.genplay.core.IO.dataReader.NucleotideReader;
+import edu.yu.einstein.genplay.core.IO.dataReader.RepeatReader;
+import edu.yu.einstein.genplay.core.IO.dataReader.SCWReader;
+import edu.yu.einstein.genplay.core.IO.extractor.Extractor;
+import edu.yu.einstein.genplay.core.IO.extractor.ExtractorFactory;
+import edu.yu.einstein.genplay.core.IO.extractor.TransferableTrackExtractor;
+import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -47,28 +59,42 @@ public class TAAddLayer extends TrackListAction {
 	 */
 	private static final long serialVersionUID = -6765104407932350110L;
 
-
 	/**
 	 * action accelerator {@link KeyStroke}
 	 */
 	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_A, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
-
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
 	public static final String ACTION_KEY = TAAddLayer.class.getName();
 
+	private static final String ACTION_NAME = "Add Layer(s)"; 										// action name
+	private static final String DESCRIPTION = "Add one or multiple layers to the selected track";	// tooltip
+	private static final int 	MNEMONIC = KeyEvent.VK_A; 											// mnemonic key
 
-	private static final String ACTION_NAME = "Add Layer"; 						// action name
-	private static final String DESCRIPTION = "Add a layer to selected track";	// tooltip
-	private static final int 	MNEMONIC = KeyEvent.VK_A; 						// mnemonic key
+	private File fileToLoad; // the file to load
 
 
 	/**
-	 * Adds a layer to a specified track
+	 * Loads one or multiple layers to a specified track
 	 */
 	public TAAddLayer() {
+		super();
+		putValue(NAME, ACTION_NAME);
+		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
+		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(ACCELERATOR_KEY, ACCELERATOR);
+		putValue(MNEMONIC_KEY, MNEMONIC);
+	}
+
+
+	/**
+	 * Loads layer(s) extracted from the specified file to a specified track
+	 */
+	public TAAddLayer(File fileToLoad) {
+		super();
+		this.fileToLoad = fileToLoad;
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -79,55 +105,84 @@ public class TAAddLayer extends TrackListAction {
 
 	@Override
 	public void actionPerformed(ActionEvent evt) {
-		Track selectedTrack = getTrackListPanel().getSelectedTrack();
-		if (selectedTrack != null) {
-			LayerType[] layerTypes = getLayerTypes();
-			LayerType selectedLayerType = (LayerType)JOptionPane.showInputDialog(
-					getRootPane(),
-					"Please select the type of layer to add",
-					"Layer Type",
-					JOptionPane.QUESTION_MESSAGE,
-					null,
-					layerTypes,
-					layerTypes[0]);
-			if (selectedLayerType != null) {
-				switch (selectedLayerType) {
-				case SCW_LAYER:
-					new TAAddSCWLayer().actionPerformed(evt);
-					break;
-				case GENE_LAYER:
-					new TAAddGeneLayer().actionPerformed(evt);
-					break;
-				case REPEAT_FAMILY_LAYER:
-					new TAAddRepeatLayer().actionPerformed(evt);
-					break;
-				case NUCLEOTIDE_LAYER:
-					new TAAddNucleotideLayer().actionPerformed(evt);
-					break;
-				case VARIANT_LAYER:
-					new TAAddVariantLayer().actionPerformed(evt);
-					break;
-				case MASK_LAYER:
-					new TAAddMaskLayer().actionPerformed(evt);
-					break;
-				default:
-					// do nothing
-					break;
+		try {
+			Track selectedTrack = getTrackListPanel().getSelectedTrack();
+			if (selectedTrack != null) {
+				if (fileToLoad == null) {
+					fileToLoad = Utils.chooseFileToLoad(getRootPane(), "Choose File to Load", Utils.getReadableLayerFileFilters(), true);
+				}
+				if (fileToLoad != null) {
+					Extractor extractor = ExtractorFactory.getExtractor(fileToLoad);
+					if (extractor instanceof TransferableTrackExtractor) {
+						new TAAddGenPlayTrack(extractor).actionPerformed(evt);
+					} else {
+						LayerType[] layerTypes = getLayerTypes(extractor);
+						if (layerTypes.length == 0) {
+							throw new InvalidFileTypeException();
+						}
+						LayerType selectedLayerType = (LayerType)JOptionPane.showInputDialog(
+								getRootPane(),
+								"Please select the type of layer to add",
+								"Layer Type",
+								JOptionPane.QUESTION_MESSAGE,
+								null,
+								layerTypes,
+								layerTypes[0]);
+						if (selectedLayerType != null) {
+							switch (selectedLayerType) {
+							case SCW_LAYER:
+								new TAAddSCWLayer(extractor).actionPerformed(evt);
+								break;
+							case GENE_LAYER:
+								new TAAddGeneLayer(extractor).actionPerformed(evt);
+								break;
+							case REPEAT_FAMILY_LAYER:
+								new TAAddRepeatLayer(extractor).actionPerformed(evt);
+								break;
+							case NUCLEOTIDE_LAYER:
+								new TAAddNucleotideLayer(extractor).actionPerformed(evt);
+								break;
+							case MASK_LAYER:
+								new TAAddMaskLayer(extractor).actionPerformed(evt);
+								break;
+							default:
+								// do nothing
+								break;
+							}
+						}
+					}
 				}
 			}
+		} catch (InvalidFileTypeException e) {
+			JOptionPane.showMessageDialog(getRootPane(), "The specified file type cannot be detected.", "Invalid File Type", JOptionPane.WARNING_MESSAGE, null);
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(getRootPane(), "The specified file cannot be loaded.", "Invalid File", JOptionPane.WARNING_MESSAGE, null);
 		}
 	}
 
 
 	/**
-	 * @return the {@link LayerType} that can be added
+	 * @param extractor an extractor
+	 * @return an array of layer types that can be extracted by the specified extractor
 	 */
-	private LayerType[] getLayerTypes () {
-		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			LayerType[] layerTypes = {LayerType.SCW_LAYER, LayerType.GENE_LAYER, LayerType.REPEAT_FAMILY_LAYER, LayerType.NUCLEOTIDE_LAYER, LayerType.VARIANT_LAYER, LayerType.MASK_LAYER};
-			return layerTypes;
+	private LayerType[] getLayerTypes(Extractor extractor) {
+		List<LayerType> typeList = new ArrayList<LayerType>();
+		if (extractor instanceof SCWReader) {
+			typeList.add(LayerType.SCW_LAYER);
+			typeList.add(LayerType.MASK_LAYER);
 		}
-		LayerType[] layerTypes = {LayerType.SCW_LAYER, LayerType.GENE_LAYER, LayerType.REPEAT_FAMILY_LAYER, LayerType.NUCLEOTIDE_LAYER, LayerType.MASK_LAYER};
-		return layerTypes;
+		if (extractor instanceof GeneReader) {
+			typeList.add(LayerType.GENE_LAYER);
+		}
+		if (extractor instanceof RepeatReader) {
+			typeList.add(LayerType.REPEAT_FAMILY_LAYER);
+		}
+		if (extractor instanceof NucleotideReader) {
+			typeList.add(LayerType.NUCLEOTIDE_LAYER);
+		}
+		if (extractor instanceof GeneReader) {
+			typeList.add(LayerType.GENE_LAYER);
+		}
+		return typeList.toArray(new LayerType[0]);
 	}
 }

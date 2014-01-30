@@ -29,6 +29,7 @@ import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.yu.einstein.genplay.core.IO.dataReader.NucleotideReader;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
@@ -46,7 +47,7 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
  * This extractor is used to create {@link GenomicListView} nucleotide
  * @author Julien Lajugie
  */
-public class TwoBitExtractor extends Extractor implements Stoppable {
+public class TwoBitExtractor extends Extractor implements Stoppable, NucleotideReader {
 
 	/** Default first base position of bed files. 2bit files are 0-based */
 	public static final int DEFAULT_FIRST_BASE_POSITION = 0;

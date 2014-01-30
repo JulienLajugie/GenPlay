@@ -51,7 +51,9 @@ public final class ExtractorFactory {
 		if (fileExtension == null) {
 			return null;
 		}
-		if (fileExtension.equalsIgnoreCase("gff")) {
+		if (fileExtension.equalsIgnoreCase("gptf")) {
+			return new TransferableTrackExtractor(fileToExtract);
+		} else if (fileExtension.equalsIgnoreCase("gff")) {
 			return new GFFExtractor(fileToExtract);
 		} else if (fileExtension.equalsIgnoreCase("gtf")) {
 			return new GTFExtractor(fileToExtract);

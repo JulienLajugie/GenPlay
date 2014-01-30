@@ -48,7 +48,6 @@ import edu.yu.einstein.genplay.util.Utils;
 public abstract class TrackListActionExtractorWorker<T> extends TrackListActionWorker<T> implements InvalidDataListener {
 
 	private static final long serialVersionUID = -1626148358656459751L; // generated ID
-	protected File								fileToExtract;  		// file to extract
 	protected String							name;					// a name
 	protected Extractor							extractor;				// an extractor
 	protected boolean[]							selectedChromo = null;	// selected chromo
@@ -56,9 +55,11 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 
 	/**
 	 * Public constructor
+	 * @param extractor the extractor that will extract the data
 	 */
-	public TrackListActionExtractorWorker() {
+	public TrackListActionExtractorWorker(Extractor	extractor) {
 		super();
+		this.extractor = extractor;
 	}
 
 
@@ -85,12 +86,12 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 	private void handleProcessActionException(Exception e) throws Exception {
 		e.printStackTrace();
 		if (e instanceof ElementAddedNotSortedException) {
-			String message = "File not sorted:  " + fileToExtract.getName()
+			String message = "File not sorted:  " + extractor.getDataFile().getName()
 					+ "\nThis file cannot be loaded because it is not sorted by chromosome and start position.";
 			showWarningMessage(message);
 			throw new InterruptedException();
 		} else if (e instanceof InvalidFileTypeException) {
-			String message = "Invalid file: " + fileToExtract.getName()
+			String message = "Invalid file: " + extractor.getDataFile().getName()
 					+"\nThe file type is not compatible with the selected layer type.";
 			showWarningMessage(message);
 			throw new InterruptedException();
@@ -113,16 +114,15 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 	 * @throws Exception
 	 */
 	private T handleUnsortedFile() throws Exception {
-		File sortedFile = ExternalSortAdapter.generateOutputFile(fileToExtract);
+		File sortedFile = ExternalSortAdapter.generateOutputFile(extractor.getDataFile());
 		int answer = JOptionPane.showConfirmDialog(getRootPane(), "GenPlay cannot load the selected file because it is not sorted.\n"
 				+ "Do you want GenPlay to sort the file?\n"
 				+ "(This will generate a new file with a .sorted prefix)", "Sort File", JOptionPane.YES_NO_OPTION);
 		if (answer == JOptionPane.YES_OPTION) {
 			if (!Utils.cancelBecauseFileExist(getRootPane(), sortedFile)) {
 				notifyActionStart("Sorting File", 1, false);
-				ExternalSortAdapter.externalSortGenomicFile(fileToExtract);
-				fileToExtract = sortedFile;
-				Extractor newExtractor = ExtractorFactory.getExtractor(fileToExtract);
+				ExternalSortAdapter.externalSortGenomicFile(extractor.getDataFile());
+				Extractor newExtractor = ExtractorFactory.getExtractor(sortedFile);
 				newExtractor.addInvalidDataListener(this);
 				newExtractor.addOperationProgressListener(this);
 				newExtractor.setGenomeName(genomeName);
@@ -149,41 +149,29 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 
 	@Override
 	protected final T processAction() throws Exception {
-		fileToExtract = retrieveFileToExtract();
-		if (fileToExtract != null) {
-			try {
-				extractor = ExtractorFactory.getExtractor(fileToExtract);
-				if (extractor != null) {
-					name = extractor.getDataName();
-					extractor.addInvalidDataListener(this);
-					extractor.addOperationProgressListener(this);
-					doBeforeExtraction();
-					if (ProjectManager.getInstance().isMultiGenomeProject()) {
-						extractor.setGenomeName(genomeName);
-						extractor.setAlleleType(alleleType);
-					}
-					try {
-						return generateList();
-					} catch (ElementAddedNotSortedException e) {
-						return handleUnsortedFile();
-					}
-				}
-			} catch (Exception e) {
-				if (extractor != null) {
-					extractor.stop();
-				}
-				handleProcessActionException(e);
+		try {
+			name = extractor.getDataName();
+			extractor.addInvalidDataListener(this);
+			extractor.addOperationProgressListener(this);
+			doBeforeExtraction();
+			if (ProjectManager.getInstance().isMultiGenomeProject()) {
+				extractor.setGenomeName(genomeName);
+				extractor.setAlleleType(alleleType);
 			}
+			try {
+				return generateList();
+			} catch (ElementAddedNotSortedException e) {
+				return handleUnsortedFile();
+			}
+
+		} catch (Exception e) {
+			if (extractor != null) {
+				extractor.stop();
+			}
+			handleProcessActionException(e);
 		}
 		throw new InterruptedException();
 	}
-
-
-	/**
-	 * Asks the user a file to load
-	 * @return the file to load. Null if canceled
-	 */
-	abstract protected File retrieveFileToExtract();
 
 
 	/**

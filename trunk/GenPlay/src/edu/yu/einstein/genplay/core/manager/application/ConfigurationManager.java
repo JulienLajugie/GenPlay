@@ -33,7 +33,6 @@ import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.UIManager;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.util.Utils;
 
 /**
@@ -90,7 +89,7 @@ public final class ConfigurationManager {
 	 */
 	public static ConfigurationManager getInstance() {
 		if (instance == null) {
-			synchronized(ProjectManager.class) {
+			synchronized(ConfigurationManager.class) {
 				if (instance == null) {
 					instance = new ConfigurationManager();
 				}

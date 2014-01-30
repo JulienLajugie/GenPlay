@@ -476,6 +476,27 @@ public final class Track implements Serializable, GenomeWindowListener, TrackLis
 
 
 	/**
+	 * Sets the current track with the parameters and the layers of the specified track
+	 * @param otherTrack
+	 */
+	public void setContentFrom(Track otherTrack) {
+		foregroundLayer = otherTrack.foregroundLayer.clone();
+		foregroundLayer.setTrack(this);
+		backgroundLayer = otherTrack.backgroundLayer.clone();
+		backgroundLayer.setTrack(this);
+		for (Layer<?> currentLayer: otherTrack.layers) {
+			Layer<?> layerToAdd = currentLayer.clone();
+			layerToAdd.setTrack(this);
+			getLayers().add(layerToAdd);
+		}
+		trackName = otherTrack.trackName;
+		score.setMinimumScore(otherTrack.score.getMinimumScore());
+		score.setMaximumScore(otherTrack.score.getMaximumScore());
+		score.setScoreAxisAutorescaled(otherTrack.score.isScoreAxisAutorescaled());
+	}
+
+
+	/**
 	 * Sets the default height of the track
 	 * @param defaultHeight default height to set
 	 */

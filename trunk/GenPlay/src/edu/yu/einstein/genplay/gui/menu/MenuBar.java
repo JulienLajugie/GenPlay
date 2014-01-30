@@ -42,7 +42,7 @@ import edu.yu.einstein.genplay.gui.action.track.TACopy;
 import edu.yu.einstein.genplay.gui.action.track.TACut;
 import edu.yu.einstein.genplay.gui.action.track.TADelete;
 import edu.yu.einstein.genplay.gui.action.track.TAInsert;
-import edu.yu.einstein.genplay.gui.action.track.TAPaste;
+import edu.yu.einstein.genplay.gui.action.track.TAPasteOrDrop;
 import edu.yu.einstein.genplay.gui.action.track.TASaveAsImage;
 import edu.yu.einstein.genplay.gui.action.track.TATrackSettings;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
@@ -104,7 +104,7 @@ public class MenuBar extends JMenuBar {
 	private void createEditMenu() {
 		final JMenuItem jmiCopy = new JMenuItem(actionMap.get(TACopy.ACTION_KEY));
 		final JMenuItem jmiCut = new JMenuItem(actionMap.get(TACut.ACTION_KEY));
-		final JMenuItem jmiPaste = new JMenuItem(actionMap.get(TAPaste.ACTION_KEY));
+		final JMenuItem jmiPaste = new JMenuItem(actionMap.get(TAPasteOrDrop.ACTION_KEY));
 		final JMenuItem jmiInsert = new JMenuItem(actionMap.get(TAInsert.ACTION_KEY));
 		final JMenuItem jmiDelete = new JMenuItem(actionMap.get(TADelete.ACTION_KEY));
 

@@ -24,7 +24,6 @@ package edu.yu.einstein.genplay.gui.trackList;
 
 import java.awt.Component;
 import java.awt.Point;
-import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -47,11 +46,12 @@ import javax.swing.event.ListDataListener;
 
 import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
-import edu.yu.einstein.genplay.gui.action.track.TADropFile;
+import edu.yu.einstein.genplay.gui.action.track.TAPasteOrDrop;
 import edu.yu.einstein.genplay.gui.action.track.TATrackSettings;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEvent;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventType;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackListener;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.menu.TrackMenu;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackConstants;
@@ -60,6 +60,7 @@ import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.VersionedLayer;
 import edu.yu.einstein.genplay.gui.track.layer.variantLayer.MultiGenomeDrawer;
 import edu.yu.einstein.genplay.gui.track.layer.variantLayer.VariantLayer;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -125,22 +126,30 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 
 	@Override
 	public void dragEnter(DropTargetDragEvent dtde) {
-		// do nothing
+		if (!MainFrame.getInstance().isLocked() &&
+				(dtde.isDataFlavorSupported(DataFlavor.javaFileListFlavor) || dtde.isDataFlavorSupported(TransferableTrack.uriListFlavor))) {
+			dtde.acceptDrag(TransferHandler.COPY);
+			trackDragged();
+		} else {
+			dtde.acceptDrag(TransferHandler.NONE);
+		}
 	}
 
 
 	@Override
 	public void dragExit(DropTargetEvent dte) {
-		draggedOverTrack.setBorder(TrackConstants.REGULAR_BORDER);
-		draggedOverTrack = null;
-		unlockTrackHandles();
+		if (draggedOverTrack != null) {
+			draggedOverTrack.setBorder(TrackConstants.REGULAR_BORDER);
+			draggedOverTrack = null;
+			unlockTrackHandles();
+		}
 	}
 
 
 	@Override
 	public void dragOver(DropTargetDragEvent dtde) {
-		if (dtde.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
-			dtde.acceptDrag(TransferHandler.COPY);
+		if (!MainFrame.getInstance().isLocked() &&
+				(dtde.isDataFlavorSupported(DataFlavor.javaFileListFlavor) || dtde.isDataFlavorSupported(TransferableTrack.uriListFlavor))) {
 			trackDragged();
 		}
 	}
@@ -148,16 +157,27 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 
 	@Override
 	public void drop(DropTargetDropEvent dtde) {
-		draggedOverTrack.setBorder(TrackConstants.REGULAR_BORDER);
-		unlockTrackHandles();
-		try {
-			new TADropFile(draggedOverTrack, dtde.getTransferable()).processAction();
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(getRootPane(), "The selected file cannot be loaded in GenPlay", "Cannot Drop File", JOptionPane.WARNING_MESSAGE, null);
-			e.printStackTrace();
+		if (draggedOverTrack != null) {
+			draggedOverTrack.setBorder(TrackConstants.REGULAR_BORDER);
+			unlockTrackHandles();
+			try {
+				dtde.acceptDrop(TransferHandler.COPY);
+				// unselect the previous track
+				if (selectedTrack != null) {
+					selectedTrack.setSelected(false);
+				}
+				// select the dragged over track
+				selectedTrack = draggedOverTrack;
+				selectedTrack.setSelected(true);
+				new TAPasteOrDrop(dtde.getTransferable()).processAction();
+				dtde.dropComplete(true);
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(getRootPane(), "The selected file cannot be loaded in GenPlay", "Cannot Drop File", JOptionPane.WARNING_MESSAGE, null);
+				e.printStackTrace();
+				dtde.dropComplete(false);
+			}
+			draggedOverTrack = null;
 		}
-		draggedOverTrack = null;
-		dtde.dropComplete(true);
 	}
 
 
@@ -227,7 +247,7 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 	 * @return true if there is a track to paste
 	 */
 	public boolean isPasteEnable() {
-		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+		Clipboard clipboard = Utils.getClipboard();
 		Transferable clipboardContent = clipboard.getContents(this);
 		DataFlavor[] flavors = clipboardContent.getTransferDataFlavors();
 		int i = 0;
@@ -237,7 +257,6 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 				isPasteEnabled = true;
 			} else if (flavors[i].match(DataFlavor.javaFileListFlavor)) {
 				isPasteEnabled = true;
-				// TODO check that the file type is really loadable in genplay
 			} else if (flavors[i].match(TransferableTrack.uriListFlavor)) {
 				isPasteEnabled = true;
 			}
@@ -353,7 +372,7 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 			releaseTrack();
 		} else if (evt.getEventType() == TrackEventType.SELECTED) {
 			// unselect the previously selected track (if any)
-			if (selectedTrack != null) {
+			if ((selectedTrack != null) && (selectedTrack  != evt.getSource())){
 				selectedTrack.setSelected(false);
 			}
 			// set the new selected track
@@ -400,23 +419,23 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 				int currentTrackTop = currentTrackPanel.getY() - getVerticalScrollBar().getValue();
 				int currentrackBottom = (currentTrackPanel.getY() + currentTrackPanel.getHeight()) - getVerticalScrollBar().getValue();
 				int mouseY = -1;
-				synchronized (this) {
-					if (getMousePosition() != null) {
-						mouseY = getMousePosition().y;
+				try {
+					mouseY = getMousePosition().y;
+					if ((mouseY != -1) && (mouseY > currentTrackTop) && (mouseY < currentrackBottom) && (currentTrack != draggedOverTrack)) {
+						if (draggedOverTrack != null) {
+							draggedOverTrack.setBorder(TrackConstants.REGULAR_BORDER);
+						}
+						draggedOverTrack = currentTrack;
+						if ((draggedTrack == null) || (draggedOverTrack == draggedTrack)) {
+							draggedOverTrack.setBorder(TrackConstants.DRAG_START_BORDER);
+						} else if (draggedOverTrack.getNumber() < draggedTrack.getNumber()) {
+							draggedOverTrack.setBorder(TrackConstants.DRAG_UP_BORDER);
+						} else {
+							draggedOverTrack.setBorder(TrackConstants.DRAG_DOWN_BORDER);
+						}
 					}
-				}
-				if ((mouseY != -1) && (mouseY > currentTrackTop) && (mouseY < currentrackBottom) && (currentTrack != draggedOverTrack)) {
-					if (draggedOverTrack != null) {
-						draggedOverTrack.setBorder(TrackConstants.REGULAR_BORDER);
-					}
-					draggedOverTrack = currentTrack;
-					if ((draggedTrack == null) || (draggedOverTrack == draggedTrack)) {
-						draggedOverTrack.setBorder(TrackConstants.DRAG_START_BORDER);
-					} else if (draggedOverTrack.getNumber() < draggedTrack.getNumber()) {
-						draggedOverTrack.setBorder(TrackConstants.DRAG_UP_BORDER);
-					} else {
-						draggedOverTrack.setBorder(TrackConstants.DRAG_DOWN_BORDER);
-					}
+				} catch (NullPointerException e) {
+					// do nothing, it's because the getMousePosition return null
 				}
 			}
 		}

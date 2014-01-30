@@ -44,7 +44,7 @@ public final class TADelete extends TrackListAction {
 	private static final long serialVersionUID = -832588159357836362L; 		// generated ID
 	private static final String ACTION_NAME = "Delete";						// action name
 	private static final String DESCRIPTION = "Delete the selected track"; 	// tooltip
-	private static final int 	MNEMONIC = KeyEvent.VK_D; 					// mnemonic key
+	private static final int 	MNEMONIC = KeyEvent.VK_E; 					// mnemonic key
 
 
 	/**

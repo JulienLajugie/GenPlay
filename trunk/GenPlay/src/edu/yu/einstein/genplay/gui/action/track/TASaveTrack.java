@@ -20,9 +20,10 @@
  * 
  * Website: <http://genplay.einstein.yu.edu>
  ******************************************************************************/
-package edu.yu.einstein.genplay.gui.action.project;
+package edu.yu.einstein.genplay.gui.action.track;
 
 import java.awt.Toolkit;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 
@@ -31,74 +32,65 @@ import javax.swing.JFileChooser;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.manager.recording.ProjectRecording;
-import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
+import edu.yu.einstein.genplay.core.IO.writer.TransferableTrackWriter;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.fileFilter.ExtendedFileFilter;
-import edu.yu.einstein.genplay.gui.fileFilter.GenPlayProjectFilter;
-import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
+import edu.yu.einstein.genplay.gui.fileFilter.GenPlayTrackFilter;
+import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.Utils;
 
-/**
- * Saves the project into a file
- * 
- * @author Julien Lajugie
- * @author Nicolas Fourel
- */
-public class PASaveProject extends TrackListActionWorker<Boolean> {
 
-	private static final long serialVersionUID = -8503082838697971220L; 			// generated ID
-	private static final String 	DESCRIPTION = "Save the project into a file"; 	// tooltip
-	private static final int 		MNEMONIC = KeyEvent.VK_S; 						// mnemonic key
-	private static final String 	ACTION_NAME = "Save Project"; 					// action name
-	private File 					selectedFile; 									// selected file
+/**
+ * Saves the selected track in GenPlay transferable track format
+ * @author Julien Lajugie
+ */
+public final class TASaveTrack extends TrackListActionWorker<Void> {
+
+
+	private static final long serialVersionUID = -1893808843074231009L;							// generated ID
+	private static final String ACTION_NAME = "Save Track"; 									// action name
+	private static final String DESCRIPTION = "Save the selected track with all its layers";	// tooltip
+	private static final int 	MNEMONIC = KeyEvent.VK_S; 										// mnemonic key
+	private File 				selectedFile; 													// selected file
+
 
 	/**
 	 * action accelerator {@link KeyStroke}
 	 */
-	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() | InputEvent.ALT_DOWN_MASK);
 
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = PASaveProject.class.getName();
+	public static final String ACTION_KEY = TASaveTrack.class.getName();
 
 
 	/**
-	 * Creates an instance of {@link PASaveProject}
+	 * Creates an instance of {@link TASaveTrack}
 	 */
-	public PASaveProject() {
+	public TASaveTrack() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
-		putValue(MNEMONIC_KEY, MNEMONIC);
 		putValue(ACCELERATOR_KEY, ACCELERATOR);
+		putValue(MNEMONIC_KEY, MNEMONIC);
 	}
 
 
 	@Override
-	protected void doAtTheEnd(Boolean actionResult) {
-		if ((actionResult != null) && (actionResult)) {
-			RecordingManager.getInstance().getRecentProjectRecording().writeProjects();
-			MainFrame.getInstance().setTitle();
-		}
-	}
-
-
-	@Override
-	protected Boolean processAction() throws Exception {
+	protected Void processAction() throws Exception {
+		Track selectedTrack = getTrackListPanel().getSelectedTrack();
 		final JFileChooser jfc = new JFileChooser();
 		Utils.setFileChooserSelectedDirectory(jfc);
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		jfc.setDialogTitle("Save Project");
-		FileFilter[] filters = { new GenPlayProjectFilter() };
+		jfc.setDialogTitle("Save Track");
+		FileFilter[] filters = {new GenPlayTrackFilter()};
 		jfc.addChoosableFileFilter(filters[0]);
 		jfc.setFileFilter(filters[0]);
 		jfc.setAcceptAllFileFilterUsed(false);
-		File f = new File(ProjectManager.getInstance().getProjectName() + "." + GenPlayProjectFilter.EXTENSIONS[0]);
+		File f = new File(selectedTrack.getName() + "." + GenPlayTrackFilter.EXTENSIONS[0]);
 		jfc.setSelectedFile(f);
 		int returnVal = jfc.showSaveDialog(getRootPane());
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -106,17 +98,13 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 			if (selectedFilter != null) {
 				selectedFile = Utils.addExtension(jfc.getSelectedFile(), selectedFilter.getExtensions()[0]);
 			} else {
-				selectedFile = Utils.addExtension(jfc.getSelectedFile(), GenPlayProjectFilter.EXTENSIONS[0]);
+				selectedFile = Utils.addExtension(jfc.getSelectedFile(), GenPlayTrackFilter.EXTENSIONS[0]);
 			}
 			if (!Utils.cancelBecauseFileExist(getRootPane(), selectedFile)) {
-				notifyActionStart("Saving Project", 1, false);
-				String projectName = Utils.getFileNameWithoutExtension(selectedFile);
-				ProjectManager.getInstance().setProjectName(projectName);
-				ProjectRecording projectRecording = RecordingManager.getInstance().getProjectRecording();
-				projectRecording.setCurrentProjectPath(selectedFile.getPath());
-				return projectRecording.saveProject(selectedFile);
+				notifyActionStart("Saving Track " + selectedTrack.getNumber(), 1, false);
+				new TransferableTrackWriter(selectedTrack, selectedFile).write();
 			}
 		}
-		return false;
+		return null;
 	}
 }

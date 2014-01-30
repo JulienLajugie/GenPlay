@@ -25,7 +25,6 @@ package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLineDialog;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
-import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
@@ -107,6 +106,41 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 	}
 
 
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		if (arg0.getSource().equals(copyItem)) {
+			Clipboard clipboard = Utils.getClipboard();
+			clipboard.setContents(getSelection(), null);
+		}
+	}
+
+
+	/**
+	 * @param columnName
+	 * @param data
+	 * @return the max length between the column name and the data
+	 */
+	private int getMax (String columnName, Object data) {
+		return Math.max(fm.stringWidth(columnName), fm.stringWidth(data.toString()));
+	}
+
+
+	/**
+	 * Formats the table data and return the transferable string
+	 * @return the string for the clipboard
+	 */
+	private StringSelection getSelection () {
+		String line = "";
+		for (int i = 0; i < table.getModel().getColumnCount(); i++) {
+			line += table.getValueAt(0, i);
+			if (i < (table.getModel().getColumnCount() - 1)) {
+				line += "\t";
+			}
+		}
+		return new StringSelection(line);
+	}
+
+
 	/**
 	 * Initializes column header list.
 	 */
@@ -125,31 +159,6 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 		for (String name: genomeName) {
 			columns.add(name);
 		}
-	}
-
-
-	/**
-	 * Shows the dialog
-	 * @param line information about the position
-	 */
-	public void show (VCFLine line) {
-		// Initializes the table
-		initColumnList(line);
-		initTable(line);
-		table.revalidate();
-		pane.setViewportView(table);
-
-		// Manages the sizes
-		int heightOffset = 17 + 17 + 2;			// 17 (horizontal scroll bar); 17 (table header); 2 (to make sure we see the whole line: linux issue)
-		int tableHeight = (int)table.getPreferredSize().getHeight();
-		Dimension paneDimension = new Dimension(maxWidth, tableHeight + heightOffset);
-		pane.setPreferredSize(paneDimension);
-		pack();
-
-		// Show the dialog
-		setLocationRelativeTo(getRootPane());
-		setVisible(true);
-
 	}
 
 
@@ -188,37 +197,6 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 		}
 	}
 
-
-	/**
-	 * @param columnName
-	 * @param data
-	 * @return the max length between the column name and the data
-	 */
-	private int getMax (String columnName, Object data) {
-		return Math.max(fm.stringWidth(columnName), fm.stringWidth(data.toString()));
-	}
-
-
-	@Override
-	public void mouseClicked(MouseEvent arg0) {}
-
-	@Override
-	public void mouseEntered(MouseEvent arg0) {}
-
-	@Override
-	public void mouseExited(MouseEvent arg0) {}
-
-	@Override
-	public void mousePressed(MouseEvent arg0) {
-		maybeShowPopup(arg0);
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent arg0) {
-		maybeShowPopup(arg0);
-	}
-
-
 	/**
 	 * Shows the popup menu if the event if valid
 	 * @param e
@@ -229,29 +207,50 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 		}
 	}
 
+	@Override
+	public void mouseClicked(MouseEvent arg0) {}
 
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		if (arg0.getSource().equals(copyItem)) {
-			Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-			clipboard.setContents(getSelection(), null);
-		}
+	public void mouseEntered(MouseEvent arg0) {}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {}
+
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+		maybeShowPopup(arg0);
+	}
+
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		maybeShowPopup(arg0);
 	}
 
 
 	/**
-	 * Formats the table data and return the transferable string
-	 * @return the string for the clipboard
+	 * Shows the dialog
+	 * @param line information about the position
 	 */
-	private StringSelection getSelection () {
-		String line = "";
-		for (int i = 0; i < table.getModel().getColumnCount(); i++) {
-			line += table.getValueAt(0, i);
-			if (i < (table.getModel().getColumnCount() - 1)) {
-				line += "\t";
-			}
-		}
-		return new StringSelection(line);
+	public void show (VCFLine line) {
+		// Initializes the table
+		initColumnList(line);
+		initTable(line);
+		table.revalidate();
+		pane.setViewportView(table);
+
+		// Manages the sizes
+		int heightOffset = 17 + 17 + 2;			// 17 (horizontal scroll bar); 17 (table header); 2 (to make sure we see the whole line: linux issue)
+		int tableHeight = (int)table.getPreferredSize().getHeight();
+		Dimension paneDimension = new Dimension(maxWidth, tableHeight + heightOffset);
+		pane.setPreferredSize(paneDimension);
+		pack();
+
+		// Show the dialog
+		setLocationRelativeTo(getRootPane());
+		setVisible(true);
+
 	}
 
 }

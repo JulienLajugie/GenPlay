@@ -22,10 +22,9 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.track;
 
-import java.io.File;
-
 import javax.swing.ActionMap;
 
+import edu.yu.einstein.genplay.core.IO.extractor.Extractor;
 import edu.yu.einstein.genplay.core.IO.extractor.TwoBitExtractor;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.nucleotideList.TwoBitSequenceList;
@@ -34,7 +33,6 @@ import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection.GenomeSelectionDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.NucleotideLayer;
-import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -56,9 +54,10 @@ public class TAAddNucleotideLayer extends TrackListActionExtractorWorker<TwoBitS
 
 	/**
 	 * Creates an instance of {@link TAAddNucleotideLayer}
+	 * @param extractor the extractor that will extract the data
 	 */
-	public TAAddNucleotideLayer() {
-		super();
+	public TAAddNucleotideLayer(Extractor extractor) {
+		super(extractor);
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -100,20 +99,10 @@ public class TAAddNucleotideLayer extends TrackListActionExtractorWorker<TwoBitS
 		try {
 			TwoBitExtractor twoBitExtractor = (TwoBitExtractor) extractor;
 			twoBitExtractor.extract(genomeName, alleleType);
-			return new TwoBitSequenceList(fileToExtract.getAbsolutePath(), twoBitExtractor.needToReverseBytes(), genomeName, alleleType, twoBitExtractor.getExtractedData());
+			return new TwoBitSequenceList(extractor.getDataFile().getAbsolutePath(), twoBitExtractor.needToReverseBytes(), genomeName, alleleType, twoBitExtractor.getExtractedData());
 		} catch (ClassCastException e) {
 			throw new InvalidFileTypeException();
 		}
-	}
-
-
-	@Override
-	protected File retrieveFileToExtract() {
-		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load DNA Sequence File", Utils.getReadableSequenceFileFilters(), true);
-		if (selectedFile != null) {
-			return selectedFile;
-		}
-		return null;
 	}
 
 

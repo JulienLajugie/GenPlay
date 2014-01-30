@@ -79,7 +79,7 @@ import edu.yu.einstein.genplay.gui.action.track.TACopy;
 import edu.yu.einstein.genplay.gui.action.track.TACut;
 import edu.yu.einstein.genplay.gui.action.track.TADelete;
 import edu.yu.einstein.genplay.gui.action.track.TAInsert;
-import edu.yu.einstein.genplay.gui.action.track.TAPaste;
+import edu.yu.einstein.genplay.gui.action.track.TAPasteOrDrop;
 import edu.yu.einstein.genplay.gui.action.track.TASaveAsImage;
 import edu.yu.einstein.genplay.gui.action.track.TATrackSettings;
 import edu.yu.einstein.genplay.gui.controlPanel.ControlPanel;
@@ -113,7 +113,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 	private static final int VERSION_MINOR = 0;
 
 	/** Build version of GenPlay */
-	private static final int VERSION_BUILD = 2;
+	private static final int VERSION_BUILD = 3;
 
 	/** GenPlay version */
 	public static final String GENPLAY_VERSION = VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_BUILD;
@@ -170,7 +170,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 	private final 	ControlPanel		controlPanel; 		// ControlPanel component
 	private final 	StatusBar 			statusBar; 			// Status bar component
 	private 		Rectangle			screenBounds; 		// position and dimension of this frame
-
+	private 		boolean 			isLocked;			// true if the main frame is locked
 
 	/**
 	 * Private constructor. Creates an instance of singleton {@link MainFrame}
@@ -343,6 +343,14 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 
 
 	/**
+	 * @return true if the main frame is locked
+	 */
+	public boolean isLocked() {
+		return isLocked;
+	}
+
+
+	/**
 	 * Locks the main frame:
 	 * - the action button (top left button)
 	 * - the track handles
@@ -353,6 +361,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		ruler.lock();
 		trackListPanel.lockTrackHandles();
 		controlPanel.lock();
+		isLocked = true;
 	}
 
 
@@ -386,7 +395,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		getRootPane().getActionMap().put(TAAddLayerFromDAS.ACTION_KEY, new TAAddLayerFromDAS());
 		getRootPane().getActionMap().put(TACopy.ACTION_KEY, new TACopy());
 		getRootPane().getActionMap().put(TACut.ACTION_KEY, new TACut());
-		getRootPane().getActionMap().put(TAPaste.ACTION_KEY, new TAPaste());
+		getRootPane().getActionMap().put(TAPasteOrDrop.ACTION_KEY, new TAPasteOrDrop());
 		getRootPane().getActionMap().put(TAInsert.ACTION_KEY, new TAInsert());
 		getRootPane().getActionMap().put(TADelete.ACTION_KEY, new TADelete());
 		getRootPane().getActionMap().put(TASaveAsImage.ACTION_KEY, new TASaveAsImage());
@@ -540,6 +549,6 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		ruler.unlock();
 		trackListPanel.unlockTrackHandles();
 		controlPanel.unlock();
+		isLocked = false;
 	}
-
 }

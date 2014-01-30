@@ -24,6 +24,8 @@ package edu.yu.einstein.genplay.util;
 
 import java.awt.Component;
 import java.awt.FontMetrics;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,6 +43,7 @@ import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.GeneScoreType;
 import edu.yu.einstein.genplay.dataStructure.enums.LogBase;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
+import edu.yu.einstein.genplay.gui.clipboard.LocalClipboard;
 import edu.yu.einstein.genplay.gui.dialog.chromosomeChooser.ChromosomeChooserDialog;
 import edu.yu.einstein.genplay.gui.fileFilter.BAMFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.BedFilter;
@@ -50,8 +53,8 @@ import edu.yu.einstein.genplay.gui.fileFilter.ElandExtendedFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.ExtendedFileFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.GFFFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.GTFFilter;
+import edu.yu.einstein.genplay.gui.fileFilter.GenPlayTrackFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.PSLFilter;
-import edu.yu.einstein.genplay.gui.fileFilter.PairFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.SAMFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.TwoBitFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.WiggleFilter;
@@ -249,6 +252,23 @@ public final class Utils {
 
 
 	/**
+	 * @return the system clipboard if the application has the permission to access it.
+	 * A local clipboard otherwise.
+	 */
+	public static Clipboard getClipboard() {
+		SecurityManager sm = System.getSecurityManager();
+		if (sm != null) {
+			try {
+				sm.checkSystemClipboardAccess();
+			} catch(SecurityException e) {
+				return LocalClipboard.getInstance();
+			}
+		}
+		return Toolkit.getDefaultToolkit().getSystemClipboard();
+	}
+
+
+	/**
 	 * If the user is using Windows, the configuration directory is the temporary one (eg: C:\Users\USER\AppData\Local\Temp)
 	 * If the user is using POSIX like platform, the configuration directory is $HOME/.genplay
 	 * @return the configuration directory
@@ -395,45 +415,29 @@ public final class Utils {
 	/**
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as GeneList
 	 */
-	public final static FileFilter[] getReadableGeneFileFilters() {
-		ExtendedFileFilter[] filters = {new BedFilter(), new GTFFilter(), new PSLFilter()};
+	public final static FileFilter[] getReadableLayerFileFilters() {
+		ExtendedFileFilter[] filters = {
+				new GenPlayTrackFilter(),
+				new BAMFilter(),
+				new SAMFilter(),
+				new BedFilter(),
+				new BedGraphFilter(),
+				new WiggleFilter(),
+				new GTFFilter(),
+				new GFFFilter(),
+				new PSLFilter(),
+				new ElandExtendedFilter()
+		};
 		return filters;
 	}
 
 
 	/**
-	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as stripes
+	 * @return the file filters for the sequence files
 	 */
-	public final static FileFilter[] getReadableMaskFileFilters() {
-		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new GTFFilter(), new WiggleFilter(), new PSLFilter(), new SAMFilter(), new BAMFilter()};
-		return filters;
-	}
-
-
-	/**
-	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as Repeats
-	 */
-	public final static FileFilter[] getReadableRepeatFileFilters() {
-		ExtendedFileFilter[] filters = {new BedFilter(), new GFFFilter(), new GTFFilter(), new PSLFilter()};
-		return filters;
-	}
-
-
-	/**
-	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as SCWList
-	 */
-	public final static FileFilter[] getReadableSCWFileFilters() {
-		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new GTFFilter(), new WiggleFilter(), new PairFilter(), new ElandExtendedFilter(), new PSLFilter(), new SAMFilter(), new BAMFilter()};
-		return filters;
-	}
-
-
-	/**
-	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as sequence track (aka nucleotide list)
-	 */
-	public final static FileFilter[] getReadableSequenceFileFilters() {
-		ExtendedFileFilter[] filters = {new TwoBitFilter()};
-		return filters;
+	public static FileFilter[] getReadableSequenceFileFilters() {
+		FileFilter[] filefilters = {new TwoBitFilter()};
+		return filefilters;
 	}
 
 

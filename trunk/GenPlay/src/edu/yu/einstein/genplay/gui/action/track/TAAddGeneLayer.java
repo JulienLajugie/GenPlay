@@ -22,11 +22,10 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.track;
 
-import java.io.File;
-
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.IO.dataReader.GeneReader;
+import edu.yu.einstein.genplay.core.IO.extractor.Extractor;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneListFactory;
@@ -35,7 +34,6 @@ import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection.GenomeSelectionDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
-import edu.yu.einstein.genplay.util.Utils;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
@@ -59,9 +57,10 @@ public final class TAAddGeneLayer extends TrackListActionExtractorWorker<GeneLis
 
 	/**
 	 * Creates an instance of {@link TAAddGeneLayer}
+	 * @param extractor the extractor that will extract the data
 	 */
-	public TAAddGeneLayer() {
-		super();
+	public TAAddGeneLayer(Extractor extractor) {
+		super(extractor);
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -77,7 +76,7 @@ public final class TAAddGeneLayer extends TrackListActionExtractorWorker<GeneLis
 		if ((actionResult != null) && valid) {
 			Track selectedTrack = getTrackListPanel().getSelectedTrack();
 			GeneLayer newLayer = new GeneLayer(selectedTrack, actionResult, name);
-			newLayer.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Colors.GREY);
+			newLayer.getHistory().add("Load " + extractor.getDataFile().getAbsolutePath(), Colors.GREY);
 			selectedTrack.getLayers().add(newLayer);
 			selectedTrack.setActiveLayer(newLayer);
 		}
@@ -108,15 +107,5 @@ public final class TAAddGeneLayer extends TrackListActionExtractorWorker<GeneLis
 		} catch (ClassCastException e) {
 			throw new InvalidFileTypeException();
 		}
-	}
-
-
-	@Override
-	protected File retrieveFileToExtract() {
-		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Gene File", Utils.getReadableGeneFileFilters(), true);
-		if (selectedFile != null) {
-			return selectedFile;
-		}
-		return null;
 	}
 }

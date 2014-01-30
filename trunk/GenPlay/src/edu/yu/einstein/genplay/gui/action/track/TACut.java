@@ -34,6 +34,7 @@ import javax.swing.KeyStroke;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TransferableTrack;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -76,11 +77,7 @@ public final class TACut extends TrackListActionWorker<Transferable> implements 
 	@Override
 	protected void doAtTheEnd(Transferable actionResult) {
 		if (actionResult != null) {
-			SecurityManager sm = System.getSecurityManager();
-			if (sm != null) {
-				sm.checkSystemClipboardAccess();
-			}
-			Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+			Clipboard clipboard = Utils.getClipboard();
 			clipboard.setContents(actionResult, this);
 			getTrackListPanel().cutTrack();
 			super.doAtTheEnd(actionResult);

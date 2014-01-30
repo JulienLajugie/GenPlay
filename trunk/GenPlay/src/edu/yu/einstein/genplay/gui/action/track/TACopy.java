@@ -22,18 +22,25 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.track;
 
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.ActionMap;
 import javax.swing.KeyStroke;
 
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
+import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TransferableTrack;
+import edu.yu.einstein.genplay.gui.track.layer.Layer;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -76,11 +83,7 @@ public final class TACopy extends TrackListActionWorker<Transferable> implements
 	@Override
 	protected void doAtTheEnd(Transferable actionResult) {
 		if (actionResult != null) {
-			SecurityManager sm = System.getSecurityManager();
-			if (sm != null) {
-				sm.checkSystemClipboardAccess();
-			}
-			Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+			Clipboard clipboard = Utils.getClipboard();
 			clipboard.setContents(actionResult, this);
 			super.doAtTheEnd(actionResult);
 		}
@@ -97,9 +100,37 @@ public final class TACopy extends TrackListActionWorker<Transferable> implements
 	protected Transferable processAction() throws Exception {
 		Track selectedTrack = getTrackListPanel().getSelectedTrack();
 		if (selectedTrack != null) {
-			notifyActionStart("Copying Track #" + selectedTrack.getNumber(), 1, false);
-			Transferable data = new TransferableTrack(selectedTrack);
-			return data;
+			Track trackToCopy = null;
+			// if there is more than one layer we ask the user which layer to copy
+			Layer<?>[] layers = selectedTrack.getLayers().getLayers();
+			if (layers.length > 1) {
+				trackToCopy = new Track(1);
+				LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
+				layerChooserDialog.setLayers(Arrays.asList(layers));
+				// since Arrays.asList create a list that doesn't support the remove method we convert it as an ArrayList
+				layerChooserDialog.setSelectedLayers(new ArrayList<Layer<?>>(Arrays.asList(layers)));
+				layerChooserDialog.setMultiselectable(true);
+				if (layerChooserDialog.showDialog(getRootPane(), "Select Layers to Copy") == LayerChooserDialog.APPROVE_OPTION) {
+					List<Layer<?>> selectedLayerList = layerChooserDialog.getSelectedLayers();
+					Layer<?>[] selectedLayers = selectedLayerList.toArray(new Layer<?>[0]);
+					if ((selectedLayers != null) && (selectedLayers.length > 0)) {
+						for (Layer<?> currentLayer: selectedLayers) {
+							Layer<?> layerToAdd = currentLayer.clone();
+							layerToAdd.setTrack(trackToCopy);
+							trackToCopy.getLayers().add(layerToAdd);
+							trackToCopy.setActiveLayer(layerToAdd);
+						}
+					}
+				}
+			} else {
+				trackToCopy = selectedTrack;
+			}
+			if (trackToCopy != null) {
+				notifyActionStart("Copying Track #" + selectedTrack.getNumber(), 1, false);
+				Image trackImage = TASaveAsImage.createImage(selectedTrack);
+				Transferable data = new TransferableTrack(trackToCopy, trackImage);
+				return data;
+			}
 		}
 		return null;
 	}

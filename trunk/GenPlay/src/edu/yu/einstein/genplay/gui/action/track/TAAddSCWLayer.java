@@ -22,11 +22,10 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.track;
 
-import java.io.File;
-
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.IO.dataReader.SCWReader;
+import edu.yu.einstein.genplay.core.IO.extractor.Extractor;
 import edu.yu.einstein.genplay.core.IO.extractor.SAMExtractor;
 import edu.yu.einstein.genplay.core.IO.extractor.StrandedExtractor;
 import edu.yu.einstein.genplay.core.IO.utils.ChromosomesSelector;
@@ -53,7 +52,6 @@ import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.AbstractSCWLayer;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
 import edu.yu.einstein.genplay.gui.track.layer.SimpleSCWLayer;
-import edu.yu.einstein.genplay.util.Utils;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
@@ -83,9 +81,10 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 
 	/**
 	 * Creates an instance of {@link TAAddSCWLayer}
+	 * @param extractor the extractor that will extract the data
 	 */
-	public TAAddSCWLayer() {
-		super();
+	public TAAddSCWLayer(Extractor extractor) {
+		super(extractor);
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -105,7 +104,7 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 			} else {
 				newLayer = new SimpleSCWLayer(selectedTrack, actionResult, name);
 			}
-			newLayer.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Colors.GREY);
+			newLayer.getHistory().add("Load " + extractor.getDataFile().getAbsolutePath(), Colors.GREY);
 			history += "Method of Calculation = " + scoreCalculation;
 			if (strand != null) {
 				history += ", Strand = ";
@@ -233,15 +232,4 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 			throw new InvalidFileTypeException();
 		}
 	}
-
-
-	@Override
-	protected File retrieveFileToExtract() {
-		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Sequencing/Microarray Layer", Utils.getReadableSCWFileFilters(), true);
-		if (selectedFile != null) {
-			return selectedFile;
-		}
-		return null;
-	}
 }
-

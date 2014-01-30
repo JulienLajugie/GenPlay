@@ -22,11 +22,10 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.track;
 
-import java.io.File;
-
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.IO.dataReader.SCWReader;
+import edu.yu.einstein.genplay.core.IO.extractor.Extractor;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.enums.SCWListType;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
@@ -37,7 +36,6 @@ import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection.GenomeSelectionDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.MaskLayer;
-import edu.yu.einstein.genplay.util.Utils;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
@@ -61,9 +59,10 @@ public final class TAAddMaskLayer extends TrackListActionExtractorWorker<SCWList
 
 	/**
 	 * Creates an instance of {@link TAAddMaskLayer}
+	 * @param extractor the extractor that will extract the data
 	 */
-	public TAAddMaskLayer() {
-		super();
+	public TAAddMaskLayer(Extractor extractor) {
+		super(extractor);
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -75,7 +74,7 @@ public final class TAAddMaskLayer extends TrackListActionExtractorWorker<SCWList
 		if (actionResult != null) {
 			Track selectedTrack = getTrackListPanel().getSelectedTrack();
 			MaskLayer newLayer = new MaskLayer(selectedTrack, actionResult, name);
-			newLayer.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Colors.GREY);
+			newLayer.getHistory().add("Load " + extractor.getDataFile().getAbsolutePath(), Colors.GREY);
 			selectedTrack.getLayers().add(newLayer);
 			selectedTrack.setActiveLayer(newLayer);
 		}
@@ -105,15 +104,5 @@ public final class TAAddMaskLayer extends TrackListActionExtractorWorker<SCWList
 		} catch (ClassCastException e) {
 			throw new InvalidFileTypeException();
 		}
-	}
-
-
-	@Override
-	protected File retrieveFileToExtract() {
-		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Mask File", Utils.getReadableMaskFileFilters(), true);
-		if (selectedFile != null) {
-			return selectedFile;
-		}
-		return null;
 	}
 }
