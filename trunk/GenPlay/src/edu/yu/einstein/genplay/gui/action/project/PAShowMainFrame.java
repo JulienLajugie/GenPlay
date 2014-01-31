@@ -23,54 +23,44 @@
 package edu.yu.einstein.genplay.gui.action.project;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.gui.dialog.exceptionDialog.WarningReportDialog;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 
 
 
 /**
- * Shows the error report
- * @author Nicolas Fourel
+ * Shows the main frame
  * @author Julien Lajugie
- * @version 0.1
  */
-public final class PAWarningReport extends AbstractAction {
+public final class PAShowMainFrame extends AbstractAction {
 
-	private static final long serialVersionUID = -7328322178569010171L; // generated ID
-	private static final int 		MNEMONIC = KeyEvent.VK_E;			// mnemonic key
-	private static final String 	ACTION_NAME = "Warnings Report";	// action name
-	private final MainFrame 		mainFrame;							// main frame of the application
+	private static final long serialVersionUID = 6624658434614757750L; 		// generated ID
+	private static final String 	ACTION_NAME = "Main Window"; 			// action name
+	private static final String 	DESCRIPTION = "Show the main window"; 	// tooltip
 
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = PAWarningReport.class.getName();
+	public static final String ACTION_KEY = PAShowMainFrame.class.getName();
 
 
 	/**
-	 * Creates an instance of {@link PAWarningReport}
-	 * @param mainFrame {@link MainFrame} of the application
+	 * Creates an instance of {@link PAShowMainFrame}
 	 */
-	public PAWarningReport(MainFrame mainFrame) {
+	public PAShowMainFrame() {
 		super();
-		this.mainFrame = mainFrame;
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
-		putValue(MNEMONIC_KEY, MNEMONIC);
+		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 	}
 
 
-	/**
-	 * Shows the option screen
-	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		WarningReportDialog.getInstance().showDialog(mainFrame);
+		MainFrame.getInstance().setVisible(true);
 	}
 }

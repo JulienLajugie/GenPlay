@@ -44,6 +44,7 @@ import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
 import com.apple.eawt.Application;
+import com.apple.eawt.FullScreenUtilities;
 
 import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
@@ -69,8 +70,9 @@ import edu.yu.einstein.genplay.gui.action.project.PANewProject;
 import edu.yu.einstein.genplay.gui.action.project.PAOption;
 import edu.yu.einstein.genplay.gui.action.project.PARNAPosToDNAPos;
 import edu.yu.einstein.genplay.gui.action.project.PASaveProject;
+import edu.yu.einstein.genplay.gui.action.project.PAShowErrorReport;
+import edu.yu.einstein.genplay.gui.action.project.PAShowWarningReport;
 import edu.yu.einstein.genplay.gui.action.project.PASortFile;
-import edu.yu.einstein.genplay.gui.action.project.PAWarningReport;
 import edu.yu.einstein.genplay.gui.action.project.PAZoomIn;
 import edu.yu.einstein.genplay.gui.action.project.PAZoomOut;
 import edu.yu.einstein.genplay.gui.action.track.TAAddLayer;
@@ -81,6 +83,7 @@ import edu.yu.einstein.genplay.gui.action.track.TADelete;
 import edu.yu.einstein.genplay.gui.action.track.TAInsert;
 import edu.yu.einstein.genplay.gui.action.track.TAPasteOrDrop;
 import edu.yu.einstein.genplay.gui.action.track.TASaveAsImage;
+import edu.yu.einstein.genplay.gui.action.track.TASaveTrack;
 import edu.yu.einstein.genplay.gui.action.track.TATrackSettings;
 import edu.yu.einstein.genplay.gui.controlPanel.ControlPanel;
 import edu.yu.einstein.genplay.gui.dialog.optionDialog.OptionDialog;
@@ -228,18 +231,21 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		setActionMap();
 		// add shortcuts
 		setInputMap();
+
 		// add menu bar
+		setJMenuBar(new MenuBar(getRootPane().getActionMap()));
 
 		if (Utils.isMacOS()) {
 			// add a menu bar for OSX
 			Application macApplication = Application.getApplication();
-			setJMenuBar(new MenuBar(getRootPane().getActionMap()));
-			// integration of the menu bar in OSX
 			macApplication.setDefaultMenuBar(getJMenuBar());
 			macApplication.setAboutHandler(OSXHandler.getInstance());
 			macApplication.setPreferencesHandler(OSXHandler.getInstance());
 			macApplication.setQuitHandler(OSXHandler.getInstance());
+			FullScreenUtilities.setWindowCanFullScreen(this, true);
 		}
+
+		showMenuBar();
 
 		// customise the look and feel
 		customizeLookAndFeel();
@@ -388,7 +394,8 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		getRootPane().getActionMap().put(PAZoomIn.ACTION_KEY, new PAZoomIn());
 		getRootPane().getActionMap().put(PAZoomOut.ACTION_KEY, new PAZoomOut());
 		getRootPane().getActionMap().put(PARNAPosToDNAPos.ACTION_KEY, new PARNAPosToDNAPos(this));
-		getRootPane().getActionMap().put(PAWarningReport.ACTION_KEY, new PAWarningReport(this));
+		getRootPane().getActionMap().put(PAShowWarningReport.ACTION_KEY, new PAShowWarningReport());
+		getRootPane().getActionMap().put(PAShowErrorReport.ACTION_KEY, new PAShowErrorReport());
 		getRootPane().getActionMap().put(PACopyCurrentPosition.ACTION_KEY, new PACopyCurrentPosition());
 		// Add track actions to action map
 		getRootPane().getActionMap().put(TAAddLayer.ACTION_KEY, new TAAddLayer());
@@ -398,6 +405,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		getRootPane().getActionMap().put(TAPasteOrDrop.ACTION_KEY, new TAPasteOrDrop());
 		getRootPane().getActionMap().put(TAInsert.ACTION_KEY, new TAInsert());
 		getRootPane().getActionMap().put(TADelete.ACTION_KEY, new TADelete());
+		getRootPane().getActionMap().put(TASaveTrack.ACTION_KEY, new TASaveTrack());
 		getRootPane().getActionMap().put(TASaveAsImage.ACTION_KEY, new TASaveAsImage());
 		getRootPane().getActionMap().put(TATrackSettings.ACTION_KEY, new TATrackSettings());
 	}
@@ -489,6 +497,21 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 
 
 	/**
+	 * Sets the main menu bar
+	 */
+	private void showMenuBar() {
+		ConfigurationManager cm = ConfigurationManager.getInstance();
+		if (cm.isMenuBarShown()) {
+
+			getJMenuBar().setVisible(true);
+		} else {
+			getJMenuBar().setVisible(false);
+		}
+		validate();
+	}
+
+
+	/**
 	 * Shows the option screen
 	 */
 	public void showOption() {
@@ -496,6 +519,9 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		if (optionDialog.showConfigurationDialog(getRootPane()) == OptionDialog.APPROVE_OPTION) {
 			if (optionDialog.lookAndFeelChanged()) {
 				setLookAndFeel();
+			}
+			if (optionDialog.showMenuBarChanged()) {
+				showMenuBar();
 			}
 			if (optionDialog.trackHeightChanged()) {
 				trackListPanel.trackHeightChanged();
@@ -521,23 +547,29 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 	 * Toggles the full screen mode
 	 */
 	public void toggleFullScreenMode() {
-		if (!isUndecorated()) {
-			setVisible(false);
-			dispose();
-			setUndecorated(true);
-			controlPanel.setVisible(false);
-			statusBar.setVisible(false);
-			screenBounds = getBounds();
-			setExtendedState(Frame.MAXIMIZED_BOTH);
-			setVisible(true);
+		if (Utils.isMacOS()) {
+			// full screen for integration in OSX
+			Application.getApplication().requestToggleFullScreen(this);
 		} else {
-			setVisible(false);
-			dispose();
-			setUndecorated(false);
-			controlPanel.setVisible(true);
-			statusBar.setVisible(true);
-			setVisible(true);
-			setBounds(screenBounds);
+			// full screen on linux and windows
+			if (!isUndecorated()) {
+				setVisible(false);
+				dispose();
+				setUndecorated(true);
+				controlPanel.setVisible(false);
+				statusBar.setVisible(false);
+				screenBounds = getBounds();
+				setExtendedState(Frame.MAXIMIZED_BOTH);
+				setVisible(true);
+			} else {
+				setVisible(false);
+				dispose();
+				setUndecorated(false);
+				controlPanel.setVisible(true);
+				statusBar.setVisible(true);
+				setVisible(true);
+				setBounds(screenBounds);
+			}
 		}
 	}
 

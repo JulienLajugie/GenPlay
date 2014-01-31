@@ -37,8 +37,9 @@ import edu.yu.einstein.genplay.gui.action.project.PANewProject;
 import edu.yu.einstein.genplay.gui.action.project.PAOption;
 import edu.yu.einstein.genplay.gui.action.project.PARNAPosToDNAPos;
 import edu.yu.einstein.genplay.gui.action.project.PASaveProject;
+import edu.yu.einstein.genplay.gui.action.project.PAShowErrorReport;
+import edu.yu.einstein.genplay.gui.action.project.PAShowWarningReport;
 import edu.yu.einstein.genplay.gui.action.project.PASortFile;
-import edu.yu.einstein.genplay.gui.action.project.PAWarningReport;
 
 
 /**
@@ -53,7 +54,8 @@ public final class MainMenu extends JPopupMenu {
 	private final JMenuItem jmiSaveProject;		// menu save project
 	private final JMenuItem jmiLoadProject;		// menu load project
 	private final JMenuItem jmiFullScreen;		// full screen
-	private final JMenuItem jmiErrorReport;		// option
+	private final JMenuItem jmiWarningReport;	// warning report
+	private final JMenuItem jmiErrorReport;		// exception report
 	private final JMenuItem jmiOption;			// option
 	private final JMenuItem jmiSortFile;		// sort file
 	private final JMenuItem jmiRNAToDNAPos;		// option
@@ -73,7 +75,8 @@ public final class MainMenu extends JPopupMenu {
 		jmiLoadProject = new JMenuItem(actionMap.get(PALoadProject.ACTION_KEY));
 		jmiSaveProject = new JMenuItem(actionMap.get(PASaveProject.ACTION_KEY));
 		jmiFullScreen = new JMenuItem(actionMap.get(PAFullScreen.ACTION_KEY));
-		jmiErrorReport = new JMenuItem(actionMap.get(PAWarningReport.ACTION_KEY));
+		jmiWarningReport = new JMenuItem(actionMap.get(PAShowWarningReport.ACTION_KEY));
+		jmiErrorReport = new JMenuItem(actionMap.get(PAShowErrorReport.ACTION_KEY));
 		jmiOption = new JMenuItem(actionMap.get(PAOption.ACTION_KEY));
 		jmiRNAToDNAPos = new JMenuItem(actionMap.get(PARNAPosToDNAPos.ACTION_KEY));
 		jmiSortFile = new JMenuItem(actionMap.get(PASortFile.ACTION_KEY));
@@ -87,8 +90,8 @@ public final class MainMenu extends JPopupMenu {
 		add(jmiSaveProject);
 		addSeparator();
 		add(jmiFullScreen);
+		add(jmiWarningReport);
 		add(jmiErrorReport);
-		add(jmiOption);
 		addSeparator();
 		add(jmiSortFile);
 		add(jmiRNAToDNAPos);
@@ -96,6 +99,7 @@ public final class MainMenu extends JPopupMenu {
 		if (PACheckForUpdates.isUpdaterAvailable()) {
 			add(jmiUpdate);
 		}
+		add(jmiOption);
 		add(jmiHelp);
 		add(jmiAbout);
 		addSeparator();

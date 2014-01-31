@@ -33,6 +33,7 @@ import edu.yu.einstein.genplay.exception.exceptions.BinListDifferentWindowSizeEx
 import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
 import edu.yu.einstein.genplay.exception.report.ReportBuilder;
 import edu.yu.einstein.genplay.gui.dialog.exceptionDialog.ExceptionReportDialog;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 
 
 /**
@@ -77,7 +78,6 @@ public final class ExceptionManager implements UncaughtExceptionHandler {
 
 	private static	ExceptionManager	instance = null;		// unique instance of the singleton
 	private final ReportBuilder 		report;					// object that creates exception reports
-	private ExceptionReportDialog 		reportDialog = null;	// dialog showing the exception report
 
 
 	/**
@@ -260,13 +260,14 @@ public final class ExceptionManager implements UncaughtExceptionHandler {
 		}
 
 		if (showReport()) {
-			if (reportDialog == null) {
-				reportDialog = new ExceptionReportDialog();
-			}
 			String currentReport = report.getReport() + "\n\n\n";
-			currentReport += reportDialog.getReport();
-			reportDialog.setReport(currentReport);
-			reportDialog.showDialog(null);
+			currentReport += ExceptionReportDialog.getInstance().getReport();
+			ExceptionReportDialog.getInstance().setReport(currentReport);
+			try {
+				ExceptionReportDialog.getInstance().showDialog(MainFrame.getInstance().getRootPane());
+			} catch (Exception e) {
+				ExceptionReportDialog.getInstance().showDialog(null);
+			}
 		}
 	}
 

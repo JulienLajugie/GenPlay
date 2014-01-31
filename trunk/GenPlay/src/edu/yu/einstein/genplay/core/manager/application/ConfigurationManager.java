@@ -38,7 +38,6 @@ import edu.yu.einstein.genplay.util.Utils;
 /**
  * Class containing the project
  * @author Julien Lajugie
- * @author Chirag Gorasia
  * @author Nicolas Fourel
  */
 public final class ConfigurationManager {
@@ -52,9 +51,9 @@ public final class ConfigurationManager {
 	private static final String 	DEFAULT_DEFAULT_DIRECTORY 		=
 			getDefaultGenPlayLibraryPath();										// default directory
 	private static final String 	DEFAULT_LOOK_AND_FEEL 			=
-			"javax.swing.plaf.metal.MetalLookAndFeel";							// default look and feel for non Mac OS
-	private static final String 	DEFAULT_MAC_LOOK_AND_FEEL 		=
-			UIManager.getSystemLookAndFeelClassName();							// default look and feel for Mac OS
+			getDefaultLookAndFeel();											// default look and feel
+	private static final boolean 	DEFAULT_SHOW_MENU_BAR			=
+			getDefaultShowMenuBar();											// if the menu bar should be shown by default
 	private static final int 		DEFAULT_TRACK_COUNT 			= 50; 		// default number of track
 	private static final int 		DEFAULT_TRACK_HEIGHT 			= 100; 		// default track height
 	private static final int 		DEFAULT_UNDO_COUNT 				= 1; 		// default number of undo in memory
@@ -70,6 +69,7 @@ public final class ConfigurationManager {
 
 	private static ConfigurationManager instance = null;
 
+
 	/**
 	 * @return the default GenPlay library path
 	 */
@@ -82,6 +82,31 @@ public final class ConfigurationManager {
 			return System.getProperty("user.home") + File.separator + "Documents" + File.separator + "GenPlay Library" + File.separator;
 		}
 	}
+
+
+	/**
+	 * @return the default look and feel
+	 */
+	private static String getDefaultLookAndFeel() {
+		if (Utils.isMacOS()) {
+			return UIManager.getSystemLookAndFeelClassName();
+		} else {
+			return "javax.swing.plaf.metal.MetalLookAndFeel";
+		}
+	}
+
+
+	/**
+	 * @return true if the menu bar should be shown by default
+	 */
+	private static boolean getDefaultShowMenuBar() {
+		if (Utils.isMacOS()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 
 	/**
 	 * @return an instance of a {@link ConfigurationManager}.
@@ -101,6 +126,7 @@ public final class ConfigurationManager {
 
 	private String 	defaultDirectory; 				// default directory
 	private String 	lookAndFeel; 					// look and feel
+	private boolean showMenuBar;					// true if the main menu bar should be shown
 	private String 	dasServerListFile;				// DAS Server list
 	private int 	trackCount; 					// track count
 	private int 	trackHeight; 					// track height
@@ -136,6 +162,8 @@ public final class ConfigurationManager {
 					setDefaultDirectory(value);
 				} else if (key.equalsIgnoreCase("look and feel")) {
 					setLookAndFeel(value);
+				} else if (key.equalsIgnoreCase("show menu bar")) {
+					setShowMenuBar(Boolean.parseBoolean(value));
 				} else if (key.equalsIgnoreCase("track count")) {
 					setTrackCount(Integer.parseInt(value));
 				} else if (key.equalsIgnoreCase("track height")) {
@@ -251,6 +279,14 @@ public final class ConfigurationManager {
 
 
 	/**
+	 * @return true if the main menu bar should be shown
+	 */
+	public final boolean isMenuBarShown() {
+		return showMenuBar;
+	}
+
+
+	/**
 	 * @return the resetTrack
 	 */
 	public boolean isResetTrack() {
@@ -290,11 +326,8 @@ public final class ConfigurationManager {
 		defaultDirectory = DEFAULT_DEFAULT_DIRECTORY;
 		dasServerListFile = getDefaultDASServerFileAbsolutePath();
 		new File(dasServerListFile).delete();
-		if (Utils.isMacOS()) {
-			lookAndFeel = DEFAULT_MAC_LOOK_AND_FEEL;
-		} else {
-			lookAndFeel = DEFAULT_LOOK_AND_FEEL;
-		}
+		lookAndFeel = DEFAULT_LOOK_AND_FEEL;
+		showMenuBar = DEFAULT_SHOW_MENU_BAR;
 		trackCount = DEFAULT_TRACK_COUNT;
 		trackHeight = DEFAULT_TRACK_HEIGHT;
 		undoCount = DEFAULT_UNDO_COUNT;
@@ -353,6 +386,14 @@ public final class ConfigurationManager {
 
 
 	/**
+	 * @param showMenuBar set to true to show the main menu bar
+	 */
+	public final void setShowMenuBar(boolean showMenuBar) {
+		this.showMenuBar = showMenuBar;
+	}
+
+
+	/**
 	 * @param trackCount the trackCount to set
 	 */
 	public final void setTrackCount(int trackCount) {
@@ -404,6 +445,8 @@ public final class ConfigurationManager {
 			writer.write("default directory: " + getDefaultDirectory());
 			writer.newLine();
 			writer.write("look and feel: " + getLookAndFeel());
+			writer.newLine();
+			writer.write("show menu bar: " + isMenuBarShown());
 			writer.newLine();
 			writer.write("track count: " + getTrackCount());
 			writer.newLine();

@@ -56,6 +56,23 @@ public class ExceptionReportDialog extends JDialog {
 	private static final int 	DIALOG_WIDTH  	= 350;	// Dialog width
 	private static final int 	REPORT_HEIGHT 	= 200;	// Text area height
 
+	private static ExceptionReportDialog instance = null;				// unique instance of the singleton
+
+	/**
+	 * @return an instance of a {@link ExceptionReportDialog}.
+	 * Makes sure that there is only one unique instance as specified in the singleton pattern
+	 */
+	public static ExceptionReportDialog getInstance() {
+		if (instance == null) {
+			synchronized(ExceptionReportDialog.class) {
+				if (instance == null) {
+					instance = new ExceptionReportDialog();
+				}
+			}
+		}
+		return instance;
+	}
+
 	private JTextArea 			textArea;				// Area displaying the text of the exception report
 	private JScrollPane 		contentPane;			// Scrollpane containing the text area dispaying the report
 	private String 				report			= "";	// Exception report showed in the dialog
@@ -64,7 +81,7 @@ public class ExceptionReportDialog extends JDialog {
 	/**
 	 * Constructor of {@link ExceptionReportDialog}
 	 */
-	public ExceptionReportDialog () {
+	private ExceptionReportDialog () {
 		// Dialog layout
 		BorderLayout layout = new BorderLayout();
 		setLayout(layout);

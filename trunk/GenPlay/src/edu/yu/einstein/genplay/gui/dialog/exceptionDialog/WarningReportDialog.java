@@ -42,7 +42,6 @@ import edu.yu.einstein.genplay.util.Utils;
 
 /**
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class WarningReportDialog extends JDialog {
 
@@ -53,6 +52,7 @@ public class WarningReportDialog extends JDialog {
 	private static final int CONTENT_HEIGHT = 600;	// Text area height
 
 	private static WarningReportDialog instance = null;				// unique instance of the singleton
+
 	/**
 	 * @return an instance of a {@link WarningReportDialog}.
 	 * Makes sure that there is only one unique instance as specified in the singleton pattern
@@ -67,9 +67,8 @@ public class WarningReportDialog extends JDialog {
 		}
 		return instance;
 	}
+
 	private	List<String> 	messages = new ArrayList<String>();		// List of messages
-
-
 	private JTextArea 		textArea;								// Text area where messages are displayed
 
 

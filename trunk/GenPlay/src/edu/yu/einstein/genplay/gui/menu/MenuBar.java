@@ -23,18 +23,24 @@
 package edu.yu.einstein.genplay.gui.menu;
 
 import javax.swing.ActionMap;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
+import edu.yu.einstein.genplay.gui.action.project.PAAbout;
 import edu.yu.einstein.genplay.gui.action.project.PAFullScreen;
 import edu.yu.einstein.genplay.gui.action.project.PAHelp;
 import edu.yu.einstein.genplay.gui.action.project.PALoadProject;
 import edu.yu.einstein.genplay.gui.action.project.PANewProject;
+import edu.yu.einstein.genplay.gui.action.project.PAOption;
 import edu.yu.einstein.genplay.gui.action.project.PARNAPosToDNAPos;
 import edu.yu.einstein.genplay.gui.action.project.PASaveProject;
+import edu.yu.einstein.genplay.gui.action.project.PAShowErrorReport;
+import edu.yu.einstein.genplay.gui.action.project.PAShowMainFrame;
+import edu.yu.einstein.genplay.gui.action.project.PAShowWarningReport;
 import edu.yu.einstein.genplay.gui.action.project.PASortFile;
 import edu.yu.einstein.genplay.gui.action.track.TAAddLayer;
 import edu.yu.einstein.genplay.gui.action.track.TAAddLayerFromDAS;
@@ -44,11 +50,15 @@ import edu.yu.einstein.genplay.gui.action.track.TADelete;
 import edu.yu.einstein.genplay.gui.action.track.TAInsert;
 import edu.yu.einstein.genplay.gui.action.track.TAPasteOrDrop;
 import edu.yu.einstein.genplay.gui.action.track.TASaveAsImage;
+import edu.yu.einstein.genplay.gui.action.track.TASaveTrack;
 import edu.yu.einstein.genplay.gui.action.track.TATrackSettings;
+import edu.yu.einstein.genplay.gui.dialog.exceptionDialog.ExceptionReportDialog;
+import edu.yu.einstein.genplay.gui.dialog.exceptionDialog.WarningReportDialog;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.menu.layerMenu.LayerMenuFactory;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
+import edu.yu.einstein.genplay.util.Utils;
 
 /**
  * Application main menu bar following the OSX feel
@@ -62,7 +72,7 @@ public class MenuBar extends JMenuBar {
 	private final JMenu 		jmEdit;				// menu edit
 	private final JMenu 		jmTrack;			// menu track
 	private final JMenu 		jmLayers;			// menu layers
-	private final JMenu 		jmView;				// menu view
+	private final JMenu 		jmWindow;			// menu window
 	private final JMenu 		jmUtilities;		// menu utilities
 	private final JMenu 		jmHelp;				// menu help
 
@@ -87,11 +97,11 @@ public class MenuBar extends JMenuBar {
 		jmLayers = new JMenu("Layers");
 		createLayerMenu();
 
-		jmView = new JMenu("View");
-		createViewMenu();
-
 		jmUtilities = new JMenu("Utilities");
 		createUtiliesMenu();
+
+		jmWindow = new JMenu("Window");
+		createViewMenu();
 
 		jmHelp = new JMenu("Help");
 		createHelpMenu();
@@ -153,7 +163,15 @@ public class MenuBar extends JMenuBar {
 	 * Creates Help menu
 	 */
 	private void createHelpMenu() {
+		if (!Utils.isMacOS()) {
+			// on mac the option and about menu items are available from the
+			// application menu so we don't need them in the help menu
+			jmHelp.add(actionMap.get(PAOption.ACTION_KEY));
+		}
 		jmHelp.add(actionMap.get(PAHelp.ACTION_KEY));
+		if (!Utils.isMacOS()) {
+			jmHelp.add(actionMap.get(PAAbout.ACTION_KEY));
+		}
 		add(jmHelp);
 	}
 
@@ -220,6 +238,7 @@ public class MenuBar extends JMenuBar {
 					jmTrack.add(actionMap.get(TAAddLayer.ACTION_KEY));
 					jmTrack.add(actionMap.get(TAAddLayerFromDAS.ACTION_KEY));
 					jmTrack.addSeparator();
+					jmTrack.add(actionMap.get(TASaveTrack.ACTION_KEY));
 					jmTrack.add(actionMap.get(TASaveAsImage.ACTION_KEY));
 					jmTrack.addSeparator();
 					jmTrack.add(actionMap.get(TATrackSettings.ACTION_KEY));
@@ -248,7 +267,35 @@ public class MenuBar extends JMenuBar {
 	 * Creates View menu
 	 */
 	private void createViewMenu() {
-		jmView.add(actionMap.get(PAFullScreen.ACTION_KEY));
-		add(jmView);
+		final JCheckBoxMenuItem jcbmiMainFrame = new JCheckBoxMenuItem(new PAShowMainFrame());
+		final JCheckBoxMenuItem jcbmiWarningReport = new JCheckBoxMenuItem(new PAShowWarningReport());;
+		final JCheckBoxMenuItem jcbmiExceptionReport = new JCheckBoxMenuItem(new PAShowErrorReport());;
+
+		jmWindow.add(actionMap.get(PAFullScreen.ACTION_KEY));
+		jmWindow.addSeparator();
+		jmWindow.add(jcbmiMainFrame);
+		jmWindow.add(jcbmiWarningReport);
+		jmWindow.add(jcbmiExceptionReport);
+
+		jmWindow.addMenuListener(new MenuListener() {
+
+			@Override
+			public void menuCanceled(MenuEvent e) {}
+
+			@Override
+			public void menuDeselected(MenuEvent e) {}
+
+			@Override
+			public void menuSelected(MenuEvent e) {
+				jcbmiMainFrame.setSelected(MainFrame.getInstance().isActive());
+				jcbmiMainFrame.setEnabled(MainFrame.getInstance().isVisible());
+				jcbmiWarningReport.setSelected(WarningReportDialog.getInstance().isActive());
+				jcbmiWarningReport.setEnabled(WarningReportDialog.getInstance().isVisible());
+				jcbmiExceptionReport.setSelected(ExceptionReportDialog.getInstance().isActive());
+				jcbmiExceptionReport.setEnabled(ExceptionReportDialog.getInstance().isVisible());
+			}
+		});
+
+		add(jmWindow);
 	}
 }

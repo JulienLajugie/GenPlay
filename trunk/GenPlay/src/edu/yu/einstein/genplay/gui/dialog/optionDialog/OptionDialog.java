@@ -72,6 +72,7 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 	private final JButton 				jbCancel; 			// Button cancel
 	private final JSplitPane 			jspDivider; 		// Divider between the tree and the panel
 	private final String 				defaultDirectory; 	// default directory
+	private final boolean 				showMenuBar; 		// show menu bar
 	private final String 				lookAndFeel; 		// look and feel
 	private final String 				dasServerListFile; 	// DAS Server List File
 	private final int 					trackCount; 		// track count
@@ -104,6 +105,7 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 		dasServerListFile = cm.getDASServerListFile();
 		defaultDirectory = cm.getDefaultDirectory();
 		lookAndFeel = cm.getLookAndFeel();
+		showMenuBar = cm.isMenuBarShown();
 		trackCount = cm.getTrackCount();
 		trackHeight = cm.getTrackHeight();
 		undoCount = cm.getUndoCount();
@@ -208,6 +210,7 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 					cm.setDASServerListFile(dasServerListFile);
 					cm.setDefaultDirectory(defaultDirectory);
 					cm.setLookAndFeel(lookAndFeel);
+					cm.setShowMenuBar(showMenuBar);
 					cm.setTrackCount(trackCount);
 					cm.setTrackHeight(trackHeight);
 					cm.setUndoCount(undoCount);
@@ -324,6 +327,11 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 		setLocationRelativeTo(parent);
 		setVisible(true);
 		return approved;
+	}
+
+
+	public boolean showMenuBarChanged() {
+		return showMenuBar != cm.isMenuBarShown();
 	}
 
 

@@ -32,11 +32,16 @@ import java.awt.event.ItemListener;
 import java.io.File;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import edu.yu.einstein.genplay.util.Utils;
 
 /**
  * Panel of the {@link OptionDialog} that allows to <br/>
@@ -52,6 +57,8 @@ final class GeneralOptionPanel extends OptionPanel {
 	private final JButton 		jbDefaultDirBrowse; // button browse default directory
 	private final JLabel 		jlLookAndFeel; 		// label look and feel
 	private final JComboBox 	jcbLookAndFeel; 	// comboBox look and feel
+	private final JLabel 		jlShowMenu; 		// label show menu
+	private final JCheckBox 	jcbShowMenu;	 	// comboBox show menu
 
 
 	/**
@@ -100,6 +107,16 @@ final class GeneralOptionPanel extends OptionPanel {
 			}
 		});
 
+		jlShowMenu = new JLabel("Show main menu bar:");
+		jcbShowMenu = new JCheckBox();
+		jcbShowMenu.setSelected(configurationManager.isMenuBarShown());
+		jcbShowMenu.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				configurationManager.setShowMenuBar(jcbShowMenu.isSelected());
+			}
+		});
+
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 
@@ -134,5 +151,23 @@ final class GeneralOptionPanel extends OptionPanel {
 		c.anchor = GridBagConstraints.LINE_END;
 		c.insets = new Insets(30, 0, 0, 0);
 		add(jcbLookAndFeel, c);
+
+		// no option to hide or show the menu bar in mac os
+		// because it's always visible
+		if (!Utils.isMacOS()) {
+			c.gridx = 0;
+			c.gridy = 4;
+			c.gridwidth = 2;
+			c.anchor = GridBagConstraints.LINE_START;
+			c.insets = new Insets(30, 0, 0, 0);
+			add(jlShowMenu, c);
+
+			c.gridx = 1;
+			c.gridy = 4;
+			c.gridwidth = 1;
+			c.anchor = GridBagConstraints.LINE_END;
+			c.insets = new Insets(30, 0, 0, 0);
+			add(jcbShowMenu, c);
+		}
 	}
 }
