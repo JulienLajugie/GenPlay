@@ -28,7 +28,8 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.gui.track.TransferableTrack;
+import edu.yu.einstein.genplay.gui.track.trackTransfer.TrackForTransfer;
+import edu.yu.einstein.genplay.gui.track.trackTransfer.TransferableTrack;
 
 /**
  * Encapsulate a {@link Track} in a {@link TransferableTrack} object and then serialize it and write it in a file
@@ -55,7 +56,7 @@ public class TransferableTrackWriter {
 	 * @throws IOException
 	 */
 	public void write() throws IOException {
-		TransferableTrack transferableTrack = new TransferableTrack(trackToWrite);
+		TrackForTransfer transferableTrack = new TrackForTransfer(trackToWrite);
 		ObjectOutputStream oos = null;
 		FileOutputStream out = new FileOutputStream(fileToWrite);
 		oos = new ObjectOutputStream(out);

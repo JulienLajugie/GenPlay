@@ -31,7 +31,7 @@ import java.io.ObjectInputStream;
 
 import edu.yu.einstein.genplay.exception.exceptions.IncompatibleAssembliesException;
 import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.gui.track.TransferableTrack;
+import edu.yu.einstein.genplay.gui.track.trackTransfer.TrackForTransfer;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -59,7 +59,7 @@ public class TransferableTrackExtractor extends Extractor {
 		try {
 			file = new FileInputStream(getDataFile());
 			input = new ObjectInputStream (file);
-			TransferableTrack transTrack = (TransferableTrack) (input.readObject());
+			TrackForTransfer transTrack = (TrackForTransfer) (input.readObject());
 			return transTrack.getTrackToTransfer();
 		} finally {
 			if (input != null) {

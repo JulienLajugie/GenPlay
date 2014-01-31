@@ -35,8 +35,8 @@ import javax.swing.KeyStroke;
 import edu.yu.einstein.genplay.exception.exceptions.IncompatibleAssembliesException;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.gui.track.TransferableTrack;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
+import edu.yu.einstein.genplay.gui.track.trackTransfer.TransferableTrack;
 import edu.yu.einstein.genplay.util.Utils;
 
 

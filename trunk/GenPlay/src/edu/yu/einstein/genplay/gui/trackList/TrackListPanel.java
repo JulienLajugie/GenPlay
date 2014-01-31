@@ -55,11 +55,11 @@ import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.menu.TrackMenu;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackConstants;
-import edu.yu.einstein.genplay.gui.track.TransferableTrack;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.VersionedLayer;
 import edu.yu.einstein.genplay.gui.track.layer.variantLayer.MultiGenomeDrawer;
 import edu.yu.einstein.genplay.gui.track.layer.variantLayer.VariantLayer;
+import edu.yu.einstein.genplay.gui.track.trackTransfer.TransferableTrack;
 import edu.yu.einstein.genplay.util.Utils;
 
 

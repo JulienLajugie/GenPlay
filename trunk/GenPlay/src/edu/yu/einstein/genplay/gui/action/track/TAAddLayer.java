@@ -117,17 +117,21 @@ public class TAAddLayer extends TrackListAction {
 						new TAAddGenPlayTrack(extractor).actionPerformed(evt);
 					} else {
 						LayerType[] layerTypes = getLayerTypes(extractor);
+						LayerType selectedLayerType = null;
 						if (layerTypes.length == 0) {
 							throw new InvalidFileTypeException();
+						} else if (layerTypes.length == 1) {
+							selectedLayerType = layerTypes[0];
+						} else {
+							selectedLayerType = (LayerType)JOptionPane.showInputDialog(
+									getRootPane(),
+									"Please select the type of layer to add",
+									"Layer Type",
+									JOptionPane.QUESTION_MESSAGE,
+									null,
+									layerTypes,
+									layerTypes[0]);
 						}
-						LayerType selectedLayerType = (LayerType)JOptionPane.showInputDialog(
-								getRootPane(),
-								"Please select the type of layer to add",
-								"Layer Type",
-								JOptionPane.QUESTION_MESSAGE,
-								null,
-								layerTypes,
-								layerTypes[0]);
 						if (selectedLayerType != null) {
 							switch (selectedLayerType) {
 							case SCW_LAYER:

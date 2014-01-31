@@ -38,8 +38,8 @@ import javax.swing.KeyStroke;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.gui.track.TransferableTrack;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
+import edu.yu.einstein.genplay.gui.track.trackTransfer.TransferableTrack;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -128,7 +128,9 @@ public final class TACopy extends TrackListActionWorker<Transferable> implements
 			if (trackToCopy != null) {
 				notifyActionStart("Copying Track #" + selectedTrack.getNumber(), 1, false);
 				Image trackImage = TASaveAsImage.createImage(selectedTrack);
-				Transferable data = new TransferableTrack(trackToCopy, trackImage);
+				TransferableTrack data = TransferableTrack.getInstance();
+				data.setTrackToTransfer(trackToCopy);
+				data.setImageToTransfer(trackImage);
 				return data;
 			}
 		}

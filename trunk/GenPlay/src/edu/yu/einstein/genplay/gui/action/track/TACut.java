@@ -33,7 +33,7 @@ import javax.swing.KeyStroke;
 
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.gui.track.TransferableTrack;
+import edu.yu.einstein.genplay.gui.track.trackTransfer.TransferableTrack;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -94,7 +94,8 @@ public final class TACut extends TrackListActionWorker<Transferable> implements 
 		Track selectedTrack = getTrackListPanel().getSelectedTrack();
 		if (selectedTrack != null) {
 			notifyActionStart("Cutting Track #" + selectedTrack.getNumber(), 1, false);
-			Transferable data = new TransferableTrack(selectedTrack);
+			TransferableTrack data = TransferableTrack.getInstance();
+			data.setTrackToTransfer(selectedTrack);
 			return data;
 		}
 		return null;
