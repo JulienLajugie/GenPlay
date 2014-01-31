@@ -77,6 +77,7 @@ import edu.yu.einstein.genplay.gui.action.project.PAZoomIn;
 import edu.yu.einstein.genplay.gui.action.project.PAZoomOut;
 import edu.yu.einstein.genplay.gui.action.track.TAAddLayer;
 import edu.yu.einstein.genplay.gui.action.track.TAAddLayerFromDAS;
+import edu.yu.einstein.genplay.gui.action.track.TAAddVariantLayer;
 import edu.yu.einstein.genplay.gui.action.track.TACopy;
 import edu.yu.einstein.genplay.gui.action.track.TACut;
 import edu.yu.einstein.genplay.gui.action.track.TADelete;
@@ -399,6 +400,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		getRootPane().getActionMap().put(PACopyCurrentPosition.ACTION_KEY, new PACopyCurrentPosition());
 		// Add track actions to action map
 		getRootPane().getActionMap().put(TAAddLayer.ACTION_KEY, new TAAddLayer());
+		getRootPane().getActionMap().put(TAAddVariantLayer.ACTION_KEY, new TAAddVariantLayer());
 		getRootPane().getActionMap().put(TAAddLayerFromDAS.ACTION_KEY, new TAAddLayerFromDAS());
 		getRootPane().getActionMap().put(TACopy.ACTION_KEY, new TACopy());
 		getRootPane().getActionMap().put(TACut.ACTION_KEY, new TACut());

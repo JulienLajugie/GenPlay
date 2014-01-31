@@ -30,6 +30,7 @@ import javax.swing.JMenuItem;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.project.PAAbout;
 import edu.yu.einstein.genplay.gui.action.project.PAFullScreen;
 import edu.yu.einstein.genplay.gui.action.project.PAHelp;
@@ -44,6 +45,7 @@ import edu.yu.einstein.genplay.gui.action.project.PAShowWarningReport;
 import edu.yu.einstein.genplay.gui.action.project.PASortFile;
 import edu.yu.einstein.genplay.gui.action.track.TAAddLayer;
 import edu.yu.einstein.genplay.gui.action.track.TAAddLayerFromDAS;
+import edu.yu.einstein.genplay.gui.action.track.TAAddVariantLayer;
 import edu.yu.einstein.genplay.gui.action.track.TACopy;
 import edu.yu.einstein.genplay.gui.action.track.TACut;
 import edu.yu.einstein.genplay.gui.action.track.TADelete;
@@ -236,6 +238,9 @@ public class MenuBar extends JMenuBar {
 				boolean isTrackSelected = MainFrame.getInstance().getTrackListPanel().getSelectedTrack() != null;
 				if (isTrackSelected) {
 					jmTrack.add(actionMap.get(TAAddLayer.ACTION_KEY));
+					if (ProjectManager.getInstance().isMultiGenomeProject()) {
+						jmTrack.add(actionMap.get(TAAddVariantLayer.ACTION_KEY));
+					}
 					jmTrack.add(actionMap.get(TAAddLayerFromDAS.ACTION_KEY));
 					jmTrack.addSeparator();
 					jmTrack.add(actionMap.get(TASaveTrack.ACTION_KEY));

@@ -27,12 +27,15 @@ import java.util.List;
 
 import javax.swing.ActionMap;
 import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.track.TAAddLayer;
 import edu.yu.einstein.genplay.gui.action.track.TAAddLayerFromDAS;
+import edu.yu.einstein.genplay.gui.action.track.TAAddVariantLayer;
 import edu.yu.einstein.genplay.gui.action.track.TACopy;
 import edu.yu.einstein.genplay.gui.action.track.TACut;
 import edu.yu.einstein.genplay.gui.action.track.TADelete;
@@ -96,6 +99,9 @@ public class TrackMenu extends JPopupMenu implements PopupMenuListener {
 			}
 		}
 		addPopupMenuListener(this);
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			add(new JMenuItem(actionMap.get(TAAddVariantLayer.ACTION_KEY)), 1);
+		}
 	}
 
 

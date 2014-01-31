@@ -44,8 +44,8 @@ import edu.yu.einstein.genplay.gui.track.layer.variantLayer.VariantLayer;
 public class TAAddVariantLayer extends TrackListAction {
 
 	private static final long serialVersionUID = 5229478480046927796L;
-	private static final String ACTION_NAME = "Add Variant Layer"; 										// action name
-	private static final String DESCRIPTION = "Add a layer to display multi genome information"; 		// tooltip
+	private static final String ACTION_NAME = "Add Variant Layer"; 															// action name
+	private static final String DESCRIPTION = "Add a layer displaying multi-genome information such as SNPs and Indels"; 	// tooltip
 
 
 	/**
