@@ -75,6 +75,7 @@ public class TAAddNucleotideLayer extends TrackListActionExtractorWorker<TwoBitS
 			NucleotideLayer newLayer = new NucleotideLayer(selectedTrack, actionResult, name);
 			selectedTrack.getLayers().add(newLayer);
 			selectedTrack.setActiveLayer(newLayer);
+			selectedTrack.repaint();
 		}
 	}
 

@@ -34,19 +34,33 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.yu.einstein.genplay.core.IO.writer.geneListWriter.GeneListAsBedWriter;
 import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
+import edu.yu.einstein.genplay.dataStructure.gene.Gene;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
+import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
+import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
+import edu.yu.einstein.genplay.dataStructure.scoredChromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.exception.exceptions.IncompatibleAssembliesException;
 import edu.yu.einstein.genplay.gui.action.track.TASaveAsImage;
 import edu.yu.einstein.genplay.gui.fileFilter.GenPlayTrackFilter;
 import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.util.Utils;
+import edu.yu.einstein.genplay.util.ListView.ChromosomeWindowListViews;
 
 /**
  * Transferable track singleton for clipboard, cut and paste
  * @author Julien Lajugie
  */
 public class TransferableTrack implements Transferable {
+
+	/** Max element to put in the clipboard for the text flavor containing the data of a track */
+	private static final int MAX_ELEMENT_TO_PUT_IN_CLIPBOARD = 1000;
 
 	/** Tranferable rack data flavor */
 	public transient static final DataFlavor TRACK_FLAVOR = new DataFlavor(TransferableTrack.class, "GenPlay Track");
@@ -168,6 +182,42 @@ public class TransferableTrack implements Transferable {
 	}
 
 
+	private String getTrackDataAsString() {
+		Layer<?> activeLayer = track.getTrackToTransfer().getActiveLayer();
+		if (activeLayer != null) {
+			Object data = activeLayer.getData();
+			GenomeWindow displayedWindow = ProjectManager.getInstance().getProjectWindow().getGenomeWindow();
+			Chromosome chr = displayedWindow.getChromosome();
+			if (data instanceof SCWList) {
+				SCWList scwList = (SCWList) data;
+				ListView<ScoredChromosomeWindow> chrLV = ChromosomeWindowListViews.subList(scwList, displayedWindow);
+				String clipboardString = "";
+				int i =0;
+				for (i = 0; (i < chrLV.size()) && (i < MAX_ELEMENT_TO_PUT_IN_CLIPBOARD); i++) {
+					clipboardString += chr + "\t" + chrLV.get(i).getStart() + "\t" + chrLV.get(i).getStop() + "\t" + chrLV.get(i).getScore() + "\n";
+				}
+				if (i >= MAX_ELEMENT_TO_PUT_IN_CLIPBOARD) {
+					clipboardString += "and more...\n";
+				}
+				return clipboardString;
+			} else if (data instanceof GeneList) {
+				GeneList scwList = (GeneList) data;
+				ListView<Gene> chrLV = ChromosomeWindowListViews.subList(scwList, displayedWindow);
+				String clipboardString = "";
+				int i = 0;
+				for (i = 0; (i < chrLV.size()) && (i < MAX_ELEMENT_TO_PUT_IN_CLIPBOARD); i++) {
+					clipboardString += GeneListAsBedWriter.geneToString(chrLV.get(i), chr) + "\n";
+				}
+				if (i >= MAX_ELEMENT_TO_PUT_IN_CLIPBOARD) {
+					clipboardString += "and more...\n";
+				}
+				return clipboardString;
+			}
+		}
+		return null;
+	}
+
+
 	/**
 	 * @return the track to transfer
 	 */
@@ -190,7 +240,14 @@ public class TransferableTrack implements Transferable {
 			}
 		}
 		if (flavor.equals(DataFlavor.stringFlavor)) {
-			return track.getTrackToTransfer().getName();
+			String dataString = getTrackDataAsString();
+			if (dataString != null) {
+				// if we can retrieve the data from the active layer we put it in the clipboard
+				return dataString;
+			} else {
+				// otherwise the default is the track name
+				return track.getTrackToTransfer().getName();
+			}
 		}
 		if (flavor.equals(TRACK_FLAVOR)) {
 			return track;

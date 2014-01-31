@@ -47,6 +47,120 @@ import edu.yu.einstein.genplay.util.NumberFormats;
  */
 public final class GeneListAsBedWriter extends GeneListWriter implements Stoppable {
 
+	/**
+	 * @param gene a Gene
+	 * @return true if the gene is scored, false otherwise
+	 */
+	private final static boolean areExonsScored(Gene gene) {
+		for (ScoredChromosomeWindow currentExon: gene.getExons()) {
+			if (!Float.isNaN(currentExon.getScore())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	/**
+	 * @param gene a Gene
+	 * @param chromosome the chromosome of the gene
+	 * @return a bed format string representing the specified gene
+	 */
+	public final static String geneToString(Gene gene, Chromosome chromosome) {
+		return geneToString(gene, chromosome,
+				gene.getStart(), gene.getStop(),
+				gene.getUTR5Bound(), gene.getUTR3Bound(),
+				true);
+	}
+
+
+	/**
+	 * @param gene a gene
+	 * @param chromosome the chromosome of the gene
+	 * @param start the start position of the gene after translation on appropriate genome (for multigenome)
+	 * @param stop the stop position of the gene after translation on appropriate genome (for multigenome)
+	 * @param UTR5Bound the UTR5 bound position of the gene after translation on appropriate genome (for multigenome)
+	 * @param UTR3Bound the UTR3 bound position of the gene after translation on appropriate genome (for multigenome)
+	 * @param isGeneListScored true if the gene is scores
+	 * @return a bed format string representing the specified gene
+	 */
+	private final static String geneToString(Gene gene, Chromosome chromosome,
+			int start, int stop,
+			int UTR5Bound, int UTR3Bound,
+			boolean isGeneListScored) {
+		String lineToPrint = "";
+		// retrieve the number formats for the scores
+		NumberFormat numberFormat = NumberFormats.getWriterScoreFormat();
+
+		lineToPrint = chromosome.toString();
+		lineToPrint += "\t";
+		lineToPrint += start;
+		lineToPrint += "\t";
+		lineToPrint += stop;
+		lineToPrint += "\t";
+		lineToPrint += gene.getName();
+		lineToPrint += "\t";
+		// add the RPKM of the gene for the score if there is one
+		if (!isGeneListScored) {
+			lineToPrint += "1";
+		} else {
+			float score = gene.getScore();
+			if (Float.isNaN(score)) {
+				// if there is no score for the gene we put a default 1
+				lineToPrint += "0";
+			} else {
+				lineToPrint += numberFormat.format(score);
+			}
+		}
+		lineToPrint += "\t";
+		lineToPrint += gene.getStrand().toString();
+		lineToPrint += "\t";
+		lineToPrint += UTR5Bound;
+		lineToPrint += "\t";
+		lineToPrint += UTR3Bound;
+		// add "-" for itemRgb
+		lineToPrint += "\t-\t";
+		if (gene.getExons() == null) {
+			lineToPrint += "-\t-\t-";
+		} else {
+			// exon count
+			lineToPrint += gene.getExons().size();
+			lineToPrint += "\t";
+			// exon lengths
+			for (int i = 0; i < gene.getExons().size(); i++) {
+				lineToPrint += gene.getExons().get(i).getStop() - gene.getExons().get(i).getStart();
+				lineToPrint += ",";
+			}
+			// remove last comma
+			lineToPrint = lineToPrint.substring(0, lineToPrint.length() - 1);
+			lineToPrint += "\t";
+			// exon starts
+			for (ScoredChromosomeWindow currentExon: gene.getExons()) {
+				int currentStart = currentExon.getStart();
+				lineToPrint += currentStart - gene.getStart();
+				lineToPrint += ",";
+			}
+			// remove last comma
+			lineToPrint = lineToPrint.substring(0, lineToPrint.length() - 1);
+			// exon scores
+			if (areExonsScored(gene)) {
+				lineToPrint += "\t";
+				for (ScoredChromosomeWindow currentExon: gene.getExons()) {
+					float currentScore = currentExon.getScore();
+					if (Float.isNaN(currentScore)) {
+						currentScore = 0;
+					}
+					lineToPrint += numberFormat.format(currentScore);
+					lineToPrint += ",";
+				}
+				// remove last comma
+				lineToPrint = lineToPrint.substring(0, lineToPrint.length() - 1);
+			}
+		}
+		return lineToPrint;
+	}
+
+
 	private boolean needsToBeStopped = false;	// true if the writer needs to be stopped
 	private boolean isGeneListScored = false;	// true if the gene list is scored
 
@@ -59,20 +173,6 @@ public final class GeneListAsBedWriter extends GeneListWriter implements Stoppab
 	 */
 	public GeneListAsBedWriter(File outputFile, GeneList data, String name) {
 		super(outputFile, data, name);
-	}
-
-
-	/**
-	 * @param gene a Gene
-	 * @return true if the gene is scored, false otherwise
-	 */
-	private final boolean areExonsScored(Gene gene) {
-		for (ScoredChromosomeWindow currentExon: gene.getExons()) {
-			if (!Float.isNaN(currentExon.getScore())) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 
@@ -121,8 +221,7 @@ public final class GeneListAsBedWriter extends GeneListWriter implements Stoppab
 				writer.write(trackLine);
 				writer.newLine();
 			}
-			// retrieve the number formats for the scores
-			NumberFormat numberFormat = NumberFormats.getWriterScoreFormat();
+
 			// print the data
 			for (Chromosome currentChromosome: projectChromosomes) {
 				ListView<Gene> currentList = data.get(currentChromosome);
@@ -151,72 +250,7 @@ public final class GeneListAsBedWriter extends GeneListWriter implements Stoppab
 						UTR5Bound--;
 						UTR3Bound--;
 						if ((start > -1) && (stop > -1)) {
-							String lineToPrint = new String();
-							lineToPrint = currentChromosome.toString();
-							lineToPrint += "\t";
-							lineToPrint += start;
-							lineToPrint += "\t";
-							lineToPrint += stop;
-							lineToPrint += "\t";
-							lineToPrint += currentGene.getName();
-							lineToPrint += "\t";
-							// add the RPKM of the gene for the score if there is one
-							if (!isGeneListScored) {
-								lineToPrint += "1";
-							} else {
-								float score = currentGene.getScore();
-								if (Float.isNaN(score)) {
-									// if there is no score for the gene we put a default 1
-									lineToPrint += "0";
-								} else {
-									lineToPrint += numberFormat.format(score);
-								}
-							}
-							lineToPrint += "\t";
-							lineToPrint += currentGene.getStrand().toString();
-							lineToPrint += "\t";
-							lineToPrint += UTR5Bound;
-							lineToPrint += "\t";
-							lineToPrint += UTR3Bound;
-							// add "-" for itemRgb
-							lineToPrint += "\t-\t";
-							if (currentGene.getExons() == null) {
-								lineToPrint += "-\t-\t-";
-							} else {
-								// exon count
-								lineToPrint += currentGene.getExons().size();
-								lineToPrint += "\t";
-								// exon lengths
-								for (int i = 0; i < currentGene.getExons().size(); i++) {
-									lineToPrint += currentGene.getExons().get(i).getStop() - currentGene.getExons().get(i).getStart();
-									lineToPrint += ",";
-								}
-								// remove last comma
-								lineToPrint = lineToPrint.substring(0, lineToPrint.length() - 1);
-								lineToPrint += "\t";
-								// exon starts
-								for (ScoredChromosomeWindow currentExon: currentGene.getExons()) {
-									int currentStart = currentExon.getStart();
-									lineToPrint += currentStart - currentGene.getStart();
-									lineToPrint += ",";
-								}
-								// remove last comma
-								lineToPrint = lineToPrint.substring(0, lineToPrint.length() - 1);
-								// exon scores
-								if (areExonsScored(currentGene)) {
-									lineToPrint += "\t";
-									for (ScoredChromosomeWindow currentExon: currentGene.getExons()) {
-										float currentScore = currentExon.getScore();
-										if (Float.isNaN(currentScore)) {
-											currentScore = 0;
-										}
-										lineToPrint += numberFormat.format(currentScore);
-										lineToPrint += ",";
-									}
-									// remove last comma
-									lineToPrint = lineToPrint.substring(0, lineToPrint.length() - 1);
-								}
-							}
+							String lineToPrint = geneToString(currentGene, currentChromosome, start, stop, UTR5Bound, UTR3Bound, isGeneListScored);
 							writer.write(lineToPrint);
 							writer.newLine();
 						}
