@@ -69,7 +69,7 @@ public class TAAddGenPlayTrack extends TrackListActionWorker<Track> {
 		if (actionResult != null) {
 			Track selectedTrack = getTrackListPanel().getSelectedTrack();
 			if (selectedTrack.getLayers().isEmpty()) {
-				selectedTrack.setContentFrom(actionResult);
+				selectedTrack.setContentAs(actionResult);
 			} else {
 				Layer<?>[] layers = actionResult.getLayers().getLayers();
 				for (Layer<?> currentLayer: layers) {

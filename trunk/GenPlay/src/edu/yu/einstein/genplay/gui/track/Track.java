@@ -479,7 +479,7 @@ public final class Track implements Serializable, GenomeWindowListener, TrackLis
 	 * Sets the current track with the parameters and the layers of the specified track
 	 * @param otherTrack
 	 */
-	public void setContentFrom(Track otherTrack) {
+	public void setContentAs(Track otherTrack) {
 		foregroundLayer = otherTrack.foregroundLayer.clone();
 		foregroundLayer.setTrack(this);
 		backgroundLayer = otherTrack.backgroundLayer.clone();

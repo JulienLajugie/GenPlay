@@ -45,6 +45,8 @@ import edu.yu.einstein.genplay.gui.action.multiGenome.synchronization.MGASynchro
 import edu.yu.einstein.genplay.gui.action.project.PAInitMGManager;
 import edu.yu.einstein.genplay.gui.action.project.PAInitManagers;
 import edu.yu.einstein.genplay.gui.action.project.PALoadProject;
+import edu.yu.einstein.genplay.gui.dialog.quickViewDialog.QuickViewDialog;
+import edu.yu.einstein.genplay.gui.fileFilter.GenPlayTrackFilter;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 import edu.yu.einstein.genplay.util.Images;
@@ -261,7 +263,6 @@ public class Launcher {
 				// mac only
 				if (OSXHandler.getInstance().getFileToOpen() != null) {
 					startProjectFromFile(OSXHandler.getInstance().getFileToOpen());
-
 				} else if (isDemo) {
 					startDemoProject();
 				} else if (args.length == 1) { // if a project file path has been specified to the main method we load this file
@@ -281,7 +282,6 @@ public class Launcher {
 	 */
 	private static void startDemoProject() {
 		InputStream is = ProjectFrame.getInstance().getClass().getClassLoader().getResourceAsStream(DEMO_PROJECT_PATH);
-
 		try {
 			loadFile(is);
 		} catch (Exception e) {
@@ -307,7 +307,11 @@ public class Launcher {
 	 */
 	public static void startProjectFromFile(File file) {
 		try {
-			loadFile(file);
+			if (Utils.getExtension(file).equals(GenPlayTrackFilter.EXTENSIONS[0])) {
+				QuickViewDialog.showDialog(file);
+			} else {
+				loadFile(file);
+			}
 		} catch (Exception e) {
 			ExceptionManager.getInstance().caughtException(e);
 			System.out.println("Invalid Project File: The specifed file is not a valid project file");

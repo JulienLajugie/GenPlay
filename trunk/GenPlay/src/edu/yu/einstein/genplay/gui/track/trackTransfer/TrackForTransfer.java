@@ -82,9 +82,10 @@ public final class TrackForTransfer implements Serializable {
 	 */
 	private boolean isTransferableTrackCompatibleWithCurrentProject() {
 		ProjectManager pm = ProjectManager.getInstance();
-		if (!assemblyName.equals(pm.getAssembly().getName())) {
+		if ((pm.getAssembly() != null) && (!assemblyName.equals(pm.getAssembly().getName()))) {
 			return false;
 		}
+
 		if (pm.isMultiGenomeProject()) {
 			MultiGenomeProject mgp = pm.getMultiGenomeProject();
 			if ((genomeNames == null) && (mgp.getGenomeNames() != null)) {

@@ -114,7 +114,7 @@ public final class TAPasteOrDrop extends TrackListActionWorker<Void> {
 						Track copiedTrack = TransferableTrack.getTrackFromTransferable(transferable);
 						if (copiedTrack != null) {
 							if (selectedTrack.getLayers().isEmpty()) {
-								selectedTrack.setContentFrom(copiedTrack);
+								selectedTrack.setContentAs(copiedTrack);
 							} else {
 								Layer<?>[] layers = copiedTrack.getLayers().getLayers();
 								for (Layer<?> currentLayer: layers) {
