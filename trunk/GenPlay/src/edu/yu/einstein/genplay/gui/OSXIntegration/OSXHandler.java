@@ -37,9 +37,15 @@ import com.apple.eawt.PreferencesHandler;
 import com.apple.eawt.QuitHandler;
 import com.apple.eawt.QuitResponse;
 
+import edu.yu.einstein.genplay.core.IO.extractor.ExtractorFactory;
 import edu.yu.einstein.genplay.core.manager.MGFiltersManager;
 import edu.yu.einstein.genplay.gui.action.project.PAAbout;
+import edu.yu.einstein.genplay.gui.action.track.TAAddGenPlayTrack;
+import edu.yu.einstein.genplay.gui.action.track.TAInsert;
+import edu.yu.einstein.genplay.gui.fileFilter.GenPlayTrackFilter;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
+import edu.yu.einstein.genplay.gui.trackList.TrackListPanel;
+import edu.yu.einstein.genplay.util.Utils;
 
 /**
  * Handle OSX specific events such the opening of a GenPlay project file in Mac OSX when the user
@@ -122,6 +128,25 @@ public class OSXHandler implements AboutHandler, PreferencesHandler, QuitHandler
 
 	@Override
 	public void openFiles(OpenFilesEvent openFilesEvent) {
-		fileToOpen = openFilesEvent.getFiles().get(0);
+		// case where a file is clicked when the program is loaded
+		if (MainFrame.isInitialized()) {
+			for (File fileToOpen: openFilesEvent.getFiles()) {
+				// we try to open the selected files
+				if (Utils.getExtension(fileToOpen).equals(GenPlayTrackFilter.EXTENSIONS[0])) {
+					try {
+						TrackListPanel trackListPanel =	MainFrame.getInstance().getTrackListPanel();
+						trackListPanel.setSelectedTrack(trackListPanel.getModel().getTrack(0));
+						new TAInsert().actionPerformed(null);
+						trackListPanel.setSelectedTrack(trackListPanel.getModel().getTrack(0));
+						new TAAddGenPlayTrack(ExtractorFactory.getExtractor(fileToOpen)).actionPerformed(null);
+					} catch (Exception e) {
+						JOptionPane.showMessageDialog(MainFrame.getInstance().getRootPane(), "The selected file cannot be loaded", "Cannot Load File", JOptionPane.WARNING_MESSAGE, null);
+					}
+				}
+			}
+		} else {
+			// case where the program is started by clicking a file associated with genplay
+			fileToOpen = openFilesEvent.getFiles().get(0);
+		}
 	}
 }

@@ -111,6 +111,7 @@ public class QuickViewDialog extends JDialog {
 		setIconImage(Images.getApplicationImage());
 		setModal(true);
 		pack();
+		setLocationRelativeTo(null);
 		setVisible(true);
 	}
 }

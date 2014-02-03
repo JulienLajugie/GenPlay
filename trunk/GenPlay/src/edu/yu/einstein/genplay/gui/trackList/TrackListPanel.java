@@ -162,13 +162,7 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 			unlockTrackHandles();
 			try {
 				dtde.acceptDrop(TransferHandler.COPY);
-				// unselect the previous track
-				if (selectedTrack != null) {
-					selectedTrack.setSelected(false);
-				}
-				// select the dragged over track
-				selectedTrack = draggedOverTrack;
-				selectedTrack.setSelected(true);
+				setSelectedTrack(draggedOverTrack);
 				new TAPasteOrDrop(dtde.getTransferable()).processAction();
 				dtde.dropComplete(true);
 			} catch (Exception e) {
@@ -350,6 +344,21 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 		this.model = model;
 		this.model.addListDataListener(this);
 		rebuildPanel();
+	}
+
+
+	/**
+	 * Sets the selected track in the track panel
+	 * @param trackToSelect
+	 */
+	public void setSelectedTrack(Track trackToSelect) {
+		// unselect the previous track
+		if (selectedTrack != null) {
+			selectedTrack.setSelected(false);
+		}
+		// select the dragged over track
+		selectedTrack = trackToSelect;
+		selectedTrack.setSelected(true);
 	}
 
 
