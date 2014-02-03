@@ -137,7 +137,7 @@ public class TransferableTrack implements Transferable {
 	public static Track getTrackFromTransferable(Transferable transferable) throws IOException, IncompatibleAssembliesException {
 		try {
 			TrackForTransfer transTrack = (TrackForTransfer) transferable.getTransferData(TRACK_FLAVOR);
-			return transTrack.getTrackToTransfer();
+			return transTrack.getTrackForTransfer();
 		} catch (UnsupportedFlavorException e) {
 			return null;
 		}
@@ -161,7 +161,7 @@ public class TransferableTrack implements Transferable {
 	private List<File> getDataAsFileList() {
 		ObjectOutputStream oos = null;
 		try {
-			File tmpFile = new File(Utils.getTmpDirectoryPath(), track.getTrackToTransfer().getName() + GenPlayTrackFilter.EXTENSIONS[0]);
+			File tmpFile = new File(Utils.getTmpDirectoryPath(), track.getTrackForTransfer().getName() + GenPlayTrackFilter.EXTENSIONS[0]);
 			FileOutputStream out = new FileOutputStream(tmpFile);
 			oos = new ObjectOutputStream(out);
 			oos.writeObject(track);
@@ -183,7 +183,7 @@ public class TransferableTrack implements Transferable {
 
 
 	private String getTrackDataAsString() {
-		Layer<?> activeLayer = track.getTrackToTransfer().getActiveLayer();
+		Layer<?> activeLayer = track.getTrackForTransfer().getActiveLayer();
 		if (activeLayer != null) {
 			Object data = activeLayer.getData();
 			GenomeWindow displayedWindow = ProjectManager.getInstance().getProjectWindow().getGenomeWindow();
@@ -222,7 +222,7 @@ public class TransferableTrack implements Transferable {
 	 * @return the track to transfer
 	 */
 	public Track getTrackToTransfer() {
-		return track.getTrackToTransfer();
+		return track.getTrackForTransfer();
 	}
 
 
@@ -234,7 +234,7 @@ public class TransferableTrack implements Transferable {
 		}
 		if (flavor.equals(DataFlavor.imageFlavor)) {
 			if (trackImage == null) {
-				return TASaveAsImage.createImage(track.getTrackToTransfer());
+				return TASaveAsImage.createImage(track.getTrackForTransfer());
 			} else {
 				return trackImage;
 			}
@@ -246,7 +246,7 @@ public class TransferableTrack implements Transferable {
 				return dataString;
 			} else {
 				// otherwise the default is the track name
-				return track.getTrackToTransfer().getName();
+				return track.getTrackForTransfer().getName();
 			}
 		}
 		if (flavor.equals(TRACK_FLAVOR)) {

@@ -53,7 +53,7 @@ public class Ruler implements GenomeWindowListener {
 
 	private static final int 		HANDLE_WIDTH = 50;					// Width of the track handle
 	private static final int 		TRACKS_SCROLL_WIDTH = 17;			// Width of the scroll bar
-	private static final int 		RULER_HEIGHT = 20;					// Height of the ruler
+	public static final int 		RULER_HEIGHT = 20;					// Height of the ruler
 	private final GraphicsPanel		rulerGraphics;						// Graphics part
 	private final JPanel			rulerPanel;							// top container
 	private final JButton 			rulerButton;						// button of the ruler
@@ -115,6 +115,14 @@ public class Ruler implements GenomeWindowListener {
 	 */
 	public JButton getOptionButton() {
 		return rulerButton;
+	}
+
+
+	/**
+	 * @return the graphics panel of the ruler
+	 */
+	public GraphicsPanel getRulerGraphics() {
+		return rulerGraphics;
 	}
 
 

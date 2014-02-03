@@ -506,6 +506,15 @@ public final class Track implements Serializable, GenomeWindowListener, TrackLis
 
 
 	/**
+	 * Makes the handle of the track visible or invisible
+	 * @param isVisible true to make the handle visible; false to make it invisible
+	 */
+	public void setHandleVisible(boolean isVisible) {
+		handlePanel.setVisible(isVisible);
+	}
+
+
+	/**
 	 * Sets the name of the track
 	 * @param name
 	 */

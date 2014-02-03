@@ -23,14 +23,11 @@ package edu.yu.einstein.genplay.gui.dialog.quickViewDialog;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JDialog;
+import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -39,11 +36,11 @@ import org.xml.sax.SAXException;
 import edu.yu.einstein.genplay.core.IO.extractor.TransferableTrackExtractor;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.chromosome.SimpleChromosome;
 import edu.yu.einstein.genplay.dataStructure.genome.Assembly;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.ruler.Ruler;
+import edu.yu.einstein.genplay.gui.track.trackTransfer.TrackForTransfer;
 import edu.yu.einstein.genplay.util.Images;
 
 /**
@@ -54,23 +51,18 @@ import edu.yu.einstein.genplay.util.Images;
 public class QuickViewDialog extends JDialog {
 
 	private static final long serialVersionUID = 3137164002203992280L; // generated serial ID
-	private static final int 	DIALOG_WIDTH  	= 800;	// Dialog width
-	private static final int 	CHROMOSOME_LENGTH = 250000000;
+	private static final int DIALOG_WIDTH  	= 800;	// Dialog width
 
 
 	/**
 	 * Init GenPlay Managers
+	 * @param assembly assembly to use to initialize the managers
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
 	 * @throws IOException
 	 */
-	public static void initManagers() {
-		// keep only the "basic" chromosomes (we don't want the _random)
-		Chromosome chr = new SimpleChromosome("Chr1", CHROMOSOME_LENGTH);
-		List<Chromosome> chrList = new ArrayList<Chromosome>();
-		chrList.add(chr);
-		Assembly assembly = new Assembly("Quick View", "0001 01");
-		assembly.setChromosomeList(chrList);
+	public static void initManagers(Assembly assembly) {
+		Chromosome chr = assembly.getChromosomeList().get(0);
 		ProjectManager.getInstance().setAssembly(assembly);
 		ProjectManager.getInstance().updateChromosomeList();
 		ProjectManager.getInstance().getProjectWindow().setGenomeWindow(new SimpleGenomeWindow(chr, 0, chr.getLength()));
@@ -84,10 +76,10 @@ public class QuickViewDialog extends JDialog {
 	 */
 	public static void showDialog(File genPlayTrackFile) throws Exception {
 		TransferableTrackExtractor extractor = new TransferableTrackExtractor(genPlayTrackFile);
-		Track track = extractor.extract();
-		initManagers();
-		new QuickViewDialog(track);
-		//System.exit(0);
+		TrackForTransfer trackForTransfer = extractor.extract();
+		initManagers(trackForTransfer.getAssembly());
+		new QuickViewDialog(trackForTransfer.getTrackForTransfer());
+		System.exit(0);
 	}
 
 
@@ -96,27 +88,19 @@ public class QuickViewDialog extends JDialog {
 	 * Private constructor
 	 * @param track track to display in the dialog
 	 */
-	private QuickViewDialog(final Track track) {
-		addComponentListener(new ComponentAdapter() {
-			@Override
-			public void componentShown(ComponentEvent e) {
-				System.out.println("fdsaf");
-				ProjectManager.getInstance().getProjectWindow().setTrackWidth(track.getGraphicsPanel().getWidth());
-			}
-		});
+	private QuickViewDialog(Track track) {
+		JPanel rulerPanel = new Ruler().getRulerGraphics();
+		rulerPanel.setPreferredSize(new Dimension(DIALOG_WIDTH, Ruler.RULER_HEIGHT));
+
+		track.getTrackPanel().setPreferredSize(new Dimension(DIALOG_WIDTH, 100));
+		track.setHandleVisible(false);
 
 		// Dialog layout
 		BorderLayout layout = new BorderLayout();
 		setLayout(layout);
 
-		//Track displayedTrack = new Track(1);
-		//displayedTrack.setContentAs(track);
-
-		Ruler ruler = new Ruler();
-		add(ruler.getRulerPanel(), BorderLayout.NORTH);
-		ruler.getOptionButton().setEnabled(false);
-
 		// Adds component to the dialog
+		add(rulerPanel, BorderLayout.NORTH);
 		add(track.getTrackPanel(), BorderLayout.SOUTH);
 
 		// Default close operation
@@ -125,17 +109,8 @@ public class QuickViewDialog extends JDialog {
 		// Dialog settings
 		setTitle("GenPlay Quick View");
 		setIconImage(Images.getApplicationImage());
+		setModal(true);
 		pack();
-		setSize(new Dimension(DIALOG_WIDTH, getHeight()));
-		//setModal(true);
-		setResizable(true);
-		//System.out.println(">>>" + track.getGraphicsPanel().getWidth());
 		setVisible(true);
-
-		//System.out.println(">>>" + track.getGraphicsPanel().getWidth());
-		//validate();
-		//displayedTrack.getGraphicsPanel().componentResized(null);
-
-		//ProjectManager.getInstance().getProjectWindow().setTrackWidth(displayedTrack.getGraphicsPanel().getWidth());
 	}
 }

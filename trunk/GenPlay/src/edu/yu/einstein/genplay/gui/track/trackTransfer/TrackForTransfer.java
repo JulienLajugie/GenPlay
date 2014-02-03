@@ -30,6 +30,7 @@ import java.util.List;
 
 import edu.yu.einstein.genplay.core.manager.project.MultiGenomeProject;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.dataStructure.genome.Assembly;
 import edu.yu.einstein.genplay.exception.exceptions.IncompatibleAssembliesException;
 import edu.yu.einstein.genplay.gui.track.Track;
 
@@ -48,7 +49,7 @@ public final class TrackForTransfer implements Serializable {
 	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
 
 	private Track 			trackToTransfer;	// track to transfer
-	private String 			assemblyName;		// assembly of the track to transfer
+	private Assembly 		assembly;			// assembly of the track to transfer
 	private List<String>	genomeNames;		// name of the genomes in the case of a multi-genome project
 
 
@@ -59,7 +60,7 @@ public final class TrackForTransfer implements Serializable {
 	public TrackForTransfer(Track trackToTransfer) {
 		this.trackToTransfer = trackToTransfer;
 		ProjectManager pm = ProjectManager.getInstance();
-		assemblyName = pm.getAssembly().getName();
+		assembly = pm.getAssembly();
 		if (pm.isMultiGenomeProject()) {
 			genomeNames = pm.getMultiGenomeProject().getGenomeNames();
 		} else {
@@ -69,9 +70,18 @@ public final class TrackForTransfer implements Serializable {
 
 
 	/**
+	 * @return the assembly that was used when the
+	 * track for transfer was created.
+	 */
+	public Assembly getAssembly() {
+		return assembly;
+	}
+
+
+	/**
 	 * @return the track to transfer
 	 */
-	public Track getTrackToTransfer() {
+	public Track getTrackForTransfer() {
 		return trackToTransfer;
 	}
 
@@ -82,7 +92,7 @@ public final class TrackForTransfer implements Serializable {
 	 */
 	private boolean isTransferableTrackCompatibleWithCurrentProject() {
 		ProjectManager pm = ProjectManager.getInstance();
-		if ((pm.getAssembly() != null) && (!assemblyName.equals(pm.getAssembly().getName()))) {
+		if ((pm.getAssembly() != null) && (!assembly.getName().equals(pm.getAssembly().getName()))) {
 			return false;
 		}
 
@@ -118,7 +128,7 @@ public final class TrackForTransfer implements Serializable {
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt(); // read the saved format
 		trackToTransfer = (Track) in.readObject();
-		assemblyName = (String) in.readObject();
+		assembly = (Assembly) in.readObject();
 		genomeNames = (List<String>) in.readObject();
 		// check if the unserialized track is compatible with the current project
 		if (!isTransferableTrackCompatibleWithCurrentProject()) {
@@ -136,7 +146,7 @@ public final class TrackForTransfer implements Serializable {
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeObject(trackToTransfer);
-		out.writeObject(assemblyName);
+		out.writeObject(assembly);
 		out.writeObject(genomeNames);
 	}
 }

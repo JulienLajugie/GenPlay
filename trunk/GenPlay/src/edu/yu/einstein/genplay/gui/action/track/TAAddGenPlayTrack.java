@@ -86,7 +86,7 @@ public class TAAddGenPlayTrack extends TrackListActionWorker<Track> {
 	protected Track processAction() throws Exception {
 		try {
 			TransferableTrackExtractor transferableTrackExtractor = (TransferableTrackExtractor) extractor;
-			return transferableTrackExtractor.extract();
+			return transferableTrackExtractor.extract().getTrackForTransfer();
 		} catch (IncompatibleAssembliesException e) {
 			JOptionPane.showMessageDialog(getRootPane(), "The specified file cannot be loaded. "
 					+ "\nIt contains a track from a project with different assembly or multigenome parameters.", "Invalid File", JOptionPane.WARNING_MESSAGE, null);

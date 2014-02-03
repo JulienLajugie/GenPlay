@@ -72,21 +72,23 @@ public class DataScalerManager {
 		 * Cleans the map that associates data keys to data scaler values that scale their associated keys.
 		 */
 		private void cleanDataScalerMap() {
-			List<Layer<?>> displayedLayers = MainFrame.getInstance().getTrackListPanel().getModel().getAllLayers(); // retrieve the list of all the layers displayed
-			Map<Object, Boolean> isDataDisplayedMap = new HashMap<Object, Boolean>(); // map with data as key and isDisplayed as value
-			for (Object currentData: dataScalerMap.keySet()) {
-				isDataDisplayedMap.put(currentData, false);
-			}
-			// set to true the is displayed value of data of displayed layer
-			for (Layer<?> currentLayer: displayedLayers) {
-				isDataDisplayedMap.put(currentLayer.getData(), true);
-			}
-			// remove data scalers that are not displayed
-			Iterator<Entry<Object, DataScalerForTrackDisplay<?, ?>>> dataScalerMapEntryIterator = dataScalerMap.entrySet().iterator();
-			while (dataScalerMapEntryIterator.hasNext()) {
-				Entry<Object, DataScalerForTrackDisplay<?, ?>> currentEntry = dataScalerMapEntryIterator.next();
-				if (!isDataDisplayedMap.get(currentEntry.getKey())) {
-					dataScalerMapEntryIterator.remove();
+			if (MainFrame.isInitialized()) {
+				List<Layer<?>> displayedLayers = MainFrame.getInstance().getTrackListPanel().getModel().getAllLayers(); // retrieve the list of all the layers displayed
+				Map<Object, Boolean> isDataDisplayedMap = new HashMap<Object, Boolean>(); // map with data as key and isDisplayed as value
+				for (Object currentData: dataScalerMap.keySet()) {
+					isDataDisplayedMap.put(currentData, false);
+				}
+				// set to true the is displayed value of data of displayed layer
+				for (Layer<?> currentLayer: displayedLayers) {
+					isDataDisplayedMap.put(currentLayer.getData(), true);
+				}
+				// remove data scalers that are not displayed
+				Iterator<Entry<Object, DataScalerForTrackDisplay<?, ?>>> dataScalerMapEntryIterator = dataScalerMap.entrySet().iterator();
+				while (dataScalerMapEntryIterator.hasNext()) {
+					Entry<Object, DataScalerForTrackDisplay<?, ?>> currentEntry = dataScalerMapEntryIterator.next();
+					if (!isDataDisplayedMap.get(currentEntry.getKey())) {
+						dataScalerMapEntryIterator.remove();
+					}
 				}
 			}
 		}

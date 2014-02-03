@@ -151,6 +151,14 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 
 
 	/**
+	 * @return true if the main frame has been initialized, false otherwise
+	 */
+	public static boolean isInitialized() {
+		return instance != null;
+	}
+
+
+	/**
 	 * Reinit the {@link ProjectChromosomes} and the chromosome panel of the {@link ControlPanel} if needed
 	 */
 	public static void reinit() {
