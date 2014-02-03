@@ -155,25 +155,32 @@ public final class PAInitManagers extends AbstractAction {
 								invalidPaths = getInvalidPath(formerPaths);				// we get the invalid files
 								if (hasInvalidFiles()) {		// if some invalid files exist,
 
+									newPaths = getPathInProjectDirectory(invalidPaths); // try to see if the files are not in the same directory as the project
 
-									// Warn the user about the .gz and .gz.tbi files
-									if (!projectInformation.isSingleProject()) {
-										JOptionPane.showMessageDialog(null, "You are about to load a Multi Genome Project but some files have been moved.\n" +
-												"The next window will allow you to define their new location.\n" +
-												"Please keep in mind that .gz and .gz.tbi files must have the same name and location.");
-									}
+									if (getNumberOfInvalidFiles(newPaths) == 0) {
+										ProjectFiles.getInstance().setCurrentFiles(formerPaths);
+										ProjectFiles.getInstance().setNewFiles(newPaths);
+									} else {
 
-									InvalidFileDialog invalidFileDialog = new InvalidFileDialog(invalidPaths);
-									if (invalidFileDialog.showDialog(null) == InvalidFileDialog.APPROVE_OPTION) {
-										newPaths = invalidFileDialog.getCorrectedPaths();
-										if (getNumberOfInvalidFiles(newPaths) == 0) {
-											ProjectFiles.getInstance().setCurrentFiles(formerPaths);
-											ProjectFiles.getInstance().setNewFiles(newPaths);
-										} else {						// the user can valid the dialog using invalid files
+										// Warn the user about the .gz and .gz.tbi files
+										if (!projectInformation.isSingleProject()) {
+											JOptionPane.showMessageDialog(null, "You are about to load a Multi Genome Project but some files have been moved.\n" +
+													"The next window will allow you to define their new location.\n" +
+													"Please keep in mind that .gz and .gz.tbi files must have the same name and location.");
+										}
+
+										InvalidFileDialog invalidFileDialog = new InvalidFileDialog(invalidPaths);
+										if (invalidFileDialog.showDialog(null) == InvalidFileDialog.APPROVE_OPTION) {
+											newPaths = invalidFileDialog.getCorrectedPaths();
+											if (getNumberOfInvalidFiles(newPaths) == 0) {
+												ProjectFiles.getInstance().setCurrentFiles(formerPaths);
+												ProjectFiles.getInstance().setNewFiles(newPaths);
+											} else {						// the user can valid the dialog using invalid files
+												throw new Exception();
+											}
+										} else {							// the user canceled the dialog
 											throw new Exception();
 										}
-									} else {							// the user canceled the dialog
-										throw new Exception();
 									}
 								}
 							}
@@ -245,6 +252,25 @@ public final class PAInitManagers extends AbstractAction {
 			}
 		}
 		return cpt;
+	}
+
+
+	/**
+	 * @param invalidPaths
+	 * @return an array containing the specified files having the project directory as parent directory
+	 */
+	private String[] getPathInProjectDirectory(String[] invalidPaths) {
+		if (file != null) {
+			File projectDirect = file.getParentFile();
+			String[] correctedPaths = new String[invalidPaths.length];
+			for (int i = 0; i < invalidPaths.length; i++) {
+				String newPath = new File(projectDirect, new File(invalidPaths[i]).getName()).getAbsolutePath();
+				correctedPaths[i] = newPath;
+			}
+			return correctedPaths;
+		} else {
+			return invalidPaths;
+		}
 	}
 
 
@@ -333,6 +359,7 @@ public final class PAInitManagers extends AbstractAction {
 	 */
 	public void setFile(File file) {
 		this.file = file;
+		ProjectManager.getInstance().setProjectDirectory(file.getParentFile());
 	}
 
 

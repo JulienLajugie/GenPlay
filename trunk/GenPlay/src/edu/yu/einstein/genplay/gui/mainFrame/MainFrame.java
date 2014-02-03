@@ -70,6 +70,7 @@ import edu.yu.einstein.genplay.gui.action.project.PANewProject;
 import edu.yu.einstein.genplay.gui.action.project.PAOption;
 import edu.yu.einstein.genplay.gui.action.project.PARNAPosToDNAPos;
 import edu.yu.einstein.genplay.gui.action.project.PASaveProject;
+import edu.yu.einstein.genplay.gui.action.project.PASaveProjectAs;
 import edu.yu.einstein.genplay.gui.action.project.PAShowErrorReport;
 import edu.yu.einstein.genplay.gui.action.project.PAShowWarningReport;
 import edu.yu.einstein.genplay.gui.action.project.PASortFile;
@@ -396,6 +397,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		getRootPane().getActionMap().put(PANewProject.ACTION_KEY, new PANewProject());
 		getRootPane().getActionMap().put(PAOption.ACTION_KEY, new PAOption(this));
 		getRootPane().getActionMap().put(PASaveProject.ACTION_KEY, new PASaveProject());
+		getRootPane().getActionMap().put(PASaveProjectAs.ACTION_KEY, new PASaveProjectAs());
 		getRootPane().getActionMap().put(PAMoveLeft.ACTION_KEY, new PAMoveLeft());
 		getRootPane().getActionMap().put(PAMoveFarLeft.ACTION_KEY, new PAMoveFarLeft());
 		getRootPane().getActionMap().put(PAMoveRight.ACTION_KEY, new PAMoveRight());
@@ -449,6 +451,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAFullScreen.ACCELERATOR, PAFullScreen.ACTION_KEY);
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAHelp.ACCELERATOR, PAHelp.ACTION_KEY);
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PASaveProject.ACCELERATOR, PASaveProject.ACTION_KEY);
+		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PASaveProjectAs.ACCELERATOR, PASaveProjectAs.ACTION_KEY);
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PALoadProject.ACCELERATOR, PALoadProject.ACTION_KEY);
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PANewProject.ACCELERATOR, PANewProject.ACTION_KEY);
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAMoveLeft.ACCELERATOR, PAMoveLeft.ACTION_KEY);

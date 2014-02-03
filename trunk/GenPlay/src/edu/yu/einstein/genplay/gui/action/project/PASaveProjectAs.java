@@ -23,50 +23,54 @@
 package edu.yu.einstein.genplay.gui.action.project;
 
 import java.awt.Toolkit;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 
 import javax.swing.ActionMap;
+import javax.swing.JFileChooser;
 import javax.swing.KeyStroke;
+import javax.swing.filechooser.FileFilter;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.recording.ProjectRecording;
 import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
+import edu.yu.einstein.genplay.gui.fileFilter.ExtendedFileFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.GenPlayProjectFilter;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.util.Utils;
 
 /**
- * Saves the project into a file
+ * Saves the project into a specified file
  * 
  * @author Julien Lajugie
  * @author Nicolas Fourel
  */
-public class PASaveProject extends TrackListActionWorker<Boolean> {
+public class PASaveProjectAs extends TrackListActionWorker<Boolean> {
 
 	private static final long serialVersionUID = -8503082838697971220L; 			// generated ID
 	private static final String 	DESCRIPTION = "Save the current project"; 		// tooltip
 	private static final int 		MNEMONIC = KeyEvent.VK_S; 						// mnemonic key
-	private static final String 	ACTION_NAME = "Save Project"; 					// action name
-
+	private static final String 	ACTION_NAME = "Save As..."; 					// action name
+	private File 					selectedFile; 									// selected file
 
 	/**
 	 * action accelerator {@link KeyStroke}
 	 */
-	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() | InputEvent.SHIFT_DOWN_MASK);
 
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = PASaveProject.class.getName();
+	public static final String ACTION_KEY = PASaveProjectAs.class.getName();
 
 
 	/**
-	 * Creates an instance of {@link PASaveProject}
+	 * Creates an instance of {@link PASaveProjectAs}
 	 */
-	public PASaveProject() {
+	public PASaveProjectAs() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -87,13 +91,33 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 
 	@Override
 	protected Boolean processAction() throws Exception {
-		File projectDirectory = ProjectManager.getInstance().getProjectDirectory();
-		if (projectDirectory != null) {
-			String projectName = ProjectManager.getInstance().getProjectName();
-			File projectFile = Utils.addExtension(new File(projectDirectory, projectName), GenPlayProjectFilter.EXTENSIONS[0]);
-			ProjectRecording projectRecording = RecordingManager.getInstance().getProjectRecording();
-			projectRecording.setCurrentProjectPath(projectFile.getPath());
-			return projectRecording.saveProject(projectFile);
+		final JFileChooser jfc = new JFileChooser();
+		Utils.setFileChooserSelectedDirectory(jfc);
+		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		jfc.setDialogTitle("Save Project As");
+		FileFilter[] filters = { new GenPlayProjectFilter() };
+		jfc.addChoosableFileFilter(filters[0]);
+		jfc.setFileFilter(filters[0]);
+		jfc.setAcceptAllFileFilterUsed(false);
+		File f = new File(ProjectManager.getInstance().getProjectName() + "." + GenPlayProjectFilter.EXTENSIONS[0]);
+		jfc.setSelectedFile(f);
+		int returnVal = jfc.showSaveDialog(getRootPane());
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			ExtendedFileFilter selectedFilter = (ExtendedFileFilter) jfc.getFileFilter();
+			if (selectedFilter != null) {
+				selectedFile = Utils.addExtension(jfc.getSelectedFile(), selectedFilter.getExtensions()[0]);
+			} else {
+				selectedFile = Utils.addExtension(jfc.getSelectedFile(), GenPlayProjectFilter.EXTENSIONS[0]);
+			}
+			if (!Utils.cancelBecauseFileExist(getRootPane(), selectedFile)) {
+				notifyActionStart("Saving Project", 1, false);
+				String projectName = Utils.getFileNameWithoutExtension(selectedFile);
+				ProjectManager.getInstance().setProjectName(projectName);
+				ProjectManager.getInstance().setProjectDirectory(selectedFile.getParentFile());
+				ProjectRecording projectRecording = RecordingManager.getInstance().getProjectRecording();
+				projectRecording.setCurrentProjectPath(selectedFile.getPath());
+				return projectRecording.saveProject(selectedFile);
+			}
 		}
 		return false;
 	}

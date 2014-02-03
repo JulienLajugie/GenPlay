@@ -22,6 +22,7 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.core.manager.project;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -61,16 +62,17 @@ public class ProjectManager implements Serializable {
 	}
 
 
-	private	String						projectName;			// project name
-	private	String						cladeName;				// clade name
-	private	String						genomeName;				// genome name
-	private Assembly 					assembly;				// assembly name
-	private	boolean						multiGenome;			// True if it is a multi genome project, false if it is a simple genome project
-	private ScorePrecision				projectScorePrecision;	// precision of the scores of the project (16 / 32 BIT)
-	private final ProjectWindow			projectWindow;			// Instance of the Genome Window Manager
-	private final ProjectZoom 			projectZoom;			// Instance of the Zoom Manager
-	private final ProjectChromosomes	projectChromosomes;		// Instance of the Chromosome Manager
-	private MultiGenomeProject			multiGenomeProject;		// Instance of the Multi Genome Project
+	private	String						projectName;				// project name
+	private transient File				projectDirectory = null;	// directory where the project is saved
+	private	String						cladeName;					// clade name
+	private	String						genomeName;					// genome name
+	private Assembly 					assembly;					// assembly name
+	private	boolean						multiGenome;				// True if it is a multi genome project, false if it is a simple genome project
+	private ScorePrecision				projectScorePrecision;		// precision of the scores of the project (16 / 32 BIT)
+	private final ProjectWindow			projectWindow;				// Instance of the Genome Window Manager
+	private final ProjectZoom 			projectZoom;				// Instance of the Zoom Manager
+	private final ProjectChromosomes	projectChromosomes;			// Instance of the Chromosome Manager
+	private MultiGenomeProject			multiGenomeProject;			// Instance of the Multi Genome Project
 
 
 	/**
@@ -125,6 +127,14 @@ public class ProjectManager implements Serializable {
 	 */
 	public ProjectChromosomes getProjectChromosomes() {
 		return projectChromosomes;
+	}
+
+
+	/**
+	 * @return the directory where the project is saved
+	 */
+	public File getProjectDirectory() {
+		return projectDirectory;
 	}
 
 
@@ -234,6 +244,15 @@ public class ProjectManager implements Serializable {
 		if (!multiGenome) {
 			multiGenomeProject = null;
 		}
+	}
+
+
+	/**
+	 * Sets the directory where the project is saved
+	 * @param projectDirectory
+	 */
+	public void setProjectDirectory(File projectDirectory) {
+		this.projectDirectory = projectDirectory;
 	}
 
 

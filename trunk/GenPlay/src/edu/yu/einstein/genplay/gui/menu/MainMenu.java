@@ -26,7 +26,10 @@ import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.project.PAAbout;
 import edu.yu.einstein.genplay.gui.action.project.PACheckForUpdates;
 import edu.yu.einstein.genplay.gui.action.project.PAExit;
@@ -37,6 +40,7 @@ import edu.yu.einstein.genplay.gui.action.project.PANewProject;
 import edu.yu.einstein.genplay.gui.action.project.PAOption;
 import edu.yu.einstein.genplay.gui.action.project.PARNAPosToDNAPos;
 import edu.yu.einstein.genplay.gui.action.project.PASaveProject;
+import edu.yu.einstein.genplay.gui.action.project.PASaveProjectAs;
 import edu.yu.einstein.genplay.gui.action.project.PAShowErrorReport;
 import edu.yu.einstein.genplay.gui.action.project.PAShowWarningReport;
 import edu.yu.einstein.genplay.gui.action.project.PASortFile;
@@ -52,6 +56,7 @@ public final class MainMenu extends JPopupMenu {
 
 	private final JMenuItem jmiNewProject;		// menu new project
 	private final JMenuItem jmiSaveProject;		// menu save project
+	private final JMenuItem jmiSaveProjectAs;	// menu save project
 	private final JMenuItem jmiLoadProject;		// menu load project
 	private final JMenuItem jmiFullScreen;		// full screen
 	private final JMenuItem jmiWarningReport;	// warning report
@@ -74,6 +79,7 @@ public final class MainMenu extends JPopupMenu {
 		jmiNewProject = new JMenuItem(actionMap.get(PANewProject.ACTION_KEY));
 		jmiLoadProject = new JMenuItem(actionMap.get(PALoadProject.ACTION_KEY));
 		jmiSaveProject = new JMenuItem(actionMap.get(PASaveProject.ACTION_KEY));
+		jmiSaveProjectAs = new JMenuItem(actionMap.get(PASaveProjectAs.ACTION_KEY));
 		jmiFullScreen = new JMenuItem(actionMap.get(PAFullScreen.ACTION_KEY));
 		jmiWarningReport = new JMenuItem(actionMap.get(PAShowWarningReport.ACTION_KEY));
 		jmiErrorReport = new JMenuItem(actionMap.get(PAShowErrorReport.ACTION_KEY));
@@ -88,6 +94,7 @@ public final class MainMenu extends JPopupMenu {
 		add(jmiNewProject);
 		add(jmiLoadProject);
 		add(jmiSaveProject);
+		add(jmiSaveProjectAs);
 		addSeparator();
 		add(jmiFullScreen);
 		add(jmiWarningReport);
@@ -104,5 +111,19 @@ public final class MainMenu extends JPopupMenu {
 		add(jmiAbout);
 		addSeparator();
 		add(jmiExit);
+
+		addPopupMenuListener(new PopupMenuListener() {
+
+			@Override
+			public void popupMenuCanceled(PopupMenuEvent e) {}
+
+			@Override
+			public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {}
+
+			@Override
+			public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+				jmiSaveProject.setEnabled(ProjectManager.getInstance().getProjectDirectory() != null);
+			}
+		});
 	}
 }

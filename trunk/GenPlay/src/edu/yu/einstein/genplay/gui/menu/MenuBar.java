@@ -39,6 +39,7 @@ import edu.yu.einstein.genplay.gui.action.project.PANewProject;
 import edu.yu.einstein.genplay.gui.action.project.PAOption;
 import edu.yu.einstein.genplay.gui.action.project.PARNAPosToDNAPos;
 import edu.yu.einstein.genplay.gui.action.project.PASaveProject;
+import edu.yu.einstein.genplay.gui.action.project.PASaveProjectAs;
 import edu.yu.einstein.genplay.gui.action.project.PAShowErrorReport;
 import edu.yu.einstein.genplay.gui.action.project.PAShowMainFrame;
 import edu.yu.einstein.genplay.gui.action.project.PAShowWarningReport;
@@ -156,7 +157,24 @@ public class MenuBar extends JMenuBar {
 	private void createFileMenu() {
 		jmFile.add(actionMap.get(PANewProject.ACTION_KEY));
 		jmFile.add(actionMap.get(PALoadProject.ACTION_KEY));
-		jmFile.add(actionMap.get(PASaveProject.ACTION_KEY));
+		jmFile.addSeparator();
+		final JMenuItem jmiSaveProject = new JMenuItem(actionMap.get(PASaveProject.ACTION_KEY));
+		jmFile.add(jmiSaveProject);
+		jmFile.add(actionMap.get(PASaveProjectAs.ACTION_KEY));
+
+		jmFile.addMenuListener(new MenuListener() {
+			@Override
+			public void menuCanceled(MenuEvent e) {}
+
+			@Override
+			public void menuDeselected(MenuEvent e) {}
+
+			@Override
+			public void menuSelected(MenuEvent e) {
+				jmiSaveProject.setEnabled(ProjectManager.getInstance().getProjectDirectory() != null);
+			}
+		});
+
 		add(jmFile);
 	}
 

@@ -316,25 +316,34 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 				// restore the connection to the file containing the 2 bit sequences
 				twoBitData.reinitDataFile();
 			} catch (FileNotFoundException e) {
-				// if the file is not found we
 				String filePath = twoBitData.getDataFilePath();
-				// since the track can be null we need to get the project root pane
-				Component rootPane = MainFrame.getInstance().getRootPane();
-				int dialogRes = JOptionPane.showConfirmDialog(rootPane, "The file " + filePath + " cannot be found\nPlease locate the file or press cancel to delete the Sequence Track", "File Not Found", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
-				if (dialogRes == JOptionPane.OK_OPTION) {
-					File selectedFile = Utils.chooseFileToLoad(rootPane, "Load Sequence Track", Utils.getReadableSequenceFileFilters(), true);
-					if (selectedFile != null) {
-						try {
-							TwoBitSequenceList new2BitData = new TwoBitSequenceList(twoBitData, selectedFile);
-							setData(new2BitData);
-						} catch (FileNotFoundException e1) {
-							twoBitSequenceListUnserialization();
+				File projectDir = ProjectManager.getInstance().getProjectDirectory();
+				if (projectDir != null) {
+					File twoBitFile = new File(projectDir, new File(filePath).getName());
+					try {
+						TwoBitSequenceList new2BitData = new TwoBitSequenceList(twoBitData, twoBitFile);
+						setData(new2BitData);
+					} catch (FileNotFoundException e1) {
+						// if the file is not found we ask the user to specify the path
+						// since the track can be null we need to get the project root pane
+						Component rootPane = MainFrame.getInstance().getRootPane();
+						int dialogRes = JOptionPane.showConfirmDialog(rootPane, "The file " + filePath + " cannot be found\nPlease locate the file or press cancel to delete the Sequence Track", "File Not Found", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+						if (dialogRes == JOptionPane.OK_OPTION) {
+							File selectedFile = Utils.chooseFileToLoad(rootPane, "Load Sequence Track", Utils.getReadableSequenceFileFilters(), true);
+							if (selectedFile != null) {
+								try {
+									TwoBitSequenceList new2BitData = new TwoBitSequenceList(twoBitData, selectedFile);
+									setData(new2BitData);
+								} catch (FileNotFoundException e2) {
+									twoBitSequenceListUnserialization();
+								}
+							} else {
+								twoBitSequenceListUnserialization();
+							}
+						} else {
+							setData(null);
 						}
-					} else {
-						twoBitSequenceListUnserialization();
 					}
-				} else {
-					setData(null);
 				}
 			}
 		}

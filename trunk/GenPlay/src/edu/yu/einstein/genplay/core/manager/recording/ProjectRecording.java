@@ -46,6 +46,7 @@ import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.trackList.TrackListPanel;
+import edu.yu.einstein.genplay.util.Utils;
 
 /**
  * This class manages the saving and loading processes of the current project.
@@ -216,6 +217,10 @@ public class ProjectRecording {
 	public void initProjectManager() throws ClassNotFoundException, IOException {
 		if (ois != null) {
 			ois.readObject(); // read the project manager
+			// set the project name to match the file name
+			if (fileToLoad != null) {
+				ProjectManager.getInstance().setProjectName(Utils.getFileNameWithoutExtension(new File(fileToLoad.getName())));
+			}
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
 				mgManagerReadyToLoad = true;
 				trackListReadyToLoad = false;
