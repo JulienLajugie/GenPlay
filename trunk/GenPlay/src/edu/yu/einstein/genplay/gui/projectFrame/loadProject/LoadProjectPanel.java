@@ -74,7 +74,6 @@ public class LoadProjectPanel extends JPanel {
 		setPreferredSize(getSize());
 		setMinimumSize(getSize());
 		setMaximumSize(getSize());
-
 		//Layout manager
 		GridBagLayout grid = new GridBagLayout();
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -85,14 +84,17 @@ public class LoadProjectPanel extends JPanel {
 		gbc.gridy = 0;
 		gbc.anchor = GridBagConstraints.PAGE_START;
 		gbc.weightx = 1;
+		gbc.weighty = 0;
+		gbc.fill = GridBagConstraints.VERTICAL;
 		gbc.insets = new Insets(0, 0, 0, 0);
 		add(projectInformationPanel, gbc);
 
 		//projectList
 		gbc.gridx = 0;
 		gbc.gridy = 1;
+		gbc.weighty = 1;
 		gbc.anchor = GridBagConstraints.PAGE_START;
-		gbc.insets = new Insets(0, 70, 0, 0);
+		gbc.insets = new Insets(0, 00, 0, 0);
 		add(projectListPanel, gbc);
 
 		//Misc

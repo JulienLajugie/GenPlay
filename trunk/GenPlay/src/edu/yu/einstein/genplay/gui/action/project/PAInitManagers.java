@@ -118,9 +118,7 @@ public final class PAInitManagers extends AbstractAction {
 				ExceptionManager.getInstance().caughtException(e);
 			}
 
-
 			if (error == null) {
-
 				// Reads the project information object
 				try {
 					projectRecording.initProjectInformation();
@@ -154,7 +152,6 @@ public final class PAInitManagers extends AbstractAction {
 							if (formerPaths != null) {									// if the project is file dependent
 								invalidPaths = getInvalidPath(formerPaths);				// we get the invalid files
 								if (hasInvalidFiles()) {		// if some invalid files exist,
-
 									newPaths = getPathInProjectDirectory(invalidPaths); // try to see if the files are not in the same directory as the project
 
 									if (getNumberOfInvalidFiles(newPaths) == 0) {

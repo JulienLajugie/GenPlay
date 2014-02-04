@@ -170,11 +170,14 @@ public final class Utils {
 		setFileChooserSelectedDirectory(jfc);
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		jfc.setDialogTitle(title);
-		for (FileFilter currentFilter: choosableFileFilters) {
-			jfc.addChoosableFileFilter(currentFilter);
+		if (choosableFileFilters != null) {
+			for (FileFilter currentFilter: choosableFileFilters) {
+				jfc.addChoosableFileFilter(currentFilter);
+			}
+			jfc.setFileFilter(choosableFileFilters[0]);
 		}
 		if (allFiles) {
-			jfc.setFileFilter(jfc.getAcceptAllFileFilter());
+			jfc.addChoosableFileFilter(jfc.getAcceptAllFileFilter());
 		}
 		int returnVal = jfc.showOpenDialog(parentComponent);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {

@@ -32,6 +32,7 @@ import javax.swing.event.MenuListener;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.project.PAAbout;
+import edu.yu.einstein.genplay.gui.action.project.PAExit;
 import edu.yu.einstein.genplay.gui.action.project.PAFullScreen;
 import edu.yu.einstein.genplay.gui.action.project.PAHelp;
 import edu.yu.einstein.genplay.gui.action.project.PALoadProject;
@@ -161,6 +162,10 @@ public class MenuBar extends JMenuBar {
 		final JMenuItem jmiSaveProject = new JMenuItem(actionMap.get(PASaveProject.ACTION_KEY));
 		jmFile.add(jmiSaveProject);
 		jmFile.add(actionMap.get(PASaveProjectAs.ACTION_KEY));
+		if(!Utils.isMacOS()) {
+			jmFile.addSeparator();
+			jmFile.add(actionMap.get(PAExit.ACTION_KEY));
+		}
 
 		jmFile.addMenuListener(new MenuListener() {
 			@Override

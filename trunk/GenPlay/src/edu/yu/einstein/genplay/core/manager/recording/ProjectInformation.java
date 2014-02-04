@@ -146,6 +146,7 @@ public class ProjectInformation implements Serializable {
 		projectDate = (String) in.readObject();
 		projectTrackNumber = (String) in.readObject();
 		int numberOfFiles = in.readInt();
+		// System.out.println("ProjectInformation.readObject(): " + projectName + ":" + numberOfFiles);
 		if (numberOfFiles > 0) {
 			projectFiles = new String[numberOfFiles];
 			for (int i = 0; i < numberOfFiles; i++) {
@@ -264,7 +265,9 @@ public class ProjectInformation implements Serializable {
 		out.writeObject(projectTrackNumber);
 		if (projectFiles == null) {
 			out.writeInt(0);
+			// System.out.println("ProjectInformation.writeObject(): " + projectName + ":" + 0);
 		} else {
+			// System.out.println("ProjectInformation.writeObject(): " + projectName + ":" + projectFiles.length);
 			out.writeInt(projectFiles.length);
 			for (String path: projectFiles) {
 				out.writeObject(path);

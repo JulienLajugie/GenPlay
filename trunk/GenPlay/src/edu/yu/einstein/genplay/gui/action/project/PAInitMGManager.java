@@ -87,7 +87,7 @@ public class PAInitMGManager extends TrackListActionWorker<Void> {
 	@Override
 	protected Void processAction() throws Exception {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			notifyActionStart("Load Multi Genome information", 1, false);
+			notifyActionStart("Loading Multi-Genome Information", 1, false);
 
 			ProjectRecording projectRecording = RecordingManager.getInstance().getProjectRecording();
 			try {

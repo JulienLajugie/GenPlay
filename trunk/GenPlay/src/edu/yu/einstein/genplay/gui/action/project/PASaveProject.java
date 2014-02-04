@@ -48,7 +48,7 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 	private static final long serialVersionUID = -8503082838697971220L; 			// generated ID
 	private static final String 	DESCRIPTION = "Save the current project"; 		// tooltip
 	private static final int 		MNEMONIC = KeyEvent.VK_S; 						// mnemonic key
-	private static final String 	ACTION_NAME = "Save Project"; 					// action name
+	private static final String 	ACTION_NAME = "Save";		 					// action name
 
 
 	/**
@@ -89,6 +89,7 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 	protected Boolean processAction() throws Exception {
 		File projectDirectory = ProjectManager.getInstance().getProjectDirectory();
 		if (projectDirectory != null) {
+			notifyActionStart("Saving Project", 1, false);
 			String projectName = ProjectManager.getInstance().getProjectName();
 			File projectFile = Utils.addExtension(new File(projectDirectory, projectName), GenPlayProjectFilter.EXTENSIONS[0]);
 			ProjectRecording projectRecording = RecordingManager.getInstance().getProjectRecording();

@@ -47,7 +47,7 @@ class ProjectChooserPanel extends JPanel {
 	private static final long serialVersionUID = 8028393644918726073L; //generated ID
 
 	private final ProjectListPanel 	projectListPanel;	// Panel containing the list of projects
-	private final JTextField 			path;				// The path of the selected project
+	private final JTextField 		path;				// The path of the selected project
 
 
 	/**

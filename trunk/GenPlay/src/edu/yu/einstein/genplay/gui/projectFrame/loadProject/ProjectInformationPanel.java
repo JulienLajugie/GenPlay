@@ -73,9 +73,7 @@ class ProjectInformationPanel extends JPanel {
 		setBorder(BorderFactory.createTitledBorder("Information"));
 
 		//Size
-		setSize(PANEL_DIM);
 		setPreferredSize(PANEL_DIM);
-		setMinimumSize(PANEL_DIM);
 
 		//Fields name
 		jlProjectName = new JLabel("Name");
