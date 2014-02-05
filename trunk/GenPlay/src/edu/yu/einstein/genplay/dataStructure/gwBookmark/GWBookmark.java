@@ -47,6 +47,10 @@ public class GWBookmark implements Serializable {
 	/** Bookmarked position on the genome */
 	private final GenomeWindow 	genomeWindow;
 
+	/** Name of the genome the bookmark refers to. Only used for multi-genome projects.
+	 * Null means that the bookmark refers to the meta=genome */
+	private final String genomeName;
+
 
 	/**
 	 * Creates an instance of {@link GWBookmark}
@@ -54,8 +58,21 @@ public class GWBookmark implements Serializable {
 	 * @param genomeWindow the genome window to bookmark
 	 */
 	public GWBookmark(String description, GenomeWindow genomeWindow) {
+		this(description, genomeWindow, null);
+	}
+
+
+	/**
+	 * Creates an instance of {@link GWBookmark}
+	 * @param description description of the bookmark
+	 * @param genomeWindow the genome window to bookmark
+	 * @param genomeName name of the genome the bookmark refers to. Only used for multi-genome projects.
+	 * Null means that the bookmark refers to the meta=genome
+	 */
+	public GWBookmark(String description, GenomeWindow genomeWindow, String genomeName) {
 		this.description = description;
 		this.genomeWindow = genomeWindow;
+		this.genomeName = genomeName;
 	}
 
 
@@ -64,6 +81,15 @@ public class GWBookmark implements Serializable {
 	 */
 	public String getDescription() {
 		return description;
+	}
+
+
+	/**
+	 * @return the name of the genome the bookmark refers to. Only used for multi-genome projects.
+	 * Null means that the bookmark refers to the meta=genome
+	 */
+	public String getGenomeName() {
+		return genomeName;
 	}
 
 
@@ -86,6 +112,12 @@ public class GWBookmark implements Serializable {
 		in.readInt();
 		// read the final fields
 		in.defaultReadObject();
+	}
+
+
+	@Override
+	public String toString() {
+		return genomeWindow.toString() + " (" + description + ")";
 	}
 
 

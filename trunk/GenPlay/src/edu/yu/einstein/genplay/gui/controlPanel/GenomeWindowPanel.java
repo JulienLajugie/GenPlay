@@ -27,15 +27,15 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
@@ -46,10 +46,13 @@ import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.enums.CoordinateSystemType;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.gwBookmark.GWBookmark;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
+import edu.yu.einstein.genplay.gui.action.project.PABookmarkCurrentPosition;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
+import edu.yu.einstein.genplay.util.Images;
 
 
 /**
@@ -60,9 +63,11 @@ import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 
 	private static final long serialVersionUID = 8279801687428218652L;  // generated ID
-	private final JTextField 						jtfGenomeWindow;	// text field for the GenomeWindow
+	static final String DELETE_BOOKMARK_ACTION_KEY = "delete selected bookmark";
+	private final JComboBox 						jcbGenomeWindow;	// combobox the GenomeWindow
 	private final JButton 							jbJump;				// button jump to position
-	private final JComboBox							jcbGenomeSelection;
+	private final JComboBox							jcbGenomeSelection;	// combobox to select a genome in multi-genome project
+	private final JButton							jbBookmark;			// button to add current position to bookmark
 	private final ProjectWindow						projectWindow;		// Instance of the Genome Window Manager
 
 
@@ -74,16 +79,8 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 		projectWindow = ProjectManager.getInstance().getProjectWindow();
 
 		// Create the genome window (positions) text field
-		jtfGenomeWindow = new JTextField(20);
-		jtfGenomeWindow.setText(projectWindow.getGenomeWindow().toString());
-		jtfGenomeWindow.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					updateGenomeWindow();
-				}
-			}
-		});
+		jcbGenomeWindow = new JComboBox();
+		initGenomeWindowCombo();
 
 		// Create the "jump" button
 		jbJump = new JButton("jump");
@@ -114,6 +111,11 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 			jcbGenomeSelection = null;
 		}
 
+		jbBookmark = new JButton(new PABookmarkCurrentPosition(getRootPane()));
+		jbBookmark.setBorderPainted(false);
+		jbBookmark.setHideActionText(true);
+		jbBookmark.setRolloverIcon(new ImageIcon(Images.getBookmarkRolledOverImage()));
+
 		// Add the components
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -125,21 +127,29 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 		// Add the the genome window text field
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		add(jtfGenomeWindow, gbc);
-
-		// Add the jump button
-		gbc.fill = GridBagConstraints.NONE;
-		gbc.gridy = 1;
-		gbc.weightx = 0;
-		add(jbJump, gbc);
+		add(jcbGenomeWindow, gbc);
 
 		// Add the genome coordinate selector
 		if (jcbGenomeSelection != null) {
 			gbc.fill = GridBagConstraints.HORIZONTAL;
-			gbc.gridx = 1;
+			gbc.gridx++;
 			gbc.gridy = 0;
 			add(jcbGenomeSelection, gbc);
 		}
+
+		gbc.fill = GridBagConstraints.NONE;
+		gbc.gridx++;
+		gbc.gridy = 0;
+		gbc.weightx = 0;
+		add(jbBookmark, gbc);
+
+		// Add the jump button
+		gbc.fill = GridBagConstraints.NONE;
+		gbc.anchor = GridBagConstraints.LINE_END;
+		gbc.gridx--;
+		gbc.gridy = 1;
+		gbc.gridwidth = 2;
+		add(jbJump, gbc);
 	}
 
 
@@ -153,7 +163,7 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 	 * @return the newly defined genome window
 	 */
 	private SimpleGenomeWindow getGenomeWindow () {
-		GenomeWindowInputHandler handler = new GenomeWindowInputHandler(jtfGenomeWindow.getText());
+		GenomeWindowInputHandler handler = new GenomeWindowInputHandler((String) jcbGenomeWindow.getSelectedItem());
 		SimpleGenomeWindow newGenomeWindow = handler.getGenomeWindow();
 		if (newGenomeWindow != null) {
 			String outputGenome = CoordinateSystemType.METAGENOME.toString();
@@ -168,10 +178,69 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 
 
 	/**
+	 * @return the button to jump on a genomic position
+	 */
+	public JButton getJumpButton() {
+		return jbJump;
+	}
+
+
+	/**
+	 * Initialized the combo box for the genome window address
+	 */
+	public void initGenomeWindowCombo() {
+		jcbGenomeWindow.setEditable(true);
+		jcbGenomeWindow.setPrototypeDisplayValue(new GWBookmark(projectWindow.getGenomeWindow().toString(), projectWindow.getGenomeWindow()));
+		jcbGenomeWindow.setSelectedItem(projectWindow.getGenomeWindow().toString());
+		jcbGenomeWindow.addPopupMenuListener(new PopupMenuListener() {
+
+			@Override
+			public void popupMenuCanceled(PopupMenuEvent e) {
+				jcbGenomeWindow.removeAllItems();
+				jcbGenomeWindow.setSelectedItem(projectWindow.getGenomeWindow().toString());
+			}
+
+			@Override
+			public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+				jcbGenomeWindow.removeAllItems();
+				jcbGenomeWindow.setSelectedItem(projectWindow.getGenomeWindow().toString());
+			}
+
+			@Override
+			public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+				List<GWBookmark> bookmarks = ProjectManager.getInstance().getProjectBookmarks();
+				for (GWBookmark currentBookmark: bookmarks) {
+					jcbGenomeWindow.addItem(currentBookmark);
+				}
+			}
+		});
+
+		jcbGenomeWindow.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (jcbGenomeWindow.getSelectedItem() instanceof GWBookmark) {
+					GWBookmark selectedBookmark = (GWBookmark) jcbGenomeWindow.getSelectedItem();
+					if ((e.getModifiers() & ActionEvent.ALT_MASK) != 0) {
+						ProjectManager.getInstance().getProjectBookmarks().remove(selectedBookmark);
+					} else {
+						jcbGenomeWindow.setSelectedItem(selectedBookmark.getGenomeWindow().toString());
+						if (jcbGenomeSelection != null) {
+							setSelectedGenomeName(selectedBookmark.getGenomeName());
+						}
+						updateGenomeWindow();
+					}
+
+				}
+			}
+		});
+	}
+
+
+	/**
 	 * Locks the genome window panel
 	 */
 	public void lock() {
-		jtfGenomeWindow.setEnabled(false);
+		jcbGenomeWindow.setEnabled(false);
 	}
 
 
@@ -212,7 +281,7 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 	 * Unlocks the genome window panel
 	 */
 	public void unlock() {
-		jtfGenomeWindow.setEnabled(true);
+		jcbGenomeWindow.setEnabled(true);
 	}
 
 
@@ -249,7 +318,6 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 			int positionStop = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, inputAlleleType, genomeWindow.getStop(), currentChromosome, genomeName);
 			text = currentChromosome.getName() + ":" + positionStart + "-" + positionStop;
 		}
-		jtfGenomeWindow.setText(text);
+		jcbGenomeWindow.setSelectedItem(text);
 	}
-
 }

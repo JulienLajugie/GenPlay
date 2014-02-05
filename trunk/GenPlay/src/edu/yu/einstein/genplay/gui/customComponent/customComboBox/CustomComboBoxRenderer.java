@@ -58,7 +58,7 @@ import edu.yu.einstein.genplay.util.Images;
 public class CustomComboBoxRenderer implements ListCellRenderer, CustomComboBoxEventsGenerator {
 
 	private final 	List<CustomComboBoxListener> 	listenerList;		// list of GenomeWindowListener
-	private final 		CustomComboBoxRenderer 			instance;			// instance of the class, needed for the CustomComboBoxEventsGenerator.
+	private final 	CustomComboBoxRenderer 			instance;			// instance of the class, needed for the CustomComboBoxEventsGenerator.
 	private 		int 							x;					// x position of the mouse
 
 	/**

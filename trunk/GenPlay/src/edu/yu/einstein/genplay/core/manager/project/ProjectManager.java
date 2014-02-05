@@ -27,12 +27,14 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.genome.Assembly;
+import edu.yu.einstein.genplay.dataStructure.gwBookmark.GWBookmark;
 import edu.yu.einstein.genplay.dataStructure.list.primitiveList.PrimitiveList;
 
 
@@ -43,7 +45,7 @@ import edu.yu.einstein.genplay.dataStructure.list.primitiveList.PrimitiveList;
 public class ProjectManager implements Serializable {
 
 	private static final long serialVersionUID = -8900126340763056646L; // generated ID
-	private static final int  SAVED_FORMAT_VERSION_NUMBER = 1;			// saved format version
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 2;			// saved format version
 	private static	ProjectManager	instance = null;					// unique instance of the singleton
 
 	/**
@@ -67,22 +69,24 @@ public class ProjectManager implements Serializable {
 	private	String						cladeName;					// clade name
 	private	String						genomeName;					// genome name
 	private Assembly 					assembly;					// assembly name
-	private	boolean						multiGenome;				// True if it is a multi genome project, false if it is a simple genome project
+	private	boolean						isMultiGenome;				// True if it is a multi genome project, false if it is a simple genome project
 	private ScorePrecision				projectScorePrecision;		// precision of the scores of the project (16 / 32 BIT)
 	private final ProjectWindow			projectWindow;				// Instance of the Genome Window Manager
 	private final ProjectZoom 			projectZoom;				// Instance of the Zoom Manager
 	private final ProjectChromosomes	projectChromosomes;			// Instance of the Chromosome Manager
 	private MultiGenomeProject			multiGenomeProject;			// Instance of the Multi Genome Project
+	private List<GWBookmark> 			projectBookmarks;			// Genome windows bookmarked for the project
 
 
 	/**
 	 * Private constructor of the singleton. Creates an instance of a {@link ProjectManager}.
 	 */
 	private ProjectManager() {
-		multiGenome = false;
+		isMultiGenome = false;
 		projectZoom = new ProjectZoom();
 		projectChromosomes = new ProjectChromosomes();
 		projectWindow = new ProjectWindow();
+		projectBookmarks = new ArrayList<GWBookmark>();
 	}
 
 
@@ -114,11 +118,19 @@ public class ProjectManager implements Serializable {
 	 * @return the genomeSynchroniser
 	 */
 	public MultiGenomeProject getMultiGenomeProject() {
-		if (multiGenome && (multiGenomeProject == null)) {
+		if (isMultiGenome && (multiGenomeProject == null)) {
 			multiGenomeProject = new MultiGenomeProject();
 			FormattedMultiGenomeName.REFERENCE_GENOME_NAME = assembly.getDisplayName();
 		}
 		return multiGenomeProject;
+	}
+
+
+	/**
+	 * @return the list of the genome windows bookmarked
+	 */
+	public List<GWBookmark> getProjectBookmarks() {
+		return projectBookmarks;
 	}
 
 
@@ -174,7 +186,7 @@ public class ProjectManager implements Serializable {
 	 * @return the multiGenomeProject
 	 */
 	public boolean isMultiGenomeProject() {
-		return multiGenome;
+		return isMultiGenome;
 	}
 
 
@@ -196,6 +208,7 @@ public class ProjectManager implements Serializable {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
+	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		getInstance();
 		int savedVersion = in.readInt();
@@ -204,11 +217,16 @@ public class ProjectManager implements Serializable {
 		instance.setGenomeName((String) in.readObject());
 		instance.setAssembly((Assembly) in.readObject());
 		instance.setMultiGenomeProject(in.readBoolean());
-		if (savedVersion > 0) {
+		if (savedVersion >= 1) {
 			instance.setProjectScorePrecision((ScorePrecision) in.readObject());
 		}
 		instance.getProjectWindow().setProjectWindow((ProjectWindow) in.readObject());
 		instance.getProjectChromosomes().setProjectChromosomes((ProjectChromosomes) in.readObject());
+		if (savedVersion >= 2) {
+			instance.projectBookmarks = (List<GWBookmark>) in.readObject();
+		} else {
+			instance.projectBookmarks = new ArrayList<GWBookmark>();
+		}
 	}
 
 
@@ -240,7 +258,7 @@ public class ProjectManager implements Serializable {
 	 * @param multiGenome the multiGenomeProject to set
 	 */
 	public void setMultiGenomeProject(boolean multiGenome) {
-		this.multiGenome = multiGenome;
+		isMultiGenome = multiGenome;
 		if (!multiGenome) {
 			multiGenomeProject = null;
 		}
@@ -294,9 +312,10 @@ public class ProjectManager implements Serializable {
 		out.writeObject(cladeName);
 		out.writeObject(genomeName);
 		out.writeObject(assembly);
-		out.writeBoolean(multiGenome);
+		out.writeBoolean(isMultiGenome);
 		out.writeObject(projectScorePrecision);
 		out.writeObject(projectWindow);
 		out.writeObject(projectChromosomes);
+		out.writeObject(projectBookmarks);
 	}
 }

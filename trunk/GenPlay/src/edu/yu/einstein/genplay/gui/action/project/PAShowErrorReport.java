@@ -39,7 +39,7 @@ import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 public final class PAShowErrorReport extends AbstractAction {
 
 	private static final long serialVersionUID = 5351986258754898595L;		// generated ID
-	private static final String 	ACTION_NAME = "Error Report"; 			// action name
+	private static final String 	ACTION_NAME = "Show Error Report"; 		// action name
 	private static final String 	DESCRIPTION = "Show the error report"; 	// tooltip
 
 

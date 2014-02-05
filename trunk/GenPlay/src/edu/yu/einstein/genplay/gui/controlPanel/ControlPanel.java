@@ -27,6 +27,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.List;
 
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
@@ -102,6 +103,14 @@ public final class ControlPanel extends JPanel {
 
 		// register the control panel to the project window manager so the control panel can be notified when the project window changes
 		registerToGenomeWindow();
+	}
+
+
+	/**
+	 * @return the button to jump on a genomic position
+	 */
+	public JButton getJumpButton() {
+		return genomeWindowPanel.getJumpButton();
 	}
 
 

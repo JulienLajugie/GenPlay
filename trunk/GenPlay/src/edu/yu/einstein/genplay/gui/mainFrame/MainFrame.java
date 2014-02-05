@@ -56,6 +56,7 @@ import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.OSXIntegration.OSXHandler;
 import edu.yu.einstein.genplay.gui.action.multiGenome.properties.MGARefresh;
 import edu.yu.einstein.genplay.gui.action.project.PAAbout;
+import edu.yu.einstein.genplay.gui.action.project.PABookmarkCurrentPosition;
 import edu.yu.einstein.genplay.gui.action.project.PACheckForUpdates;
 import edu.yu.einstein.genplay.gui.action.project.PACopyCurrentPosition;
 import edu.yu.einstein.genplay.gui.action.project.PAExit;
@@ -275,6 +276,15 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 			loader.setSkipFileSelection(true);
 			loader.actionPerformed(null);
 		}
+
+		// set the jump button as the default button pressed when enter is pressed
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowActivated(WindowEvent e) {
+				getRootPane().setDefaultButton(controlPanel.getJumpButton());
+				super.windowActivated(e);
+			}
+		});
 	}
 
 
@@ -408,6 +418,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		getRootPane().getActionMap().put(PAShowWarningReport.ACTION_KEY, new PAShowWarningReport());
 		getRootPane().getActionMap().put(PAShowErrorReport.ACTION_KEY, new PAShowErrorReport());
 		getRootPane().getActionMap().put(PACopyCurrentPosition.ACTION_KEY, new PACopyCurrentPosition());
+		getRootPane().getActionMap().put(PABookmarkCurrentPosition.ACTION_KEY, new PACopyCurrentPosition());
 		// Add track actions to action map
 		getRootPane().getActionMap().put(TAAddLayer.ACTION_KEY, new TAAddLayer());
 		getRootPane().getActionMap().put(TAAddVariantLayer.ACTION_KEY, new TAAddVariantLayer());
@@ -461,6 +472,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAZoomIn.ACCELERATOR, PAZoomIn.ACTION_KEY);
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAZoomOut.ACCELERATOR, PAZoomOut.ACTION_KEY);
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PACopyCurrentPosition.ACCELERATOR, PACopyCurrentPosition.ACTION_KEY);
+		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PABookmarkCurrentPosition.ACCELERATOR, PABookmarkCurrentPosition.ACTION_KEY);
 	}
 
 

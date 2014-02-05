@@ -38,7 +38,7 @@ import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 public final class PAShowWarningReport extends AbstractAction {
 
 	private static final long serialVersionUID = -2922039476574345222L;			// generated ID
-	private static final String 	ACTION_NAME = "Warning Report"; 			// action name
+	private static final String 	ACTION_NAME = "Show Warning Report"; 		// action name
 	private static final String 	DESCRIPTION = "Show the warning report"; 	// tooltip
 
 

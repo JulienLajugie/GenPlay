@@ -38,7 +38,7 @@ import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 public final class PAShowMainFrame extends AbstractAction {
 
 	private static final long serialVersionUID = 6624658434614757750L; 		// generated ID
-	private static final String 	ACTION_NAME = "Main Window"; 			// action name
+	private static final String 	ACTION_NAME = "Show Main Window"; 		// action name
 	private static final String 	DESCRIPTION = "Show the main window"; 	// tooltip
 
 

@@ -105,7 +105,7 @@ public class MenuBar extends JMenuBar {
 		createUtiliesMenu();
 
 		jmWindow = new JMenu("Window");
-		createViewMenu();
+		createWindowMenu();
 
 		jmHelp = new JMenu("Help");
 		createHelpMenu();
@@ -287,6 +287,9 @@ public class MenuBar extends JMenuBar {
 	private void createUtiliesMenu() {
 		jmUtilities.add(actionMap.get(PASortFile.ACTION_KEY));
 		jmUtilities.add(actionMap.get(PARNAPosToDNAPos.ACTION_KEY));
+		jmUtilities.addSeparator();
+		jmUtilities.add(actionMap.get(PAShowWarningReport.ACTION_KEY));
+		jmUtilities.add(actionMap.get(PAShowErrorReport.ACTION_KEY));
 		add(jmUtilities);
 	}
 
@@ -294,10 +297,13 @@ public class MenuBar extends JMenuBar {
 	/**
 	 * Creates View menu
 	 */
-	private void createViewMenu() {
-		final JCheckBoxMenuItem jcbmiMainFrame = new JCheckBoxMenuItem(new PAShowMainFrame());
-		final JCheckBoxMenuItem jcbmiWarningReport = new JCheckBoxMenuItem(new PAShowWarningReport());;
-		final JCheckBoxMenuItem jcbmiExceptionReport = new JCheckBoxMenuItem(new PAShowErrorReport());;
+	private void createWindowMenu() {
+		final JCheckBoxMenuItem jcbmiMainFrame = new JCheckBoxMenuItem(actionMap.get(PAShowMainFrame.ACTION_KEY));
+		jcbmiMainFrame.setText("Main Frame");
+		final JCheckBoxMenuItem jcbmiWarningReport = new JCheckBoxMenuItem(actionMap.get(PAShowWarningReport.ACTION_KEY));
+		jcbmiWarningReport.setText("Warning Report");
+		final JCheckBoxMenuItem jcbmiExceptionReport = new JCheckBoxMenuItem(actionMap.get(PAShowErrorReport.ACTION_KEY));
+		jcbmiExceptionReport.setText("Error Report");
 
 		jmWindow.add(actionMap.get(PAFullScreen.ACTION_KEY));
 		jmWindow.addSeparator();

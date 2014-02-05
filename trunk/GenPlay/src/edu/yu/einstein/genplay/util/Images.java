@@ -35,37 +35,40 @@ public class Images {
 
 	private static final ClassLoader cl = MainFrame.class.getClassLoader();
 
-	//	private static final String APPLICATION_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/images/icon.png";						// Path of the application image
-	private static final String APPLICATION_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/images/GenPlay64x64.png";					// Path of the application image
-	private static final String BANNER_IMAGE_PATH		= "edu/yu/einstein/genplay/resource/images/genplay_banner_447x91.png";		// Path of the banner image
-	private static final String TOOLS_IMAGE_PATH 		= "edu/yu/einstein/genplay/resource/images/tools.png";						// Path of the tools image
-	private static final String ADD_IMAGE_PATH 			= "edu/yu/einstein/genplay/resource/images/add_entry_50x50.png"; 			// Path of the add entry image
-	private static final String EDIT_IMAGE_PATH 		= "edu/yu/einstein/genplay/resource/images/edit_entry_50x50.png"; 			// Path of the edit entry image
-	private static final String DELETE_IMAGE_PATH 		= "edu/yu/einstein/genplay/resource/images/delete_entry_50x50.png"; 		// Path of the delete entry image
-	private static final String MOUSE_IMAGE_PATH		= "edu/yu/einstein/genplay/resource/images/mouse_right_click_50x50.png"; 	// Path of the mouse image
-	private static final String NEXT_IMAGE_PATH 		= "edu/yu/einstein/genplay/resource/images/next_icon_256x256.png"; 			// Path of the next image
-	private static final String PREVIOUS_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/images/previous_icon_256x256.png"; 		// Path of the previous image
-	private static final String ACTUALIZE_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/images/actualize15x15.png";				// Path of the actualize image
-	private static final String SUPERIOR_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/images/superior8x6.png";				// Path of the superior sign
-	private static final String INFERIOR_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/images/inferior8x6.png";				// Path of the inferior sign
-	private static final String DNA_IMAGE_PATH 			= "edu/yu/einstein/genplay/resource/images/dna_25x17.png";					// Path of the DNA sign
-	private static final String LOADING_IMAGE_PATH 		= "edu/yu/einstein/genplay/resource/images/loading_anim.gif";				// Path of the loading animated GIF
-	private static final String HELP_IMAGE_PATH 		= "edu/yu/einstein/genplay/resource/images/help.png";						// Path of the help image
-	private static Image applicationImage 	= null;		// Application image
-	private static Image bannerImage		= null;		// Banner image
-	private static Image toolsImage 		= null;		// Tools image
-	private static Image addImage 			= null;		// Add image
-	private static Image editImage			= null;		// Edit image
-	private static Image deleteImage		= null;		// Delete image
-	private static Image mouseImage 		= null;		// Mouse image
-	private static Image nextImage 			= null;		// Next image
-	private static Image previousImage 		= null;		// Previous image
-	private static Image actualizeImage 	= null;		// Actualize image
-	private static Image superiorImage 		= null;		// Superior image
-	private static Image inferiorImage 		= null;		// Inferior image
-	private static Image dnaImage 			= null;		// DNA image
-	private static Image loadingImage		= null;		// image showed while tracks are loading
-	private static Image helpImage			= null;		// help image
+	private static final String APPLICATION_IMAGE_PATH 			= "edu/yu/einstein/genplay/resource/images/GenPlay64x64.png";				// Path of the application image
+	private static final String BANNER_IMAGE_PATH				= "edu/yu/einstein/genplay/resource/images/genplay_banner_447x91.png";		// Path of the banner image
+	private static final String TOOLS_IMAGE_PATH 				= "edu/yu/einstein/genplay/resource/images/tools.png";						// Path of the tools image
+	private static final String ADD_IMAGE_PATH 					= "edu/yu/einstein/genplay/resource/images/add_entry_50x50.png"; 			// Path of the add entry image
+	private static final String EDIT_IMAGE_PATH 				= "edu/yu/einstein/genplay/resource/images/edit_entry_50x50.png"; 			// Path of the edit entry image
+	private static final String DELETE_IMAGE_PATH 				= "edu/yu/einstein/genplay/resource/images/delete_entry_50x50.png"; 		// Path of the delete entry image
+	private static final String MOUSE_IMAGE_PATH				= "edu/yu/einstein/genplay/resource/images/mouse_right_click_50x50.png"; 	// Path of the mouse image
+	private static final String NEXT_IMAGE_PATH 				= "edu/yu/einstein/genplay/resource/images/next_icon_256x256.png"; 			// Path of the next image
+	private static final String PREVIOUS_IMAGE_PATH 			= "edu/yu/einstein/genplay/resource/images/previous_icon_256x256.png"; 		// Path of the previous image
+	private static final String ACTUALIZE_IMAGE_PATH 			= "edu/yu/einstein/genplay/resource/images/actualize15x15.png";				// Path of the actualize image
+	private static final String SUPERIOR_IMAGE_PATH 			= "edu/yu/einstein/genplay/resource/images/superior8x6.png";				// Path of the superior sign
+	private static final String INFERIOR_IMAGE_PATH 			= "edu/yu/einstein/genplay/resource/images/inferior8x6.png";				// Path of the inferior sign
+	private static final String DNA_IMAGE_PATH 					= "edu/yu/einstein/genplay/resource/images/dna_25x17.png";					// Path of the DNA sign
+	private static final String LOADING_IMAGE_PATH 				= "edu/yu/einstein/genplay/resource/images/loading_anim.gif";				// Path of the loading animated GIF
+	private static final String HELP_IMAGE_PATH 				= "edu/yu/einstein/genplay/resource/images/help.png";						// Path of the help image
+	private static final String BOOKMARK_IMAGE_PATH 			= "edu/yu/einstein/genplay/resource/images/bookmark_24x24.png";				// Path of the bookmark image
+	private static final String BOOKMARK_ROLLEDOVER_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/images/bookmark_rolled_over_24x24.png";	// Path of the bookmark image
+	private static Image applicationImage		 	= null;		// Application image
+	private static Image bannerImage				= null;		// Banner image
+	private static Image toolsImage 				= null;		// Tools image
+	private static Image addImage 					= null;		// Add image
+	private static Image editImage					= null;		// Edit image
+	private static Image deleteImage				= null;		// Delete image
+	private static Image mouseImage 				= null;		// Mouse image
+	private static Image nextImage 					= null;		// Next image
+	private static Image previousImage 				= null;		// Previous image
+	private static Image actualizeImage 			= null;		// Actualize image
+	private static Image superiorImage 				= null;		// Superior image
+	private static Image inferiorImage 				= null;		// Inferior image
+	private static Image dnaImage 					= null;		// DNA image
+	private static Image loadingImage				= null;		// image showed while tracks are loading
+	private static Image helpImage					= null;		// help image
+	private static Image bookmarkImage				= null;		// bookmark image
+	private static Image bookmarkRolledOverImage	= null;		// bookmark rolled over image
 
 
 	/**
@@ -109,6 +112,28 @@ public class Images {
 			bannerImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(BANNER_IMAGE_PATH));
 		}
 		return bannerImage;
+	}
+
+
+	/**
+	 * @return the bookmark image
+	 */
+	public static Image getBookmarkImage () {
+		if (bookmarkImage == null) {
+			bookmarkImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(BOOKMARK_IMAGE_PATH));
+		}
+		return bookmarkImage;
+	}
+
+
+	/**
+	 * @return the bookmark image
+	 */
+	public static Image getBookmarkRolledOverImage () {
+		if (bookmarkRolledOverImage == null) {
+			bookmarkRolledOverImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(BOOKMARK_ROLLEDOVER_IMAGE_PATH));
+		}
+		return bookmarkRolledOverImage;
 	}
 
 
