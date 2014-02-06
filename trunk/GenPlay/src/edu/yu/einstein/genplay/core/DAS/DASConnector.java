@@ -42,7 +42,6 @@ import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.gene.Gene;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
-import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SimpleSCWList.SimpleSCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
@@ -138,7 +137,7 @@ public class DASConnector {
 	 * @param dataSource a {@link DataSource}
 	 * @param entryPoint an {@link EntryPoint}
 	 * @param dasType a {@link DASType}
-	 * @param genomeWindow a {@link SimpleGenomeWindow}
+	 * @param genomeWindow a {@link GenomeWindow}
 	 * @return a {@link URL} containing the query
 	 * @throws MalformedURLException
 	 */
@@ -288,7 +287,7 @@ public class DASConnector {
 	 * Retrieves a list of genes from a specified Data Source and a specified DAS Type and a specified Data Range
 	 * @param dataSource a {@link DataSource}
 	 * @param dasType a {@link DASType}
-	 * @param genomeWindow a {@link SimpleGenomeWindow}
+	 * @param genomeWindow a {@link GenomeWindow}
 	 * @return a {@link GeneList}
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -296,7 +295,7 @@ public class DASConnector {
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public GeneList getGeneList(DataSource dataSource, DASType dasType, SimpleGenomeWindow genomeWindow) throws IOException, ParserConfigurationException, SAXException, InterruptedException, ExecutionException
+	public GeneList getGeneList(DataSource dataSource, DASType dasType, GenomeWindow genomeWindow) throws IOException, ParserConfigurationException, SAXException, InterruptedException, ExecutionException
 	{
 		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
 		List<ListView<Gene>> resultList = new ArrayList<ListView<Gene>>();
@@ -381,7 +380,7 @@ public class DASConnector {
 	 * Retrieves a list of ScoredChromosomeWindow from a specified Data Source and a specified DAS Type and a specified Data Range
 	 * @param dataSource a {@link DataSource}
 	 * @param dasType a {@link DASType}
-	 * @param genomeWindow a {@link SimpleGenomeWindow}
+	 * @param genomeWindow a {@link GenomeWindow}
 	 * @return a {@link SCWList}
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -390,7 +389,7 @@ public class DASConnector {
 	 * @throws InterruptedException
 	 */
 
-	public SCWList getSCWList(DataSource dataSource, DASType dasType, SimpleGenomeWindow genomeWindow) throws IOException, ParserConfigurationException, SAXException, InterruptedException, ExecutionException {
+	public SCWList getSCWList(DataSource dataSource, DASType dasType, GenomeWindow genomeWindow) throws IOException, ParserConfigurationException, SAXException, InterruptedException, ExecutionException {
 		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
 		List<ListView<ScoredChromosomeWindow>> resultList = new ArrayList<ListView<ScoredChromosomeWindow>>();
 		Chromosome currentChromo = genomeWindow.getChromosome();

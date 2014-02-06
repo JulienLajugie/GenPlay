@@ -99,6 +99,8 @@ public final class ControlPanel extends JPanel {
 		gbc.gridy = 1;
 		gbc.weightx = 1;
 		gbc.gridwidth = 1;
+		gbc.anchor = GridBagConstraints.PAGE_END;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
 		add(genomeWindowPanel, gbc);
 
 		// register the control panel to the project window manager so the control panel can be notified when the project window changes

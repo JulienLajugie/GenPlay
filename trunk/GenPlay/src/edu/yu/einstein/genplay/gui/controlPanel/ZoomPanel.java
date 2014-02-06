@@ -30,6 +30,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -49,6 +50,7 @@ import edu.yu.einstein.genplay.gui.action.project.PAMoveLeft;
 import edu.yu.einstein.genplay.gui.action.project.PAMoveRight;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
+import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.NumberFormats;
 
 
@@ -77,9 +79,14 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 		projectWindow = ProjectManager.getInstance().getProjectWindow();
 		jlZoom = new JLabel();
 		setZoomLabel(projectWindow.getGenomeWindow().getSize());
-		jbMinus = new JButton("-");
-		jbMinus.setMargin(new Insets(0, 6, 0, 6));
+
+		jbMinus = new JButton();
+		jbMinus.setIcon(new ImageIcon(Images.getMinusImage()));
+		jbMinus.setRolloverIcon(new ImageIcon(Images.getMinusRolledOverImage()));
+		jbMinus.setBorderPainted(false);
 		jbMinus.setFocusPainted(false);
+		jbMinus.setMargin(new Insets(0, 0, 0, 0));
+		jbMinus.setContentAreaFilled(false);
 		jbMinus.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -87,9 +94,13 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 			}
 		});
 
-		jbPlus = new JButton("+");
-		jbPlus.setMargin(new Insets(0, 5, 0, 5));
+		jbPlus = new JButton();
+		jbPlus.setIcon(new ImageIcon(Images.getPlusImage()));
+		jbPlus.setRolloverIcon(new ImageIcon(Images.getPlusRolledOverImage()));
+		jbPlus.setBorderPainted(false);
 		jbPlus.setFocusPainted(false);
+		jbPlus.setMargin(new Insets(0, 0, 0, 0));
+		jbPlus.setContentAreaFilled(false);
 		jbPlus.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

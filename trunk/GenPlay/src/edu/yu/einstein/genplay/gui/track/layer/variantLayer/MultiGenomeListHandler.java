@@ -36,7 +36,7 @@ import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.MixVariant;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.VariantDisplay;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
-import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
 
 
 /**
@@ -58,142 +58,12 @@ public class MultiGenomeListHandler implements Serializable {
 
 
 	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(variantList);
-		out.writeObject(fullList);
-		out.writeObject(fittedList);
-		out.writeObject(fittedChromosome);
-		if (fittedXRatio == null) {
-			out.writeDouble(0.0);
-		} else {
-			out.writeDouble(fittedXRatio);
-		}
-	}
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	@SuppressWarnings("unchecked")
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		variantList = (List<VariantDisplayList>) in.readObject();
-		fullList = (List<List<Variant>>) in.readObject();
-		fittedList = (List<List<VariantDisplay>>) in.readObject();
-		fittedChromosome = (Chromosome) in.readObject();
-		fittedXRatio = in.readDouble();
-
-		cache = new CacheTrack<List<List<VariantDisplay>>>();
-	}
-
-
-	/**
 	 * Constructor of {@link MultiGenomeListHandler}
 	 */
 	public MultiGenomeListHandler () {
 		cache = new CacheTrack<List<List<VariantDisplay>>>();
 		fittedChromosome = null;
 		fittedXRatio = null;
-	}
-
-
-	/**
-	 * Initializes the list of {@link Variant}
-	 * @param variantList
-	 */
-	public void initialize (List<VariantDisplayList> variantList) {
-		cache.initialize();
-		if (variantList == null) {
-			variantList = new ArrayList<VariantDisplayList>();
-		}
-		this.variantList = variantList;
-		fullList = new ArrayList<List<Variant>>();
-		fullList.add(new ArrayList<Variant>());
-		fullList.add(new ArrayList<Variant>());
-
-		for (VariantDisplayList current: variantList) {
-			fullList.get(0).addAll(current.getVariants().get(0));
-			fullList.get(1).addAll(current.getVariants().get(1));
-		}
-
-		Collections.sort(fullList.get(0), new VariantComparator());
-		Collections.sort(fullList.get(1), new VariantComparator());
-	}
-
-
-	///////////////////////////////////////////////////////////////////// Interface methods
-
-	/**
-	 * @param window the genome window
-	 * @param xRatio the x ratio
-	 * @param allele the allele index
-	 * @return the variant list that fits the screen
-	 */
-	public final List<VariantDisplay> getFittedData(SimpleGenomeWindow window, double xRatio, int allele) {
-		boolean hasToFit = false;
-		if ((fittedChromosome == null) || (!fittedChromosome.equals(window.getChromosome()))) {
-			fittedChromosome = window.getChromosome();
-			if ((fittedXRatio == null) || (fittedXRatio != xRatio)) {
-				fittedXRatio = xRatio;
-			}
-			hasToFit = true;
-		} else if ((fittedXRatio == null) || (fittedXRatio != xRatio)) {
-			fittedXRatio = xRatio;
-			hasToFit = true;
-		}
-
-		if (hasToFit) {
-			if (cache.hasData(xRatio)) {
-				fittedList = cache.getData(xRatio);
-			} else {
-				fitToScreen();
-				cache.setData(fittedXRatio, fittedList);
-			}
-		}
-
-		List<VariantDisplay> result = getFittedData(window.getStart(), window.getStop(), allele);
-		return result;
-	}
-
-	protected List<VariantDisplay> getFittedData(int start, int stop, int allele) {
-		if ((fittedList == null) || (fittedList.size() == 0) || (fittedList.get(allele).size() == 0)) {
-			return null;
-		}
-
-		ArrayList<VariantDisplay> resultList = new ArrayList<VariantDisplay>();
-		int indexStart = findStart(fittedList.get(allele), start, 0, fittedList.get(allele).size() - 1);
-		int indexStop = findStop(fittedList.get(allele), stop, 0, fittedList.get(allele).size() - 1);
-
-		if (indexStart > 0) {
-			VariantDisplay variant = fittedList.get(allele).get(indexStart - 1);
-			if (variant.getVariant().getStop() >= start) {
-				resultList.add(variant);
-			}
-		}
-		for (int i = indexStart; i <= indexStop; i++) {
-			if (i == indexStop) {
-				VariantDisplay variant = fittedList.get(allele).get(indexStop);
-				if (variant.getVariant().getStart() <= stop) {
-					resultList.add(variant);
-				}
-			} else {
-				resultList.add(fittedList.get(allele).get(i));
-			}
-		}
-		if ((indexStop + 1) < fittedList.get(allele).size()) {
-			VariantDisplay variant = fittedList.get(allele).get(indexStop + 1);
-			if (variant.getVariant().getStart() <= stop) {
-				resultList.add(variant);
-			}
-		}
-		return resultList;
 	}
 
 	/**
@@ -216,6 +86,7 @@ public class MultiGenomeListHandler implements Serializable {
 			return findStart(list, value, indexStart, indexStart + middle);
 		}
 	}
+
 
 	/**
 	 * Recursive function. Returns the index where the stop value of the window is found or the index right before if the exact value is not find.
@@ -240,18 +111,6 @@ public class MultiGenomeListHandler implements Serializable {
 
 
 	/**
-	 * Forces the fitToScreen method to be performed
-	 * (Used after a change of options that didn't required the full list of {@link Variant} to change)
-	 * @param xRatio
-	 */
-	public void forceFitToScreen(double xRatio) {
-		fittedXRatio = xRatio;
-		fitToScreen();
-		cache.setData(fittedXRatio, fittedList);
-	}
-
-
-	/**
 	 * Merges two windows together if the gap between this two windows is not visible
 	 */
 	public void fitToScreen() {
@@ -262,6 +121,8 @@ public class MultiGenomeListHandler implements Serializable {
 		fitToScreen(1);
 	}
 
+
+	///////////////////////////////////////////////////////////////////// Interface methods
 
 	/**
 	 * Merges two windows together if the gap between this two windows is not visible
@@ -358,6 +219,145 @@ public class MultiGenomeListHandler implements Serializable {
 			if (variantDisplay != null) {
 				fittedList.get(allele).add(variantDisplay);
 			}
+		}
+	}
+
+	/**
+	 * Forces the fitToScreen method to be performed
+	 * (Used after a change of options that didn't required the full list of {@link Variant} to change)
+	 * @param xRatio
+	 */
+	public void forceFitToScreen(double xRatio) {
+		fittedXRatio = xRatio;
+		fitToScreen();
+		cache.setData(fittedXRatio, fittedList);
+	}
+
+	/**
+	 * @param window the genome window
+	 * @param xRatio the x ratio
+	 * @param allele the allele index
+	 * @return the variant list that fits the screen
+	 */
+	public final List<VariantDisplay> getFittedData(GenomeWindow window, double xRatio, int allele) {
+		boolean hasToFit = false;
+		if ((fittedChromosome == null) || (!fittedChromosome.equals(window.getChromosome()))) {
+			fittedChromosome = window.getChromosome();
+			if ((fittedXRatio == null) || (fittedXRatio != xRatio)) {
+				fittedXRatio = xRatio;
+			}
+			hasToFit = true;
+		} else if ((fittedXRatio == null) || (fittedXRatio != xRatio)) {
+			fittedXRatio = xRatio;
+			hasToFit = true;
+		}
+
+		if (hasToFit) {
+			if (cache.hasData(xRatio)) {
+				fittedList = cache.getData(xRatio);
+			} else {
+				fitToScreen();
+				cache.setData(fittedXRatio, fittedList);
+			}
+		}
+
+		List<VariantDisplay> result = getFittedData(window.getStart(), window.getStop(), allele);
+		return result;
+	}
+
+	protected List<VariantDisplay> getFittedData(int start, int stop, int allele) {
+		if ((fittedList == null) || (fittedList.size() == 0) || (fittedList.get(allele).size() == 0)) {
+			return null;
+		}
+
+		ArrayList<VariantDisplay> resultList = new ArrayList<VariantDisplay>();
+		int indexStart = findStart(fittedList.get(allele), start, 0, fittedList.get(allele).size() - 1);
+		int indexStop = findStop(fittedList.get(allele), stop, 0, fittedList.get(allele).size() - 1);
+
+		if (indexStart > 0) {
+			VariantDisplay variant = fittedList.get(allele).get(indexStart - 1);
+			if (variant.getVariant().getStop() >= start) {
+				resultList.add(variant);
+			}
+		}
+		for (int i = indexStart; i <= indexStop; i++) {
+			if (i == indexStop) {
+				VariantDisplay variant = fittedList.get(allele).get(indexStop);
+				if (variant.getVariant().getStart() <= stop) {
+					resultList.add(variant);
+				}
+			} else {
+				resultList.add(fittedList.get(allele).get(i));
+			}
+		}
+		if ((indexStop + 1) < fittedList.get(allele).size()) {
+			VariantDisplay variant = fittedList.get(allele).get(indexStop + 1);
+			if (variant.getVariant().getStart() <= stop) {
+				resultList.add(variant);
+			}
+		}
+		return resultList;
+	}
+
+
+	/**
+	 * Initializes the list of {@link Variant}
+	 * @param variantList
+	 */
+	public void initialize (List<VariantDisplayList> variantList) {
+		cache.initialize();
+		if (variantList == null) {
+			variantList = new ArrayList<VariantDisplayList>();
+		}
+		this.variantList = variantList;
+		fullList = new ArrayList<List<Variant>>();
+		fullList.add(new ArrayList<Variant>());
+		fullList.add(new ArrayList<Variant>());
+
+		for (VariantDisplayList current: variantList) {
+			fullList.get(0).addAll(current.getVariants().get(0));
+			fullList.get(1).addAll(current.getVariants().get(1));
+		}
+
+		Collections.sort(fullList.get(0), new VariantComparator());
+		Collections.sort(fullList.get(1), new VariantComparator());
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		variantList = (List<VariantDisplayList>) in.readObject();
+		fullList = (List<List<Variant>>) in.readObject();
+		fittedList = (List<List<VariantDisplay>>) in.readObject();
+		fittedChromosome = (Chromosome) in.readObject();
+		fittedXRatio = in.readDouble();
+
+		cache = new CacheTrack<List<List<VariantDisplay>>>();
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(variantList);
+		out.writeObject(fullList);
+		out.writeObject(fittedList);
+		out.writeObject(fittedChromosome);
+		if (fittedXRatio == null) {
+			out.writeDouble(0.0);
+		} else {
+			out.writeDouble(fittedXRatio);
 		}
 	}
 

@@ -41,7 +41,7 @@ import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.VariantDisplay;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.enums.VariantType;
-import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
 import edu.yu.einstein.genplay.util.colors.Colors;
@@ -63,32 +63,6 @@ class MultiGenomeVariantDrawer implements Serializable {
 
 
 	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(currentDrawingAllele);
-		out.writeInt(variantOpacity);
-	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		currentDrawingAllele = (AlleleType) in.readObject();
-		variantOpacity = in.readInt();
-		projectWindow = ProjectManager.getInstance().getProjectWindow();
-	}
-
-
-	/**
 	 * Constructor of {@link MultiGenomeVariantDrawer}
 	 * @param drawer
 	 */
@@ -100,50 +74,22 @@ class MultiGenomeVariantDrawer implements Serializable {
 
 
 	/**
-	 * @param drawer the drawer to set
+	 * Draws the edge of a deletion stripe.
+	 * @param g			graphics object
+	 * @param x			x coordinate
+	 * @param y			y coordinate
+	 * @param width		width of the stripe
+	 * @param height	height of the stripe
 	 */
-	protected void setDrawer(MultiGenomeDrawer drawer) {
-		this.drawer = drawer;
-	}
-
-
-	/**
-	 * Initializes the variant opacity
-	 */
-	protected void initializeStripesOpacity () {
-		variantOpacity = MGDisplaySettings.getInstance().getVariousSettings().getColorOpacity();						// gets the opacity for the stripes
-	}
-
-
-	/**
-	 * @param allele set the current allele
-	 */
-	protected void setCurrentAllele (AlleleType allele) {
-		currentDrawingAllele = allele;
-	}
-
-
-	/**
-	 * Draw a light gray mask over the track with a text
-	 * @param g		graphics object
-	 * @param text	a text to display
-	 */
-	protected void drawMultiGenomeMask (Graphics g, String text) {
-		int height = g.getClipBounds().height;
-		g.setColor(Colors.RED);
-		g.drawString(text, 10, height -5);
-	}
-
-
-	/**
-	 * Draws the line on the middle of a multi genome track
-	 * @param g	graphics object
-	 */
-	protected void drawMultiGenomeLine (Graphics g) {
-		Color color = new Color(Colors.GREY.getRed(), Colors.GREY.getGreen(), Colors.GREY.getBlue(), variantOpacity);
-		g.setColor(color);
-		int y = g.getClipBounds().height / 2;
-		g.drawLine(0, y, g.getClipBounds().width, y);
+	private void drawDeletion (Graphics g, int x, int y, int width, int height) {
+		if (MGDisplaySettings.DRAW_DELETION_EDGE == MGDisplaySettings.YES_MG_OPTION) {	// checks if the option is activated
+			float dash1[] = {5.0f};						// length of the lines
+			BasicStroke line = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1.0f, dash1, 0.0f); // creates a stroke line
+			Graphics2D g2d = (Graphics2D) g.create(); 	// create a temporary graphic
+			g2d.setStroke(line);						// give the stroke line to the graphic
+			g2d.setColor(Colors.BLACK);					// color of the edge (black)
+			g2d.drawRect(x, y, width - 1, height);		// draw the edge all around the stripe
+		}
 	}
 
 
@@ -152,7 +98,7 @@ class MultiGenomeVariantDrawer implements Serializable {
 	 * @param g				Graphics object
 	 * @param variantList	list of variants
 	 */
-	protected void drawGenome (Graphics g, SimpleGenomeWindow genomeWindow, List<VariantDisplay> variants) {
+	protected void drawGenome (Graphics g, GenomeWindow genomeWindow, List<VariantDisplay> variants) {
 		if ((variants != null) && (variants.size() > 0)) {
 			Color mixColor = new Color(Colors.BLUE.getRed(), Colors.BLUE.getGreen(), Colors.BLUE.getBlue());			// color for mixed variant
 			for (int i = 0; i < variants.size(); i++) {
@@ -180,12 +126,128 @@ class MultiGenomeVariantDrawer implements Serializable {
 
 
 	/**
+	 * Draws the edge of an insertion stripe.
+	 * @param g			graphics object
+	 * @param x			x coordinate
+	 * @param y			y coordinate
+	 * @param width		width of the stripe
+	 * @param height	height of the stripe
+	 */
+	private void drawInsertion (Graphics g, int x, int y, int width, int height) {
+		if (MGDisplaySettings.DRAW_INSERTION_EDGE == MGDisplaySettings.YES_MG_OPTION) {	// checks if the option is activated
+			Graphics gTmp = g.create();				// creates a temporary graphics
+			gTmp.setColor(Colors.BLACK);			// color of the edge (black)
+			gTmp.drawRect(x, y, width, height);		// the edge here is a simple line all around the stripe
+		}
+	}
+
+
+	/**
+	 * Draws the letters (nucleotides) over the stripe.
+	 * @param g					graphics object
+	 * @param x					x coordinate
+	 * @param width				width of the stripe
+	 * @param height			height of the stripe
+	 * @param variantDisplay			variant
+	 * @param nucleotideNumber	number of nucleotide to display
+	 */
+	private void drawLetters (Graphics g, int x, int width, int height, VariantDisplay variantDisplay, int nucleotideNumber) {
+		boolean draw = false;								// boolean to check if drawing letters is required
+		Variant variant = variantDisplay.getVariant();
+		VariantType variantType = variant.getType();		// gets the variant type
+		if (	((variantType == VariantType.INSERTION) && 	(MGDisplaySettings.DRAW_INSERTION_LETTERS 	== MGDisplaySettings.YES_MG_OPTION)) ||	// checks all options in order to determine if the letters must be drawn
+				((variantType == VariantType.DELETION) 	&& 	(MGDisplaySettings.DRAW_DELETION_LETTERS 	== MGDisplaySettings.YES_MG_OPTION)) ||
+				((variantType == VariantType.SNPS) 		&& 	(MGDisplaySettings.DRAW_SNP_LETTERS 		== MGDisplaySettings.YES_MG_OPTION)) ||
+				((variant instanceof ReferenceVariant)	&& 	(MGDisplaySettings.DRAW_REFERENCE_LETTERS 	== MGDisplaySettings.YES_MG_OPTION))) {
+			draw = true;
+		}
+
+		if (draw) {
+			// if the letters must be drawn
+			double windowWidth = width / nucleotideNumber;									// calculate the size of window (here, the windo is the width of a nucleotide on the screen)
+			FontMetrics fm = g.getFontMetrics();											// get the font metrics
+			if ((fm.getHeight() < height) && (fm.stringWidth("A") < windowWidth)) {			// verifies if the height of the font is smaller than the height of the stripe AND if the width of a reference letter (A) is smaller than a window size
+				String letters = variantDisplay.getVariantSequence();
+				g.setColor(Colors.BLACK);												// set the color of the letters
+				int letterHeight = ((height + fm.getHeight()) / 2);						// define where the draw will start on the Y axis
+				Graphics2D g2d = (Graphics2D) g.create();						// we reverse all coordinates to display the letter on the right way
+				if (currentDrawingAllele == AlleleType.ALLELE02) {
+					g2d.scale(1, -1);
+					g2d.translate(0, -g2d.getClipBounds().height - 1);
+				} else {
+					letterHeight += (g2d.getClipBounds().height - height);						// define where the draw will start on the Y axis
+				}
+
+				for (int i = 0; i < nucleotideNumber; i++) {							// for all the nucleotide that are supposed to be displayed
+					String letter = "-";												// the default letter is the question mark
+					if ((letters != "-") && (i < letters.length())) {					// if the letters are different to the question mark and if the current index is smaller than the string length
+						letter = letters.charAt(i) + "";								// we get the current character
+					}
+					int xC = (int) Math.round(x + (i * windowWidth) + ((windowWidth - fm.stringWidth(letter)) * 0.5));	// the horizontal position from where the draw starts: x (of the stripe) + size of a window * current window number + (windows width - letter width) / 2 (for the middle)
+					g2d.drawString(letter, xC, letterHeight);							// we draw the letter
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * Draws the line on the middle of a multi genome track
+	 * @param g	graphics object
+	 */
+	protected void drawMultiGenomeLine (Graphics g) {
+		Color color = new Color(Colors.GREY.getRed(), Colors.GREY.getGreen(), Colors.GREY.getBlue(), variantOpacity);
+		g.setColor(color);
+		int y = g.getClipBounds().height / 2;
+		g.drawLine(0, y, g.getClipBounds().width, y);
+	}
+
+
+	/**
+	 * Draw a light gray mask over the track with a text
+	 * @param g		graphics object
+	 * @param text	a text to display
+	 */
+	protected void drawMultiGenomeMask (Graphics g, String text) {
+		int height = g.getClipBounds().height;
+		g.setColor(Colors.RED);
+		g.drawString(text, 10, height -5);
+	}
+
+
+	/**
+	 * Draw the filter pattern
+	 * @param g			graphics object
+	 * @param x			x coordinate
+	 * @param width		width of the stripe
+	 * @param height	height of the stripe
+	 */
+	private void drawPatternFilter (Graphics g, int x, int y, int width, int height) {
+		g.setColor(Colors.GREY);
+		g.drawLine(x, y, x + width, y + height);
+		g.drawLine(x, y + height, x + width, y);
+	}
+
+
+	/**
+	 * Draw a blank of synchronization.
+	 * A blank of synchronization is drawn on the full height of the clip.
+	 * @param g		graphics object
+	 * @param x		x coordinate
+	 * @param width	width of the stripe
+	 */
+	private void drawReference (Graphics g, int x, int width) {
+		g.fillRect(x, 0, width, g.getClipBounds().height);
+	}
+
+
+	/**
 	 * Draws a rectangle symbolizing a variant
 	 * @param g			graphics object
 	 * @param variant	the variant
 	 * @param color		the color of the stripe
 	 */
-	private void drawVariant (Graphics g, VariantDisplay variantDisplay, Color color, SimpleGenomeWindow genomeWindow) {
+	private void drawVariant (Graphics g, VariantDisplay variantDisplay, Color color, GenomeWindow genomeWindow) {
 		Variant variant = variantDisplay.getVariant();
 
 		// Get start and stop position
@@ -257,6 +319,28 @@ class MultiGenomeVariantDrawer implements Serializable {
 
 
 
+	/**
+	 * Gets the color defined for a variant according to its type and a genome
+	 * @param genome	the genome name
+	 * @param type		the variant type
+	 * @return			the associated color
+	 */
+	private Color getVariantColor (String genome, VariantType type) {
+		Color color = null;
+		for (VariantData data: drawer.getVariantDataList()) {
+			if (data.getGenome().equals(genome)) {
+				int variantIndex = data.getVariationTypeList().indexOf(type);
+				if (variantIndex != -1) {
+					color = data.getColorList().get(variantIndex);
+					break;
+				}
+			}
+		}
+
+		return color;
+	}
+
+
 	protected int getVariantHeight (Variant variant, int clipHeight) {
 		int height;																	// Instantiate the int for the height of the variant
 		if (variant instanceof ReferenceVariant) {					// drawing a reference stripe requires a different method (shorter and more simple)
@@ -283,136 +367,52 @@ class MultiGenomeVariantDrawer implements Serializable {
 
 
 	/**
-	 * Draw a blank of synchronization.
-	 * A blank of synchronization is drawn on the full height of the clip.
-	 * @param g		graphics object
-	 * @param x		x coordinate
-	 * @param width	width of the stripe
+	 * Initializes the variant opacity
 	 */
-	private void drawReference (Graphics g, int x, int width) {
-		g.fillRect(x, 0, width, g.getClipBounds().height);
+	protected void initializeStripesOpacity () {
+		variantOpacity = MGDisplaySettings.getInstance().getVariousSettings().getColorOpacity();						// gets the opacity for the stripes
 	}
 
 
 	/**
-	 * Draws the edge of an insertion stripe.
-	 * @param g			graphics object
-	 * @param x			x coordinate
-	 * @param y			y coordinate
-	 * @param width		width of the stripe
-	 * @param height	height of the stripe
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
 	 */
-	private void drawInsertion (Graphics g, int x, int y, int width, int height) {
-		if (MGDisplaySettings.DRAW_INSERTION_EDGE == MGDisplaySettings.YES_MG_OPTION) {	// checks if the option is activated
-			Graphics gTmp = g.create();				// creates a temporary graphics
-			gTmp.setColor(Colors.BLACK);			// color of the edge (black)
-			gTmp.drawRect(x, y, width, height);		// the edge here is a simple line all around the stripe
-		}
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		currentDrawingAllele = (AlleleType) in.readObject();
+		variantOpacity = in.readInt();
+		projectWindow = ProjectManager.getInstance().getProjectWindow();
 	}
 
 
 	/**
-	 * Draws the edge of a deletion stripe.
-	 * @param g			graphics object
-	 * @param x			x coordinate
-	 * @param y			y coordinate
-	 * @param width		width of the stripe
-	 * @param height	height of the stripe
+	 * @param allele set the current allele
 	 */
-	private void drawDeletion (Graphics g, int x, int y, int width, int height) {
-		if (MGDisplaySettings.DRAW_DELETION_EDGE == MGDisplaySettings.YES_MG_OPTION) {	// checks if the option is activated
-			float dash1[] = {5.0f};						// length of the lines
-			BasicStroke line = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1.0f, dash1, 0.0f); // creates a stroke line
-			Graphics2D g2d = (Graphics2D) g.create(); 	// create a temporary graphic
-			g2d.setStroke(line);						// give the stroke line to the graphic
-			g2d.setColor(Colors.BLACK);					// color of the edge (black)
-			g2d.drawRect(x, y, width - 1, height);		// draw the edge all around the stripe
-		}
+	protected void setCurrentAllele (AlleleType allele) {
+		currentDrawingAllele = allele;
 	}
 
 
 	/**
-	 * Draw the filter pattern
-	 * @param g			graphics object
-	 * @param x			x coordinate
-	 * @param width		width of the stripe
-	 * @param height	height of the stripe
+	 * @param drawer the drawer to set
 	 */
-	private void drawPatternFilter (Graphics g, int x, int y, int width, int height) {
-		g.setColor(Colors.GREY);
-		g.drawLine(x, y, x + width, y + height);
-		g.drawLine(x, y + height, x + width, y);
+	protected void setDrawer(MultiGenomeDrawer drawer) {
+		this.drawer = drawer;
 	}
 
 
 	/**
-	 * Draws the letters (nucleotides) over the stripe.
-	 * @param g					graphics object
-	 * @param x					x coordinate
-	 * @param width				width of the stripe
-	 * @param height			height of the stripe
-	 * @param variantDisplay			variant
-	 * @param nucleotideNumber	number of nucleotide to display
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
 	 */
-	private void drawLetters (Graphics g, int x, int width, int height, VariantDisplay variantDisplay, int nucleotideNumber) {
-		boolean draw = false;								// boolean to check if drawing letters is required
-		Variant variant = variantDisplay.getVariant();
-		VariantType variantType = variant.getType();		// gets the variant type
-		if (	((variantType == VariantType.INSERTION) && 	(MGDisplaySettings.DRAW_INSERTION_LETTERS 	== MGDisplaySettings.YES_MG_OPTION)) ||	// checks all options in order to determine if the letters must be drawn
-				((variantType == VariantType.DELETION) 	&& 	(MGDisplaySettings.DRAW_DELETION_LETTERS 	== MGDisplaySettings.YES_MG_OPTION)) ||
-				((variantType == VariantType.SNPS) 		&& 	(MGDisplaySettings.DRAW_SNP_LETTERS 		== MGDisplaySettings.YES_MG_OPTION)) ||
-				((variant instanceof ReferenceVariant)	&& 	(MGDisplaySettings.DRAW_REFERENCE_LETTERS 	== MGDisplaySettings.YES_MG_OPTION))) {
-			draw = true;
-		}
-
-		if (draw) {
-			// if the letters must be drawn
-			double windowWidth = width / nucleotideNumber;									// calculate the size of window (here, the windo is the width of a nucleotide on the screen)
-			FontMetrics fm = g.getFontMetrics();											// get the font metrics
-			if ((fm.getHeight() < height) && (fm.stringWidth("A") < windowWidth)) {			// verifies if the height of the font is smaller than the height of the stripe AND if the width of a reference letter (A) is smaller than a window size
-				String letters = variantDisplay.getVariantSequence();
-				g.setColor(Colors.BLACK);												// set the color of the letters
-				int letterHeight = ((height + fm.getHeight()) / 2);						// define where the draw will start on the Y axis
-				Graphics2D g2d = (Graphics2D) g.create();						// we reverse all coordinates to display the letter on the right way
-				if (currentDrawingAllele == AlleleType.ALLELE02) {
-					g2d.scale(1, -1);
-					g2d.translate(0, -g2d.getClipBounds().height - 1);
-				} else {
-					letterHeight += (g2d.getClipBounds().height - height);						// define where the draw will start on the Y axis
-				}
-
-				for (int i = 0; i < nucleotideNumber; i++) {							// for all the nucleotide that are supposed to be displayed
-					String letter = "-";												// the default letter is the question mark
-					if ((letters != "-") && (i < letters.length())) {					// if the letters are different to the question mark and if the current index is smaller than the string length
-						letter = letters.charAt(i) + "";								// we get the current character
-					}
-					int xC = (int) Math.round(x + (i * windowWidth) + ((windowWidth - fm.stringWidth(letter)) * 0.5));	// the horizontal position from where the draw starts: x (of the stripe) + size of a window * current window number + (windows width - letter width) / 2 (for the middle)
-					g2d.drawString(letter, xC, letterHeight);							// we draw the letter
-				}
-			}
-		}
-	}
-
-
-	/**
-	 * Gets the color defined for a variant according to its type and a genome
-	 * @param genome	the genome name
-	 * @param type		the variant type
-	 * @return			the associated color
-	 */
-	private Color getVariantColor (String genome, VariantType type) {
-		Color color = null;
-		for (VariantData data: drawer.getVariantDataList()) {
-			if (data.getGenome().equals(genome)) {
-				int variantIndex = data.getVariationTypeList().indexOf(type);
-				if (variantIndex != -1) {
-					color = data.getColorList().get(variantIndex);
-					break;
-				}
-			}
-		}
-
-		return color;
+	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(currentDrawingAllele);
+		out.writeInt(variantOpacity);
 	}
 
 }

@@ -40,6 +40,7 @@ import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.VariantType;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLineDialog.VCFLineDialog;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
@@ -82,7 +83,7 @@ public class VariantInformationDialog extends JDialog {
 	 */
 	public VariantInformationDialog(MultiGenomeDrawer multiGenomeDrawer) {
 		super(MainFrame.getInstance());
-		this.vcfLineDialog = new VCFLineDialog();
+		vcfLineDialog = new VCFLineDialog();
 		options = new SearchOption();
 		track = MainFrame.getInstance().getTrackListPanel().getTrackFromGenomeDrawer(multiGenomeDrawer);
 		int trackNumber = track.getNumber();
@@ -144,99 +145,21 @@ public class VariantInformationDialog extends JDialog {
 
 
 	/**
-	 * Method for showing the dialog box.
-	 * @param iterator the multi list iterator
-	 * @param X X position on the screen
-	 * @param Y Y position on the screen
+	 * @return the name of the current genome
 	 */
-	public void show(VariantDisplayMultiListScanner iterator, int X, int Y) {
-		this.iterator = iterator;
-		this.currentVariant = iterator.getCurrentVariants().get(0);
-		refreshDialog();
-		setLocation(X, Y);
-		setVisible(true);
-	}
-
-	/**
-	 * initializes the dialog content and moves the screen onto the related variant.
-	 * @param newVariant the variant to display
-	 */
-	private void refreshDialog() {
-		// Initialize the current variant
-		if (currentVariant == null) {
-			currentLine = null;
-		} else {
-			this.currentLine = currentVariant.getVCFLine();
-			if (currentLine != null) {
-				this.currentLine.processForAnalyse();
-			}
+	private String getCurrentGenomeName () {
+		if ((currentVariant == null) || (currentVariant instanceof MixVariant)) {
+			return null;
 		}
-
-		// Initialize the content of the dialog
-		initContent();
-
-		// Relocate the screen position
-		relocateScreenPosition();
+		return iterator.getCurrentVariantDisplayList(currentVariant).getGenomeName();
 	}
 
 	/**
-	 * Initializes the content of the dialog box according to a variant.
+	 * @return the search options
 	 */
-	private void initContent() {
-		String genomeName = getCurrentGenomeName();
-		VariantInfo variantInfo;
-		VariantFormat variantFormat;
-
-		if (currentLine == null) {
-			variantInfo = new VariantInfo(null);
-			variantFormat = new VariantFormat(null, null, null);
-		} else {
-			variantInfo = new VariantInfo(currentLine);
-			variantFormat = new VariantFormat(currentVariant, currentLine, genomeName);
-		}
-
-
-		updatePanel(headerPanel, new GlobalInformationPanel(currentVariant, currentLine, genomeName));
-		updatePanel(infoPanel, variantInfo.getPane());
-		updatePanel(formatPanel, variantFormat.getPane());
-		NavigationPanel newNavigationPanel = new NavigationPanel(this);
-		if (currentLine == null) {
-			jbFullLine.setEnabled(false);
-		} else {
-			jbFullLine.setEnabled(true);
-		}
-		updatePanel(navigationPanel, newNavigationPanel);
-
-		validate();
-
-		pack();
+	protected SearchOption getOptions() {
+		return options;
 	}
-
-	/**
-	 * Locates the screen position to the start position of the actual variant.
-	 */
-	private void relocateScreenPosition() {
-		int variantStart = currentVariant.getStart();
-		SimpleGenomeWindow currentGenomeWindow = ProjectManager.getInstance().getProjectWindow().getGenomeWindow();
-		int width = currentGenomeWindow.getSize();
-		int startWindow = variantStart - (width / 2);
-		int stopWindow = startWindow + width;
-		Chromosome chromosome = currentGenomeWindow.getChromosome();
-		SimpleGenomeWindow genomeWindow = new SimpleGenomeWindow(chromosome, startWindow, stopWindow);
-		ProjectManager.getInstance().getProjectWindow().setGenomeWindow(genomeWindow);
-	}
-
-
-	/**
-	 * Updates a panel with another one
-	 * @param previousPanel panel to update
-	 * @param newPanel new panel
-	 */
-	private void updatePanel(JPanel previousPanel, JPanel newPanel) {
-		previousPanel.removeAll();
-		previousPanel.add(newPanel);
-	}
-
 
 	/**
 	 * @return the variant
@@ -244,7 +167,6 @@ public class VariantInformationDialog extends JDialog {
 	public Variant getVariant() {
 		return currentVariant;
 	}
-
 
 	/**
 	 * Looks for the next variant and run the dialog initialization.
@@ -289,6 +211,40 @@ public class VariantInformationDialog extends JDialog {
 
 
 	/**
+	 * Initializes the content of the dialog box according to a variant.
+	 */
+	private void initContent() {
+		String genomeName = getCurrentGenomeName();
+		VariantInfo variantInfo;
+		VariantFormat variantFormat;
+
+		if (currentLine == null) {
+			variantInfo = new VariantInfo(null);
+			variantFormat = new VariantFormat(null, null, null);
+		} else {
+			variantInfo = new VariantInfo(currentLine);
+			variantFormat = new VariantFormat(currentVariant, currentLine, genomeName);
+		}
+
+
+		updatePanel(headerPanel, new GlobalInformationPanel(currentVariant, currentLine, genomeName));
+		updatePanel(infoPanel, variantInfo.getPane());
+		updatePanel(formatPanel, variantFormat.getPane());
+		NavigationPanel newNavigationPanel = new NavigationPanel(this);
+		if (currentLine == null) {
+			jbFullLine.setEnabled(false);
+		} else {
+			jbFullLine.setEnabled(true);
+		}
+		updatePanel(navigationPanel, newNavigationPanel);
+
+		validate();
+
+		pack();
+	}
+
+
+	/**
 	 * @return true if the variant is valid according to the search options, false otherwise
 	 */
 	private boolean isVariantValid (Variant variant) {
@@ -327,20 +283,44 @@ public class VariantInformationDialog extends JDialog {
 	}
 
 
-
 	/**
-	 * Shows the vcf line dialog
+	 * initializes the dialog content and moves the screen onto the related variant.
+	 * @param newVariant the variant to display
 	 */
-	protected void showVCFLine() {
-		vcfLineDialog.show(currentLine);
+	private void refreshDialog() {
+		// Initialize the current variant
+		if (currentVariant == null) {
+			currentLine = null;
+		} else {
+			currentLine = currentVariant.getVCFLine();
+			if (currentLine != null) {
+				currentLine.processForAnalyse();
+			}
+		}
+
+		// Initialize the content of the dialog
+		initContent();
+
+		// Relocate the screen position
+		relocateScreenPosition();
 	}
 
+
 	/**
-	 * @return the search options
+	 * Locates the screen position to the start position of the actual variant.
 	 */
-	protected SearchOption getOptions() {
-		return options;
+	private void relocateScreenPosition() {
+		int variantStart = currentVariant.getStart();
+		GenomeWindow currentGenomeWindow = ProjectManager.getInstance().getProjectWindow().getGenomeWindow();
+		int width = currentGenomeWindow.getSize();
+		int startWindow = variantStart - (width / 2);
+		int stopWindow = startWindow + width;
+		Chromosome chromosome = currentGenomeWindow.getChromosome();
+		GenomeWindow genomeWindow = new SimpleGenomeWindow(chromosome, startWindow, stopWindow);
+		ProjectManager.getInstance().getProjectWindow().setGenomeWindow(genomeWindow);
 	}
+
+
 
 	/**
 	 * @param options the options to set
@@ -349,14 +329,35 @@ public class VariantInformationDialog extends JDialog {
 		this.options = options;
 	}
 
+	/**
+	 * Method for showing the dialog box.
+	 * @param iterator the multi list iterator
+	 * @param X X position on the screen
+	 * @param Y Y position on the screen
+	 */
+	public void show(VariantDisplayMultiListScanner iterator, int X, int Y) {
+		this.iterator = iterator;
+		currentVariant = iterator.getCurrentVariants().get(0);
+		refreshDialog();
+		setLocation(X, Y);
+		setVisible(true);
+	}
 
 	/**
-	 * @return the name of the current genome
+	 * Shows the vcf line dialog
 	 */
-	private String getCurrentGenomeName () {
-		if ((currentVariant == null) || (currentVariant instanceof MixVariant)) {
-			return null;
-		}
-		return iterator.getCurrentVariantDisplayList(currentVariant).getGenomeName();
+	protected void showVCFLine() {
+		vcfLineDialog.show(currentLine);
+	}
+
+
+	/**
+	 * Updates a panel with another one
+	 * @param previousPanel panel to update
+	 * @param newPanel new panel
+	 */
+	private void updatePanel(JPanel previousPanel, JPanel newPanel) {
+		previousPanel.removeAll();
+		previousPanel.add(newPanel);
 	}
 }

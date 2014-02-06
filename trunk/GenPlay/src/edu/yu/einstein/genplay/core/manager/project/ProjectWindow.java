@@ -29,7 +29,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
@@ -46,7 +46,7 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 	private static final long 	serialVersionUID 				= -9014173267531950797L;	// Generated serial version ID
 	private static final int  	SAVED_FORMAT_VERSION_NUMBER 	= 0;						// saved format version
 	private List<GenomeWindowListener> 	gwListenerList;			// list of GenomeWindowListener
-	private SimpleGenomeWindow			genomeWindow;			// the genome window displayed by the track
+	private GenomeWindow				genomeWindow;			// the genome window displayed by the track
 	private int							trackWidth;				// width of the tracks
 	private transient double			xRatio;					// ratio of the track width to the genome window width
 
@@ -137,7 +137,7 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 	/**
 	 * @return the genomeWindow
 	 */
-	public SimpleGenomeWindow getGenomeWindow() {
+	public GenomeWindow getGenomeWindow() {
 		return genomeWindow;
 	}
 
@@ -186,7 +186,7 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		setGenomeWindow((SimpleGenomeWindow) in.readObject());
+		setGenomeWindow((GenomeWindow) in.readObject());
 		setTrackWidth(in.readInt());
 		updateXRatio();
 		gwListenerList = new ArrayList<GenomeWindowListener>();
@@ -231,11 +231,11 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 	/**
 	 * Sets the genome window value.  If the new value is different from the current one
 	 * the {@link GenomeWindowListener} will be notified
-	 * @param genomeWindow {@link SimpleGenomeWindow} to set
+	 * @param genomeWindow {@link GenomeWindow} to set
 	 */
-	public void setGenomeWindow(SimpleGenomeWindow genomeWindow) {
+	public void setGenomeWindow(GenomeWindow genomeWindow) {
 		if (!genomeWindow.equals(this.genomeWindow)) {
-			SimpleGenomeWindow oldGenomeWindow = this.genomeWindow;
+			GenomeWindow oldGenomeWindow = this.genomeWindow;
 			this.genomeWindow = genomeWindow;
 			// update the xRatio
 			updateXRatio();

@@ -45,6 +45,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.LogBase;
 import edu.yu.einstein.genplay.dataStructure.enums.ScoreOperation;
 import edu.yu.einstein.genplay.gui.clipboard.LocalClipboard;
 import edu.yu.einstein.genplay.gui.dialog.chromosomeChooser.ChromosomeChooserDialog;
+import edu.yu.einstein.genplay.gui.fileFilter.AllTrackFileFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.BAMFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.BedFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.BedGraphFilter;
@@ -420,6 +421,7 @@ public final class Utils {
 	 */
 	public final static FileFilter[] getReadableLayerFileFilters() {
 		ExtendedFileFilter[] filters = {
+				new AllTrackFileFilter(),
 				new GenPlayTrackFilter(),
 				new BAMFilter(),
 				new SAMFilter(),

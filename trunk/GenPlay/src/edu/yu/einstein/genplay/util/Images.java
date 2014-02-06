@@ -51,7 +51,16 @@ public class Images {
 	private static final String LOADING_IMAGE_PATH 				= "edu/yu/einstein/genplay/resource/images/loading_anim.gif";				// Path of the loading animated GIF
 	private static final String HELP_IMAGE_PATH 				= "edu/yu/einstein/genplay/resource/images/help.png";						// Path of the help image
 	private static final String BOOKMARK_IMAGE_PATH 			= "edu/yu/einstein/genplay/resource/images/bookmark_24x24.png";				// Path of the bookmark image
-	private static final String BOOKMARK_ROLLEDOVER_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/images/bookmark_rolled_over_24x24.png";	// Path of the bookmark image
+	private static final String BOOKMARK_ROLLEDOVER_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/images/bookmark_rolled_over_24x24.png";	// Path of the bookmark rolled over image
+	private static final String JUMP_IMAGE_PATH					= "edu/yu/einstein/genplay/resource/images/jump_24x24.png";					// Path of the jump image
+	private static final String JUMP_ROLLEDOVER_IMAGE_PATH		= "edu/yu/einstein/genplay/resource/images/jump_rolled_over_24x24.png";		// Path of the jump rolled over image
+	private static final String PLUS_IMAGE_PATH					= "edu/yu/einstein/genplay/resource/images/plus_24x24.png";					// Path of the plus image
+	private static final String PLUS_ROLLEDOVER_IMAGE_PATH		= "edu/yu/einstein/genplay/resource/images/plus_rolled_over_24x24.png";		// Path of the plus rolled over image
+	private static final String MINUS_IMAGE_PATH				= "edu/yu/einstein/genplay/resource/images/minus_24x24.png";				// Path of the minus image
+	private static final String MINUS_ROLLEDOVER_IMAGE_PATH		= "edu/yu/einstein/genplay/resource/images/minus_rolled_over_24x24.png";	// Path of the minus rolled over image
+
+
+
 	private static Image applicationImage		 	= null;		// Application image
 	private static Image bannerImage				= null;		// Banner image
 	private static Image toolsImage 				= null;		// Tools image
@@ -69,6 +78,12 @@ public class Images {
 	private static Image helpImage					= null;		// help image
 	private static Image bookmarkImage				= null;		// bookmark image
 	private static Image bookmarkRolledOverImage	= null;		// bookmark rolled over image
+	private static Image jumpImage					= null;		// jump image
+	private static Image jumpRolledOverImage		= null;		// jump rolled over image
+	private static Image plusImage 					= null;		// plus image
+	private static Image plusRolledOverImage 		= null;		// plus rolled over
+	private static Image minusImage					= null;		// minus image
+	private static Image minusRolledOverImage 		= null;		// minus rolled over image
 
 
 	/**
@@ -127,7 +142,7 @@ public class Images {
 
 
 	/**
-	 * @return the bookmark image
+	 * @return the bookmark rolled over image
 	 */
 	public static Image getBookmarkRolledOverImage () {
 		if (bookmarkRolledOverImage == null) {
@@ -193,6 +208,28 @@ public class Images {
 
 
 	/**
+	 * @return the jump image
+	 */
+	public static Image getJumpImage () {
+		if (jumpImage == null) {
+			jumpImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(JUMP_IMAGE_PATH));
+		}
+		return jumpImage;
+	}
+
+
+	/**
+	 * @return the jump rolled over image
+	 */
+	public static Image getJumpRolledOverImage () {
+		if (jumpRolledOverImage == null) {
+			jumpRolledOverImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(JUMP_ROLLEDOVER_IMAGE_PATH));
+		}
+		return jumpRolledOverImage;
+	}
+
+
+	/**
 	 * @return the image showed while tracks are loading
 	 */
 	public static Image getLoadingImage () {
@@ -200,6 +237,28 @@ public class Images {
 			loadingImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(LOADING_IMAGE_PATH));
 		}
 		return loadingImage;
+	}
+
+
+	/**
+	 * @return the minus image
+	 */
+	public static Image getMinusImage () {
+		if (minusImage == null) {
+			minusImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(MINUS_IMAGE_PATH));
+		}
+		return minusImage;
+	}
+
+
+	/**
+	 * @return the minus rolled over image
+	 */
+	public static Image getMinusRolledOverImage () {
+		if (minusRolledOverImage == null) {
+			minusRolledOverImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(MINUS_ROLLEDOVER_IMAGE_PATH));
+		}
+		return minusRolledOverImage;
 	}
 
 
@@ -222,6 +281,28 @@ public class Images {
 			nextImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(NEXT_IMAGE_PATH));
 		}
 		return nextImage;
+	}
+
+
+	/**
+	 * @return the plus image
+	 */
+	public static Image getPlusImage () {
+		if (plusImage == null) {
+			plusImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(PLUS_IMAGE_PATH));
+		}
+		return plusImage;
+	}
+
+
+	/**
+	 * @return the plus rolled over image
+	 */
+	public static Image getPlusRolledOverImage () {
+		if (plusRolledOverImage == null) {
+			plusRolledOverImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(PLUS_ROLLEDOVER_IMAGE_PATH));
+		}
+		return plusRolledOverImage;
 	}
 
 

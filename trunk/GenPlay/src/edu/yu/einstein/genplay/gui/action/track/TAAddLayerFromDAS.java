@@ -35,7 +35,7 @@ import edu.yu.einstein.genplay.core.DAS.DASType;
 import edu.yu.einstein.genplay.core.DAS.DataSource;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
-import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
+import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.dialog.DASDialog.DASDialog;
@@ -103,8 +103,8 @@ public class TAAddLayerFromDAS extends TrackListAction {
 					DASType dasType = dasDialog.getSelectedDasType();
 					int resType = dasDialog.getGenerateType();
 					int dataRange = dasDialog.getDataRange();
-					SimpleGenomeWindow genomeWindow = dasDialog.getUserSpecifiedGenomeWindow();
-					SimpleGenomeWindow currentWindow = ProjectManager.getInstance().getProjectWindow().getGenomeWindow();
+					GenomeWindow genomeWindow = dasDialog.getUserSpecifiedGenomeWindow();
+					GenomeWindow currentWindow = ProjectManager.getInstance().getProjectWindow().getGenomeWindow();
 					if (resType == DASDialog.GENERATE_GENE_LIST) {
 						// case where the result type is a GeneList
 						new TAAddGeneLayerFromDAS(dataSource, dasConnector, dasType, dataRange, genomeWindow, currentWindow, selectedTrack).actionPerformed(arg0);

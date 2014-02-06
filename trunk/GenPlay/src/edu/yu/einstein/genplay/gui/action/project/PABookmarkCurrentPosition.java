@@ -29,8 +29,6 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
@@ -38,7 +36,6 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.dataStructure.gwBookmark.GWBookmark;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
-import edu.yu.einstein.genplay.util.Images;
 
 
 /**
@@ -73,13 +70,11 @@ public final class PABookmarkCurrentPosition extends AbstractAction {
 	public PABookmarkCurrentPosition(Component parent) {
 		super();
 		this.parent = parent;
-		Icon actionIcon = new ImageIcon(Images.getBookmarkImage());
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
 		putValue(ACCELERATOR_KEY, ACCELERATOR);
-		putValue(LARGE_ICON_KEY, actionIcon);
 	}
 
 
