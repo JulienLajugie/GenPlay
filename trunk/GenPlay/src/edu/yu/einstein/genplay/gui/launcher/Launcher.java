@@ -203,6 +203,7 @@ public class Launcher {
 
 		if (initAction.hasBeenInitialized()) {
 			MainFrame.getInstance().setVisible(true);
+			MainFrame.getInstance().lock();
 
 			LoadingThread thread = new LoadingThread();
 			thread.start();

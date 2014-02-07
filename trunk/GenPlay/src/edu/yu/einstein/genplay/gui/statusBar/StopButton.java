@@ -22,14 +22,15 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.statusBar;
 
-import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
-import edu.yu.einstein.genplay.util.colors.Colors;
+import edu.yu.einstein.genplay.util.Images;
 
 
 /**
@@ -40,8 +41,6 @@ import edu.yu.einstein.genplay.util.colors.Colors;
 final class StopButton extends JButton implements ActionListener {
 
 	private static final long serialVersionUID = 8260242568878040712L; 		// generated ID
-	private static final Color ENABLED_COLOR = Colors.RED;		// color of the button when enabled
-	private static final Color DISABLED_COLOR = new Color(200, 175, 175);	// color of the button when disabled
 	private Stoppable stoppable = null;	// stoppable to stop when the button is clicked
 
 
@@ -49,9 +48,17 @@ final class StopButton extends JButton implements ActionListener {
 	 * Creates an instance of a {@link StopButton}
 	 */
 	StopButton() {
-		setBackground(Colors.RED);
-		setMargin(new Insets(4, 4, 4, 4));
+		super();
+		setIcon(new ImageIcon(Images.getStopImage()));
+		setRolloverIcon(new ImageIcon(Images.getStopRolledOverImage()));
+		setDisabledIcon(new ImageIcon(Images.getStopDisabledImage()));
+		setBorderPainted(false);
 		setFocusPainted(false);
+		setMargin(new Insets(0, 0, 0, 0));
+		setContentAreaFilled(false);
+		setPreferredSize(new Dimension(16, 16));
+		setSize(new Dimension(16, 16));
+		setMaximumSize(new Dimension(16, 16));
 		setEnabled(false);
 		addActionListener(this);
 	}
@@ -65,20 +72,6 @@ final class StopButton extends JButton implements ActionListener {
 		if (stoppable != null) {
 			stoppable.stop();
 		}
-	}
-
-
-	/**
-	 * Changes the color of the button when the enabled state changes
-	 */
-	@Override
-	public void setEnabled(boolean b) {
-		if (b) {
-			setBackground(ENABLED_COLOR);
-		} else {
-			setBackground(DISABLED_COLOR);
-		}
-		super.setEnabled(b);
 	}
 
 

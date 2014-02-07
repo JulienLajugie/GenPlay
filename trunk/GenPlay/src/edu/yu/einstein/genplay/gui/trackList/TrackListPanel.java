@@ -22,6 +22,7 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.trackList;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.datatransfer.Clipboard;
@@ -34,6 +35,7 @@ import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.io.Serializable;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -90,6 +92,9 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 		this.model = model;
 		this.model.addListDataListener(this);
 		jpTrackList = new JPanel();
+
+		setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, Color.LIGHT_GRAY));
+
 		jpTrackList.setLayout(new BoxLayout(jpTrackList, BoxLayout.PAGE_AXIS));
 		new DropTarget(jpTrackList, this);
 		setActionMap(TrackListActionMap.getActionMap());
@@ -313,6 +318,7 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 				getModel().insertTrack(insertIndex, draggedTrack);
 			}
 		}
+		setSelectedTrack(draggedTrack);
 		draggedTrack = null;
 		draggedOverTrack = null;
 		unlockTrackHandles();
@@ -352,13 +358,15 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 	 * @param trackToSelect
 	 */
 	public void setSelectedTrack(Track trackToSelect) {
-		// unselect the previous track
-		if (selectedTrack != null) {
-			selectedTrack.setSelected(false);
+		if (trackToSelect != null) {
+			// unselect the previous track
+			if (selectedTrack != null) {
+				selectedTrack.setSelected(false);
+			}
+			// select the dragged over track
+			selectedTrack = trackToSelect;
+			selectedTrack.setSelected(true);
 		}
-		// select the dragged over track
-		selectedTrack = trackToSelect;
-		selectedTrack.setSelected(true);
 	}
 
 

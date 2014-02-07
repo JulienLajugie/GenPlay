@@ -52,13 +52,19 @@ public class Images {
 	private static final String HELP_IMAGE_PATH 				= "edu/yu/einstein/genplay/resource/images/help.png";						// Path of the help image
 	private static final String BOOKMARK_IMAGE_PATH 			= "edu/yu/einstein/genplay/resource/images/bookmark_24x24.png";				// Path of the bookmark image
 	private static final String BOOKMARK_ROLLEDOVER_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/images/bookmark_rolled_over_24x24.png";	// Path of the bookmark rolled over image
+	private static final String BOOKMARK_DISABLED_PATH 			= "edu/yu/einstein/genplay/resource/images/bookmark_disabled_24x24.png";	// Path of the bookmark disabled image
 	private static final String JUMP_IMAGE_PATH					= "edu/yu/einstein/genplay/resource/images/jump_24x24.png";					// Path of the jump image
 	private static final String JUMP_ROLLEDOVER_IMAGE_PATH		= "edu/yu/einstein/genplay/resource/images/jump_rolled_over_24x24.png";		// Path of the jump rolled over image
+	private static final String JUMP_DISABLED_IMAGE_PATH		= "edu/yu/einstein/genplay/resource/images/jump_disabled_24x24.png";		// Path of the jump disabled
+	private static final String STOP_IMAGE_PATH					= "edu/yu/einstein/genplay/resource/images/stop_16x16.png";					// Path of the stop image
+	private static final String STOP_ROLLEDOVER_IMAGE_PATH		= "edu/yu/einstein/genplay/resource/images/stop_rolled_over_16x16.png";		// Path of the stop rolled over image
+	private static final String STOP_DISABLED_IMAGE_PATH		= "edu/yu/einstein/genplay/resource/images/stop_disabled_16x16.png";		// Path of the stop disabled
+	private static final String RECYCLE_IMAGE_PATH				= "edu/yu/einstein/genplay/resource/images/recycle_16x16.png";				// Path of the recycle image
+	private static final String RECYCLEROLLEDOVER_IMAGE_PATH	= "edu/yu/einstein/genplay/resource/images/recycle_rolled_over_16x16.png";	// Path of the recycle rolled over image
 	private static final String PLUS_IMAGE_PATH					= "edu/yu/einstein/genplay/resource/images/plus_24x24.png";					// Path of the plus image
 	private static final String PLUS_ROLLEDOVER_IMAGE_PATH		= "edu/yu/einstein/genplay/resource/images/plus_rolled_over_24x24.png";		// Path of the plus rolled over image
 	private static final String MINUS_IMAGE_PATH				= "edu/yu/einstein/genplay/resource/images/minus_24x24.png";				// Path of the minus image
 	private static final String MINUS_ROLLEDOVER_IMAGE_PATH		= "edu/yu/einstein/genplay/resource/images/minus_rolled_over_24x24.png";	// Path of the minus rolled over image
-
 
 
 	private static Image applicationImage		 	= null;		// Application image
@@ -78,8 +84,15 @@ public class Images {
 	private static Image helpImage					= null;		// help image
 	private static Image bookmarkImage				= null;		// bookmark image
 	private static Image bookmarkRolledOverImage	= null;		// bookmark rolled over image
+	private static Image bookmarkDisabledImage		= null;		// bookmark disabled image
 	private static Image jumpImage					= null;		// jump image
 	private static Image jumpRolledOverImage		= null;		// jump rolled over image
+	private static Image jumpDisabledImage			= null;		// jump disabled image
+	private static Image stopImage					= null;		// stop image
+	private static Image stopRolledOverImage		= null;		// stop rolled over image
+	private static Image stopDisabledImage			= null;		// stop disabled image
+	private static Image recycleImage 				= null;		// recycle image
+	private static Image recycleRolledOverImage 	= null;		// recycle rolled over
 	private static Image plusImage 					= null;		// plus image
 	private static Image plusRolledOverImage 		= null;		// plus rolled over
 	private static Image minusImage					= null;		// minus image
@@ -127,6 +140,17 @@ public class Images {
 			bannerImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(BANNER_IMAGE_PATH));
 		}
 		return bannerImage;
+	}
+
+
+	/**
+	 * @return the bookmark disabled image
+	 */
+	public static Image getBookmarkDisabledImage () {
+		if (bookmarkDisabledImage == null) {
+			bookmarkDisabledImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(BOOKMARK_DISABLED_PATH));
+		}
+		return bookmarkDisabledImage;
 	}
 
 
@@ -204,6 +228,17 @@ public class Images {
 			inferiorImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(INFERIOR_IMAGE_PATH));
 		}
 		return inferiorImage;
+	}
+
+
+	/**
+	 * @return the jump disabled image
+	 */
+	public static Image getJumpDisabledImage () {
+		if (jumpDisabledImage == null) {
+			jumpDisabledImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(JUMP_DISABLED_IMAGE_PATH));
+		}
+		return jumpDisabledImage;
 	}
 
 
@@ -318,6 +353,28 @@ public class Images {
 
 
 	/**
+	 * @return the recycle image
+	 */
+	public static Image getRecycleImage () {
+		if (recycleImage == null) {
+			recycleImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(RECYCLE_IMAGE_PATH));
+		}
+		return recycleImage;
+	}
+
+
+	/**
+	 * @return the plus recycle over image
+	 */
+	public static Image getRecycleRolledOverImage () {
+		if (recycleRolledOverImage == null) {
+			recycleRolledOverImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(RECYCLEROLLEDOVER_IMAGE_PATH));
+		}
+		return recycleRolledOverImage;
+	}
+
+
+	/**
 	 * Creates a new resized image.
 	 * @param image		the image
 	 * @param width 	width of the new image
@@ -338,6 +395,39 @@ public class Images {
 	 */
 	public static Image getSquareImage (Image image, int side) {
 		return getResizedImage(image, side, side);
+	}
+
+
+	/**
+	 * @return the stop disabled image
+	 */
+	public static Image getStopDisabledImage () {
+		if (stopDisabledImage == null) {
+			stopDisabledImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(STOP_DISABLED_IMAGE_PATH));
+		}
+		return stopDisabledImage;
+	}
+
+
+	/**
+	 * @return the stop image
+	 */
+	public static Image getStopImage () {
+		if (stopImage == null) {
+			stopImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(STOP_IMAGE_PATH));
+		}
+		return stopImage;
+	}
+
+
+	/**
+	 * @return the stop rolled over image
+	 */
+	public static Image getStopRolledOverImage () {
+		if (stopRolledOverImage == null) {
+			stopRolledOverImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(STOP_ROLLEDOVER_IMAGE_PATH));
+		}
+		return stopRolledOverImage;
 	}
 
 

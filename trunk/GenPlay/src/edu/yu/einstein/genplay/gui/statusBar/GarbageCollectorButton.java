@@ -27,7 +27,10 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+
+import edu.yu.einstein.genplay.util.Images;
 
 /**
  * This class implements a button for calling the garbage collector from the main frame.
@@ -39,22 +42,22 @@ public class GarbageCollectorButton extends JButton implements ActionListener {
 
 	/** Default generated serial version ID */
 	private static final long serialVersionUID = 1971269845667687839L;
-	private static final int 		SIDE = 15; 		// side base of the button
 
 
 	/**
 	 * Constructor of {@link GarbageCollectorButton}
 	 */
 	protected GarbageCollectorButton () {
+		setIcon(new ImageIcon(Images.getRecycleImage()));
+		setRolloverIcon(new ImageIcon(Images.getRecycleRolledOverImage()));
+		setBorderPainted(false);
+		setFocusPainted(false);
 		setMargin(new Insets(0, 0, 0, 0));
-		setText("GC");
-
+		setContentAreaFilled(false);
+		setPreferredSize(new Dimension(16, 16));
+		setSize(new Dimension(16, 16));
+		setMaximumSize(new Dimension(16, 16));
 		setToolTipText("Clean up the memory (Garbage Collector).");
-
-		Dimension dimension = new Dimension(SIDE * 2, SIDE);
-		setPreferredSize(dimension);
-		setMinimumSize(dimension);
-
 		addActionListener(this);
 	}
 

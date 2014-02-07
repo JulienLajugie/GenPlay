@@ -86,6 +86,7 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 		jbJump = new JButton();
 		jbJump.setIcon(new ImageIcon(Images.getJumpImage()));
 		jbJump.setRolloverIcon(new ImageIcon(Images.getJumpRolledOverImage()));
+		jbJump.setDisabledIcon(new ImageIcon(Images.getJumpDisabledImage()));
 		jbJump.setBorderPainted(false);
 		jbJump.setFocusPainted(false);
 		jbJump.setMargin(new Insets(0, 0, 0, 0));
@@ -135,6 +136,8 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 		jbBookmark.setHideActionText(true);
 		jbBookmark.setIcon(new ImageIcon(Images.getBookmarkImage()));
 		jbBookmark.setRolloverIcon(new ImageIcon(Images.getBookmarkRolledOverImage()));
+		jbBookmark.setDisabledIcon(new ImageIcon(Images.getBookmarkDisabledImage()));
+
 
 		// Add the components
 		setLayout(new GridBagLayout());
@@ -163,9 +166,9 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 
 		// Add the genome coordinate selector
 		if (jcbGenomeSelection != null) {
-			gbc.fill = GridBagConstraints.HORIZONTAL;
-			gbc.gridx = 3;
-			gbc.gridy = 0;
+			gbc.fill = GridBagConstraints.NONE;
+			gbc.gridx = 0;
+			gbc.gridy = 1;
 			add(jcbGenomeSelection, gbc);
 		}
 	}
@@ -245,6 +248,8 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 	 */
 	public void lock() {
 		jcbGenomeWindow.setEnabled(false);
+		jbJump.setEnabled(false);
+		jbBookmark.setEnabled(false);
 	}
 
 
@@ -286,6 +291,8 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 	 */
 	public void unlock() {
 		jcbGenomeWindow.setEnabled(true);
+		jbJump.setEnabled(true);
+		jbBookmark.setEnabled(true);
 	}
 
 

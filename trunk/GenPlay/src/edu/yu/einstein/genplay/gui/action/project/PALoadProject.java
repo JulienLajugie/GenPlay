@@ -151,10 +151,14 @@ public class PALoadProject extends TrackListActionWorker<Track[]> {
 			if (!init.hasBeenInitialized() || !initMG.hasBeenInitialized()) {
 				hasBeenInitialized = false;
 			}
+			try {
+				TrackListModel trackListModel = new TrackListModel();
+				MainFrame.getInstance().getTrackListPanel().setModel(trackListModel); // we remove all the track before the loading (better for memory usage)
+			} catch (Exception e) {
+				// do nothing, dirty trick to avoid getting an awt error
+			}
 		}
 		if (hasBeenInitialized) {
-			TrackListModel trackListModel = new TrackListModel();
-			MainFrame.getInstance().getTrackListPanel().setModel(trackListModel); // we remove all the track before the loading (better for memory usage)
 			notifyActionStart("Loading Project", 1, false);
 			return RecordingManager.getInstance().getProjectRecording().getTrackList();
 		}

@@ -71,7 +71,7 @@ final class HandlePanel extends JPanel implements MouseListener, MouseMotionList
 	HandlePanel(int number) {
 		this.number = number;
 		setBackground(Colors.TRACK_HANDLE_BACKGROUND);
-		setPreferredSize(new Dimension(HANDLE_WIDTH - 1, 0));
+		setPreferredSize(new Dimension(HANDLE_WIDTH, 0));
 
 		trackListeners = new ArrayList<TrackListener>();
 

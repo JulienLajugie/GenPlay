@@ -162,6 +162,8 @@ public class TAAddLayer extends TrackListAction {
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(getRootPane(), "The specified file cannot be loaded.", "Invalid File", JOptionPane.WARNING_MESSAGE, null);
 		}
+		// reset the file to load
+		fileToLoad = null;
 	}
 
 

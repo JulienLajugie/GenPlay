@@ -32,6 +32,7 @@ import java.io.IOException;
 
 import javax.swing.JFileChooser;
 import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 
 import edu.yu.einstein.genplay.util.Utils;
 
@@ -91,6 +92,17 @@ public final class ConfigurationManager {
 		if (Utils.isMacOS()) {
 			return UIManager.getSystemLookAndFeelClassName();
 		} else {
+			// the default look and feel is nimbus if it's installed
+			try {
+				for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+					if ("Nimbus".equals(info.getName())) {
+						return info.getClassName();
+					}
+				}
+			} catch (Exception e) {
+				// If Nimbus is not available, we set the cross platform look&feel
+				return UIManager.getCrossPlatformLookAndFeelClassName();
+			}
 			return "javax.swing.plaf.metal.MetalLookAndFeel";
 		}
 	}

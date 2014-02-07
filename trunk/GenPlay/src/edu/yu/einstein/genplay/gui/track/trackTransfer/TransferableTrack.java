@@ -191,10 +191,12 @@ public class TransferableTrack implements Transferable {
 			if (data instanceof SCWList) {
 				SCWList scwList = (SCWList) data;
 				ListView<ScoredChromosomeWindow> chrLV = ChromosomeWindowListViews.subList(scwList, displayedWindow);
-				String clipboardString = "";
+				String clipboardString = "Layer: " + activeLayer.getName() + ", Region: " + displayedWindow  + "\n";
 				int i =0;
 				for (i = 0; (i < chrLV.size()) && (i < MAX_ELEMENT_TO_PUT_IN_CLIPBOARD); i++) {
-					clipboardString += chr + "\t" + chrLV.get(i).getStart() + "\t" + chrLV.get(i).getStop() + "\t" + chrLV.get(i).getScore() + "\n";
+					if (chrLV.get(i).getScore() != 0) {
+						clipboardString += chr + "\t" + chrLV.get(i).getStart() + "\t" + chrLV.get(i).getStop() + "\t" + chrLV.get(i).getScore() + "\n";
+					}
 				}
 				if (i >= MAX_ELEMENT_TO_PUT_IN_CLIPBOARD) {
 					clipboardString += "and more...\n";
@@ -203,7 +205,7 @@ public class TransferableTrack implements Transferable {
 			} else if (data instanceof GeneList) {
 				GeneList scwList = (GeneList) data;
 				ListView<Gene> chrLV = ChromosomeWindowListViews.subList(scwList, displayedWindow);
-				String clipboardString = "";
+				String clipboardString = "Layer: " + activeLayer.getName() + ", Region: " + displayedWindow  + "\n";
 				int i = 0;
 				for (i = 0; (i < chrLV.size()) && (i < MAX_ELEMENT_TO_PUT_IN_CLIPBOARD); i++) {
 					clipboardString += GeneListAsBedWriter.geneToString(chrLV.get(i), chr) + "\n";

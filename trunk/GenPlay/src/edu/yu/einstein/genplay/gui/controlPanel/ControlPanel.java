@@ -91,7 +91,7 @@ public final class ControlPanel extends JPanel {
 
 		gbc.gridx = 1;
 		gbc.gridy = 1;
-		gbc.weightx = 0;
+		gbc.weightx = 0.1;
 		gbc.gridwidth = 1;
 		add(chromosomePanel, gbc);
 

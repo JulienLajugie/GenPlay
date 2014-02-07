@@ -44,6 +44,7 @@ import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.projectFrame.loadProject.LoadProjectPanel;
 import edu.yu.einstein.genplay.gui.projectFrame.newProject.NewProjectPanel;
 import edu.yu.einstein.genplay.util.Images;
+import edu.yu.einstein.genplay.util.LookAndFeels;
 
 /**
  * This class manages all the screen project.
@@ -242,6 +243,10 @@ public class ProjectFrame extends JFrame {
 	 */
 	private ProjectFrame() throws HeadlessException {
 		super();
+		// customise the look and feel
+		LookAndFeels.customizeLookAndFeel();
+		// set the look and feel
+		LookAndFeels.setLookAndFeel(this);
 	}
 
 

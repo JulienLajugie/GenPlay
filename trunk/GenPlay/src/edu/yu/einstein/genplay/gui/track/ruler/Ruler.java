@@ -138,21 +138,23 @@ public class Ruler implements GenomeWindowListener {
 	 * Initializes the button of the ruler
 	 */
 	private void initButton() {
-		rulerButton.setBackground(Colors.WHITE);
+		rulerButton.setBackground(Colors.TRACK_HANDLE_BACKGROUND);
 		rulerButton.setMargin(new Insets(0, 0, 0, 0));
 		rulerButton.setFocusPainted(false);
 		rulerButton.setIcon(new ImageIcon(Images.getToolsImage()));
 		rulerButton.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 1, Colors.LIGHT_GREY));
+		rulerButton.setContentAreaFilled(false);
+		rulerButton.setOpaque(true);
 		rulerButton.setPreferredSize(new Dimension(HANDLE_WIDTH + 1, RULER_HEIGHT));
 		rulerButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				rulerButton.setBackground(Colors.GREY);
+				rulerButton.setBackground(Colors.TRACK_HANDLE_ROLLOVER);
 				super.mouseEntered(e);
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
-				rulerButton.setBackground(Colors.WHITE);
+				rulerButton.setBackground(Colors.TRACK_HANDLE_BACKGROUND);
 				super.mouseExited(e);
 			}
 		});

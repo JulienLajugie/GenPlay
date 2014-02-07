@@ -32,9 +32,9 @@ public class NotUniqueNorPrimarySAMRecordFilter implements SAMRecordFilter {
 
 	@Override
 	public SAMRecord applyFilter(SAMRecord samRecord) {
-		Character typeBWAFlag = (Character) samRecord.getAttribute("XT");
+		String typeBWAFlag = (String) samRecord.getAttribute("XT");
 		if (samRecord.getNotPrimaryAlignmentFlag()) {
-			return ((typeBWAFlag != null) && (typeBWAFlag == 'U')) ? samRecord : null;
+			return ((typeBWAFlag != null) && typeBWAFlag.equalsIgnoreCase("U")) ? samRecord : null;
 		} else {
 			return samRecord;
 		}

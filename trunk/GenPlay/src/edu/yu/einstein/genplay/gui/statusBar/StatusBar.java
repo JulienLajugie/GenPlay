@@ -65,13 +65,13 @@ public final class StatusBar extends JPanel {
 		gbc.fill = GridBagConstraints.VERTICAL;
 		gbc.anchor = GridBagConstraints.CENTER;
 
-		gbc.insets = new Insets(5, 10, 5, 3);
+		gbc.insets = new Insets(3, 10, 3, 3);
 		gbc.weightx = 0;
 		gbc.weighty = 1;
 		gbc.gridx = 0;
 		add(progressBar, gbc);
 
-		gbc.insets = new Insets(5, 0, 5, 0);
+		gbc.insets = new Insets(0, 0, 0, 0);
 		gbc.gridx++;
 		add(stopButton, gbc);
 
@@ -80,13 +80,13 @@ public final class StatusBar extends JPanel {
 		gbc.gridx++;
 		add(statusLabel, gbc);
 
-		gbc.insets = new Insets(5, 0, 5, 0);
+		gbc.insets = new Insets(0, 0, 0, 0);
 		gbc.weightx = 0;
 		gbc.weighty = 1;
 		gbc.gridx++;
 		add(garbageCollectorButton, gbc);
 
-		gbc.insets = new Insets(1, 3, 1, 1);
+		gbc.insets = new Insets(0, 3, 0, 1);
 		gbc.gridx++;
 		add(memoryPanel, gbc);
 		setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Colors.LIGHT_GREY));
@@ -133,13 +133,10 @@ public final class StatusBar extends JPanel {
 
 
 	/**
-	 * Sets the progress of the action on the status bar
-	 * @param step current step of the action
-	 * @param progress progress of the action
+	 * Set the description label when starting a new project
 	 */
-	public void setProgress(int step, int progress) {
-		progressBar.setProgress(progress);
-		statusLabel.setStep(step);
+	public void initDescriptionForFirstUse () {
+		statusLabel.initDescriptionForFirstUse();
 	}
 
 
@@ -154,9 +151,12 @@ public final class StatusBar extends JPanel {
 
 
 	/**
-	 * Set the description label when starting a new project
+	 * Sets the progress of the action on the status bar
+	 * @param step current step of the action
+	 * @param progress progress of the action
 	 */
-	public void initDescriptionForFirstUse () {
-		statusLabel.initDescriptionForFirstUse();
+	public void setProgress(int step, int progress) {
+		progressBar.setProgress(progress);
+		statusLabel.setStep(step);
 	}
 }

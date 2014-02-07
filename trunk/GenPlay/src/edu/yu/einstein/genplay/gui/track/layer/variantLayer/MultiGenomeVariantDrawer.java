@@ -152,19 +152,15 @@ class MultiGenomeVariantDrawer implements Serializable {
 	 * @param nucleotideNumber	number of nucleotide to display
 	 */
 	private void drawLetters (Graphics g, int x, int width, int height, VariantDisplay variantDisplay, int nucleotideNumber) {
-		boolean draw = false;								// boolean to check if drawing letters is required
 		Variant variant = variantDisplay.getVariant();
 		VariantType variantType = variant.getType();		// gets the variant type
 		if (	((variantType == VariantType.INSERTION) && 	(MGDisplaySettings.DRAW_INSERTION_LETTERS 	== MGDisplaySettings.YES_MG_OPTION)) ||	// checks all options in order to determine if the letters must be drawn
 				((variantType == VariantType.DELETION) 	&& 	(MGDisplaySettings.DRAW_DELETION_LETTERS 	== MGDisplaySettings.YES_MG_OPTION)) ||
 				((variantType == VariantType.SNPS) 		&& 	(MGDisplaySettings.DRAW_SNP_LETTERS 		== MGDisplaySettings.YES_MG_OPTION)) ||
 				((variant instanceof ReferenceVariant)	&& 	(MGDisplaySettings.DRAW_REFERENCE_LETTERS 	== MGDisplaySettings.YES_MG_OPTION))) {
-			draw = true;
-		}
 
-		if (draw) {
 			// if the letters must be drawn
-			double windowWidth = width / nucleotideNumber;									// calculate the size of window (here, the windo is the width of a nucleotide on the screen)
+			double windowWidth = width / nucleotideNumber;									// calculate the size of window (here, the window is the width of a nucleotide on the screen)
 			FontMetrics fm = g.getFontMetrics();											// get the font metrics
 			if ((fm.getHeight() < height) && (fm.stringWidth("A") < windowWidth)) {			// verifies if the height of the font is smaller than the height of the stripe AND if the width of a reference letter (A) is smaller than a window size
 				String letters = variantDisplay.getVariantSequence();
@@ -178,10 +174,13 @@ class MultiGenomeVariantDrawer implements Serializable {
 					letterHeight += (g2d.getClipBounds().height - height);						// define where the draw will start on the Y axis
 				}
 
-				for (int i = 0; i < nucleotideNumber; i++) {							// for all the nucleotide that are supposed to be displayed
-					String letter = "-";												// the default letter is the question mark
-					if ((letters != "-") && (i < letters.length())) {					// if the letters are different to the question mark and if the current index is smaller than the string length
-						letter = letters.charAt(i) + "";								// we get the current character
+				int firstNucleotide = projectWindow.getGenomeWindow().getStart() - variant.getStart();	// retrieve the position of the first displayed nucleotide in the variant
+				firstNucleotide = Math.max(0, firstNucleotide);
+
+				for (int i = 0; i < nucleotideNumber; i++) {								// for all the nucleotide that are supposed to be displayed
+					String letter = "-";													// the default letter is the question mark
+					if ((letters != "-") && ((i + firstNucleotide) < letters.length())) {		// if the letters are different to the question mark and if the current index is smaller than the string length
+						letter = letters.charAt(i + firstNucleotide) + "";					// we get the current character
 					}
 					int xC = (int) Math.round(x + (i * windowWidth) + ((windowWidth - fm.stringWidth(letter)) * 0.5));	// the horizontal position from where the draw starts: x (of the stripe) + size of a window * current window number + (windows width - letter width) / 2 (for the middle)
 					g2d.drawString(letter, xC, letterHeight);							// we draw the letter

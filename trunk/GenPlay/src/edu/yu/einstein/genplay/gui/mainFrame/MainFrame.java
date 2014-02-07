@@ -22,7 +22,6 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.mainFrame;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
@@ -39,8 +38,6 @@ import java.awt.event.WindowEvent;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
 import com.apple.eawt.Application;
@@ -51,7 +48,6 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
-import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.OSXIntegration.OSXHandler;
 import edu.yu.einstein.genplay.gui.action.multiGenome.properties.MGARefresh;
@@ -99,6 +95,7 @@ import edu.yu.einstein.genplay.gui.track.ruler.Ruler;
 import edu.yu.einstein.genplay.gui.trackList.TrackListModel;
 import edu.yu.einstein.genplay.gui.trackList.TrackListPanel;
 import edu.yu.einstein.genplay.util.Images;
+import edu.yu.einstein.genplay.util.LookAndFeels;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -259,9 +256,9 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		showMenuBar();
 
 		// customise the look and feel
-		customizeLookAndFeel();
+		LookAndFeels.customizeLookAndFeel();
 		// set the look and feel
-		setLookAndFeel();
+		LookAndFeels.setLookAndFeel(this);
 		// set the application behavior when closed
 		setDefaultCloseOperation();
 
@@ -294,17 +291,6 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		new MainMenu(getRootPane().getActionMap()).show(this, getMousePosition().x, getMousePosition().y);
-	}
-
-
-	/**
-	 * Customizes the look and feel
-	 */
-	private void customizeLookAndFeel() {
-		// change the colors for nimbus look and feel
-		UIManager.put("nimbusBase", new Color(41, 96, 150));
-		UIManager.put("nimbusBlueGrey", new Color(187, 196, 209));
-		UIManager.put("control", new Color(228, 236, 247));
 	}
 
 
@@ -477,24 +463,6 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 
 
 	/**
-	 * Changes the look and feel of the application
-	 */
-	private void setLookAndFeel() {
-		try {
-			UIManager.setLookAndFeel(ConfigurationManager.getInstance().getLookAndFeel());
-			SwingUtilities.updateComponentTreeUI(this);
-		} catch (Exception e) {
-			ExceptionManager.getInstance().caughtException(Thread.currentThread(), e, "Error while loading the look and feel specified in the config file");
-			try {
-				UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-			} catch (Exception e1) {
-				ExceptionManager.getInstance().caughtException(Thread.currentThread(), e1, "Error while loading the default look and feel");
-			}
-		}
-	}
-
-
-	/**
 	 * Set the current selected genome as well as repaint the frame
 	 * @param genomeName the new selected genome name to use for the coordinate system
 	 */
@@ -543,7 +511,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		OptionDialog optionDialog = new OptionDialog();
 		if (optionDialog.showConfigurationDialog(getRootPane()) == OptionDialog.APPROVE_OPTION) {
 			if (optionDialog.lookAndFeelChanged()) {
-				setLookAndFeel();
+				LookAndFeels.setLookAndFeel(this);
 			}
 			if (optionDialog.showMenuBarChanged()) {
 				showMenuBar();

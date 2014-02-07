@@ -74,7 +74,7 @@ class AssemblyPanel extends JPanel implements ActionListener {
 	private final JComboBox 			jcClade;			// Clade combo box
 	private final JComboBox 			jcGenome;			// Genome combo box
 	private final JComboBox 			jcAssembly;			// Assembly combo box
-	private final JButton 			jbChromosome;		// Button to create a chromosome chooser object
+	private final JButton 				jbChromosome;		// Button to create a chromosome chooser object
 
 	private Map<String, Clade> 	cladeList;			// list of all the assembly available for GenPlay retrived from an XML file
 	private Clade 				selectedClade;		// Selected Clade
@@ -119,6 +119,8 @@ class AssemblyPanel extends JPanel implements ActionListener {
 		//Chromosome selection button
 		icon = new ImageIcon(Images.getToolsImage());
 		jbChromosome = new JButton(icon);
+		jbChromosome.setContentAreaFilled(false);
+		jbChromosome.setOpaque(true);
 		jbChromosome.setPreferredSize(new Dimension(20, 20));
 		jbChromosome.setMargin(new Insets(0, 0, 0, 0));
 
@@ -239,65 +241,6 @@ class AssemblyPanel extends JPanel implements ActionListener {
 
 
 	/**
-	 * Initialization of the clade combo box.
-	 */
-	private void initClade () {
-		//Get assemblies from xml files
-		cladeList = new HashMap<String, Clade>();
-		try {
-			AssemblyListLoader genomeHandler = new AssemblyListLoader();
-			cladeList = genomeHandler.getCladeList();
-		} catch (Exception e) {
-			ExceptionManager.getInstance().caughtException(e);
-		}
-		List<String> cladeNames = new ArrayList<String>(cladeList.keySet());
-		Collections.sort(cladeNames);
-		for (String name: cladeNames){
-			jcClade.addItem(cladeList.get(name));
-		}
-		jcClade.setSelectedItem(cladeList.get(CLADE_DEFAULT_VALUE));
-		selectedClade = (Clade) jcClade.getSelectedItem();
-	}
-
-
-	/**
-	 * Initialization of the genome combo box.
-	 */
-	private void initGenome () {
-		jcGenome.removeAllItems();
-		List<String> genomeNames = new ArrayList<String>(selectedClade.getGenomeList().keySet());
-		Collections.sort(genomeNames);
-		for (String name: genomeNames){
-			jcGenome.addItem(selectedClade.getGenomeList().get(name));
-		}
-		jcGenome.setSelectedItem(selectedClade.getGenomeList().get(GENOME_DEFAULT_VALUE));
-		if (jcGenome.getSelectedItem() == null) {
-			jcGenome.setSelectedIndex(0);
-		}
-		selectedGenome = (Genome) jcGenome.getSelectedItem();
-	}
-
-
-	/**
-	 * Initialization of the assembly combo box
-	 */
-	private void initAssembly () {
-		jcAssembly.removeAllItems();
-		List<String> assemblies = new ArrayList<String>(selectedGenome.getAssemblyList().keySet());
-		Collections.sort(assemblies);
-		for (int i = (assemblies.size()-1); i >= 0; i--) {
-			jcAssembly.addItem(selectedGenome.getAssemblyList().get(assemblies.get(i)));
-		}
-		jcAssembly.setSelectedIndex(0);
-		selectedAssembly = (Assembly) jcAssembly.getSelectedItem();
-		//fullChromosomeList = new ArrayList<Chromosome>(selectedAssembly.getChromosomeList().values());
-		fullChromosomeList = selectedAssembly.getChromosomeList();
-		Collections.sort(fullChromosomeList);
-		selectedChromosomes = fullChromosomeList;
-	}
-
-
-	/**
 	 * This listener updates combo boxes when an action is performed.
 	 */
 	@Override
@@ -340,22 +283,6 @@ class AssemblyPanel extends JPanel implements ActionListener {
 
 
 	/**
-	 * @return the selectedClade
-	 */
-	protected Clade getSelectedClade() {
-		return selectedClade;
-	}
-
-
-	/**
-	 * @return the selectedGenome
-	 */
-	protected Genome getSelectedGenome() {
-		return selectedGenome;
-	}
-
-
-	/**
 	 * @return the selectedAssembly
 	 */
 	protected Assembly getSelectedAssembly() {
@@ -373,5 +300,80 @@ class AssemblyPanel extends JPanel implements ActionListener {
 			chromosomeList.add(chromosome);
 		}
 		return chromosomeList;
+	}
+
+
+	/**
+	 * @return the selectedClade
+	 */
+	protected Clade getSelectedClade() {
+		return selectedClade;
+	}
+
+
+	/**
+	 * @return the selectedGenome
+	 */
+	protected Genome getSelectedGenome() {
+		return selectedGenome;
+	}
+
+
+	/**
+	 * Initialization of the assembly combo box
+	 */
+	private void initAssembly () {
+		jcAssembly.removeAllItems();
+		List<String> assemblies = new ArrayList<String>(selectedGenome.getAssemblyList().keySet());
+		Collections.sort(assemblies);
+		for (int i = (assemblies.size()-1); i >= 0; i--) {
+			jcAssembly.addItem(selectedGenome.getAssemblyList().get(assemblies.get(i)));
+		}
+		jcAssembly.setSelectedIndex(0);
+		selectedAssembly = (Assembly) jcAssembly.getSelectedItem();
+		//fullChromosomeList = new ArrayList<Chromosome>(selectedAssembly.getChromosomeList().values());
+		fullChromosomeList = selectedAssembly.getChromosomeList();
+		Collections.sort(fullChromosomeList);
+		selectedChromosomes = fullChromosomeList;
+	}
+
+
+	/**
+	 * Initialization of the clade combo box.
+	 */
+	private void initClade () {
+		//Get assemblies from xml files
+		cladeList = new HashMap<String, Clade>();
+		try {
+			AssemblyListLoader genomeHandler = new AssemblyListLoader();
+			cladeList = genomeHandler.getCladeList();
+		} catch (Exception e) {
+			ExceptionManager.getInstance().caughtException(e);
+		}
+		List<String> cladeNames = new ArrayList<String>(cladeList.keySet());
+		Collections.sort(cladeNames);
+		for (String name: cladeNames){
+			jcClade.addItem(cladeList.get(name));
+		}
+		jcClade.setSelectedItem(cladeList.get(CLADE_DEFAULT_VALUE));
+		selectedClade = (Clade) jcClade.getSelectedItem();
+	}
+
+
+	/**
+	 * Initialization of the genome combo box.
+	 */
+	private void initGenome () {
+		jcGenome.removeAllItems();
+		List<String> genomeNames = new ArrayList<String>(selectedClade.getGenomeList().keySet());
+		Collections.sort(genomeNames);
+		for (String name: genomeNames){
+			jcGenome.addItem(selectedClade.getGenomeList().get(name));
+		}
+		jcGenome.setSelectedItem(selectedClade.getGenomeList().get(GENOME_DEFAULT_VALUE));
+		if (jcGenome.getSelectedItem() == null) {
+			jcGenome.setSelectedIndex(0);
+		}
+		selectedGenome = (Genome) jcGenome.getSelectedItem();
 	}
 }
