@@ -338,9 +338,6 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 			AlignmentBlock firstBlock = alignmentBlocks.get(0);
 			int start = firstBlock.getReferenceStart();
 			int stop = start + firstBlock.getLength();
-
-			System.out.println(chromosome + "\t" + start + "\t" + stop);
-
 			// compute the read position with specified strand shift and read length
 			if (strandOptions != null) {
 				SimpleChromosomeWindow resultStartStop = strandOptions.computeStartStop(chromosome, start, stop, strand);
