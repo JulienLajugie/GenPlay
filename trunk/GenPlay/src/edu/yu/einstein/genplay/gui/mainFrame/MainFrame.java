@@ -246,7 +246,9 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		if (Utils.isMacOS()) {
 			// add a menu bar for OSX
 			Application macApplication = Application.getApplication();
-			macApplication.setDefaultMenuBar(getJMenuBar());
+			try {
+				macApplication.setDefaultMenuBar(getJMenuBar());
+			} catch (IllegalStateException e) {}// case where the menu bar is not suported by the look and feel
 			macApplication.setAboutHandler(OSXHandler.getInstance());
 			macApplication.setPreferencesHandler(OSXHandler.getInstance());
 			macApplication.setQuitHandler(OSXHandler.getInstance());
