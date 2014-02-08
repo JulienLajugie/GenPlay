@@ -81,8 +81,14 @@ public abstract class AbstractGene extends AbstractChromosomeWindow implements G
 			if (other.getExons() != null) {
 				return false;
 			}
-		} else if (!getExons().equals(other.getExons())) {
+		} else if (getExons().size() != other.getExons().size()) {
 			return false;
+		} else {
+			for (int i = 0; i < getExons().size(); i++) {
+				if (!getExons().get(i).equals(other.getExons().get(i))) {
+					return false;
+				}
+			}
 		}
 		return true;
 	}

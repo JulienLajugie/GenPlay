@@ -431,6 +431,7 @@ public final class Utils {
 				new GTFFilter(),
 				new GFFFilter(),
 				new PSLFilter(),
+				new TwoBitFilter(),
 				new ElandExtendedFilter()
 		};
 		return filters;

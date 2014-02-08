@@ -57,7 +57,10 @@ public abstract class AbstractScoredChromosomeWindow extends AbstractChromosomeW
 			return false;
 		}
 		if (getScore() != other.getScore()) {
-			return false;
+			if (!Float.isNaN(getScore()) || !Float.isNaN(other.getScore())) {
+				// needed because in java NaN == NaN returns false
+				return false;
+			}
 		}
 		return true;
 	}
