@@ -91,8 +91,7 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 		jbJump.setFocusPainted(false);
 		jbJump.setMargin(new Insets(0, 0, 0, 0));
 		jbJump.setContentAreaFilled(false);
-		//jbJump.set
-
+		jbJump.setPreferredSize(new Dimension(24, 24));
 		jbJump.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -218,6 +217,7 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 		jcbGenomeWindow.setEditable(true);
 		jcbGenomeWindow.setPrototypeDisplayValue(new GWBookmark(projectWindow.getGenomeWindow().toString(), projectWindow.getGenomeWindow()));
 		jcbGenomeWindow.setSelectedItem(projectWindow.getGenomeWindow().toString());
+		jcbGenomeWindow.setPreferredSize(new Dimension(24, 24));
 
 		jcbGenomeWindow.addActionListener(new ActionListener() {
 			@Override

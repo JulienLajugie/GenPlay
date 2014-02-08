@@ -57,8 +57,6 @@ final class StopButton extends JButton implements ActionListener {
 		setMargin(new Insets(0, 0, 0, 0));
 		setContentAreaFilled(false);
 		setPreferredSize(new Dimension(16, 16));
-		setSize(new Dimension(16, 16));
-		setMaximumSize(new Dimension(16, 16));
 		setEnabled(false);
 		addActionListener(this);
 	}
