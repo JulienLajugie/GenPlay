@@ -190,7 +190,7 @@ public class TransfragDialog extends JDialog {
 		add(jbCancel, c);
 
 		setTitle("Transfrag");
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		pack();
 		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		getRootPane().setDefaultButton(jbOk);

@@ -94,7 +94,7 @@ public abstract class MultiGenomeTrackActionDialog extends JDialog {
 		add(validationPanel, BorderLayout.SOUTH);
 
 		// Dialog settings
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		setTitle(title);
 		//setAlwaysOnTop(true);
 		setResizable(false);

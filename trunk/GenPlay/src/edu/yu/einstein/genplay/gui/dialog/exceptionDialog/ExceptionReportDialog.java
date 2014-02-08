@@ -96,7 +96,7 @@ public class ExceptionReportDialog extends JDialog {
 
 		// Dialog settings
 		setTitle("Exception report");
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		setResizable(true);
 		setVisible(false);
 		pack();

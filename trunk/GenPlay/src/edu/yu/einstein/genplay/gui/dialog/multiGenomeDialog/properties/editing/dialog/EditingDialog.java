@@ -76,7 +76,7 @@ public class EditingDialog<K> extends JDialog {
 
 		// Dialog settings
 		setTitle("Multi-Genome Project Properties - Editing Dialog");
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setResizable(false);
 		setVisible(false);

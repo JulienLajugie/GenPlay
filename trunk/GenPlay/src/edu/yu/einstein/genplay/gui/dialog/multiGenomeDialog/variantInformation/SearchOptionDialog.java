@@ -70,7 +70,7 @@ public class SearchOptionDialog extends JDialog {
 	public SearchOptionDialog () {
 		// Dialog settings
 		setTitle("Advanced Options");
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		setResizable(false);
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);

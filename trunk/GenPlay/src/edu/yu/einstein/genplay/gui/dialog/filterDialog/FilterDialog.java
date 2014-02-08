@@ -194,7 +194,7 @@ public final class FilterDialog extends JDialog implements TreeSelectionListener
 
 		jt.setSelectionRow(selectionRow);
 		setTitle("Filter");
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		setSize(FILTER_DIALOG_DIMENSION);
 		setResizable(false);
 		setModalityType(ModalityType.APPLICATION_MODAL);

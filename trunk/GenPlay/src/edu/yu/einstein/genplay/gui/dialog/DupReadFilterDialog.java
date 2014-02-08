@@ -215,72 +215,10 @@ public class DupReadFilterDialog extends JDialog implements ActionListener{
 		setResizable(false);
 		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		setTitle("Duplicate Reads Filter");
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		setVisible(false);
 		jbOK.setDefaultCapable(true);
 		getRootPane().setDefaultButton(jbOK);
-	}
-
-	/**
-	 * Action to be performed when the radio button is changed
-	 */
-	protected void radioButtonChanged() {
-		if (jrbLE.isSelected()) {
-			optionSelected = 1;
-			jtLE.setEnabled(true);
-			jtEE.setEnabled(false);
-			jtBetweenMin.setEnabled(false);
-			jtBetweenMax.setEnabled(false);
-			jtMT.setEnabled(false);
-		}
-		if (jrbEE.isSelected()) {
-			optionSelected = 2;
-			jtLE.setEnabled(false);
-			jtEE.setEnabled(true);
-			jtBetweenMin.setEnabled(false);
-			jtBetweenMax.setEnabled(false);
-			jtMT.setEnabled(false);
-		}
-		if (jrbBetween.isSelected()) {
-			optionSelected = 3;
-			jtLE.setEnabled(false);
-			jtEE.setEnabled(false);
-			jtBetweenMin.setEnabled(true);
-			jtBetweenMax.setEnabled(true);
-			jtMT.setEnabled(false);
-		}
-		if (jrbMT.isSelected()) {
-			optionSelected = 4;
-			jtLE.setEnabled(false);
-			jtEE.setEnabled(false);
-			jtBetweenMin.setEnabled(false);
-			jtBetweenMax.setEnabled(false);
-			jtMT.setEnabled(true);
-		}
-	}
-
-	/**
-	 * Method to return the option selected
-	 * @return optionSelected
-	 */
-	public int getOptionSelected() {
-		return optionSelected;
-	}
-
-	/**
-	 * Method to return the min duplicate count
-	 * @return minDupCount
-	 */
-	public int getMinDupCount() {
-		return minDupCount;
-	}
-
-	/**
-	 * Method to return the max duplicate count
-	 * @return maxDupCount
-	 */
-	public int getMaxDupCount() {
-		return maxDupCount;
 	}
 
 	/**
@@ -322,6 +260,68 @@ public class DupReadFilterDialog extends JDialog implements ActionListener{
 			}
 		}
 		setVisible(false);
+	}
+
+	/**
+	 * Method to return the max duplicate count
+	 * @return maxDupCount
+	 */
+	public int getMaxDupCount() {
+		return maxDupCount;
+	}
+
+	/**
+	 * Method to return the min duplicate count
+	 * @return minDupCount
+	 */
+	public int getMinDupCount() {
+		return minDupCount;
+	}
+
+	/**
+	 * Method to return the option selected
+	 * @return optionSelected
+	 */
+	public int getOptionSelected() {
+		return optionSelected;
+	}
+
+	/**
+	 * Action to be performed when the radio button is changed
+	 */
+	protected void radioButtonChanged() {
+		if (jrbLE.isSelected()) {
+			optionSelected = 1;
+			jtLE.setEnabled(true);
+			jtEE.setEnabled(false);
+			jtBetweenMin.setEnabled(false);
+			jtBetweenMax.setEnabled(false);
+			jtMT.setEnabled(false);
+		}
+		if (jrbEE.isSelected()) {
+			optionSelected = 2;
+			jtLE.setEnabled(false);
+			jtEE.setEnabled(true);
+			jtBetweenMin.setEnabled(false);
+			jtBetweenMax.setEnabled(false);
+			jtMT.setEnabled(false);
+		}
+		if (jrbBetween.isSelected()) {
+			optionSelected = 3;
+			jtLE.setEnabled(false);
+			jtEE.setEnabled(false);
+			jtBetweenMin.setEnabled(true);
+			jtBetweenMax.setEnabled(true);
+			jtMT.setEnabled(false);
+		}
+		if (jrbMT.isSelected()) {
+			optionSelected = 4;
+			jtLE.setEnabled(false);
+			jtEE.setEnabled(false);
+			jtBetweenMin.setEnabled(false);
+			jtBetweenMax.setEnabled(false);
+			jtMT.setEnabled(true);
+		}
 	}
 
 	/**

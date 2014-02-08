@@ -446,7 +446,7 @@ public class DistanceCalculatorDialog extends JDialog {
 		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setTitle("Distance Calculator Paramters");
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		setLocation(GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint().x - (WINDOW_WIDTH/2), GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint().y - (WINDOW_HEIGHT/2));
 		setMinimumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
 		setResizable(false);

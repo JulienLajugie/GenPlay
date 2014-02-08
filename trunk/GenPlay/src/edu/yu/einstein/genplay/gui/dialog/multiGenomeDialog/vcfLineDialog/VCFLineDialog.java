@@ -98,7 +98,7 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 		menu.add(copyItem);
 
 		// Sets dialog parameters
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		setResizable(false);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setAlwaysOnTop(true);

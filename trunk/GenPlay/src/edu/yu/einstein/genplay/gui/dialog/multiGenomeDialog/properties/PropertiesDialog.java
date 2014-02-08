@@ -151,7 +151,7 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 
 		// Dialog settings
 		setTitle("Multi-Genome Project Properties");
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setResizable(false);
 		setVisible(false);

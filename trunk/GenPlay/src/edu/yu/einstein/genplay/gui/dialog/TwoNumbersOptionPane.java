@@ -115,7 +115,7 @@ public final class TwoNumbersOptionPane extends JDialog {
 		validated = false;
 		initComponent();
 		setTitle(title);
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		getRootPane().setDefaultButton(jbOk);
 		pack();
 		setResizable(false);

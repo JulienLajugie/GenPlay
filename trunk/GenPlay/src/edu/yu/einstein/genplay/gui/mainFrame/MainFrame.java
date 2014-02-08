@@ -27,7 +27,6 @@ import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -188,7 +187,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 	 */
 	private MainFrame() {
 		super(GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration());
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 
 		setTitle();
 
@@ -312,15 +311,6 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 	 */
 	public final ControlPanel getControlPanel() {
 		return controlPanel;
-	}
-
-
-	/**
-	 * @return the icon of the application
-	 */
-	@Override
-	public Image getIconImage() {
-		return Images.getApplicationImage();
 	}
 
 

@@ -102,7 +102,7 @@ public final class TextDialog extends JDialog implements ActionListener {
 		add(jbOk, c);
 
 		setTitle(title);
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		getRootPane().setDefaultButton(jbOk);
 		pack();
 		setSize(DIALOG_DIMENSION);

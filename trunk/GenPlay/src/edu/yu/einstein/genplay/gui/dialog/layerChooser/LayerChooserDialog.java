@@ -127,14 +127,6 @@ public class LayerChooserDialog extends JDialog {
 
 
 	/**
-	 * @return the list of selected layers
-	 */
-	public List<Layer<?>> getSelectedLayers() {
-		return selectedLayers;
-	}
-
-
-	/**
 	 * @return the first element of the list of selected layers.
 	 * This method return the only layer selected if the property
 	 * isMultiselectable is set to false.
@@ -145,6 +137,14 @@ public class LayerChooserDialog extends JDialog {
 		} else {
 			return selectedLayers.get(0);
 		}
+	}
+
+
+	/**
+	 * @return the list of selected layers
+	 */
+	public List<Layer<?>> getSelectedLayers() {
+		return selectedLayers;
 	}
 
 
@@ -314,7 +314,7 @@ public class LayerChooserDialog extends JDialog {
 		init();
 		setLocationRelativeTo(parent);
 		setTitle(title);
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		setVisible(true);
 		return approved;
 	}

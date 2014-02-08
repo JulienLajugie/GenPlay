@@ -113,7 +113,7 @@ public class RNAPosToDNAPosOutputFileTypeDialog extends JDialog implements Actio
 		setResizable(false);
 		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		setTitle("RNA To DNA Output File Selector");
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		setVisible(false);
 		jbOK.setDefaultCapable(true);
 		getRootPane().setDefaultButton(jbOK);

@@ -194,7 +194,7 @@ public class DASDialog extends JDialog {
 		add(jbCancel, c);
 
 		setTitle("Retrieve DAS Data");
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		getRootPane().setDefaultButton(jbOk);
 		pack();

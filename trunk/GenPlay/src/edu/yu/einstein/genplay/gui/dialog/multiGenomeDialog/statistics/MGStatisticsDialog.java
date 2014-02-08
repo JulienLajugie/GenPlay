@@ -67,7 +67,7 @@ public class MGStatisticsDialog extends JDialog {
 		gbc.insets = new Insets(5, 5, 10, 15);
 		add(scrollPane, gbc);
 
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		setResizable(false);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setAlwaysOnTop(true);

@@ -71,7 +71,7 @@ public class GenomeSelectionDialog extends JDialog {
 
 		// Init
 		setTitle("Synchronization parameters");
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		setResizable(false);
 		setVisible(false);
 

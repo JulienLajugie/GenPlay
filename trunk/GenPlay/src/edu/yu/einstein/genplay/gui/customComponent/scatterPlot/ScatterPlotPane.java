@@ -79,7 +79,7 @@ public class ScatterPlotPane extends JPanel {
 		scatterPlotDialog.setContentPane(scatterPlotPane);
 		scatterPlotDialog.setModalityType(ModalityType.APPLICATION_MODAL);
 		scatterPlotDialog.setTitle("Scatter Plot");
-		scatterPlotDialog.setIconImage(Images.getApplicationImage());
+		scatterPlotDialog.setIconImages(Images.getApplicationImages());
 		scatterPlotDialog.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
 		scatterPlotDialog.setMinimumSize(new Dimension(MINIMUM_WIDTH, MINIMUM_HEIGHT));
 		scatterPlotDialog.pack();

@@ -113,7 +113,7 @@ public class TrackSettingsDialog extends JDialog implements TreeSelectionListene
 
 		// Dialog settings
 		setTitle("Track Settings");
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setResizable(false);
 		setVisible(false);

@@ -69,7 +69,7 @@ public final class TrackChooser extends JDialog {
 		textLabel = text;
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setTitle(title);
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		initComponent();
 		setPreferredSize(new Dimension(300, 175));
 		getRootPane().setDefaultButton(jbOk);

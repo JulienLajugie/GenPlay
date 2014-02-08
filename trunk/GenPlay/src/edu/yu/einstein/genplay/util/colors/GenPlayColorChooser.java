@@ -89,7 +89,7 @@ public class GenPlayColorChooser {
 		init();
 		selectedColor = color;
 		dialog = JColorChooser.createDialog(component, "Choose a color", true, chooser, okListener, cancelListener);
-		dialog.setIconImage(Images.getApplicationImage());
+		dialog.setIconImages(Images.getApplicationImages());
 		dialog.setVisible(true);
 		return selectedColor;
 	}

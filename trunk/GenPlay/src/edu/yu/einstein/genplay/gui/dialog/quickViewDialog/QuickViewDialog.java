@@ -108,7 +108,7 @@ public class QuickViewDialog extends JDialog {
 
 		// Dialog settings
 		setTitle("GenPlay Quick View");
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		setModal(true);
 		pack();
 		setLocationRelativeTo(null);

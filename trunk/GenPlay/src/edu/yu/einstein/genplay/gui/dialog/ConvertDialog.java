@@ -137,7 +137,7 @@ public class ConvertDialog extends JDialog {
 
 		// Dialog settings
 		setTitle("Convert the layer");
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		setResizable(false);
 		setVisible(false);
 		pack();

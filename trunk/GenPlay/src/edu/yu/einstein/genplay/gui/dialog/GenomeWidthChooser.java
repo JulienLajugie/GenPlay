@@ -109,7 +109,7 @@ public final class GenomeWidthChooser extends JDialog {
 		validated = false;
 		initComponent();
 		setTitle("Moving Window Value :");
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		getRootPane().setDefaultButton(jbOk);
 		setLocationRelativeTo(parent);
 	}

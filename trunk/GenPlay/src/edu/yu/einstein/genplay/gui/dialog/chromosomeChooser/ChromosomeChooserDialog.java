@@ -95,42 +95,6 @@ public class ChromosomeChooserDialog extends JDialog {
 
 
 	/**
-	 * Sets the list of all chromosome available for selection
-	 * @param list list of chromosome
-	 */
-	public void setFullChromosomeList (List<Chromosome> list) {
-		if (list == null) {
-			fullChromosomeList = new ArrayList<Chromosome>();
-		} else {
-			fullChromosomeList = list;
-		}
-	}
-
-
-	/**
-	 * Sets the list of selected chromosome
-	 * @param list list of chromosome
-	 */
-	public void setSelectedChromosomeList (List<Chromosome> list) {
-		if (list == null) {
-			selectedChromosome = new ArrayList<Chromosome>();
-		} else {
-			selectedChromosome = list;
-		}
-	}
-
-
-	/**
-	 * Sets the ordering features.
-	 * Allow users to order the list of displayed chromosome.
-	 * @param bool	boolean (true: enable; false:disable)
-	 */
-	public void setOrdering(boolean bool) {
-		ordering = bool;
-	}
-
-
-	/**
 	 * @return the list of every chromosome
 	 */
 	public List<Chromosome> getFullChromosomeList () {
@@ -147,19 +111,6 @@ public class ChromosomeChooserDialog extends JDialog {
 
 
 	/**
-	 * Displays the chromosome chooser dialog
-	 * @param parent 	the parent component of the dialog, can be null; see showDialog for details
-	 * @return 			APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
-	 */
-	public int showDialog(Component parent) {
-		init();
-		setLocationRelativeTo(parent);
-		setVisible(true);
-		return approved;
-	}
-
-
-	/**
 	 * Initializes dialog components
 	 */
 	private void init() {
@@ -167,7 +118,7 @@ public class ChromosomeChooserDialog extends JDialog {
 		setSize(DIALOG_SIZE);
 		setBackground(CHROMOSOME_CHOOSER_COLOR);
 		setTitle("Choose Chromosomes");
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		setResizable(false);
 		setModalityType(ModalityType.APPLICATION_MODAL);
 
@@ -331,5 +282,54 @@ public class ChromosomeChooserDialog extends JDialog {
 				break;
 			}
 		}
+	}
+
+
+	/**
+	 * Sets the list of all chromosome available for selection
+	 * @param list list of chromosome
+	 */
+	public void setFullChromosomeList (List<Chromosome> list) {
+		if (list == null) {
+			fullChromosomeList = new ArrayList<Chromosome>();
+		} else {
+			fullChromosomeList = list;
+		}
+	}
+
+
+	/**
+	 * Sets the ordering features.
+	 * Allow users to order the list of displayed chromosome.
+	 * @param bool	boolean (true: enable; false:disable)
+	 */
+	public void setOrdering(boolean bool) {
+		ordering = bool;
+	}
+
+
+	/**
+	 * Sets the list of selected chromosome
+	 * @param list list of chromosome
+	 */
+	public void setSelectedChromosomeList (List<Chromosome> list) {
+		if (list == null) {
+			selectedChromosome = new ArrayList<Chromosome>();
+		} else {
+			selectedChromosome = list;
+		}
+	}
+
+
+	/**
+	 * Displays the chromosome chooser dialog
+	 * @param parent 	the parent component of the dialog, can be null; see showDialog for details
+	 * @return 			APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
+	 */
+	public int showDialog(Component parent) {
+		init();
+		setLocationRelativeTo(parent);
+		setVisible(true);
+		return approved;
 	}
 }

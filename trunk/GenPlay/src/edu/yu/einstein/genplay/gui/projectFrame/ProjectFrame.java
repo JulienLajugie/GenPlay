@@ -350,7 +350,7 @@ public class ProjectFrame extends JFrame {
 	 */
 	public void initScreen () {
 		// set the icon of the frame
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 
 		//Init panels
 		bannerPanel = new BannerPanel();

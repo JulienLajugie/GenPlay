@@ -119,23 +119,33 @@ public class VCFLoaderDialog extends JDialog {
 		setLayout(new BorderLayout());
 		add(scrollPane, BorderLayout.CENTER);
 		add(southPanel, BorderLayout.SOUTH);
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 	}
 
 
 	/**
-	 * Shows the component.
-	 * @param parent the parent component of the dialog, can be null; see showDialog for details
-	 * @return APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
+	 * Checks if row are valid.
+	 * @return true if settings are valid, false otherwise
 	 */
-	public int showDialog(Component parent) {
-		if (table.getData().size() == 0) {
-			table.addEmptyRow();
+	public boolean areValidSettings () {
+		List<VCFData> data = getData();
+		String errors = "";
+		if ((data == null) || (data.size() == 0)) {
+			errors = "No settings found";
+		} else {
+			for (int i = 0; i < data.size(); i++) {
+				String error = data.get(i).getErrors();
+				if (error != null) {
+					errors += "row " + i + ": " + error +"\n";
+				}
+			}
 		}
-		setModalityType(ModalityType.APPLICATION_MODAL);
-		setLocationRelativeTo(parent);
-		setVisible(true);
-		return approved;
+		if (errors.length() > 0) {
+			JOptionPane.showMessageDialog(this, errors, "Settings are not valid", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		return true;
+
 	}
 
 
@@ -148,16 +158,24 @@ public class VCFLoaderDialog extends JDialog {
 
 
 	/**
-	 * Initializes the south panel.
-	 * South panel contains "how to use" panel and Ok/Cancel button panel.
-	 * @param validationDimension
+	 * @return the data
 	 */
-	private JPanel getSouthPanel (Dimension validationDimension) {
-		JPanel southPanel = new JPanel();
-		southPanel.setLayout(new BorderLayout());
-		southPanel.add(getInformationPanel(), BorderLayout.CENTER);
-		southPanel.add(getValidationPanel(validationDimension), BorderLayout.SOUTH);
-		return southPanel;
+	public List<VCFData> getData() {
+		if (table != null) {
+			return table.getData();
+		}
+		return null;
+	}
+
+
+	/**
+	 * Creates a square icon using the image
+	 * @param image the image
+	 * @return		the icon
+	 */
+	private ImageIcon getIcon (Image image) {
+		return new ImageIcon(Images.getSquareImage(image, fm.getHeight()));
+
 	}
 
 
@@ -215,6 +233,40 @@ public class VCFLoaderDialog extends JDialog {
 
 
 	/**
+	 * The minimum height is the height of the caption, the validation panel height plus 100
+	 * @return the minimum height of the dialog
+	 */
+	private int getMinimumHeight () {
+		int height = VALIDATION_HEIGHT + (fm.getHeight() * 4) + 100;
+		return height;
+	}
+
+
+	/**
+	 * The minimum width is according to the longest text label
+	 * @return the minimum width of the dialog
+	 */
+	private int getMinimumWidth () {
+		int width = 250;
+		return width;
+	}
+
+
+	/**
+	 * Initializes the south panel.
+	 * South panel contains "how to use" panel and Ok/Cancel button panel.
+	 * @param validationDimension
+	 */
+	private JPanel getSouthPanel (Dimension validationDimension) {
+		JPanel southPanel = new JPanel();
+		southPanel.setLayout(new BorderLayout());
+		southPanel.add(getInformationPanel(), BorderLayout.CENTER);
+		southPanel.add(getValidationPanel(validationDimension), BorderLayout.SOUTH);
+		return southPanel;
+	}
+
+
+	/**
 	 * The validation panel contains ok and cancel buttons
 	 * @param dimension dimension of the panel
 	 * @return			the panel
@@ -257,19 +309,20 @@ public class VCFLoaderDialog extends JDialog {
 
 
 	/**
+	 * @param file
+	 * @return the existing VCF file (if exists) or a new VCF File
+	 */
+	public VCFFile getVCFFile (File file) {
+		return table.getVCFFile(file);
+	}
+
+
+	/**
 	 * Initializes the popup menu for the table.
 	 */
 	private void initializesPopUpMenu () {
 
 		MouseListener popupListener = new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent e) {
-				maybeShowPopup(e);
-			}
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				maybeShowPopup(e);
-			}
 			private void maybeShowPopup(MouseEvent e) {
 				if (e.isPopupTrigger()) {
 					JPopupMenu popup = new JPopupMenu();
@@ -307,77 +360,17 @@ public class VCFLoaderDialog extends JDialog {
 							e.getX(), e.getY());
 				}
 			}
+			@Override
+			public void mousePressed(MouseEvent e) {
+				maybeShowPopup(e);
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				maybeShowPopup(e);
+			}
 		};
 
 		table.addMouseListener(popupListener);
-	}
-
-
-	/**
-	 * Creates a square icon using the image
-	 * @param image the image
-	 * @return		the icon
-	 */
-	private ImageIcon getIcon (Image image) {
-		return new ImageIcon(Images.getSquareImage(image, fm.getHeight()));
-
-	}
-
-
-	/**
-	 * The minimum width is according to the longest text label
-	 * @return the minimum width of the dialog
-	 */
-	private int getMinimumWidth () {
-		int width = 250;
-		return width;
-	}
-
-
-	/**
-	 * The minimum height is the height of the caption, the validation panel height plus 100
-	 * @return the minimum height of the dialog
-	 */
-	private int getMinimumHeight () {
-		int height = VALIDATION_HEIGHT + (fm.getHeight() * 4) + 100;
-		return height;
-	}
-
-
-	/**
-	 * Checks if row are valid.
-	 * @return true if settings are valid, false otherwise
-	 */
-	public boolean areValidSettings () {
-		List<VCFData> data = getData();
-		String errors = "";
-		if ((data == null) || (data.size() == 0)) {
-			errors = "No settings found";
-		} else {
-			for (int i = 0; i < data.size(); i++) {
-				String error = data.get(i).getErrors();
-				if (error != null) {
-					errors += "row " + i + ": " + error +"\n";
-				}
-			}
-		}
-		if (errors.length() > 0) {
-			JOptionPane.showMessageDialog(this, errors, "Settings are not valid", JOptionPane.ERROR_MESSAGE);
-			return false;
-		}
-		return true;
-
-	}
-
-
-	/**
-	 * @return the data
-	 */
-	public List<VCFData> getData() {
-		if (table != null) {
-			return table.getData();
-		}
-		return null;
 	}
 
 
@@ -390,11 +383,18 @@ public class VCFLoaderDialog extends JDialog {
 
 
 	/**
-	 * @param file
-	 * @return the existing VCF file (if exists) or a new VCF File
+	 * Shows the component.
+	 * @param parent the parent component of the dialog, can be null; see showDialog for details
+	 * @return APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
 	 */
-	public VCFFile getVCFFile (File file) {
-		return table.getVCFFile(file);
+	public int showDialog(Component parent) {
+		if (table.getData().size() == 0) {
+			table.addEmptyRow();
+		}
+		setModalityType(ModalityType.APPLICATION_MODAL);
+		setLocationRelativeTo(parent);
+		setVisible(true);
+		return approved;
 	}
 
 }

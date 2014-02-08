@@ -105,7 +105,7 @@ public class InvalidFileDialog extends JDialog {
 
 		// Dialog
 		setTitle("Invalid File(s) Correction");
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		setResizable(false);
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setLayout(new BorderLayout());

@@ -114,7 +114,7 @@ public class ExtractExonsDialog extends JDialog implements ActionListener{
 		setResizable(false);
 		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		setTitle("Extract Exons");
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		setVisible(false);
 		jbOk.setDefaultCapable(true);
 		getRootPane().setDefaultButton(jbOk);

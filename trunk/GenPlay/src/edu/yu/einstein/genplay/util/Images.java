@@ -24,6 +24,8 @@ package edu.yu.einstein.genplay.util;
 
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 
@@ -35,7 +37,17 @@ public class Images {
 
 	private static final ClassLoader cl = MainFrame.class.getClassLoader();
 
-	private static final String APPLICATION_IMAGE_PATH 			= "edu/yu/einstein/genplay/resource/images/GenPlay64x64.png";				// Path of the application image
+	// Path of the application images at different resolution
+	private static final String[] APPLICATION_IMAGE_PATHS 		=
+		{
+		"edu/yu/einstein/genplay/resource/images/GenPlay_16x16.png",
+		"edu/yu/einstein/genplay/resource/images/GenPlay_32x32.png",
+		"edu/yu/einstein/genplay/resource/images/GenPlay_64x64.png",
+		"edu/yu/einstein/genplay/resource/images/GenPlay_128x128.png",
+		"edu/yu/einstein/genplay/resource/images/GenPlay_256x256.png",
+		"edu/yu/einstein/genplay/resource/images/GenPlay_512x512.png",
+		};
+
 	private static final String BANNER_IMAGE_PATH				= "edu/yu/einstein/genplay/resource/images/genplay_banner_447x91.png";		// Path of the banner image
 	private static final String TOOLS_IMAGE_PATH 				= "edu/yu/einstein/genplay/resource/images/tools.png";						// Path of the tools image
 	private static final String ADD_IMAGE_PATH 					= "edu/yu/einstein/genplay/resource/images/add_entry_50x50.png"; 			// Path of the add entry image
@@ -67,7 +79,7 @@ public class Images {
 	private static final String MINUS_ROLLEDOVER_IMAGE_PATH		= "edu/yu/einstein/genplay/resource/images/minus_rolled_over_24x24.png";	// Path of the minus rolled over image
 
 
-	private static Image applicationImage		 	= null;		// Application image
+	private static List<Image> applicationImages	= null;		// list with the application images at different resolution
 	private static Image bannerImage				= null;		// Banner image
 	private static Image toolsImage 				= null;		// Tools image
 	private static Image addImage 					= null;		// Add image
@@ -122,13 +134,16 @@ public class Images {
 
 
 	/**
-	 * @return the image of the GenPlay icon
+	 * @return a list containing images of the GenPlay icon at different resolutions
 	 */
-	public static Image getApplicationImage () {
-		if (applicationImage == null) {
-			applicationImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(APPLICATION_IMAGE_PATH));
+	public static List<Image> getApplicationImages () {
+		if (applicationImages == null) {
+			applicationImages = new ArrayList<Image>();
+			for (String path: APPLICATION_IMAGE_PATHS) {
+				applicationImages.add(Toolkit.getDefaultToolkit().getImage(cl.getResource(path)));
+			}
 		}
-		return applicationImage;
+		return applicationImages;
 	}
 
 

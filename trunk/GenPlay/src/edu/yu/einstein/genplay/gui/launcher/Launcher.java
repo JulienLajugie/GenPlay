@@ -23,8 +23,10 @@
 package edu.yu.einstein.genplay.gui.launcher;
 
 import java.awt.EventQueue;
+import java.awt.Image;
 import java.io.File;
 import java.io.InputStream;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import javax.swing.JOptionPane;
@@ -228,7 +230,12 @@ public class Launcher {
 			// Handle mac-specific events (if we're running under OS X).
 			Application macApplication = Application.getApplication();
 			macApplication.setOpenFileHandler(OSXHandler.getInstance());
-			macApplication.setDockIconImage(Images.getApplicationImage());
+			// if it's not a mac install with a icns resource we need to set the
+			// icon image manually
+			if (!Utils.isMacInstall()) {
+				List<Image> appImages = Images.getApplicationImages();
+				macApplication.setDockIconImage(appImages.get(appImages.size() - 1));
+			}
 		}
 		// load the application settings
 		try {

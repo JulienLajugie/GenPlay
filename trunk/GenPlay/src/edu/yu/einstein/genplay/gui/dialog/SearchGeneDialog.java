@@ -209,7 +209,7 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 
 		getRootPane().setDefaultButton(jbValidInput);
 		setTitle("Find Gene");
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		pack();
 		setAlwaysOnTop(true);
 		setResizable(false);

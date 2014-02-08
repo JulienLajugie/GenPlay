@@ -360,6 +360,6 @@ public class CorrelationReportDialog extends JDialog {
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		getRootPane().setDefaultButton(jbOk);
 		setTitle("Correlation Report");
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 	}
 }

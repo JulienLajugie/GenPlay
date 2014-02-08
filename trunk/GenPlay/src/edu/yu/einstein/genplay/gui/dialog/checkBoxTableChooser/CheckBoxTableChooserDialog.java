@@ -87,42 +87,6 @@ public class CheckBoxTableChooserDialog<T> extends JDialog {
 
 
 	/**
-	 * Sets the list of all items available for selection
-	 * @param list list of items
-	 */
-	public void setItems(List<T> list) {
-		if (list == null) {
-			this.fullItemList = new ArrayList<T>();
-		} else {
-			this.fullItemList = list;
-		}
-	}
-
-
-	/**
-	 * Sets the list of selected items
-	 * @param list list of item
-	 */
-	public void setSelectedItems(List<T> list) {
-		if (list == null) {
-			this.selectedItem = new ArrayList<T>();
-		} else {
-			this.selectedItem = list;
-		}
-	}
-
-
-	/**
-	 * Sets the ordering features.
-	 * Allow users to order the list of displayed items.
-	 * @param bool	boolean (true: enable; false:disable)
-	 */
-	public void setOrdering(boolean bool) {
-		ordering = bool;
-	}
-
-
-	/**
 	 * @return the list of all items
 	 */
 	public List<T> getItems() {
@@ -139,20 +103,6 @@ public class CheckBoxTableChooserDialog<T> extends JDialog {
 
 
 	/**
-	 * Displays the item chooser dialog
-	 * @param parent 	the parent component of the dialog, can be null; see showDialog for details
-	 * @return 			APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
-	 */
-	public int showDialog(Component parent) {
-		init();
-		pack();
-		setLocationRelativeTo(parent);
-		setVisible(true);
-		return approved;
-	}
-
-
-	/**
 	 * Initializes dialog components
 	 */
 	private void init() {
@@ -160,7 +110,7 @@ public class CheckBoxTableChooserDialog<T> extends JDialog {
 		setBackground(ITEM_CHOOSER_COLOR);
 		setResizable(false);
 		setModalityType(ModalityType.APPLICATION_MODAL);
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		//Table
 		tableModel = new CheckBoxTableModel<T>();
 		tableModel.setData(fullItemList, selectedItem);
@@ -283,5 +233,55 @@ public class CheckBoxTableChooserDialog<T> extends JDialog {
 			column.setHeaderValue(COLUMN_NAMES[i]);
 			column.setResizable(true);
 		}
+	}
+
+
+	/**
+	 * Sets the list of all items available for selection
+	 * @param list list of items
+	 */
+	public void setItems(List<T> list) {
+		if (list == null) {
+			this.fullItemList = new ArrayList<T>();
+		} else {
+			this.fullItemList = list;
+		}
+	}
+
+
+	/**
+	 * Sets the ordering features.
+	 * Allow users to order the list of displayed items.
+	 * @param bool	boolean (true: enable; false:disable)
+	 */
+	public void setOrdering(boolean bool) {
+		ordering = bool;
+	}
+
+
+	/**
+	 * Sets the list of selected items
+	 * @param list list of item
+	 */
+	public void setSelectedItems(List<T> list) {
+		if (list == null) {
+			this.selectedItem = new ArrayList<T>();
+		} else {
+			this.selectedItem = list;
+		}
+	}
+
+
+	/**
+	 * Displays the item chooser dialog
+	 * @param parent 	the parent component of the dialog, can be null; see showDialog for details
+	 * @return 			APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
+	 */
+	public int showDialog(Component parent) {
+		init();
+		pack();
+		setLocationRelativeTo(parent);
+		setVisible(true);
+		return approved;
 	}
 }

@@ -219,7 +219,7 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 		});
 		setTitle("Option");
 		setSize(OPTION_DIALOG_DIMENSION);
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		setResizable(false);
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setLocationRelativeTo(getRootPane());

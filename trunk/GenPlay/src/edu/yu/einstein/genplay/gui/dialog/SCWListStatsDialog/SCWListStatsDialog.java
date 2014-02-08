@@ -129,7 +129,7 @@ public class SCWListStatsDialog extends JDialog {
 		add(jpButtons, BorderLayout.SOUTH);
 
 		// set dialog properties
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		setModal(true);
 		pack();
 		setResizable(false);

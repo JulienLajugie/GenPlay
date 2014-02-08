@@ -184,7 +184,7 @@ public class PeakFinderDialog extends JDialog implements TreeSelectionListener {
 
 		jt.setSelectionRow(selectionRow);
 		setTitle("Peak Finder");
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		setSize(PEAK_FINDER_DIALOG_DIMENSION);
 		setResizable(false);
 		setModalityType(ModalityType.APPLICATION_MODAL);

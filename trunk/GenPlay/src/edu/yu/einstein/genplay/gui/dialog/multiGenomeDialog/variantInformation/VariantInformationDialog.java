@@ -94,7 +94,7 @@ public class VariantInformationDialog extends JDialog {
 
 		// Dialog settings
 		setTitle(title);
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		setResizable(false);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setAlwaysOnTop(true);

@@ -217,7 +217,7 @@ public class NewCurveLayerDialog extends JDialog {
 		add(chromoSelectionPanel, c);
 
 		setTitle("New Layer");
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		pack();
 		setResizable(false);
 		setModalityType(ModalityType.APPLICATION_MODAL);

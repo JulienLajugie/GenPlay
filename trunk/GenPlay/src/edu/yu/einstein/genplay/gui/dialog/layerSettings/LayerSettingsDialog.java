@@ -284,7 +284,7 @@ public class LayerSettingsDialog extends JDialog {
 		init();
 		setLocationRelativeTo(parent);
 		setTitle("Layer Settings");
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		setVisible(true);
 		return approved;
 	}

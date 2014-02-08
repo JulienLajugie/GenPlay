@@ -60,15 +60,6 @@ public class DefaultWaitingDialog extends JDialog {
 
 
 	/**
-	 * @param lines the lines to set
-	 */
-	public void setLines(List<String> lines) {
-		this.lines = lines;
-		initialize();
-	}
-
-
-	/**
 	 * Initialize the dialog
 	 */
 	private void initialize () {
@@ -101,12 +92,21 @@ public class DefaultWaitingDialog extends JDialog {
 
 		// Dialog settings
 		setTitle("Please wait");
-		setIconImage(Images.getApplicationImage());
+		setIconImages(Images.getApplicationImages());
 		setAlwaysOnTop(true);
 		setLocationRelativeTo(null);
 		setResizable(false);
 		setVisible(false);
 		pack();
+	}
+
+
+	/**
+	 * @param lines the lines to set
+	 */
+	public void setLines(List<String> lines) {
+		this.lines = lines;
+		initialize();
 	}
 
 }
