@@ -40,16 +40,23 @@ import edu.yu.einstein.genplay.util.Images;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class NavigationPanel extends JPanel{
+public class NavigationPanel extends JPanel {
 
 	/**
 	 * Generated serial version ID
 	 */
 	private static final long serialVersionUID = 793779650948801264L;
-
 	private static final int HEIGHT = 30;	// height of the panel
 
-	private final VariantInformationDialog origin;		// tooltipstripe object to aware it of any changes.
+	/**
+	 * @return the height of the panel
+	 */
+	protected static int getPanelHeight () {
+		return NavigationPanel.HEIGHT;
+	}
+
+
+	private final VariantInformationDialog origin;	// tooltipstripe object to aware it of any changes.
 	private final SearchOptionDialog optionDialog;	// the option search dialog
 	private final JButton jbOptions;				// button to show the full line
 	private final JButton jbPrevious;				// the previous button (move backward)
@@ -61,7 +68,7 @@ public class NavigationPanel extends JPanel{
 	 */
 	protected NavigationPanel (VariantInformationDialog origin) {
 		this.origin = origin;
-		this.optionDialog = new SearchOptionDialog();
+		optionDialog = new SearchOptionDialog();
 
 		Dimension paneDim = new Dimension(VariantInformationDialog.WIDTH, HEIGHT);
 		setSize(paneDim);
@@ -79,10 +86,6 @@ public class NavigationPanel extends JPanel{
 			public void actionPerformed(ActionEvent arg0) {
 				int approve = optionDialog.showDialog(getOrigin(), getOrigin().getOptions());
 				if (approve == SearchOptionDialog.APPROVE_OPTION) {
-					/*if (!getOrigin().getOptions().equals(optionDialog.getOptions())) {
-						jbNext.setEnabled(true);
-						jbPrevious.setEnabled(true);
-					}*/
 					getOrigin().setOptions(optionDialog.getOptions());
 				}
 			}
@@ -143,14 +146,6 @@ public class NavigationPanel extends JPanel{
 
 
 	/**
-	 * @return the {@link VariantInformationDialog} object that requested the {@link NavigationPanel}
-	 */
-	private VariantInformationDialog getOrigin () {
-		return origin;
-	}
-
-
-	/**
 	 * Creates a square icon using the given path
 	 * @param path	icon path
 	 * @param side	size of the side
@@ -164,10 +159,10 @@ public class NavigationPanel extends JPanel{
 
 
 	/**
-	 * @return the height of the panel
+	 * @return the {@link VariantInformationDialog} object that requested the {@link NavigationPanel}
 	 */
-	protected static int getPanelHeight () {
-		return NavigationPanel.HEIGHT;
+	private VariantInformationDialog getOrigin () {
+		return origin;
 	}
 
 }

@@ -48,7 +48,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
-import edu.yu.einstein.genplay.gui.OSXIntegration.OSXHandler;
+import edu.yu.einstein.genplay.gui.OSIntegration.OSXHandler;
 import edu.yu.einstein.genplay.gui.action.multiGenome.properties.MGARefresh;
 import edu.yu.einstein.genplay.gui.action.project.PAAbout;
 import edu.yu.einstein.genplay.gui.action.project.PABookmarkCurrentPosition;
@@ -364,7 +364,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 	public void lock() {
 		ruler.lock();
 		trackListPanel.lockTrackHandles();
-		controlPanel.lock();
+		controlPanel.setEnabled(false);
 		isLocked = true;
 	}
 
@@ -565,7 +565,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 	public void unlock() {
 		ruler.unlock();
 		trackListPanel.unlockTrackHandles();
-		controlPanel.unlock();
+		controlPanel.setEnabled(true);
 		isLocked = false;
 	}
 }

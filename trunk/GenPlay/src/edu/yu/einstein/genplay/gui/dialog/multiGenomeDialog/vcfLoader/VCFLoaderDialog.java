@@ -272,11 +272,10 @@ public class VCFLoaderDialog extends JDialog {
 	 * @return			the panel
 	 */
 	private JPanel getValidationPanel (Dimension dimension) {
-		Dimension buttonDim = new Dimension(60, 30);
+		//Dimension buttonDim = new Dimension(60, 40);
 		Insets inset = new Insets(0, 0, 0, 0);
 
 		JButton confirm = new JButton("Ok");
-		confirm.setPreferredSize(buttonDim);
 		confirm.setToolTipText("Ok");
 		confirm.setMargin(inset);
 		confirm.addActionListener(new ActionListener() {
@@ -288,7 +287,6 @@ public class VCFLoaderDialog extends JDialog {
 		});
 
 		JButton cancel = new JButton("Cancel");
-		cancel.setPreferredSize(buttonDim);
 		cancel.setToolTipText("Cancel");
 		cancel.setMargin(inset);
 		cancel.addActionListener(new ActionListener() {
@@ -298,6 +296,8 @@ public class VCFLoaderDialog extends JDialog {
 				closeDialog();
 			}
 		});
+
+		confirm.setPreferredSize(cancel.getPreferredSize());
 
 		JPanel validationPanel = new JPanel();
 		validationPanel.add(confirm);

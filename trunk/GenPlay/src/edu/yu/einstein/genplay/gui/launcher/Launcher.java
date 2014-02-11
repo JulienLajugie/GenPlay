@@ -42,7 +42,8 @@ import edu.yu.einstein.genplay.dataStructure.genome.Clade;
 import edu.yu.einstein.genplay.dataStructure.genome.Genome;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
-import edu.yu.einstein.genplay.gui.OSXIntegration.OSXHandler;
+import edu.yu.einstein.genplay.gui.OSIntegration.OSXHandler;
+import edu.yu.einstein.genplay.gui.OSIntegration.X11Integrator;
 import edu.yu.einstein.genplay.gui.action.multiGenome.synchronization.MGASynchronizing;
 import edu.yu.einstein.genplay.gui.action.project.PAInitMGManager;
 import edu.yu.einstein.genplay.gui.action.project.PAInitManagers;
@@ -237,6 +238,8 @@ public class Launcher {
 				macApplication.setDockIconImage(appImages.get(appImages.size() - 1));
 			}
 		}
+		// set the WM_CLASS property for X11
+		X11Integrator.setWMClassName();
 		// load the application settings
 		try {
 			ConfigurationManager.getInstance().loadConfiguration();

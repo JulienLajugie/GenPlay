@@ -20,7 +20,7 @@
  * 
  * Website: <http://genplay.einstein.yu.edu>
  ******************************************************************************/
-package edu.yu.einstein.genplay.gui.OSXIntegration;
+package edu.yu.einstein.genplay.gui.OSIntegration;
 
 import java.io.File;
 

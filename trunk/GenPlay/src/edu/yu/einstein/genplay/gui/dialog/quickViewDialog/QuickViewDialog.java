@@ -75,11 +75,14 @@ public class QuickViewDialog extends JDialog {
 	 * @throws Exception
 	 */
 	public static void showDialog(File genPlayTrackFile) throws Exception {
-		TransferableTrackExtractor extractor = new TransferableTrackExtractor(genPlayTrackFile);
-		TrackForTransfer trackForTransfer = extractor.extract();
-		initManagers(trackForTransfer.getAssembly());
-		new QuickViewDialog(trackForTransfer.getTrackForTransfer());
-		System.exit(0);
+		try {
+			TransferableTrackExtractor extractor = new TransferableTrackExtractor(genPlayTrackFile);
+			TrackForTransfer trackForTransfer = extractor.extract();
+			initManagers(trackForTransfer.getAssembly());
+			new QuickViewDialog(trackForTransfer.getTrackForTransfer());
+		} finally {
+			System.exit(0);
+		}
 	}
 
 
@@ -110,6 +113,7 @@ public class QuickViewDialog extends JDialog {
 		setTitle("GenPlay Quick View");
 		setIconImages(Images.getApplicationImages());
 		setModal(true);
+		setResizable(false);
 		pack();
 		setLocationRelativeTo(null);
 		setVisible(true);

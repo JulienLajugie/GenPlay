@@ -149,12 +149,16 @@ public class Ruler implements GenomeWindowListener {
 		rulerButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				rulerButton.setBackground(Colors.TRACK_HANDLE_ROLLOVER);
+				if (rulerButton.isEnabled()) {
+					rulerButton.setBackground(Colors.TRACK_HANDLE_ROLLOVER);
+				}
 				super.mouseEntered(e);
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
-				rulerButton.setBackground(Colors.TRACK_HANDLE_BACKGROUND);
+				if (rulerButton.isEnabled()) {
+					rulerButton.setBackground(Colors.TRACK_HANDLE_BACKGROUND);
+				}
 				super.mouseExited(e);
 			}
 		});

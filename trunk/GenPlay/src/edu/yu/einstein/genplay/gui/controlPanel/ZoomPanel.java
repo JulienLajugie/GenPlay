@@ -22,6 +22,7 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.controlPanel;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -63,6 +64,7 @@ import edu.yu.einstein.genplay.util.NumberFormats;
 final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindowListener {
 
 	private static final long serialVersionUID = -8481919273684304592L; // generated ID
+	private static final int ZOOM_SLIDE_WIDTH = 400;					// width of the zoom slider
 	private final JLabel 							jlZoom;				// zoom label
 	private final JButton 							jbPlus;				// button '+'
 	private final JButton 							jbMinus;			// button '-'
@@ -113,6 +115,8 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 		jsZoom.setMinorTickSpacing(1);
 		jsZoom.setPaintTicks(true);
 		jsZoom.setInverted(true);
+		jsZoom.setPreferredSize(new Dimension(ZOOM_SLIDE_WIDTH, jsZoom.getPreferredSize().height));
+		jsZoom.setMinimumSize(new Dimension(ZOOM_SLIDE_WIDTH, jsZoom.getMinimumSize().height));
 		jsZoom.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {

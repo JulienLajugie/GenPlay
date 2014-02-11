@@ -63,7 +63,7 @@ import edu.yu.einstein.genplay.util.Images;
 final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 
 	private static final long serialVersionUID = 8279801687428218652L;  // generated ID
-	static final String DELETE_BOOKMARK_ACTION_KEY = "delete selected bookmark";
+	private static final int GENOME_WINDOW_COMBO_WIDTH = 415;			// width of the genome window combobox
 	private final JComboBox 						jcbGenomeWindow;	// combobox the GenomeWindow
 	private final JButton 							jbJump;				// button jump to position
 	private final JComboBox							jcbGenomeSelection;	// combobox to select a genome in multi-genome project
@@ -92,6 +92,7 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 		jbJump.setMargin(new Insets(0, 0, 0, 0));
 		jbJump.setContentAreaFilled(false);
 		jbJump.setPreferredSize(new Dimension(24, 24));
+		jbJump.setMinimumSize(new Dimension(24, 24));
 		jbJump.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -133,18 +134,19 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 		jbBookmark.setContentAreaFilled(false);
 		jbBookmark.setFocusPainted(false);
 		jbBookmark.setHideActionText(true);
+		jbBookmark.setPreferredSize(new Dimension(24, 24));
+		jbBookmark.setMinimumSize(new Dimension(24, 24));
 		jbBookmark.setIcon(new ImageIcon(Images.getBookmarkImage()));
 		jbBookmark.setRolloverIcon(new ImageIcon(Images.getBookmarkRolledOverImage()));
 		jbBookmark.setDisabledIcon(new ImageIcon(Images.getBookmarkDisabledImage()));
-
 
 		// Add the components
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 
 		// Add the the genome window text field
-		gbc.anchor = GridBagConstraints.CENTER;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.PAGE_END;
+		gbc.fill = GridBagConstraints.BOTH;
 		gbc.weightx = 1;
 		gbc.weighty = 0;
 		gbc.gridx = 0;
@@ -214,10 +216,11 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 	 * Initialized the combo box for the genome window address
 	 */
 	public void initGenomeWindowCombo() {
+		jcbGenomeWindow.setPreferredSize(new Dimension(GENOME_WINDOW_COMBO_WIDTH, jcbGenomeWindow.getPreferredSize().height));
+		jcbGenomeWindow.setMinimumSize(new Dimension(GENOME_WINDOW_COMBO_WIDTH, jcbGenomeWindow.getMinimumSize().height));
 		jcbGenomeWindow.setEditable(true);
 		jcbGenomeWindow.setPrototypeDisplayValue(new GWBookmark(projectWindow.getGenomeWindow().toString(), projectWindow.getGenomeWindow()));
 		jcbGenomeWindow.setSelectedItem(projectWindow.getGenomeWindow().toString());
-		jcbGenomeWindow.setPreferredSize(new Dimension(24, 24));
 
 		jcbGenomeWindow.addActionListener(new ActionListener() {
 			@Override
@@ -230,26 +233,16 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 						updateBookmarkDropdownList();
 					} else {
 						// goto bookmark
-						jcbGenomeWindow.setSelectedItem(selectedBookmark.getGenomeWindow().toString());
 						if (jcbGenomeSelection != null) {
-							setSelectedGenomeName(selectedBookmark.getGenomeName());
+							MainFrame.getInstance().setNewGenomeCoordinate(selectedBookmark.getGenomeName());
 						}
+						jcbGenomeWindow.setSelectedItem(selectedBookmark.getGenomeWindow().toString());
 						updateGenomeWindow();
 					}
 
 				}
 			}
 		});
-	}
-
-
-	/**
-	 * Locks the genome window panel
-	 */
-	public void lock() {
-		jcbGenomeWindow.setEnabled(false);
-		jbJump.setEnabled(false);
-		jbBookmark.setEnabled(false);
 	}
 
 
@@ -278,6 +271,21 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 
 
 	/**
+	 * Enables or disables the genome window panel
+	 * @param b a boolean value, where true enables the component and false disables it
+	 */
+	public void setEnaled(boolean b) {
+		jcbGenomeWindow.setEnabled(b);
+		jbJump.setEnabled(b);
+		jbBookmark.setEnabled(b);
+		if (jcbGenomeSelection != null) {
+			jcbGenomeSelection.setEditable(b);
+		}
+		super.setEnabled(b);
+	}
+
+
+	/**
 	 * @param genomeName genome name to select in the genome selector (multi genome only)
 	 */
 	public void setSelectedGenomeName (String genomeName) {
@@ -287,15 +295,8 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 
 
 	/**
-	 * Unlocks the genome window panel
+	 * Updates the list with the items in the bookmark combobox
 	 */
-	public void unlock() {
-		jcbGenomeWindow.setEnabled(true);
-		jbJump.setEnabled(true);
-		jbBookmark.setEnabled(true);
-	}
-
-
 	private void updateBookmarkDropdownList() {
 		jcbGenomeWindow.removeAllItems();
 		jcbGenomeWindow.setSelectedItem(projectWindow.getGenomeWindow().toString());

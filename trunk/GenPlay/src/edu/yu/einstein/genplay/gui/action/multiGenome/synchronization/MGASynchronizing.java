@@ -32,6 +32,7 @@ import javax.swing.ActionMap;
 import edu.yu.einstein.genplay.core.manager.project.MultiGenomeProject;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -170,11 +171,11 @@ public class MGASynchronizing extends TrackListActionWorker<Track[]> {
 
 			} else {
 				// Generates error when parameters have not been set
-				System.err.println("Multi-genome synchronization cannot be performed because the file readers and/or the genome file association parameters have not been set.");
+				ExceptionManager.getInstance().caughtException(Thread.currentThread(), new Throwable(), "Multi-genome synchronization cannot be performed because the file readers and/or the genome file association parameters have not been set.");
 			}
 		} else {
 			// Generates error if the project is not multi-genome
-			System.err.println("Multi-genome synchronization cannot be performed because the project does not seem to be multi-genome.");
+			ExceptionManager.getInstance().caughtException(Thread.currentThread(), new Throwable(), "Multi-genome synchronization cannot be performed because the project does not seem to be multi-genome.");
 		}
 		return null;
 	}

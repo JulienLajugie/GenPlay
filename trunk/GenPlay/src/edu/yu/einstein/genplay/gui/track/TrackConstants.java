@@ -203,4 +203,8 @@ public class TrackConstants {
 	 * Number of vertical lines displayed in the background of a track
 	 */
 	public static final int	VERTICAL_LINES_COUNT = 10;
+
+
+	/** Width of the track handles */
+	public static final int	HANDLE_WIDTH = 50;
 }

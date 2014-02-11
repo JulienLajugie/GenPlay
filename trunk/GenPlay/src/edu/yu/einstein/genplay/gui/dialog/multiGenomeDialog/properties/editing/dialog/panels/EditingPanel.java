@@ -115,53 +115,9 @@ abstract public class EditingPanel<K> extends JPanel {
 
 
 	/**
-	 * Initializes the content panel, the one about the editing part.
-	 */
-	protected abstract void initializeContentPanel();
-
-
-	/**
-	 * Updates the editing panels listening the current panel
-	 */
-	private void refreshListeners() {
-		for (EditingPanel<?> panelListener: editingPanelListeners) {
-			panelListener.update(element);
-		}
-	}
-
-
-	/**
-	 * Updates the current panel
-	 * @param object object used for updating the current panel
-	 */
-	public abstract void update(Object object);
-
-
-	/**
 	 * @return a list of error gathered in one String
 	 */
 	public abstract String getErrors ();
-
-
-	/**
-	 * Reset the panel to an empty state
-	 */
-	public abstract void reset ();
-
-
-	/**
-	 * Initializes the panel with an object
-	 * @param element the object to use
-	 */
-	public abstract void initialize (K element);
-
-
-	/**
-	 * Resets the content panel using an empty panel.
-	 */
-	protected void resetContentPanel () {
-		setNewContentPanel(new JPanel());
-	}
 
 
 	/**
@@ -182,6 +138,15 @@ abstract public class EditingPanel<K> extends JPanel {
 
 
 	/**
+	 * @return the height of a radio box
+	 */
+	protected int getRadioHeight () {
+		JRadioButton radio = new JRadioButton("A");
+		return radio.getPreferredSize().height;
+	}
+
+
+	/**
 	 * @return the height of the string according to the current font
 	 */
 	protected int getStringHeight () {
@@ -190,12 +155,16 @@ abstract public class EditingPanel<K> extends JPanel {
 
 
 	/**
-	 * @return the height of a radio box
+	 * Initializes the panel with an object
+	 * @param element the object to use
 	 */
-	protected int getRadioHeight () {
-		JRadioButton radio = new JRadioButton("A");
-		return radio.getPreferredSize().height;
-	}
+	public abstract void initialize (K element);
+
+
+	/**
+	 * Initializes the content panel, the one about the editing part.
+	 */
+	protected abstract void initializeContentPanel();
 
 
 	/**
@@ -228,15 +197,10 @@ abstract public class EditingPanel<K> extends JPanel {
 			scrollPanelHeight = CONTENT_HEIGHT;
 		}
 
-		Dimension panelDimension = new Dimension(scrollPanelWidth, scrollPanelHeight + TITLE_HEIGHT);
-		Dimension titleDimension = new Dimension(scrollPanelWidth - TITLE_LEFT_INSET, TITLE_HEIGHT);
 		Dimension scrollPanelDimension = new Dimension(scrollPanelWidth, scrollPanelHeight);
 		Dimension contentPanelDimension = new Dimension(contentPanelWidth, contentPanelHeight);
 
-		setSize(this, panelDimension);
-		setSize(titleLabel, titleDimension);
 		setSize(scrollPane, scrollPanelDimension);
-		setSize(contentPanel, contentPanelDimension);
 
 		repaint();
 
@@ -244,11 +208,36 @@ abstract public class EditingPanel<K> extends JPanel {
 	}
 
 
-	protected void setSize (Component comp, Dimension dim) {
-		comp.setSize(dim);
-		comp.setMinimumSize(dim);
-		comp.setMaximumSize(dim);
-		comp.setPreferredSize(dim);
+	/**
+	 * Updates the editing panels listening the current panel
+	 */
+	private void refreshListeners() {
+		for (EditingPanel<?> panelListener: editingPanelListeners) {
+			panelListener.update(element);
+		}
+	}
+
+
+	/**
+	 * Reset the panel to an empty state
+	 */
+	public abstract void reset ();
+
+
+	/**
+	 * Resets the content panel using an empty panel.
+	 */
+	protected void resetContentPanel () {
+		setNewContentPanel(new JPanel());
+	}
+
+
+	/**
+	 * @param element the object to set
+	 */
+	public void setElement(K element) {
+		this.element = element;
+		refreshListeners();
 	}
 
 
@@ -262,12 +251,18 @@ abstract public class EditingPanel<K> extends JPanel {
 	}
 
 
-	/**
-	 * @param element the object to set
-	 */
-	public void setElement(K element) {
-		this.element = element;
-		refreshListeners();
+	protected void setSize (Component comp, Dimension dim) {
+		comp.setSize(dim);
+		comp.setMinimumSize(dim);
+		comp.setMaximumSize(dim);
+		comp.setPreferredSize(dim);
 	}
+
+
+	/**
+	 * Updates the current panel
+	 * @param object object used for updating the current panel
+	 */
+	public abstract void update(Object object);
 
 }

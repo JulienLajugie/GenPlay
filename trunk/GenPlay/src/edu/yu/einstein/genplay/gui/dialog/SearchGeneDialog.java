@@ -24,7 +24,6 @@ package edu.yu.einstein.genplay.gui.dialog;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -137,30 +136,23 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 		jpOption.add(jcbChromosome);
 		// create the Find button
 		jbValidInput = new JButton("Find");
-		jbValidInput.setMargin(new Insets(0, 0, 0, 0));
 		jbValidInput.setToolTipText("Move to the first match in the whole genome.");
-		Dimension dimension = new Dimension(50, jbValidInput.getPreferredSize().height);
-		jbValidInput.setPreferredSize(dimension);
 		jbValidInput.addActionListener(this);
 		// create the previous match button
-		jbPreviousMatch = new JButton("< Prev match");
+		jbPreviousMatch = new JButton("<  Prev match");
 		jbPreviousMatch.setToolTipText("Move to the previous match.");
-		jbPreviousMatch.setPreferredSize(new Dimension(150, jbPreviousMatch.getPreferredSize().height));
 		jbPreviousMatch.addActionListener(this);
 		// create the next match button
-		jbNextMatch = new JButton("Next match     >");
+		jbNextMatch = new JButton("Next match >");
 		jbNextMatch.setToolTipText("Move to the next match.");
-		jbNextMatch.setPreferredSize(new Dimension(150, jbNextMatch.getPreferredSize().height));
 		jbNextMatch.addActionListener(this);
 		// create the previous gene button
-		jbPreviousGene = new JButton("<  Prev gene");
+		jbPreviousGene = new JButton("<  Prev gene  ");
 		jbPreviousGene.setToolTipText("Move to the previous gene.");
-		jbPreviousGene.setPreferredSize(new Dimension(150, jbPreviousGene.getPreferredSize().height));
 		jbPreviousGene.addActionListener(this);
 		// create the next gene button
-		jbNextGene = new JButton("Next gene      >");
+		jbNextGene = new JButton(" Next gene  >");
 		jbNextGene.setToolTipText("Move to the next gene.");
-		jbNextGene.setPreferredSize(new Dimension(150, jbNextGene.getPreferredSize().height));
 		jbNextGene.addActionListener(this);
 
 		// add the components
@@ -192,19 +184,25 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 
 		c.gridy++;
 		c.gridwidth = 1;
+		c.fill = GridBagConstraints.NONE;
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(3, 3, 3, 3);
 		add(jbPreviousMatch, c);
 
 		c.gridx = 1;
 		c.gridwidth = 2;
+		c.anchor = GridBagConstraints.LINE_END;
 		add(jbNextMatch, c);
 
 		c.gridy++;
 		c.gridx = 0;
 		c.gridwidth = 1;
+		c.anchor = GridBagConstraints.LINE_START;
 		add(jbPreviousGene, c);
 
 		c.gridx = 1;
 		c.gridwidth = 2;
+		c.anchor = GridBagConstraints.LINE_END;
 		add(jbNextGene, c);
 
 		getRootPane().setDefaultButton(jbValidInput);

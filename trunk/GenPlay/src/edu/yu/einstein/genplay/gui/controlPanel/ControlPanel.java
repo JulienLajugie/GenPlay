@@ -69,38 +69,35 @@ public final class ControlPanel extends JPanel {
 		// Add the components
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.weighty = 1;
-		gbc.fill = GridBagConstraints.BOTH;
 
-		//gbc.weighty = 1;
-		gbc.anchor = GridBagConstraints.PAGE_START;
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.insets = new Insets(0, 0, 10, 0);
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.weightx = 1;
+		gbc.weighty = 1;
 		gbc.gridwidth = 3;
 		add(topPanel, gbc);
 
-		//gbc.weighty = 0;
-		gbc.anchor = GridBagConstraints.CENTER;
-		gbc.insets = new Insets(0, 10, 0, 10);
+		gbc.fill = GridBagConstraints.NONE;
+		gbc.anchor = GridBagConstraints.LAST_LINE_START;
+		gbc.insets = new Insets(0, 10, 0, 0);
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.weightx = 1;
 		gbc.gridwidth = 1;
 		add(zoomPanel, gbc);
 
+		gbc.anchor = GridBagConstraints.PAGE_END;
+		gbc.insets = new Insets(0, 10, 0, 10);
 		gbc.gridx = 1;
-		gbc.gridy = 1;
-		gbc.weightx = 0.1;
-		gbc.gridwidth = 1;
+		gbc.weightx = 0;
 		add(chromosomePanel, gbc);
 
+		gbc.anchor = GridBagConstraints.LAST_LINE_END;
+		gbc.insets = new Insets(0, 0, 0, 10);
 		gbc.gridx = 2;
-		gbc.gridy = 1;
 		gbc.weightx = 1;
-		gbc.gridwidth = 1;
-		gbc.anchor = GridBagConstraints.PAGE_END;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
 		add(genomeWindowPanel, gbc);
 
 		// register the control panel to the project window manager so the control panel can be notified when the project window changes
@@ -113,15 +110,6 @@ public final class ControlPanel extends JPanel {
 	 */
 	public JButton getJumpButton() {
 		return genomeWindowPanel.getJumpButton();
-	}
-
-
-	/**
-	 * Locks the control panel
-	 */
-	public void lock() {
-		chromosomePanel.lock();
-		genomeWindowPanel.lock();
 	}
 
 
@@ -233,19 +221,23 @@ public final class ControlPanel extends JPanel {
 
 
 	/**
-	 * @param genomeName genome name to select in the genome selector (multi genome only)
+	 * Enables or disables the control panel
+	 * @param b a boolean value, where true enables the component and false disables it
 	 */
-	public void setSelectedGenomeName (String genomeName) {
-		genomeWindowPanel.setSelectedGenomeName(genomeName);
+	@Override
+	public void setEnabled(boolean b) {
+		chromosomePanel.setEnaled(b);
+		genomeWindowPanel.setEnaled(b);
+		topPanel.setEnabled(b);
+		super.setEnabled(b);
 	}
 
 
 	/**
-	 * Unlocks the control panel
+	 * @param genomeName genome name to select in the genome selector (multi genome only)
 	 */
-	public void unlock() {
-		chromosomePanel.unlock();
-		genomeWindowPanel.unlock();
+	public void setSelectedGenomeName (String genomeName) {
+		genomeWindowPanel.setSelectedGenomeName(genomeName);
 	}
 
 

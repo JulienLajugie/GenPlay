@@ -51,7 +51,6 @@ import edu.yu.einstein.genplay.util.colors.Colors;
 final class HandlePanel extends JPanel implements MouseListener, MouseMotionListener, TrackEventsGenerator {
 
 	private static final long serialVersionUID = -1942543548154386009L;		// generated serial ID
-	private static final int 				HANDLE_WIDTH = 50;				// width of the handle
 	private static final int 				MOVE_RESIZE_ZONE_HEIGHT = 10;	// height of the resize zone
 	private static final String 			FONT_NAME = "ARIAL";			// name of the font
 	private static final int 				FONT_SIZE = 12;					// size of the font
@@ -71,7 +70,7 @@ final class HandlePanel extends JPanel implements MouseListener, MouseMotionList
 	HandlePanel(int number) {
 		this.number = number;
 		setBackground(Colors.TRACK_HANDLE_BACKGROUND);
-		setPreferredSize(new Dimension(HANDLE_WIDTH, 0));
+		setPreferredSize(new Dimension(TrackConstants.HANDLE_WIDTH, 0));
 
 		trackListeners = new ArrayList<TrackListener>();
 

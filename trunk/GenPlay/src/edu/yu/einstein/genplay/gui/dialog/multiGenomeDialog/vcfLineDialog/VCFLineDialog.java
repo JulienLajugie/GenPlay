@@ -59,7 +59,8 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 
 	private static final long serialVersionUID = -4932470485711131874L;
 
-	private final int maxWidth = 700;
+	private final static int WIDTH = 700;
+	private final static int HEIGHT = 70;
 
 	private final FontMetrics 	fm;			// the dialog font metrics
 	private List<String> 		columns;	// list of the columns for the table
@@ -239,12 +240,8 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 		initTable(line);
 		table.revalidate();
 		pane.setViewportView(table);
+		pane.setPreferredSize(new Dimension(WIDTH, HEIGHT));
 
-		// Manages the sizes
-		int heightOffset = 17 + 17 + 2;			// 17 (horizontal scroll bar); 17 (table header); 2 (to make sure we see the whole line: linux issue)
-		int tableHeight = (int)table.getPreferredSize().getHeight();
-		Dimension paneDimension = new Dimension(maxWidth, tableHeight + heightOffset);
-		pane.setPreferredSize(paneDimension);
 		pack();
 
 		// Show the dialog

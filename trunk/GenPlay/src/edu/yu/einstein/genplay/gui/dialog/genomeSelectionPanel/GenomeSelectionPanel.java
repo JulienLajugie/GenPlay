@@ -22,7 +22,6 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.genomeSelectionPanel;
 
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -43,12 +42,10 @@ import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
  * Panel for the selection of a genome as a reference in a multi-genome project
  * @author Julien Lajugie
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class GenomeSelectionPanel extends JPanel {
 
 	private static final long 	serialVersionUID = -2863825210102188370L;	// generated ID
-	private static final int 	PANEL_WIDTH = 180;	// width of the panel
 	private 					JComboBox 	jcbGenome; 									// combo box to choose the genome
 	private						JComboBox	jcbAllele;									// combo box to choose the allele type
 	private static int 						defaultGenome = 1;	// default selected genome
@@ -120,12 +117,6 @@ public class GenomeSelectionPanel extends JPanel {
 		jcbAllele = new JComboBox(alleles);
 		jcbAllele.setSelectedIndex(defaultAllele);
 
-		//Dimension
-		int height = jcbAllele.getFontMetrics(jcbAllele.getFont()).getHeight() + 5;
-		Dimension dimension = new Dimension(PANEL_WIDTH, height);
-		jcbAllele.setPreferredSize(dimension);
-		jcbAllele.setMinimumSize(dimension);
-
 		// Tool tip text
 		jcbAllele.setToolTipText("Select an allele to synchronize with");
 
@@ -161,12 +152,6 @@ public class GenomeSelectionPanel extends JPanel {
 		// Creates the combo box
 		jcbGenome = new JComboBox(ProjectManager.getInstance().getMultiGenomeProject().getFormattedGenomeArray());
 		jcbGenome.setSelectedIndex(defaultGenome);
-
-		//Dimension
-		int height = jcbGenome.getFontMetrics(jcbGenome.getFont()).getHeight() + 5;
-		Dimension dimension = new Dimension(PANEL_WIDTH, height);
-		jcbGenome.setPreferredSize(dimension);
-		jcbGenome.setMinimumSize(dimension);
 
 		// Tool tip text
 		jcbGenome.setToolTipText("Select a genome");

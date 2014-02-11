@@ -58,8 +58,7 @@ public class VariantInformationDialog extends JDialog {
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -4932470485711131874L;
 
-	/** Dialog width */
-	public static final int WIDTH = 250; // width of the dialog
+	public static final int WIDTH = 270; // width of the dialog
 
 	private final VCFLineDialog vcfLineDialog;
 	private VariantDisplayMultiListScanner iterator;

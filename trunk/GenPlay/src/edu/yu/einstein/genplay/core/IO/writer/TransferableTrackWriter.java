@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.zip.GZIPOutputStream;
 
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.trackTransfer.TrackForTransfer;
@@ -56,14 +57,27 @@ public class TransferableTrackWriter {
 	 * @throws IOException
 	 */
 	public void write() throws IOException {
-		TrackForTransfer transferableTrack = new TrackForTransfer(trackToWrite);
+		FileOutputStream fos = null;
+		GZIPOutputStream gzos = null;
 		ObjectOutputStream oos = null;
-		FileOutputStream out = new FileOutputStream(fileToWrite);
-		oos = new ObjectOutputStream(out);
-		oos.writeObject(transferableTrack);
-		oos.flush();
-		if (oos != null) {
-			oos.close();
+		try {
+			TrackForTransfer transferableTrack = new TrackForTransfer(trackToWrite);
+			fos = new FileOutputStream(fileToWrite);
+			gzos = new GZIPOutputStream(fos);
+			oos = new ObjectOutputStream(gzos);
+			oos.writeObject(transferableTrack);
+			oos.flush();
+		} finally {
+			if (oos != null) {
+				oos.close();
+			}
+			if (gzos != null) {
+				gzos.close();
+			}
+			if (fos != null) {
+				fos.close();
+			}
 		}
+
 	}
 }

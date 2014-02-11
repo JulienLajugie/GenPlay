@@ -2,9 +2,9 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="externalJars/mail_V1.4.7.jar"/>
-	<classpathentry kind="lib" path="externalJars/sam_V1.96.jar"/>
-	<classpathentry kind="lib" path="externalJars/jannot_genplay_v1.0.jar"/>
 	<classpathentry kind="lib" path="externalJars/AppleJavaExtensions.jar"/>
+	<classpathentry kind="lib" path="externalJars/jannot_GenPlay_v1.0.jar"/>
+	<classpathentry kind="lib" path="externalJars/mail_v1.4.7.jar"/>
+	<classpathentry kind="lib" path="externalJars/sam_v1.96.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

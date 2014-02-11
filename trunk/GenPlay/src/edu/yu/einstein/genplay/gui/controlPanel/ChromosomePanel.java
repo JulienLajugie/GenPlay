@@ -91,7 +91,7 @@ final class ChromosomePanel extends JPanel implements MouseWheelListener, ItemLi
 
 		gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.CENTER;
-		gbc.fill = GridBagConstraints.BOTH;
+		//gbc.fill = GridBagConstraints.BOTH;
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.weightx = 1;
@@ -111,25 +111,8 @@ final class ChromosomePanel extends JPanel implements MouseWheelListener, ItemLi
 
 
 	@Override
-	public void mouseWheelMoved(MouseWheelEvent mwe) {
-		if ((mwe.getWheelRotation() + jcbChromosome.getSelectedIndex()) < 0) {
-			jcbChromosome.setSelectedIndex(0);
-		} else if ((mwe.getWheelRotation() + jcbChromosome.getSelectedIndex()) > (jcbChromosome.getItemCount() - 1)) {
-			jcbChromosome.setSelectedIndex(jcbChromosome.getItemCount() - 1);
-		} else {
-			jcbChromosome.setSelectedIndex(mwe.getWheelRotation() + jcbChromosome.getSelectedIndex());
-		}
-	}
-
-
-	/**
-	 * This method updates the chromosome panel when a project is loaded.
-	 */
-	public void updateChromosomePanel () {
-		jcbChromosome.removeAllItems();
-		for (Chromosome currentChromosome: projectChromosomes) {
-			jcbChromosome.addItem(currentChromosome);
-		}
+	public void genomeWindowChanged(GenomeWindowEvent evt) {
+		jcbChromosome.setSelectedItem(evt.getNewWindow().getChromosome());
 	}
 
 
@@ -143,25 +126,36 @@ final class ChromosomePanel extends JPanel implements MouseWheelListener, ItemLi
 	}
 
 
-	/**
-	 * Locks the chromosome panel
-	 */
-	public void lock() {
-		jcbChromosome.setEnabled(false);
-	}
-
-
-	/**
-	 * Unlocks the chromosome panel
-	 */
-	public void unlock() {
-		jcbChromosome.setEnabled(true);
-	}
-
-
 	@Override
-	public void genomeWindowChanged(GenomeWindowEvent evt) {
-		jcbChromosome.setSelectedItem(evt.getNewWindow().getChromosome());
+	public void mouseWheelMoved(MouseWheelEvent mwe) {
+		if ((mwe.getWheelRotation() + jcbChromosome.getSelectedIndex()) < 0) {
+			jcbChromosome.setSelectedIndex(0);
+		} else if ((mwe.getWheelRotation() + jcbChromosome.getSelectedIndex()) > (jcbChromosome.getItemCount() - 1)) {
+			jcbChromosome.setSelectedIndex(jcbChromosome.getItemCount() - 1);
+		} else {
+			jcbChromosome.setSelectedIndex(mwe.getWheelRotation() + jcbChromosome.getSelectedIndex());
+		}
+	}
+
+
+	/**
+	 * Enables or disables the chromosome panel
+	 * @param b a boolean value, where true enables the component and false disables it
+	 */
+	public void setEnaled(boolean b) {
+		jcbChromosome.setEnabled(b);
+		super.setEnabled(b);
+	}
+
+
+	/**
+	 * This method updates the chromosome panel when a project is loaded.
+	 */
+	public void updateChromosomePanel () {
+		jcbChromosome.removeAllItems();
+		for (Chromosome currentChromosome: projectChromosomes) {
+			jcbChromosome.addItem(currentChromosome);
+		}
 	}
 
 }

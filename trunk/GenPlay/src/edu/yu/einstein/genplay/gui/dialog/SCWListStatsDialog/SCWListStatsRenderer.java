@@ -22,6 +22,7 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.SCWListStatsDialog;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 
@@ -49,7 +50,7 @@ class SCWListStatsRenderer extends DefaultTableCellRenderer {
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 		Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 		// style of the row (background of 1 row out of 2 is light grey)
-		if ((!isSelected) && ((row % 2) == 1)) {
+		if ((row % 2) == 1) {
 			component.setBackground(Colors.LIGHT_GREY);
 		} else {
 			component.setBackground(Colors.WHITE);
@@ -60,7 +61,13 @@ class SCWListStatsRenderer extends DefaultTableCellRenderer {
 		} else {
 			((JLabel) component).setHorizontalAlignment(SwingConstants.RIGHT);
 		}
-		// style for the genome wide row
+		// set font black
+		component.setForeground(Color.BLACK);
+		// selected row -> italic
+		if (isSelected) {
+			component.setFont(getFont().deriveFont(Font.ITALIC));
+		}
+		// genome wide row -> bold
 		if (row == 0) {
 			component.setFont(getFont().deriveFont(Font.BOLD));
 		}

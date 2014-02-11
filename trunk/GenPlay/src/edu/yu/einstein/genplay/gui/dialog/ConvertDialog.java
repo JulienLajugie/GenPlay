@@ -66,7 +66,6 @@ public class ConvertDialog extends JDialog {
 	public static final 	int 			CANCEL_OPTION 		= 1;
 
 	private int	approved = CANCEL_OPTION;	// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
-	private int dialogwidth = 400;
 	private JPanel binPanel;
 	private JPanel scwPanel;
 
@@ -101,6 +100,7 @@ public class ConvertDialog extends JDialog {
 		// Layout settings
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.BOTH;
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -112,12 +112,6 @@ public class ConvertDialog extends JDialog {
 		JPanel outputTypeLayerPanel = getOutputTypeLayer();
 		outputLayerPanel = new OutputLayerPanel("Converted " + inputLayer.getName());
 		JPanel validationPanel = getValidationPanel();
-
-		// Set the panels dimension
-		setDimension(inputLayerPanel);
-		setDimension(outputTypeLayerPanel);
-		setDimension(outputLayerPanel);
-		setDimension(validationPanel);
 
 		// Add the input layer panel
 		add(inputLayerPanel, gbc);
@@ -148,19 +142,16 @@ public class ConvertDialog extends JDialog {
 	 * @return the panel for the {@link BinList} options
 	 */
 	private JPanel getBinPanel () {
-		Dimension dimension = new Dimension(100, 20);
 
 		// Create bin size element
 		JLabel jlBinSize = new JLabel("Select a bin size:");
 		SpinnerNumberModel snm = new SpinnerNumberModel(1000, 1, Integer.MAX_VALUE, 100);
 		jsBinSize = new JSpinner(snm);
-		jsBinSize.setPreferredSize(dimension);
 
 		// Create the calculation method elements
 		JLabel jlCalculationMethod = new JLabel("Select a calculation method:");
 		jcbBinCalculMetod = new JComboBox(ScoreOperation.getPileupOperations());
 		jcbBinCalculMetod.setSelectedItem(ScoreOperation.ADDITION);
-		jcbBinCalculMetod.setPreferredSize(dimension);
 
 		// Creates the panel
 		JPanel panel = new JPanel();
@@ -223,7 +214,6 @@ public class ConvertDialog extends JDialog {
 		// Creates panel elements
 		JLabel jlName = new JLabel("Layer name: " + inputLayer.getName());
 		JLabel jlType = new JLabel(inputLayer.getType().toString());
-		setDialogWidth(jlName.getText());
 
 		// Creates the panel
 		JPanel panel = new JPanel();
@@ -423,29 +413,6 @@ public class ConvertDialog extends JDialog {
 		return panel;
 	}
 
-
-	/**
-	 * Set the width of the dialog (cannot be less than 400) according to the length of a string.
-	 * @param s the string
-	 */
-	private void setDialogWidth (String s) {
-		JLabel test = new JLabel();
-		int width = getFontMetrics(test.getFont()).stringWidth(s);
-		if (width > dialogwidth) {
-			dialogwidth = width;
-		}
-	}
-
-
-	/**
-	 * Set the dimension of a panel with the dialog width.
-	 * @param panel the panel
-	 */
-	private void setDimension (JPanel panel) {
-		int height = panel.getPreferredSize().height;
-		Dimension dimension = new Dimension(dialogwidth, height);
-		panel.setPreferredSize(dimension);
-	}
 
 
 	/**

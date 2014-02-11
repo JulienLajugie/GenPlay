@@ -262,6 +262,7 @@ public final class PAInitManagers extends AbstractAction {
 			String[] correctedPaths = new String[invalidPaths.length];
 			for (int i = 0; i < invalidPaths.length; i++) {
 				String newPath = new File(projectDirect, new File(invalidPaths[i]).getName()).getAbsolutePath();
+				//TODO correct bug
 				correctedPaths[i] = newPath;
 			}
 			return correctedPaths;

@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
+import java.util.zip.GZIPInputStream;
 
 import edu.yu.einstein.genplay.exception.exceptions.IncompatibleAssembliesException;
 import edu.yu.einstein.genplay.gui.track.trackTransfer.TrackForTransfer;
@@ -53,19 +54,24 @@ public class TransferableTrackExtractor extends Extractor {
 	 * @throws IOException
 	 */
 	public TrackForTransfer extract() throws ClassNotFoundException, IOException, IncompatibleAssembliesException {
-		InputStream file = null;
-		ObjectInput input = null;
+		InputStream fis = null;
+		GZIPInputStream gzis = null;
+		ObjectInput ois = null;
 		try {
-			file = new FileInputStream(getDataFile());
-			input = new ObjectInputStream (file);
-			TrackForTransfer transTrack = (TrackForTransfer) (input.readObject());
+			fis = new FileInputStream(getDataFile());
+			gzis = new GZIPInputStream(fis);
+			ois = new ObjectInputStream(gzis);
+			TrackForTransfer transTrack = (TrackForTransfer) (ois.readObject());
 			return transTrack;
 		} finally {
-			if (input != null) {
-				input.close();
+			if (ois != null) {
+				ois.close();
 			}
-			if (file != null) {
-				file.close();
+			if (gzis != null) {
+				gzis.close();
+			}
+			if (fis != null) {
+				fis.close();
 			}
 		}
 	}

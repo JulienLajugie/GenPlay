@@ -51,15 +51,12 @@ public class MGButtonPopupMenu extends JPopupMenu implements ActionListener {
 	}
 
 
-	/**
-	 * Initializes the list of items for this menu
-	 */
-	private void initializeItem () {
-		add(getItemMenu(PropertiesDialog.GENERAL));
-		add(getItemMenu(PropertiesDialog.SETTINGS));
-		add(getItemMenu(PropertiesDialog.FILTERS));
-		//add(getItemMenu(PropertiesDialog.FILTERS_FILE));
-		//add(getItemMenu(PropertiesDialog.FILTERS_ADVANCED));
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		String item = ((JMenuItem)arg0.getSource()).getText();
+		MGAProperties action = new MGAProperties();
+		action.setItemDialog(item);
+		action.actionPerformed(null);
 	}
 
 
@@ -75,11 +72,12 @@ public class MGButtonPopupMenu extends JPopupMenu implements ActionListener {
 	}
 
 
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		String item = ((JMenuItem)arg0.getSource()).getText();
-		MGAProperties action = new MGAProperties();
-		action.setItemDialog(item);
-		action.actionPerformed(null);
+	/**
+	 * Initializes the list of items for this menu
+	 */
+	private void initializeItem () {
+		add(getItemMenu(PropertiesDialog.GENERAL));
+		add(getItemMenu(PropertiesDialog.SETTINGS));
+		add(getItemMenu(PropertiesDialog.FILTERS));
 	}
 }

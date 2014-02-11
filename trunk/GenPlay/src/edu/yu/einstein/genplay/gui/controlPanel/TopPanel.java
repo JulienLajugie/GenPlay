@@ -163,10 +163,12 @@ public class TopPanel extends JPanel implements AdjustmentListener, MouseWheelLi
 
 		// sets some attributes
 		Dimension buttonDimension = new Dimension(HANDLE_WIDTH, TRACKS_SCROLL_WIDTH - 1);
-		jbMultiGenome.setBackground(Colors.WHITE);
+		jbMultiGenome.setBackground(Colors.TRACK_HANDLE_BACKGROUND);
+		jbMultiGenome.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Colors.LIGHT_GREY));
 		jbMultiGenome.setMargin(new Insets(0, 0, 0, 0));
 		jbMultiGenome.setFocusPainted(false);
-		jbMultiGenome.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 0, Colors.LIGHT_GREY));
+		jbMultiGenome.setContentAreaFilled(false);
+		jbMultiGenome.setOpaque(true);
 		jbMultiGenome.setPreferredSize(buttonDimension);
 		jbMultiGenome.setToolTipText("Show the Multi Genome Properties Dialog");
 
@@ -189,13 +191,16 @@ public class TopPanel extends JPanel implements AdjustmentListener, MouseWheelLi
 			}
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				jbMultiGenome.setBackground(Colors.GREY);
+				if (jbMultiGenome.isEnabled()) {
+					jbMultiGenome.setBackground(Colors.TRACK_HANDLE_ROLLOVER);
+				}
 				super.mouseEntered(e);
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
-				jbMultiGenome.setBackground(Colors.WHITE);
-
+				if (jbMultiGenome.isEnabled()) {
+					jbMultiGenome.setBackground(Colors.TRACK_HANDLE_BACKGROUND);
+				}
 				super.mouseExited(e);
 			}
 			@Override
@@ -223,6 +228,19 @@ public class TopPanel extends JPanel implements AdjustmentListener, MouseWheelLi
 		int stop = start + projectWindow.getGenomeWindow().getSize();
 		SimpleGenomeWindow newGenomeWindow = new SimpleGenomeWindow(chromosome, start, stop);
 		projectWindow.setGenomeWindow(newGenomeWindow);
+	}
+
+
+	/**
+	 * Enables or disables the top panel
+	 * @param b a boolean value, where true enables the component and false disables it
+	 */
+	@Override
+	public void setEnabled(boolean b) {
+		if (jbMultiGenome != null) {
+			jbMultiGenome.setEnabled(b);
+		}
+		super.setEnabled(b);
 	}
 
 

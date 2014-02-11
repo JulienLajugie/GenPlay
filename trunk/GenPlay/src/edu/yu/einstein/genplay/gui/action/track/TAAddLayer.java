@@ -175,7 +175,6 @@ public class TAAddLayer extends TrackListAction {
 		List<LayerType> typeList = new ArrayList<LayerType>();
 		if (extractor instanceof SCWReader) {
 			typeList.add(LayerType.SCW_LAYER);
-			typeList.add(LayerType.MASK_LAYER);
 		}
 		if (extractor instanceof GeneReader) {
 			typeList.add(LayerType.GENE_LAYER);
@@ -185,6 +184,9 @@ public class TAAddLayer extends TrackListAction {
 		}
 		if (extractor instanceof NucleotideReader) {
 			typeList.add(LayerType.NUCLEOTIDE_LAYER);
+		}
+		if (extractor instanceof SCWReader) {
+			typeList.add(LayerType.MASK_LAYER);
 		}
 		return typeList.toArray(new LayerType[0]);
 	}

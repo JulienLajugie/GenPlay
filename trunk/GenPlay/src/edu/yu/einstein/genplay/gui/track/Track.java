@@ -179,6 +179,14 @@ public final class Track implements Serializable, GenomeWindowListener, TrackLis
 
 
 	/**
+	 * @return the default track name
+	 */
+	private String getDefaultName() {
+		return new String(TrackConstants.NAME_PREFIX + getNumber());
+	}
+
+
+	/**
 	 * @param font
 	 * @return the font metrics of the specified font
 	 */
@@ -245,7 +253,7 @@ public final class Track implements Serializable, GenomeWindowListener, TrackLis
 	public String getName() {
 		if (trackName == null) {
 			// default track name if it hasn't been set
-			return new String(TrackConstants.NAME_PREFIX + getNumber());
+			return getDefaultName();
 		} else {
 			return trackName;
 		}
@@ -489,7 +497,9 @@ public final class Track implements Serializable, GenomeWindowListener, TrackLis
 			layerToAdd.setTrack(this);
 			getLayers().add(layerToAdd);
 		}
-		trackName = otherTrack.trackName;
+		if ((otherTrack.trackName != null) && !otherTrack.trackName.equals(otherTrack.getDefaultName())) {
+			trackName = otherTrack.trackName;
+		}
 		score.setMinimumScore(otherTrack.score.getMinimumScore());
 		score.setMaximumScore(otherTrack.score.getMaximumScore());
 		score.setScoreAxisAutorescaled(otherTrack.score.isScoreAxisAutorescaled());
@@ -519,7 +529,9 @@ public final class Track implements Serializable, GenomeWindowListener, TrackLis
 	 * @param name
 	 */
 	public void setName(String name) {
-		trackName = name;
+		if ((name != null) && !name.equals(getDefaultName())) {
+			trackName = name;
+		}
 	}
 
 

@@ -36,6 +36,7 @@ import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.d
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.editing.GenomeEditingPanel;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.editing.VariationTypeEditingPanel;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 
 
 /**
@@ -71,15 +72,6 @@ public class EditingDialogManagerForVariants implements EditingDialogManagerInte
 	@Override
 	public List<EditingPanel<?>> getEditingPanelList() {
 		return editingPanelList;
-	}
-
-
-	/**
-	 * Enable/Disable the selection of the genome
-	 * @param enable true to enable, false to disable
-	 */
-	public void setEnableSelection (boolean enable) {
-		genomeEditingPanel.setEnableSelection(enable);
 	}
 
 
@@ -148,18 +140,26 @@ public class EditingDialogManagerForVariants implements EditingDialogManagerInte
 	}
 
 
+	/**
+	 * Enable/Disable the selection of the genome
+	 * @param enable true to enable, false to disable
+	 */
+	public void setEnableSelection (boolean enable) {
+		genomeEditingPanel.setEnableSelection(enable);
+	}
+
+
 	@Override
 	public List<VariantData> showDialog() {
 		initializePanels();
 		EditingDialog<VariantData> editingDialog = new EditingDialog<VariantData>(this);
 		editingDialog.setTitle("Add a Variant Layer");
 		List<VariantData> data = new ArrayList<VariantData>();
-		if (editingDialog.showDialog(null) == EditingDialog.APPROVE_OPTION) {
+		if (editingDialog.showDialog(MainFrame.getInstance().getRootPane()) == EditingDialog.APPROVE_OPTION) {
 			data = retrieveData();
 		}
 		currentData = null;
 		resetPanels();
 		return data;
 	}
-
 }

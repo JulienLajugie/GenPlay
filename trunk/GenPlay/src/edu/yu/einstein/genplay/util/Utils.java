@@ -280,10 +280,13 @@ public final class Utils {
 	public static String getConfigurationDirectoryPath() {
 		if (isWindowsOS()) {
 			// windows system
-			return System.getenv("APPDATA") + File.separator + "GenPlay" + File.separator;
+			return System.getenv("APPDATA") + "\\GenPlay\\";
+		} else if (isMacOS()){
+			// mac
+			return System.getProperty("user.home") + "/Library/Application Suppor/GenPlay/";
 		} else {
-			// POSIX like systems
-			return System.getProperty("user.home") + File.separator + ".genplay" + File.separator;
+			// linux / unix
+			return System.getProperty("user.home") + "/.config/GenPlay/";
 		}
 	}
 
