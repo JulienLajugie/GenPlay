@@ -172,6 +172,8 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 			gbc.gridy = 1;
 			add(jcbGenomeSelection, gbc);
 		}
+
+		setOpaque(false);
 	}
 
 

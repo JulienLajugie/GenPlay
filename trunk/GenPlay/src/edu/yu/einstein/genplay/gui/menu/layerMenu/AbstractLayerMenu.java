@@ -33,7 +33,6 @@ import edu.yu.einstein.genplay.gui.menu.TrackMenu;
 import edu.yu.einstein.genplay.gui.track.layer.ColoredLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.VersionedLayer;
-import edu.yu.einstein.genplay.util.colors.Colors;
 
 /**
  * Abstract class extended by the different types of layer menus.
@@ -58,7 +57,7 @@ public abstract class AbstractLayerMenu extends JMenu {
 			Color menuColor = ((ColoredLayer) layer).getColor();
 			setForeground(menuColor);
 		}
-		setBackground(Colors.TRACK_HANDLE_BACKGROUND);
+
 		// if the layer is a versioned layer we add the versionlayer sub-menu
 		if (layer instanceof VersionedLayer) {
 			VersionedLayerMenu.addVersionedOptionsToMenu(this,(VersionedLayer<?>) layer, enable);

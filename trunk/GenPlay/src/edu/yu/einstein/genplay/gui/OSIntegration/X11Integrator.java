@@ -24,6 +24,8 @@ package edu.yu.einstein.genplay.gui.OSIntegration;
 
 import java.awt.Toolkit;
 
+import edu.yu.einstein.genplay.util.Utils;
+
 /**
  * Methods to integrate genplay into X11 systems
  * @author Julien Lajugie
@@ -36,13 +38,15 @@ public class X11Integrator {
 	 * the correct icons on gnome shell for example)
 	 */
 	public static void setWMClassName() {
-		try {
-			Toolkit xToolkit = Toolkit.getDefaultToolkit();
-			java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass().getDeclaredField("awtAppClassName");
-			awtAppClassNameField.setAccessible(true);
-			awtAppClassNameField.set(xToolkit, "GenPlay");
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (!Utils.isMacOS() && !Utils.isWindowsOS()) { // if it's unix or linux
+			try {
+				Toolkit xToolkit = Toolkit.getDefaultToolkit();
+				java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass().getDeclaredField("awtAppClassName");
+				awtAppClassNameField.setAccessible(true);
+				awtAppClassNameField.set(xToolkit, "GenPlay");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }

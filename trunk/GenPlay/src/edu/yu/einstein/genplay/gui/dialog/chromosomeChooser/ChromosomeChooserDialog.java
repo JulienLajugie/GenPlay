@@ -44,6 +44,7 @@ import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.Utils;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 /**
  * This class displays a list of chromosome in order to make a selection.
@@ -70,10 +71,10 @@ public class ChromosomeChooserDialog extends JDialog {
 	 */
 	public 		static 	final 	int 		CANCEL_OPTION = 1;
 
-	protected 	static	final 	String[] 	COLUMN_NAMES 				= {"#", "Name", "Length", ""};	// Column names
+	protected 	static	final 	String[] 	COLUMN_NAMES 				= {"#", "Name", "Length", ""};				// Column names
 	private 	static	final 	Dimension 	DIALOG_SIZE 				= new Dimension(430, 600);					// Window size
 	private 	static	final 	Dimension 	BUTTON_PANEL_SIZE			= new Dimension(DIALOG_SIZE.width, 65);		// Button panel size
-	private 	static	final 	Color 		CHROMOSOME_CHOOSER_COLOR 	= ProjectFrame.ASSEMBLY_COLOR;	// Chromosome chooser color
+	private 	static	final 	Color 		CHROMOSOME_CHOOSER_COLOR 	= Colors.MAIN_GUI_BACKGROUND;				// Chromosome chooser color
 
 
 	private 	static 			JTable 							chromosomeTable;			// Chromosome table

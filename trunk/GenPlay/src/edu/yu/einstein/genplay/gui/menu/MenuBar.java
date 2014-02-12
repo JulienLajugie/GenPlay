@@ -62,7 +62,9 @@ import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.menu.layerMenu.LayerMenuFactory;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
+import edu.yu.einstein.genplay.util.LookAndFeels;
 import edu.yu.einstein.genplay.util.Utils;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 /**
  * Application main menu bar following the OSX feel
@@ -87,6 +89,9 @@ public class MenuBar extends JMenuBar {
 	 */
 	public MenuBar(ActionMap actionMap) {
 		super();
+
+		setBackground(Colors.MENU_BAR_COLOR);
+
 		this.actionMap = actionMap;
 
 		jmFile = new JMenu("File");
@@ -162,7 +167,7 @@ public class MenuBar extends JMenuBar {
 		final JMenuItem jmiSaveProject = new JMenuItem(actionMap.get(PASaveProject.ACTION_KEY));
 		jmFile.add(jmiSaveProject);
 		jmFile.add(actionMap.get(PASaveProjectAs.ACTION_KEY));
-		if(!Utils.isMacOS()) {
+		if(!Utils.isMacOS() || !LookAndFeels.isNativeLookAndFeel()) {
 			jmFile.addSeparator();
 			jmFile.add(actionMap.get(PAExit.ACTION_KEY));
 		}
@@ -188,13 +193,13 @@ public class MenuBar extends JMenuBar {
 	 * Creates Help menu
 	 */
 	private void createHelpMenu() {
-		if (!Utils.isMacOS()) {
+		if (!Utils.isMacOS() || !LookAndFeels.isNativeLookAndFeel()) {
 			// on mac the option and about menu items are available from the
 			// application menu so we don't need them in the help menu
 			jmHelp.add(actionMap.get(PAOption.ACTION_KEY));
 		}
 		jmHelp.add(actionMap.get(PAHelp.ACTION_KEY));
-		if (!Utils.isMacOS()) {
+		if (!Utils.isMacOS() || !LookAndFeels.isNativeLookAndFeel()) {
 			jmHelp.add(actionMap.get(PAAbout.ACTION_KEY));
 		}
 		add(jmHelp);
@@ -329,7 +334,6 @@ public class MenuBar extends JMenuBar {
 				jcbmiExceptionReport.setEnabled(ExceptionReportDialog.getInstance().isVisible());
 			}
 		});
-
 		add(jmWindow);
 	}
 }

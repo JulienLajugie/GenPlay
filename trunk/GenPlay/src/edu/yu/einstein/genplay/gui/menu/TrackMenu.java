@@ -88,6 +88,7 @@ public class TrackMenu extends JPopupMenu implements PopupMenuListener {
 	 * Creates an instance of {@link TrackMenu}
 	 */
 	public TrackMenu() {
+		super();
 		layerMenus = new ArrayList<JMenu>();
 		layerMenusSeparator = new Separator();
 		ActionMap actionMap = TrackListActionMap.getActionMap();

@@ -32,7 +32,6 @@ import edu.yu.einstein.genplay.gui.trackList.TrackListPanel;
 /**
  * Abstract class. Represents an action on a TrackList
  * @author Julien Lajugie
- * @version 0.1
  */
 public abstract class TrackListAction extends AbstractAction {
 

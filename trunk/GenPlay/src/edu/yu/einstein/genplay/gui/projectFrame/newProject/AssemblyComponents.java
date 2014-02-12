@@ -22,9 +22,6 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.projectFrame.newProject;
 
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,7 +35,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.IO.genomeListLoader.AssemblyListLoader;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
@@ -54,46 +50,32 @@ import edu.yu.einstein.genplay.util.Images;
 /**
  * This class provides a panel including combo boxes to choose an assembly.
  * @author Nicolas Fourel
- * @version 0.1
  */
-class AssemblyPanel extends JPanel implements ActionListener {
-
-	private static final long serialVersionUID = -5768796908632202321L; //generated ID
-
-	private final 	 			ImageIcon	icon;
-
-	private static final int COMBO_WIDTH = 200;	// Combo box width value
-	private static final int COMBO_HEIGTH = 20;	// Combo box height value
+class AssemblyComponents implements ActionListener {
 
 	private static final String CLADE_DEFAULT_VALUE = "mammal";	// Default clade value
 	private static final String GENOME_DEFAULT_VALUE = "human";	// Default genome value
 
-	private final JLabel 				jlClade;			// Clade label
-	private final JLabel 				jlGenome;			// Genome label
-	private final JLabel 				jlAssembly;			// Assembly label
-	private final JComboBox 			jcClade;			// Clade combo box
-	private final JComboBox 			jcGenome;			// Genome combo box
-	private final JComboBox 			jcAssembly;			// Assembly combo box
-	private final JButton 				jbChromosome;		// Button to create a chromosome chooser object
+	private final JLabel 		jlClade;			// Clade label
+	private final JLabel 		jlGenome;			// Genome label
+	private final JLabel 		jlAssembly;			// Assembly label
+	private final JComboBox 	jcClade;			// Clade combo box
+	private final JComboBox 	jcGenome;			// Genome combo box
+	private final JComboBox 	jcAssembly;			// Assembly combo box
+	private final JButton 		jbChromosome;		// Button to create a chromosome chooser object
 
 	private Map<String, Clade> 	cladeList;			// list of all the assembly available for GenPlay retrived from an XML file
 	private Clade 				selectedClade;		// Selected Clade
 	private Genome 				selectedGenome;		// Selected Genome
 	private Assembly 			selectedAssembly;	// Selected Assembly
-
 	private List<Chromosome> 	fullChromosomeList;	// List of chromosome to display
 	private List<Chromosome> 	selectedChromosomes;// List of chromosome after selection
 
 
 	/**
-	 * Constructor of {@link AssemblyPanel}
+	 * Constructor of {@link AssemblyComponents}
 	 */
-	protected AssemblyPanel () {
-		//Size Panel
-		setSize(ProjectFrame.ASSEMBLY_DIM);
-		setPreferredSize(getSize());
-		setMinimumSize(getSize());
-		setMaximumSize(getSize());
+	AssemblyComponents () {
 
 		//Labels
 		jlClade = new JLabel("Clade:");
@@ -105,121 +87,14 @@ class AssemblyPanel extends JPanel implements ActionListener {
 		jcGenome = new JComboBox();
 		jcAssembly = new JComboBox();
 
-		//Size Combo boxes
-		Dimension comboDim = new Dimension(COMBO_WIDTH, COMBO_HEIGTH);
-		jcClade.setPreferredSize(comboDim);
-		jcGenome.setPreferredSize(comboDim);
-		jcAssembly.setPreferredSize(comboDim);
-
-		//Boxes color
-		jcClade.setBackground(ProjectFrame.ASSEMBLY_COLOR);
-		jcGenome.setBackground(ProjectFrame.ASSEMBLY_COLOR);
-		jcAssembly.setBackground(ProjectFrame.ASSEMBLY_COLOR);
-
 		//Chromosome selection button
-		icon = new ImageIcon(Images.getToolsImage());
-		jbChromosome = new JButton(icon);
-		jbChromosome.setContentAreaFilled(false);
-		jbChromosome.setOpaque(true);
-		jbChromosome.setPreferredSize(new Dimension(20, 20));
+		jbChromosome = new JButton();
 		jbChromosome.setMargin(new Insets(0, 0, 0, 0));
-
-		//Layout
-		setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-
-		//Insets
-		Insets labelInsets = new Insets (10, 28, 10, 30);
-		Insets boxInsets = new Insets (0, 0, 0, 0);
-		Insets buttonInsets = new Insets (0, 5, 0, 0);
-
-		//jlClade
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.gridwidth = 1;
-		gbc.gridheight = 1;
-		gbc.fill = GridBagConstraints.NONE;
-		gbc.ipadx = 0;
-		gbc.ipady = 0;
-		gbc.insets = labelInsets;
-		gbc.anchor = GridBagConstraints.LINE_START;
-		gbc.weighty = 0;
-		add(jlClade, gbc);
-
-		//jcClade
-		gbc.gridx = 1;
-		gbc.gridy = 0;
-		gbc.gridwidth = 1;
-		gbc.gridheight = 1;
-		gbc.fill = GridBagConstraints.NONE;
-		gbc.ipadx = 0;
-		gbc.ipady = 0;
-		gbc.insets = boxInsets;
-		gbc.anchor = GridBagConstraints.LINE_START;
-		add(jcClade, gbc);
-
-		//jlGenome
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		gbc.gridwidth = 1;
-		gbc.gridheight = 1;
-		gbc.fill = GridBagConstraints.NONE;
-		gbc.ipadx = 0;
-		gbc.ipady = 0;
-		gbc.insets = labelInsets;
-		gbc.anchor = GridBagConstraints.LINE_START;
-		add(jlGenome, gbc);
-
-		//jcGenome
-		gbc.gridx = 1;
-		gbc.gridy = 1;
-		gbc.gridwidth = 1;
-		gbc.gridheight = 1;
-		gbc.fill = GridBagConstraints.NONE;
-		gbc.ipadx = 0;
-		gbc.ipady = 0;
-		gbc.insets = boxInsets;
-		gbc.anchor = GridBagConstraints.LINE_START;
-		add(jcGenome, gbc);
-
-		//jlAssembly
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		gbc.gridwidth = 1;
-		gbc.gridheight = 1;
-		gbc.fill = GridBagConstraints.NONE;
-		gbc.ipadx = 0;
-		gbc.ipady = 0;
-		gbc.insets = labelInsets;
-		gbc.anchor = GridBagConstraints.LINE_START;
-		add(jlAssembly, gbc);
-
-		//jcAssembly
-		gbc.gridx = 1;
-		gbc.gridy = 2;
-		gbc.gridwidth = 1;
-		gbc.gridheight = 1;
-		gbc.fill = GridBagConstraints.NONE;
-		gbc.ipadx = 0;
-		gbc.ipady = 0;
-		gbc.insets = boxInsets;
-		gbc.anchor = GridBagConstraints.LINE_START;
-		add(jcAssembly, gbc);
-
-		//jbChromosome
-		gbc.gridx = 2;
-		gbc.gridy = 2;
-		gbc.gridwidth = 1;
-		gbc.gridheight = 1;
-		gbc.fill = GridBagConstraints.NONE;
-		gbc.ipadx = 0;
-		gbc.ipady = 0;
-		gbc.insets = buttonInsets;
-		gbc.anchor = GridBagConstraints.LINE_START;
-		add(jbChromosome, gbc);
-
-		//Background
-		setBackground(ProjectFrame.ASSEMBLY_COLOR);
+		jbChromosome.setIcon(new ImageIcon(Images.getToolsImage()));
+		jbChromosome.setFocusPainted(false);
+		jbChromosome.setBorderPainted(false);
+		jbChromosome.setContentAreaFilled(false);
+		jbChromosome.setOpaque(false);
 
 		//init boxes and data
 		initClade();
@@ -274,11 +149,67 @@ class AssemblyPanel extends JPanel implements ActionListener {
 			chromosomeChooser.setFullChromosomeList(fullChromosomeList);
 			chromosomeChooser.setSelectedChromosomeList(selectedChromosomes);
 			chromosomeChooser.setOrdering(false);
-			if (chromosomeChooser.showDialog(getRootPane()) == ChromosomeChooserDialog.APPROVE_OPTION) {
+			if (chromosomeChooser.showDialog(ProjectFrame.getInstance().getRootPane()) == ChromosomeChooserDialog.APPROVE_OPTION) {
 				fullChromosomeList = chromosomeChooser.getFullChromosomeList();
 				selectedChromosomes = chromosomeChooser.getSelectedChromosomeList();
 			}
 		}
+	}
+
+
+	/**
+	 * @return the jbChromosome
+	 */
+	JButton getJbChromosome() {
+		return jbChromosome;
+	}
+
+
+	/**
+	 * @return the jcAssembly
+	 */
+	JComboBox getJcAssembly() {
+		return jcAssembly;
+	}
+
+
+	/**
+	 * @return the jcClade
+	 */
+	JComboBox getJcClade() {
+		return jcClade;
+	}
+
+
+	/**
+	 * @return the jcGenome
+	 */
+	JComboBox getJcGenome() {
+		return jcGenome;
+	}
+
+
+	/**
+	 * @return the jlAssembly
+	 */
+	JLabel getJlAssembly() {
+		return jlAssembly;
+	}
+
+
+	/**
+	 * @return the jlClade
+	 */
+	JLabel getJlClade() {
+		return jlClade;
+	}
+
+
+	/**
+	 * @return the jlGenome
+	 */
+	JLabel getJlGenome() {
+		return jlGenome;
 	}
 
 

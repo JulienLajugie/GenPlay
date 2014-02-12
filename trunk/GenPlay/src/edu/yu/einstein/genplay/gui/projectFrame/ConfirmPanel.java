@@ -31,9 +31,9 @@ import javax.swing.JPanel;
 /**
  * This class manages the button which validates the project screen.
  * @author Nicolas Fourel
- * @version 0.1
+ * @author Julien Lajugie
  */
-public class ConfirmPanel extends JPanel implements ActionListener {
+class ConfirmPanel extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = 2332665074234979205L;	// generated ID
 	private final JButton valid;	// Button to valid the project screen
@@ -42,22 +42,16 @@ public class ConfirmPanel extends JPanel implements ActionListener {
 	/**
 	 * Constructor of {@link ConfirmPanel}
 	 */
-	protected ConfirmPanel () {
-		//Size
-		setSize(ProjectFrame.CONFIRM_DIM);
-		setPreferredSize(getSize());
-		setMinimumSize(getSize());
-		setMaximumSize(getSize());
-
+	ConfirmPanel () {
 		//Valid button
 		valid = new JButton("Create");
 		valid.addActionListener(this);
 
-		//Background color
-		setBackground(ProjectFrame.CONFIRM_COLOR);
-
 		//Add valid button
 		add(valid);
+
+		setOpaque(false);
+
 		// set valid button as the default button of the project screen manager
 		ProjectFrame.getInstance().getRootPane().setDefaultButton(valid);
 	}

@@ -22,6 +22,7 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.projectFrame;
 
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 
@@ -44,15 +45,9 @@ public class BannerPanel extends JPanel {
 	/**
 	 * Constructor of {@link BannerPanel}
 	 */
-	protected BannerPanel () {
+	protected BannerPanel (int bannerHeight) {
 		//Size Panel
-		setSize(ProjectFrame.BANNER_DIM);
-		setPreferredSize(getSize());
-		setMinimumSize(getSize());
-		setMaximumSize(getSize());
-
-		//Background color
-		setBackground(ProjectFrame.BANNER_COLOR);
+		setPreferredSize(new Dimension(getPreferredSize().width, bannerHeight));
 
 		//Load the image
 		banner = Images.getBannerImage();
@@ -70,5 +65,4 @@ public class BannerPanel extends JPanel {
 			g.drawImage(banner, 0, 0, width, height, this); //resize automatically
 		}
 	}
-
 }

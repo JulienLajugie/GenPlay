@@ -112,6 +112,7 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 
 		int	maximumZoom = projectWindow.getGenomeWindow().getChromosome().getLength() * 2;
 		jsZoom = new JSlider(SwingConstants.HORIZONTAL, 0, projectZoom.getZoomIndex(maximumZoom), projectZoom.getZoomIndex(projectWindow.getGenomeWindow().getSize()));
+		jsZoom.setOpaque(false);
 		jsZoom.setMinorTickSpacing(1);
 		jsZoom.setPaintTicks(true);
 		jsZoom.setInverted(true);
@@ -169,6 +170,8 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 		jsZoom.getInputMap().put(PAMoveFarLeft.ACCELERATOR, "none");
 		jsZoom.getInputMap().put(PAMoveRight.ACCELERATOR, "none");
 		jsZoom.getInputMap().put(PAMoveFarRight.ACCELERATOR, "none");
+
+		setOpaque(false);
 	}
 
 

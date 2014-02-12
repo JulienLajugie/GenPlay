@@ -107,6 +107,8 @@ final class ChromosomePanel extends JPanel implements MouseWheelListener, ItemLi
 		jcbChromosome.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAMoveFarRight.ACCELERATOR, "none");
 		jcbChromosome.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAZoomIn.ACCELERATOR, "none");
 		jcbChromosome.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAZoomOut.ACCELERATOR, "none");
+
+		setOpaque(false);
 	}
 
 

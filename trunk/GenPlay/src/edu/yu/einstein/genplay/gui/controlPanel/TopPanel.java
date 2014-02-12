@@ -121,6 +121,8 @@ public class TopPanel extends JPanel implements AdjustmentListener, MouseWheelLi
 		add(jsbPosition, gbc);
 
 		addMouseWheelListener(this);
+
+		setOpaque(false);
 	}
 
 

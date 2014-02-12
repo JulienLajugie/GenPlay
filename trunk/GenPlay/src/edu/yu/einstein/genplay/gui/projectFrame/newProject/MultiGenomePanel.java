@@ -22,8 +22,10 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.projectFrame.newProject;
 
-import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -58,47 +60,27 @@ import edu.yu.einstein.genplay.util.Utils;
 /**
  * This class shows information and buttons about the multi genome
  * @author Nicolas Fourel
- * @version 0.1
  */
 class MultiGenomePanel extends JPanel {
 
 	private static final long serialVersionUID = -1295541774864815129L;
 
-	private final MultiGenomeInformationPanel informationPanel;	// multi genome information panel
-	private VCFLoaderDialog				vcfLoaderDialog;	// the VCF loader
-	private List<VCFData> 				data;				// data
-	private Map<String, List<VCFFile>> genomeFileAssociation;
-
-	private final JFileChooser 				fc;					// file chooser
+	private final MultiGenomeInformationPanel 	informationPanel;		// multi genome information panel
+	private VCFLoaderDialog						vcfLoaderDialog;		// the VCF loader
+	private List<VCFData> 						data;					// data
+	private Map<String, List<VCFFile>> 			genomeFileAssociation;
+	private final JFileChooser 					fc;						// file chooser
 
 
 	/**
 	 * Constructor of {@link MultiGenomePanel}
 	 */
 	protected MultiGenomePanel () {
-
-		setVisible(false);
-
 		//Create a file chooser
 		fc = new JFileChooser();
 		Utils.setFileChooserSelectedDirectory(fc);
 		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fc.setFileFilter(new XMLFilter());
-
-		//Size
-		Dimension dim = ProjectFrame.VCF_DIM;
-		setSize(dim);
-		setPreferredSize(dim);
-		setMinimumSize(dim);
-		setMaximumSize(dim);
-
-		setBackground(ProjectFrame.VCF_COLOR);
-
-		//Layout
-		FlowLayout flow = new FlowLayout(FlowLayout.CENTER);
-		flow.setVgap(20);
-		setLayout(flow);
-
 
 		informationPanel = new MultiGenomeInformationPanel();
 
@@ -121,12 +103,10 @@ class MultiGenomePanel extends JPanel {
 
 						initializesGenomeFileAssociation();
 						updatesStatistics();
-						//vcfLoaderDialog.closeDialog();
 					}
 				}
 			}
 		});
-
 
 		//Import button
 		JButton importXML = new JButton("Import");
@@ -138,7 +118,6 @@ class MultiGenomePanel extends JPanel {
 			}
 		});
 
-
 		//Export button
 		JButton exportXML = new JButton("Export");
 		exportXML.setToolTipText("Export information to xml");
@@ -149,11 +128,26 @@ class MultiGenomePanel extends JPanel {
 			}
 		});
 
+		setLayout(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
 
-		add(informationPanel);
-		add(editVCFFile);
-		add(importXML);
-		add(exportXML);
+		gbc.gridwidth = 3;
+		add(informationPanel, gbc);
+
+		gbc.insets = new Insets(10, 0, 0, 0);
+		gbc.gridy = 1;
+		gbc.gridwidth = 1;
+		add(editVCFFile, gbc);
+
+		gbc.gridx = 1;
+		add(importXML, gbc);
+
+		gbc.gridx = 2;
+		add(exportXML, gbc);
+
+		setOpaque(false);
+
+		setVarTableVisible(false);
 	}
 
 
@@ -297,21 +291,7 @@ class MultiGenomePanel extends JPanel {
 			genomeFileAssociation.get(fullName).add(vcfFile);
 			readerList.add(vcfFile);
 		}
-		//showsAssociation();
 	}
-
-
-	/*private void showsAssociation () {
-		String info = "-----------------\n";
-		for (String genome: genomeFileAssociation.keySet()) {
-			info += genome + ": ";
-			for (VCFFile reader: genomeFileAssociation.get(genome)) {
-				info += reader.hashCode() + " " + reader.getFile().getName() + ";";
-			}
-			info += "\n";
-		}
-		System.out.println(info);
-	}*/
 
 
 	/**
@@ -331,6 +311,17 @@ class MultiGenomePanel extends JPanel {
 		data = new ArrayList<VCFData>();
 		for (VCFData vcfData: newData) {
 			data.add(vcfData);
+		}
+	}
+
+
+	/**
+	 * Displays or hides the var panel
+	 * @param visible set to true to show the var table
+	 */
+	void setVarTableVisible(boolean visible) {
+		for (Component c: getComponents()) {
+			c.setVisible(visible);
 		}
 	}
 
@@ -373,5 +364,4 @@ class MultiGenomePanel extends JPanel {
 		MultiGenomeInformationPanel.FILE_NUMBER = fileGenome.size();
 		MultiGenomeInformationPanel.refreshInformation();
 	}
-
 }

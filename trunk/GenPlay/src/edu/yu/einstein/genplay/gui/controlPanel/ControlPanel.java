@@ -102,6 +102,8 @@ public final class ControlPanel extends JPanel {
 
 		// register the control panel to the project window manager so the control panel can be notified when the project window changes
 		registerToGenomeWindow();
+
+		setOpaque(false);
 	}
 
 

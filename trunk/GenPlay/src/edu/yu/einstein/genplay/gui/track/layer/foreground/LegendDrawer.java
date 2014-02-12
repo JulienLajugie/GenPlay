@@ -238,7 +238,7 @@ public class LegendDrawer implements Drawer, MouseListener, MouseMotionListener 
 	 * Draw the legend area elements (borders and rectangle content).
 	 */
 	private void drawLegendArea () {
-		Color rect = Colors.addTransparency(Colors.WHITE, transparency);
+		Color rect = Colors.addTransparency(Colors.TRACK_BACKGROUND, transparency);
 		gLegend.setColor(rect);
 		gLegend.fillRect(0, 0, gLegend.getClipBounds().width, gLegend.getClipBounds().height - 1);
 		gLegend.setColor(Colors.BLACK);

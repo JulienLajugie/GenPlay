@@ -36,25 +36,54 @@ import javax.swing.JRadioButton;
  * This class gives radio button in order to choose between creating a new project or
  * loading an existing project.
  * @author Nicolas Fourel
+ * @author Julien Lajugie
  */
 class ProjectTypePanel extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = 5891323545514431816L; //generated ID
 
-	private final ProjectFrame 			projectScreenFrame;	// Screen Project object
-	private JRadioButton 			newRadio;		// The radio button to choose a new project
-	private JRadioButton 			loadRadio;		// The radio button to choose to load a project
-	private ButtonGroup 			projectRadio;	// The button group
+	private JRadioButton 			newRadio;			// The radio button to choose a new project
+	private JRadioButton 			loadRadio;			// The radio button to choose to load a project
+	private ButtonGroup 			projectRadio;		// The button group
 
 
 	/**
 	 * Constructor of {@link ProjectTypePanel}
 	 * @param projectScreenFrame the project screen object
 	 */
-	protected ProjectTypePanel(ProjectFrame projectScreenFrame) {
+	protected ProjectTypePanel() {
 		super();
-		this.projectScreenFrame = projectScreenFrame;
 		init();
+	}
+
+
+	/**
+	 * This method runs the screen project manager object method
+	 * according to the selected radio button.
+	 */
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		if (arg0.getSource() == newRadio) {
+			ProjectFrame.getInstance().toNewScreenProject();
+		} else if (arg0.getSource() == loadRadio) {
+			ProjectFrame.getInstance().toLoadScreenProject();
+		}
+	}
+
+
+	/**
+	 * @return the loadRadio
+	 */
+	public JRadioButton getLoadRadio() {
+		return loadRadio;
+	}
+
+
+	/**
+	 * @return the newRadio
+	 */
+	public JRadioButton getNewRadio() {
+		return newRadio;
 	}
 
 
@@ -63,21 +92,14 @@ class ProjectTypePanel extends JPanel implements ActionListener {
 	 * It initializes the {@link ProjectTypePanel} panel.
 	 */
 	private void init() {
-		//Size
-		setSize(ProjectFrame.TYPE_DIM);
-		setPreferredSize(getSize());
-		setMinimumSize(getSize());
-		setMaximumSize(getSize());
-
 		//Radio buttons
 		newRadio = new JRadioButton("New project");
 		newRadio.setSelected(true);
 		loadRadio = new JRadioButton("Load an existing project");
 
-		//Color
-		setBackground(ProjectFrame.TYPE_COLOR);
-		newRadio.setBackground(ProjectFrame.TYPE_COLOR);
-		loadRadio.setBackground(ProjectFrame.TYPE_COLOR);
+		setOpaque(false);
+		newRadio.setOpaque(false);
+		loadRadio.setOpaque(false);
 
 		//Listener
 		newRadio.addActionListener(this);
@@ -108,35 +130,4 @@ class ProjectTypePanel extends JPanel implements ActionListener {
 		gbc.insets = gbcInsets;
 		add(loadRadio, gbc);
 	}
-
-
-	/**
-	 * This method runs the screen project manager object method
-	 * according to the selected radio button.
-	 */
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		if (arg0.getSource() == newRadio) {
-			projectScreenFrame.toNewScreenProject();
-		} else if (arg0.getSource() == loadRadio) {
-			projectScreenFrame.toLoadScreenProject();
-		}
-	}
-
-
-	/**
-	 * @return the newRadio
-	 */
-	public JRadioButton getNewRadio() {
-		return newRadio;
-	}
-
-
-	/**
-	 * @return the loadRadio
-	 */
-	public JRadioButton getLoadRadio() {
-		return loadRadio;
-	}
-
 }

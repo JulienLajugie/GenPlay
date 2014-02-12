@@ -154,7 +154,7 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 						g.setColor(nucleoColor);
 						g.fillRect(x, 0, nucleoWith, height);
 						if (nucleoWith >= 5) {
-							g.setColor(Colors.WHITE);
+							g.setColor(Colors.TRACK_BACKGROUND);
 							g.drawRect(x, 0, nucleoWith, height - 1);
 						}
 					}
@@ -192,7 +192,7 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 							if ((baseUnderMouseIndex != null) && (index == baseUnderMouseIndex)) {
 								g.setColor(Colors.BLACK);
 							} else {
-								g.setColor(Colors.WHITE);
+								g.setColor(Colors.TRACK_BACKGROUND);
 							}
 							g.drawString(String.valueOf(nucleotide.getCode()), x, height - NUCLEOTIDE_HEIGHT);
 						}

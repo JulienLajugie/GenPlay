@@ -30,6 +30,7 @@ import javax.swing.UIManager;
 
 import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 /**
@@ -47,7 +48,15 @@ public class LookAndFeels {
 		UIManager.put("nimbusBase", new Color(41, 96, 150));
 		UIManager.put("nimbusBlueGrey", new Color(187, 196, 209));
 		//UIManager.put("control", new Color(228, 236, 247));
-		UIManager.put("control", Color.white);
+		UIManager.put("control", Colors.MAIN_GUI_BACKGROUND);
+	}
+
+
+	/**
+	 * @return true if the current look and feel is a native look and feel, false otherwise
+	 */
+	public static boolean isNativeLookAndFeel() {
+		return UIManager.getLookAndFeel().isNativeLookAndFeel();
 	}
 
 

@@ -283,7 +283,7 @@ public final class Utils {
 			return System.getenv("APPDATA") + "\\GenPlay\\";
 		} else if (isMacOS()){
 			// mac
-			return System.getProperty("user.home") + "/Library/Application Suppor/GenPlay/";
+			return System.getProperty("user.home") + "/Library/Application Support/GenPlay/";
 		} else {
 			// linux / unix
 			return System.getProperty("user.home") + "/.config/GenPlay/";

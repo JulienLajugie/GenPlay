@@ -22,7 +22,6 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.projectFrame.loadProject;
 
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -32,7 +31,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.manager.recording.ProjectInformation;
-import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 
 /**
  * This class displays project information:
@@ -46,8 +44,6 @@ import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 class ProjectInformationPanel extends JPanel {
 
 	private static final long serialVersionUID = 970034695447470123L; //generated ID
-
-	private final static Dimension PANEL_DIM = new Dimension (ProjectFrame.LOAD_DIM.width - 70, 170);
 
 	private final JLabel jlProjectName;			// Label name for project name
 	private final JLabel jlProjectPrecision;	// Label name for project precision
@@ -69,11 +65,7 @@ class ProjectInformationPanel extends JPanel {
 	 */
 	protected ProjectInformationPanel () {
 		//Misc
-		setBackground(ProjectFrame.LOAD_COLOR);
 		setBorder(BorderFactory.createTitledBorder("Information"));
-
-		//Size
-		setPreferredSize(PANEL_DIM);
 
 		//Fields name
 		jlProjectName = new JLabel("Name");
@@ -179,6 +171,8 @@ class ProjectInformationPanel extends JPanel {
 		gbc.insets = infoInsets;
 		gbc.anchor = GridBagConstraints.LINE_START;
 		add(projectTrackNumber, gbc);
+
+		setOpaque(false);
 	}
 
 

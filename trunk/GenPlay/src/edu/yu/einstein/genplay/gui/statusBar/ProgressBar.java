@@ -32,12 +32,11 @@ import edu.yu.einstein.genplay.util.colors.Colors;
 /**
  * Progress bar of the {@link StatusBar}
  * @author Julien Lajugie
- * @version 0.1
  */
 final class ProgressBar extends JProgressBar {
 
 	private static final long serialVersionUID = -3669001086333207235L; 	// generated ID
-	private static final Color 	BACKGROUND_COLOR = Colors.WHITE; // color of the background of the progressbar
+	private static final Color 	BACKGROUND_COLOR = Colors.WHITE; 			// color of the background of the progressbar
 	private static final int 	HEIGHT = 15; 								// height of the progress bar
 
 
@@ -56,6 +55,18 @@ final class ProgressBar extends JProgressBar {
 
 
 	/**
+	 * Sets the progress bar indeterminate and don't print the string
+	 * on the progress bar if the parameter is true
+	 * @param b true to set indeterminate and unpainted
+	 */
+	public void setIndeterminateAndUnpainted(boolean b) {
+		setIndeterminate(b);
+		//firePropertyChange("indeterminate", isIndeterminate(), b);
+		setStringPainted(!b);
+	}
+
+
+	/**
 	 * Sets the level of completion showed on the {@link ProgressBar}
 	 * @param progress
 	 */
@@ -65,17 +76,5 @@ final class ProgressBar extends JProgressBar {
 		setValue(progress);
 		// set the text on the progress bar
 		setString(progress + "%");
-	}
-
-
-	/**
-	 * Sets the progress bar indeterminate and don't print the string
-	 * on the progress bar if the parameter is true
-	 * @param b true to set indeterminate and unpainted
-	 */
-	public void setIndeterminateAndUnpainted(boolean b) {
-		setIndeterminate(b);
-		//firePropertyChange("indeterminate", isIndeterminate(), b);
-		setStringPainted(!b);
 	}
 }

@@ -22,8 +22,9 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.projectFrame.loadProject;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -34,13 +35,13 @@ import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 
 import edu.yu.einstein.genplay.gui.fileFilter.GenPlayProjectFilter;
-import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 import edu.yu.einstein.genplay.util.Utils;
 
 /**
  * This class displays a field to write a project path.
  * A file dialog box is also available.
  * @author Nicolas Fourel
+ * @author Julien Lajugie
  */
 class ProjectChooserPanel extends JPanel {
 
@@ -57,33 +58,12 @@ class ProjectChooserPanel extends JPanel {
 	protected ProjectChooserPanel (final ProjectListPanel projectListPanel) {
 		//Misc
 		this.projectListPanel = projectListPanel;
-		setVisible(false);
-		setBackground(ProjectFrame.LOAD_COLOR);
-
-		//Size
-		setPreferredSize(ProjectFrame.PROJECT_CHOOSER_DIM);
-		setSize(ProjectFrame.PROJECT_CHOOSER_DIM);
-		setMinimumSize(ProjectFrame.PROJECT_CHOOSER_DIM);
-		setMaximumSize(ProjectFrame.PROJECT_CHOOSER_DIM);
-
-		//layout
-		BorderLayout borderLayout = new BorderLayout();
-		borderLayout.setHgap(10);
-		borderLayout.setVgap(0);
-		setLayout(borderLayout);
 
 		//path
 		path = new JTextField();
-		Dimension pathDim = new Dimension (100, 10);
-		path.setSize(pathDim);
-		path.setPreferredSize(pathDim);
-		path.setMaximumSize(pathDim);
 
 		//Choose button
-		JButton chooseProject = new JButton("...");
-		Dimension addDim = new Dimension(getHeight(), getHeight());
-		chooseProject.setSize(addDim);
-		chooseProject.setPreferredSize(addDim);
+		JButton chooseProject = new JButton("Open");
 		chooseProject.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -96,9 +76,18 @@ class ProjectChooserPanel extends JPanel {
 			}
 		});
 
-		//Add
-		add(path, BorderLayout.CENTER);
-		add(chooseProject, BorderLayout.EAST);
+		setOpaque(false);
+
+		setLayout(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+
+		gbc.weightx = 1;
+		gbc.fill = GridBagConstraints.BOTH;
+		add(path, gbc);
+
+		gbc.weightx = 0;
+		gbc.gridx = 1;
+		add(chooseProject, gbc);
 	}
 
 
@@ -115,4 +104,12 @@ class ProjectChooserPanel extends JPanel {
 		return path.getText();
 	}
 
+
+	@Override
+	public void setEnabled(boolean enabled) {
+		for (Component c: getComponents()) {
+			c.setEnabled(enabled);
+		}
+		super.setEnabled(enabled);
+	}
 }

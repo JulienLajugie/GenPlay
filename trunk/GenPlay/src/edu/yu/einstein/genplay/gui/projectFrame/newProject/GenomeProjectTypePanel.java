@@ -24,7 +24,6 @@ package edu.yu.einstein.genplay.gui.projectFrame.newProject;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -38,7 +37,7 @@ import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
  * This class allows users to choose a simple genome project
  * or a multi genome project.
  * @author Nicolas Fourel
- * @version 0.1
+ * @author Julien Lajugie
  */
 class GenomeProjectTypePanel extends JPanel implements ActionListener {
 
@@ -53,25 +52,18 @@ class GenomeProjectTypePanel extends JPanel implements ActionListener {
 	 * Constructor of {@link GenomeProjectTypePanel}
 	 */
 	protected GenomeProjectTypePanel () {
-		//Size
-		setSize(ProjectFrame.GENOME_DIM);
-		setPreferredSize(getSize());
-		setMinimumSize(getSize());
-		setMaximumSize(getSize());
 
 		//Radio buttons
 		singleRadio = new JRadioButton("Single Genome Project");
 		singleRadio.setSelected(true);
 		multiRadio = new JRadioButton("Multi Genome Project");
 
-		//Color
-		setBackground(ProjectFrame.GENOME_COLOR);
-		singleRadio.setBackground(ProjectFrame.GENOME_COLOR);
-		multiRadio.setBackground(ProjectFrame.GENOME_COLOR);
-
 		//Listener
 		singleRadio.addActionListener(this);
 		multiRadio.addActionListener(this);
+
+		singleRadio.setOpaque(false);
+		multiRadio.setOpaque(false);
 
 		//Radio group
 		genomeRadio = new ButtonGroup();
@@ -81,22 +73,18 @@ class GenomeProjectTypePanel extends JPanel implements ActionListener {
 		//Layout
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
-		Insets gbcInsets = new Insets (5, 77, 5, 0);
 
 		//newRadio
-		gbc.gridx = 0;
-		gbc.gridy = 0;
 		gbc.fill = GridBagConstraints.BOTH;
-		gbc.insets = gbcInsets;
 		gbc.anchor = GridBagConstraints.CENTER;
-		gbc.weightx = 1;
 		add(singleRadio, gbc);
 
 		//loadRadio
 		gbc.gridy = 1;
 		gbc.fill = GridBagConstraints.BOTH;
-		gbc.insets = gbcInsets;
 		add(multiRadio, gbc);
+
+		setOpaque(false);
 	}
 
 
@@ -120,5 +108,4 @@ class GenomeProjectTypePanel extends JPanel implements ActionListener {
 			return false;
 		}
 	}
-
 }

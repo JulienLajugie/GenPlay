@@ -96,6 +96,7 @@ import edu.yu.einstein.genplay.gui.trackList.TrackListPanel;
 import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.LookAndFeels;
 import edu.yu.einstein.genplay.util.Utils;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 /**
@@ -263,6 +264,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		// set the application behavior when closed
 		setDefaultCloseOperation();
 
+		getContentPane().setBackground(Colors.MAIN_GUI_BACKGROUND);
 		setMinimumSize(WINDOW_MINIMUM_SIZE);
 		setPreferredSize(WINDOW_DEFAULT_SIZE);
 		pack();

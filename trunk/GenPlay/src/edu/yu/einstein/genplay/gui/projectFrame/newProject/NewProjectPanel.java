@@ -24,6 +24,7 @@ package edu.yu.einstein.genplay.gui.projectFrame.newProject;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.List;
 import java.util.Map;
 
@@ -35,13 +36,13 @@ import edu.yu.einstein.genplay.dataStructure.enums.ScorePrecision;
 import edu.yu.einstein.genplay.dataStructure.genome.Assembly;
 import edu.yu.einstein.genplay.dataStructure.genome.Clade;
 import edu.yu.einstein.genplay.dataStructure.genome.Genome;
-import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 
 
 /**
  * This class manages all information regarding new project information.
  * It displays and organizes the communication of every panels.
  * @author Nicolas Fourel
+ * @author Julien Lajugie
  */
 public class NewProjectPanel extends JPanel {
 
@@ -49,13 +50,11 @@ public class NewProjectPanel extends JPanel {
 
 	protected static final String DEFAULT_PROJECT_NAME = "New Project";
 
-	private GridBagConstraints 			gbc;				// Grid bag constraints
-	private NamePanel 					namePanel;			// Name panel
-	private ScorePrecisionPanel			scorePrecisionPanel;// Score precision panel
-	private AssemblyPanel 				assemblyPanel;		// Assembly panel
-	private GenomeProjectTypePanel 		genomePanel;		// Genome panel
-	private MultiGenomePanel			multiGenomePanel;	// Multi genome panel
-	private JPanel 						blankPanel;			// blank panel under the  genome panel when a simple genome is selected
+	private ProjectNameComponents 		nameComponents;				// Name components
+	private ScorePrecisionComponents	scorePrecisionComponents;	// Score precision components
+	private AssemblyComponents 			assemblyComponents;			// Assembly components
+	private GenomeProjectTypePanel 		genomePanel;				// Genome panel
+	private MultiGenomePanel			multiGenomePanel;			// Multi genome panel
 
 
 	/**
@@ -71,7 +70,7 @@ public class NewProjectPanel extends JPanel {
 	 * @return the selected assembly
 	 */
 	public Assembly getAssembly() {
-		return assemblyPanel.getSelectedAssembly();
+		return assemblyComponents.getSelectedAssembly();
 	}
 
 
@@ -79,7 +78,7 @@ public class NewProjectPanel extends JPanel {
 	 * @return the selected clade
 	 */
 	public Clade getClade() {
-		return assemblyPanel.getSelectedClade();
+		return assemblyComponents.getSelectedClade();
 	}
 
 
@@ -87,7 +86,7 @@ public class NewProjectPanel extends JPanel {
 	 * @return the selected genome
 	 */
 	public Genome getGenome() {
-		return assemblyPanel.getSelectedGenome();
+		return assemblyComponents.getSelectedGenome();
 	}
 
 
@@ -103,7 +102,7 @@ public class NewProjectPanel extends JPanel {
 	 * @return the project name or null if it is not valid
 	 */
 	public String getProjectName () {
-		return namePanel.getProjectName();
+		return nameComponents.getProjectName();
 	}
 
 
@@ -111,7 +110,7 @@ public class NewProjectPanel extends JPanel {
 	 * @return the selected score precision
 	 */
 	public ScorePrecision getProjectScorePrecision() {
-		return scorePrecisionPanel.getProjectScorePrecision();
+		return scorePrecisionComponents.getProjectScorePrecision();
 	}
 
 
@@ -119,7 +118,7 @@ public class NewProjectPanel extends JPanel {
 	 * @return a {@link Map} containing the selected chromosomes.  Each chromosome is associated to its name in the map
 	 */
 	public List<Chromosome> getSelectedChromosomes() {
-		return assemblyPanel.getSelectedChromosomes();
+		return assemblyComponents.getSelectedChromosomes();
 	}
 
 
@@ -130,56 +129,87 @@ public class NewProjectPanel extends JPanel {
 	private void init() {
 		//Layout
 		setLayout(new GridBagLayout());
-		gbc = new GridBagConstraints();
+		GridBagConstraints gbc = new GridBagConstraints();
+
+		Insets minorInsets = new Insets(0, 5, 5, 5);
+		Insets majorInsets = new Insets(5, 5, 25, 5);
 
 		//Panels
-		namePanel = new NamePanel();
-		scorePrecisionPanel = new ScorePrecisionPanel();
-		assemblyPanel = new AssemblyPanel();
+		nameComponents = new ProjectNameComponents();
+		scorePrecisionComponents = new ScorePrecisionComponents();
+		assemblyComponents = new AssemblyComponents();
 		genomePanel = new GenomeProjectTypePanel();
-		//VCFPanel_old = new VCFPanel_old();
 		multiGenomePanel = new MultiGenomePanel();
 
-		//Fake panel
-		blankPanel = new JPanel();
-		blankPanel.setSize(ProjectFrame.VCF_DIM);
-		blankPanel.setPreferredSize(blankPanel.getSize());
-		blankPanel.setMinimumSize(blankPanel.getSize());
-		blankPanel.setMaximumSize(blankPanel.getSize());
-		blankPanel.setBackground(ProjectFrame.VCF_COLOR);
+		// panel with the labels name, precision, clade ...
+		JPanel jpBasicInfo = new JPanel();
+		jpBasicInfo.setOpaque(false);
+		jpBasicInfo.setLayout(new GridBagLayout());
 
-		//Name panel
-		gbc.gridx = 0;
+		// project name
+		gbc.anchor = GridBagConstraints.LINE_START;
+		gbc.fill = GridBagConstraints.BOTH;
 		gbc.gridy = 0;
-		add(namePanel, gbc);
+		gbc.insets = majorInsets;
+		jpBasicInfo.add(nameComponents.getJlName(), gbc);
 
-		// Score precision panel
-		gbc.gridy++;
-		add(scorePrecisionPanel, gbc);
+		gbc.gridx = 1;
+		gbc.gridwidth = 2;
+		jpBasicInfo.add(nameComponents.getJtName(), gbc);
 
-		//Assembly panel
+		// project precision
+		gbc.gridx = 0;
 		gbc.gridy++;
-		add(assemblyPanel, gbc);
+		gbc.gridwidth = 1;
+		jpBasicInfo.add(scorePrecisionComponents.getJlScorePrecision(), gbc);
 
-		//Genome panel
+		gbc.gridx = 1;
+		jpBasicInfo.add(scorePrecisionComponents.getJcbScorePrecision(), gbc);
+
+		gbc.gridx = 2;
+		jpBasicInfo.add(scorePrecisionComponents.getJlHelp(), gbc);
+
+		// project assembly
+		gbc.gridx = 0;
 		gbc.gridy++;
+		gbc.insets = minorInsets;
+		jpBasicInfo.add(assemblyComponents.getJlClade(), gbc);
+
+		gbc.gridx = 1;
+		jpBasicInfo.add(assemblyComponents.getJcClade(), gbc);
+
+		gbc.gridx = 0;
+		gbc.gridy++;
+		jpBasicInfo.add(assemblyComponents.getJlGenome(), gbc);
+
+		gbc.gridx = 1;
+		jpBasicInfo.add(assemblyComponents.getJcGenome(), gbc);
+
+		gbc.gridx = 0;
+		gbc.gridy++;
+		jpBasicInfo.add(assemblyComponents.getJlAssembly(), gbc);
+
+		gbc.gridx = 1;
+		jpBasicInfo.add(assemblyComponents.getJcAssembly(), gbc);
+
+		gbc.gridx = 2;
+		jpBasicInfo.add(assemblyComponents.getJbChromosome(), gbc);
+
+		gbc = new GridBagConstraints();
+
+		gbc.insets = majorInsets;
+		add(jpBasicInfo, gbc);
+
+		// Genome panel
+		gbc.gridy = 1;
 		add(genomePanel, gbc);
 
-		//Fake panel
-		gbc.gridy++;
+		// multi-genome panel
+		gbc.gridy = 2;
+		gbc.weighty = 1;
 		add(multiGenomePanel, gbc);
-		add(blankPanel, gbc);
 
-		//Size
-		setSize(ProjectFrame.NEW_DIM);
-		setPreferredSize(getSize());
-		setMinimumSize(getSize());
-		setMaximumSize(getSize());
-		assemblyPanel.setPreferredSize(ProjectFrame.ASSEMBLY_DIM);
-		genomePanel.setPreferredSize(ProjectFrame.GENOME_DIM);
-
-		//Background
-		setBackground(ProjectFrame.NEW_COLOR);
+		setOpaque(false);
 	}
 
 
@@ -205,8 +235,6 @@ public class NewProjectPanel extends JPanel {
 	 * @param visible set to true to show the var table
 	 */
 	public void setVarTableVisible(boolean visible) {
-		multiGenomePanel.setVisible(visible);
-		blankPanel.setVisible(!visible);
+		multiGenomePanel.setVarTableVisible(visible);
 	}
-
 }

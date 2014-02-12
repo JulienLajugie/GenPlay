@@ -22,8 +22,6 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.projectFrame;
 
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.HeadlessException;
@@ -45,6 +43,7 @@ import edu.yu.einstein.genplay.gui.projectFrame.loadProject.LoadProjectPanel;
 import edu.yu.einstein.genplay.gui.projectFrame.newProject.NewProjectPanel;
 import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.LookAndFeels;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 /**
  * This class manages all the screen project.
@@ -56,86 +55,14 @@ public class ProjectFrame extends JFrame {
 
 	private static final long serialVersionUID = -5785973410951935317L; // generated ID
 
-	//Ratio
-	/** Ratio for the height of the banner section */
-	public static final Double BANNER_RATIO 			= 0.15;
-	/** Ratio for the height of the type section */
-	public static final Double TYPE_RATIO 				= 0.08;
-	/** Ratio for the height of the content section */
-	public static final Double CONTENT_RATIO 			= 0.7;
-	/** Ratio for the height of the name section in the content part */
-	public static final Double NAME_RATIO 				= 0.1;
-	/** Ratio for the height of the score precision section in the content part */
-	public static final Double PRECISION_RATIO			= 0.1;
-	/** Ratio for the height of the assembly section in the content part */
-	public static final Double ASSEMBLY_RATIO 			= 0.22;
-	/** Ratio for the height of the genome section in the content part */
-	public static final Double GENOME_RATIO 			= 0.15;
-	/** Ratio for the height of the VCF section in the content part */
-	public static final Double VCF_RATIO 				= 0.5;
-	/** Ratio for the height of the line section in the content part */
-	public static final Double LINE_RATIO 				= 0.1;
-	/** Ratio for the height of the project chooser section */
-	public static final Double PROJECT_CHOOSER_RATIO 	= 0.05;
-	/** Ratio for the height of the confirmation section */
-	public static final Double CONFIRM_RATIO 			= 0.07;
-
 	//Size
 	/** Width of the dialog */
 	public static final int SCREEN_WIDTH 					= 450;
 	/** Height of the dialog */
 	public static final int SCREEN_HEIGHT 					= 700;
 	/** Height of the banner section */
-	public static final int BANNER_HEIGHT 					= (int)Math.round(SCREEN_HEIGHT*BANNER_RATIO);
-	/** Height of the type section */
-	public static final int TYPE_HEIGHT 					= (int)Math.round(SCREEN_HEIGHT*TYPE_RATIO);
-	/** Height of the content section */
-	public static final int CONTENT_HEIGHT 					= (int)Math.round(SCREEN_HEIGHT*CONTENT_RATIO);
-	/** Height of the name section in the content part */
-	public static final int NAME_HEIGHT 					= (int)Math.round(CONTENT_HEIGHT*NAME_RATIO);
-	/** Height of the score precision section in the content part */
-	public static final int PRECISION_HEIGHT				= (int)Math.round(CONTENT_HEIGHT*PRECISION_RATIO);
-	/** Height of the assembly section in the content part */
-	public static final int ASSEMBLY_HEIGHT 				= (int)Math.round(CONTENT_HEIGHT*ASSEMBLY_RATIO);
-	/** Height of the genome section in the content part */
-	public static final int GENOME_HEIGHT 					= (int)Math.round(CONTENT_HEIGHT*GENOME_RATIO);
-	/** Height of the VCF section in the content part */
-	public static final int VCF_HEIGHT 						= (int)Math.round(CONTENT_HEIGHT*VCF_RATIO);
-	/** Height of the line section in the content part */
-	public static final int LINE_HEIGHT 					= (int)Math.round(CONTENT_HEIGHT*LINE_RATIO);
-	/** Height of the project chooser section */
-	public static final int PROJECT_CHOOSER_HEIGHT 			= (int)Math.round(CONTENT_HEIGHT*PROJECT_CHOOSER_RATIO);
-	/** Height of the confirmation section */
-	public static final int CONFIRM_HEIGHT 					= (int)Math.round(SCREEN_HEIGHT*CONFIRM_RATIO);
+	public static final int BANNER_HEIGHT 					= 105;
 
-	/** Banner panel dimensions */
-	public static final Dimension BANNER_DIM 	= new Dimension (SCREEN_WIDTH, BANNER_HEIGHT);
-	/** Type panel dimensions */
-	public static final Dimension TYPE_DIM 		= new Dimension (SCREEN_WIDTH, TYPE_HEIGHT);
-
-	// New project panel dimensions
-	/** Dimension of the new project section */
-	public static final Dimension NEW_DIM 		= new Dimension (SCREEN_WIDTH, CONTENT_HEIGHT);
-	/** Dimension of the name section */
-	public static final Dimension NAME_DIM 		= new Dimension (SCREEN_WIDTH, NAME_HEIGHT);
-	/** Dimension of the score precision section */
-	public static final Dimension PRECISION_DIM = new Dimension (SCREEN_WIDTH, PRECISION_HEIGHT);
-	/** Dimension of the assembly section */
-	public static final Dimension ASSEMBLY_DIM 	= new Dimension (SCREEN_WIDTH, ASSEMBLY_HEIGHT);
-	/** Dimension of the genome section */
-	public static final Dimension GENOME_DIM 	= new Dimension (SCREEN_WIDTH, GENOME_HEIGHT);
-	/** Dimension of the VCF section */
-	public static final Dimension VCF_DIM 		= new Dimension (SCREEN_WIDTH, VCF_HEIGHT);
-
-	// Load project panel dimensions
-	/** Dimension of the load project section */
-	public static final Dimension LOAD_DIM 				= new Dimension (SCREEN_WIDTH, CONTENT_HEIGHT);
-	/** Dimension of the line section */
-	public static final Dimension LINE_DIM 				= new Dimension (SCREEN_WIDTH, LINE_HEIGHT);
-	/** Dimension of the project chooser section */
-	public static final Dimension PROJECT_CHOOSER_DIM 	= new Dimension (SCREEN_WIDTH-70, PROJECT_CHOOSER_HEIGHT);
-	/** Dimension of the confirmation section */
-	public static final Dimension CONFIRM_DIM 			= new Dimension (SCREEN_WIDTH, CONFIRM_HEIGHT);
 
 	//Tool tip text
 	/** Name for adding a vcf file */
@@ -156,34 +83,6 @@ public class ProjectFrame extends JFrame {
 	public static final String MOVE_DOWN_FILES 		= "Move down selection";
 	/** Name to select the basic chromosomes */
 	public static final String SELECT_BASIC_CHR 	= "Select basics chromosome";
-
-	//Real colors
-	/** White color */
-	public static final		Color COLOR 			= Color.white;
-	/** Color of the banner section */
-	public static final 	Color BANNER_COLOR 		= COLOR;
-	/** Color of the type section */
-	public static final 	Color TYPE_COLOR 		= COLOR;
-	/** Color of the new section */
-	public static final 	Color NEW_COLOR 		= COLOR;
-	/** Color of the name section */
-	public static final 	Color NAME_COLOR 		= COLOR;
-	/** Color of the score precision section */
-	public static final 	Color PRECISION_COLOR	= COLOR;
-	/** Color of the assembly section */
-	public static final 	Color ASSEMBLY_COLOR 	= COLOR;
-	/** Color of the genome section */
-	public static final 	Color GENOME_COLOR 		= COLOR;
-	/** Color of the VCF section */
-	public static final 	Color VCF_COLOR 		= COLOR;
-	/** Color of the table section */
-	public static final 	Color TABLE_PANEL_COLOR = COLOR;
-	/** Color of the button section */
-	public static final 	Color TABLE_BUTTON_COLOR = COLOR;
-	/** Color of the load section */
-	public static final 	Color LOAD_COLOR 		= COLOR;
-	/** Color of the confirmation section */
-	public static final 	Color CONFIRM_COLOR 	= COLOR;
 
 	// Validate button labels
 	/** Text of the button if you choose a new project */
@@ -228,6 +127,8 @@ public class ProjectFrame extends JFrame {
 	public static void showPopUp (String title, String info) {
 		JOptionPane.showMessageDialog(instance, info, title, JOptionPane.WARNING_MESSAGE);
 	}
+
+
 	private NewProjectPanel 		newProjectPanel;			// Panel for a new project
 	private LoadProjectPanel 		loadProjectPanel;			// Panel for loading a project
 	private BannerPanel 			bannerPanel;				// The banner
@@ -353,8 +254,8 @@ public class ProjectFrame extends JFrame {
 		setIconImages(Images.getApplicationImages());
 
 		//Init panels
-		bannerPanel = new BannerPanel();
-		projectTypePanel = new ProjectTypePanel(this);
+		bannerPanel = new BannerPanel(BANNER_HEIGHT);
+		projectTypePanel = new ProjectTypePanel();
 		newProjectPanel = new NewProjectPanel();
 		loadProjectPanel = new LoadProjectPanel();
 		confirmPanel = new ConfirmPanel();
@@ -366,28 +267,37 @@ public class ProjectFrame extends JFrame {
 		//bannerPanel
 		gbc.gridx = 0;
 		gbc.gridy = 0;
+		gbc.weightx = 1;
+		gbc.weighty = 0;
 		gbc.anchor = GridBagConstraints.PAGE_START;
+		gbc.fill = GridBagConstraints.BOTH;
 		add(bannerPanel, gbc);
 
 		//projectType
-		gbc.gridx = 0;
 		gbc.gridy = 1;
-		gbc.anchor = GridBagConstraints.PAGE_START;
+		gbc.fill = GridBagConstraints.NONE;
 		add(projectTypePanel, gbc);
 
 		//newProject
 		gbc.gridy = 2;
+		gbc.weighty = 1;
+		newProjectPanel.setPreferredSize(projectTypePanel.getPreferredSize());
+		gbc.fill = GridBagConstraints.VERTICAL;
 		add(newProjectPanel, gbc);
 
 		//loadProject
+		loadProjectPanel.setPreferredSize(projectTypePanel.getPreferredSize());
 		add(loadProjectPanel, gbc);
 
 		//confirmPanel
 		gbc.gridy = 3;
+		gbc.weighty = 0;
+		gbc.anchor = GridBagConstraints.PAGE_END;
 		add(confirmPanel, gbc);
 
 		//Init frame
 		instance.setTitle("GenPlay");
+		instance.getContentPane().setBackground(Colors.MAIN_GUI_BACKGROUND);
 		instance.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 		instance.setResizable(false);
 		instance.setLocationRelativeTo(null);

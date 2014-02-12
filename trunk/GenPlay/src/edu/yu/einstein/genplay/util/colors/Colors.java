@@ -180,7 +180,6 @@ public class Colors {
 	public static final Color STRIPES_COLOR = Colors.GREY;
 
 
-
 	//////////////////////////////////////////////// Track handle colors
 
 	/** Background color for the track handles */
@@ -191,6 +190,14 @@ public class Colors {
 
 	/** Selected color for the track handles */
 	public static final Color 	TRACK_HANDLE_SELECTED = new Color(157, 193, 228);
+
+	////////////////////////////////////////////////other colors
+
+	/** Background color of most of the gui */
+	public static final Color MAIN_GUI_BACKGROUND = Colors.WHITE;
+
+	/** Background color of the menu bar */
+	public static final Color MENU_BAR_COLOR = Colors.WHITE;
 
 
 	/**

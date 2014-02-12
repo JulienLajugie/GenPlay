@@ -22,84 +22,45 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.projectFrame.newProject;
 
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
-
-import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 
 /**
  * This class manages the name project information.
  * @author Nicolas Fourel
- * @version 0.1
+ * @author Julien Lajugie
  */
-class NamePanel extends JPanel {
+class ProjectNameComponents {
 
-	private static final long serialVersionUID = 3176088024132214727L;
-
-	private static final Dimension 	JTF_DIM = new Dimension(250, 24);	// Name text field size
 	private final JLabel 			jlName;								// Name label
 	private final JTextField 		jtName;								// Name text field
 
 
 	/**
-	 * Constructor of {@link NamePanel}
+	 * Constructor of {@link ProjectNameComponents}
 	 */
-	protected NamePanel () {
-		//Size
-		setSize(ProjectFrame.NAME_DIM);
-		setPreferredSize(getSize());
-		setMinimumSize(getSize());
-		setMaximumSize(getSize());
-
-		//Background
-		setBackground(ProjectFrame.NAME_COLOR);
-
+	ProjectNameComponents () {
 		//Name label
 		jlName = new JLabel("Name: ");
 
 		//Name text field
 		jtName = new JTextField(NewProjectPanel.DEFAULT_PROJECT_NAME);
-		jtName.setPreferredSize(JTF_DIM);
-		jtName.setMinimumSize(JTF_DIM);
+	}
 
-		//Layout
-		setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
 
-		//Insets
-		Insets labelInsets = new Insets (10, 15, 10, 0);
-		Insets jtfInsets = new Insets (0, 15, 0, 0);
+	/**
+	 * @return  jlName
+	 */
+	JLabel getJlName() {
+		return jlName;
+	}
 
-		//jlClade
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.gridwidth = 1;
-		gbc.gridheight = 1;
-		gbc.fill = GridBagConstraints.NONE;
-		gbc.ipadx = 0;
-		gbc.ipady = 0;
-		gbc.insets = labelInsets;
-		gbc.anchor = GridBagConstraints.LINE_START;
-		gbc.weighty = 0;
-		add(jlName, gbc);
 
-		//jcClade
-		gbc.gridx = 1;
-		gbc.gridy = 0;
-		gbc.gridwidth = 1;
-		gbc.gridheight = 1;
-		gbc.fill = GridBagConstraints.NONE;
-		gbc.ipadx = 0;
-		gbc.ipady = 0;
-		gbc.insets = jtfInsets;
-		gbc.anchor = GridBagConstraints.LINE_START;
-		add(jtName, gbc);
+	/**
+	 * @return  jtName
+	 */
+	JTextField getJtName() {
+		return jtName;
 	}
 
 
@@ -109,5 +70,4 @@ class NamePanel extends JPanel {
 	protected String getProjectName() {
 		return jtName.getText();
 	}
-
 }

@@ -30,12 +30,12 @@ import java.io.File;
 import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.manager.recording.ProjectInformation;
-import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 
 /**
  * This class displays radio buttons to load the 5 last projects,
  * it also lets users choosing an older project.
  * @author Nicolas Fourel
+ * @author Julien Lajugie
  */
 public class LoadProjectPanel extends JPanel {
 
@@ -69,37 +69,26 @@ public class LoadProjectPanel extends JPanel {
 	 * It initializes the {@link LoadProjectPanel} panel.
 	 */
 	private void init() {
-		//Size
-		setSize(ProjectFrame.LOAD_DIM);
-		setPreferredSize(getSize());
-		setMinimumSize(getSize());
-		setMaximumSize(getSize());
 		//Layout manager
 		GridBagLayout grid = new GridBagLayout();
 		GridBagConstraints gbc = new GridBagConstraints();
 		setLayout(grid);
 
 		//projectInformation
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.anchor = GridBagConstraints.PAGE_START;
 		gbc.weightx = 1;
-		gbc.weighty = 0;
-		gbc.fill = GridBagConstraints.VERTICAL;
-		gbc.insets = new Insets(0, 0, 0, 0);
+		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbc.fill = GridBagConstraints.BOTH;
 		add(projectInformationPanel, gbc);
 
 		//projectList
-		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.weighty = 1;
-		gbc.anchor = GridBagConstraints.PAGE_START;
-		gbc.insets = new Insets(0, 00, 0, 0);
+		gbc.insets = new Insets(30, 0, 0, 0);
 		add(projectListPanel, gbc);
 
 		//Misc
+		setOpaque(false);
 		setVisible(false);
-		setBackground(ProjectFrame.LOAD_COLOR);
 	}
 
 

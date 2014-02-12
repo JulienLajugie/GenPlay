@@ -39,9 +39,9 @@ import javax.swing.JTable;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.table.TableColumn;
 
-import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.Utils;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 /**
  * This class displays a dialog windows containing a table with two columns:
@@ -65,8 +65,8 @@ public class CheckBoxTableChooserDialog<T> extends JDialog {
 	 */
 	public 		static 	final 	int 		CANCEL_OPTION = 1;
 
-	protected 	static	final 	String[] 	COLUMN_NAMES 				= {"Name", "Selected"};			// Column names
-	private 	static	final 	Color 		ITEM_CHOOSER_COLOR 			= ProjectFrame.ASSEMBLY_COLOR;	// Item chooser color
+	protected 	static	final 	String[] 	COLUMN_NAMES 				= {"Name", "Selected"};				// Column names
+	private 	static	final 	Color 		ITEM_CHOOSER_COLOR 			= Colors.MAIN_GUI_BACKGROUND;		// Item chooser color
 
 	private JTable 					itemTable;					// table containing the items and the check-boxes
 	private CheckBoxTableModel<T> 	tableModel;					// table model

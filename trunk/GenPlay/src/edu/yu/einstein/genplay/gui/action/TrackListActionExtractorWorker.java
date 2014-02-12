@@ -98,13 +98,6 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 		} else if (!(e instanceof InterruptedException)) {
 			ExceptionManager.getInstance().caughtException(Thread.currentThread(), e);
 		}
-		/*else if (e.getMessage() != null) {
-			String message = "Error in file: " + fileToExtract.getName()
-					+ "\nThe following error occurred: \"" + e.getMessage() + "\""
-					+ "\nPlease check that the file is sorted and that there is no formatting errors.";
-			showWarningMessage(message);
-			throw new InterruptedException();
-		}*/
 	}
 
 
