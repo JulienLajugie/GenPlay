@@ -36,6 +36,7 @@ import edu.yu.einstein.genplay.core.IO.writer.TransferableTrackWriter;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.fileFilter.ExtendedFileFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.GenPlayTrackFilter;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.Utils;
 
@@ -81,6 +82,10 @@ public final class TASaveTrack extends TrackListActionWorker<Void> {
 
 	@Override
 	protected Void processAction() throws Exception {
+		if (MainFrame.getInstance().isLocked()) {
+			return null;
+		}
+
 		Track selectedTrack = getTrackListPanel().getSelectedTrack();
 		final JFileChooser jfc = new JFileChooser();
 		Utils.setFileChooserSelectedDirectory(jfc);

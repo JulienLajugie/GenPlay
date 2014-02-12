@@ -89,7 +89,6 @@ public class ProjectFiles {
 
 	private String createPlatformIndependantFileName(String path) {
 		return path.replace(WINDOWS_FILE_SEPARATOR, UNIX_FILE_SEPARATOR);
-
 	}
 
 

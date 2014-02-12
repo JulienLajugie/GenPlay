@@ -37,6 +37,7 @@ import javax.swing.KeyStroke;
 
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.trackTransfer.TransferableTrack;
@@ -98,6 +99,10 @@ public final class TACopy extends TrackListActionWorker<Transferable> implements
 
 	@Override
 	protected Transferable processAction() throws Exception {
+		if (MainFrame.getInstance().isLocked()) {
+			return null;
+		}
+
 		Track selectedTrack = getTrackListPanel().getSelectedTrack();
 		if (selectedTrack != null) {
 			Track trackToCopy = null;

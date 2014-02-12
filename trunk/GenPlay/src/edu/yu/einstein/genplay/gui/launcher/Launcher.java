@@ -84,7 +84,6 @@ public class Launcher {
 			} catch (InterruptedException e) {
 				ExceptionManager.getInstance().caughtException(e);
 			}
-
 			PALoadProject load = new PALoadProject();
 			load.setSkipFileSelection(true);
 			load.actionPerformed(null);
@@ -106,8 +105,6 @@ public class Launcher {
 	 * This constant can be set to a project file path in the resource folder of the jar.
 	 * In this case this project will be directly loaded when GenPlay starts.
 	 */
-
-	//private static final String DEMO_PROJECT_PATH = "edu/yu/einstein/genplay/resource/MethylPhase_Demo_H19_Region.gppf";
 	private static final String DEMO_PROJECT_PATH = null;
 
 

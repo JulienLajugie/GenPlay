@@ -87,6 +87,10 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 
 	@Override
 	protected Boolean processAction() throws Exception {
+		if (MainFrame.getInstance().isLocked()) {
+			return null;
+		}
+
 		File projectDirectory = ProjectManager.getInstance().getProjectDirectory();
 		if (projectDirectory != null) {
 			notifyActionStart("Saving Project", 1, false);

@@ -39,6 +39,7 @@ import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.dialog.DASDialog.DASDialog;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
 
 
@@ -84,6 +85,10 @@ public class TAAddLayerFromDAS extends TrackListAction {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
+		if (MainFrame.getInstance().isLocked()) {
+			return;
+		}
+
 		try {
 			final Track selectedTrack = getTrackListPanel().getSelectedTrack();
 			if (selectedTrack != null) {

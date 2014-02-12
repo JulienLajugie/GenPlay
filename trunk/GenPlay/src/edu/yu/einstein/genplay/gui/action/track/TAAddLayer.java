@@ -43,6 +43,7 @@ import edu.yu.einstein.genplay.core.IO.extractor.ExtractorFactory;
 import edu.yu.einstein.genplay.core.IO.extractor.TransferableTrackExtractor;
 import edu.yu.einstein.genplay.exception.exceptions.InvalidFileTypeException;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
 import edu.yu.einstein.genplay.util.Utils;
@@ -105,6 +106,10 @@ public class TAAddLayer extends TrackListAction {
 
 	@Override
 	public void actionPerformed(ActionEvent evt) {
+		if (MainFrame.getInstance().isLocked()) {
+			return;
+		}
+
 		try {
 			Track selectedTrack = getTrackListPanel().getSelectedTrack();
 			if (selectedTrack != null) {

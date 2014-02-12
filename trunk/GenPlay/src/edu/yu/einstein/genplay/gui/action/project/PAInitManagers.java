@@ -38,6 +38,7 @@ import edu.yu.einstein.genplay.core.manager.recording.ProjectRecording;
 import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.dialog.invalidFileDialog.InvalidFileDialog;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -56,7 +57,6 @@ import edu.yu.einstein.genplay.gui.dialog.invalidFileDialog.InvalidFileDialog;
  * 
  * @author Nicolas Fourel
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class PAInitManagers extends AbstractAction {
 
@@ -261,8 +261,7 @@ public final class PAInitManagers extends AbstractAction {
 			File projectDirect = file.getParentFile();
 			String[] correctedPaths = new String[invalidPaths.length];
 			for (int i = 0; i < invalidPaths.length; i++) {
-				String newPath = new File(projectDirect, new File(invalidPaths[i]).getName()).getAbsolutePath();
-				//TODO correct bug
+				String newPath = new File(projectDirect, Utils.getFileName(invalidPaths[i])).getAbsolutePath();
 				correctedPaths[i] = newPath;
 			}
 			return correctedPaths;
@@ -270,7 +269,6 @@ public final class PAInitManagers extends AbstractAction {
 			return invalidPaths;
 		}
 	}
-
 
 	/**
 	 * @return true if the managers have been initialized, false otherwise

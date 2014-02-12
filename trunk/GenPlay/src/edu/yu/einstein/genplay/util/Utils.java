@@ -310,6 +310,23 @@ public final class Utils {
 
 
 	/**
+	 * @param path
+	 * @return the name of file without its path
+	 */
+	public static String getFileName(String path) {
+		int lastBackSlashIndex = path.lastIndexOf('\\');
+		int latSlashIndex = path.lastIndexOf('/');
+		String[] splitPath;
+		if (lastBackSlashIndex > latSlashIndex) {
+			splitPath = path.split("\\\\");
+		} else {
+			splitPath = path.split("/");
+		}
+		return splitPath[splitPath.length - 1];
+	}
+
+
+	/**
 	 * @param file a {@link File}
 	 * @return the name of a file without its extension
 	 */

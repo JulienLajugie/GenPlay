@@ -35,6 +35,7 @@ import javax.swing.KeyStroke;
 import edu.yu.einstein.genplay.core.IO.fileSorter.ExternalSortAdapter;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.exceptionDialog.WarningReportDialog;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.util.Utils;
 
 /**
@@ -85,6 +86,9 @@ public class PASortFile extends TrackListActionWorker<Boolean> {
 
 	@Override
 	protected Boolean processAction() throws Exception {
+		if (MainFrame.getInstance().isLocked()) {
+			return null;
+		}
 		final JFileChooser jfc = new JFileChooser();
 		Utils.setFileChooserSelectedDirectory(jfc);
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);

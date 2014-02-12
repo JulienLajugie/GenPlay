@@ -319,7 +319,7 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 				String filePath = twoBitData.getDataFilePath();
 				File projectDir = ProjectManager.getInstance().getProjectDirectory();
 				if (projectDir != null) {
-					File twoBitFile = new File(projectDir, new File(filePath).getName());
+					File twoBitFile = new File(projectDir, Utils.getFileName(filePath));
 					try {
 						TwoBitSequenceList new2BitData = new TwoBitSequenceList(twoBitData, twoBitFile);
 						setData(new2BitData);

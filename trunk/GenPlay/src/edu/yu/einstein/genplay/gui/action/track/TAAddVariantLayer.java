@@ -32,6 +32,7 @@ import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.action.multiGenome.properties.MGARefresh;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.managers.EditingDialogManagerForVariants;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.variantLayer.VariantLayer;
 
@@ -67,6 +68,10 @@ public class TAAddVariantLayer extends TrackListAction {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
+		if (MainFrame.getInstance().isLocked()) {
+			return;
+		}
+
 		final Track selectedTrack = getTrackListPanel().getSelectedTrack();
 		if (selectedTrack != null) {
 			EditingDialogManagerForVariants manager = new EditingDialogManagerForVariants();

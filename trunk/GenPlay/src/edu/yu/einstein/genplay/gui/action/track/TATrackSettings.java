@@ -34,6 +34,7 @@ import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.dialog.layerSettings.LayerSettingsRow;
 import edu.yu.einstein.genplay.gui.dialog.trackSettings.TrackSettingsDialog;
 import edu.yu.einstein.genplay.gui.dialog.trackSettings.TrackSettingsPanel;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackScore;
 import edu.yu.einstein.genplay.gui.track.layer.ColoredLayer;
@@ -88,6 +89,10 @@ public class TATrackSettings extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
+		if (MainFrame.getInstance().isLocked()) {
+			return;
+		}
+
 		Track selectedTrack = getTrackListPanel().getSelectedTrack();
 		if (selectedTrack != null) {
 			TrackSettingsDialog dialog = new TrackSettingsDialog();
