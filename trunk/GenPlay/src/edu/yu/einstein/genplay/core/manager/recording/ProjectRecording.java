@@ -255,11 +255,13 @@ public class ProjectRecording {
 			FileOutputStream fos = new FileOutputStream(outputFile);
 			GZIPOutputStream gz = new GZIPOutputStream(fos);
 			ObjectOutputStream oos = new ObjectOutputStream(gz);
+			/*
 			// there is bug during the serialization with the nimbus LAF if the
 			// track list is visible
 			if (UIManager.getLookAndFeel().getID().equalsIgnoreCase("Nimbus")) {
 				trackListPanel.setViewportView(null);
 			}
+			 */
 			updatesCurrentProjectInformation();
 			oos.writeObject(projectInformation);
 			oos.writeObject(ProjectManager.getInstance());

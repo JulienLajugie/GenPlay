@@ -68,33 +68,49 @@ public class VariationTypeEditingPanel extends EditingPanel<List<VariantType>> {
 	}
 
 
+	/**
+	 * @return the stripes editing panel instance
+	 */
+	protected Component getCurrentInstance() {
+		return this;
+	}
+
+
 	@Override
-	protected void initializeContentPanel() {
-		JLabel jlVariation = new JLabel("Variations");
+	public String getErrors() {
+		String errors = "";
+		if (getSelectedVariantTypes().size() == 0) {
+			errors += "Variation type selection\n";
+		}
+		return errors;
+	}
 
-		defaultVariationColor = new Color[3];
-		defaultVariationColor[0] = Colors.GREEN;
-		defaultVariationColor[1] = Colors.RED;
-		defaultVariationColor[2] = Colors.LIGHT_BLUE;
 
-		// Init the content panel
-		contentPanel.setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-		gbc.gridx = 0;
-		gbc.weightx = 1;
-		gbc.weighty = 0;
+	/**
+	 * @return the list of color according to the selected variant types
+	 */
+	public List<Color> getSelectedColors () {
+		List<Color> list = new ArrayList<Color>();
+		for (int i = 0; i < selectedVariation.size(); i++) {
+			if (selectedVariation.get(i).isSelected()) {
+				list.add(variationColor.get(i).getBackground());
+			}
+		}
+		return list;
+	}
 
-		// Variation selection title
-		gbc.gridy++;
-		gbc.insets = new Insets(10, 10, 10, 0);
-		contentPanel.add(jlVariation, gbc);
 
-		// Variation selection panel
-		gbc.gridy++;
-		gbc.insets = new Insets(5, 20, 0, 0);
-		gbc.weighty = 1;
-		contentPanel.add(getVariationSelectionPanel(), gbc);
+	/**
+	 * @return the list of selected variant types
+	 */
+	public List<VariantType> getSelectedVariantTypes () {
+		List<VariantType> list = new ArrayList<VariantType>();
+		for (int i = 0; i < selectedVariation.size(); i++) {
+			if (selectedVariation.get(i).isSelected()) {
+				list.add(variationName.get(i));
+			}
+		}
+		return list;
 	}
 
 
@@ -130,6 +146,7 @@ public class VariationTypeEditingPanel extends EditingPanel<List<VariantType>> {
 			Dimension colorDim = new Dimension(13, 13);
 			colorButton.setPreferredSize(colorDim);
 			colorButton.setBorder(null);
+			colorButton.setOpaque(true);
 			colorButton.setToolTipText("Select color for " + variationName.get(i).toString().toLowerCase() + ".");
 			colorButton.addActionListener(new ActionListener() {
 				@Override
@@ -199,6 +216,58 @@ public class VariationTypeEditingPanel extends EditingPanel<List<VariantType>> {
 	}
 
 
+	@Override
+	public void initialize(List<VariantType> element) {
+		if (element != null) {
+			for (VariantType variantType: element) {
+				int index = variationName.indexOf(variantType);
+				selectedVariation.get(index).setSelected(true);
+				selectedVariation.get(index).setEnabled(true);
+			}
+		}
+	}
+
+
+	@Override
+	protected void initializeContentPanel() {
+		JLabel jlVariation = new JLabel("Variations");
+
+		defaultVariationColor = new Color[3];
+		defaultVariationColor[0] = Colors.GREEN;
+		defaultVariationColor[1] = Colors.RED;
+		defaultVariationColor[2] = Colors.LIGHT_BLUE;
+
+		// Init the content panel
+		contentPanel.setLayout(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbc.gridx = 0;
+		gbc.weightx = 1;
+		gbc.weighty = 0;
+
+		// Variation selection title
+		gbc.gridy++;
+		gbc.insets = new Insets(10, 10, 10, 0);
+		contentPanel.add(jlVariation, gbc);
+
+		// Variation selection panel
+		gbc.gridy++;
+		gbc.insets = new Insets(5, 20, 0, 0);
+		gbc.weighty = 1;
+		gbc.fill = GridBagConstraints.BOTH;
+		contentPanel.add(getVariationSelectionPanel(), gbc);
+	}
+
+
+	@Override
+	public void reset() {
+		for (JCheckBox box: selectedVariation) {
+			box.setSelected(false);
+			box.setEnabled(false);
+		}
+	}
+
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public void update(Object object) {
@@ -229,73 +298,6 @@ public class VariationTypeEditingPanel extends EditingPanel<List<VariantType>> {
 					selectedVariation.get(i).setEnabled(false);
 					selectedVariation.get(i).setSelected(false);
 				}
-			}
-		}
-	}
-
-
-	/**
-	 * @return the stripes editing panel instance
-	 */
-	protected Component getCurrentInstance() {
-		return this;
-	}
-
-
-	/**
-	 * @return the list of selected variant types
-	 */
-	public List<VariantType> getSelectedVariantTypes () {
-		List<VariantType> list = new ArrayList<VariantType>();
-		for (int i = 0; i < selectedVariation.size(); i++) {
-			if (selectedVariation.get(i).isSelected()) {
-				list.add(variationName.get(i));
-			}
-		}
-		return list;
-	}
-
-
-	/**
-	 * @return the list of color according to the selected variant types
-	 */
-	public List<Color> getSelectedColors () {
-		List<Color> list = new ArrayList<Color>();
-		for (int i = 0; i < selectedVariation.size(); i++) {
-			if (selectedVariation.get(i).isSelected()) {
-				list.add(variationColor.get(i).getBackground());
-			}
-		}
-		return list;
-	}
-
-
-	@Override
-	public String getErrors() {
-		String errors = "";
-		if (getSelectedVariantTypes().size() == 0) {
-			errors += "Variation type selection\n";
-		}
-		return errors;
-	}
-
-
-	@Override
-	public void reset() {
-		for (JCheckBox box: selectedVariation) {
-			box.setSelected(false);
-			box.setEnabled(false);
-		}
-	}
-
-
-	@Override
-	public void initialize(List<VariantType> element) {
-		if (element != null) {
-			for (VariantType variantType: element) {
-				int index = variationName.indexOf(variantType);
-				selectedVariation.get(index).setSelected(true);
-				selectedVariation.get(index).setEnabled(true);
 			}
 		}
 	}

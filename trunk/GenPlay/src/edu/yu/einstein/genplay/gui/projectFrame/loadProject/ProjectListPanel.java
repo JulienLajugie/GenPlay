@@ -24,6 +24,7 @@ package edu.yu.einstein.genplay.gui.projectFrame.loadProject;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -127,7 +128,7 @@ class ProjectListPanel extends JPanel {
 
 		projectList = new HashMap<JRadioButton, File>();
 		group = new ButtonGroup();
-		for (int i=0; i<5; i++) {
+		for (int i = 0; i < 5; i++) {
 			boolean isLatestProject = true;
 			final JRadioButton radio = new JRadioButton();
 
@@ -221,10 +222,12 @@ class ProjectListPanel extends JPanel {
 		gbc.weightx = 1;
 		gbc.weighty = 0;
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbc.insets = new Insets(0, 0, 15, 0);
 
 		//Radio buttons
 		buildProjectList();
 		gbc.weighty = 0.01;
+		gbc.insets = new Insets(0, 0, 0, 0);
 		buildButtonOther();
 
 		//Project chooser

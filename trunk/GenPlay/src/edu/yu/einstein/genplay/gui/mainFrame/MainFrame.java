@@ -352,7 +352,9 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 	 * @return true if the main frame is locked
 	 */
 	public boolean isLocked() {
-		return isLocked;
+		synchronized (MainFrame.class) {
+			return isLocked;
+		}
 	}
 
 
@@ -364,10 +366,12 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 	 * - the chromosome position text field
 	 */
 	public void lock() {
-		ruler.lock();
-		trackListPanel.lockTrackHandles();
-		controlPanel.setEnabled(false);
-		isLocked = true;
+		synchronized (MainFrame.class) {
+			ruler.lock();
+			trackListPanel.lockTrackHandles();
+			controlPanel.setEnabled(false);
+			isLocked = true;
+		}
 	}
 
 
@@ -489,7 +493,6 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 	private void showMenuBar() {
 		ConfigurationManager cm = ConfigurationManager.getInstance();
 		if (cm.isMenuBarShown()) {
-
 			getJMenuBar().setVisible(true);
 		} else {
 			getJMenuBar().setVisible(false);
@@ -565,9 +568,11 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 	 * Unlocks the main frame
 	 */
 	public void unlock() {
-		ruler.unlock();
-		trackListPanel.unlockTrackHandles();
-		controlPanel.setEnabled(true);
-		isLocked = false;
+		synchronized (MainFrame.class) {
+			ruler.unlock();
+			trackListPanel.unlockTrackHandles();
+			controlPanel.setEnabled(true);
+			isLocked = false;
+		}
 	}
 }

@@ -29,6 +29,7 @@ import javax.swing.ActionMap;
 import javax.swing.KeyStroke;
 
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
 
 
@@ -76,6 +77,10 @@ public class TAInsert extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
+		if (MainFrame.getInstance().isLocked()) {
+			return;
+		}
+
 		Track selectedTrack = getTrackListPanel().getSelectedTrack();
 		if (selectedTrack != null) {
 			int trackIndex = getTrackListPanel().getModel().indexOf(selectedTrack);

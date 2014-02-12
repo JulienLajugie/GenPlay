@@ -34,7 +34,6 @@ import javax.swing.KeyStroke;
 
 import edu.yu.einstein.genplay.exception.exceptions.IncompatibleAssembliesException;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
-import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.trackTransfer.TransferableTrack;
@@ -100,10 +99,6 @@ public final class TAPasteOrDrop extends TrackListActionWorker<Void> {
 
 	@Override
 	public Void processAction() throws Exception {
-		if (MainFrame.getInstance().isLocked()) {
-			return null;
-		}
-
 		try {
 			Track selectedTrack = getTrackListPanel().getSelectedTrack();
 			if (selectedTrack != null) {

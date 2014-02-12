@@ -30,6 +30,7 @@ import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
 
 
@@ -37,7 +38,6 @@ import edu.yu.einstein.genplay.gui.track.Track;
 /**
  * Deletes the selected track
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class TADelete extends TrackListAction {
 
@@ -77,6 +77,10 @@ public final class TADelete extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
+		if (MainFrame.getInstance().isLocked()) {
+			return;
+		}
+
 		Track selectedTrack = getTrackListPanel().getSelectedTrack();
 		if (selectedTrack != null) {
 			if (JOptionPane.showConfirmDialog(getRootPane(), "Do you really want to delete the track \"" + selectedTrack.getName() + "\"?", "Delete Track", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {

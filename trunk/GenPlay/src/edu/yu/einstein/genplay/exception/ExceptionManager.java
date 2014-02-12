@@ -160,7 +160,11 @@ public final class ExceptionManager implements UncaughtExceptionHandler {
 	 * @param message error message to display
 	 */
 	private void handleThrowable (Thread thread, Throwable throwable, String message) {
-		if (!isProgressBarException(throwable)) {
+		if (isProgressBarException(throwable) || isNimbusLAFException(throwable)) {
+			// exception in the look and feel are likely due to swing components
+			// not started in the EDT. We don't want to notify the user for that
+			throwable.printStackTrace();
+		} else {
 			report.initializeReport(thread, throwable, message);
 			processError(throwable);
 		}
@@ -181,7 +185,23 @@ public final class ExceptionManager implements UncaughtExceptionHandler {
 
 	/**
 	 * @param throwable
-	 * @return true if the exception is due to
+	 * @return true if the exception is due to a nimbus look and feel exception
+	 */
+	private boolean isNimbusLAFException(Throwable throwable) {
+		StackTraceElement[] stackTraceElements = throwable.getStackTrace();
+		if ((stackTraceElements != null) && (stackTraceElements.length > 0)) {
+			String firstStackTraceClass = stackTraceElements[0].getClassName();
+			if (firstStackTraceClass != null) {
+				return firstStackTraceClass.contains("nimbus");
+			}
+		}
+		return false;
+	}
+
+
+	/**
+	 * @param throwable
+	 * @return true if the exception is due to an error while creating the progress bar UI
 	 */
 	private boolean isProgressBarException(Throwable throwable) {
 		StackTraceElement[] stackTraceElements = throwable.getStackTrace();

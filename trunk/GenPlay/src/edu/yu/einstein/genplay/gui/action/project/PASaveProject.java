@@ -87,14 +87,10 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 
 	@Override
 	protected Boolean processAction() throws Exception {
-		if (MainFrame.getInstance().isLocked()) {
-			return null;
-		}
-
 		File projectDirectory = ProjectManager.getInstance().getProjectDirectory();
+		String projectName = ProjectManager.getInstance().getProjectName();
 		if (projectDirectory != null) {
 			notifyActionStart("Saving Project", 1, false);
-			String projectName = ProjectManager.getInstance().getProjectName();
 			File projectFile = Utils.addExtension(new File(projectDirectory, projectName), GenPlayProjectFilter.EXTENSIONS[0]);
 			ProjectRecording projectRecording = RecordingManager.getInstance().getProjectRecording();
 			projectRecording.setCurrentProjectPath(projectFile.getPath());

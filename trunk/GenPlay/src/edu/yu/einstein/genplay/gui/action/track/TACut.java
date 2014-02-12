@@ -32,7 +32,6 @@ import javax.swing.ActionMap;
 import javax.swing.KeyStroke;
 
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
-import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.trackTransfer.TransferableTrack;
 import edu.yu.einstein.genplay.util.Utils;
@@ -92,10 +91,6 @@ public final class TACut extends TrackListActionWorker<Transferable> implements 
 
 	@Override
 	protected Transferable processAction() throws Exception {
-		if (MainFrame.getInstance().isLocked()) {
-			return null;
-		}
-
 		Track selectedTrack = getTrackListPanel().getSelectedTrack();
 		if (selectedTrack != null) {
 			notifyActionStart("Cutting Track #" + selectedTrack.getNumber(), 1, false);

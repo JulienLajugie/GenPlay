@@ -108,10 +108,6 @@ public final class TASaveAsImage extends TrackListActionWorker<Void> {
 
 	@Override
 	protected Void processAction() throws Exception {
-		if (MainFrame.getInstance().isLocked()) {
-			return null;
-		}
-
 		Track selectedTrack = getTrackListPanel().getSelectedTrack();
 		if (selectedTrack != null) {
 			final JFileChooser saveFC = new JFileChooser();

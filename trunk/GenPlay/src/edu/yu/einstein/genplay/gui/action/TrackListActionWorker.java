@@ -59,6 +59,9 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 
 		@Override
 		final protected T doInBackground() throws Exception {
+			if (MainFrame.getInstance().isLocked()) {
+				return null;
+			}
 			OperationPool.getInstance().addOperationProgressListener(TrackListActionWorker.this);
 			MainFrame.getInstance().lock();
 			return processAction();

@@ -91,10 +91,6 @@ public class PASaveProjectAs extends TrackListActionWorker<Boolean> {
 
 	@Override
 	protected Boolean processAction() throws Exception {
-		if (MainFrame.getInstance().isLocked()) {
-			return null;
-		}
-
 		final JFileChooser jfc = new JFileChooser();
 		Utils.setFileChooserSelectedDirectory(jfc);
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
