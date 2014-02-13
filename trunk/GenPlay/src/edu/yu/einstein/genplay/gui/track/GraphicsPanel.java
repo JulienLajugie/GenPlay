@@ -23,6 +23,8 @@
 package edu.yu.einstein.genplay.gui.track;
 
 import java.awt.Graphics;
+import java.awt.MouseInfo;
+import java.awt.Point;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
@@ -34,6 +36,7 @@ import java.io.Serializable;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.ToolTipManager;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
@@ -247,6 +250,20 @@ public final class GraphicsPanel extends JPanel implements Serializable, Compone
 	 */
 	public void setDrawers(Drawer[] drawers) {
 		this.drawers = drawers;
+	}
+
+
+	@Override
+	public void setToolTipText(String text) {
+		super.setToolTipText(text);
+		Point locationOnScreen = MouseInfo.getPointerInfo().getLocation();
+		Point locationOnComponent = new Point(locationOnScreen);
+		SwingUtilities.convertPointFromScreen(locationOnComponent, this);
+		if (this.contains(locationOnComponent)) {
+			ToolTipManager.sharedInstance().mouseMoved(
+					new MouseEvent(this, -1, System.currentTimeMillis(), 0, locationOnComponent.x, locationOnComponent.y,
+							locationOnScreen.x, locationOnScreen.y, 0, false, 0));
+		}
 	}
 
 

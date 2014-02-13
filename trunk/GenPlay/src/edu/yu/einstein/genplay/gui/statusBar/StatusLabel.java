@@ -35,24 +35,12 @@ import edu.yu.einstein.genplay.exception.ExceptionManager;
  * Label on the status bar that shows a description of the current Operation
  * and the time elapsed since the operation started
  * @author Julien Lajugie
- * @version 0.1
  */
 final class StatusLabel extends JLabel {
-
-	private static final long serialVersionUID = 404304422248672368L; // generated ID
-	private static final String INIT_TEXT = "Right click on a track number to select actions.";	// welcome text when creating a new project
-	private TimeCounter 			timeCounterThread;	// thread showing the time elapsed in the progress bar
-	private String 					description;		// description of the current operation
-	private long 					timeElapsed = 0;	// time elapsed since the beginning of the operation
-	private final SimpleDateFormat 	dateFormat;			// date format for the time elapsed
-	private int 					step = 0;			// step of the current operation
-	private int						stepCount = 0;		// total number of steps for the operation
-
 
 	/**
 	 * Thread displaying the time elapsed in the progress bar
 	 * @author Julien Lajugie
-	 * @version 0.1
 	 */
 	private class TimeCounter extends Thread {
 		@Override
@@ -69,7 +57,17 @@ final class StatusLabel extends JLabel {
 				}
 			}
 		}
-	};
+	}
+
+
+	private static final long serialVersionUID = 404304422248672368L; // generated ID
+	private static final String INIT_TEXT = "Right click on a track number to select actions.";	// welcome text when creating a new project
+	private TimeCounter 			timeCounterThread;	// thread showing the time elapsed in the progress bar
+	private String 					description;		// description of the current operation
+	private long 					timeElapsed = 0;	// time elapsed since the beginning of the operation
+	private final SimpleDateFormat 	dateFormat;			// date format for the time elapsed
+	private int 					step = 0;			// step of the current operation
+	private int						stepCount = 0;		// total number of steps for the operation;
 
 
 	/**
@@ -78,24 +76,35 @@ final class StatusLabel extends JLabel {
 	StatusLabel() {
 		super();
 		// set the date format
-		dateFormat = new SimpleDateFormat("mm:ss");
+		dateFormat = new SimpleDateFormat("HH:mm:ss");
 		// the correct elapsed time it has to be adjusted to UTC so that
 		// it compensates for the timezone and daylight saving time differences
 		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+		setHorizontalAlignment(JLabel.CENTER);
 	}
 
 
 	/**
-	 * Updates the text of the label
+	 * @return the description printed on the label without the time
 	 */
-	private synchronized void updateText() {
-		String timeString = new String(dateFormat.format(new Date(timeElapsed)));
-		if (stepCount == 1) {
-			// we don't show the step information if the operation is done in 1 step
-			setText(description + "  -  " + timeString);
-		} else {
-			setText(description + "  (" + step + " / " + stepCount + ")  -  " + timeString);
-		}
+	String getDescription() {
+		return description;
+	}
+
+
+	/**
+	 * @return the step
+	 */
+	int getStep() {
+		return step;
+	}
+
+
+	/**
+	 * @return the stepCount
+	 */
+	int getStepCount() {
+		return stepCount;
 	}
 
 
@@ -104,6 +113,14 @@ final class StatusLabel extends JLabel {
 	 */
 	void initDescriptionForFirstUse () {
 		setText(INIT_TEXT);
+	}
+
+
+	/**
+	 * Erases the text
+	 */
+	void reinit() {
+		setText("");
 	}
 
 
@@ -118,14 +135,6 @@ final class StatusLabel extends JLabel {
 
 
 	/**
-	 * @return the description printed on the label without the time
-	 */
-	String getDescription() {
-		return description;
-	}
-
-
-	/**
 	 * Sets the step
 	 * @param step
 	 */
@@ -136,28 +145,12 @@ final class StatusLabel extends JLabel {
 
 
 	/**
-	 * @return the step
-	 */
-	int getStep() {
-		return step;
-	}
-
-
-	/**
 	 * Sets the step count
 	 * @param stepCount
 	 */
 	void setStepCount(int stepCount) {
 		this.stepCount = stepCount;
 		updateText();
-	}
-
-
-	/**
-	 * @return the stepCount
-	 */
-	int getStepCount() {
-		return stepCount;
 	}
 
 
@@ -180,9 +173,15 @@ final class StatusLabel extends JLabel {
 
 
 	/**
-	 * Erases the text
+	 * Updates the text of the label
 	 */
-	void reinit() {
-		setText("");
+	private synchronized void updateText() {
+		String timeString = new String(dateFormat.format(new Date(timeElapsed)));
+		if (stepCount == 1) {
+			// we don't show the step information if the operation is done in 1 step
+			setText(description + "  -  " + timeString);
+		} else {
+			setText(description + "  (" + step + " / " + stepCount + ")  -  " + timeString);
+		}
 	}
 }

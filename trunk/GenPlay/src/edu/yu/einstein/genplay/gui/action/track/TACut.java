@@ -41,7 +41,7 @@ import edu.yu.einstein.genplay.util.Utils;
  * Cuts the selected track
  * @author Julien Lajugie
  */
-public final class TACut extends TrackListActionWorker<Transferable> implements ClipboardOwner{
+public final class TACut extends TrackListActionWorker<Void> implements ClipboardOwner{
 
 	private static final long serialVersionUID = 5387375446702872880L;  // generated ID
 	private static final String ACTION_NAME = "Cut"; 					// action name
@@ -75,28 +75,19 @@ public final class TACut extends TrackListActionWorker<Transferable> implements 
 
 
 	@Override
-	protected void doAtTheEnd(Transferable actionResult) {
-		if (actionResult != null) {
-			Clipboard clipboard = Utils.getClipboard();
-			clipboard.setContents(actionResult, this);
-			getTrackListPanel().cutTrack();
-			super.doAtTheEnd(actionResult);
-		}
-	}
-
-
-	@Override
 	public void lostOwnership(Clipboard clipboard, Transferable contents) {}
 
 
 	@Override
-	protected Transferable processAction() throws Exception {
+	protected Void processAction() throws Exception {
 		Track selectedTrack = getTrackListPanel().getSelectedTrack();
 		if (selectedTrack != null) {
 			notifyActionStart("Cutting Track #" + selectedTrack.getNumber(), 1, false);
 			TransferableTrack data = TransferableTrack.getInstance();
 			data.setTrackToTransfer(selectedTrack);
-			return data;
+			Clipboard clipboard = Utils.getClipboard();
+			clipboard.setContents(data, this);
+			getTrackListPanel().cutTrack();
 		}
 		return null;
 	}

@@ -123,6 +123,7 @@ public final class TAPasteOrDrop extends TrackListActionWorker<Void> {
 									selectedTrack.setActiveLayer(currentLayer);
 								}
 							}
+							selectedTrack.repaint();
 						}
 					} else {
 						// try to retrieve a file from the clipboard

@@ -270,6 +270,8 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 							getTrack().repaint();
 						}
 					}
+				} else {
+					getTrack().getGraphicsPanel().setToolTipText(null);
 				}
 				if (baseUnderMouseIndex != null) {
 					Nucleotide nucleotide = DataScalerManager.getInstance().getScaledData(this)[baseUnderMouseIndex];

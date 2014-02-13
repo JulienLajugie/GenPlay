@@ -47,7 +47,7 @@ import edu.yu.einstein.genplay.util.Utils;
  * Copies the selected track
  * @author Julien Lajugie
  */
-public final class TACopy extends TrackListActionWorker<Transferable> implements ClipboardOwner {
+public final class TACopy extends TrackListActionWorker<Void> implements ClipboardOwner {
 
 	private static final long serialVersionUID = -1436541643590614314L; // generated ID
 	private static final String ACTION_NAME = "Copy"; 					// action name
@@ -80,15 +80,6 @@ public final class TACopy extends TrackListActionWorker<Transferable> implements
 	}
 
 
-	@Override
-	protected void doAtTheEnd(Transferable actionResult) {
-		if (actionResult != null) {
-			Clipboard clipboard = Utils.getClipboard();
-			clipboard.setContents(actionResult, this);
-			super.doAtTheEnd(actionResult);
-		}
-	}
-
 
 	@Override
 	public void lostOwnership(Clipboard clipboard, Transferable contents) {
@@ -97,7 +88,7 @@ public final class TACopy extends TrackListActionWorker<Transferable> implements
 
 
 	@Override
-	protected Transferable processAction() throws Exception {
+	protected Void processAction() throws Exception {
 		Track selectedTrack = getTrackListPanel().getSelectedTrack();
 		if (selectedTrack != null) {
 			Track trackToCopy = null;
@@ -131,7 +122,8 @@ public final class TACopy extends TrackListActionWorker<Transferable> implements
 				TransferableTrack data = TransferableTrack.getInstance();
 				data.setTrackToTransfer(trackToCopy);
 				data.setImageToTransfer(trackImage);
-				return data;
+				Clipboard clipboard = Utils.getClipboard();
+				clipboard.setContents(data, this);
 			}
 		}
 		return null;
