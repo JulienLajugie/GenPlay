@@ -41,27 +41,30 @@ public class Images {
 	private static final String[] APPLICATION_IMAGE_PATHS 		=
 		{
 		"edu/yu/einstein/genplay/resource/images/GenPlay_16x16.png",
+		"edu/yu/einstein/genplay/resource/images/GenPlay_24x24.png",
 		"edu/yu/einstein/genplay/resource/images/GenPlay_32x32.png",
+		"edu/yu/einstein/genplay/resource/images/GenPlay_48x48.png",
 		"edu/yu/einstein/genplay/resource/images/GenPlay_64x64.png",
+		"edu/yu/einstein/genplay/resource/images/GenPlay_96x96.png",
 		"edu/yu/einstein/genplay/resource/images/GenPlay_128x128.png",
 		"edu/yu/einstein/genplay/resource/images/GenPlay_256x256.png",
 		"edu/yu/einstein/genplay/resource/images/GenPlay_512x512.png",
 		};
 
 	private static final String BANNER_IMAGE_PATH				= "edu/yu/einstein/genplay/resource/images/genplay_banner_447x91.png";		// Path of the banner image
-	private static final String TOOLS_IMAGE_PATH 				= "edu/yu/einstein/genplay/resource/images/tools.png";						// Path of the tools image
+	private static final String TOOLS_IMAGE_PATH 				= "edu/yu/einstein/genplay/resource/images/tools_16x16.png";				// Path of the tools image
 	private static final String ADD_IMAGE_PATH 					= "edu/yu/einstein/genplay/resource/images/add_entry_50x50.png"; 			// Path of the add entry image
 	private static final String EDIT_IMAGE_PATH 				= "edu/yu/einstein/genplay/resource/images/edit_entry_50x50.png"; 			// Path of the edit entry image
 	private static final String DELETE_IMAGE_PATH 				= "edu/yu/einstein/genplay/resource/images/delete_entry_50x50.png"; 		// Path of the delete entry image
 	private static final String MOUSE_IMAGE_PATH				= "edu/yu/einstein/genplay/resource/images/mouse_right_click_50x50.png"; 	// Path of the mouse image
-	private static final String NEXT_IMAGE_PATH 				= "edu/yu/einstein/genplay/resource/images/next_icon_256x256.png"; 			// Path of the next image
-	private static final String PREVIOUS_IMAGE_PATH 			= "edu/yu/einstein/genplay/resource/images/previous_icon_256x256.png"; 		// Path of the previous image
-	private static final String ACTUALIZE_IMAGE_PATH 			= "edu/yu/einstein/genplay/resource/images/actualize15x15.png";				// Path of the actualize image
-	private static final String SUPERIOR_IMAGE_PATH 			= "edu/yu/einstein/genplay/resource/images/superior8x6.png";				// Path of the superior sign
-	private static final String INFERIOR_IMAGE_PATH 			= "edu/yu/einstein/genplay/resource/images/inferior8x6.png";				// Path of the inferior sign
+	private static final String NEXT_IMAGE_PATH 				= "edu/yu/einstein/genplay/resource/images/next_icon_32x32.png"; 			// Path of the next image
+	private static final String PREVIOUS_IMAGE_PATH 			= "edu/yu/einstein/genplay/resource/images/previous_icon_32x32.png"; 		// Path of the previous image
+	private static final String ACTUALIZE_IMAGE_PATH 			= "edu/yu/einstein/genplay/resource/images/actualize_15x15.png";			// Path of the actualize image
+	private static final String SUPERIOR_IMAGE_PATH 			= "edu/yu/einstein/genplay/resource/images/superior_8x6.png";				// Path of the superior sign
+	private static final String INFERIOR_IMAGE_PATH 			= "edu/yu/einstein/genplay/resource/images/inferior_8x6.png";				// Path of the inferior sign
 	private static final String DNA_IMAGE_PATH 					= "edu/yu/einstein/genplay/resource/images/dna_25x17.png";					// Path of the DNA sign
-	private static final String LOADING_IMAGE_PATH 				= "edu/yu/einstein/genplay/resource/images/loading_anim.gif";				// Path of the loading animated GIF
-	private static final String HELP_IMAGE_PATH 				= "edu/yu/einstein/genplay/resource/images/help.png";						// Path of the help image
+	private static final String LOADING_IMAGE_PATH 				= "edu/yu/einstein/genplay/resource/images/loading_anim_32x32.gif";			// Path of the loading animated GIF
+	private static final String HELP_IMAGE_PATH 				= "edu/yu/einstein/genplay/resource/images/help_16x16.png";					// Path of the help image
 	private static final String BOOKMARK_IMAGE_PATH 			= "edu/yu/einstein/genplay/resource/images/bookmark_24x24.png";				// Path of the bookmark image
 	private static final String BOOKMARK_ROLLEDOVER_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/images/bookmark_rolled_over_24x24.png";	// Path of the bookmark rolled over image
 	private static final String BOOKMARK_DISABLED_PATH 			= "edu/yu/einstein/genplay/resource/images/bookmark_disabled_24x24.png";	// Path of the bookmark disabled image
@@ -324,7 +327,7 @@ public class Images {
 
 
 	/**
-	 * @return the image of the Next icon (256x256)
+	 * @return the image of the Next icon
 	 */
 	public static Image getNextImage () {
 		if (nextImage == null) {
@@ -357,7 +360,7 @@ public class Images {
 
 
 	/**
-	 * @return the image of the Previous icon (256x256)
+	 * @return the image of the Previous icon
 	 */
 	public static Image getPreviousImage () {
 		if (previousImage == null) {

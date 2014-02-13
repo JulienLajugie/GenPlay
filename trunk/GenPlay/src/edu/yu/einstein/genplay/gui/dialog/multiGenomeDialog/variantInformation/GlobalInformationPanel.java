@@ -59,7 +59,7 @@ public class GlobalInformationPanel extends JPanel {
 	 * Generated serial version ID
 	 */
 	private static final long serialVersionUID = -120050377469385302L;
-	private static final int LABEL_HEIGHT = 15;		// height of a label
+	private static final int LABEL_HEIGHT = 20;		// height of a label
 	private static final int KEY_WIDTH = 50;		// width of a label used to display a key
 	private static final int VALUE_WIDTH = 100;		// width of a label used to display a value
 	private final Variant variant;
@@ -73,7 +73,7 @@ public class GlobalInformationPanel extends JPanel {
 	 * Initializes all label and put them on the panel, this is the main method.
 	 */
 	protected GlobalInformationPanel (Variant variantDisplay, VCFLine variantInformation, String genomeName) {
-		this.variant = variantDisplay;
+		variant = variantDisplay;
 		this.variantInformation = variantInformation;
 		this.genomeName = genomeName;
 
@@ -87,6 +87,91 @@ public class GlobalInformationPanel extends JPanel {
 		gbc.gridy = 0;
 
 		addPanel();
+	}
+
+
+	/**
+	 * Adds an association key/value to the panel.
+	 * @param text			the description
+	 * @param gbc			the constraint
+	 */
+	private void addDescriptionRow (String text) {
+		if ((text != null) && !text.isEmpty()) {
+			Dimension keyDimension = new Dimension(VariantInformationDialog.WIDTH - 20, LABEL_HEIGHT * 4);
+
+			JLabel descriptionLabel = new JLabel(text);
+			descriptionLabel.setSize(keyDimension);
+			descriptionLabel.setPreferredSize(keyDimension);
+			descriptionLabel.setMinimumSize(keyDimension);
+			descriptionLabel.setMaximumSize(keyDimension);
+
+			gbc.gridx = 0;
+			gbc.gridwidth = GridBagConstraints.REMAINDER;
+			gbc.weightx = 1;
+			add(descriptionLabel, gbc);
+			gbc.gridy++;
+		}
+	}
+
+
+
+	/**
+	 * Adds an association key/value to the panel.
+	 * @param key			the key
+	 * @param valueObject	the value
+	 * @param gbc			the constraint
+	 */
+	private void addLabelRow (String key, JLabel valueLabel) {
+		VCFHeader header = null;
+		if ((variantInformation != null) && (variantInformation.getGenomeIndexer() instanceof VCFHeader)) {
+			header = (VCFHeader) variantInformation.getGenomeIndexer();
+		}
+
+		Dimension keyDimension = new Dimension(KEY_WIDTH, LABEL_HEIGHT);
+		Dimension valueDimension = new Dimension(VALUE_WIDTH, LABEL_HEIGHT);
+
+		JLabel keyLabel = new JLabel(key);
+		keyLabel.setSize(keyDimension);
+		valueLabel.setSize(valueDimension);
+		valueLabel.setMaximumSize(valueDimension);
+		String toolTip = valueLabel.getText();
+		if ((variantInformation != null) && (header != null) && key.equals("ALT: ") && (valueLabel.getText().charAt(0) == '<')) {
+			String id = valueLabel.getText().substring(1, valueLabel.getText().length() - 1);
+			VCFHeaderType headerType = header.getAltHeaderFromID(id);
+			if (headerType != null) {
+				toolTip += " (" + headerType.getDescription() + ")";
+			} else {
+				System.err.println("The header for the ID field: '" + id + "' does not seem to be valid.");
+			}
+		}
+		valueLabel.setToolTipText(toolTip);
+		gbc.gridwidth = 1;
+		gbc.gridx = 0;
+		gbc.weightx = 0;
+		add(keyLabel, gbc);
+		gbc.weightx = 1;
+		gbc.gridx = 1;
+		add(valueLabel, gbc);
+		gbc.gridy++;
+	}
+
+
+	/**
+	 * Adds an association key/value to the panel.
+	 * This method prepares the information but uses the addLabelRow to add them on the panel.
+	 * @param key			the key
+	 * @param valueObject	the value
+	 * @param gbc			the constraint
+	 */
+	private void addObjectRow (String key, Object valueObject) {
+		String value;
+		if ((valueObject == null) || valueObject.toString().equals("")) {
+			value = "-";
+		} else {
+			value = valueObject.toString();
+		}
+		JLabel valueLabel = new JLabel(value);
+		addLabelRow(key, valueLabel);
 	}
 
 
@@ -145,7 +230,7 @@ public class GlobalInformationPanel extends JPanel {
 
 				description += "</i></html>";
 				// Reference
-				reference = this.variantInformation.getREF();
+				reference = variantInformation.getREF();
 				if (reference.length() > 1) {
 					reference = reference.substring(1);
 				}
@@ -189,7 +274,6 @@ public class GlobalInformationPanel extends JPanel {
 	}
 
 
-
 	private void addPanel (String description, String genome, String group, int startPosition, int stopPosition, int length, String type, String idString, JLabel idLabel, String reference, String alternative, String quality, String filter) {
 		addDescriptionRow(description);
 		addObjectRow("Genome: ", genome);
@@ -227,6 +311,18 @@ public class GlobalInformationPanel extends JPanel {
 		idLabel.setForeground(outColor);
 		idLabel.addMouseListener( new MouseAdapter() {
 			@Override
+			public void mouseEntered (MouseEvent arg0) {
+				idLabel.setForeground(inColor);
+				idLabel.setFont(inFont);
+			}
+
+			@Override
+			public void mouseExited (MouseEvent arg0) {
+				idLabel.setForeground(outColor);
+				idLabel.setFont(outFont);
+			}
+
+			@Override
 			public void mouseReleased(MouseEvent arg0) {
 				if (Desktop.isDesktopSupported()) {
 					try {
@@ -238,104 +334,8 @@ public class GlobalInformationPanel extends JPanel {
 					}
 				}
 			}
-
-			@Override
-			public void mouseEntered (MouseEvent arg0) {
-				idLabel.setForeground(inColor);
-				idLabel.setFont(inFont);
-			}
-
-			@Override
-			public void mouseExited (MouseEvent arg0) {
-				idLabel.setForeground(outColor);
-				idLabel.setFont(outFont);
-			}
 		});
 		return idLabel;
-	}
-
-
-	/**
-	 * Adds an association key/value to the panel.
-	 * This method prepares the information but uses the addLabelRow to add them on the panel.
-	 * @param key			the key
-	 * @param valueObject	the value
-	 * @param gbc			the constraint
-	 */
-	private void addObjectRow (String key, Object valueObject) {
-		String value;
-		if ((valueObject == null) || valueObject.toString().equals("")) {
-			value = "-";
-		} else {
-			value = valueObject.toString();
-		}
-		JLabel valueLabel = new JLabel(value);
-		addLabelRow(key, valueLabel);
-	}
-
-
-	/**
-	 * Adds an association key/value to the panel.
-	 * @param key			the key
-	 * @param valueObject	the value
-	 * @param gbc			the constraint
-	 */
-	private void addLabelRow (String key, JLabel valueLabel) {
-		VCFHeader header = null;
-		if ((variantInformation != null) && (variantInformation.getGenomeIndexer() instanceof VCFHeader)) {
-			header = (VCFHeader) variantInformation.getGenomeIndexer();
-		}
-
-		Dimension keyDimension = new Dimension(KEY_WIDTH, LABEL_HEIGHT);
-		Dimension valueDimension = new Dimension(VALUE_WIDTH, LABEL_HEIGHT);
-
-		JLabel keyLabel = new JLabel(key);
-		keyLabel.setSize(keyDimension);
-		valueLabel.setSize(valueDimension);
-		valueLabel.setMaximumSize(valueDimension);
-		String toolTip = valueLabel.getText();
-		if ((variantInformation != null) && (header != null) && key.equals("ALT: ") && (valueLabel.getText().charAt(0) == '<')) {
-			String id = valueLabel.getText().substring(1, valueLabel.getText().length() - 1);
-			VCFHeaderType headerType = header.getAltHeaderFromID(id);
-			if (headerType != null) {
-				toolTip += " (" + headerType.getDescription() + ")";
-			} else {
-				System.err.println("The header for the ID field: '" + id + "' does not seem to be valid.");
-			}
-		}
-		valueLabel.setToolTipText(toolTip);
-		gbc.gridwidth = 1;
-		gbc.gridx = 0;
-		gbc.weightx = 0;
-		add(keyLabel, gbc);
-		gbc.weightx = 1;
-		gbc.gridx = 1;
-		add(valueLabel, gbc);
-		gbc.gridy++;
-	}
-
-
-	/**
-	 * Adds an association key/value to the panel.
-	 * @param text			the description
-	 * @param gbc			the constraint
-	 */
-	private void addDescriptionRow (String text) {
-		if ((text != null) && !text.isEmpty()) {
-			Dimension keyDimension = new Dimension(VariantInformationDialog.WIDTH - 20, LABEL_HEIGHT * 4);
-
-			JLabel descriptionLabel = new JLabel(text);
-			descriptionLabel.setSize(keyDimension);
-			descriptionLabel.setPreferredSize(keyDimension);
-			descriptionLabel.setMinimumSize(keyDimension);
-			descriptionLabel.setMaximumSize(keyDimension);
-
-			gbc.gridx = 0;
-			gbc.gridwidth = GridBagConstraints.REMAINDER;
-			gbc.weightx = 1;
-			add(descriptionLabel, gbc);
-			gbc.gridy++;
-		}
 	}
 
 }

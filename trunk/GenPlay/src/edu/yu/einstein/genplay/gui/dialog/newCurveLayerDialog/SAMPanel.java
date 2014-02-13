@@ -75,10 +75,10 @@ class SAMPanel extends JPanel {
 	private final JFormattedTextField 	jftfMappingQuality;		// input text field for the mapping quality
 	private final JLabel 				jlMappingQuality;		// label for the mapping quality
 
-	private final JLabel				jlAlignmentsToExtract;		// label reads to extract
-	private final JRadioButton 			jrbUniqueAlignments;				// radio button unique matches
+	private final JLabel				jlAlignmentsToExtract;	// label reads to extract
+	private final JRadioButton 			jrbUniqueAlignments;	// radio button unique matches
 	private final JRadioButton 			jrbPrimaryAlignments;	// radio button primary alignment
-	private final JRadioButton 			jrbAllAlignments;			// radio all reads
+	private final JRadioButton 			jrbAllAlignments;		// radio all reads
 	private final ButtonGroup 			readUniquenessGroup;	// group with the reads to extract radio buttons
 
 	private final JButton				jbHeader;				// button to show the header of the SAM/BAM file
@@ -87,9 +87,9 @@ class SAMPanel extends JPanel {
 	private static boolean 	isRemoveDuplicatesSelected = true;	// remove duplicates check-box default value
 	private static boolean 	isSingleEndSelected = true;			// single-end radio button default state
 	private static boolean 	isPairedEndSelected = false;		// paired-end radio button default state
-	private static boolean 	isUniqueAlignmentsSelected = false;			// unique radio button default state
+	private static boolean 	isUniqueAlignmentsSelected = false;	// unique radio button default state
 	private static boolean 	isPrimaryAligmentSelected = false;	// primary alignment radio button default state
-	private static boolean 	isAllAlignmentsSelected = true;			// all reads radio button default state
+	private static boolean 	isAllAlignmentsSelected = true;		// all reads radio button default state
 
 
 	/**
@@ -99,7 +99,7 @@ class SAMPanel extends JPanel {
 		this.samExtractor = samExtractor;
 
 		// mapping quality field
-		jlMappingQuality = new JLabel("Mapping Quality (0 - 255) ≥");
+		jlMappingQuality = new JLabel("Mapping Quality (0 - 255) \u2265"); // \u2265 is the code for the superior or equal char
 		jftfMappingQuality = new JFormattedTextField(NumberFormat.getIntegerInstance());
 		jftfMappingQuality.setColumns(5);
 		((NumberFormatter) jftfMappingQuality.getFormatter()).setMinimum(0);

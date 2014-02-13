@@ -31,6 +31,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JPanel;
 
 import net.sf.samtools.SAMReadGroupRecord;
 import edu.yu.einstein.genplay.core.IO.extractor.Extractor;
@@ -51,19 +52,21 @@ import edu.yu.einstein.genplay.util.Images;
  */
 public class NewCurveLayerDialog extends JDialog {
 
-	private static final long serialVersionUID = -4896476921693184496L; // generated ID
-	private static final int 			INSET = 7;					// inset between the components
-	private final 	LayerNamePanel 			layerNamePanel;			// panel for the layer name
-	private final 	BinSizePanel			binSizePanel;			// panel for the binsize
-	private final 	ChromoSelectionPanel 	chromoSelectionPanel;	// panel for selecting chromosomes
-	private final 	CalculMethodPanel 		calculMethodPanel;		// panel for the method of score calculation
-	private final 	StrandSelectionPanel	strandSelectionPanel;	// panel for the selection of the strand to extract
-	private final 	ReadDefinitionPanel		readDefinitionPanel;	// panel for the shift and the length of the reads
-	private final	GenomeSelectionPanel	genomeSelectionPanel;	// panel for the selection of the genome in a multigenome project
-	private final	SAMPanel				samPanel;				// panel for SAM/BAM options
-	private final 	JButton 				jbOk; 					// Button OK
-	private final 	JButton 				jbCancel; 				// Button cancel
-	private int 							approved = CANCEL_OPTION;	// indicate if the user canceled or validated
+	private static final long serialVersionUID = -4896476921693184496L; 	// generated ID
+	private static final int 			INSET = 7;							// inset between the components
+	private final 	LayerNamePanel 			layerNamePanel;					// panel for the layer name
+	private final 	BinSizePanel			binSizePanel;					// panel for the binsize
+	private final 	ChromoSelectionPanel 	chromoSelectionPanel;			// panel for selecting chromosomes
+	private final 	CalculMethodPanel 		calculMethodPanel;				// panel for the method of score calculation
+	private final 	StrandSelectionPanel	strandSelectionPanel;			// panel for the selection of the strand to extract
+	private final 	ReadDefinitionPanel		readDefinitionPanel;			// panel for the shift and the length of the reads
+	private final	GenomeSelectionPanel	genomeSelectionPanel;			// panel for the selection of the genome in a multigenome project
+	private final	SAMPanel				samPanel;						// panel for SAM/BAM options
+	private final 	JButton 				jbOk; 							// Button OK
+	private final 	JButton 				jbCancel; 						// Button cancel
+	private final 	boolean 				isGenomeSelectionPanelNeeded;	// true if the genome selection panel needs be shown
+	private final 	boolean 				isSAMPanelNeeded;				// true if the sam panel needs to be shown
+	private int 							approved = CANCEL_OPTION;		// indicate if the user canceled or validated
 
 	/**
 	 * Return value when OK has been clicked.
@@ -87,8 +90,8 @@ public class NewCurveLayerDialog extends JDialog {
 		boolean isMethodNeeded = !(extractor instanceof SAMExtractor);
 		// need to add the strand panel if the extractor is stranded
 		boolean isStrandNeeded = extractor instanceof StrandedExtractor;
-		boolean isGenomeSelectionPanelNeeded = ProjectManager.getInstance().isMultiGenomeProject();
-		boolean isSAMPanelNeeded = extractor instanceof SAMExtractor;
+		isGenomeSelectionPanelNeeded = ProjectManager.getInstance().isMultiGenomeProject();
+		isSAMPanelNeeded = extractor instanceof SAMExtractor;
 
 		// create panels
 		layerNamePanel = new LayerNamePanel(extractor.getDataName());
@@ -118,8 +121,68 @@ public class NewCurveLayerDialog extends JDialog {
 			genomeSelectionPanel = null;
 		}
 
-		// create the OK button
 		jbOk = new JButton("OK");
+		jbCancel = new JButton("Cancel");
+
+		// add the components
+		setLayout(new GridBagLayout());
+		GridBagConstraints c;
+
+		c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 0;
+		c.anchor = GridBagConstraints.PAGE_START;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.insets = new Insets(INSET, INSET, INSET, INSET);
+		c.weightx = 1;
+		c.weighty = 1;
+		add(layerNamePanel, c);
+
+		c.gridy = GridBagConstraints.RELATIVE;
+		add(binSizePanel, c);
+
+		if (isMethodNeeded) {
+			add(calculMethodPanel, c);
+		}
+
+		if (isStrandNeeded) {
+			add(strandSelectionPanel, c);
+			add(readDefinitionPanel, c);
+		}
+
+		c.gridx = 1;
+		c.gridy = 0;
+		c.gridheight = GridBagConstraints.RELATIVE;
+		add(createMiddlePanel(), c);
+
+		c.gridx = 2;
+		c.fill = GridBagConstraints.BOTH;
+		add(chromoSelectionPanel, c);
+
+		c.gridx = 0;
+		c.gridy = GridBagConstraints.RELATIVE;
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.anchor = GridBagConstraints.CENTER;
+		c.fill = GridBagConstraints.VERTICAL;
+		add(createConfirmPanel(), c);
+
+		setTitle("New Layer");
+		setIconImages(Images.getApplicationImages());
+		pack();
+		setResizable(false);
+		setModalityType(ModalityType.APPLICATION_MODAL);
+		setLocationRelativeTo(getRootPane());
+		setDefaultCloseOperation(HIDE_ON_CLOSE);
+		getRootPane().setDefaultButton(jbOk);
+	}
+
+
+	/**
+	 * Creates the panel with the ok and cancel buttons
+	 * @return the panel with the OK and Cancel buttons
+	 */
+	private JPanel createConfirmPanel() {
+		// initializes OK button
 		jbOk.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -149,8 +212,7 @@ public class NewCurveLayerDialog extends JDialog {
 			}
 		});
 
-		// create the cancel button
-		jbCancel = new JButton("Cancel");
+		// initializes the cancel button
 		jbCancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -161,69 +223,40 @@ public class NewCurveLayerDialog extends JDialog {
 		// we want the size of the two buttons to be equal
 		jbOk.setPreferredSize(jbCancel.getPreferredSize());
 
-		// add the components
-		setLayout(new GridBagLayout());
-		GridBagConstraints c;
-
+		// add components to container panel
+		JPanel jpConfirm = new JPanel(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
 		c = new GridBagConstraints();
-		c.gridx = 0;
-		c.gridy = 0;
 		c.anchor = GridBagConstraints.LINE_END;
+		c.fill = GridBagConstraints.BOTH;
+		jpConfirm.add(jbOk, c);
+
+		c.gridx = 1;
+		c.anchor = GridBagConstraints.LINE_START;
+		jpConfirm.add(jbCancel, c);
+
+		return jpConfirm;
+	}
+
+
+	/**
+	 * Creates the middle panel with the sam options and the genome selection (MG only)
+	 * @return
+	 */
+	private JPanel createMiddlePanel() {
+		JPanel jpMiddle = new JPanel(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
-		c.insets = new Insets(INSET, INSET, INSET, INSET);
-		c.weightx = 1;
-		c.weighty = 1;
-		add(layerNamePanel, c);
 
-		c.gridy++;
-		add(binSizePanel, c);
-
-		if (isMethodNeeded) {
-			c.gridy++;
-			add(calculMethodPanel, c);
+		if (isGenomeSelectionPanelNeeded) {
+			jpMiddle.add(genomeSelectionPanel, c);
 		}
 
 		if (isSAMPanelNeeded) {
-			c.gridy++;
-			add(samPanel, c);
+			c.gridy = 1;
+			jpMiddle.add(samPanel, c);
 		}
-
-		if (isStrandNeeded) {
-			c.gridy++;
-			add(strandSelectionPanel, c);
-
-			c.gridy++;
-			add(readDefinitionPanel, c);
-		}
-
-		if (genomeSelectionPanel != null) {
-			c.gridy++;
-			add(genomeSelectionPanel, c);
-		}
-
-		c.anchor = GridBagConstraints.LINE_END;
-		c.fill = GridBagConstraints.VERTICAL;
-		c.gridy++;
-		add(jbOk, c);
-
-		c.anchor = GridBagConstraints.LINE_START;
-		c.gridx = 1;
-		add(jbCancel, c);
-
-		c.fill = GridBagConstraints.BOTH;
-		c.gridheight = c.gridy;
-		c.gridx = 1;
-		c.gridy = 0;
-		add(chromoSelectionPanel, c);
-
-		setTitle("New Layer");
-		setIconImages(Images.getApplicationImages());
-		pack();
-		setResizable(false);
-		setModalityType(ModalityType.APPLICATION_MODAL);
-		setLocationRelativeTo(getRootPane());
-		setDefaultCloseOperation(HIDE_ON_CLOSE);
-		getRootPane().setDefaultButton(jbOk);
+		return jpMiddle;
 	}
 
 

@@ -160,6 +160,9 @@ public abstract class AbstractLayer<T extends Serializable> implements Cloneable
 	public <U extends T> void setData(U data) {
 		this.data = data;
 		if (getTrack() != null) {
+			if (getTrack().getScore() != null) {
+				getTrack().getScore().autorescaleScoreAxis();
+			}
 			getTrack().repaint();
 		}
 	}

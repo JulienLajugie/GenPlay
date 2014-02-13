@@ -23,7 +23,7 @@
 package edu.yu.einstein.genplay.gui.dialog;
 
 import java.awt.Color;
-import java.awt.Component;
+import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -48,17 +48,15 @@ import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneSe
 import edu.yu.einstein.genplay.util.Images;
 
 
-
 /**
  * A dialog to search genes on a GeneListTrack
  * @author Julien Lajugie
- * @version 0.1
  */
 public class SearchGeneDialog extends JDialog implements ActionListener {
 
 	private static final long serialVersionUID = -7154640426239852428L;	// generated ID
 	private static final Color 	NOTHING_FOUND_COLOR =
-			new Color(230, 150, 115); 							// color of the textfield background when nothing is found
+			new Color(230, 150, 115); 						// color of the textfield background when nothing is found
 	private static JTextField 	jtfSearchGene;				// text field for the input gene name
 	private static JPanel 		jpOption;					// panel containing the check boxes
 	private static JCheckBox 	jcbMatchCase;				// check box for the case sensitivity
@@ -79,7 +77,7 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 	 * @param parent parent component. Can be null
 	 * @param geneSearcher a {@link GeneSearcher}
 	 */
-	public static void showSearchGeneDialog(Component parent, GeneSearcher geneSearcher) {
+	public static void showSearchGeneDialog(Frame parent, GeneSearcher geneSearcher) {
 		SearchGeneDialog dialog = new SearchGeneDialog(parent, geneSearcher);
 		dialog.setVisible(true);
 	}
@@ -90,8 +88,8 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 	 * @param parent parent component. Can be null
 	 * @param geneSearcher a {@link GeneSearcher} that searches the genes
 	 */
-	private SearchGeneDialog(Component parent, GeneSearcher geneSearcher) {
-		super();
+	private SearchGeneDialog(Frame parent, GeneSearcher geneSearcher) {
+		super(parent);
 		SearchGeneDialog.geneSearcher = geneSearcher;
 		// create the textfield
 		jtfSearchGene = new JTextField(geneSearcher.getLastSearchedGeneName());
@@ -209,9 +207,9 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 		setTitle("Find Gene");
 		setIconImages(Images.getApplicationImages());
 		pack();
-		setAlwaysOnTop(true);
 		setResizable(false);
 		setLocationRelativeTo(parent);
+		setAlwaysOnTop(true);
 	}
 
 

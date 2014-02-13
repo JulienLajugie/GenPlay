@@ -49,7 +49,7 @@ import edu.yu.einstein.genplay.util.colors.Colors;
  * This class manages all the screen project.
  * It defines different sizes, colors, panels...
  * @author Nicolas Fourel
- * @version 0.1
+ * @author Julien Lajugie
  */
 public class ProjectFrame extends JFrame {
 
@@ -61,7 +61,7 @@ public class ProjectFrame extends JFrame {
 	/** Height of the dialog */
 	public static final int SCREEN_HEIGHT 					= 700;
 	/** Height of the banner section */
-	public static final int BANNER_HEIGHT 					= 105;
+	public static final int BANNER_HEIGHT 					= 91;
 
 
 	//Tool tip text
@@ -147,7 +147,7 @@ public class ProjectFrame extends JFrame {
 		// customise the look and feel
 		LookAndFeels.customizeLookAndFeel();
 		// set the look and feel
-		LookAndFeels.setLookAndFeel(this);
+		LookAndFeels.setLookAndFeel(getRootPane());
 	}
 
 

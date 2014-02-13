@@ -31,15 +31,15 @@ import javax.swing.KeyStroke;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneSearcher;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.SearchGeneDialog;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
 
 
 /**
  * Searches a gene on a {@link GeneLayer}
  * @author Julien Lajugie
- * @version 0.1
  */
-public final class GLASearchGene extends TrackListActionWorker<Void> {
+public final class GLASearchGene extends TrackListActionWorker<GeneSearcher> {
 
 	private static final long serialVersionUID = 2102571378866219218L; 	// generated ID
 	private static final String 	ACTION_NAME = "Search Gene";		// action name
@@ -72,15 +72,18 @@ public final class GLASearchGene extends TrackListActionWorker<Void> {
 
 
 	@Override
-	protected void doAtTheEnd(Void actionResult) {}
+	protected void doAtTheEnd(GeneSearcher actionResult) {
+		if (actionResult != null) {
+			SearchGeneDialog.showSearchGeneDialog(MainFrame.getInstance(), actionResult);
+		}
+	}
 
 
 	@Override
-	protected Void processAction() throws Exception {
+	protected GeneSearcher processAction() throws Exception {
 		GeneLayer selectedLayer = (GeneLayer) getValue("Layer");
 		if (selectedLayer != null) {
-			GeneSearcher geneSearcher = selectedLayer.getData().getGeneSearcher();
-			SearchGeneDialog.showSearchGeneDialog(getRootPane(), geneSearcher);
+			return selectedLayer.getData().getGeneSearcher();
 		}
 		return null;
 	}

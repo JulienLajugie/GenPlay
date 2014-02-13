@@ -281,7 +281,7 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 		jbJump.setEnabled(b);
 		jbBookmark.setEnabled(b);
 		if (jcbGenomeSelection != null) {
-			jcbGenomeSelection.setEditable(b);
+			jcbGenomeSelection.setEnabled(b);
 		}
 		super.setEnabled(b);
 	}

@@ -230,6 +230,14 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 	}
 
 
+	/**
+	 * @return the track menu
+	 */
+	public TrackMenu getTrackMenu() {
+		return trackMenu;
+	}
+
+
 	@Override
 	public void intervalAdded(ListDataEvent e) {
 		rebuildPanel();

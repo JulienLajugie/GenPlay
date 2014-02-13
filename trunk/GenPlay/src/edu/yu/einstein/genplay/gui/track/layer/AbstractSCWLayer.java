@@ -369,10 +369,6 @@ public abstract class AbstractSCWLayer<T extends SCWList> extends AbstractVersio
 	@Override
 	public <U extends T> void setData(U data) {
 		super.setData(data);
-		// tells the track score object to auto-rescale the score axis
-		if ((getTrack() != null) && (getTrack().getScore() != null)) {
-			getTrack().getScore().autorescaleScoreAxis();
-		}
 	}
 
 
@@ -380,10 +376,6 @@ public abstract class AbstractSCWLayer<T extends SCWList> extends AbstractVersio
 	@Override
 	public <U extends T> void setData(U data, String description) {
 		super.setData(data, description);
-		// tells the track score object to auto-rescale the score axis
-		if ((getTrack() != null) && (getTrack().getScore() != null)) {
-			getTrack().getScore().autorescaleScoreAxis();
-		}
 	}
 
 

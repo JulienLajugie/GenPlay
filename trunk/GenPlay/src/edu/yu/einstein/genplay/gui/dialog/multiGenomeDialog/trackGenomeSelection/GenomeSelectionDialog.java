@@ -23,7 +23,6 @@
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection;
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -44,7 +43,6 @@ import edu.yu.einstein.genplay.util.Images;
  * Dialog for choosing a genome.
  * @author Julien Lajugie
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class GenomeSelectionDialog extends JDialog {
 
@@ -57,10 +55,9 @@ public class GenomeSelectionDialog extends JDialog {
 	 */
 	public static final int 	CANCEL_OPTION = 1;
 
-	private static final 	long 		serialVersionUID = -2863825210102188370L;	// generated ID
-	private static final 	int 		dialogWidth 		= 180;					// dialog width
-	private final					GenomeSelectionPanel panel;
-	private 				int			approved = CANCEL_OPTION;					// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
+	private static final 	long 					serialVersionUID = -2863825210102188370L;	// generated ID
+	private final 			GenomeSelectionPanel 	panel;
+	private 				int						approved = CANCEL_OPTION;					// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
 
 
 	/**
@@ -70,7 +67,7 @@ public class GenomeSelectionDialog extends JDialog {
 		super();
 
 		// Init
-		setTitle("Synchronization parameters");
+		setTitle("Genome Selection");
 		setIconImages(Images.getApplicationImages());
 		setResizable(false);
 		setVisible(false);
@@ -98,25 +95,25 @@ public class GenomeSelectionDialog extends JDialog {
 	}
 
 
+	private void cancelChoice() {
+		setVisible(false);
+	}
+
+
+	/**
+	 * @return the selected allele type
+	 */
+	public AlleleType getAlleleType () {
+		return panel.getAlleleType();
+	}
+
+
 	private JPanel getButtonPanel () {
 		JPanel panel = new JPanel();
-
-		//Dimension
-		Dimension panelDim = new Dimension(dialogWidth, 40);
-		panel.setSize(panelDim);
-		panel.setPreferredSize(panelDim);
-		panel.setMinimumSize(panelDim);
-		panel.setMaximumSize(panelDim);
-
-		Dimension buttonDim = new Dimension(50, 25);
 
 		//Confirm button
 		JButton confirm = new JButton("Ok");
 		confirm.setToolTipText("Ok");
-		confirm.setSize(buttonDim);
-		confirm.setPreferredSize(buttonDim);
-		confirm.setMinimumSize(buttonDim);
-		confirm.setMaximumSize(buttonDim);
 		confirm.setMargin(new Insets(0, 0, 0, 0));
 		confirm.addActionListener(new ActionListener() {
 			@Override
@@ -128,10 +125,6 @@ public class GenomeSelectionDialog extends JDialog {
 		//Cancel button
 		JButton cancel = new JButton("Cancel");
 		cancel.setToolTipText("Cancel");
-		cancel.setSize(buttonDim);
-		cancel.setPreferredSize(buttonDim);
-		cancel.setMinimumSize(buttonDim);
-		cancel.setMaximumSize(buttonDim);
 		cancel.setMargin(new Insets(0, 0, 0, 0));
 		cancel.addActionListener(new ActionListener() {
 			@Override
@@ -139,6 +132,8 @@ public class GenomeSelectionDialog extends JDialog {
 				cancelChoice();
 			}
 		});
+
+		confirm.setPreferredSize(cancel.getPreferredSize());
 
 		getRootPane().setDefaultButton(confirm);
 
@@ -155,14 +150,11 @@ public class GenomeSelectionDialog extends JDialog {
 	}
 
 
-	private void cancelChoice() {
-		setVisible(false);
-	}
-
-
-	private void validChoice() {
-		approved = APPROVE_OPTION;
-		setVisible(false);
+	/**
+	 * @return the full name of the selected genome
+	 */
+	public String getGenomeName () {
+		return panel.getGenomeName();
 	}
 
 
@@ -179,19 +171,9 @@ public class GenomeSelectionDialog extends JDialog {
 	}
 
 
-	/**
-	 * @return the full name of the selected genome
-	 */
-	public String getGenomeName () {
-		return panel.getGenomeName();
-	}
-
-
-	/**
-	 * @return the selected allele type
-	 */
-	public AlleleType getAlleleType () {
-		return panel.getAlleleType();
+	private void validChoice() {
+		approved = APPROVE_OPTION;
+		setVisible(false);
 	}
 
 }

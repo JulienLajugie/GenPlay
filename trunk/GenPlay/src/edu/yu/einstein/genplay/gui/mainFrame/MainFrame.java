@@ -260,7 +260,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		// customise the look and feel
 		LookAndFeels.customizeLookAndFeel();
 		// set the look and feel
-		LookAndFeels.setLookAndFeel(this);
+		LookAndFeels.setLookAndFeel(getRootPane());
 		// set the application behavior when closed
 		setDefaultCloseOperation();
 
@@ -508,7 +508,8 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		OptionDialog optionDialog = new OptionDialog();
 		if (optionDialog.showConfigurationDialog(getRootPane()) == OptionDialog.APPROVE_OPTION) {
 			if (optionDialog.lookAndFeelChanged()) {
-				LookAndFeels.setLookAndFeel(this);
+				LookAndFeels.setLookAndFeel(getRootPane());
+				LookAndFeels.setLookAndFeel(getTrackListPanel().getTrackMenu());
 			}
 			if (optionDialog.showMenuBarChanged()) {
 				showMenuBar();

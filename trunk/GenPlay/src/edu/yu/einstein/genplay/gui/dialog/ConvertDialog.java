@@ -23,7 +23,6 @@
 package edu.yu.einstein.genplay.gui.dialog;
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -333,13 +332,10 @@ public class ConvertDialog extends JDialog {
 
 
 	private JPanel getScwPanel() {
-		Dimension dimension = new Dimension(100, 20);
-
 		// Create the calculation method elements
 		JLabel jlCalculationMethod = new JLabel("Select a calculation method:");
 		jcbSCWCalculMetod = new JComboBox(ScoreOperation.getPileupOperations());
 		jcbSCWCalculMetod.setSelectedItem(ScoreOperation.ADDITION);
-		jcbSCWCalculMetod.setPreferredSize(dimension);
 
 		// Creates the panel
 		JPanel panel = new JPanel();

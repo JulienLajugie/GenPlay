@@ -25,7 +25,6 @@ package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.variantInformation;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -91,8 +90,14 @@ public class NavigationPanel extends JPanel {
 			}
 		});
 
-		jbNext = new JButton(getIcon(Images.getNextImage()));
+		Dimension buttonDim = new Dimension(32, 32);
+		jbNext = new JButton(new ImageIcon(Images.getNextImage()));
+		jbNext.setPreferredSize(buttonDim);
+		jbNext.setMaximumSize(buttonDim);
+		jbNext.setFocusPainted(false);
+		jbNext.setBorderPainted(false);
 		jbNext.setContentAreaFilled(false);
+		jbNext.setOpaque(false);
 		jbNext.setToolTipText("Next variant on the track");
 		jbNext.setMargin(inset);
 		jbNext.addActionListener(new ActionListener() {
@@ -103,9 +108,14 @@ public class NavigationPanel extends JPanel {
 			}
 		});
 
-		jbPrevious = new JButton(getIcon(Images.getPreviousImage()));
+		jbPrevious = new JButton(new ImageIcon(Images.getPreviousImage()));
+		jbPrevious.setPreferredSize(buttonDim);
+		jbPrevious.setMaximumSize(buttonDim);
+		jbPrevious.setFocusPainted(false);
+		jbPrevious.setBorderPainted(false);
 		jbPrevious.setContentAreaFilled(false);
-		jbPrevious.setToolTipText("Previous variant on the track");
+		jbPrevious.setOpaque(false);
+		jbPrevious.setToolTipText("Next variant on the track");
 		jbPrevious.setMargin(inset);
 		jbPrevious.addActionListener(new ActionListener() {
 			@Override
@@ -142,19 +152,6 @@ public class NavigationPanel extends JPanel {
 		gbc.gridx++;
 		gbc.weightx = 0;
 		add(jbNext, gbc);
-	}
-
-
-	/**
-	 * Creates a square icon using the given path
-	 * @param path	icon path
-	 * @param side	size of the side
-	 * @return		the icon
-	 */
-	private ImageIcon getIcon (Image image) {
-		Image newImg = image.getScaledInstance(VariantInformationDialog.WIDTH / 4, HEIGHT, Image.SCALE_SMOOTH);
-		ImageIcon icon = new ImageIcon(newImg);
-		return icon;
 	}
 
 
