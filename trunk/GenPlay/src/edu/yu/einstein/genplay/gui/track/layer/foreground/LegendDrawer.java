@@ -23,7 +23,6 @@
 package edu.yu.einstein.genplay.gui.track.layer.foreground;
 
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -141,6 +140,7 @@ public class LegendDrawer implements Drawer, MouseListener, MouseMotionListener 
 
 
 	private boolean isVisible;						// If the legend is visible or not.
+	private boolean isCursorOverLegend;				// true if the cursor is over the legend
 
 
 	/**
@@ -160,7 +160,7 @@ public class LegendDrawer implements Drawer, MouseListener, MouseMotionListener 
 	private void closeLegend () {
 		Thread rolling = new Rolling(Rolling.CLOSE);
 		rolling.start();
-		parent.getTrack().getGraphicsPanel().updateCursor();
+		parent.getTrack().updateGraphicCursor();
 	}
 
 
@@ -422,6 +422,14 @@ public class LegendDrawer implements Drawer, MouseListener, MouseMotionListener 
 
 
 	/**
+	 * @return true if the cursor is over the legend
+	 */
+	public boolean isCursorOverLegend() {
+		return isCursorOverLegend;
+	}
+
+
+	/**
 	 * @param p a {@link Point} on the track
 	 * @return true if the point is in the roller, false otherwise
 	 */
@@ -470,19 +478,18 @@ public class LegendDrawer implements Drawer, MouseListener, MouseMotionListener 
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		if (isInRoller(e.getPoint())) {
-			parent.getTrack().getGraphicsPanel().setCursor(new Cursor(Cursor.HAND_CURSOR));
-		} else {
-			parent.getTrack().getGraphicsPanel().updateCursor();
-		}
+		isCursorOverLegend = isInRoller(e.getPoint());
+		parent.getTrack().updateGraphicCursor();
 	}
 
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {}
 
+
 	@Override
 	public void mouseReleased(MouseEvent arg0) {}
+
 
 	/**
 	 * Open the legend
@@ -491,6 +498,7 @@ public class LegendDrawer implements Drawer, MouseListener, MouseMotionListener 
 		Thread rolling = new Rolling(Rolling.OPEN);
 		rolling.start();
 	}
+
 
 	/**
 	 * Print a string

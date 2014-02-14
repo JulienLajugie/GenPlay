@@ -46,7 +46,6 @@ import edu.yu.einstein.genplay.gui.track.layer.Layer;
 
 /**
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class EditingDialogManagerForFilters implements EditingDialogManagerInterface<FiltersData>{
 

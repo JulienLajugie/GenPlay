@@ -22,9 +22,11 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.SCWListStatsDialog;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
@@ -32,13 +34,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ScrollPaneConstants;
@@ -114,19 +112,24 @@ public class SCWListStatsDialog extends JDialog {
 			}
 		});
 
-		// create panel with buttons
-		JPanel jpButtons = new JPanel();
-		jpButtons.setLayout(new BoxLayout(jpButtons, BoxLayout.LINE_AXIS));
-		jpButtons.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		jpButtons.add(Box.createHorizontalGlue());
-		jpButtons.add(jbOK);
-		jpButtons.add(Box.createRigidArea(new Dimension(10, 0)));
-		jpButtons.add(jbSave);
+		jbOK.setPreferredSize(jbSave.getPreferredSize());
 
 		// add the components
-		setLayout(new BorderLayout());
-		add(scrollPane, BorderLayout.CENTER);
-		add(jpButtons, BorderLayout.SOUTH);
+		setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+
+		c.gridwidth = 2;
+		add(scrollPane, c);
+
+		c.gridwidth = 1;
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(10, 10, 10, 10);
+		c.gridy = 1;
+		add(jbSave, c);
+
+		c.gridx = 1;
+		c.anchor = GridBagConstraints.LINE_END;
+		add(jbOK, c);
 
 		// set dialog properties
 		setIconImages(Images.getApplicationImages());

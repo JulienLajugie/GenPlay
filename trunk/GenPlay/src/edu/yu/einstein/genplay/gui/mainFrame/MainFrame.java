@@ -261,6 +261,9 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		LookAndFeels.customizeLookAndFeel();
 		// set the look and feel
 		LookAndFeels.setLookAndFeel(getRootPane());
+		if ((trackListPanel != null) && (trackListPanel.getTrackMenu() != null)) {
+			LookAndFeels.setLookAndFeel(getTrackListPanel().getTrackMenu());
+		}
 		// set the application behavior when closed
 		setDefaultCloseOperation();
 

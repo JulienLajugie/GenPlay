@@ -38,32 +38,43 @@ public class AllTrackFileFilter extends ExtendedFileFilter {
 	/** Generated serial ID */
 	private static final long serialVersionUID = 8472257739111079051L;
 
-	/** File type description */
-	public static final String DESCRIPTION = "Track Data";
+	/** Filters accepted */
+	private static final ExtendedFileFilter[] TRACK_FILTERS = {
+		new BAMFilter(),
+		new BedFilter(),
+		new BedGraphFilter(),
+		new ElandExtendedFilter(),
+		new GenPlayTrackFilter(),
+		new GFFFilter(),
+		new GTFFilter(),
+		new PairFilter(),
+		new PSLFilter(),
+		new SAMFilter(),
+		new TwoBitFilter(),
+		new WiggleFilter()
+	};
 
-	/** Valid extensions */
-	public static String[] extensions;
+	/** File type description */
+	public static String DESCRIPTION = "Track Data (";
 
 	static {
-		ExtendedFileFilter[] trackFilters = {
-				new BAMFilter(),
-				new BedFilter(),
-				new BedGraphFilter(),
-				new ElandExtendedFilter(),
-				new GenPlayTrackFilter(),
-				new GFFFilter(),
-				new GTFFilter(),
-				new PairFilter(),
-				new PSLFilter(),
-				new SAMFilter(),
-				new TwoBitFilter(),
-				new WiggleFilter()
-		};
+		for (ExtendedFileFilter filter: TRACK_FILTERS) {
+			for (String extension: filter.getExtensions()) {
+				DESCRIPTION += "*." + extension + ", ";
+			}
+		}
+		DESCRIPTION = DESCRIPTION.substring(0, DESCRIPTION.length() - 2);
+		DESCRIPTION += ")";
+	}
+
+	/** Valid extensions */
+	public static final String[] EXTENSIONS;
+	static {
 		List<String> extensionList = new ArrayList<String>();
-		for (ExtendedFileFilter filter: trackFilters) {
+		for (ExtendedFileFilter filter: TRACK_FILTERS) {
 			extensionList.addAll(Arrays.asList(filter.getExtensions()));
 		}
-		extensions = extensionList.toArray(new String[0]);
+		EXTENSIONS = extensionList.toArray(new String[0]);
 	}
 
 
@@ -71,6 +82,6 @@ public class AllTrackFileFilter extends ExtendedFileFilter {
 	 * Creates an instance of {@link AllTrackFileFilter}
 	 */
 	public AllTrackFileFilter() {
-		super(extensions, DESCRIPTION);
+		super(EXTENSIONS, DESCRIPTION);
 	}
 }

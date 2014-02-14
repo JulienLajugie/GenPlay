@@ -47,7 +47,6 @@ import edu.yu.einstein.genplay.gui.action.track.TATrackSettings;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.menu.layerMenu.LayerMenuFactory;
 import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.trackList.TrackListActionMap;
 
 /**
@@ -81,7 +80,7 @@ public class TrackMenu extends JPopupMenu implements PopupMenuListener {
 	};
 
 	private Track 				selectedTrack; 			// selected track
-	private final List<JMenu> 	layerMenus; 			// list containing all the layer menus available for the selected track
+	private List<JMenu> 		layerMenus; 			// list containing all the layer menus available for the selected track
 	private final Separator		layerMenusSeparator;	// separator that separate the layer menus from the other elements of the track menu
 
 	/**
@@ -140,24 +139,16 @@ public class TrackMenu extends JPopupMenu implements PopupMenuListener {
 	 */
 	@Override
 	public void popupMenuWillBecomeVisible(PopupMenuEvent evt) {
-		if (selectedTrack != null) {
-			boolean isPasteEnable = MainFrame.getInstance().getTrackListPanel().isPasteEnable();
-			TrackListActionMap.getActionMap().get(TAPasteOrDrop.ACTION_KEY).setEnabled(isPasteEnable);
-			Layer<?>[] trackLayers = selectedTrack.getLayers().getLayers();
-			if (trackLayers != null) {
-				int lastIndex = getComponentCount();
-				for (Layer<?> currentLayer: trackLayers) {
-					JMenu layerMenu = LayerMenuFactory.createLayerMenu(currentLayer);
-					if (layerMenu != null) {
-						add(layerMenu);
-						layerMenus.add(layerMenu);
-					}
-				}
-				// if there is at least one layer menu we add a separator right on top of it
-				if (!layerMenus.isEmpty()) {
-					add(layerMenusSeparator, lastIndex);
-				}
-			}
+		int lastIndex = getComponentCount();
+		boolean isPasteEnable = MainFrame.getInstance().getTrackListPanel().isPasteEnable();
+		TrackListActionMap.getActionMap().get(TAPasteOrDrop.ACTION_KEY).setEnabled(isPasteEnable);
+		layerMenus = LayerMenuFactory.createLayerMenusForTrack(selectedTrack);
+		for (JMenu menu: layerMenus) {
+			add(menu);
+		}
+		// if there is at least one layer menu we add a separator right on top of it
+		if (!layerMenus.isEmpty()) {
+			add(layerMenusSeparator, lastIndex);
 		}
 	}
 

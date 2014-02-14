@@ -22,6 +22,8 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.menu;
 
+import java.util.List;
+
 import javax.swing.ActionMap;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
@@ -61,7 +63,6 @@ import edu.yu.einstein.genplay.gui.dialog.exceptionDialog.WarningReportDialog;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.menu.layerMenu.LayerMenuFactory;
 import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.util.LookAndFeels;
 import edu.yu.einstein.genplay.util.Utils;
 import edu.yu.einstein.genplay.util.colors.Colors;
@@ -229,14 +230,14 @@ public class MenuBar extends JMenuBar {
 					noTrackSelected.setEnabled(false);
 					jmLayers.add(noTrackSelected);
 				} else {
-					Layer<?>[] layers = selectedTrack.getLayers().getLayers();
-					if (layers.length == 0) {
+					List<JMenu> layerMenus = LayerMenuFactory.createLayerMenusForTrack(selectedTrack);
+					if (layerMenus.isEmpty()) {
 						JMenuItem noLayerAvailable = new JMenuItem("No layer loaded on selected track");
 						noLayerAvailable.setEnabled(false);
 						jmLayers.add(noLayerAvailable);
 					} else {
-						for (Layer<?> currentLayer: layers) {
-							jmLayers.add(LayerMenuFactory.createLayerMenu(currentLayer));
+						for (JMenu menu: layerMenus) {
+							jmLayers.add(menu);
 						}
 					}
 				}

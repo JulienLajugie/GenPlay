@@ -27,13 +27,13 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.yu.einstein.genplay.core.IO.writer.TransferableTrackWriter;
 import edu.yu.einstein.genplay.core.IO.writer.geneListWriter.GeneListAsBedWriter;
 import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
@@ -161,11 +161,9 @@ public class TransferableTrack implements Transferable {
 	private List<File> getDataAsFileList() {
 		ObjectOutputStream oos = null;
 		try {
-			File tmpFile = new File(Utils.getTmpDirectoryPath(), track.getTrackForTransfer().getName() + GenPlayTrackFilter.EXTENSIONS[0]);
-			FileOutputStream out = new FileOutputStream(tmpFile);
-			oos = new ObjectOutputStream(out);
-			oos.writeObject(track);
-			oos.flush();
+			File tmpFile = new File(Utils.getTmpDirectoryPath(), track.getTrackForTransfer().getName() + "." + GenPlayTrackFilter.EXTENSIONS[0]);
+			TransferableTrackWriter writer = new TransferableTrackWriter(track.getTrackForTransfer(), tmpFile);
+			writer.write();
 			List<File> fileList = new ArrayList<File>();
 			fileList.add(tmpFile);
 			return fileList;

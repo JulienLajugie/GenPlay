@@ -62,12 +62,12 @@ public class GenotypeVCFDialog extends MultiGenomeTrackActionDialog {
 
 	private final static String DIALOG_TITLE = "Correct genotype of a file using current VCF stripes";
 
-	private JTextField 	jtfInputFile;		// Text field for the path of the VCF file to correct
-	private JTextField 	jtfOutputFile;		// Text field for the path of the new VCF file
-	private GenomeMappingPanel genomePanel;
-	private JCheckBox 	jcbCompress;	// Check box to compress with BGZIP
-	private JCheckBox 	jcbIndex;		// Check box to index with Tabix
-	private VCFFile vcfToGenotype;
+	private JTextField 			jtfInputFile;		// Text field for the path of the VCF file to correct
+	private JTextField 			jtfOutputFile;		// Text field for the path of the new VCF file
+	private GenomeMappingPanel 	genomePanel;
+	private JCheckBox 			jcbCompress;		// Check box to compress with BGZIP
+	private JCheckBox 			jcbIndex;			// Check box to index with Tabix
+	private VCFFile 			vcfToGenotype;
 
 
 	/**

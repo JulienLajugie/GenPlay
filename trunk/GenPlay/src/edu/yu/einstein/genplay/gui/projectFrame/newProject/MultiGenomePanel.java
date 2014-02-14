@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -66,6 +67,7 @@ class MultiGenomePanel extends JPanel {
 	private static final long serialVersionUID = -1295541774864815129L;
 
 	private final MultiGenomeInformationPanel 	informationPanel;		// multi genome information panel
+	private final JButton 						exportXML;				// button to export the multi-genome settings as data
 	private VCFLoaderDialog						vcfLoaderDialog;		// the VCF loader
 	private List<VCFData> 						data;					// data
 	private Map<String, List<VCFFile>> 			genomeFileAssociation;
@@ -88,7 +90,7 @@ class MultiGenomePanel extends JPanel {
 		data = new ArrayList<VCFData>();
 
 		//Edit button
-		JButton editVCFFile = new JButton("Edit");
+		JButton editVCFFile = new JButton("Select VCF");
 		editVCFFile.setToolTipText("Edit multi genome information");
 		editVCFFile.addActionListener(new ActionListener() {
 			@Override
@@ -109,7 +111,7 @@ class MultiGenomePanel extends JPanel {
 		});
 
 		//Import button
-		JButton importXML = new JButton("Import");
+		JButton importXML = new JButton("Import Config");
 		importXML.setToolTipText("Import information from xml");
 		importXML.addActionListener(new ActionListener() {
 			@Override
@@ -119,7 +121,7 @@ class MultiGenomePanel extends JPanel {
 		});
 
 		//Export button
-		JButton exportXML = new JButton("Export");
+		exportXML = new JButton("Export Config");
 		exportXML.setToolTipText("Export information to xml");
 		exportXML.addActionListener(new ActionListener() {
 			@Override
@@ -127,22 +129,24 @@ class MultiGenomePanel extends JPanel {
 				exportXML();
 			}
 		});
+		exportXML.setEnabled(false);
 
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 
-		gbc.gridwidth = 3;
+		gbc.gridwidth = 2;
 		add(informationPanel, gbc);
 
 		gbc.insets = new Insets(10, 0, 0, 0);
+		gbc.anchor = GridBagConstraints.CENTER;
 		gbc.gridy = 1;
-		gbc.gridwidth = 1;
 		add(editVCFFile, gbc);
 
-		gbc.gridx = 1;
+		gbc.gridy = 2;
+		gbc.gridwidth = 1;
 		add(importXML, gbc);
 
-		gbc.gridx = 2;
+		gbc.gridx = 1;
 		add(exportXML, gbc);
 
 		setOpaque(false);
@@ -320,6 +324,11 @@ class MultiGenomePanel extends JPanel {
 	 * @param visible set to true to show the var table
 	 */
 	void setVarTableVisible(boolean visible) {
+		if (visible) {
+			setBorder(BorderFactory.createTitledBorder("Genomes Selection"));
+		} else {
+			setBorder(null);
+		}
 		for (Component c: getComponents()) {
 			c.setVisible(visible);
 		}
@@ -338,30 +347,35 @@ class MultiGenomePanel extends JPanel {
 		List<String> genomeList = new ArrayList<String>();
 		Map<String, Integer> fileGenome = new HashMap<String, Integer>();
 
-		for (String fullGenomeName: genomeFileAssociation.keySet()) {
-			String groupName = FormattedMultiGenomeName.getGroupName(fullGenomeName);
-			if (!groupList.contains(groupName)) {
-				groupList.add(groupName);
-			}
-
-			String rawName = FormattedMultiGenomeName.getRawName(fullGenomeName);
-			if (!genomeList.contains(rawName)) {
-				genomeList.add(rawName);
-			}
-
-			for (VCFFile reader: genomeFileAssociation.get(fullGenomeName)) {
-				String path = reader.getFile().getPath();
-				if (!fileGenome.containsKey(path)) {
-					fileGenome.put(path, 0);
+		if (genomeFileAssociation.keySet().isEmpty()) {
+			exportXML.setEnabled(false);
+		} else {
+			exportXML.setEnabled(true);
+			for (String fullGenomeName: genomeFileAssociation.keySet()) {
+				String groupName = FormattedMultiGenomeName.getGroupName(fullGenomeName);
+				if (!groupList.contains(groupName)) {
+					groupList.add(groupName);
 				}
-				Integer cpt = fileGenome.get(path) + 1;
-				fileGenome.put(path, cpt);
-			}
-		}
 
-		MultiGenomeInformationPanel.GROUP_NUMBER = groupList.size();
-		MultiGenomeInformationPanel.GENOME_NUMBER = genomeList.size();
-		MultiGenomeInformationPanel.FILE_NUMBER = fileGenome.size();
-		MultiGenomeInformationPanel.refreshInformation();
+				String rawName = FormattedMultiGenomeName.getRawName(fullGenomeName);
+				if (!genomeList.contains(rawName)) {
+					genomeList.add(rawName);
+				}
+
+				for (VCFFile reader: genomeFileAssociation.get(fullGenomeName)) {
+					String path = reader.getFile().getPath();
+					if (!fileGenome.containsKey(path)) {
+						fileGenome.put(path, 0);
+					}
+					Integer cpt = fileGenome.get(path) + 1;
+					fileGenome.put(path, cpt);
+				}
+			}
+
+			MultiGenomeInformationPanel.GROUP_NUMBER = groupList.size();
+			MultiGenomeInformationPanel.GENOME_NUMBER = genomeList.size();
+			MultiGenomeInformationPanel.FILE_NUMBER = fileGenome.size();
+			MultiGenomeInformationPanel.refreshInformation();
+		}
 	}
 }

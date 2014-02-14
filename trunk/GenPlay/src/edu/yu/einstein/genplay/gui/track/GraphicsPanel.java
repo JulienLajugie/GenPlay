@@ -22,6 +22,7 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.track;
 
+import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.MouseInfo;
 import java.awt.Point;
@@ -57,8 +58,8 @@ import edu.yu.einstein.genplay.util.colors.Colors;
 public final class GraphicsPanel extends JPanel implements Serializable, ComponentListener, MouseListener, MouseMotionListener, MouseWheelListener {
 
 	private static final long serialVersionUID = 4936439650634531249L;
-	private int 			mouseStartDragX = -1;	// position of the mouse when start dragging
-	private Drawer[]		drawers;				// drawers that can draw on this panel
+	private int 			mouseStartDragX = -1;		// position of the mouse when start dragging
+	private Drawer[]		drawers;					// drawers that can draw on this panel
 
 
 	/**
@@ -126,7 +127,7 @@ public final class GraphicsPanel extends JPanel implements Serializable, Compone
 				int screenWidth = e.getX() - (getWidth() / 2);
 				scrollingManager.setScrollingIntensity(screenWidth);
 			}
-			updateCursor();
+			setCursor(null);
 		}
 	}
 
@@ -167,7 +168,7 @@ public final class GraphicsPanel extends JPanel implements Serializable, Compone
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// set the cursor when the mouse enter a track
-		updateCursor();
+		setCursor(TrackConstants.DEFAULT_CURSOR);
 	}
 
 
@@ -184,7 +185,7 @@ public final class GraphicsPanel extends JPanel implements Serializable, Compone
 			// width between the cursor and the middle of the track
 			int screenWidth = e.getX() - (getWidth() / 2);
 			scrollingManager.setScrollingIntensity(screenWidth);
-			updateCursor();
+			setCursor(null);
 		}
 	}
 
@@ -244,6 +245,19 @@ public final class GraphicsPanel extends JPanel implements Serializable, Compone
 	}
 
 
+	@Override
+	public void setCursor(Cursor cursor) {
+		ScrollingManager scrollingManager = ScrollingManager.getInstance();
+		if (scrollingManager.isScrollingLeft()) {
+			super.setCursor(TrackConstants.CURSOR_SCROLL_LEFT);
+		} else if (scrollingManager.isScrollingRight()) {
+			super.setCursor(TrackConstants.CURSOR_SCROLL_RIGHT);
+		} else {
+			super.setCursor(cursor);
+		}
+	}
+
+
 	/**
 	 * Sets the drawers that will draw on this panel
 	 * @param drawers drawers to set
@@ -263,22 +277,6 @@ public final class GraphicsPanel extends JPanel implements Serializable, Compone
 			ToolTipManager.sharedInstance().mouseMoved(
 					new MouseEvent(this, -1, System.currentTimeMillis(), 0, locationOnComponent.x, locationOnComponent.y,
 							locationOnScreen.x, locationOnScreen.y, 0, false, 0));
-		}
-	}
-
-
-	/**
-	 * Sets the cursor of the track.
-	 * The cursor is different from its default value when the track is being scrolled left or right
-	 */
-	public void updateCursor() {
-		ScrollingManager scrollingManager = ScrollingManager.getInstance();
-		if (scrollingManager.isScrollingLeft()) {
-			setCursor(TrackConstants.SCROLL_LEFT_CURSOR);
-		} else if (scrollingManager.isScrollingRight()) {
-			setCursor(TrackConstants.SCROLL_RIGHT_CURSOR);
-		} else {
-			setCursor(TrackConstants.DEFAULT_CURSOR);
 		}
 	}
 }

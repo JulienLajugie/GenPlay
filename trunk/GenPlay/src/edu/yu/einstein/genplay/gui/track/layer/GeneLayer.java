@@ -22,7 +22,6 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.track.layer;
 
-import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -248,6 +247,14 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 	}
 
 
+	/**
+	 * @return the gene under the mouse. Null if none
+	 */
+	public Gene getGeneUnderMouse() {
+		return geneUnderMouse;
+	}
+
+
 	@Override
 	public float getMaximumScoreToDisplay() {
 		return max;
@@ -385,6 +392,7 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 				// unset the tool text and the mouse cursor if there is no gene under the mouse
 				if (geneUnderMouse == null) {
 					getTrack().getGraphicsPanel().setToolTipText(null);
+					getTrack().updateGraphicCursor();
 				} else {
 					// if there is a gene under the mouse we also check
 					// if there is an exon with a score under the mouse cursor
@@ -399,7 +407,7 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 						}
 					}
 					// set the cursor and the tooltip text if there is a gene under the mouse cursor
-					getTrack().getGraphicsPanel().setCursor(new Cursor(Cursor.HAND_CURSOR));
+					getTrack().updateGraphicCursor();
 					String toolTipText = "<html><b>" + geneUnderMouse.getName() + "</b><br>";
 					GeneList geneList = getData();
 					if (geneList.getGeneScoreType() != null) {
@@ -424,6 +432,7 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 	}
 
 
+
 	/**
 	 * Sets the variable mouseStartDragY when the user press the right button of the mouse
 	 */
@@ -435,7 +444,6 @@ public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer
 			}
 		}
 	}
-
 
 
 	@Override

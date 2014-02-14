@@ -22,8 +22,13 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.menu.layerMenu;
 
+import java.awt.Font;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JMenu;
 
+import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 
 /**
@@ -57,5 +62,31 @@ public class LayerMenuFactory {
 		default :
 			return null;
 		}
+	}
+
+
+	/**
+	 * @param track
+	 * @return A list of the layer menus for all the layers of the specified track
+	 */
+	public static List<JMenu> createLayerMenusForTrack(Track track) {
+		List<JMenu> menus = new ArrayList<JMenu>();
+		if (track != null) {
+			Layer<?>[] trackLayers = track.getLayers().getLayers();
+			if (trackLayers != null) {
+				for (Layer<?> currentLayer: trackLayers) {
+					JMenu layerMenu = LayerMenuFactory.createLayerMenu(currentLayer);
+					// active layer is in fold and italic
+					if (track.getActiveLayer() == currentLayer) {
+						layerMenu.setFont(layerMenu.getFont().deriveFont(Font.ITALIC | Font.BOLD));
+					} else {
+						// all layers are in bold
+						layerMenu.setFont(layerMenu.getFont().deriveFont(Font.BOLD));
+					}
+					menus.add(layerMenu);
+				}
+			}
+		}
+		return menus;
 	}
 }

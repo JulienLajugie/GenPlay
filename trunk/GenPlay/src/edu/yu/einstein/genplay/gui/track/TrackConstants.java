@@ -176,15 +176,23 @@ public class TrackConstants {
 
 
 	/**
-	 * Cursor show when a track is scrolled on the left
+	 * Cursor showed when a track is scrolled on the left
 	 */
-	public static final Cursor SCROLL_LEFT_CURSOR = new Cursor(Cursor.W_RESIZE_CURSOR);
+	public static final Cursor CURSOR_SCROLL_LEFT = new Cursor(Cursor.W_RESIZE_CURSOR);
 
 
 	/**
-	 * Cursor show when a track is scrolled on the right
+	 * Cursor showed when a track is scrolled on the right
 	 */
-	public static final Cursor SCROLL_RIGHT_CURSOR = new Cursor(Cursor.E_RESIZE_CURSOR);
+	public static final Cursor CURSOR_SCROLL_RIGHT = new Cursor(Cursor.E_RESIZE_CURSOR);
+
+
+	/**  Cursor showed when the legend is under the mouse */
+	public static final Cursor CURSOR_OVER_LEGEND = new Cursor(Cursor.HAND_CURSOR);
+
+
+	/**  Cursor showed when a gene is under the mouse */
+	public static final Cursor CURSOR_OVER_GENE = new Cursor(Cursor.HAND_CURSOR);
 
 
 	/**

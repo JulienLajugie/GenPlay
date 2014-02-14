@@ -23,8 +23,10 @@
 package edu.yu.einstein.genplay.gui.dialog.layerChooser;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -44,10 +46,12 @@ import javax.swing.table.TableColumn;
 import edu.yu.einstein.genplay.gui.customComponent.tableComponents.BooleanRadioButtonEditor;
 import edu.yu.einstein.genplay.gui.customComponent.tableComponents.BooleanRadioButtonRenderer;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
+import edu.yu.einstein.genplay.gui.track.layer.ColoredLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
 import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.Utils;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 /**
  * Dialog that prompt the user to choose layers.
@@ -68,9 +72,21 @@ public class LayerChooserDialog extends JDialog {
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 			Component renderedComponent = table.getDefaultRenderer(value.getClass()).getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 			renderedComponent.setEnabled(true);
-			LayerType layerType = (LayerType)layerTable.getValueAt(row, LAYER_TYPE_INDEX);
+			Layer<?> layer = layers.get(row);
+			// write the layer name with the color of the layer
+			if ((layer != null) && (layer instanceof ColoredLayer)) {
+				Color layerColor = ((ColoredLayer) layer).getColor();
+				renderedComponent.setForeground(layerColor);
+			}
+			// make the unselectable row (because the layer type is not accepted) different
+			if (layer != null) {
+			LayerType layerType = layer.getType();
 			if ((selectableLayerTypes != null) && !layerType.isContainedIn(selectableLayerTypes)) {
-				renderedComponent.setEnabled(false);
+				renderedComponent.setForeground(Colors.GREY);
+				renderedComponent.setFont(renderedComponent.getFont().deriveFont(Font.ITALIC));
+			} else {
+				renderedComponent.setFont(renderedComponent.getFont().deriveFont(Font.BOLD));
+			}
 			}
 			return renderedComponent;
 		}

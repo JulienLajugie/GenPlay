@@ -31,9 +31,9 @@ public class VCFFilter extends ExtendedFileFilter {
 
 	private static final long serialVersionUID = 3191118665245397752L; // generated ID
 	/** Valid extensions */
-	public static final String[] EXTENSIONS = {"vcf"};
+	public static final String[] EXTENSIONS = {"vcf", "gz"};
 	/** File type description */
-	public static final String DESCRIPTION = "VCF Files (*.vcf)";
+	public static final String DESCRIPTION = "VCF Files (*.vcf, *.vcf.gz)";
 
 
 	/**
@@ -42,6 +42,4 @@ public class VCFFilter extends ExtendedFileFilter {
 	public VCFFilter() {
 		super(EXTENSIONS, DESCRIPTION);
 	}
-
-
 }

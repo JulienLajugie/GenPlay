@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 
@@ -61,7 +62,7 @@ final class StatusLabel extends JLabel {
 
 
 	private static final long serialVersionUID = 404304422248672368L; // generated ID
-	private static final String INIT_TEXT = "Right click on a track number to select actions.";	// welcome text when creating a new project
+	private static final String INIT_TEXT = "Right click on a track handle to select actions";	// welcome text when creating a new project
 	private TimeCounter 			timeCounterThread;	// thread showing the time elapsed in the progress bar
 	private String 					description;		// description of the current operation
 	private long 					timeElapsed = 0;	// time elapsed since the beginning of the operation
@@ -80,7 +81,7 @@ final class StatusLabel extends JLabel {
 		// the correct elapsed time it has to be adjusted to UTC so that
 		// it compensates for the timezone and daylight saving time differences
 		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-		setHorizontalAlignment(JLabel.CENTER);
+		setHorizontalAlignment(SwingConstants.CENTER);
 	}
 
 

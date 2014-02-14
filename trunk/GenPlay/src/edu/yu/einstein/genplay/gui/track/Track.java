@@ -51,6 +51,7 @@ import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEvent;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventType;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackListener;
+import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.background.BackgroundData;
 import edu.yu.einstein.genplay.gui.track.layer.background.BackgroundLayer;
@@ -595,6 +596,20 @@ public final class Track implements Serializable, GenomeWindowListener, TrackLis
 	 */
 	public void unlockHandle() {
 		handlePanel.unlock();
+	}
+
+
+	/**
+	 * Updates the cursor displayed on the graphic panel
+	 */
+	public void updateGraphicCursor() {
+		if (foregroundLayer.isCursorOverLegend()) {
+			graphicsPanel.setCursor(TrackConstants.CURSOR_OVER_LEGEND);
+		} else if ((activeLayer instanceof GeneLayer) && (((GeneLayer) activeLayer).getGeneUnderMouse() != null)) {
+			graphicsPanel.setCursor(TrackConstants.CURSOR_OVER_GENE);
+		} else {
+			graphicsPanel.setCursor(TrackConstants.DEFAULT_CURSOR);
+		}
 	}
 
 

@@ -207,6 +207,7 @@ public class NewProjectPanel extends JPanel {
 		// multi-genome panel
 		gbc.gridy = 2;
 		gbc.weighty = 1;
+		gbc.fill = GridBagConstraints.BOTH;
 		add(multiGenomePanel, gbc);
 
 		setOpaque(false);
