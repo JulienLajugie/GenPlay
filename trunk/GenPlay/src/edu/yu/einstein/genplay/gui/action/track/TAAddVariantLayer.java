@@ -29,7 +29,7 @@ import javax.swing.ActionMap;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.action.multiGenome.properties.MGARefresh;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.addOrEditVariantLayer.AddOrEditVariantLayerDialog;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.addOrEditVariantLayer.AddOrEditVariantLayerDialog;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;

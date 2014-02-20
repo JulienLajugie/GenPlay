@@ -20,7 +20,7 @@
  * 
  * Website: <http://genplay.einstein.yu.edu>
  ******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.addOrEditVariantLayer;
+package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.addOrEditVariantLayer;
 
 import java.awt.Color;
 import java.awt.Component;
