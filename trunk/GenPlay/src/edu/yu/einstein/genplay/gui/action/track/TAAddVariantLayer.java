@@ -23,14 +23,13 @@
 package edu.yu.einstein.genplay.gui.action.track;
 
 import java.awt.event.ActionEvent;
-import java.util.List;
 
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.action.multiGenome.properties.MGARefresh;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.managers.EditingDialogManagerForVariants;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.addOrEditVariantLayer.AddOrEditVariantLayerDialog;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -74,13 +73,11 @@ public class TAAddVariantLayer extends TrackListAction {
 
 		final Track selectedTrack = getTrackListPanel().getSelectedTrack();
 		if (selectedTrack != null) {
-			EditingDialogManagerForVariants manager = new EditingDialogManagerForVariants();
-			List<VariantData> data = manager.showDialog();
-
-			if (data.size() > 0) {
+			VariantData data = AddOrEditVariantLayerDialog.showAddDialog(getRootPane());
+			if (data != null) {
 				MGDisplaySettings settings = MGDisplaySettings.getInstance();
 				VariantLayer newLayer = new VariantLayer(selectedTrack);
-				newLayer.setData(data.get(0));
+				newLayer.setData(data);
 				selectedTrack.getLayers().add(newLayer);
 				selectedTrack.setActiveLayer(newLayer);
 

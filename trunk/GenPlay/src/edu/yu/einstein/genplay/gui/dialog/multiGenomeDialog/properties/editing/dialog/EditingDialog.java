@@ -75,7 +75,7 @@ public class EditingDialog<K> extends JDialog {
 		add(getValidationPanel(), BorderLayout.SOUTH);
 
 		// Dialog settings
-		setTitle("Multi-Genome Project Properties - Editing Dialog");
+		setTitle("Create Filters");
 		setIconImages(Images.getApplicationImages());
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setResizable(false);
@@ -85,17 +85,20 @@ public class EditingDialog<K> extends JDialog {
 
 
 	/**
-	 * Shows the component.
-	 * @param parent the parent component of the dialog, can be null;
-	 * @return APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
+	 * @return true is the current selection is valid
 	 */
-	public int showDialog(Component parent) {
-		// Sets dialog display options
-		setLocationRelativeTo(parent);
-		setModalityType(ModalityType.APPLICATION_MODAL);
-		setVisible(true);
+	private boolean approveSelection () {
+		String errors = "";
+		for (EditingPanel<?> panel: editingPanelList) {
+			errors += panel.getErrors();
+		}
 
-		return approved;
+		if (errors.isEmpty()) {
+			return true;
+		} else {
+			showErrorDialog(errors);
+			return false;
+		}
 	}
 
 
@@ -158,20 +161,17 @@ public class EditingDialog<K> extends JDialog {
 
 
 	/**
-	 * @return true is the current selection is valid
+	 * Shows the component.
+	 * @param parent the parent component of the dialog, can be null;
+	 * @return APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
 	 */
-	private boolean approveSelection () {
-		String errors = "";
-		for (EditingPanel<?> panel: editingPanelList) {
-			errors += panel.getErrors();
-		}
+	public int showDialog(Component parent) {
+		// Sets dialog display options
+		setLocationRelativeTo(parent);
+		setModalityType(ModalityType.APPLICATION_MODAL);
+		setVisible(true);
 
-		if (errors.isEmpty()) {
-			return true;
-		} else {
-			showErrorDialog(errors);
-			return false;
-		}
+		return approved;
 	}
 
 

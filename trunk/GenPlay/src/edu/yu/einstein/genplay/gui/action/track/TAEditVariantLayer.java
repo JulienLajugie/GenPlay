@@ -23,14 +23,13 @@
 package edu.yu.einstein.genplay.gui.action.track;
 
 import java.awt.event.ActionEvent;
-import java.util.List;
 
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.action.multiGenome.properties.MGARefresh;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.managers.EditingDialogManagerForVariants;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.addOrEditVariantLayer.AddOrEditVariantLayerDialog;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
@@ -73,16 +72,11 @@ public class TAEditVariantLayer extends TrackListAction {
 		final Track selectedTrack = getTrackListPanel().getSelectedTrack();
 		if (selectedTrack != null) {
 			Layer<VariantData> layer = (Layer<VariantData>) getValue("Layer");
-			EditingDialogManagerForVariants manager = new EditingDialogManagerForVariants();
-			manager.setEnableSelection(false);
-			manager.setData(layer.getData());
-			List<VariantData> data = manager.showDialog();
-
-			if (data.size() > 0) {
+			VariantData data = AddOrEditVariantLayerDialog.showEditDialog(getRootPane(), layer.getData());
+			if (data != null) {
 				MGDisplaySettings settings = MGDisplaySettings.getInstance();
-				data.get(0).setHasChanged(true);
-				layer.setData(data.get(0));
-
+				data.setHasChanged(true);
+				layer.setData(data);
 				// Updates track (filters, display)
 				MGARefresh action = new MGARefresh();
 				action.setPreviousFilterList(settings.getFilterSettings().getAllMGFilters());
@@ -90,5 +84,4 @@ public class TAEditVariantLayer extends TrackListAction {
 			}
 		}
 	}
-
 }

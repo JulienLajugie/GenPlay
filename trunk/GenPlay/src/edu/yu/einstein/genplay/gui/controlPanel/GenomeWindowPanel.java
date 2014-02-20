@@ -265,10 +265,6 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 				jcbGenomeSelection.addItem(name02);
 			}
 		}
-		width  *= 1.2;
-		Dimension dimension = new Dimension(width, 19);
-		jcbGenomeSelection.setSize(dimension);
-		jcbGenomeSelection.setPreferredSize(dimension);
 	}
 
 

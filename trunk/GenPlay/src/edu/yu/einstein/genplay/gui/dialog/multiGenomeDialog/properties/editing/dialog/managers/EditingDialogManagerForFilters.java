@@ -189,7 +189,6 @@ public class EditingDialogManagerForFilters implements EditingDialogManagerInter
 		EditingDialog<FiltersData> editingDialog = new EditingDialog<FiltersData>(this);
 		List<FiltersData> data = null;
 		if (editingDialog.showDialog(null) == EditingDialog.APPROVE_OPTION) {
-			System.out.println("EditingDialogManagerForFilters.showDialog()");
 			data = retrieveData();
 		}
 		currentData = null;

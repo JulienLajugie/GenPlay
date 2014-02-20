@@ -85,7 +85,7 @@ public final class PABookmarkCurrentPosition extends AbstractAction {
 	public void actionPerformed(ActionEvent evt) {
 		GenomeWindow genomeWindow = ProjectManager.getInstance().getProjectWindow().getGenomeWindow();
 
-		String defaultDescription = "Region " + regionNumber++;
+		String defaultDescription = "Region " + regionNumber;
 		String bookmarkDescription = (String) JOptionPane.showInputDialog(parent,
 				"Please enter a name for the bookmark",
 				"Enter Bookmark Name",
@@ -100,7 +100,7 @@ public final class PABookmarkCurrentPosition extends AbstractAction {
 			} else {
 				bookmark = new GWBookmark(bookmarkDescription, genomeWindow);
 			}
-
+			regionNumber++;
 			ProjectManager.getInstance().getProjectBookmarks().add(bookmark);
 		}
 	}

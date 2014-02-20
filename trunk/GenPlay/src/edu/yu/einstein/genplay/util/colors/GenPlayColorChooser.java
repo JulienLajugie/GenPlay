@@ -93,5 +93,4 @@ public class GenPlayColorChooser {
 		dialog.setVisible(true);
 		return selectedColor;
 	}
-
 }

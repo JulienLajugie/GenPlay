@@ -66,7 +66,7 @@ public class GenPlayEmail {
 	private static final int SMTP_PORT = 587;
 
 	/** Sender email */
-	private static final String SENDER_EMAIL = "nicolas.fourel@einstein.yu.edu";
+	private static final String SENDER_EMAIL = "genplay@einstein.yu.edu";
 
 	/**  Sender alias */
 	private static final String SENDER_ALIAS = "GenPlay Mailbox Admin";
