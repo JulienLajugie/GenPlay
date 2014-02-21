@@ -20,7 +20,7 @@
  * 
  * Website: <http://genplay.einstein.yu.edu>
  ******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterDialog.filters;
+package edu.yu.einstein.genplay.gui.MGDisplaySettings;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -45,15 +45,6 @@ public class FiltersData implements Serializable {
 	private static final long serialVersionUID = 2767629722281248634L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 
-	/** Index used for layer column */
-	public static final int LAYER_INDEX 	= 1;
-	/** Index used for the vcf header id column */
-	public static final int ID_INDEX 	= 2;
-	/** Index used for the filter column */
-	public static final int FILTER_INDEX 	= 3;
-	/** Index used for vcf file column */
-	public static final int VCF_FILE_INDEX 	= 4;
-
 	private MGFilter	filter;
 	private Layer<?>[] 	layers;		// list of layers
 
@@ -61,7 +52,7 @@ public class FiltersData implements Serializable {
 	/**
 	 * Constructor of {@link FiltersData}
 	 */
-	protected FiltersData() {
+	public FiltersData() {
 		filter = null;
 		layers = null;
 	}
@@ -125,6 +116,29 @@ public class FiltersData implements Serializable {
 	//////////////////// Getters
 
 	/**
+	 * @return the list of layers
+	 */
+	public Layer<?>[] getLayers() {
+		return layers;
+	}
+
+
+	/**
+	 * @return the layers list for display
+	 */
+	public String getLayersForDisplay() {
+		String text = "";
+		for (int i = 0; i < layers.length; i++) {
+			text += layers[i];
+			if (i < (layers.length - 1)) {
+				text += ", ";
+			}
+		}
+		return text;
+	}
+
+
+	/**
 	 * @return the VCF filter
 	 */
 	public MGFilter getMGFilter () {
@@ -143,36 +157,13 @@ public class FiltersData implements Serializable {
 	}
 
 
+	//////////////////// Getters for display
+
 	/**
 	 * @return the genome
 	 */
 	public String getReaderForDisplay() {
 		return getReader().getFile().getName();
-	}
-
-
-	/**
-	 * @return the list of layers
-	 */
-	public Layer<?>[] getLayers() {
-		return layers;
-	}
-
-
-	//////////////////// Getters for display
-
-	/**
-	 * @return the layers list for display
-	 */
-	public String getLayersForDisplay() {
-		String text = "";
-		for (int i = 0; i < layers.length; i++) {
-			text += layers[i];
-			if (i < (layers.length - 1)) {
-				text += ", ";
-			}
-		}
-		return text;
 	}
 
 
@@ -205,18 +196,18 @@ public class FiltersData implements Serializable {
 
 
 	/**
-	 * @param filter the VCF filter to set
-	 */
-	public void setMGFilter (MGFilter filter) {
-		this.filter = filter;
-	}
-
-
-	/**
 	 * @param layers the layers to set
 	 */
 	public void setLayers(Layer<?>[] layers) {
 		this.layers = layers;
+	}
+
+
+	/**
+	 * @param filter the VCF filter to set
+	 */
+	public void setMGFilter (MGFilter filter) {
+		this.filter = filter;
 	}
 
 

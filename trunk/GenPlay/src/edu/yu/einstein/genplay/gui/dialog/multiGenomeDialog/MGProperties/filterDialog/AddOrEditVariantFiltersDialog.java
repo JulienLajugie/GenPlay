@@ -42,7 +42,7 @@ import edu.yu.einstein.genplay.core.multiGenome.filter.VCFFilter;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.IDFilterInterface;
 import edu.yu.einstein.genplay.core.multiGenome.filter.utils.FormatFilterOperatorType;
 import edu.yu.einstein.genplay.dataStructure.enums.VCFColumnName;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterDialog.filters.FiltersData;
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.FiltersData;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterDialog.panels.EditingPanel;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterDialog.panels.FileSelectionPanel;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterDialog.panels.FilterValuesPanel;

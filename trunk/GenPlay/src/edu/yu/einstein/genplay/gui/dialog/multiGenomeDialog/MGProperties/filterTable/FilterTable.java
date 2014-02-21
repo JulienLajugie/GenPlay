@@ -22,28 +22,43 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterTable;
 
+import java.awt.FontMetrics;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JTable;
 
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.FiltersData;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
+
 /**
  * @author Nicolas Fourel
  * @version 0.1
- * @param <K> class of the data that are used in the table
  */
-public abstract class EditingTable<K> extends JTable {
+public class FilterTable extends JTable {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -3342831482530035559L;
 
-	EditingTableModel<K> model;
+
+
+	FilterTableModel model;
+
+
+	/**
+	 * Constructor of {@link FiltersTable}
+	 */
+	public FilterTable () {
+		FilterTableModel model = new FilterTableModel();
+		setModel(model);
+	}
 
 
 	/**
 	 * Add a row in the table
 	 * @param data data to add
 	 */
-	public void addRow (K data) {
+	public void addRow (FiltersData data) {
 		model.addRow(data);
 	}
 
@@ -64,13 +79,13 @@ public abstract class EditingTable<K> extends JTable {
 	/**
 	 * @return the data
 	 */
-	public List<K> getData() {
+	public List<FiltersData> getData() {
 		return model.getData();
 	}
 
 
 	@Override
-	public EditingTableModel<K> getModel () {
+	public FilterTableModel getModel () {
 		return model;
 	}
 
@@ -105,19 +120,26 @@ public abstract class EditingTable<K> extends JTable {
 	}
 
 
-	/**
-	 * @param data the data to set
-	 */
-	public abstract void setData(List<K> data);
+
+	public void setData(List<FiltersData> data) {
+		List<FiltersData> newData = new ArrayList<FiltersData>();
+		for (int i = 0; i < data.size(); i++) {
+			FiltersData rowData = new FiltersData();
+			rowData.setMGFilter(data.get(i).getMGFilter());
+			rowData.setLayers(data.get(i).getLayers());
+			newData.add(rowData);
+		}
+		getModel().setData(newData);
+	}
 
 
 	/**
 	 * @param model the model to set
 	 */
-	public void setModel (EditingTableModel<K> model) {
+	public void setModel (FilterTableModel model) {
 		this.model = model;
 		super.setModel(model);
-		getColumnModel().getColumn(model.buttonColumnIndex).setCellRenderer(new TableButtonRenderer());
+		getColumnModel().getColumn(FilterTableModel.EDIT_BUTTON_INDEX).setCellRenderer(new TableButtonRenderer());
 		addMouseListener(new TableButtonListener(this));
 	}
 
@@ -145,7 +167,41 @@ public abstract class EditingTable<K> extends JTable {
 	 * This method scans all cells of each column to find the maximum width for each of them.
 	 * Then, it sets the column size according to the width.
 	 */
-	public abstract void updateColumnSize ();
+	public void updateColumnSize () {
+		int columnNumber = getModel().getColumnCount();
+		FontMetrics fm = MainFrame.getInstance().getFontMetrics(MainFrame.getInstance().getFont());
+		String[] columnNames = getModel().getColumnNames();
 
+		// Scan columns
+		for (int i = 0; i < columnNumber; i++) {
+			int currentWidth = fm.stringWidth(columnNames[i].toString()) + 10;
 
+			for (FiltersData filtersData: getData()) {
+				int width;
+				switch (i) {
+				case FilterTableModel.VCF_FILE_INDEX:
+					width = fm.stringWidth(filtersData.getReaderForDisplay()) + 10;
+					break;
+				case FilterTableModel.ID_INDEX:
+					width = fm.stringWidth(filtersData.getIDForDisplay()) + 10;
+					break;
+				case FilterTableModel.FILTER_INDEX:
+					width = fm.stringWidth(filtersData.getFilterForDisplay()) + 10;
+					break;
+				case FilterTableModel.LAYER_INDEX:
+					width = fm.stringWidth(filtersData.getLayersForDisplay().toString()) + 10;
+					break;
+				default:
+					width = 0;
+					break;
+				}
+
+				// Sets column width
+				if (width > currentWidth) {
+					currentWidth = width;
+				}
+			}
+			getColumnModel().getColumn(i).setPreferredWidth(currentWidth);
+		}
+	}
 }

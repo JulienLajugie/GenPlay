@@ -98,6 +98,7 @@ abstract public class EditingPanel<K> extends JPanel {
 		add(titleLabel, gbc);
 
 		// Adds the scroll pane
+		gbc.fill = GridBagConstraints.BOTH;
 		gbc.gridy++;
 		gbc.weighty = 1;
 		gbc.insets = new Insets(0, 0, 0, 0);

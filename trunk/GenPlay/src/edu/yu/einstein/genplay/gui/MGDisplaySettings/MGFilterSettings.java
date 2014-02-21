@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterDialog.filters.FiltersData;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 
 /**

@@ -36,9 +36,9 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.FiltersData;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterDialog.AddOrEditVariantFiltersDialog;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterDialog.filters.FiltersData;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterTable.EditingTable;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterTable.FilterTable;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterTable.TableHeaderPanel;
 
 /**
@@ -60,7 +60,7 @@ public class FiltersPanel extends JPanel implements ActionListener, MouseListene
 	private final 	JPanel 				tablePanel;		// the panel that contains the table
 	private			JPanel 				buttonPanel;	// the button panel to handle the table
 	private final	JLabel				tableLabel;
-	private final 	EditingTable<FiltersData> 	table;			// the table that summarize all stripes/filters settings
+	private final 	FilterTable		 	table;			// the table that summarize all stripes/filters settings
 	private final 	AddOrEditVariantFiltersDialog editingDialogManager;
 
 	private		JButton				jbAddRows;		// button to add row(s)
@@ -75,7 +75,7 @@ public class FiltersPanel extends JPanel implements ActionListener, MouseListene
 	 * @param table the table to use
 	 * @param editingDialogManager editing dialog manager
 	 */
-	public FiltersPanel (String title, EditingTable<FiltersData> table, AddOrEditVariantFiltersDialog editingDialogManager) {
+	public FiltersPanel (String title, FilterTable table, AddOrEditVariantFiltersDialog editingDialogManager) {
 		// Sets class parameters
 		this.table = table;
 		this.editingDialogManager = editingDialogManager;
@@ -190,7 +190,7 @@ public class FiltersPanel extends JPanel implements ActionListener, MouseListene
 	/**
 	 * @return the table
 	 */
-	public EditingTable<FiltersData> getTable() {
+	public FilterTable getTable() {
 		return table;
 	}
 

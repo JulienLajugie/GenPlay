@@ -30,39 +30,48 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.table.AbstractTableModel;
 
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.FiltersData;
+
+
 /**
  * @author Nicolas Fourel
- * @version 0.1
- * @param <K> class of the data that are used in the table
  */
-public abstract class EditingTableModel<K> extends AbstractTableModel {
+public class FilterTableModel extends AbstractTableModel {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 3478197435828366331L;
 
-	protected final int buttonColumnIndex;
+	/** Name of the columns of the table */
+	protected static final String[] COLUMN_NAMES = {"Edit", "Layer", "ID", "Filter", "File"};
 
-	protected final 	String[]		columnNames;	// the table column names
-	protected 			List<K>			data;			// list of data
-	protected			List<JButton>	buttons;		// list of buttons
-	private				K				currentData;
+	/** Index used for edit column */
+	protected static final int EDIT_BUTTON_INDEX = 0;
+
+	/** Index used for layer column */
+	protected static final int LAYER_INDEX = 1;
+
+	/** Index used for the vcf header id column */
+	protected static final int ID_INDEX = 2;
+
+	/** Index used for the filter column */
+	protected static final int FILTER_INDEX = 3;
+
+	/** Index used for vcf file column */
+	protected static final int VCF_FILE_INDEX = 4;
+
+	protected final 	String[]			columnNames;	// the table column names
+	protected 			List<FiltersData>	data;			// list of data
+	protected			List<JButton>		buttons;		// list of buttons
+	private				FiltersData			currentData;
 
 
 	/**
-	 * Constructor of {@link EditingTableModel}
-	 * @param columnNames name of the columns
+	 * Constructor of {@link FilterTableModel}
 	 */
-	protected EditingTableModel (String[] columnNames) {
-		this.columnNames = new String[columnNames.length + 1];
-		this.columnNames[0] = "Edit";
-		for (int i = 1; i < this.columnNames.length; i++) {
-			this.columnNames[i] = columnNames[i - 1];
-		}
-
-		data = new ArrayList<K>();
+	protected FilterTableModel () {
+		columnNames = COLUMN_NAMES;
+		data = new ArrayList<FiltersData>();
 		buttons = new ArrayList<JButton>();
-		//buttonColumnIndex = columnNames.length;
-		buttonColumnIndex = 0;
 		currentData = null;
 	}
 
@@ -71,7 +80,7 @@ public abstract class EditingTableModel<K> extends AbstractTableModel {
 	 * Add a row
 	 * @param row row to insert
 	 */
-	protected void addRow (K row) {
+	protected void addRow (FiltersData row) {
 		data.add(row);
 		buttons.add(getNewButton());
 		fireTableRowsInserted(data.size() - 1, data.size() - 1);
@@ -90,7 +99,20 @@ public abstract class EditingTableModel<K> extends AbstractTableModel {
 
 
 	@Override
-	public abstract Class<?> getColumnClass(int column);
+	public Class<?> getColumnClass(int column) {
+		switch (column) {
+		case VCF_FILE_INDEX:
+			return String.class;
+		case ID_INDEX:
+			return String.class;
+		case FILTER_INDEX:
+			return String.class;
+		case LAYER_INDEX:
+			return String.class;
+		default:
+			return Object.class;
+		}
+	}
 
 
 	@Override
@@ -107,7 +129,7 @@ public abstract class EditingTableModel<K> extends AbstractTableModel {
 	}
 
 
-	public K getCurrentData () {
+	public FiltersData getCurrentData () {
 		return currentData;
 	}
 
@@ -115,7 +137,7 @@ public abstract class EditingTableModel<K> extends AbstractTableModel {
 	/**
 	 * @return the data
 	 */
-	protected List<K> getData() {
+	protected List<FiltersData> getData() {
 		return data;
 	}
 
@@ -124,7 +146,7 @@ public abstract class EditingTableModel<K> extends AbstractTableModel {
 	 * @return the index of the edit column
 	 */
 	protected int getEditColumnIndex () {
-		return buttonColumnIndex;
+		return EDIT_BUTTON_INDEX;
 	}
 
 
@@ -151,7 +173,24 @@ public abstract class EditingTableModel<K> extends AbstractTableModel {
 
 
 	@Override
-	public abstract Object getValueAt(int row, int col);
+	public Object getValueAt(int row, int col) {
+		if (col == EDIT_BUTTON_INDEX) {
+			return buttons.get(row);
+		}
+		FiltersData filtersData = data.get(row);
+		switch (col) {
+		case VCF_FILE_INDEX:
+			return filtersData.getReaderForDisplay();
+		case ID_INDEX:
+			return filtersData.getIDForDisplay();
+		case FILTER_INDEX:
+			return filtersData.getFilterForDisplay();
+		case LAYER_INDEX:
+			return filtersData.getLayersForDisplay();
+		default:
+			return new Object();
+		}
+	}
 
 
 	@Override
@@ -191,13 +230,13 @@ public abstract class EditingTableModel<K> extends AbstractTableModel {
 	 */
 	private int moveDataDown (int index) {
 		if (index < (data.size() - 1)) {
-			K dataToMove = data.get(index);
-			K dataToReplace = data.get(index + 1);
-			List<K> newDataList = new ArrayList<K>();
+			FiltersData dataToMove = data.get(index);
+			FiltersData dataToReplace = data.get(index + 1);
+			List<FiltersData> newDataList = new ArrayList<FiltersData>();
 
 			int currentIndex = 0;
 			while (currentIndex < data.size()){
-				K currentData = data.get(currentIndex);
+				FiltersData currentData = data.get(currentIndex);
 				if (currentData.equals(dataToMove)) {
 					newDataList.add(dataToReplace);
 					newDataList.add(dataToMove);
@@ -220,13 +259,13 @@ public abstract class EditingTableModel<K> extends AbstractTableModel {
 	 */
 	private int moveDataUp (int index) {
 		if (index > 0) {
-			K dataToMove = data.get(index);
-			K dataToReplace = data.get(index - 1);
-			List<K> newDataList = new ArrayList<K>();
+			FiltersData dataToMove = data.get(index);
+			FiltersData dataToReplace = data.get(index - 1);
+			List<FiltersData> newDataList = new ArrayList<FiltersData>();
 
 			int currentIndex = 0;
 			while (currentIndex < data.size()){
-				K currentData = data.get(currentIndex);
+				FiltersData currentData = data.get(currentIndex);
 				if (currentData.equals(dataToReplace)) {
 					newDataList.add(dataToMove);
 					newDataList.add(dataToReplace);
@@ -266,5 +305,16 @@ public abstract class EditingTableModel<K> extends AbstractTableModel {
 	/**
 	 * @param data the data to set
 	 */
-	protected abstract void setData(List<K> data);
+	protected void setData(List<FiltersData> data) {
+		this.data = data;
+		buttons = new ArrayList<JButton>();
+		for (int row = 0; row <data.size(); row++) {
+			buttons.add(getNewButton());
+			fireTableCellUpdated(row, VCF_FILE_INDEX);
+			fireTableCellUpdated(row, ID_INDEX);
+			fireTableCellUpdated(row, FILTER_INDEX);
+			fireTableCellUpdated(row, LAYER_INDEX);
+			fireTableCellUpdated(row, EDIT_BUTTON_INDEX);
+		}
+	}
 }

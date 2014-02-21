@@ -63,6 +63,7 @@ class GenomeSelectionPanel extends JScrollPane {
 	 */
 	GenomeSelectionPanel(List<VariantLayerDisplaySettings> genomes) {
 		createPanel(genomes);
+		setOpaque(false);
 		setBorder(BorderFactory.createTitledBorder("Genome(s)"));
 	}
 

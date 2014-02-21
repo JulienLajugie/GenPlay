@@ -22,13 +22,12 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterDialog.panels;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
-import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -57,16 +56,68 @@ public class IDFilterSelectionPanel extends EditingPanel<VCFHeaderType> implemen
 
 
 	@Override
-	protected void initializeContentPanel() {
-		((FlowLayout) contentPanel.getLayout()).setHgap(0);
-		((FlowLayout) contentPanel.getLayout()).setVgap(0);
+	public String getErrors() {
+		String errors = "";
+		if (getID() == null) {
+			errors += "ID selection\n";
+		}
+		return errors;
+	}
 
+
+	/**
+	 * @return the selected ID
+	 */
+	public VCFHeaderType getID () {
+		return element;
+	}
+
+
+	/**
+	 * Tries to cast an object to a {@link VCFFile}
+	 * @param object the object to cast
+	 * @return	the casted object or null
+	 */
+	private VCFFile getVCFFile (Object object) {
+		if (object instanceof VCFFile) {
+			return (VCFFile) object;
+		}
+		return null;
+	}
+
+
+	@Override
+	public void initialize(VCFHeaderType element) {
+		int index = -1;
+		for (int i = 0; i < model.getSize(); i++) {
+			if (model.getElementAt(i).equals(element)) {
+				index = i;
+				break;
+			}
+		}
+		if (index != -1) {
+			jList.setSelectedIndex(index);
+			setElement(element);
+		}
+	}
+
+
+	@Override
+	protected void initializeContentPanel() {
 		// Creates the list
 		model = new DefaultListModel();
 		jList = new JList();
 		jList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		jList.setModel(model);
 		jList.addListSelectionListener(this);
+	}
+
+
+	@Override
+	public void reset() {
+		model.clear();
+		jList.clearSelection();
+		element = null;
 	}
 
 
@@ -88,23 +139,11 @@ public class IDFilterSelectionPanel extends EditingPanel<VCFHeaderType> implemen
 			jList.setPreferredSize(newDimension);
 
 			// Creates the content panel
-			contentPanel.add(jList);
+			contentPanel.setLayout(new BorderLayout());
+			contentPanel.add(jList, BorderLayout.CENTER);
 
 			repaint();
 		}
-	}
-
-
-	/**
-	 * Tries to cast an object to a {@link VCFFile}
-	 * @param object the object to cast
-	 * @return	the casted object or null
-	 */
-	private VCFFile getVCFFile (Object object) {
-		if (object instanceof VCFFile) {
-			return (VCFFile) object;
-		}
-		return null;
 	}
 
 
@@ -117,55 +156,6 @@ public class IDFilterSelectionPanel extends EditingPanel<VCFHeaderType> implemen
 					setElement(selectedElement);
 				}
 			}
-		}
-	}
-
-
-	/**
-	 * @return the selected ID
-	 */
-	public VCFHeaderType getID () {
-		return element;
-	}
-
-
-	@Override
-	public String getErrors() {
-		String errors = "";
-		if (getID() == null) {
-			errors += "ID selection\n";
-		}
-		return errors;
-	}
-
-
-	@Override
-	public void reset() {
-		model.clear();
-		jList.clearSelection();
-		element = null;
-
-		Dimension newDimension = new Dimension(0, 0);
-		jList.setPreferredSize(newDimension);
-
-		setNewContentPanel(new JPanel());
-		((FlowLayout) contentPanel.getLayout()).setHgap(0);
-		((FlowLayout) contentPanel.getLayout()).setVgap(0);
-	}
-
-
-	@Override
-	public void initialize(VCFHeaderType element) {
-		int index = -1;
-		for (int i = 0; i < model.getSize(); i++) {
-			if (model.getElementAt(i).equals(element)) {
-				index = i;
-				break;
-			}
-		}
-		if (index != -1) {
-			jList.setSelectedIndex(index);
-			setElement(element);
 		}
 	}
 
