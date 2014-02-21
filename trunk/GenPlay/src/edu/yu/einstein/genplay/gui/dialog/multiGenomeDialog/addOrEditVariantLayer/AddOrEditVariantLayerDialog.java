@@ -39,7 +39,7 @@ import javax.swing.JDialog;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.enums.VariantType;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filterDialog.variants.VariantData;
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.VariantLayerDisplaySettings;
 
 
 /**
@@ -59,15 +59,15 @@ public class AddOrEditVariantLayerDialog extends JDialog {
 	public static final int CANCEL_OPTION = 1;
 
 	/** Selected genome */
-	private static VariantData selectedGenome;
+	private static VariantLayerDisplaySettings selectedGenome;
 
 
 	/**
 	 * Shows the dialog to select variant types and colors
 	 * @param parentComponent parent component of the dialog to show
-	 * @return the {@link VariantData} to add. Null if canceled
+	 * @return the {@link VariantLayerDisplaySettings} to add. Null if canceled
 	 */
-	public static VariantData showAddDialog(Component parentComponent) {
+	public static VariantLayerDisplaySettings showAddDialog(Component parentComponent) {
 		AddOrEditVariantLayerDialog addOrEditVariantLayerDialog = new AddOrEditVariantLayerDialog(null, true);
 		addOrEditVariantLayerDialog.setLocationRelativeTo(parentComponent);
 		addOrEditVariantLayerDialog.setTitle("Add Variant Layer");
@@ -83,12 +83,12 @@ public class AddOrEditVariantLayerDialog extends JDialog {
 	/**
 	 * Show the dialog to edit variant types and colors
 	 * @param initialSelection initial selection shown on the dialog.
-	 * @return the edited {@link VariantData}. Null if canceled
+	 * @return the edited {@link VariantLayerDisplaySettings}. Null if canceled
 	 */
-	public static VariantData showEditDialog(Component parentComponent, VariantData initialSelection) {
-		List<VariantData> variantData = new ArrayList<VariantData>();
+	public static VariantLayerDisplaySettings showEditDialog(Component parentComponent, VariantLayerDisplaySettings initialSelection) {
+		List<VariantLayerDisplaySettings> variantData = new ArrayList<VariantLayerDisplaySettings>();
 		// we copy the input data because it will be directly modified
-		variantData.add(new VariantData(initialSelection.getGenome(),
+		variantData.add(new VariantLayerDisplaySettings(initialSelection.getGenome(),
 				initialSelection.getAlleleType(),
 				initialSelection.getVariationTypeList(),
 				initialSelection.getColorList()));
@@ -115,7 +115,7 @@ public class AddOrEditVariantLayerDialog extends JDialog {
 	 * Creates an instance of {@link AddOrEditVariantLayerDialog}
 	 * @param data data to display in the dialog
 	 */
-	public AddOrEditVariantLayerDialog (List<VariantData> variantList, boolean isGenomeSelectable) {
+	public AddOrEditVariantLayerDialog (List<VariantLayerDisplaySettings> variantList, boolean isGenomeSelectable) {
 		if(variantList == null) {
 			variantList = createNewVariantDataList();
 		}
@@ -140,7 +140,7 @@ public class AddOrEditVariantLayerDialog extends JDialog {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
 				if (evt.getPropertyName().equals(GenomeSelectionPanel.SELECTED_GENOME_PROPERTY_NAME)) {
-					selectedGenome = (VariantData) evt.getNewValue();
+					selectedGenome = (VariantLayerDisplaySettings) evt.getNewValue();
 					variantTypeSelectionPanel.setSelectedGenome(selectedGenome);
 					refreshOkButtonState();
 				}
@@ -200,11 +200,11 @@ public class AddOrEditVariantLayerDialog extends JDialog {
 	/**
 	 * @return a list with VariantData for each of the genomes of the multigenome project
 	 */
-	private List<VariantData> createNewVariantDataList() {
-		List<VariantData> data = new ArrayList<VariantData>();
+	private List<VariantLayerDisplaySettings> createNewVariantDataList() {
+		List<VariantLayerDisplaySettings> data = new ArrayList<VariantLayerDisplaySettings>();
 		List<String> allGenomeNames = ProjectManager.getInstance().getMultiGenomeProject().getGenomeNames();
 		for (String genomeName: allGenomeNames) {
-			VariantData variant = new VariantData(genomeName, AlleleType.BOTH, new ArrayList<VariantType>(), new ArrayList<Color>());
+			VariantLayerDisplaySettings variant = new VariantLayerDisplaySettings(genomeName, AlleleType.BOTH, new ArrayList<VariantType>(), new ArrayList<Color>());
 			data.add(variant);
 		}
 		return data;

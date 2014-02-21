@@ -43,7 +43,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import edu.yu.einstein.genplay.dataStructure.enums.VariantType;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filterDialog.variants.VariantData;
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.VariantLayerDisplaySettings;
 import edu.yu.einstein.genplay.util.colors.Colors;
 import edu.yu.einstein.genplay.util.colors.GenPlayColorChooser;
 
@@ -60,20 +60,20 @@ class VariantTypeSelectionPanel extends JPanel {
 	private class VariantTypeSelectionModel {
 
 		/** Colors currently selected */
-		private final Map<VariantData, Color[]> 	colorSelection;
+		private final Map<VariantLayerDisplaySettings, Color[]> 	colorSelection;
 
 		/** Selection state of the variant types */
-		private final Map<VariantData, boolean[]> 	typeSelection;
+		private final Map<VariantLayerDisplaySettings, boolean[]> 	typeSelection;
 
 
 		/**
 		 * Creates a new instance of {@link VariantTypeSelectionModel}
 		 * @param genomes genomes to edit
 		 */
-		VariantTypeSelectionModel(List<VariantData> genomes) {
-			colorSelection = new HashMap<VariantData, Color[]>(genomes.size());
-			typeSelection = new HashMap<VariantData, boolean[]>(genomes.size());
-			for(VariantData currentGenome: genomes) {
+		VariantTypeSelectionModel(List<VariantLayerDisplaySettings> genomes) {
+			colorSelection = new HashMap<VariantLayerDisplaySettings, Color[]>(genomes.size());
+			typeSelection = new HashMap<VariantLayerDisplaySettings, boolean[]>(genomes.size());
+			for(VariantLayerDisplaySettings currentGenome: genomes) {
 				colorSelection.put(currentGenome, Arrays.copyOf(DEFAULT_VARIANT_COLOR, DEFAULT_VARIANT_COLOR.length));
 				typeSelection.put(currentGenome, new boolean[3]);
 				for (VariantType selectedType: currentGenome.getVariationTypeList()) {
@@ -89,7 +89,7 @@ class VariantTypeSelectionPanel extends JPanel {
 		 * @param variantType a type of variant (insertion, deletion, SNP)
 		 * @return the color currently selected for the specified variant type of the specified genome
 		 */
-		Color getColor(VariantData genome, VariantType variantType) {
+		Color getColor(VariantLayerDisplaySettings genome, VariantType variantType) {
 			int index = getVariantTypeIndex(variantType);
 			Color[] colors = colorSelection.get(genome);
 			return colors[index];
@@ -101,7 +101,7 @@ class VariantTypeSelectionPanel extends JPanel {
 		 * @param variantType a type of variant (insertion, deletion, SNP)
 		 * @return true if the specified variant type of the specified genome is selected, false otherwise
 		 */
-		boolean isSelected(VariantData genome, VariantType variantType) {
+		boolean isSelected(VariantLayerDisplaySettings genome, VariantType variantType) {
 			int index = getVariantTypeIndex(variantType);
 			boolean[] selectedTypes = typeSelection.get(genome);
 			return selectedTypes[index];
@@ -114,7 +114,7 @@ class VariantTypeSelectionPanel extends JPanel {
 		 * @param variantType a type of variant (insertion, deletion, SNP)
 		 * @param color a color to set
 		 */
-		void setColor(VariantData genome, VariantType variantType, Color color) {
+		void setColor(VariantLayerDisplaySettings genome, VariantType variantType, Color color) {
 			int index = getVariantTypeIndex(variantType);
 			Color[] colors = colorSelection.get(genome);
 			colors[index] = color;
@@ -131,7 +131,7 @@ class VariantTypeSelectionPanel extends JPanel {
 		 * @param variantType a type of variant (insertion, deletion, SNP)
 		 * @param isSelected true if it's selected, false otherwise
 		 */
-		void setSelected(VariantData genome, VariantType variantType, boolean isSelected) {
+		void setSelected(VariantLayerDisplaySettings genome, VariantType variantType, boolean isSelected) {
 			int index = getVariantTypeIndex(variantType);
 			boolean[] selectedTypes = typeSelection.get(genome);
 			selectedTypes[index] = isSelected;
@@ -170,7 +170,7 @@ class VariantTypeSelectionPanel extends JPanel {
 	private static final int DELETION_INDEX = 2;
 
 	/** Selected genome with it's current color and variant type selection */
-	private VariantData selectedGenome;
+	private VariantLayerDisplaySettings selectedGenome;
 
 	/** Data displayed in this panel */
 	private final VariantTypeSelectionModel model;
@@ -178,9 +178,9 @@ class VariantTypeSelectionPanel extends JPanel {
 
 	/**
 	 * Creates an instance of {@link VariantTypeSelectionPanel}
-	 * @param genomes {@link VariantData} to edit
+	 * @param genomes {@link VariantLayerDisplaySettings} to edit
 	 */
-	VariantTypeSelectionPanel(List<VariantData> genomes) {
+	VariantTypeSelectionPanel(List<VariantLayerDisplaySettings> genomes) {
 		if ((genomes == null) || genomes.isEmpty()) {
 			throw new InvalidParameterException("The list of genome to edit cannot be null or empty");
 		}
@@ -292,7 +292,7 @@ class VariantTypeSelectionPanel extends JPanel {
 	 * Sets the selected genome and refresh the content of the panel
 	 * @param selectedGenome
 	 */
-	public void setSelectedGenome(VariantData selectedGenome) {
+	public void setSelectedGenome(VariantLayerDisplaySettings selectedGenome) {
 		this.selectedGenome = selectedGenome;
 		removeAll();
 		createVariationSelectionPanel();

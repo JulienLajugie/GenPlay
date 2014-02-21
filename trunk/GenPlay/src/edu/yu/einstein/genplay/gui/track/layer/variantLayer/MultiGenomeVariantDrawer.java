@@ -43,7 +43,7 @@ import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.enums.VariantType;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filterDialog.variants.VariantData;
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.VariantLayerDisplaySettings;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 /**
@@ -326,7 +326,7 @@ class MultiGenomeVariantDrawer implements Serializable {
 	 */
 	private Color getVariantColor (String genome, VariantType type) {
 		Color color = null;
-		for (VariantData data: drawer.getVariantDataList()) {
+		for (VariantLayerDisplaySettings data: drawer.getVariantDataList()) {
 			if (data.getGenome().equals(genome)) {
 				int variantIndex = data.getVariationTypeList().indexOf(type);
 				if (variantIndex != -1) {

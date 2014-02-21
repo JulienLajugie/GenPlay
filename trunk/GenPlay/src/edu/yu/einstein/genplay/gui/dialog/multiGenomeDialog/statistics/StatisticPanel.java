@@ -40,8 +40,8 @@ import javax.swing.JPanel;
 import edu.yu.einstein.genplay.core.comparator.StringComparator;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics.VCFFileStatistics;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics.VCFSampleStatistics;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.PropertiesDialog;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.Utils;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.PropertiesDialog;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.Utils;
 
 /**
  * @author Nicolas Fourel

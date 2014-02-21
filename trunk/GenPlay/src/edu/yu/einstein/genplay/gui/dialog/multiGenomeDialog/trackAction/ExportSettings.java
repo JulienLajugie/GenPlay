@@ -32,7 +32,7 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.enums.VariantType;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filterDialog.variants.VariantData;
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.VariantLayerDisplaySettings;
 import edu.yu.einstein.genplay.gui.track.layer.variantLayer.VariantLayer;
 
 /**
@@ -72,7 +72,7 @@ public class ExportSettings {
 	 * @param layers a list of {@link VariantLayer}
 	 */
 	public void initialize (List<VariantLayer> layers) {
-		List<VariantData> data = getDataList(layers);
+		List<VariantLayerDisplaySettings> data = getDataList(layers);
 		variationMap = getVariationMap(data);
 		fileMap = getGenomeFileMap(data);
 		fileList = getFileList(fileMap);
@@ -82,10 +82,10 @@ public class ExportSettings {
 
 	/**
 	 * @param layers a list of {@link VariantLayer}
-	 * @return the {@link VariantData} list from the {@link VariantLayer} list
+	 * @return the {@link VariantLayerDisplaySettings} list from the {@link VariantLayer} list
 	 */
-	private List<VariantData> getDataList (List<VariantLayer> layers) {
-		List<VariantData> data = new ArrayList<VariantData>();
+	private List<VariantLayerDisplaySettings> getDataList (List<VariantLayer> layers) {
+		List<VariantLayerDisplaySettings> data = new ArrayList<VariantLayerDisplaySettings>();
 		for (VariantLayer layer: layers) {
 			data.add(layer.getData());
 		}
@@ -98,9 +98,9 @@ public class ExportSettings {
 	 * @param stripeList the list of stripes
 	 * @return the map genome/file list
 	 */
-	private Map<String, List<VariantType>> getVariationMap (List<VariantData> stripeList) {
+	private Map<String, List<VariantType>> getVariationMap (List<VariantLayerDisplaySettings> stripeList) {
 		Map<String, List<VariantType>> map = new HashMap<String, List<VariantType>>();
-		for (VariantData stripe: stripeList) {
+		for (VariantLayerDisplaySettings stripe: stripeList) {
 			String genome = stripe.getGenome();
 			List<VariantType> variationList = stripe.getVariationTypeList();
 			if (!map.containsKey(genome)) {
@@ -124,10 +124,10 @@ public class ExportSettings {
 	 * @param stripeList the list of stripes
 	 * @return the map genome/file list
 	 */
-	private Map<String, List<VCFFile>> getGenomeFileMap (List<VariantData> stripeList) {
+	private Map<String, List<VCFFile>> getGenomeFileMap (List<VariantLayerDisplaySettings> stripeList) {
 		Map<String, List<VCFFile>> map = new HashMap<String, List<VCFFile>>();
 		Map<String, List<VCFFile>> projectMap = ProjectManager.getInstance().getMultiGenomeProject().getGenomeFileAssociation();
-		for (VariantData stripe: stripeList) {
+		for (VariantLayerDisplaySettings stripe: stripeList) {
 			String genome = stripe.getGenome();
 			if (!map.containsKey(genome)) {
 				map.put(genome, new ArrayList<VCFFile>());

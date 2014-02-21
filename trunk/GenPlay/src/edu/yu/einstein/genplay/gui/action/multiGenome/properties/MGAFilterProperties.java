@@ -30,7 +30,7 @@ import javax.swing.ActionMap;
 import javax.swing.KeyStroke;
 
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.PropertiesDialog;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.PropertiesDialog;
 
 
 /**

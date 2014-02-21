@@ -27,7 +27,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.PropertiesDialog;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.PropertiesDialog;
 
 /**
  * @author Nicolas Fourel

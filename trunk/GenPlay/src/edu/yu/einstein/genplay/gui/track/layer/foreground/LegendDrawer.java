@@ -31,7 +31,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 import edu.yu.einstein.genplay.dataStructure.enums.VariantType;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filterDialog.variants.VariantData;
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.VariantLayerDisplaySettings;
 import edu.yu.einstein.genplay.gui.track.Drawer;
 import edu.yu.einstein.genplay.gui.track.GraphicsPanel;
 import edu.yu.einstein.genplay.gui.track.TrackConstants;
@@ -294,7 +294,7 @@ public class LegendDrawer implements Drawer, MouseListener, MouseMotionListener 
 	 */
 	private void drawVariantLayerName (VariantLayer layer, int y) {
 		if (layer.getName() != null) {
-			VariantData data = layer.getData();
+			VariantLayerDisplaySettings data = layer.getData();
 			if (data != null) {
 				int x = widthOffset;
 				String s = data.getGenome() + " (";

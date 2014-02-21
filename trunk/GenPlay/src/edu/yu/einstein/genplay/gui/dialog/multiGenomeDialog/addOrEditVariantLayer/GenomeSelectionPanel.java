@@ -36,7 +36,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filterDialog.variants.VariantData;
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.VariantLayerDisplaySettings;
 
 /**
  * Panel to select a genome
@@ -54,14 +54,14 @@ class GenomeSelectionPanel extends JScrollPane {
 	private static final Dimension PANEL_SIZE = new Dimension(200, 100);
 
 	/** selected genome */
-	private VariantData selectedGenome;
+	private VariantLayerDisplaySettings selectedGenome;
 
 
 	/**
 	 * Constructor of {@link GenomeSelectionPanel}
 	 * @param list of the available genomes
 	 */
-	GenomeSelectionPanel(List<VariantData> genomes) {
+	GenomeSelectionPanel(List<VariantLayerDisplaySettings> genomes) {
 		createPanel(genomes);
 		setBorder(BorderFactory.createTitledBorder("Genome(s)"));
 	}
@@ -70,7 +70,7 @@ class GenomeSelectionPanel extends JScrollPane {
 	/**
 	 * Creates the radios panel
 	 */
-	private void createPanel (final List<VariantData> genomes) {
+	private void createPanel (final List<VariantLayerDisplaySettings> genomes) {
 		ButtonGroup group = new ButtonGroup();
 		JPanel content = new JPanel(new GridBagLayout());
 		content.setPreferredSize(PANEL_SIZE);
@@ -111,7 +111,7 @@ class GenomeSelectionPanel extends JScrollPane {
 	/**
 	 * @return the selected genome
 	 */
-	VariantData getSelectedGenomes () {
+	VariantLayerDisplaySettings getSelectedGenomes () {
 		return selectedGenome;
 	}
 

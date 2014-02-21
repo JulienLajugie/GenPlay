@@ -44,8 +44,8 @@ import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
 import edu.yu.einstein.genplay.dataStructure.enums.AlleleType;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filterDialog.filters.FiltersData;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filterDialog.variants.VariantData;
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.VariantLayerDisplaySettings;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterDialog.filters.FiltersData;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.variantInformation.VariantInformationDialog;
 
 
@@ -65,7 +65,7 @@ public class MultiGenomeDrawer implements Serializable {
 	private Chromosome 						chromosome;
 	private VCFFileStatistics 				statistics;
 
-	private List<VariantData> 				variantDataList;
+	private List<VariantLayerDisplaySettings> 				variantDataList;
 	private List<MGFilter> 					filtersList;
 	private List<VariantDisplayList> 		variantDisplayList;
 
@@ -80,7 +80,7 @@ public class MultiGenomeDrawer implements Serializable {
 	 * Constructor of {@link MultiGenomeDrawer}
 	 */
 	public MultiGenomeDrawer () {
-		variantDataList = new ArrayList<VariantData>();
+		variantDataList = new ArrayList<VariantLayerDisplaySettings>();
 		variantDisplayList = new ArrayList<VariantDisplayList>();
 		forceFitToScreen = false;
 		locked = false;
@@ -155,9 +155,9 @@ public class MultiGenomeDrawer implements Serializable {
 
 
 	/**
-	 * @return the list of {@link VariantData}
+	 * @return the list of {@link VariantLayerDisplaySettings}
 	 */
-	public List<VariantData> getVariantDataList() {
+	public List<VariantLayerDisplaySettings> getVariantDataList() {
 		return variantDataList;
 	}
 
@@ -264,7 +264,7 @@ public class MultiGenomeDrawer implements Serializable {
 	 * @param filtersList the new filters list
 	 * @return true if new information are different than the current ones
 	 */
-	public boolean hasMultiGenomeInformationChanged(List<VariantData> stripesList, List<MGFilter> filtersList) {
+	public boolean hasMultiGenomeInformationChanged(List<VariantLayerDisplaySettings> stripesList, List<MGFilter> filtersList) {
 		if (haveVariantsChanged(stripesList) || haveFiltersChanged(filtersList)) {
 			return true;
 		} else {
@@ -286,7 +286,7 @@ public class MultiGenomeDrawer implements Serializable {
 	}
 
 
-	private boolean hasToReset (List<VariantData> variantDataList) {
+	private boolean hasToReset (List<VariantLayerDisplaySettings> variantDataList) {
 		if ((this.variantDataList.size() > 0) && (variantDataList.size() == 0)) {
 			return true;
 		}
@@ -328,8 +328,8 @@ public class MultiGenomeDrawer implements Serializable {
 	 * @param variantDataList the new stripes list
 	 * @return true if new information are different than the current ones
 	 */
-	private boolean haveVariantsChanged(List<VariantData> variantDataList) {
-		ListComparator<VariantData> stripesComparator = new ListComparator<VariantData>();
+	private boolean haveVariantsChanged(List<VariantLayerDisplaySettings> variantDataList) {
+		ListComparator<VariantLayerDisplaySettings> stripesComparator = new ListComparator<VariantLayerDisplaySettings>();
 		return stripesComparator.areDifferent(this.variantDataList, variantDataList);
 	}
 
@@ -392,7 +392,7 @@ public class MultiGenomeDrawer implements Serializable {
 		statistics = (VCFFileStatistics) in.readObject();
 
 
-		variantDataList = (List<VariantData>) in.readObject();
+		variantDataList = (List<VariantLayerDisplaySettings>) in.readObject();
 		filtersList = (List<MGFilter>) in.readObject();
 		variantDisplayList = (List<VariantDisplayList>) in.readObject();
 
@@ -425,10 +425,10 @@ public class MultiGenomeDrawer implements Serializable {
 
 
 	/**
-	 * Sets the {@link VariantData} list
-	 * @param variantDataList the new {@link VariantData} list to use
+	 * Sets the {@link VariantLayerDisplaySettings} list
+	 * @param variantDataList the new {@link VariantLayerDisplaySettings} list to use
 	 */
-	public void setVariantDataList(List<VariantData> variantDataList) {
+	public void setVariantDataList(List<VariantLayerDisplaySettings> variantDataList) {
 		this.variantDataList = variantDataList;
 	}
 
@@ -475,15 +475,15 @@ public class MultiGenomeDrawer implements Serializable {
 
 	/**
 	 * Update the variant lists
-	 * @param variantDataList	the {@link VariantData} settings
+	 * @param variantDataList	the {@link VariantLayerDisplaySettings} settings
 	 * @param filtersList		the {@link FiltersData} settings
 	 */
-	public void updateMultiGenomeInformation(List<VariantData> variantDataList, List<MGFilter> filtersList) {
+	public void updateMultiGenomeInformation(List<VariantLayerDisplaySettings> variantDataList, List<MGFilter> filtersList) {
 		boolean generateLists = false;
 		boolean filtersHaveChanged = false;
 
 		if (hasToReset(variantDataList)) {
-			this.variantDataList = new ArrayList<VariantData>();
+			this.variantDataList = new ArrayList<VariantLayerDisplaySettings>();
 			variantDisplayList = new ArrayList<VariantDisplayList>();
 			statistics = null;
 			variantUnderMouse = null;
@@ -527,15 +527,15 @@ public class MultiGenomeDrawer implements Serializable {
 	}
 
 
-	private boolean updateVariant (List<VariantData> variantDataList) {
+	private boolean updateVariant (List<VariantLayerDisplaySettings> variantDataList) {
 		boolean generateLists = false;
 
 		if ((variantDataList != null) && (variantDataList.size() > 0)) {
-			List<VariantData> newVariantDataList = new ArrayList<VariantData>();
+			List<VariantLayerDisplaySettings> newVariantDataList = new ArrayList<VariantLayerDisplaySettings>();
 			List<VariantDisplayList> newVariantDisplayList = new ArrayList<VariantDisplayList>();
 
 			for (int i = 0; i < variantDataList.size(); i++) {
-				VariantData newData = variantDataList.get(i);
+				VariantLayerDisplaySettings newData = variantDataList.get(i);
 				if (newData != null) {
 					newVariantDataList.add(newData);
 					int dataIndex = this.variantDataList.indexOf(newData);

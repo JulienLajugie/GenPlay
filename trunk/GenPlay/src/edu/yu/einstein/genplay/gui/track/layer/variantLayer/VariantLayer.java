@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filterDialog.variants.VariantData;
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.VariantLayerDisplaySettings;
 import edu.yu.einstein.genplay.gui.track.ScrollingManager;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.AbstractLayer;
@@ -39,7 +39,7 @@ import edu.yu.einstein.genplay.gui.track.layer.LayerType;
 /**
  * @author Nicolas Fourel
  */
-public class VariantLayer extends AbstractLayer<VariantData> implements MouseListener, MouseMotionListener {
+public class VariantLayer extends AbstractLayer<VariantLayerDisplaySettings> implements MouseListener, MouseMotionListener {
 
 	/** Generated default serial version ID */
 	private static final long serialVersionUID = -7054772225249273886L;
@@ -153,10 +153,10 @@ public class VariantLayer extends AbstractLayer<VariantData> implements MouseLis
 	}
 
 	/**
-	 * @param data the {@link VariantData}
+	 * @param data the {@link VariantLayerDisplaySettings}
 	 * @param filters the list of {@link MGFilter}
 	 */
-	private void setData (VariantData data, List<MGFilter> filters) {
+	private void setData (VariantLayerDisplaySettings data, List<MGFilter> filters) {
 		this.filters = filters;
 		super.setData(data);
 		if (data != null) {
@@ -179,7 +179,7 @@ public class VariantLayer extends AbstractLayer<VariantData> implements MouseLis
 	 */
 	private void updateMultiGenomeInformation () {
 		if (isVisible()) {
-			List<VariantData> variantDataList = new ArrayList<VariantData>();
+			List<VariantLayerDisplaySettings> variantDataList = new ArrayList<VariantLayerDisplaySettings>();
 			variantDataList.add(getData());
 			genomeDrawer.updateMultiGenomeInformation(variantDataList, filters);
 		}
