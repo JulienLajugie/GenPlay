@@ -46,10 +46,9 @@ import javax.swing.tree.TreePath;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.managers.EditingDialogManagerForFilters;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.filters.FiltersData;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.filters.FiltersTable;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.table.TableEditingPanel;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filterDialog.dialog.managers.AddOrEditVariantFiltersDialog;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filterDialog.filters.FiltersData;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filterDialog.filters.FiltersTable;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.statistics.StatisticPanel;
 import edu.yu.einstein.genplay.util.Images;
 
@@ -96,17 +95,22 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 	public static final 	Insets			PANEL_INSET 		= new Insets(0, 20, 0, 0);
 
 
-	private int				approved 			= CANCEL_OPTION;	// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
+	/**
+	 * @return an array of Strings containing the 4 main items (GENERAL, SETTINGS, FILTERS_BASIC, FILTERS_ADVANCED, STRIPES)
+	 */
+	public static String[] getPropertiesDialogMainItems () {
+		String[] items = {GENERAL, SETTINGS, FILTERS};
+		return items;
+	}
 
 	private final Dimension contentDimension = new Dimension(600, DIALOG_HEIGHT);
-
-	private final TreeContent 						treeContent;			// the tree manager
-	private final JTree 							tree;					// the tree of the dialog
-	private final JPanel 							contentPane;			// right part of the dialog
-	private final GeneralPanel 						generalPanel;			// the general information panel
-	private final SettingsPanel 					settingsPanel;			// the settings panel
-	private final TableEditingPanel<FiltersData> 	fileFiltersPanel;		// the file filters panel
-	//private final TableEditingPanel<FiltersData> 	advancedFiltersPanel;	// the advanced filters panel DO NOT ERASE ANYTHING ABOUT ADVANCED FILTER, WE MAY NEED IT!!!
+	private final TreeContent 		treeContent;				// the tree manager
+	private final JTree 			tree;						// the tree of the dialog
+	private final JPanel 			contentPane;				// right part of the dialog
+	private final GeneralPanel 		generalPanel;				// the general information panel
+	private final SettingsPanel 	settingsPanel;				// the settings panel
+	private final FiltersPanel	 	fileFiltersPanel;			// the file filters panel
+	private int						approved = CANCEL_OPTION;	// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
 
 
 	/**
@@ -144,10 +148,7 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 		settingsPanel = new SettingsPanel();
 
 		// Creates the file filters panel
-		fileFiltersPanel = new TableEditingPanel<FiltersData>("VCF Files Filters settings", new FiltersTable(), new EditingDialogManagerForFilters());
-
-		// Creates the advanced filters panel
-		//advancedFiltersPanel = new TableEditingPanel<FiltersData>("Advanced Filters settings", new AdvancedFiltersTable(), new EditingDialogManagerForAdvancedFilters());
+		fileFiltersPanel = new FiltersPanel("VCF Files Filters settings", new FiltersTable(), new AddOrEditVariantFiltersDialog());
 
 		// Dialog settings
 		setTitle("Multi-Genome Project Properties");
@@ -156,6 +157,171 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 		setResizable(false);
 		setVisible(false);
 		pack();
+	}
+
+
+	/**
+	 * @return the default group text
+	 */
+	public String getDefaultGroupText () {
+		return settingsPanel.getDefaultGroupText();
+	}
+
+
+	/**
+	 * @return the default item dialog to show
+	 */
+	public String getDefaultItemDialog () {
+		return settingsPanel.getDefaultItemDialog();
+	}
+
+
+	/**
+	 * @return the filters list
+	 */
+	public List<FiltersData> getFiltersData () {
+		List<FiltersData> list = fileFiltersPanel.getData();
+
+		/*for (FiltersData data: advancedFiltersPanel.getData()) {
+			list.add(data);
+		}*/
+
+		return list;
+	}
+
+
+	/**
+	 * @return the optionValueList
+	 */
+	public List<Integer> getOptionValueList() {
+		return settingsPanel.getOptionValueList();
+	}
+
+
+	/**
+	 * @return the referenceColor
+	 */
+	public Color getReferenceColor() {
+		return settingsPanel.getReferenceColor();
+	}
+
+
+	/**
+	 * @return the transparency value
+	 */
+	public int getTransparency() {
+		return settingsPanel.getTransparency();
+	}
+
+
+	/**
+	 * Creates the panel that contains OK and CANCEL buttons
+	 * @return the panel
+	 */
+	private JPanel getValidationPanel () {
+		// Creates the ok button
+		JButton jbOk = new JButton("Ok");
+		jbOk.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				approved = APPROVE_OPTION;
+				setVisible(false);
+			}
+		});
+
+		// Creates the cancel button
+		JButton jbCancel = new JButton("Cancel");
+		jbCancel.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				approved = CANCEL_OPTION;
+				setVisible(false);
+			}
+		});
+
+		// Creates the panel
+		JPanel panel = new JPanel();
+		panel.add(jbOk);
+		panel.add(jbCancel);
+
+		getRootPane().setDefaultButton(jbOk);
+
+		// Returns the panel
+		return panel;
+	}
+
+
+	/**
+	 * @return the showLegend
+	 */
+	public boolean isShowLegend() {
+		return settingsPanel.isShowLegend();
+	}
+
+
+	/**
+	 * @return the showReference
+	 */
+	public boolean isShowReference() {
+		return settingsPanel.isShowReference();
+	}
+
+
+	/**
+	 * Get a vcf reader object with a vcf file name.
+	 * @param fileName 	the name of the vcf file
+	 * @return			the reader
+	 */
+	private VCFFile retrieveReader (String fileName) {
+		return ProjectManager.getInstance().getMultiGenomeProject().getVCFFileFromName(fileName);
+	}
+
+
+	/**
+	 * Sets the panel at the center of the dialog with the one given as parameter
+	 * It first includes the panel in a scroll panel.
+	 * @param panel the panel to show at the center of the dialog
+	 */
+	protected void setScrollableCenterPanel (JPanel panel) {
+		// Set the panel to the right dimension
+		JScrollPane scrollPane = new JScrollPane(panel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.getVerticalScrollBar().setUnitIncrement(edu.yu.einstein.genplay.util.Utils.SCROLL_INCREMENT_UNIT);
+		scrollPane.setPreferredSize(contentDimension);
+
+		// Removes all content of the contentPane
+		contentPane.removeAll();
+
+		// Set the redular dimension for the content panel
+		contentPane.setPreferredSize(contentDimension);
+
+		// Set the panel gaps to zero
+		((FlowLayout)(contentPane.getLayout())).setHgap(0);
+		((FlowLayout)(contentPane.getLayout())).setVgap(0);
+
+		// Add the panel to the content panel
+		contentPane.add(scrollPane);
+		contentPane.repaint();
+		validate();
+
+		pack();
+
+	}
+
+
+	/**
+	 * Set the settings panel with specific values
+	 * @param settings
+	 */
+	public void setSettings (MGDisplaySettings settings) {
+		// Settings panel
+		settingsPanel.setSettings(settings.getVariousSettings().getDefaultDialogItem(),
+				settings.getVariousSettings().getDefaultGroupText(),
+				settings.getVariousSettings().getTransparencyPercentage(),
+				settings.getVariousSettings().isShowLegend());
+
+		// File Filter settings panel
+		fileFiltersPanel.setData(settings.getFilterSettings().getDuplicatedFileFiltersList());
+		fileFiltersPanel.refreshPanel();
 	}
 
 
@@ -202,37 +368,6 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 	}
 
 
-	/**
-	 * Sets the panel at the center of the dialog with the one given as parameter
-	 * It first includes the panel in a scroll panel.
-	 * @param panel the panel to show at the center of the dialog
-	 */
-	protected void setScrollableCenterPanel (JPanel panel) {
-		// Set the panel to the right dimension
-		JScrollPane scrollPane = new JScrollPane(panel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrollPane.getVerticalScrollBar().setUnitIncrement(edu.yu.einstein.genplay.util.Utils.SCROLL_INCREMENT_UNIT);
-		scrollPane.setPreferredSize(contentDimension);
-
-		// Removes all content of the contentPane
-		contentPane.removeAll();
-
-		// Set the redular dimension for the content panel
-		contentPane.setPreferredSize(contentDimension);
-
-		// Set the panel gaps to zero
-		((FlowLayout)(contentPane.getLayout())).setHgap(0);
-		((FlowLayout)(contentPane.getLayout())).setVgap(0);
-
-		// Add the panel to the content panel
-		contentPane.add(scrollPane);
-		contentPane.repaint();
-		validate();
-
-		pack();
-
-	}
-
-
 	@Override
 	public void valueChanged(TreeSelectionEvent arg0) {
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
@@ -253,149 +388,5 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 		} else if (nodeInfo.equals(FILTERS)) {
 			setScrollableCenterPanel(fileFiltersPanel);
 		}
-	}
-
-
-	/**
-	 * Get a vcf reader object with a vcf file name.
-	 * @param fileName 	the name of the vcf file
-	 * @return			the reader
-	 */
-	private VCFFile retrieveReader (String fileName) {
-		return ProjectManager.getInstance().getMultiGenomeProject().getVCFFileFromName(fileName);
-	}
-
-
-	/**
-	 * Creates the panel that contains OK and CANCEL buttons
-	 * @return the panel
-	 */
-	private JPanel getValidationPanel () {
-		// Creates the ok button
-		JButton jbOk = new JButton("Ok");
-		jbOk.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				approved = APPROVE_OPTION;
-				setVisible(false);
-			}
-		});
-
-		// Creates the cancel button
-		JButton jbCancel = new JButton("Cancel");
-		jbCancel.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				approved = CANCEL_OPTION;
-				setVisible(false);
-			}
-		});
-
-		// Creates the panel
-		JPanel panel = new JPanel();
-		panel.add(jbOk);
-		panel.add(jbCancel);
-
-		getRootPane().setDefaultButton(jbOk);
-
-		// Returns the panel
-		return panel;
-	}
-
-
-	/**
-	 * Set the settings panel with specific values
-	 * @param settings
-	 */
-	public void setSettings (MGDisplaySettings settings) {
-		// Settings panel
-		settingsPanel.setSettings(settings.getVariousSettings().getDefaultDialogItem(),
-				settings.getVariousSettings().getDefaultGroupText(),
-				settings.getVariousSettings().getTransparencyPercentage(),
-				settings.getVariousSettings().isShowLegend());
-
-		// File Filter settings panel
-		fileFiltersPanel.setData(settings.getFilterSettings().getDuplicatedFileFiltersList());
-		fileFiltersPanel.refreshPanel();
-	}
-
-
-	/**
-	 * @return the default item dialog to show
-	 */
-	public String getDefaultItemDialog () {
-		return settingsPanel.getDefaultItemDialog();
-	}
-
-
-	/**
-	 * @return the default group text
-	 */
-	public String getDefaultGroupText () {
-		return settingsPanel.getDefaultGroupText();
-	}
-
-
-	/**
-	 * @return the transparency value
-	 */
-	public int getTransparency() {
-		return settingsPanel.getTransparency();
-	}
-
-
-	/**
-	 * @return the showLegend
-	 */
-	public boolean isShowLegend() {
-		return settingsPanel.isShowLegend();
-	}
-
-
-	/**
-	 * @return the optionValueList
-	 */
-	public List<Integer> getOptionValueList() {
-		return settingsPanel.getOptionValueList();
-	}
-
-
-	/**
-	 * @return the referenceColor
-	 */
-	public Color getReferenceColor() {
-		return settingsPanel.getReferenceColor();
-	}
-
-
-	/**
-	 * @return the showReference
-	 */
-	public boolean isShowReference() {
-		return settingsPanel.isShowReference();
-	}
-
-
-	/**
-	 * @return the filters list
-	 */
-	public List<FiltersData> getFiltersData () {
-		List<FiltersData> list = fileFiltersPanel.getData();
-
-		/*for (FiltersData data: advancedFiltersPanel.getData()) {
-			list.add(data);
-		}*/
-
-		return list;
-	}
-
-
-	/**
-	 * @return an array of Strings containing the 4 main items (GENERAL, SETTINGS, FILTERS_BASIC, FILTERS_ADVANCED, STRIPES)
-	 */
-	public static String[] getPropertiesDialogMainItems () {
-		//String[] items = {GENERAL, SETTINGS, FILTERS_FILE, FILTERS_ADVANCED, STRIPES};
-		String[] items = {GENERAL, SETTINGS, FILTERS};
-		return items;
 	}
 }

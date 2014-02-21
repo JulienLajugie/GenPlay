@@ -39,7 +39,6 @@ import edu.yu.einstein.genplay.util.Utils;
 
 /**
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class MGStatisticsDialog extends JDialog {
 

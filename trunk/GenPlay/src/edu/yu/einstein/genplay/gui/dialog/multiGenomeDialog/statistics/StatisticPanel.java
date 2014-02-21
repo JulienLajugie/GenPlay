@@ -52,9 +52,6 @@ public class StatisticPanel extends JPanel {
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -4602586057160516008L;
 
-
-	//private final JPanel filePanel;
-	//private final List<JPanel> samplePanels;
 	private final VCFFileStatistics statistic;
 
 
