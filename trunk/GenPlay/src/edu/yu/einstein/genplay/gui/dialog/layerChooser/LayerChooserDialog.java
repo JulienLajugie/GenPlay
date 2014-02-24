@@ -23,11 +23,8 @@
 package edu.yu.einstein.genplay.gui.dialog.layerChooser;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -36,22 +33,11 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
 
-import edu.yu.einstein.genplay.gui.customComponent.tableComponents.BooleanRadioButtonEditor;
-import edu.yu.einstein.genplay.gui.customComponent.tableComponents.BooleanRadioButtonRenderer;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
-import edu.yu.einstein.genplay.gui.track.layer.ColoredLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
 import edu.yu.einstein.genplay.util.Images;
-import edu.yu.einstein.genplay.util.Utils;
-import edu.yu.einstein.genplay.util.colors.Colors;
 
 /**
  * Dialog that prompt the user to choose layers.
@@ -59,39 +45,7 @@ import edu.yu.einstein.genplay.util.colors.Colors;
  * A list of layers already selected can be specified.
  * @author Julien Lajugie
  */
-
 public class LayerChooserDialog extends JDialog {
-
-	/**
-	 * Simple {@link TableCellRenderer} that returns a disabled component for the lines where the layer type is not selectable
-	 * @author Julien Lajugie
-	 */
-	private class LayerTableCellRenderer extends DefaultTableCellRenderer implements TableCellRenderer {
-		private static final long serialVersionUID = 9025676810770612025L; // generated serial ID
-		@Override
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-			Component renderedComponent = table.getDefaultRenderer(value.getClass()).getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-			renderedComponent.setEnabled(true);
-			Layer<?> layer = layers.get(row);
-			// write the layer name with the color of the layer
-			if ((layer != null) && (layer instanceof ColoredLayer)) {
-				Color layerColor = ((ColoredLayer) layer).getColor();
-				renderedComponent.setForeground(layerColor);
-			}
-			// make the unselectable row (because the layer type is not accepted) different
-			if (layer != null) {
-			LayerType layerType = layer.getType();
-			if ((selectableLayerTypes != null) && !layerType.isContainedIn(selectableLayerTypes)) {
-				renderedComponent.setForeground(Colors.GREY);
-				renderedComponent.setFont(renderedComponent.getFont().deriveFont(Font.ITALIC));
-			} else {
-				renderedComponent.setFont(renderedComponent.getFont().deriveFont(Font.BOLD));
-			}
-			}
-			return renderedComponent;
-		}
-	}
-
 
 	/** Return value when OK has been clicked. */
 	public static final int APPROVE_OPTION = 0;
@@ -99,36 +53,18 @@ public class LayerChooserDialog extends JDialog {
 	/** Return value when Cancel has been clicked. */
 	public static final int CANCEL_OPTION = 1;
 
-	/** List of the column names */
-	protected static final String[] COLUMN_NAMES = {"Track #", "Track Name", "Layer Name", "Layer Type", "Selected"};	// Column names
+	/** generated serial ID */
+	private static final long serialVersionUID = 1667557444873634190L;
 
-	/** track number index */
-	protected static final int TRACK_NUMBER_INDEX = 0;
+	/** Window size */
+	private static final Dimension DIALOG_SIZE = new Dimension(600, 600);
 
-	/** track name index */
-	protected static final int TRACK_NAME_INDEX = 1;
+	private int	approved = CANCEL_OPTION;	// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
 
-	/** layer name index */
-	protected static final int LAYER_NAME_INDEX = 2;
-
-	/** layer type index */
-	protected static final int LAYER_TYPE_INDEX = 3;
-
-	/** layer selection index */
-	protected static final int LAYER_SELECTION_INDEX = 4;
-
-	private 	static 	final 	long 		serialVersionUID 			= -5444037655111247170L; 								// generated serial ID
-	private 	static	final 	Dimension 	DIALOG_SIZE 				= new Dimension(600, 600);								// Window size
-	private 	static	final 	Dimension 	BUTTON_PANEL_SIZE			= new Dimension(DIALOG_SIZE.width, 65);					// Button panel size
-
-	private 	static 			JTable 							layerTable;					// layer table
-	private 	static 			LayerChooserTableModel 			tableModel;					// layer table model
-	private 					List<Layer<?>>					layers;						// List of layers displayed in the table
-	private 					List<Layer<?>>					selectedLayers;				// List of layers selected
-	private 					LayerType[]						selectableLayerTypes;		// type of layer types that can be selected.  Any type can be selected if null
-	private						boolean							isMultiselectable;			// true if more than one layer can be selected
-	private 					int								approved = CANCEL_OPTION;	// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
-
+	private  List<Layer<?>>		layers;						// List of layers displayed in the table
+	private  List<Layer<?>>		selectedLayers;				// List of layers selected
+	private  LayerType[]		selectableLayerTypes;		// type of layer types that can be selected.  Any type can be selected if null
+	private	 boolean			isMultiselectable;			// true if more than one layer can be selected
 
 
 	/**
@@ -168,41 +104,24 @@ public class LayerChooserDialog extends JDialog {
 	 * Initializes dialog components
 	 */
 	private void init() {
-		//JDialog information
-		setSize(DIALOG_SIZE);
-		setResizable(false);
-		setModalityType(ModalityType.APPLICATION_MODAL);
+		// panel to select the layers
+		final LayerChooserPanel layerChooserPanel =
+				new LayerChooserPanel(layers, selectedLayers, selectableLayerTypes, isMultiselectable);
 
-		// table
-		layerTable = new JTable();
-		// table model
-		tableModel = new LayerChooserTableModel(layers, selectedLayers, selectableLayerTypes, isMultiselectable);
-		layerTable.setModel(tableModel);
-		// other table properties
-		layerTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-		JScrollPane scrollPane = new JScrollPane(layerTable);
-		scrollPane.getVerticalScrollBar().setUnitIncrement(Utils.SCROLL_INCREMENT_UNIT);
-		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		initializeColumnProperties();
-		// table renderer and editors if the multiselectable property is set to false so we have radio buttons instead of check boxes
-		if (!isMultiselectable) {
-			layerTable.getColumnModel().getColumn(LAYER_SELECTION_INDEX).setCellRenderer(new BooleanRadioButtonRenderer());
-			layerTable.getColumnModel().getColumn(LAYER_SELECTION_INDEX).setCellEditor(new BooleanRadioButtonEditor());
-		}
-
-		//Confirm button
+		// Confirm button
 		JButton jbConfirm = new JButton("Ok");
 		jbConfirm.setToolTipText(ProjectFrame.CONFIRM_FILES);
 		jbConfirm.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				selectedLayers = tableModel.getSelectedLayers();
+				selectedLayers = layerChooserPanel.getSelectedLayers();
 				approved = APPROVE_OPTION;
 				dispose();
 			}
 		});
+		getRootPane().setDefaultButton(jbConfirm);
 
-		//Cancel button
+		// Cancel button
 		JButton jbCancel = new JButton("Cancel");
 		jbCancel.setToolTipText(ProjectFrame.CANCEL_FILES);
 		jbCancel.addActionListener(new ActionListener() {
@@ -216,72 +135,21 @@ public class LayerChooserDialog extends JDialog {
 		// we want the size of the two buttons to be equal
 		jbConfirm.setPreferredSize(jbCancel.getPreferredSize());
 
-		//Select button
-		JButton jbSelect = new JButton("Select");
-		jbSelect.setToolTipText(ProjectFrame.SELECT_FILES);
-		jbSelect.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				tableModel.setSelectedValues(layerTable.getSelectedRows(), true);
-			}
-		});
-
-		//Unselect button
-		JButton jbUnselect = new JButton("Unselect");
-		jbUnselect.setToolTipText(ProjectFrame.UNSELECT_FILES);
-		jbUnselect.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				tableModel.setSelectedValues(layerTable.getSelectedRows(), false);
-			}
-		});
-
-		////Button panel
-		JPanel buttonPanel = new JPanel();
-		buttonPanel.setSize(BUTTON_PANEL_SIZE);
-		buttonPanel.setPreferredSize(BUTTON_PANEL_SIZE);
-		buttonPanel.setMinimumSize(BUTTON_PANEL_SIZE);
-		buttonPanel.setMaximumSize(BUTTON_PANEL_SIZE);
-		buttonPanel.setLayout(new GridLayout(2, 1));
-
-		//TopPane
-		JPanel topPane = new JPanel();
-		topPane.add(jbSelect);
-		topPane.add(jbUnselect);
-
 		//BotPane
-		getRootPane().setDefaultButton(jbConfirm);
-		JPanel botPane = new JPanel();
-		botPane.add(jbConfirm);
-		botPane.add(jbCancel);
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.add(jbConfirm);
+		buttonPanel.add(jbCancel);
 
 		//Add panels
-		buttonPanel.add(topPane);
-		buttonPanel.add(botPane);
 		BorderLayout border = new BorderLayout();
 		setLayout(border);
-		add(scrollPane, BorderLayout.CENTER);
+		add(layerChooserPanel, BorderLayout.CENTER);
 		add(buttonPanel, BorderLayout.SOUTH);
 
-		getRootPane().setDefaultButton(jbConfirm);
-	}
-
-
-	/**
-	 * This method initializes the column properties:
-	 * - name
-	 * - width
-	 * - resizable
-	 */
-	private void initializeColumnProperties () {
-		TableCellRenderer tableCellRenderer = new LayerTableCellRenderer();
-		TableColumn column = null;
-		for (int i = 0; i < COLUMN_NAMES.length; i++) {
-			column = layerTable.getColumnModel().getColumn(i);
-			column.setHeaderValue(COLUMN_NAMES[i]);
-			column.setResizable(true);
-			column.setCellRenderer(tableCellRenderer);
-		}
+		//JDialog information
+		setSize(DIALOG_SIZE);
+		setResizable(false);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 	}
 
 

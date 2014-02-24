@@ -31,9 +31,9 @@ import javax.swing.ActionMap;
 import javax.swing.KeyStroke;
 
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
-import edu.yu.einstein.genplay.gui.dialog.layerSettings.LayerSettingsRow;
 import edu.yu.einstein.genplay.gui.dialog.trackSettings.TrackSettingsDialog;
-import edu.yu.einstein.genplay.gui.dialog.trackSettings.TrackSettingsPanel;
+import edu.yu.einstein.genplay.gui.dialog.trackSettings.layerPanel.LayerSettingsRow;
+import edu.yu.einstein.genplay.gui.dialog.trackSettings.trackPanel.TrackSettingsPanel;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackScore;

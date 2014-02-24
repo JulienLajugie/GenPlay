@@ -27,6 +27,8 @@ import java.awt.Component;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.border.LineBorder;
+import javax.swing.plaf.BorderUIResource;
 
 import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
@@ -49,6 +51,8 @@ public class LookAndFeels {
 		UIManager.put("nimbusBlueGrey", new Color(187, 196, 209));
 		//UIManager.put("control", new Color(228, 236, 247));
 		UIManager.put("control", Colors.MAIN_GUI_BACKGROUND);
+		UIManager.put("TitledBorder.border", new BorderUIResource(
+				new LineBorder(Colors.DEFAULT_BORDER_COLOR)));
 	}
 
 

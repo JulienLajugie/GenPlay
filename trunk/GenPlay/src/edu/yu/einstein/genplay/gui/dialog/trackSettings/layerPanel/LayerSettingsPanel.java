@@ -20,10 +20,12 @@
  * 
  * Website: <http://genplay.einstein.yu.edu>
  ******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.layerSettings;
+package edu.yu.einstein.genplay.gui.dialog.trackSettings.layerPanel;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -34,6 +36,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
 import edu.yu.einstein.genplay.dataStructure.enums.GraphType;
@@ -43,6 +47,8 @@ import edu.yu.einstein.genplay.gui.customComponent.tableComponents.ColorEditor;
 import edu.yu.einstein.genplay.gui.customComponent.tableComponents.ColorRenderer;
 import edu.yu.einstein.genplay.gui.customComponent.tableComponents.ComboBoxEditor;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
+import edu.yu.einstein.genplay.gui.track.layer.ColoredLayer;
+import edu.yu.einstein.genplay.gui.track.layer.Layer;
 
 /**
  * Dialog for the settings of the layers of a track
@@ -50,6 +56,31 @@ import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
  * @author Nicolas Fourel
  */
 public class LayerSettingsPanel extends JPanel {
+
+	/**
+	 * Simple {@link TableCellRenderer}  for layer setting tabl
+	 * @author Julien Lajugie
+	 */
+	private class DefaultLayerSettingsTableCellRenderer extends DefaultTableCellRenderer implements TableCellRenderer {
+
+		/** generated serial ID */
+		private static final long serialVersionUID = 1058826355528747187L;
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+			Component renderedComponent = table.getDefaultRenderer(value.getClass()).getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+			renderedComponent.setEnabled(true);
+			if (row < data.length) {
+				Layer<?> layer = data[row].getLayer();
+				// write the layer name with the color of the layer
+				if ((layer != null) && (layer instanceof ColoredLayer) && !isSelected) {
+					Color layerColor = ((ColoredLayer) layer).getColor();
+					renderedComponent.setForeground(layerColor);
+				}
+				renderedComponent.setFont(renderedComponent.getFont().deriveFont(Font.BOLD));
+			}
+			return renderedComponent;
+		}
+	}
 
 	/** Column headers */
 	protected static final String[] COLUMN_NAMES = {"#", "Name", "Type", "Color", "Graph Type", "Visible", "Active", "Set For Deletion"};
@@ -171,11 +202,6 @@ public class LayerSettingsPanel extends JPanel {
 
 			////Button panel
 			JPanel buttonPanel = new JPanel();
-			Dimension buttonPanelDimension = new Dimension(layerSettingsTable.getPreferredSize().width, 65);
-			buttonPanel.setSize(buttonPanelDimension);
-			buttonPanel.setPreferredSize(buttonPanelDimension);
-			buttonPanel.setMinimumSize(buttonPanelDimension);
-			buttonPanel.setMaximumSize(buttonPanelDimension);
 			buttonPanel.setLayout(new GridLayout(2, 1));
 
 			//TopPane
@@ -208,8 +234,8 @@ public class LayerSettingsPanel extends JPanel {
 			column.setResizable(true);
 			switch (columnIndex) {
 			case LAYER_NUMBER_INDEX:
-				//column.setWidth(5);
 				column.setPreferredWidth(5);
+				column.setCellRenderer(new DefaultLayerSettingsTableCellRenderer());
 				break;
 			case LAYER_COLOR_INDEX:
 				column.setCellEditor(new ColorEditor("Select"));
@@ -217,11 +243,14 @@ public class LayerSettingsPanel extends JPanel {
 				break;
 			case LAYER_GRAPH_TYPE_INDEX:
 				column.setCellEditor(new ComboBoxEditor(GraphType.values()));
+				column.setCellRenderer(new DefaultLayerSettingsTableCellRenderer());
 				break;
 			case IS_LAYER_ACTIVE_INDEX:
 				column.setCellEditor(new BooleanRadioButtonEditor());
 				column.setCellRenderer(new BooleanRadioButtonRenderer());
 				break;
+			default:
+				column.setCellRenderer(new DefaultLayerSettingsTableCellRenderer());
 			}
 		}
 	}

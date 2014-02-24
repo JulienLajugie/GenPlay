@@ -37,7 +37,26 @@ import edu.yu.einstein.genplay.gui.track.layer.LayerType;
  */
 class LayerChooserTableModel extends AbstractTableModel {
 
-	private static final long serialVersionUID = 136782955769801093L; // generated serial ID
+	/** Generated serial ID */
+	private static final long serialVersionUID = 136782955769801093L;
+
+	/** List of the column names */
+	protected static final String[] COLUMN_NAMES = {"Track #", "Track Name", "Layer Name", "Layer Type", "Selected"};	// Column names
+
+	/** track number index */
+	protected static final int TRACK_NUMBER_INDEX = 0;
+
+	/** track name index */
+	protected static final int TRACK_NAME_INDEX = 1;
+
+	/** layer name index */
+	protected static final int LAYER_NAME_INDEX = 2;
+
+	/** layer type index */
+	protected static final int LAYER_TYPE_INDEX = 3;
+
+	/** layer selection index */
+	protected static final int LAYER_SELECTION_INDEX = 4;
 
 	private final List<Layer<?>> 			layers;					// list of layers
 	private final List<Layer<?>>			selectedLayers;			// list of layers that are selected
@@ -75,8 +94,8 @@ class LayerChooserTableModel extends AbstractTableModel {
 	 */
 	private void deselectOtherRows(int selectedRow) {
 		for (int row = 0; row < getRowCount(); row++) {
-			if ((Boolean)getValueAt(row, LayerChooserDialog.LAYER_SELECTION_INDEX) && (row != selectedRow)) {
-				setValueAt(false, row, LayerChooserDialog.LAYER_SELECTION_INDEX);
+			if ((Boolean)getValueAt(row, LAYER_SELECTION_INDEX) && (row != selectedRow)) {
+				setValueAt(false, row, LAYER_SELECTION_INDEX);
 				// fireTableCellUpdated(row, LayerChooserDialog.LAYER_SELECTION_INDEX);
 			}
 		}
@@ -86,15 +105,15 @@ class LayerChooserTableModel extends AbstractTableModel {
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
 		switch (columnIndex) {
-		case LayerChooserDialog.TRACK_NUMBER_INDEX:
+		case TRACK_NUMBER_INDEX:
 			return Integer.class;
-		case LayerChooserDialog.TRACK_NAME_INDEX:
+		case TRACK_NAME_INDEX:
 			return String.class;
-		case LayerChooserDialog.LAYER_NAME_INDEX:
+		case LAYER_NAME_INDEX:
 			return String.class;
-		case LayerChooserDialog.LAYER_TYPE_INDEX:
+		case LAYER_TYPE_INDEX:
 			return String.class;
-		case LayerChooserDialog.LAYER_SELECTION_INDEX:
+		case LAYER_SELECTION_INDEX:
 			return Boolean.class;
 		default:
 			return null;
@@ -104,7 +123,7 @@ class LayerChooserTableModel extends AbstractTableModel {
 
 	@Override
 	public int getColumnCount() {
-		return LayerChooserDialog.COLUMN_NAMES.length;
+		return COLUMN_NAMES.length;
 	}
 
 
@@ -138,15 +157,15 @@ class LayerChooserTableModel extends AbstractTableModel {
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		if (rowIndex < layers.size()) {
 			switch (columnIndex) {
-			case LayerChooserDialog.TRACK_NUMBER_INDEX:
+			case TRACK_NUMBER_INDEX:
 				return layers.get(rowIndex).getTrack().getNumber();
-			case LayerChooserDialog.TRACK_NAME_INDEX:
+			case TRACK_NAME_INDEX:
 				return layers.get(rowIndex).getTrack().getName();
-			case LayerChooserDialog.LAYER_NAME_INDEX:
+			case LAYER_NAME_INDEX:
 				return layers.get(rowIndex).getName();
-			case LayerChooserDialog.LAYER_TYPE_INDEX:
+			case LAYER_TYPE_INDEX:
 				return layers.get(rowIndex).getType();
-			case LayerChooserDialog.LAYER_SELECTION_INDEX:
+			case LAYER_SELECTION_INDEX:
 				boolean isLayerSelected = selectedLayers.contains(layers.get(rowIndex));
 				return isLayerSelected;
 			default:
@@ -164,7 +183,7 @@ class LayerChooserTableModel extends AbstractTableModel {
 	public boolean isCellEditable(int row, int col) {
 		LayerType rowLayerType = layers.get(row).getType();
 		boolean isSelectableLayerType = ((selectableLayerTypes == null) || rowLayerType.isContainedIn(selectableLayerTypes));
-		if ((col == LayerChooserDialog.LAYER_SELECTION_INDEX) && isSelectableLayerType) {
+		if ((col == LAYER_SELECTION_INDEX) && isSelectableLayerType) {
 			return true;
 		} else {
 			return false;
@@ -179,7 +198,7 @@ class LayerChooserTableModel extends AbstractTableModel {
 	 */
 	protected void setSelectedValues(int[] list, boolean value) {
 		for (int i: list) {
-			setValueAt(value, i, LayerChooserDialog.LAYER_SELECTION_INDEX);
+			setValueAt(value, i, LAYER_SELECTION_INDEX);
 		}
 	}
 
@@ -194,7 +213,7 @@ class LayerChooserTableModel extends AbstractTableModel {
 	public void setValueAt(Object value, int row, int col) {
 		if (row < layers.size()) {
 			// only the layer selection column is editable
-			if (col == LayerChooserDialog.LAYER_SELECTION_INDEX) {
+			if (col == LAYER_SELECTION_INDEX) {
 				if (value instanceof Boolean) {
 					Layer<?> rowLayer = layers.get(row);
 					if ((Boolean)value) {

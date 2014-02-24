@@ -20,7 +20,7 @@
  * 
  * Website: <http://genplay.einstein.yu.edu>
  ******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.layerSettings;
+package edu.yu.einstein.genplay.gui.dialog.trackSettings.layerPanel;
 
 import java.awt.Color;
 
@@ -38,7 +38,35 @@ import edu.yu.einstein.genplay.gui.track.layer.GraphLayer;
  */
 public class LayerSettingsModel extends AbstractTableModel implements TableModel {
 
-	private static final long serialVersionUID = -3008057257010488995L;	// generated serial ID
+	/** generated serial ID */
+	private static final long serialVersionUID = -3008057257010488995L;
+
+	/** Column headers */
+	protected static final String[] COLUMN_NAMES = {"#", "Name", "Type", "Color", "Graph Type", "Visible", "Active", "Set For Deletion"};
+
+	/** Index of the layer number column */
+	protected static final int LAYER_NUMBER_INDEX = 0;
+
+	/** Index of the layer name column */
+	protected static final int LAYER_NAME_INDEX = 1;
+
+	/** Index of the layer type column */
+	protected static final int LAYER_TYPE_INDEX = 2;
+
+	/** Index of the layer color column */
+	protected static final int LAYER_COLOR_INDEX = 3;
+
+	/** Index of the layer graph type column */
+	protected static final int LAYER_GRAPH_TYPE_INDEX = 4;
+
+	/** Index of the "is layer visible" column */
+	protected static final int IS_LAYER_VISIBLE_INDEX = 5;
+
+	/** Index of the "is layer active" column */
+	protected static final int IS_LAYER_ACTIVE_INDEX = 6;
+
+	/** Index of the set for deletion column*/
+	protected static final int IS_LAYER_SET_FOR_DELETION_INDEX = 7;
 
 	private final LayerSettingsRow[] data; // data managed by the model
 
@@ -52,67 +80,37 @@ public class LayerSettingsModel extends AbstractTableModel implements TableModel
 	}
 
 
-	@Override
-	public int getRowCount() {
-		return data.length;
-	}
-
-
-	@Override
-	public int getColumnCount() {
-		return LayerSettingsDialog.COLUMN_NAMES.length;
-	}
-
-
-	@Override
-	public Object getValueAt(int rowIndex, int columnIndex) {
-		switch (columnIndex) {
-		case LayerSettingsDialog.LAYER_NUMBER_INDEX:
-			return rowIndex + 1;
-		case LayerSettingsDialog.LAYER_NAME_INDEX:
-			return data[rowIndex].getLayerName();
-		case LayerSettingsDialog.LAYER_TYPE_INDEX:
-			return data[rowIndex].getLayer().getType();
-		case LayerSettingsDialog.LAYER_COLOR_INDEX:
-			return data[rowIndex].getLayerColor();
-		case LayerSettingsDialog.LAYER_GRAPH_TYPE_INDEX:
-			return data[rowIndex].getLayerGraphType();
-		case LayerSettingsDialog.IS_LAYER_VISIBLE_INDEX:
-			return data[rowIndex].isLayerVisible();
-		case LayerSettingsDialog.IS_LAYER_ACTIVE_INDEX:
-			return data[rowIndex].isLayerActive();
-		case LayerSettingsDialog.IS_LAYER_SET_FOR_DELETION_INDEX:
-			return data[rowIndex].isLayerSetForDeletion();
-		default:
-			return null;
+	/**
+	 * Sets to false all the active layers that are not the one with the specified index
+	 * @param rowIndex index of a layer in the table
+	 */
+	private void deselectOtherActiveLayers(int rowIndex) {
+		for (int row = 0; row < getRowCount(); row++) {
+			if ((Boolean)getValueAt(row, IS_LAYER_ACTIVE_INDEX) && (row != rowIndex)) {
+				setValueAt(false, row, IS_LAYER_ACTIVE_INDEX);
+			}
 		}
-	}
-
-
-	@Override
-	public String getColumnName(int columnIndex) {
-		return LayerSettingsDialog.COLUMN_NAMES[columnIndex];
 	}
 
 
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
 		switch (columnIndex) {
-		case LayerSettingsDialog.LAYER_NUMBER_INDEX:
+		case LAYER_NUMBER_INDEX:
 			return Integer.class;
-		case LayerSettingsDialog.LAYER_NAME_INDEX:
+		case LAYER_NAME_INDEX:
 			return String.class;
-		case LayerSettingsDialog.LAYER_TYPE_INDEX:
+		case LAYER_TYPE_INDEX:
 			return String.class;
-		case LayerSettingsDialog.LAYER_COLOR_INDEX:
+		case LAYER_COLOR_INDEX:
 			return Color.class;
-		case LayerSettingsDialog.LAYER_GRAPH_TYPE_INDEX:
+		case LAYER_GRAPH_TYPE_INDEX:
 			return GraphType.class;
-		case LayerSettingsDialog.IS_LAYER_VISIBLE_INDEX:
+		case IS_LAYER_VISIBLE_INDEX:
 			return Boolean.class;
-		case LayerSettingsDialog.IS_LAYER_ACTIVE_INDEX:
+		case IS_LAYER_ACTIVE_INDEX:
 			return Boolean.class;
-		case LayerSettingsDialog.IS_LAYER_SET_FOR_DELETION_INDEX:
+		case IS_LAYER_SET_FOR_DELETION_INDEX:
 			return Boolean.class;
 		default:
 			return null;
@@ -121,27 +119,14 @@ public class LayerSettingsModel extends AbstractTableModel implements TableModel
 
 
 	@Override
-	public boolean isCellEditable(int rowIndex, int columnIndex) {
-		switch (columnIndex) {
-		case LayerSettingsDialog.LAYER_NUMBER_INDEX:
-			return false;
-		case LayerSettingsDialog.LAYER_NAME_INDEX:
-			return true;
-		case LayerSettingsDialog.LAYER_TYPE_INDEX:
-			return false;
-		case LayerSettingsDialog.LAYER_COLOR_INDEX:
-			return data[rowIndex].getLayer() instanceof ColoredLayer;
-		case LayerSettingsDialog.LAYER_GRAPH_TYPE_INDEX:
-			return data[rowIndex].getLayer() instanceof GraphLayer;
-		case LayerSettingsDialog.IS_LAYER_VISIBLE_INDEX:
-			return true;
-		case LayerSettingsDialog.IS_LAYER_ACTIVE_INDEX:
-			return true;
-		case LayerSettingsDialog.IS_LAYER_SET_FOR_DELETION_INDEX:
-			return true;
-		default:
-			return false;
-		}
+	public int getColumnCount() {
+		return COLUMN_NAMES.length;
+	}
+
+
+	@Override
+	public String getColumnName(int columnIndex) {
+		return COLUMN_NAMES[columnIndex];
 	}
 
 
@@ -152,65 +137,76 @@ public class LayerSettingsModel extends AbstractTableModel implements TableModel
 		return data;
 	}
 
+
 	@Override
-	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-		if (rowIndex < data.length) {
-			switch (columnIndex) {
-			case LayerSettingsDialog.LAYER_NAME_INDEX:
-				if (aValue instanceof String) {
-					data[rowIndex].setLayerName((String) aValue);
-					fireTableCellUpdated(rowIndex, columnIndex);
-				}
-				break;
-			case LayerSettingsDialog.LAYER_COLOR_INDEX:
-				if (aValue instanceof Color) {
-					data[rowIndex].setLayerColor((Color) aValue);
-					fireTableCellUpdated(rowIndex, columnIndex);
-				}
-				break;
-			case LayerSettingsDialog.LAYER_GRAPH_TYPE_INDEX:
-				if (aValue instanceof GraphType) {
-					data[rowIndex].setLayerGraphType((GraphType) aValue);
-					fireTableCellUpdated(rowIndex, columnIndex);
-				}
-			case LayerSettingsDialog.IS_LAYER_VISIBLE_INDEX:
-				if(aValue instanceof Boolean) {
-					data[rowIndex].setLayerVisible((Boolean) aValue);
-					fireTableCellUpdated(rowIndex, columnIndex);
-				}
-				break;
-			case LayerSettingsDialog.IS_LAYER_ACTIVE_INDEX:
-				// only the layer selection column is editable
-				if (aValue instanceof Boolean) {
-					if ((Boolean) aValue) {
-						data[rowIndex].setLayerActive(true);
-						deselectOtherActiveLayers(rowIndex);
-					} else {
-						data[rowIndex].setLayerActive(false);
-					}
-					fireTableCellUpdated(rowIndex, columnIndex);
-				}
-				break;
-			case LayerSettingsDialog.IS_LAYER_SET_FOR_DELETION_INDEX:
-				if(aValue instanceof Boolean) {
-					data[rowIndex].setLayerSetForDeletion((Boolean) aValue);
-					fireTableCellUpdated(rowIndex, columnIndex);
-				}
-			}
+	public int getRowCount() {
+		return data.length;
+	}
+
+
+	@Override
+	public Object getValueAt(int rowIndex, int columnIndex) {
+		switch (columnIndex) {
+		case LAYER_NUMBER_INDEX:
+			return rowIndex + 1;
+		case LAYER_NAME_INDEX:
+			return data[rowIndex].getLayerName();
+		case LAYER_TYPE_INDEX:
+			return data[rowIndex].getLayer().getType();
+		case LAYER_COLOR_INDEX:
+			return data[rowIndex].getLayerColor();
+		case LAYER_GRAPH_TYPE_INDEX:
+			return data[rowIndex].getLayerGraphType();
+		case IS_LAYER_VISIBLE_INDEX:
+			return data[rowIndex].isLayerVisible();
+		case IS_LAYER_ACTIVE_INDEX:
+			return data[rowIndex].isLayerActive();
+		case IS_LAYER_SET_FOR_DELETION_INDEX:
+			return data[rowIndex].isLayerSetForDeletion();
+		default:
+			return null;
+		}
+	}
+
+	@Override
+	public boolean isCellEditable(int rowIndex, int columnIndex) {
+		switch (columnIndex) {
+		case LAYER_NUMBER_INDEX:
+			return false;
+		case LAYER_NAME_INDEX:
+			return true;
+		case LAYER_TYPE_INDEX:
+			return false;
+		case LAYER_COLOR_INDEX:
+			return data[rowIndex].getLayer() instanceof ColoredLayer;
+		case LAYER_GRAPH_TYPE_INDEX:
+			return data[rowIndex].getLayer() instanceof GraphLayer;
+		case IS_LAYER_VISIBLE_INDEX:
+			return true;
+		case IS_LAYER_ACTIVE_INDEX:
+			return true;
+		case IS_LAYER_SET_FOR_DELETION_INDEX:
+			return true;
+		default:
+			return false;
 		}
 	}
 
 
 	/**
-	 * Sets to false all the active layers that are not the one with the specified index
-	 * @param rowIndex index of a layer in the table
+	 * Inverts the specified row and the row under it
+	 * @param selectedRow
+	 * @return true if the selected row was moved down
 	 */
-	private void deselectOtherActiveLayers(int rowIndex) {
-		for (int row = 0; row < getRowCount(); row++) {
-			if ((Boolean)getValueAt(row, LayerSettingsDialog.IS_LAYER_ACTIVE_INDEX) && (row != rowIndex)) {
-				setValueAt(false, row, LayerSettingsDialog.IS_LAYER_ACTIVE_INDEX);
-			}
+	public boolean moveLayerDown(int selectedRow) {
+		if ((selectedRow + 1) < data.length) {
+			LayerSettingsRow rowTmp = data[selectedRow + 1];
+			data[selectedRow + 1] = data[selectedRow];
+			data[selectedRow] = rowTmp;
+			fireTableRowsUpdated(selectedRow, selectedRow + 1);
+			return true;
 		}
+		return false;
 	}
 
 
@@ -231,19 +227,51 @@ public class LayerSettingsModel extends AbstractTableModel implements TableModel
 	}
 
 
-	/**
-	 * Inverts the specified row and the row under it
-	 * @param selectedRow
-	 * @return true if the selected row was moved down
-	 */
-	public boolean moveLayerDown(int selectedRow) {
-		if ((selectedRow + 1) < data.length) {
-			LayerSettingsRow rowTmp = data[selectedRow + 1];
-			data[selectedRow + 1] = data[selectedRow];
-			data[selectedRow] = rowTmp;
-			fireTableRowsUpdated(selectedRow, selectedRow + 1);
-			return true;
+	@Override
+	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+		if (rowIndex < data.length) {
+			switch (columnIndex) {
+			case LAYER_NAME_INDEX:
+				if (aValue instanceof String) {
+					data[rowIndex].setLayerName((String) aValue);
+					fireTableCellUpdated(rowIndex, columnIndex);
+				}
+				break;
+			case LAYER_COLOR_INDEX:
+				if (aValue instanceof Color) {
+					data[rowIndex].setLayerColor((Color) aValue);
+					fireTableCellUpdated(rowIndex, columnIndex);
+				}
+				break;
+			case LAYER_GRAPH_TYPE_INDEX:
+				if (aValue instanceof GraphType) {
+					data[rowIndex].setLayerGraphType((GraphType) aValue);
+					fireTableCellUpdated(rowIndex, columnIndex);
+				}
+			case IS_LAYER_VISIBLE_INDEX:
+				if(aValue instanceof Boolean) {
+					data[rowIndex].setLayerVisible((Boolean) aValue);
+					fireTableCellUpdated(rowIndex, columnIndex);
+				}
+				break;
+			case IS_LAYER_ACTIVE_INDEX:
+				// only the layer selection column is editable
+				if (aValue instanceof Boolean) {
+					if ((Boolean) aValue) {
+						data[rowIndex].setLayerActive(true);
+						deselectOtherActiveLayers(rowIndex);
+					} else {
+						data[rowIndex].setLayerActive(false);
+					}
+					fireTableCellUpdated(rowIndex, columnIndex);
+				}
+				break;
+			case IS_LAYER_SET_FOR_DELETION_INDEX:
+				if(aValue instanceof Boolean) {
+					data[rowIndex].setLayerSetForDeletion((Boolean) aValue);
+					fireTableCellUpdated(rowIndex, columnIndex);
+				}
+			}
 		}
-		return false;
 	}
 }

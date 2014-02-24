@@ -22,29 +22,31 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.trackSettings;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTree;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
-import edu.yu.einstein.genplay.gui.dialog.layerSettings.LayerSettingsPanel;
-import edu.yu.einstein.genplay.gui.dialog.layerSettings.LayerSettingsRow;
+import edu.yu.einstein.genplay.gui.dialog.trackSettings.layerPanel.LayerSettingsPanel;
+import edu.yu.einstein.genplay.gui.dialog.trackSettings.layerPanel.LayerSettingsRow;
+import edu.yu.einstein.genplay.gui.dialog.trackSettings.trackPanel.TrackSettingsPanel;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.util.Images;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 /**
  * @author Nicolas Fourel
@@ -54,22 +56,16 @@ public class TrackSettingsDialog extends JDialog implements TreeSelectionListene
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 3713110227164397033L;
-
 	/** Return value when OK has been clicked. */
-	public static final 	int 			APPROVE_OPTION 		= 0;
+	public static final 	int 			APPROVE_OPTION 				= 0;
 	/** Return value when Cancel has been clicked. */
-	public static final 	int 			CANCEL_OPTION 		= 1;
-	/** Height of the dialog */
-	public static final	int					DIALOG_HEIGHT 		= 400;
+	public static final 	int 			CANCEL_OPTION 				= 1;
 	/** Text for GENERAL tree node */
-	public static final		String			TRACK 				= "General";
+	public static final		String			TRACK 						= "General";
 	/** Text for SETTINGS tree node */
-	public static final		String			LAYER 				= "Layer(s)";
-
-
-	private int				approved 			= CANCEL_OPTION;	// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
-
-	private final Dimension contentDimension = new Dimension(700, DIALOG_HEIGHT);
+	public static final		String			LAYER 						= "Layer(s)";
+	/** Right panel minimum width */
+	private static final 	int 			RIGHT_PANEL_MINIMUM_WIDTH	= 600;
 
 	private final TreeContent 						treeContent;			// the tree manager
 	private final JTree 							tree;					// the tree of the dialog
@@ -77,28 +73,24 @@ public class TrackSettingsDialog extends JDialog implements TreeSelectionListene
 	private final TrackSettingsPanel				trackPanel;
 	private final LayerSettingsPanel				layerPanel;
 
+	private int				approved 			= CANCEL_OPTION;	// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
+
 
 	/**
 	 * Constructor of {@link TrackSettingsDialog}
 	 */
 	public TrackSettingsDialog () {
-		// Dialog layout
-		BorderLayout layout = new BorderLayout();
-		setLayout(layout);
+		super();
 
 		// Tree (left part of the dialog)
 		treeContent = new TreeContent();
 		tree = treeContent.getTree();
 		tree.addTreeSelectionListener(this);
-		JScrollPane treeScroll = new JScrollPane(tree, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		treeScroll.getVerticalScrollBar().setUnitIncrement(edu.yu.einstein.genplay.util.Utils.SCROLL_INCREMENT_UNIT);
-		Dimension scrollDimension = new Dimension(100, DIALOG_HEIGHT);
-		treeScroll.setPreferredSize(scrollDimension);
-		treeScroll.setMinimumSize(scrollDimension);
+		tree.setBorder(BorderFactory.createLineBorder(Colors.DEFAULT_BORDER_COLOR));
 
 		// Content panel (right part of the dialog)
-		contentPane = new JPanel();
-		contentPane.setPreferredSize(contentDimension);
+		contentPane = new JPanel(new GridBagLayout());
+		contentPane.setBorder(BorderFactory.createLineBorder(Colors.DEFAULT_BORDER_COLOR));
 
 		// Create track panel
 		trackPanel = new TrackSettingsPanel();
@@ -106,10 +98,31 @@ public class TrackSettingsDialog extends JDialog implements TreeSelectionListene
 		// Create layer panel
 		layerPanel = new LayerSettingsPanel();
 
+		// set the dimension of the right panel to the max dimension of the 2 panels that can be displayed
+		int gap = 10;
+		int preferredWidth = Math.max(trackPanel.getPreferredSize().width, layerPanel.getPreferredSize().width);
+		preferredWidth = Math.max(preferredWidth, RIGHT_PANEL_MINIMUM_WIDTH);
+		preferredWidth += gap;
+		int preferredHeight = Math.max(trackPanel.getPreferredSize().height, layerPanel.getPreferredSize().height);
+		preferredHeight += gap;
+		contentPane.setPreferredSize(new Dimension(preferredWidth, preferredHeight));
+
 		// Adds panels
-		add(treeScroll, BorderLayout.WEST);
-		add(contentPane, BorderLayout.CENTER);
-		add(getValidationPanel(), BorderLayout.SOUTH);
+		setLayout(new GridBagLayout());
+
+		GridBagConstraints gbc = new GridBagConstraints();
+
+		gbc.insets = new Insets(5, 5, 5, 5);
+		gbc.fill = GridBagConstraints.BOTH;
+		add(tree, gbc);
+
+		gbc.gridx = 1;
+		add(contentPane, gbc);
+
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		gbc.gridwidth = 2;
+		add(getValidationPanel(), gbc);
 
 		// Dialog settings
 		setTitle("Track Settings");
@@ -122,104 +135,18 @@ public class TrackSettingsDialog extends JDialog implements TreeSelectionListene
 
 
 	/**
-	 * Shows the component.
-	 * @param parent the parent component of the dialog, can be null; see showDialog for details
-	 * @param track the selected track
-	 * @return APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
+	 * @return the layer options
 	 */
-	public int showDialog(Component parent, Track track) {
-		trackPanel.setOptions(track);
-
-		Layer<?>[] trackLayers = track.getLayers().getLayers();
-		LayerSettingsRow[] layerSettings = null;
-		if ((trackLayers != null) && (trackLayers.length > 0)) {
-			layerSettings = new LayerSettingsRow[trackLayers.length];
-			for (int i = 0; i < trackLayers.length; i++) {
-				layerSettings[i] = new LayerSettingsRow(trackLayers[i]);
-				layerSettings[i].setLayerActive(track.getActiveLayer() == trackLayers[i]);
-			}
-		}
-
-		layerPanel.initialize(layerSettings);
-
-		String accessor = TRACK;
-		return showDialog(parent, accessor);
+	public LayerSettingsRow[] getLayerOptions() {
+		return layerPanel.getData();
 	}
 
 
 	/**
-	 * Shows the component.
-	 * @param parent 	the parent component of the dialog, can be null; see showDialog for details
-	 * @param accessor 	get into a specific node of the properties dialog
-	 * @return APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
+	 * @return the track options
 	 */
-	private int showDialog(Component parent, String accessor) {
-		// Sets the content panel
-		if (accessor.equals(TRACK)) {
-			setScrollableCenterPanel(trackPanel);
-		} else if (accessor.equals(LAYER)) {
-			setScrollableCenterPanel(layerPanel);
-		}
-
-		// Gets the tree path if exists and select it
-		TreePath treePath = treeContent.getTreePath(accessor);
-		if (treePath != null) {
-			tree.setSelectionPath(treePath);
-			tree.scrollPathToVisible(treePath);
-		}
-
-		// Sets dialog display options
-		setLocationRelativeTo(parent);
-		setModalityType(ModalityType.APPLICATION_MODAL);
-		setVisible(true);
-
-		return approved;
-	}
-
-
-	/**
-	 * Sets the panel at the center of the dialog with the one given as parameter
-	 * It first includes the panel in a scroll panel.
-	 * @param panel the panel to show at the center of the dialog
-	 */
-	protected void setScrollableCenterPanel (JPanel panel) {
-		// Set the panel to the right dimension
-		JScrollPane scrollPane = new JScrollPane(panel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrollPane.getVerticalScrollBar().setUnitIncrement(edu.yu.einstein.genplay.util.Utils.SCROLL_INCREMENT_UNIT);
-		scrollPane.setPreferredSize(contentDimension);
-
-		// Removes all content of the contentPane
-		contentPane.removeAll();
-
-		// Set the redular dimension for the content panel
-		contentPane.setPreferredSize(contentDimension);
-
-		// Set the panel gaps to zero
-		((FlowLayout)(contentPane.getLayout())).setHgap(0);
-		((FlowLayout)(contentPane.getLayout())).setVgap(0);
-
-		// Add the panel to the content panel
-		contentPane.add(scrollPane);
-		contentPane.repaint();
-		validate();
-
-		pack();
-
-	}
-
-
-	@Override
-	public void valueChanged(TreeSelectionEvent arg0) {
-		DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
-		if (node == null) {
-			return;
-		}
-		Object nodeInfo = node.getUserObject();
-		if (nodeInfo.equals(TRACK)) {
-			setScrollableCenterPanel(trackPanel);
-		} else if (nodeInfo.equals(LAYER)) {
-			setScrollableCenterPanel(layerPanel);
-		}
+	public TrackSettingsPanel getTrackOptions() {
+		return trackPanel;
 	}
 
 
@@ -263,18 +190,94 @@ public class TrackSettingsDialog extends JDialog implements TreeSelectionListene
 
 
 	/**
-	 * @return the track options
+	 * Sets the panel on the right of the dialog as the one given as parameter
+	 * @param panel the panel to show at the center of the dialog
 	 */
-	public TrackSettingsPanel getTrackOptions() {
-		return trackPanel;
+	protected void setRightPanel (JPanel panel) {
+		// Removes all content of the contentPane
+		contentPane.removeAll();
+
+		// Add the panel to the content panel
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+		contentPane.add(panel, gbc);
+		contentPane.repaint();
+		validate();
+
+		pack();
 	}
 
 
 	/**
-	 * @return the layer options
+	 * Shows the component.
+	 * @param parent 	the parent component of the dialog, can be null; see showDialog for details
+	 * @param accessor 	get into a specific node of the properties dialog
+	 * @return APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
 	 */
-	public LayerSettingsRow[] getLayerOptions() {
-		return layerPanel.getData();
+	private int showDialog(Component parent, String accessor) {
+		// Sets the content panel
+		if (accessor.equals(TRACK)) {
+			setRightPanel(trackPanel);
+		} else if (accessor.equals(LAYER)) {
+			setRightPanel(layerPanel);
+		}
+
+		// Gets the tree path if exists and select it
+		TreePath treePath = treeContent.getTreePath(accessor);
+		if (treePath != null) {
+			tree.setSelectionPath(treePath);
+			tree.scrollPathToVisible(treePath);
+		}
+
+		// Sets dialog display options
+		setLocationRelativeTo(parent);
+		setModalityType(ModalityType.APPLICATION_MODAL);
+		setVisible(true);
+
+		return approved;
+	}
+
+
+	/**
+	 * Shows the component.
+	 * @param parent the parent component of the dialog, can be null; see showDialog for details
+	 * @param track the selected track
+	 * @return APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
+	 */
+	public int showDialog(Component parent, Track track) {
+		trackPanel.setOptions(track);
+
+		Layer<?>[] trackLayers = track.getLayers().getLayers();
+		LayerSettingsRow[] layerSettings = null;
+		if ((trackLayers != null) && (trackLayers.length > 0)) {
+			layerSettings = new LayerSettingsRow[trackLayers.length];
+			for (int i = 0; i < trackLayers.length; i++) {
+				layerSettings[i] = new LayerSettingsRow(trackLayers[i]);
+				layerSettings[i].setLayerActive(track.getActiveLayer() == trackLayers[i]);
+			}
+		}
+
+		layerPanel.initialize(layerSettings);
+
+		String accessor = TRACK;
+		return showDialog(parent, accessor);
+	}
+
+
+	@Override
+	public void valueChanged(TreeSelectionEvent arg0) {
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
+		if (node == null) {
+			return;
+		}
+		Object nodeInfo = node.getUserObject();
+		if (nodeInfo.equals(TRACK)) {
+			setRightPanel(trackPanel);
+		} else if (nodeInfo.equals(LAYER)) {
+			setRightPanel(layerPanel);
+		}
 	}
 
 }

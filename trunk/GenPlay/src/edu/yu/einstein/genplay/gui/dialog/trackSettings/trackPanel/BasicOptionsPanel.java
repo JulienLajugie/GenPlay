@@ -20,7 +20,7 @@
  * 
  * Website: <http://genplay.einstein.yu.edu>
  ******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.trackSettings;
+package edu.yu.einstein.genplay.gui.dialog.trackSettings.trackPanel;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -65,8 +65,6 @@ class BasicOptionsPanel extends JPanel {
 		jftfHeight = new JFormattedTextField(createHeightFormatter());
 
 		// Format components
-		TrackSettingsPanel.formatLabel(jlName);
-		TrackSettingsPanel.formatLabel(jlHeight);
 		TrackSettingsPanel.formatTextField(jtfName);
 		TrackSettingsPanel.formatNumberField(jftfHeight);
 

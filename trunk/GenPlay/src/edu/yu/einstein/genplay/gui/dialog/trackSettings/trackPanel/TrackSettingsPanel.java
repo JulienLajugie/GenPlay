@@ -20,14 +20,12 @@
  * 
  * Website: <http://genplay.einstein.yu.edu>
  ******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.trackSettings;
+package edu.yu.einstein.genplay.gui.dialog.trackSettings.trackPanel;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -49,17 +47,6 @@ public class TrackSettingsPanel extends JPanel {
 	private static final long serialVersionUID = -5402176442100056968L; // generated ID
 
 
-	protected static final int labelWidth = 100;
-
-	/**
-	 * Format a label
-	 * @param label a label
-	 */
-	protected static void formatLabel (JLabel label) {
-		int height = label.getFontMetrics(label.getFont()).getHeight();
-		Dimension dimension = new Dimension(130, height);
-		label.setPreferredSize(dimension);
-	}
 	/**
 	 * Format a field containing a number
 	 * @param field

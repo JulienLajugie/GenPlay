@@ -22,6 +22,7 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.trackSettings;
 
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +37,9 @@ import javax.swing.tree.TreeSelectionModel;
  * @version 0.1
  */
 class TreeContent {
+
+	/** preferred width of the tree */
+	private final static int TREE_PREFERRED_WIDTH = 100;
 
 	private final JTree 					tree;	// the tree
 	private DefaultMutableTreeNode 			root;	// root of the tree
@@ -68,6 +72,9 @@ class TreeContent {
 
 		// Single selection
 		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+
+		// set the new tree preferred width
+		tree.setPreferredSize(new Dimension(TREE_PREFERRED_WIDTH, tree.getPreferredSize().height));
 	}
 
 

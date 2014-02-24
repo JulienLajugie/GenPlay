@@ -20,7 +20,7 @@
  * 
  * Website: <http://genplay.einstein.yu.edu>
  ******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.trackSettings;
+package edu.yu.einstein.genplay.gui.dialog.trackSettings.trackPanel;
 
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -102,11 +102,6 @@ class ScoreOptionsPanel extends JPanel implements ActionListener, ChangeListener
 		jbScoreColor.addActionListener(this);
 
 		// Format components
-		TrackSettingsPanel.formatLabel(jlScoreMin);
-		TrackSettingsPanel.formatLabel(jlScoreMax);
-		TrackSettingsPanel.formatLabel(jlScoreAuto);
-		TrackSettingsPanel.formatLabel(jlScorePosition);
-		TrackSettingsPanel.formatLabel(jlScoreColor);
 		TrackSettingsPanel.formatNumberField(jftfScoreMin);
 		TrackSettingsPanel.formatNumberField(jftfScoreMax);
 

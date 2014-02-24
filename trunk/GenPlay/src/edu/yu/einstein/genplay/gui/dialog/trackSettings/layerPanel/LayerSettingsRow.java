@@ -20,7 +20,7 @@
  * 
  * Website: <http://genplay.einstein.yu.edu>
  ******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.layerSettings;
+package edu.yu.einstein.genplay.gui.dialog.trackSettings.layerPanel;
 
 import java.awt.Color;
 

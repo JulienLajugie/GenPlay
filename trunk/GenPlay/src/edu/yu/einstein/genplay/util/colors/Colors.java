@@ -199,6 +199,9 @@ public class Colors {
 	/** Background color of the menu bar */
 	public static final Color MENU_BAR_COLOR = Colors.WHITE;
 
+	/** Nimbus title border color */
+	public static final Color DEFAULT_BORDER_COLOR = GREY;
+
 
 	/**
 	 * @param color a color
