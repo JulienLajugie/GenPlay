@@ -37,9 +37,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.FiltersData;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterDialog.AddOrEditVariantFiltersDialog;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterTable.FilterTable;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterTable.TableHeaderPanel;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.newFilterDialog.AddOrEditVariantFiltersDialog;
 
 /**
  * @author Nicolas Fourel
@@ -61,7 +61,6 @@ public class FiltersPanel extends JPanel implements ActionListener, MouseListene
 	private			JPanel 				buttonPanel;	// the button panel to handle the table
 	private final	JLabel				tableLabel;
 	private final 	FilterTable		 	table;			// the table that summarize all stripes/filters settings
-	private final 	AddOrEditVariantFiltersDialog editingDialogManager;
 
 	private		JButton				jbAddRows;		// button to add row(s)
 	private		JButton				jbDeleteRows;	// button to delete row(s)
@@ -73,12 +72,10 @@ public class FiltersPanel extends JPanel implements ActionListener, MouseListene
 	 * Constructor of {@link FiltersPanel}
 	 * @param title the title of the panel
 	 * @param table the table to use
-	 * @param editingDialogManager editing dialog manager
 	 */
-	public FiltersPanel (String title, FilterTable table, AddOrEditVariantFiltersDialog editingDialogManager) {
+	public FiltersPanel (String title, FilterTable table) {
 		// Sets class parameters
 		this.table = table;
-		this.editingDialogManager = editingDialogManager;
 
 		// Adds listeners
 		this.table.addMouseListener(this);
@@ -140,11 +137,9 @@ public class FiltersPanel extends JPanel implements ActionListener, MouseListene
 	public void actionPerformed(ActionEvent e) {
 		JButton button = (JButton)e.getSource();
 		if (button.equals(jbAddRows)) {
-			List<FiltersData> tableData = editingDialogManager.showDialog(getRootPane());
-			if (tableData != null) {
-				for (FiltersData k: tableData) {
-					addRow(k);
-				}
+			FiltersData filtersData = AddOrEditVariantFiltersDialog.showAddDialog(getRootPane());
+			if (filtersData != null) {
+				addRow(filtersData);
 			}
 		} else if (button.equals(jbDeleteRows)) {
 			removeRows(table.getSelectedRows());
@@ -241,9 +236,7 @@ public class FiltersPanel extends JPanel implements ActionListener, MouseListene
 		} else {
 			FiltersData k = table.getModel().getCurrentData();
 			if (k != null) {
-				editingDialogManager.setData(k);
-				//List<K> tableData = editingDialogManager.showDialog();
-				editingDialogManager.showDialog(getRootPane());
+				AddOrEditVariantFiltersDialog.showEditDialog(getRootPane(), k);
 				table.getModel().resetCurrentData();
 				refreshPanel();
 			}

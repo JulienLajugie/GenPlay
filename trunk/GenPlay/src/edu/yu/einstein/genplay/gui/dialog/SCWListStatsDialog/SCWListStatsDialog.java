@@ -133,7 +133,7 @@ public class SCWListStatsDialog extends JDialog {
 
 		// set dialog properties
 		setIconImages(Images.getApplicationImages());
-		setModal(true);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 		pack();
 		setResizable(false);
 		getRootPane().setDefaultButton(jbOK);

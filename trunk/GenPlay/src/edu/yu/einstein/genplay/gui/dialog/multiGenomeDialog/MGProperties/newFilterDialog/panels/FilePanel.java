@@ -39,7 +39,7 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
  * Panel to select the file to filter
  * @author Julien Lajugie
  */
-public class FileSelectionPanel extends JPanel implements ItemListener {
+public class FilePanel extends JPanel implements ItemListener {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -4060807866730514644L;
@@ -55,16 +55,16 @@ public class FileSelectionPanel extends JPanel implements ItemListener {
 
 
 	/**
-	 * Constructor of {@link FileSelectionPanel}
+	 * Constructor of {@link FilePanel}
 	 */
-	public FileSelectionPanel(List<VCFFile> vcfFiles) {
+	public FilePanel(List<VCFFile> fileList, VCFFile selectedFile) {
 		super(new GridBagLayout());
-		if ((vcfFiles == null) || vcfFiles.isEmpty()) {
+
+		if ((fileList == null) || fileList.isEmpty()) {
 			throw new InvalidParameterException("The list of VCF cannot be empty or null");
 		}
-		selectedFile = vcfFiles.get(0);
-		if (vcfFiles.size() > 1) {
-			jcbFileSelection = new JComboBox(vcfFiles.toArray(new VCFFile[0]));
+		if (fileList.size() > 1) {
+			jcbFileSelection = new JComboBox(fileList.toArray(new VCFFile[0]));
 			jcbFileSelection.addItemListener(this);
 			setBorder(BorderFactory.createTitledBorder("Select VCF to Filter"));
 

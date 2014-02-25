@@ -28,6 +28,7 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -35,6 +36,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -54,7 +57,7 @@ import edu.yu.einstein.genplay.util.colors.Colors;
  * A list of layers already selected can be specified.
  * @author Julien Lajugie
  */
-public class LayerChooserPanel extends JPanel {
+public class LayerChooserPanel extends JPanel implements TableModelListener {
 
 	/**
 	 * Simple {@link TableCellRenderer} that returns a disabled component for the lines where the layer type is not selectable
@@ -90,6 +93,9 @@ public class LayerChooserPanel extends JPanel {
 	/** Generated ID */
 	private static final long serialVersionUID = 3444530544106287254L;
 
+	/** Selected layers change property name */
+	public static final String SELECTED_LAYERS_PROPERTY_NAME = "Selected Layers Change";
+
 	private final 	JTable 							layerTable;					// layer table
 	private final 	LayerChooserTableModel 			tableModel;					// layer table model
 	private final 	List<Layer<?>>					layers;						// List of layers displayed in the table
@@ -111,13 +117,18 @@ public class LayerChooserPanel extends JPanel {
 			boolean	isMultiselectable) {
 		super();
 		this.layers = layers;
-		this.selectedLayers = selectedLayers;
+		if (selectedLayers == null) {
+			this.selectedLayers = new ArrayList<Layer<?>>();
+		} else {
+			this.selectedLayers = selectedLayers;
+		}
 		this.selectableLayerTypes = selectableLayerTypes;
 		this.isMultiselectable = isMultiselectable;
 		// table
 		layerTable = new JTable();
 		// table model
-		tableModel = new LayerChooserTableModel(layers, selectedLayers, selectableLayerTypes, isMultiselectable);
+		tableModel = new LayerChooserTableModel(layers, this.selectedLayers, selectableLayerTypes, isMultiselectable);
+		tableModel.addTableModelListener(this);
 		init();
 	}
 
@@ -128,7 +139,7 @@ public class LayerChooserPanel extends JPanel {
 	 * isMultiselectable is set to false.
 	 */
 	public Layer<?> getSelectedLayer() {
-		if ((selectedLayers == null) || selectedLayers.isEmpty()) {
+		if (selectedLayers.isEmpty()) {
 			return null;
 		} else {
 			return selectedLayers.get(0);
@@ -145,6 +156,14 @@ public class LayerChooserPanel extends JPanel {
 
 
 	/**
+	 * @return the table displaying the layers
+	 */
+	public JTable getTable() {
+		return layerTable;
+	}
+
+
+	/**
 	 * Initializes dialog components
 	 */
 	private void init() {
@@ -153,7 +172,7 @@ public class LayerChooserPanel extends JPanel {
 		layerTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		JScrollPane scrollPane = new JScrollPane(layerTable);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(Utils.SCROLL_INCREMENT_UNIT);
-		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		initializeColumnProperties();
 		// table renderer and editors if the multiselectable property is set to false so we have radio buttons instead of check boxes
 		if (!isMultiselectable) {
@@ -209,5 +228,13 @@ public class LayerChooserPanel extends JPanel {
 			column.setResizable(true);
 			column.setCellRenderer(tableCellRenderer);
 		}
+	}
+
+
+	@Override
+	public void tableChanged(TableModelEvent e) {
+		//if (e.getColumn() == LayerChooserTableModel.LAYER_SELECTION_INDEX) {
+		firePropertyChange(SELECTED_LAYERS_PROPERTY_NAME, null, selectedLayers);
+		//}
 	}
 }

@@ -130,7 +130,7 @@ public final class SCWLAScoreDistribution extends TrackListActionOperationWorker
 						selectedLayers = new AbstractSCWLayer[1];
 						selectedLayers[0] =	(AbstractSCWLayer<?>) scwLayers[0];
 					}
-					if ((selectedLayers != null)) {
+					if (selectedLayers != null) {
 						SCWList[] scwListArray = new SCWList[selectedLayers.length];
 						for (int i = 0; i < selectedLayers.length; i++) {
 							scwListArray[i] = selectedLayers[i].getData();

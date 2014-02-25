@@ -27,6 +27,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,7 +111,7 @@ public class LayerChooserDialog extends JDialog {
 				new LayerChooserPanel(layers, selectedLayers, selectableLayerTypes, isMultiselectable);
 
 		// Confirm button
-		JButton jbConfirm = new JButton("Ok");
+		final JButton jbConfirm = new JButton("Ok");
 		jbConfirm.setToolTipText(ProjectFrame.CONFIRM_FILES);
 		jbConfirm.addActionListener(new ActionListener() {
 			@Override
@@ -119,6 +121,13 @@ public class LayerChooserDialog extends JDialog {
 				dispose();
 			}
 		});
+		layerChooserPanel.addPropertyChangeListener(LayerChooserPanel.SELECTED_LAYERS_PROPERTY_NAME, new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				jbConfirm.setEnabled(!selectedLayers.isEmpty());
+			}
+		});
+		jbConfirm.setEnabled(!selectedLayers.isEmpty());
 		getRootPane().setDefaultButton(jbConfirm);
 
 		// Cancel button

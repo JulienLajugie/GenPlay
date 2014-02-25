@@ -191,7 +191,7 @@ public class AddOrEditVariantLayerDialog extends JDialog {
 		add(jbCancel, gbc);
 
 		// add components
-		setModal(true);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 		setResizable(false);
 		pack();
 	}

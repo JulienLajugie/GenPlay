@@ -398,7 +398,7 @@ public final class Utils {
 	 * @param filter an array of {@link LayerType} as filters
 	 * @return a list of {@link Layer} containing only the {@link LayerType} defined in the filters.
 	 */
-	public static List<Layer<?>> getLayers (List<Layer<?>> layers, LayerType[] filter) {
+	public static List<Layer<?>> getLayers(List<Layer<?>> layers, LayerType[] filter) {
 		List<Layer<?>> result = new ArrayList<Layer<?>>();
 		for (Layer<?> layer: layers) {
 			boolean found = false;

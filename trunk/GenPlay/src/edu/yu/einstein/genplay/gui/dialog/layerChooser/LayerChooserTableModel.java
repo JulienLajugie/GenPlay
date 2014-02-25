@@ -35,7 +35,7 @@ import edu.yu.einstein.genplay.gui.track.layer.LayerType;
  * Model handling the list of layer that can be selected in a {@link LayerChooserDialog}
  * @author Julien Lajugie
  */
-class LayerChooserTableModel extends AbstractTableModel {
+public class LayerChooserTableModel extends AbstractTableModel {
 
 	/** Generated serial ID */
 	private static final long serialVersionUID = 136782955769801093L;
@@ -44,19 +44,19 @@ class LayerChooserTableModel extends AbstractTableModel {
 	protected static final String[] COLUMN_NAMES = {"Track #", "Track Name", "Layer Name", "Layer Type", "Selected"};	// Column names
 
 	/** track number index */
-	protected static final int TRACK_NUMBER_INDEX = 0;
+	public static final int TRACK_NUMBER_INDEX = 0;
 
 	/** track name index */
-	protected static final int TRACK_NAME_INDEX = 1;
+	public static final int TRACK_NAME_INDEX = 1;
 
 	/** layer name index */
-	protected static final int LAYER_NAME_INDEX = 2;
+	public static final int LAYER_NAME_INDEX = 2;
 
 	/** layer type index */
-	protected static final int LAYER_TYPE_INDEX = 3;
+	public static final int LAYER_TYPE_INDEX = 3;
 
 	/** layer selection index */
-	protected static final int LAYER_SELECTION_INDEX = 4;
+	public static final int LAYER_SELECTION_INDEX = 4;
 
 	private final List<Layer<?>> 			layers;					// list of layers
 	private final List<Layer<?>>			selectedLayers;			// list of layers that are selected
@@ -78,11 +78,7 @@ class LayerChooserTableModel extends AbstractTableModel {
 		} else {
 			layers = availableLayers;
 		}
-		if (selectedLayers == null) {
-			this.selectedLayers = new ArrayList<Layer<?>>();
-		} else {
-			this.selectedLayers = selectedLayers;
-		}
+		this.selectedLayers = selectedLayers;
 		this.selectableLayerTypes = selectableLayerTypes;
 		this.isMultiselectable = isMultiselectable;
 	}

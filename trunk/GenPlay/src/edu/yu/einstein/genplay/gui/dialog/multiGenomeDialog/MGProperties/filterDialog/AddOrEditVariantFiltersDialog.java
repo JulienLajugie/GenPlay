@@ -290,7 +290,7 @@ public class AddOrEditVariantFiltersDialog extends JDialog {
 		List<FiltersData> data = null;
 		initDialog();
 		setLocationRelativeTo(parent);
-		setModal(true);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 		setVisible(true);
 		if (approved == APPROVE_OPTION) {
 			data = retrieveData();

@@ -47,7 +47,6 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.FiltersData;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterDialog.AddOrEditVariantFiltersDialog;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterTable.FilterTable;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.statistics.StatisticPanel;
 import edu.yu.einstein.genplay.util.Images;
@@ -148,7 +147,7 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 		settingsPanel = new SettingsPanel();
 
 		// Creates the file filters panel
-		fileFiltersPanel = new FiltersPanel("VCF Files Filters settings", new FilterTable(), new AddOrEditVariantFiltersDialog());
+		fileFiltersPanel = new FiltersPanel("VCF Files Filters settings", new FilterTable());
 
 		// Dialog settings
 		setTitle("Multi-Genome Project Properties");
