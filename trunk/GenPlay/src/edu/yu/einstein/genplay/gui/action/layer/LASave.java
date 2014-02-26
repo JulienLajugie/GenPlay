@@ -25,7 +25,6 @@ package edu.yu.einstein.genplay.gui.action.layer;
 import java.io.File;
 
 import javax.swing.ActionMap;
-import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
 import edu.yu.einstein.genplay.core.IO.writer.Writer;
@@ -34,10 +33,10 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.GenomicListView;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection.GenomeSelectionDialog;
-import edu.yu.einstein.genplay.gui.fileFilter.ExtendedFileFilter;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
+import edu.yu.einstein.genplay.util.FileChooser;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -75,10 +74,6 @@ public class LASave extends TrackListActionWorker<Void> {
 	protected Void processAction() throws Exception {
 		if (getTrackListPanel().getSelectedTrack() != null) {
 			Layer<?> selectedLayer = (Layer<?>) getValue("Layer");
-			JFileChooser jfc = new JFileChooser();
-			Utils.setFileChooserSelectedDirectory(jfc);
-			jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-			jfc.setDialogTitle("Save Layer");
 			FileFilter[] filters = null;
 			if (selectedLayer.getType() == LayerType.BIN_LAYER) {
 				filters = Utils.getWritableBinListFileFilters();
@@ -90,33 +85,23 @@ public class LASave extends TrackListActionWorker<Void> {
 				// case where we don't know how to save the type of the selected track
 				return null;
 			}
-			for (FileFilter currentFilter: filters) {
-				jfc.addChoosableFileFilter(currentFilter);
-			}
-			jfc.setAcceptAllFileFilterUsed(false);
-			jfc.setFileFilter(jfc.getChoosableFileFilters()[0]);
-			jfc.setSelectedFile(new File(selectedLayer.getName()));
-			int returnVal = jfc.showSaveDialog(getRootPane());
-			if(returnVal == JFileChooser.APPROVE_OPTION) {
-				ExtendedFileFilter selectedFilter = (ExtendedFileFilter)jfc.getFileFilter();
-				File selectedFile = Utils.addExtension(jfc.getSelectedFile(), selectedFilter.getExtensions()[0]);
-				if (!Utils.cancelBecauseFileExist(getRootPane(), selectedFile)) {
-					boolean isValid = true;
-					GenomicListView<?> data = (GenomicListView<?>) selectedLayer.getData();
-					String name = selectedLayer.getName();
-					writer = WriterFactory.getWriter(selectedFile, data, name, selectedFilter);
-					if (ProjectManager.getInstance().isMultiGenomeProject()) {
-						GenomeSelectionDialog dialog = new GenomeSelectionDialog();
-						if (dialog.showDialog(getRootPane()) == GenomeSelectionDialog.APPROVE_OPTION) {
-							writer.setMultiGenomeCoordinateSystem(dialog.getGenomeName(), dialog.getAlleleType());
-						} else {
-							isValid = false;
-						}
+			File selectedFile = FileChooser.chooseFile(getRootPane(), FileChooser.SAVE_FILE_MODE, "Save Layer", filters, false, new File(selectedLayer.getName()));
+			if(selectedFile != null) {
+				boolean isValid = true;
+				GenomicListView<?> data = (GenomicListView<?>) selectedLayer.getData();
+				String name = selectedLayer.getName();
+				writer = WriterFactory.getWriter(selectedFile, data, name);
+				if (ProjectManager.getInstance().isMultiGenomeProject()) {
+					GenomeSelectionDialog dialog = new GenomeSelectionDialog();
+					if (dialog.showDialog(getRootPane()) == GenomeSelectionDialog.APPROVE_OPTION) {
+						writer.setMultiGenomeCoordinateSystem(dialog.getGenomeName(), dialog.getAlleleType());
+					} else {
+						isValid = false;
 					}
-					if (isValid) {
-						notifyActionStart("Saving Layer " + name, 1, writer instanceof Stoppable);
-						writer.write();
-					}
+				}
+				if (isValid) {
+					notifyActionStart("Saving Layer " + name, 1, writer instanceof Stoppable);
+					writer.write();
 				}
 			}
 		}

@@ -28,13 +28,13 @@ import java.io.File;
 import java.security.InvalidParameterException;
 
 import javax.swing.ActionMap;
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
 import edu.yu.einstein.genplay.core.IO.fileSorter.ExternalSortAdapter;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.exceptionDialog.WarningReportDialog;
+import edu.yu.einstein.genplay.util.FileChooser;
 import edu.yu.einstein.genplay.util.Utils;
 
 /**
@@ -47,7 +47,6 @@ public class PASortFile extends TrackListActionWorker<Boolean> {
 	private static final String 	DESCRIPTION = "Sort the specified file by chromosome, start and stop position"; 	// tooltip
 	private static final int 		MNEMONIC = KeyEvent.VK_R; 			// mnemonic key
 	private static final String 	ACTION_NAME = "Sort File";	 		// action name
-	private File 					selectedFile; 						// selected file
 
 
 	/**
@@ -85,14 +84,8 @@ public class PASortFile extends TrackListActionWorker<Boolean> {
 
 	@Override
 	protected Boolean processAction() throws Exception {
-		final JFileChooser jfc = new JFileChooser();
-		Utils.setFileChooserSelectedDirectory(jfc);
-		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		jfc.setDialogTitle("Sort File");
-		jfc.setAcceptAllFileFilterUsed(true);
-		int returnVal = jfc.showOpenDialog(getRootPane());
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			selectedFile = jfc.getSelectedFile();
+		File selectedFile = FileChooser.chooseFile(getRootPane(), FileChooser.OPEN_FILE_MODE, "Select File to Sort", Utils.getSortableFileFilters(), false);
+		if (selectedFile != null) {
 			if (!Utils.cancelBecauseFileExist(getRootPane(), ExternalSortAdapter.generateOutputFile(selectedFile))) {
 				notifyActionStart("Sorting File", 1, false);
 				try {

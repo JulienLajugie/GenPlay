@@ -27,21 +27,20 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotData;
 import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotPane;
+import edu.yu.einstein.genplay.util.FileChooser;
 import edu.yu.einstein.genplay.util.NumberFormats;
-import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
  * Saves the data of the ScatterPlot chart as TSV file
  * @author Julien Lajugie
- * @version 0.1
  */
 public class SPASaveData extends ScatterPlotAction {
 
@@ -72,18 +71,10 @@ public class SPASaveData extends ScatterPlotAction {
 			selectedData = (ScatterPlotData) JOptionPane.showInputDialog(getScatterPlotPane(), "Select a graph", "Choose Color", JOptionPane.PLAIN_MESSAGE, null, graphNames, graphNames[0]);
 		}
 		if (selectedData != null) {
-			JFileChooser jfc = new JFileChooser();
-			Utils.setFileChooserSelectedDirectory(jfc);
-			jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-			FileNameExtensionFilter filter = new FileNameExtensionFilter("TSV file (*.tsv)", "tsv");
-			jfc.setFileFilter(filter);
-			int retValue = jfc.showSaveDialog(getScatterPlotPane());
-			if (retValue == JFileChooser.APPROVE_OPTION) {
-				File file = jfc.getSelectedFile();
-				if (!Utils.cancelBecauseFileExist(getScatterPlotPane(), file)) {
-					file = Utils.addExtension(file, "tsv");
-					writeData(file, selectedData);
-				}
+			FileFilter[] filters = {new FileNameExtensionFilter("TSV file (*.tsv)", "tsv")};
+			File selectedFile = FileChooser.chooseFile(getRootPane(), FileChooser.SAVE_FILE_MODE, "Save Data As", filters, false);
+			if (selectedFile != null) {
+				writeData(selectedFile, selectedData);
 			}
 		}
 	}

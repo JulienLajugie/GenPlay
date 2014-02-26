@@ -28,7 +28,6 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 
 import javax.swing.ActionMap;
-import javax.swing.JFileChooser;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 
@@ -36,9 +35,9 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.recording.ProjectRecording;
 import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
-import edu.yu.einstein.genplay.gui.fileFilter.ExtendedFileFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.GenPlayProjectFilter;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
+import edu.yu.einstein.genplay.util.FileChooser;
 import edu.yu.einstein.genplay.util.Utils;
 
 /**
@@ -53,7 +52,7 @@ public class PASaveProjectAs extends TrackListActionWorker<Boolean> {
 	private static final String 	DESCRIPTION = "Save the current project"; 		// tooltip
 	private static final int 		MNEMONIC = KeyEvent.VK_S; 						// mnemonic key
 	private static final String 	ACTION_NAME = "Save As..."; 					// action name
-	private File 					selectedFile; 									// selected file
+
 
 	/**
 	 * action accelerator {@link KeyStroke}
@@ -91,33 +90,16 @@ public class PASaveProjectAs extends TrackListActionWorker<Boolean> {
 
 	@Override
 	protected Boolean processAction() throws Exception {
-		final JFileChooser jfc = new JFileChooser();
-		Utils.setFileChooserSelectedDirectory(jfc);
-		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		jfc.setDialogTitle("Save Project As");
-		FileFilter[] filters = { new GenPlayProjectFilter() };
-		jfc.addChoosableFileFilter(filters[0]);
-		jfc.setFileFilter(filters[0]);
-		jfc.setAcceptAllFileFilterUsed(false);
 		File f = new File(ProjectManager.getInstance().getProjectName() + "." + GenPlayProjectFilter.EXTENSIONS[0]);
-		jfc.setSelectedFile(f);
-		int returnVal = jfc.showSaveDialog(getRootPane());
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			ExtendedFileFilter selectedFilter = (ExtendedFileFilter) jfc.getFileFilter();
-			if (selectedFilter != null) {
-				selectedFile = Utils.addExtension(jfc.getSelectedFile(), selectedFilter.getExtensions()[0]);
-			} else {
-				selectedFile = Utils.addExtension(jfc.getSelectedFile(), GenPlayProjectFilter.EXTENSIONS[0]);
-			}
-			if (!Utils.cancelBecauseFileExist(getRootPane(), selectedFile)) {
-				notifyActionStart("Saving Project", 1, false);
-				String projectName = Utils.getFileNameWithoutExtension(selectedFile);
-				ProjectManager.getInstance().setProjectName(projectName);
-				ProjectManager.getInstance().setProjectDirectory(selectedFile.getParentFile());
-				ProjectRecording projectRecording = RecordingManager.getInstance().getProjectRecording();
-				projectRecording.setCurrentProjectPath(selectedFile.getPath());
-				return projectRecording.saveProject(selectedFile);
-			}
+		File selectedFile = FileChooser.chooseFile(getRootPane(), FileChooser.SAVE_FILE_MODE, "Save Project As", new FileFilter[] {new GenPlayProjectFilter()}, false, f);
+		if (selectedFile != null) {
+			notifyActionStart("Saving Project", 1, false);
+			String projectName = Utils.getFileNameWithoutExtension(selectedFile);
+			ProjectManager.getInstance().setProjectName(projectName);
+			ProjectManager.getInstance().setProjectDirectory(selectedFile.getParentFile());
+			ProjectRecording projectRecording = RecordingManager.getInstance().getProjectRecording();
+			projectRecording.setCurrentProjectPath(selectedFile.getPath());
+			return projectRecording.saveProject(selectedFile);
 		}
 		return false;
 	}

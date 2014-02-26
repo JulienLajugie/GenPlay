@@ -24,8 +24,6 @@ package edu.yu.einstein.genplay.core.IO.writer;
 
 import java.io.File;
 
-import javax.swing.filechooser.FileFilter;
-
 import edu.yu.einstein.genplay.core.IO.writer.SCWListWriter.SCWListAsBedGraphWith0Writer;
 import edu.yu.einstein.genplay.core.IO.writer.SCWListWriter.SCWListAsBedGraphWriter;
 import edu.yu.einstein.genplay.core.IO.writer.SCWListWriter.SCWListAsBedWriter;
@@ -58,21 +56,16 @@ public final class WriterFactory {
 	 * @param outputFile output {@link File}
 	 * @param data {@link BinList} to write
 	 * @param name a name for the {@link BinList}
-	 * @param ff a subclass of {@link FileFilter}
 	 * @return a subclass of {@link BinListWriter} or null if the type can't be figured out
 	 */
-	private static Writer getBinListWriter(File outputFile, BinList data, String name, FileFilter ff) {
-		if (ff == null) {
-			return null;
-		} else if (ff instanceof BedFilter) {
+	private static Writer getBinListWriter(File outputFile, BinList data, String name) {
+		if (new BedFilter().accept(outputFile)) {
 			return new SCWListAsBedWriter(outputFile, data, name);
-		} else if (ff instanceof BedGraphFilter) {
+		} else if (new BedGraphFilter().accept(outputFile)) {
 			return new SCWListAsBedGraphWriter(outputFile, data, name);
-		} else if (ff instanceof BedGraphWith0Filter) {
-			return new SCWListAsBedGraphWith0Writer(outputFile, data, name);
-		} else if (ff instanceof GFFFilter) {
+		} else if (new GFFFilter().accept(outputFile)) {
 			return new SCWListAsGFFWriter(outputFile, data, name);
-		} else if (ff instanceof WiggleFilter) {
+		} else if (new WiggleFilter().accept(outputFile)) {
 			return new BinListAsWiggleWriter(outputFile, data, name);
 		} else {
 			return null;
@@ -85,13 +78,10 @@ public final class WriterFactory {
 	 * @param outputFile output {@link File}
 	 * @param data {@link GeneList} to write
 	 * @param name a name for the {@link GeneList}
-	 * @param ff a subclass of {@link FileFilter}
 	 * @return a subclass of {@link GeneListWriter} or null if the type can't be figured out
 	 */
-	private static GeneListWriter getGeneListWriter(File outputFile, GeneList data, String name, FileFilter ff) {
-		if (ff == null) {
-			return null;
-		} else if (ff instanceof BedFilter) {
+	private static GeneListWriter getGeneListWriter(File outputFile, GeneList data, String name) {
+		if (new BedFilter().accept(outputFile)) {
 			return new GeneListAsBedWriter(outputFile, data, name);
 		} else {
 			return null;
@@ -104,19 +94,16 @@ public final class WriterFactory {
 	 * @param outputFile output {@link File}
 	 * @param data {@link SCWList} to write
 	 * @param name a name for the data
-	 * @param ff a subclass of {@link FileFilter}
 	 * @return a subclass of {@link SCWListWriter} or null if the type can't be figured out
 	 */
-	private static SCWListWriter getSCWListWriter(File outputFile, SCWList data, String name, FileFilter ff) {
-		if (ff == null) {
-			return null;
-		} else if (ff instanceof BedFilter) {
+	private static SCWListWriter getSCWListWriter(File outputFile, SCWList data, String name) {
+		if (new BedFilter().accept(outputFile)) {
 			return new SCWListAsBedWriter(outputFile, data, name);
-		} else if (ff instanceof BedGraphFilter) {
+		} else if (new BedGraphFilter().accept(outputFile)) {
 			return new SCWListAsBedGraphWriter(outputFile, data, name);
-		} else if (ff instanceof BedGraphWith0Filter) {
+		} else if (new BedGraphWith0Filter().accept(outputFile)) {
 			return new SCWListAsBedGraphWith0Writer(outputFile, data, name);
-		} else if (ff instanceof GFFFilter) {
+		} else if (new GFFFilter().accept(outputFile)) {
 			return new SCWListAsGFFWriter(outputFile, data, name);
 		} else {
 			return null;
@@ -129,21 +116,20 @@ public final class WriterFactory {
 	 * @param outputFile output {@link File}
 	 * @param data data to write
 	 * @param name a name for the data
-	 * @param ff a subclass of {@link FileFilter}
 	 * @return a class implementing the Writer interface.
 	 * @throws InvalidFileTypeException
 	 */
-	public static Writer getWriter(File outputFile, GenomicListView<?> data, String name, FileFilter ff) throws InvalidFileTypeException {
+	public static Writer getWriter(File outputFile, GenomicListView<?> data, String name) throws InvalidFileTypeException {
 		Writer writer = null;
 		if (data instanceof GeneList) {
 			GeneList geneList = (GeneList) data;
-			writer = getGeneListWriter(outputFile, geneList, name, ff);
+			writer = getGeneListWriter(outputFile, geneList, name);
 		} else if (data instanceof BinList) {
 			BinList scwList = (BinList) data;
-			writer = getBinListWriter(outputFile, scwList, name, ff);
+			writer = getBinListWriter(outputFile, scwList, name);
 		} else if (data instanceof SCWList) {
 			SCWList scwList = (SCWList) data;
-			writer = getSCWListWriter(outputFile, scwList, name, ff);
+			writer = getSCWListWriter(outputFile, scwList, name);
 		}
 		if (writer != null) {
 			return writer;

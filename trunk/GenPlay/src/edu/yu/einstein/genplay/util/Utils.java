@@ -31,12 +31,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileFilter;
 
-import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
@@ -56,6 +54,7 @@ import edu.yu.einstein.genplay.gui.fileFilter.GFFFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.GTFFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.GenPlayTrackFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.PSLFilter;
+import edu.yu.einstein.genplay.gui.fileFilter.PairFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.SAMFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.TwoBitFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.WiggleFilter;
@@ -155,44 +154,6 @@ public final class Utils {
 			}
 		}
 		return null;
-	}
-
-
-	/**
-	 * Opens a dialog box asking the user to choose a file to load
-	 * @param parentComponent determines the Frame in which the dialog is displayed; if null, or if the parentComponent has no Frame, a default Frame is used
-	 * @param title title of the open dialog
-	 * @param choosableFileFilters {@link FileFilter} available
-	 * @param allFiles allow the selection of every kind of file if true, disable the all file selection if false
-	 * @return a file to load
-	 */
-	public final static File chooseFileToLoad(Component parentComponent, String title, FileFilter[] choosableFileFilters, boolean allFiles) {
-		JFileChooser jfc = new JFileChooser();
-		setFileChooserSelectedDirectory(jfc);
-		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		jfc.setDialogTitle(title);
-		if (choosableFileFilters != null) {
-			for (FileFilter currentFilter: choosableFileFilters) {
-				jfc.addChoosableFileFilter(currentFilter);
-			}
-			jfc.setFileFilter(choosableFileFilters[0]);
-		}
-		if (allFiles) {
-			jfc.addChoosableFileFilter(jfc.getAcceptAllFileFilter());
-		}
-		int returnVal = jfc.showOpenDialog(parentComponent);
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			File selectedFile = jfc.getSelectedFile();
-			if (!selectedFile.canRead()) {
-				JOptionPane.showMessageDialog(parentComponent,
-						"You don't have the permission to read the selected file.", "File Incorrect", JOptionPane.ERROR_MESSAGE, null);
-				return null;
-			} else {
-				return jfc.getSelectedFile();
-			}
-		} else {
-			return null;
-		}
 	}
 
 
@@ -468,6 +429,15 @@ public final class Utils {
 
 
 	/**
+	 * @return the {@link ExtendedFileFilter} associated to the files that can be sorted by the application
+	 */
+	public final static FileFilter[] getSortableFileFilters() {
+		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new SAMFilter(), new GFFFilter(), new PairFilter(), new PSLFilter()};
+		return filters;
+	}
+
+
+	/**
 	 * @return the location of the temporary directory
 	 */
 	public static String getTmpDirectoryPath() {
@@ -479,7 +449,7 @@ public final class Utils {
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be saved as BinList
 	 */
 	public final static FileFilter[] getWritableBinListFileFilters() {
-		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedGraphWith0Filter(), new BedFilter(), new GFFFilter(), new WiggleFilter()};
+		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new WiggleFilter()};
 		return filters;
 	}
 
@@ -572,20 +542,6 @@ public final class Utils {
 			right--;
 		}
 		return b;
-	}
-
-
-	/**
-	 * Sets the specified {@link JFileChooser} to the default directory
-	 * @param jfc
-	 */
-	public static void setFileChooserSelectedDirectory(JFileChooser jfc) {
-		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
-		if (isMacOS()) {
-			jfc.setSelectedFile(new File(defaultDirectory));
-		} else {
-			jfc.setCurrentDirectory(new File(defaultDirectory));
-		}
 	}
 
 

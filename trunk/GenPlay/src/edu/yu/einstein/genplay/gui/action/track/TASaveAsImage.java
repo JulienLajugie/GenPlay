@@ -31,15 +31,15 @@ import java.io.File;
 
 import javax.imageio.ImageIO;
 import javax.swing.ActionMap;
-import javax.swing.JFileChooser;
 import javax.swing.KeyStroke;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.util.Utils;
+import edu.yu.einstein.genplay.util.FileChooser;
 
 
 /**
@@ -110,23 +110,15 @@ public final class TASaveAsImage extends TrackListActionWorker<Void> {
 	protected Void processAction() throws Exception {
 		Track selectedTrack = getTrackListPanel().getSelectedTrack();
 		if (selectedTrack != null) {
-			final JFileChooser saveFC = new JFileChooser();
-			Utils.setFileChooserSelectedDirectory(saveFC);
-			saveFC.setFileSelectionMode(JFileChooser.FILES_ONLY);
-			FileNameExtensionFilter filter = new FileNameExtensionFilter("PNG file (*.PNG)", "png");
-			saveFC.setFileFilter(filter);
-			saveFC.setDialogTitle("Save track " + selectedTrack.getName() + " as a PNG image");
-			saveFC.setSelectedFile(new File(selectedTrack.getName() + ".png"));
-			int returnVal = saveFC.showSaveDialog(getRootPane());
-			if(returnVal == JFileChooser.APPROVE_OPTION) {
-				File file = Utils.addExtension(saveFC.getSelectedFile(), "png");
-				if (!Utils.cancelBecauseFileExist(getRootPane(), file)) {
-					notifyActionStart("Saving Track #" + selectedTrack.getNumber() + " As Image", 1, false);
-					try {
-						ImageIO.write(createImage(selectedTrack), "PNG", file);
-					}catch(Exception e) {
-						ExceptionManager.getInstance().caughtException(Thread.currentThread(), e, "Error while saving the tracks as an image");
-					}
+			FileFilter[] filters = {new FileNameExtensionFilter("PNG file (*.PNG)", "png")};
+			File f = new File(selectedTrack.getName() + ".png");
+			File selectedFile = FileChooser.chooseFile(getRootPane(), FileChooser.SAVE_FILE_MODE, "Save Image As", filters, false, f);
+			if(selectedFile != null) {
+				notifyActionStart("Saving Track #" + selectedTrack.getNumber() + " As Image", 1, false);
+				try {
+					ImageIO.write(createImage(selectedTrack), "PNG", selectedFile);
+				}catch(Exception e) {
+					ExceptionManager.getInstance().caughtException(Thread.currentThread(), e, "Error while saving the tracks as an image");
 				}
 			}
 		}

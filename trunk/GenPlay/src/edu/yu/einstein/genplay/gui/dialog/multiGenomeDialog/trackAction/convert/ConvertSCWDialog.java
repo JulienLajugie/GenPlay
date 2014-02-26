@@ -22,7 +22,6 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.convert;
 
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -56,7 +55,7 @@ public class ConvertSCWDialog extends MultiGenomeTrackActionDialog {
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -1321930230220361216L;
 
-	private final static String DIALOG_TITLE = "Convert into variable window track";
+	private final static String DIALOG_TITLE = "Convert Into Variable Window Track";
 
 	private String genomeName;
 	private JComboBox jcbAlleleTrack01;
@@ -116,12 +115,6 @@ public class ConvertSCWDialog extends MultiGenomeTrackActionDialog {
 		JComboBox jcbGenome = new JComboBox(genomeList.toArray());
 		jcbGenome.setSelectedIndex(0);
 		genomeName = jcbGenome.getSelectedItem().toString();
-
-		//Dimension
-		int height = jcbGenome.getFontMetrics(jcbGenome.getFont()).getHeight() + 5;
-		Dimension dimension = new Dimension(MIN_DIALOG_WIDTH - 50, height);
-		jcbGenome.setPreferredSize(dimension);
-		jcbGenome.setMinimumSize(dimension);
 
 		jcbGenome.addActionListener(new ActionListener() {
 			@Override
@@ -321,7 +314,6 @@ public class ConvertSCWDialog extends MultiGenomeTrackActionDialog {
 		contentPanel.add(getIDPanel(settings.getFileList()), gbc);
 
 		gbc.gridy++;
-		gbc.weighty = 1;
 		contentPanel.add(getOptionPanel(), gbc);
 	}
 

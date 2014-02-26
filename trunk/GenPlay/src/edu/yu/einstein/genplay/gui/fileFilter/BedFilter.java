@@ -26,7 +26,7 @@ import javax.swing.filechooser.FileFilter;
 
 
 /**
- * A BinListAsBedGraphWriter {@link FileFilter}
+ * A Bed {@link FileFilter}
  * @author Julien Lajugie
  * @version 0.1
  */

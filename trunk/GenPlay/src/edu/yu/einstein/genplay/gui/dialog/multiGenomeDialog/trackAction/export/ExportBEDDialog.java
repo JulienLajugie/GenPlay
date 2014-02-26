@@ -41,7 +41,6 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
-import javax.swing.filechooser.FileFilter;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
@@ -51,6 +50,7 @@ import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSe
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportUtils;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.mainDialog.MultiGenomeTrackActionDialog;
 import edu.yu.einstein.genplay.gui.fileFilter.BedFilter;
+import edu.yu.einstein.genplay.gui.fileFilter.ExtendedFileFilter;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 
 /**
@@ -80,39 +80,6 @@ public class ExportBEDDialog extends MultiGenomeTrackActionDialog {
 	}
 
 
-	@Override
-	protected void initializeContentPanel() {
-		// Initialize the content panel
-		contentPanel = new JPanel();
-
-		// Create the field set effect
-		TitledBorder titledBorder = BorderFactory.createTitledBorder("Export settings");
-		contentPanel.setBorder(titledBorder);
-
-		// Create the layout
-		GridBagLayout layout = new GridBagLayout();
-		contentPanel.setLayout(layout);
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-		gbc.insets = new Insets(0, 0, 0, 0);
-		gbc.weightx = 1;
-		gbc.weighty = 0;
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-
-		contentPanel.add(getBedPanel(), gbc);
-
-		gbc.gridy++;
-		contentPanel.add(getGenomeSelectionPanel(settings.getGenomeNames()), gbc);
-
-		gbc.gridy++;
-		contentPanel.add(getIDPanel(settings.getFileList()), gbc);
-
-		gbc.gridy++;
-		gbc.weighty = 1;
-		contentPanel.add(getOptionPanel(), gbc);
-	}
-
 	/**
 	 * @return the panel to select a path to export the track
 	 */
@@ -137,18 +104,14 @@ public class ExportBEDDialog extends MultiGenomeTrackActionDialog {
 		// Create the text field
 		jtfFile = new JTextField();
 		jtfFile.setEditable(false);
-		Dimension jtfDim = new Dimension(MIN_DIALOG_WIDTH - 25, 21);
-		ExportUtils.setComponentSize(jtfFile, jtfDim);
 
 		// Create the button
 		JButton button = new JButton("...");
-		Dimension bDim = new Dimension(20, 20);
-		ExportUtils.setComponentSize(button, bDim);
 		button.setMargin(new Insets(0, 0, 0, 0));
 		button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				FileFilter[] filters = {new BedFilter()};
+				ExtendedFileFilter[] filters = {new BedFilter()};
 				File file = ExportUtils.getFile(filters, false);
 				if (file != null) {
 					jtfFile.setText(file.getPath());
@@ -166,6 +129,78 @@ public class ExportBEDDialog extends MultiGenomeTrackActionDialog {
 		panel.add(button, gbc);
 
 		return panel;
+	}
+
+	/**
+	 * @return the path of the selected BED
+	 */
+	public String getBEDPath () {
+		return jtfFile.getText();
+	}
+
+
+	/**
+	 * @return the coordinateSystem
+	 */
+	public CoordinateSystemType getCoordinateSystem() {
+		return coordinateSystem;
+	}
+
+
+	@Override
+	protected String getErrors() {
+		String error = "";
+
+		String filePath = jtfFile.getText();
+		if (filePath == null) {
+			error += "The path of the file has not been found.";
+		} else if (filePath.isEmpty()){
+			error += "The path of the file has not been found.";
+		}
+
+		if (getDotValue() == null) {
+			if (!error.isEmpty()) {
+				error += "\n";
+			}
+			error += "The defined constant for \".\" in genotype does not seem to be a valid number.";
+		}
+
+		return error;
+	}
+
+
+	/**
+	 * Creates the genome combo box.
+	 * @return the genome combo box
+	 */
+	private JComboBox getGenomeComboBox (List<String> genomeList) {
+		// Creates the combo box
+		JComboBox jcbGenome = new JComboBox(genomeList.toArray());
+		jcbGenome.setSelectedIndex(0);
+		genomeName = jcbGenome.getSelectedItem().toString();
+
+		//Dimension
+		int height = jcbGenome.getFontMetrics(jcbGenome.getFont()).getHeight() + 5;
+		Dimension dimension = new Dimension(MIN_DIALOG_WIDTH - 50, height);
+		jcbGenome.setPreferredSize(dimension);
+		jcbGenome.setMinimumSize(dimension);
+
+		jcbGenome.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				genomeName = ((JComboBox) arg0.getSource()).getSelectedItem().toString();
+			}
+		});
+
+		return jcbGenome;
+	}
+
+
+	/**
+	 * @return the selected genome name
+	 */
+	public String getGenomeName () {
+		return genomeName;
 	}
 
 
@@ -247,29 +282,26 @@ public class ExportBEDDialog extends MultiGenomeTrackActionDialog {
 
 
 	/**
-	 * Creates the genome combo box.
-	 * @return the genome combo box
+	 * @return the header
 	 */
-	private JComboBox getGenomeComboBox (List<String> genomeList) {
-		// Creates the combo box
-		JComboBox jcbGenome = new JComboBox(genomeList.toArray());
-		jcbGenome.setSelectedIndex(0);
-		genomeName = jcbGenome.getSelectedItem().toString();
+	public VCFHeaderType getHeader() {
+		return header;
+	}
 
-		//Dimension
-		int height = jcbGenome.getFontMetrics(jcbGenome.getFont()).getHeight() + 5;
-		Dimension dimension = new Dimension(MIN_DIALOG_WIDTH - 50, height);
-		jcbGenome.setPreferredSize(dimension);
-		jcbGenome.setMinimumSize(dimension);
 
-		jcbGenome.addActionListener(new ActionListener() {
+	private JComboBox getIDComboBox (List<VCFHeaderType> headers) {
+		JComboBox box = new JComboBox(headers.toArray());
+		box.setSelectedIndex(0);
+		header = (VCFHeaderType) box.getSelectedItem();
+
+		box.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				genomeName = ((JComboBox) arg0.getSource()).getSelectedItem().toString();
+				header =  (VCFHeaderType)((JComboBox) arg0.getSource()).getSelectedItem();
 			}
 		});
 
-		return jcbGenome;
+		return box;
 	}
 
 
@@ -311,19 +343,37 @@ public class ExportBEDDialog extends MultiGenomeTrackActionDialog {
 	}
 
 
-	private JComboBox getIDComboBox (List<VCFHeaderType> headers) {
-		JComboBox box = new JComboBox(headers.toArray());
-		box.setSelectedIndex(0);
-		header = (VCFHeaderType) box.getSelectedItem();
+	@Override
+	protected void initializeContentPanel() {
+		// Initialize the content panel
+		contentPanel = new JPanel();
 
-		box.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				header =  (VCFHeaderType)((JComboBox) arg0.getSource()).getSelectedItem();
-			}
-		});
+		// Create the field set effect
+		TitledBorder titledBorder = BorderFactory.createTitledBorder("Export settings");
+		contentPanel.setBorder(titledBorder);
 
-		return box;
+		// Create the layout
+		GridBagLayout layout = new GridBagLayout();
+		contentPanel.setLayout(layout);
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbc.insets = new Insets(0, 0, 0, 0);
+		gbc.weightx = 1;
+		gbc.weighty = 0;
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+
+		contentPanel.add(getBedPanel(), gbc);
+
+		gbc.gridy++;
+		contentPanel.add(getGenomeSelectionPanel(settings.getGenomeNames()), gbc);
+
+		gbc.gridy++;
+		contentPanel.add(getIDPanel(settings.getFileList()), gbc);
+
+		gbc.gridy++;
+		gbc.weighty = 1;
+		contentPanel.add(getOptionPanel(), gbc);
 	}
 
 
@@ -352,59 +402,5 @@ public class ExportBEDDialog extends MultiGenomeTrackActionDialog {
 		}
 
 		return result;
-	}
-
-
-	/**
-	 * @return the path of the selected BED
-	 */
-	public String getBEDPath () {
-		return jtfFile.getText();
-	}
-
-
-	/**
-	 * @return the selected genome name
-	 */
-	public String getGenomeName () {
-		return genomeName;
-	}
-
-
-	/**
-	 * @return the header
-	 */
-	public VCFHeaderType getHeader() {
-		return header;
-	}
-
-
-	/**
-	 * @return the coordinateSystem
-	 */
-	public CoordinateSystemType getCoordinateSystem() {
-		return coordinateSystem;
-	}
-
-
-	@Override
-	protected String getErrors() {
-		String error = "";
-
-		String filePath = jtfFile.getText();
-		if (filePath == null) {
-			error += "The path of the file has not been found.";
-		} else if (filePath.isEmpty()){
-			error += "The path of the file has not been found.";
-		}
-
-		if (getDotValue() == null) {
-			if (!error.isEmpty()) {
-				error += "\n";
-			}
-			error += "The defined constant for \".\" in genotype does not seem to be a valid number.";
-		}
-
-		return error;
 	}
 }

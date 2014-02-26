@@ -46,6 +46,7 @@ import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.ScrollingManager;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackConstants;
+import edu.yu.einstein.genplay.util.FileChooser;
 import edu.yu.einstein.genplay.util.Utils;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
@@ -331,7 +332,7 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 						Component rootPane = MainFrame.getInstance().getRootPane();
 						int dialogRes = JOptionPane.showConfirmDialog(rootPane, "The file " + filePath + " cannot be found\nPlease locate the file or press cancel to delete the Sequence Track", "File Not Found", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 						if (dialogRes == JOptionPane.OK_OPTION) {
-							File selectedFile = Utils.chooseFileToLoad(rootPane, "Load Sequence Track", Utils.getReadableSequenceFileFilters(), true);
+							File selectedFile = FileChooser.chooseFile(rootPane, FileChooser.OPEN_FILE_MODE, "Load Sequence Track", Utils.getReadableSequenceFileFilters(), true);
 							if (selectedFile != null) {
 								try {
 									TwoBitSequenceList new2BitData = new TwoBitSequenceList(twoBitData, selectedFile);

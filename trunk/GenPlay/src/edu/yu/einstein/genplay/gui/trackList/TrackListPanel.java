@@ -380,7 +380,7 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 
 	@Override
 	public void trackChanged(TrackEvent evt) {
-		if (evt.getEventType() == TrackEventType.RIGHT_CLICKED) {
+		if (evt.getEventType() == TrackEventType.POPUP_TRIGGERED) {
 			selectedTrack = (Track) evt.getSource();
 			trackMenu.setTrack(selectedTrack);
 			Point mousePoint = getMousePosition();

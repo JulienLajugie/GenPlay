@@ -38,7 +38,6 @@ import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.IDFilterInterface;
 
 /**
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class IDGTEditor implements IDEditor {
 
@@ -55,6 +54,90 @@ public class IDGTEditor implements IDEditor {
 	private JRadioButton	heterozygote;		// Radio box for ABSENT value
 	private JCheckBox		phased;				// Check box to take into account (or not) phased genotypes
 	private JCheckBox		unPhased;			// Check box to take into account (or not) phased genotypes
+
+
+	@Override
+	public String getErrors() {
+		String errors = "";
+		if (header == null) {
+			errors += "ID selection\n";
+		}
+		if (!phased.isSelected() && !unPhased.isSelected()) {
+			errors += "At least one phasing constraint must be selected\n";
+		}
+		return errors;
+	}
+
+
+	@Override
+	public IDFilterInterface getFilter() {
+		GenotypeIDFilter filter = new GenotypeIDFilter();
+		filter.setHeaderType(header);
+		if (homozygote.isSelected()) {
+			filter.setOption(GenotypeIDFilter.HOMOZYGOTE_OPTION);
+		} else {
+			filter.setOption(GenotypeIDFilter.HETEROZYGOTE_OPTION);
+		}
+
+		filter.setCanBePhased(phased.isSelected());
+		filter.setCanBeUnPhased(unPhased.isSelected());
+
+		return filter;
+	}
+
+
+	@Override
+	public VCFHeaderType getHeaderType () {
+		return header;
+	}
+
+
+	@Override
+	public void initializesPanel(IDFilterInterface filter) {
+		GenotypeIDFilter gtFilter = (GenotypeIDFilter) filter;
+		if (gtFilter.getOption() == GenotypeIDFilter.HOMOZYGOTE_OPTION) {
+			homozygote.setSelected(true);
+		} else {
+			heterozygote.setSelected(true);
+		}
+
+		if (gtFilter.canBePhased()) {
+			phased.setSelected(true);
+		} else {
+			phased.setSelected(false);
+		}
+
+		if (gtFilter.canBeUnPhased()) {
+			unPhased.setSelected(true);
+		} else {
+			unPhased.setSelected(false);
+		}
+	}
+
+
+	@Override
+	public boolean isEnabled() {
+		return panel.isEnabled();
+	}
+
+
+	@Override
+	public void setEnabled(boolean b) {
+		if (panel != null) {
+			panel.setEnabled(b);
+			constraintLabel.setEnabled(b);
+			homozygote.setEnabled(b);
+			heterozygote.setEnabled(b);
+			phased.setEnabled(b);
+			unPhased.setEnabled(b);
+		}
+	}
+
+
+	@Override
+	public void setHeaderType(VCFHeaderType id) {
+		header = id;
+	}
 
 
 	@Override
@@ -90,18 +173,15 @@ public class IDGTEditor implements IDEditor {
 		panel.setLayout(layout);
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-		gbc.weightx = 1;
-		gbc.weighty = 0;
 
 		// Label
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		gbc.insets = new Insets(10, 10, 10, 0);
 		panel.add(constraintLabel, gbc);
 
 		// "homozygote" button
+		gbc.insets = new Insets(0, 10, 0, 0);
 		gbc.gridy++;
-		gbc.insets = new Insets(5, 20, 0, 0);
 		panel.add(homozygote, gbc);
 
 		// "heterozygote" button
@@ -119,89 +199,4 @@ public class IDGTEditor implements IDEditor {
 
 		return panel;
 	}
-
-
-	@Override
-	public IDFilterInterface getFilter() {
-		GenotypeIDFilter filter = new GenotypeIDFilter();
-		filter.setHeaderType(header);
-		if (homozygote.isSelected()) {
-			filter.setOption(GenotypeIDFilter.HOMOZYGOTE_OPTION);
-		} else {
-			filter.setOption(GenotypeIDFilter.HETEROZYGOTE_OPTION);
-		}
-
-		filter.setCanBePhased(phased.isSelected());
-		filter.setCanBeUnPhased(unPhased.isSelected());
-
-		return filter;
-	}
-
-
-	@Override
-	public void setHeaderType(VCFHeaderType id) {
-		this.header = id;
-	}
-
-
-	@Override
-	public VCFHeaderType getHeaderType () {
-		return header;
-	}
-
-
-	@Override
-	public void initializesPanel(IDFilterInterface filter) {
-		GenotypeIDFilter gtFilter = (GenotypeIDFilter) filter;
-		if (gtFilter.getOption() == GenotypeIDFilter.HOMOZYGOTE_OPTION) {
-			homozygote.setSelected(true);
-		} else {
-			heterozygote.setSelected(true);
-		}
-
-		if (gtFilter.canBePhased()) {
-			phased.setSelected(true);
-		} else {
-			phased.setSelected(false);
-		}
-
-		if (gtFilter.canBeUnPhased()) {
-			unPhased.setSelected(true);
-		} else {
-			unPhased.setSelected(false);
-		}
-	}
-
-
-	@Override
-	public String getErrors() {
-		String errors = "";
-		if (header == null) {
-			errors += "ID selection\n";
-		}
-		if (!phased.isSelected() && !unPhased.isSelected()) {
-			errors += "At least one phasing constraint must be selected\n";
-		}
-		return errors;
-	}
-
-
-	@Override
-	public void setEnabled(boolean b) {
-		if (panel != null) {
-			panel.setEnabled(b);
-			constraintLabel.setEnabled(b);
-			homozygote.setEnabled(b);
-			heterozygote.setEnabled(b);
-			phased.setEnabled(b);
-			unPhased.setEnabled(b);
-		}
-	}
-
-
-	@Override
-	public boolean isEnabled() {
-		return panel.isEnabled();
-	}
-
 }

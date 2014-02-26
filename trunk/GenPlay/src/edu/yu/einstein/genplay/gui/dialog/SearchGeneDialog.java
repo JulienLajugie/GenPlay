@@ -93,6 +93,7 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 		SearchGeneDialog.geneSearcher = geneSearcher;
 		// create the textfield
 		jtfSearchGene = new JTextField(geneSearcher.getLastSearchedGeneName());
+		jtfSearchGene.putClientProperty("JTextField.variant", "search");
 		// retrieve the default background color of a text field
 		textFieldDefaultColor = jtfSearchGene.getBackground();
 		jtfSearchGene.addKeyListener(new KeyAdapter() {

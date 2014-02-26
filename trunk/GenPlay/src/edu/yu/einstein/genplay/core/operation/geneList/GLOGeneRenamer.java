@@ -50,8 +50,8 @@ import edu.yu.einstein.genplay.util.Utils;
 public class GLOGeneRenamer implements Operation<GeneList> {
 
 	private final GeneList 	geneList;			// input geneList
-	private final File 		fileName;			// fileName in which the gene needs to be renamed
-	private boolean		stopped = false;	// true if the operation must be stopped
+	private final File 		file;				// file in which the gene needs to be renamed
+	private boolean			stopped = false;	// true if the operation must be stopped
 
 
 	/**
@@ -61,7 +61,7 @@ public class GLOGeneRenamer implements Operation<GeneList> {
 	 */
 	public GLOGeneRenamer(GeneList geneList, File fileName) {
 		this.geneList = geneList;
-		this.fileName = fileName;
+		file = fileName;
 	}
 
 
@@ -69,7 +69,7 @@ public class GLOGeneRenamer implements Operation<GeneList> {
 	public GeneList compute() throws Exception {
 		BufferedReader bufReader = null;
 		try {
-			bufReader = new BufferedReader(new FileReader(fileName));
+			bufReader = new BufferedReader(new FileReader(file));
 			Map<String, String> nameMap = new HashMap<String, String>();
 			String lineRead;
 			while (((lineRead = bufReader.readLine()) != null) && !stopped) {
@@ -117,7 +117,7 @@ public class GLOGeneRenamer implements Operation<GeneList> {
 
 	@Override
 	public String getDescription() {
-		return "Operation: Rename Genes, input file: " + fileName.getName();
+		return "Operation: Rename Genes, input file: " + file.getName();
 	}
 
 

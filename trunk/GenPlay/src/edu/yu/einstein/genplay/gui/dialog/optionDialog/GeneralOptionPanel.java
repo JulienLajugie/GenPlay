@@ -41,6 +41,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import edu.yu.einstein.genplay.util.FileChooser;
 import edu.yu.einstein.genplay.util.Utils;
 
 /**
@@ -80,8 +81,11 @@ final class GeneralOptionPanel extends OptionPanel {
 		jbDefaultDirBrowse.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				browse("Default Directory:", new File(configurationManager.getDefaultDirectory()), jtfDefautlDir, false);
-				configurationManager.setDefaultDirectory(jtfDefautlDir.getText());
+				File selectedDirectory = FileChooser.chooseFile(getRootPane(), FileChooser.OPEN_DIRECTORY_MODE, "Select Default Directory", null, false);
+				if (selectedDirectory != null) {
+					jtfDefautlDir.setText(selectedDirectory.toString());
+					configurationManager.setDefaultDirectory(selectedDirectory.toString());
+				}
 			}
 		});
 

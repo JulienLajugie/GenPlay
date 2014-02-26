@@ -48,9 +48,9 @@ public enum TrackEventType {
 	SIZE_SET_TO_DEFAULT ("track size set to default"),
 
 	/**
-	 * Event generated when a track is clicked with the right button of the mouse
+	 * Event generated when a track popup is triggered
 	 */
-	RIGHT_CLICKED ("track right clicked"),
+	POPUP_TRIGGERED ("popup triggered"),
 
 	/**
 	 * Event generated when a track is dragged

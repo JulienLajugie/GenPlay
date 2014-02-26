@@ -26,8 +26,16 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
+import edu.yu.einstein.genplay.core.multiGenome.filter.utils.FormatFilterOperatorType;
+import edu.yu.einstein.genplay.dataStructure.enums.VCFColumnName;
 
 /**
  * @author Julien Lajugie
@@ -38,11 +46,21 @@ public class MultiGenomePanel extends JPanel {
 	private static final long serialVersionUID = -4060807866730514644L;
 
 	private final JCheckBox[] boxes;
+	private final JComboBox operatorCombobox;
 
 
-	public MultiGenomePanel(List<String> genomeNames) {
+	public MultiGenomePanel(List<String> genomeNames, VCFHeaderType selectedHeader, List<String> selectedGenomes, FormatFilterOperatorType selectedOperator) {
+		super(new GridBagLayout());
+		setBorder(BorderFactory.createTitledBorder("Select Genome(s)"));
+
 		boxes = new JCheckBox[genomeNames.size()];
-		String[] paths = new String[genomeNames.size()];
+
+		operatorCombobox = new JComboBox();
+		operatorCombobox.setPrototypeDisplayValue("Mean");
+		setHeaderType(selectedHeader);
+		if (selectedOperator != null) {
+			operatorCombobox.setSelectedItem(selectedOperator);
+		}
 
 		JPanel content = new JPanel();
 		content.setLayout(new GridBagLayout());
@@ -51,18 +69,50 @@ public class MultiGenomePanel extends JPanel {
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.weightx = 1;
-		gbc.weighty = 0;
+		gbc.weighty = 1;
 
 		for (int i = 0; i < genomeNames.size(); i++) {
-			paths[i] = genomeNames.get(i);
 			JCheckBox checkBox = new JCheckBox(genomeNames.get(i));
+			if (selectedGenomes != null) {
+				checkBox.setSelected(selectedGenomes.contains(genomeNames.get(i)));
+			}
 			boxes[i] = checkBox;
-
 			content.add(boxes[i], gbc);
 			gbc.gridy++;
 		}
 
+		gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.BOTH;
+		JScrollPane jsp = new JScrollPane(content);
+		jsp.setBorder(null);
+		add(jsp, gbc);
+
+		gbc.fill = GridBagConstraints.NONE;
+		gbc.gridy = 1;
+
+
+		add(operatorCombobox, gbc);
+
 		repaint();
 	}
 
+
+	public void setHeaderType(VCFHeaderType vcfHeaderType) {
+		if (vcfHeaderType.getColumnCategory() != VCFColumnName.FORMAT) {
+			setVisible(false);
+		} else {
+			setVisible(true);
+			operatorCombobox.removeAllItems();
+			if (vcfHeaderType instanceof VCFHeaderAdvancedType) {
+				VCFHeaderAdvancedType advancedHeader = (VCFHeaderAdvancedType) vcfHeaderType;
+				operatorCombobox.addItem(FormatFilterOperatorType.AND);
+				operatorCombobox.addItem(FormatFilterOperatorType.OR);
+				if ((advancedHeader.getType() == Integer.class) || (advancedHeader.getType() == Float.class)) {
+					operatorCombobox.addItem(FormatFilterOperatorType.MEAN);
+					operatorCombobox.addItem(FormatFilterOperatorType.SUM);
+				}
+			}
+		}
+		revalidate();
+	}
 }

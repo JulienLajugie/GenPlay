@@ -31,29 +31,28 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotData;
 import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotPane;
+import edu.yu.einstein.genplay.util.FileChooser;
 import edu.yu.einstein.genplay.util.Utils;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 /**
- * 
- * @author Administrator
- *
+ * @author Julien Lajugie
  */
 public class SPALoadData extends ScatterPlotAction {
 
 	private static final long serialVersionUID = 1879651187524309395L; // generated ID
-	private static final String 	ACTION_NAME = "Load Data";		// action name
+	private static final String 	ACTION_NAME = "Load Data";			// action name
 	private static final String 	DESCRIPTION =
 			"Load data in the charts from a CSV file";					// tooltip
-	private ScatterPlotData 		extractedData;					// data extracted from the file
+	private ScatterPlotData 		extractedData;						// data extracted from the file
 
 
 	/**
@@ -69,15 +68,10 @@ public class SPALoadData extends ScatterPlotAction {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		final JFileChooser jfc = new JFileChooser();
-		Utils.setFileChooserSelectedDirectory(jfc);
-		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV file (*.csv)", "csv");
-		jfc.setFileFilter(filter);
-		int retValue = jfc.showOpenDialog(getScatterPlotPane());
-		if (retValue == JFileChooser.APPROVE_OPTION) {
-			File file = jfc.getSelectedFile();
-			loadData(file);
+		FileFilter[] filters = {new FileNameExtensionFilter("CSV file (*.csv)", "csv")};
+		File selectedFile = FileChooser.chooseFile(getRootPane(), FileChooser.OPEN_FILE_MODE, "File to Load", filters, true);
+		if (selectedFile != null) {
+			loadData(selectedFile);
 		}
 	}
 

@@ -25,14 +25,15 @@ package edu.yu.einstein.genplay.gui.action.layer.geneLayer;
 import java.io.File;
 
 import javax.swing.ActionMap;
-import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
 
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operation.geneList.GLOGeneRenamer;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.geneList.GeneList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
+import edu.yu.einstein.genplay.gui.fileFilter.TextFileFilter;
 import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
-import edu.yu.einstein.genplay.util.Utils;
+import edu.yu.einstein.genplay.util.FileChooser;
 
 
 /**
@@ -79,13 +80,9 @@ public class GLAGeneRenamer extends TrackListActionOperationWorker<GeneList>{
 		selectedLayer = (GeneLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			GeneList geneList = selectedLayer.getData();
-			JFileChooser jfc = new JFileChooser();
-			Utils.setFileChooserSelectedDirectory(jfc);
-			jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-			int retVal = jfc.showOpenDialog(getRootPane());
-			if (retVal == JFileChooser.APPROVE_OPTION) {
-				File fileName = jfc.getSelectedFile();
-				operation = new GLOGeneRenamer(geneList, fileName);
+			File selectedFile = FileChooser.chooseFile(getRootPane(), FileChooser.OPEN_FILE_MODE, "Choose File With Gene Names", new FileFilter[] {new TextFileFilter()}, true);
+			if (selectedFile != null) {
+				operation = new GLOGeneRenamer(geneList, selectedFile);
 				return operation;
 			}
 		}

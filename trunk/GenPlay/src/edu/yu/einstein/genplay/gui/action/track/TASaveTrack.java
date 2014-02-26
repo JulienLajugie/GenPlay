@@ -28,16 +28,14 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 
 import javax.swing.ActionMap;
-import javax.swing.JFileChooser;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 
 import edu.yu.einstein.genplay.core.IO.writer.TransferableTrackWriter;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
-import edu.yu.einstein.genplay.gui.fileFilter.ExtendedFileFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.GenPlayTrackFilter;
 import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.util.Utils;
+import edu.yu.einstein.genplay.util.FileChooser;
 
 
 /**
@@ -51,7 +49,6 @@ public final class TASaveTrack extends TrackListActionWorker<Void> {
 	private static final String ACTION_NAME = "Save Track"; 									// action name
 	private static final String DESCRIPTION = "Save the selected track with all its layers";	// tooltip
 	private static final int 	MNEMONIC = KeyEvent.VK_S; 										// mnemonic key
-	private File 				selectedFile; 													// selected file
 
 
 	/**
@@ -82,28 +79,12 @@ public final class TASaveTrack extends TrackListActionWorker<Void> {
 	@Override
 	protected Void processAction() throws Exception {
 		Track selectedTrack = getTrackListPanel().getSelectedTrack();
-		final JFileChooser jfc = new JFileChooser();
-		Utils.setFileChooserSelectedDirectory(jfc);
-		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		jfc.setDialogTitle("Save Track");
 		FileFilter[] filters = {new GenPlayTrackFilter()};
-		jfc.addChoosableFileFilter(filters[0]);
-		jfc.setFileFilter(filters[0]);
-		jfc.setAcceptAllFileFilterUsed(false);
 		File f = new File(selectedTrack.getName() + "." + GenPlayTrackFilter.EXTENSIONS[0]);
-		jfc.setSelectedFile(f);
-		int returnVal = jfc.showSaveDialog(getRootPane());
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			ExtendedFileFilter selectedFilter = (ExtendedFileFilter) jfc.getFileFilter();
-			if (selectedFilter != null) {
-				selectedFile = Utils.addExtension(jfc.getSelectedFile(), selectedFilter.getExtensions()[0]);
-			} else {
-				selectedFile = Utils.addExtension(jfc.getSelectedFile(), GenPlayTrackFilter.EXTENSIONS[0]);
-			}
-			if (!Utils.cancelBecauseFileExist(getRootPane(), selectedFile)) {
-				notifyActionStart("Saving Track " + selectedTrack.getNumber(), 1, false);
-				new TransferableTrackWriter(selectedTrack, selectedFile).write();
-			}
+		File selectedFile = FileChooser.chooseFile(getRootPane(), FileChooser.SAVE_FILE_MODE, "Save Track", filters, false, f);
+		if (selectedFile != null) {
+			notifyActionStart("Saving Track " + selectedTrack.getNumber(), 1, false);
+			new TransferableTrackWriter(selectedTrack, selectedFile).write();
 		}
 		return null;
 	}

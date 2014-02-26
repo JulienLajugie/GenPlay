@@ -67,6 +67,9 @@ public class LayerChooserPanel extends JPanel implements TableModelListener {
 		private static final long serialVersionUID = 9025676810770612025L; // generated serial ID
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+			if ((table == null) || (value == null)) {
+				return null;
+			}
 			Component renderedComponent = table.getDefaultRenderer(value.getClass()).getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 			renderedComponent.setEnabled(true);
 			Layer<?> layer = layers.get(row);

@@ -221,12 +221,11 @@ public class IDNumberEditor implements IDEditor {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbc.weightx = 1;
-		gbc.weighty = 0;
+		gbc.weighty = 1;
 		gbc.gridy = 0;
 
 		// Label
 		gbc.gridx = 0;
-		gbc.insets = new Insets(0, 0, 0, 0);
 		panel.add(valueLabel, gbc);
 
 		// Combobox
@@ -469,8 +468,10 @@ public class IDNumberEditor implements IDEditor {
 		// Initializes text fields
 		valueField01 = getTextField(valueField01);
 		valueField01.setToolTipText(VALUE_JTF_TTT);
+		valueField01.setColumns(8);
 		valueField02 = getTextField(valueField02);
 		valueField02.setToolTipText(VALUE_JTF_TTT);
+		valueField02.setColumns(8);
 
 		// Default setting
 		inequationBox02.setEnabled(false);
@@ -482,12 +483,12 @@ public class IDNumberEditor implements IDEditor {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbc.weightx = 1;
-		gbc.weighty = 0;
+		gbc.weighty = 1;
 
 		// First inequation
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		gbc.insets = new Insets(10, 10, 10, 0);
+		gbc.insets = new Insets(0, 10, 0, 0);
 		panel.add(getInequationPanel(inequationBox01, valueField01), gbc);
 
 		// Operators
@@ -497,11 +498,9 @@ public class IDNumberEditor implements IDEditor {
 
 		// Second inequation
 		gbc.gridy++;
-		gbc.weighty = 1;
-		gbc.insets = new Insets(10, 10, 0, 0);
+		gbc.insets = new Insets(0, 10, 0, 0);
 		panel.add(getInequationPanel(inequationBox02, valueField02), gbc);
 
 		return panel;
 	}
-
 }

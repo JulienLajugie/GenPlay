@@ -36,10 +36,10 @@ import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFileChooser;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -48,6 +48,7 @@ import javax.swing.table.TableModel;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWList;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.SCWListStats.SCWListStats;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
+import edu.yu.einstein.genplay.util.FileChooser;
 import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.Utils;
 
@@ -188,22 +189,13 @@ public class SCWListStatsDialog extends JDialog {
 	 * Saves the statistics in a file
 	 */
 	private void saveStats(JTable jtStats) {
-		final JFileChooser saveFC = new JFileChooser();
-		Utils.setFileChooserSelectedDirectory(saveFC);
-		saveFC.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		FileNameExtensionFilter filter = new FileNameExtensionFilter("TSV file (*.TSV)", "tsv");
-		saveFC.setFileFilter(filter);
-		saveFC.setDialogTitle("Save statistics in a tab separated file");
-		saveFC.setSelectedFile(new File("stats.tsv"));
-		int returnVal = saveFC.showSaveDialog(getRootPane());
-		if(returnVal == JFileChooser.APPROVE_OPTION) {
-			File file = Utils.addExtension(saveFC.getSelectedFile(), "tsv");
-			if (!Utils.cancelBecauseFileExist(getRootPane(), file)) {
-				try {
-					writeStatsToFile(jtStats, file);
-				} catch (IOException e) {
-					ExceptionManager.getInstance().caughtException(Thread.currentThread(), e);
-				}
+		FileFilter[] filters = {new FileNameExtensionFilter("TSV file (*.TSV)", "tsv")};
+		File selectedFile = FileChooser.chooseFile(getRootPane(), FileChooser.SAVE_FILE_MODE, "Save Stats in TSV File", filters, false, new File("stats.tsv"));
+		if(selectedFile != null) {
+			try {
+				writeStatsToFile(jtStats, selectedFile);
+			} catch (IOException e) {
+				ExceptionManager.getInstance().caughtException(Thread.currentThread(), e);
 			}
 		}
 	}

@@ -44,7 +44,7 @@ public enum ComparisonOperators {
 	/**
 	 * "Greater than or equal to" operator
 	 */
-	GREATER_OR_EQUAL ("≥"),
+	GREATER_OR_EQUAL ("\u2265"),
 
 	/**
 	 * "Greater than" operator
@@ -54,7 +54,7 @@ public enum ComparisonOperators {
 	/**
 	 * "Less than or equal to" operator
 	 */
-	LESS_OR_EQUAL ("≤"),
+	LESS_OR_EQUAL ("\u2264"),
 
 	/**
 	 * "Less than" operator

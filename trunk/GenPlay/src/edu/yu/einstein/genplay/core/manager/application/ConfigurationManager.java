@@ -30,9 +30,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import javax.swing.JFileChooser;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.filechooser.FileSystemView;
 
 import edu.yu.einstein.genplay.util.Utils;
 
@@ -77,7 +77,7 @@ public final class ConfigurationManager {
 	private static final String getDefaultGenPlayLibraryPath() {
 		if (Utils.isWindowsOS()) {
 			// dirty trick to get My Documents on windows
-			String myDocumentsPath = new JFileChooser().getFileSystemView().getDefaultDirectory().toString();
+			String myDocumentsPath = FileSystemView.getFileSystemView().getDefaultDirectory().toString();
 			return myDocumentsPath + File.separator + "GenPlay Library" + File.separator;
 		} else {
 			return System.getProperty("user.home") + File.separator + "Documents" + File.separator + "GenPlay Library" + File.separator;

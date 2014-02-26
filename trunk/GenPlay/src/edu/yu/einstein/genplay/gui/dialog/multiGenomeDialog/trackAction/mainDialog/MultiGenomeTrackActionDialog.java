@@ -24,7 +24,6 @@ package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.mainDia
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -40,7 +39,6 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSettings;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportUtils;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.util.Images;
 
@@ -103,24 +101,48 @@ public abstract class MultiGenomeTrackActionDialog extends JDialog {
 	}
 
 
+	/////////////////////////////////////////////////////////// Validation panel methods
 	/**
-	 * Shows the component.
-	 * @param parent 	the parent component of the dialog, can be null; see showDialog for details
-	 * @return APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
+	 * Called when the dialog has been approved
 	 */
-	public int showDialog(Component parent) {
-		pack();
-		setLocationRelativeTo(parent);
-		setModalityType(ModalityType.APPLICATION_MODAL);
-		setVisible(true);
-		return approved;
+	protected void approveDialog () {
+		String errors = getErrors();
+
+		if (errors.isEmpty()) {
+			settings.initialize(lengendPanel.getSelectedLayers());
+			approved = APPROVE_OPTION;
+			setVisible(false);
+		} else {
+			JOptionPane.showMessageDialog(getRootPane(), errors, "Error", JOptionPane.INFORMATION_MESSAGE);
+		}
 	}
 
 
 	/**
-	 * Initialize the content panel, here are the export/convert options.
+	 * Called when the dialog has been canceled
 	 */
-	protected abstract void initializeContentPanel ();
+	protected void cancelDialog () {
+		approved = CANCEL_OPTION;
+		setVisible(false);
+	}
+
+
+	/**
+	 * @return the value to use for "." in genotype, null if they have to be omitted
+	 */
+	public Double getDotValue () {
+		Double value = null;
+		if ((jtfDotValue != null) && jtfDotValue.isEnabled()) {
+			try {
+				value = Double.parseDouble(jtfDotValue.getText());
+			} catch (Exception e) {}
+		}
+		return value;
+	}
+
+
+	protected abstract String getErrors ();
+	///////////////////////////////////////////////////////////
 
 
 	/////////////////////////////////////////////////////////// Optional panel methods
@@ -134,8 +156,7 @@ public abstract class MultiGenomeTrackActionDialog extends JDialog {
 
 		// Create the value text field
 		jtfDotValue = new JTextField();
-		Dimension jtfDim = new Dimension(50, 21);
-		ExportUtils.setComponentSize(jtfDotValue, jtfDim);
+		jtfDotValue.setColumns(10);
 		jtfDotValue.setEnabled(false);
 
 		// Create the radios
@@ -192,43 +213,18 @@ public abstract class MultiGenomeTrackActionDialog extends JDialog {
 	}
 
 
-	/////////////////////////////////////////////////////////// Validation panel methods
 	/**
-	 * Called when the dialog has been approved
+	 * @return the settings
 	 */
-	protected void approveDialog () {
-		String errors = getErrors();
-
-		if (errors.isEmpty()) {
-			settings.initialize(lengendPanel.getSelectedLayers());
-			approved = APPROVE_OPTION;
-			setVisible(false);
-		} else {
-			JOptionPane.showMessageDialog(getRootPane(), errors, "Error", JOptionPane.INFORMATION_MESSAGE);
-		}
+	public ExportSettings getSettings() {
+		return settings;
 	}
 
 
 	/**
-	 * Called when the dialog has been canceled
+	 * Initialize the content panel, here are the export/convert options.
 	 */
-	protected void cancelDialog () {
-		approved = CANCEL_OPTION;
-		setVisible(false);
-	}
-
-
-	/**
-	 * Sets the text of the "OK" button
-	 * @param text text to set
-	 */
-	protected void setValidationButtonText (String text) {
-		validationPanel.setValidationButtonText(text);
-	}
-
-
-	protected abstract String getErrors ();
-	///////////////////////////////////////////////////////////
+	protected abstract void initializeContentPanel ();
 
 
 	protected void revalidate () {
@@ -243,24 +239,25 @@ public abstract class MultiGenomeTrackActionDialog extends JDialog {
 
 
 	/**
-	 * @return the value to use for "." in genotype, null if they have to be omitted
+	 * Sets the text of the "OK" button
+	 * @param text text to set
 	 */
-	public Double getDotValue () {
-		Double value = null;
-		if ((jtfDotValue != null) && jtfDotValue.isEnabled()) {
-			try {
-				value = Double.parseDouble(jtfDotValue.getText());
-			} catch (Exception e) {}
-		}
-		return value;
+	protected void setValidationButtonText (String text) {
+		validationPanel.setValidationButtonText(text);
 	}
 
 
 	/**
-	 * @return the settings
+	 * Shows the component.
+	 * @param parent 	the parent component of the dialog, can be null; see showDialog for details
+	 * @return APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
 	 */
-	public ExportSettings getSettings() {
-		return settings;
+	public int showDialog(Component parent) {
+		pack();
+		setLocationRelativeTo(parent);
+		setModalityType(ModalityType.APPLICATION_MODAL);
+		setVisible(true);
+		return approved;
 	}
 
 }

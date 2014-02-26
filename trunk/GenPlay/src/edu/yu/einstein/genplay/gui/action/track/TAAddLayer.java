@@ -46,6 +46,7 @@ import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
+import edu.yu.einstein.genplay.util.FileChooser;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -114,7 +115,7 @@ public class TAAddLayer extends TrackListAction {
 			Track selectedTrack = getTrackListPanel().getSelectedTrack();
 			if (selectedTrack != null) {
 				if (fileToLoad == null) {
-					fileToLoad = Utils.chooseFileToLoad(getRootPane(), "Choose File to Load", Utils.getReadableLayerFileFilters(), true);
+					fileToLoad = FileChooser.chooseFile(getRootPane(), FileChooser.OPEN_FILE_MODE, "Choose File to Load", Utils.getReadableLayerFileFilters(), true);
 				}
 				if (fileToLoad != null) {
 					Extractor extractor = ExtractorFactory.getExtractor(fileToLoad);

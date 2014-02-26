@@ -28,12 +28,12 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 import javax.imageio.ImageIO;
-import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.customComponent.scatterPlot.ScatterPlotPane;
-import edu.yu.einstein.genplay.util.Utils;
+import edu.yu.einstein.genplay.util.FileChooser;
 
 
 
@@ -63,25 +63,16 @@ public class SPASaveImage extends ScatterPlotAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		final JFileChooser jfc = new JFileChooser();
-		Utils.setFileChooserSelectedDirectory(jfc);
-		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		FileNameExtensionFilter filter = new FileNameExtensionFilter("PNG file (*.PNG)", "png");
-		jfc.setFileFilter(filter);
-		jfc.setDialogTitle("Save chart as a PNG image");
-		int retValue = jfc.showSaveDialog(getScatterPlotPane());
-		if (retValue == JFileChooser.APPROVE_OPTION) {
-			File file = jfc.getSelectedFile();
-			if (!Utils.cancelBecauseFileExist(getScatterPlotPane(), file)) {
-				file = Utils.addExtension(file, "png");
-				BufferedImage image = new BufferedImage(getScatterPlotPane().getWidth(), getScatterPlotPane().getHeight(), BufferedImage.TYPE_INT_RGB);
-				Graphics2D g = image.createGraphics();
-				getScatterPlotPane().paint(g);
-				try {
-					ImageIO.write(image, "png", file);
-				}catch(Exception ex) {
-					ExceptionManager.getInstance().caughtException(Thread.currentThread(), ex, "Error while saving the scatter plot as an image");
-				}
+		FileFilter[] filters = {new FileNameExtensionFilter("PNG file (*.PNG)", "png")};
+		File selectedFile = FileChooser.chooseFile(getRootPane(), FileChooser.SAVE_FILE_MODE, "Save Image As", filters, false);
+		if (selectedFile != null) {
+			BufferedImage image = new BufferedImage(getScatterPlotPane().getWidth(), getScatterPlotPane().getHeight(), BufferedImage.TYPE_INT_RGB);
+			Graphics2D g = image.createGraphics();
+			getScatterPlotPane().paint(g);
+			try {
+				ImageIO.write(image, "png", selectedFile);
+			}catch(Exception ex) {
+				ExceptionManager.getInstance().caughtException(Thread.currentThread(), ex, "Error while saving the scatter plot as an image");
 			}
 		}
 	}

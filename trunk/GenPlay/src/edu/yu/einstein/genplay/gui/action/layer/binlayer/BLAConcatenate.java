@@ -26,16 +26,17 @@ import java.io.File;
 import java.util.List;
 
 import javax.swing.ActionMap;
-import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
 
 import edu.yu.einstein.genplay.core.IO.writer.binListWriter.ConcatenateBinListWriter;
 import edu.yu.einstein.genplay.dataStructure.list.genomeWideList.SCWList.binList.BinList;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserDialog;
+import edu.yu.einstein.genplay.gui.fileFilter.TextFileFilter;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
-import edu.yu.einstein.genplay.util.Utils;
+import edu.yu.einstein.genplay.util.FileChooser;
 
 
 
@@ -85,26 +86,18 @@ public class BLAConcatenate extends TrackListActionWorker<Void> {
 			List<Layer<?>> selectedLayers = layerChooserDialog.getSelectedLayers();
 			if ((selectedLayers != null) && !selectedLayers.isEmpty()) {
 				// save dialog
-				JFileChooser jfc = new JFileChooser();
-				Utils.setFileChooserSelectedDirectory(jfc);
-				jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-				jfc.setDialogTitle("Save As");
-				jfc.setSelectedFile(new File(".txt"));
-				int returnVal = jfc.showSaveDialog(getRootPane());
-				if(returnVal == JFileChooser.APPROVE_OPTION) {
-					File selectedFile = Utils.addExtension(jfc.getSelectedFile(), "txt");
-					if (!Utils.cancelBecauseFileExist(getRootPane(), selectedFile)) {
-						// create arrays with the selected BinLists and names
-						BinList[] binListArray = new BinList[selectedLayers.size()];
-						String[] nameArray = new String[selectedLayers.size()];
-						for (int i = 0; i < selectedLayers.size(); i++) {
-							binListArray[i] = ((BinLayer)selectedLayers.get(i)).getData();
-							nameArray[i] = selectedLayers.get(i).getName();
-						}
-						notifyActionStart("Generating File", 1, true);
-						writer = new ConcatenateBinListWriter(binListArray, nameArray, selectedFile);
-						writer.write();
+				File selectedFile = FileChooser.chooseFile(getRootPane(), FileChooser.SAVE_FILE_MODE, "Save As", new FileFilter[] {new TextFileFilter()}, false);
+				if(selectedFile != null) {
+					// create arrays with the selected BinLists and names
+					BinList[] binListArray = new BinList[selectedLayers.size()];
+					String[] nameArray = new String[selectedLayers.size()];
+					for (int i = 0; i < selectedLayers.size(); i++) {
+						binListArray[i] = ((BinLayer)selectedLayers.get(i)).getData();
+						nameArray[i] = selectedLayers.get(i).getName();
 					}
+					notifyActionStart("Generating File", 1, true);
+					writer = new ConcatenateBinListWriter(binListArray, nameArray, selectedFile);
+					writer.write();
 				}
 			}
 		}

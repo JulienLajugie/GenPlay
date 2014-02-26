@@ -22,15 +22,10 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction;
 
-import java.awt.Component;
-import java.awt.Dimension;
 import java.io.File;
 
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
-
 import edu.yu.einstein.genplay.gui.fileFilter.ExtendedFileFilter;
-import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
+import edu.yu.einstein.genplay.util.FileChooser;
 import edu.yu.einstein.genplay.util.Utils;
 
 /**
@@ -42,51 +37,21 @@ public class ExportUtils {
 
 	/**
 	 * @param filters list of filters
-	 * @param open true if the dialog has to select/open a file, wrong if the dialog has to save a file
+	 * @param open true if the dialog has to select/open a file, false if the dialog has to save a file
 	 * @return a file to export the VCF
 	 */
-	public static File getFile (FileFilter[] filters, boolean open) {
-		final JFileChooser jfc = new JFileChooser();
-		Utils.setFileChooserSelectedDirectory(jfc);
-		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		jfc.setDialogTitle("Select an output file");
-		for (FileFilter currentFilter: filters) {
-			jfc.addChoosableFileFilter(currentFilter);
-		}
-		jfc.setAcceptAllFileFilterUsed(false);
-		jfc.setFileFilter(jfc.getChoosableFileFilters()[0]);
-		int returnVal = -1;
-		boolean checkIfExist = true;
+	public static File getFile (ExtendedFileFilter[] filters, boolean open) {
+		int mode;
 		if (open) {
-			returnVal = jfc.showOpenDialog(MainFrame.getInstance().getRootPane());
-			checkIfExist = false;
+			mode = FileChooser.OPEN_FILE_MODE;
 		} else {
-			returnVal = jfc.showSaveDialog(MainFrame.getInstance().getRootPane());
+			mode = FileChooser.SAVE_FILE_MODE;
 		}
-		if(returnVal == JFileChooser.APPROVE_OPTION) {
-			ExtendedFileFilter selectedFilter = (ExtendedFileFilter)jfc.getFileFilter();
-			File selectedFile = Utils.addExtension(jfc.getSelectedFile(), selectedFilter.getExtensions()[0]);
-			if (checkIfExist) {
-				if (!Utils.cancelBecauseFileExist(MainFrame.getInstance().getRootPane(), selectedFile)) {
-					return selectedFile;
-				}
-			} else {
-				return selectedFile;
-			}
+		File selectedFile = FileChooser.chooseFile(null, mode, "Select an Output File", filters, false);
+		if(selectedFile != null) {
+			selectedFile = Utils.addExtension(selectedFile, filters[0].getExtensions()[0]);
+			return selectedFile;
 		}
 		return null;
-	}
-
-
-	/**
-	 * Set the size of a component
-	 * @param c		the component
-	 * @param dim	the dimensions
-	 */
-	public static void setComponentSize (Component c, Dimension dim) {
-		c.setSize(dim);
-		c.setMinimumSize(dim);
-		c.setMaximumSize(dim);
-		c.setPreferredSize(dim);
 	}
 }

@@ -67,6 +67,9 @@ public class LayerSettingsPanel extends JPanel {
 		private static final long serialVersionUID = 1058826355528747187L;
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+			if (value == null) {
+				return null;
+			}
 			Component renderedComponent = table.getDefaultRenderer(value.getClass()).getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 			renderedComponent.setEnabled(true);
 			if (row < data.length) {

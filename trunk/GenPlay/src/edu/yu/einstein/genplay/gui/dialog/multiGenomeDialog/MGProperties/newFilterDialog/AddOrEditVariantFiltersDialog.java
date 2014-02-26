@@ -45,13 +45,14 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFFilter;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.IDFilterInterface;
+import edu.yu.einstein.genplay.core.multiGenome.filter.utils.FormatFilterOperatorType;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.FiltersData;
-import edu.yu.einstein.genplay.gui.dialog.genomeSelectionPanel.GenomeSelectionPanel;
 import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserPanel;
 import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserTableModel;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.newFilterDialog.panels.FilePanel;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.newFilterDialog.panels.FilterIDPanel;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.newFilterDialog.panels.FilterValuesPanel;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.newFilterDialog.panels.MultiGenomePanel;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
@@ -60,6 +61,9 @@ import edu.yu.einstein.genplay.util.Utils;
 
 
 public class AddOrEditVariantFiltersDialog extends JDialog implements PropertyChangeListener {
+
+	/** Generated serial ID */
+	private static final long serialVersionUID = -8357422979931946414L;
 
 	/** Return value when OK has been clicked. */
 	public static final int APPROVE_OPTION = 0;
@@ -100,7 +104,7 @@ public class AddOrEditVariantFiltersDialog extends JDialog implements PropertyCh
 	private final LayerChooserPanel 	layerPanel;
 	private final FilterIDPanel 		idPanel;
 	private final FilterValuesPanel 	valuePanel;
-	private final GenomeSelectionPanel 	genomePanel;
+	private final MultiGenomePanel 		genomePanel;
 	private final JButton 				jbOk;
 	private final FiltersData 			filtersData;						// The current filter data (can be null)
 
@@ -115,6 +119,8 @@ public class AddOrEditVariantFiltersDialog extends JDialog implements PropertyCh
 		VCFFile selectedFile;
 		List<VCFHeaderType> headerList;
 		VCFHeaderType selectedHeader;
+		List<String> selectedGenomes = null;
+		FormatFilterOperatorType selectedOperator = null;
 
 		if(filtersData == null) {
 			selectedFile = fileList.get(0);
@@ -128,13 +134,15 @@ public class AddOrEditVariantFiltersDialog extends JDialog implements PropertyCh
 			selectedFile = filtersData.getReader();
 			headerList = selectedFile.getHeader().getAllSortedHeader();
 			selectedHeader = ((IDFilterInterface) filtersData.getFilter()).getHeaderType();
+			selectedGenomes = ((IDFilterInterface) filtersData.getMGFilter().getFilter()).getGenomeNames();
+			selectedOperator = ((IDFilterInterface) filtersData.getMGFilter().getFilter()).getOperator();
 		}
 
 		filePanel = new FilePanel(fileList, selectedFile);
 		layerPanel = createLayerChooser();
 		idPanel = new FilterIDPanel(headerList, selectedHeader);
 		valuePanel = new FilterValuesPanel(selectedHeader, this.filtersData.getFilter());
-		genomePanel = new GenomeSelectionPanel();
+		genomePanel = new MultiGenomePanel(selectedFile.getHeader().getGenomeNames(), selectedHeader, selectedGenomes, selectedOperator);
 		jbOk = new JButton("Ok");
 		JPanel validationPanel = createValidationPanel();
 
@@ -144,6 +152,7 @@ public class AddOrEditVariantFiltersDialog extends JDialog implements PropertyCh
 		GridBagConstraints gbc = new GridBagConstraints();
 
 		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 1;
 		gbc.gridwidth = 2;
 		add(filePanel, gbc);
 
@@ -154,18 +163,18 @@ public class AddOrEditVariantFiltersDialog extends JDialog implements PropertyCh
 		add(idPanel, gbc);
 
 		gbc.gridwidth = 1;
-		gbc.weighty = 1;
 		gbc.gridy = 3;
 		add(valuePanel, gbc);
 
-		gbc.weighty = 0;
 		gbc.gridx = 1;
 		add(genomePanel, gbc);
 
 		gbc.gridwidth = 2;
 		gbc.gridy = 4;
+		gbc.gridx = 0;
 		add(validationPanel, gbc);
 
+		getContentPane().setBackground(validationPanel.getBackground());
 		setIconImages(Images.getApplicationImages());
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setResizable(false);
@@ -246,6 +255,7 @@ public class AddOrEditVariantFiltersDialog extends JDialog implements PropertyCh
 
 		} else if (evt.getPropertyName().equals(FilterIDPanel.FILTER_ID_PROPERTY_NAME)) {
 			valuePanel.setHeaderType((VCFHeaderType) evt.getNewValue());
+			genomePanel.setHeaderType((VCFHeaderType) evt.getNewValue());
 		}
 		jbOk.setEnabled(isFilterValid());
 	}

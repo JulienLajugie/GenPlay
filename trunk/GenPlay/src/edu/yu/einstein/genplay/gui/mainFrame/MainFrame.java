@@ -287,6 +287,22 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 				getRootPane().setDefaultButton(controlPanel.getJumpButton());
 				super.windowActivated(e);
 			}
+
+			@Override
+			public void windowDeactivated(WindowEvent e) {
+				if ((trackListPanel != null) && (trackListPanel.getTrackMenu() != null) && trackListPanel.getTrackMenu().isVisible()) {
+					trackListPanel.getTrackMenu().setVisible(false);
+				}
+				super.windowDeactivated(e);
+			}
+
+			@Override
+			public void windowLostFocus(WindowEvent e) {
+				if ((trackListPanel != null) && (trackListPanel.getTrackMenu() != null) && trackListPanel.getTrackMenu().isVisible()) {
+					trackListPanel.getTrackMenu().setVisible(false);
+				}
+				super.windowLostFocus(e);
+			}
 		});
 	}
 

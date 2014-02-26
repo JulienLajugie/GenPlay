@@ -33,14 +33,15 @@ import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFileChooser;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import edu.yu.einstein.genplay.exception.ExceptionManager;
+import edu.yu.einstein.genplay.util.FileChooser;
 import edu.yu.einstein.genplay.util.History;
 import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.Utils;
@@ -49,7 +50,6 @@ import edu.yu.einstein.genplay.util.Utils;
 /**
  * A history frame.
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class HistoryDialog extends JDialog {
 
@@ -69,24 +69,22 @@ public final class HistoryDialog extends JDialog {
 	private final JScrollPane   jspHistory;					// scroll pane containing the history list
 	private final JButton 		jbSave;						// save button
 	private final JButton 		jbClose;					// close button
-	private final String 		trackName;					// name of a curve
-
-
-	private final History 		history;					// history of a curve
+	private final String 		layerName;					// name of a layer
+	private final History 		history;					// history of a layer
 
 
 	/**
 	 * Public constructor.
 	 * @param parent parent component
-	 * @param trackName name of a curve
-	 * @param history history of a curve
+	 * @param layerName name of a layer
+	 * @param history history of a layer
 	 */
-	private HistoryDialog(Component parent, String trackName, History history) {
+	private HistoryDialog(Component parent, String layerName, History history) {
 		super();
-		setTitle(trackName);
+		setTitle(layerName);
 		setIconImages(Images.getApplicationImages());
 		setModalityType(ModalityType.APPLICATION_MODAL);
-		this.trackName = trackName;
+		this.layerName = layerName;
 		this.history = history;
 
 		jlHistory = new JList(history.get());
@@ -101,23 +99,6 @@ public final class HistoryDialog extends JDialog {
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(parent);
 		getRootPane().setDefaultButton(jbClose);
-	}
-
-
-	/**
-	 * Asks if the user wants to replace a file if this file already exists.
-	 * @param f A file.
-	 * @return True if the user wants to cancel. False otherwise.
-	 */
-	private boolean cancelBecauseFileExist(File f) {
-		if (f.exists()) {
-			int res = JOptionPane.showConfirmDialog(getRootPane(), "The file " + f.getName() + " already exists. Do you want to replace the existing file?", "File already exists", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null);
-			if (res == JOptionPane.NO_OPTION) {
-				return true;
-			}
-		}
-		f.delete();
-		return false;
 	}
 
 
@@ -171,23 +152,14 @@ public final class HistoryDialog extends JDialog {
 	 * Saves the history in a file.
 	 */
 	public void saveHistory() {
-		JFileChooser jfc = new JFileChooser();
-		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		Utils.setFileChooserSelectedDirectory(jfc);
-		jfc.setDialogTitle("Save " + trackName + " history");
 		FileNameExtensionFilter webPageFilter = new FileNameExtensionFilter("Web Pages", "html", "htm");
-		jfc.addChoosableFileFilter(webPageFilter);
-		int returnVal = jfc.showSaveDialog(getRootPane());
-		if(returnVal == JFileChooser.APPROVE_OPTION) {
-			File selectedFile = jfc.getSelectedFile();
-			selectedFile = Utils.addExtension(selectedFile, webPageFilter.getExtensions());
-			if (!cancelBecauseFileExist(selectedFile)) {
-				try {
-					history.save(selectedFile);
-				} catch (IOException e) {
-					JOptionPane.showMessageDialog(getRootPane(), "Error while saving the history", "Error", JOptionPane.ERROR_MESSAGE);
-					ExceptionManager.getInstance().caughtException(e);
-				}
+		File selectedFile = FileChooser.chooseFile(rootPane, FileChooser.SAVE_FILE_MODE, "Save Layer History", new FileFilter[] {webPageFilter}, false, new File(layerName + ".htm"));
+		if(selectedFile != null) {
+			try {
+				history.save(selectedFile);
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(getRootPane(), "Error while saving the history", "Error", JOptionPane.ERROR_MESSAGE);
+				ExceptionManager.getInstance().caughtException(e);
 			}
 		}
 	}

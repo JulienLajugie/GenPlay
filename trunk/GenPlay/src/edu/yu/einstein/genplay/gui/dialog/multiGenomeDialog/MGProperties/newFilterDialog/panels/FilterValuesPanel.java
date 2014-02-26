@@ -35,6 +35,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderBasicType;
@@ -60,7 +61,7 @@ public class FilterValuesPanel extends JPanel implements ActionListener {
 	private static final long serialVersionUID = -5350638693635564694L;
 
 	/** Preferred dimension of this panel */
-	private final Dimension PREFERRED_DIMENSION = new Dimension(300, 380);
+	private final Dimension PREFERRED_DIMENSION = new Dimension(280, 180);
 
 	private IDEditor filterEditor;
 	private IDEditor specialFilterEditor;
@@ -72,7 +73,7 @@ public class FilterValuesPanel extends JPanel implements ActionListener {
 	 * Constructor of {@link FilterValuesPanel}
 	 */
 	public FilterValuesPanel(VCFHeaderType headerType, FilterInterface filterInterface) {
-		super();
+		super(new GridBagLayout());
 		setBorder(BorderFactory.createTitledBorder("Select filter values"));
 		setHeaderType(headerType);
 		if (filterInterface != null) {
@@ -151,14 +152,13 @@ public class FilterValuesPanel extends JPanel implements ActionListener {
 			panel.setLayout(layout);
 			GridBagConstraints gbc = new GridBagConstraints();
 			gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-			gbc.weightx = 1;
-			gbc.weighty = 0;
-
 			gbc.gridx = 0;
 			gbc.gridy = 0;
+			gbc.weightx = 1 ;
 			panel.add(specialRadioBox, gbc);
 
 			gbc.gridy++;
+			gbc.insets = new Insets(0, 10, 0, 0);
 			panel.add(specialFilterEditor.updatePanel(), gbc);
 			specialFilterEditor.setEnabled(true);
 
@@ -167,13 +167,12 @@ public class FilterValuesPanel extends JPanel implements ActionListener {
 			panel.add(regularRadioBox, gbc);
 
 			gbc.gridy++;
-			gbc.weighty = 1;
+			gbc.insets = new Insets(0, 10, 0, 0);
 			panel.add(filterEditor.updatePanel(), gbc);
 			filterEditor.setEnabled(false);
 		} else {
 			panel = filterEditor.updatePanel();
 		}
-
 		return panel;
 	}
 
@@ -282,7 +281,16 @@ public class FilterValuesPanel extends JPanel implements ActionListener {
 			panel = new JPanel();
 		}
 		removeAll();
-		add(panel);
+
+		JScrollPane jsp = new JScrollPane(panel);
+		jsp.setBorder(null);
+
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+		add(jsp, gbc);
+
 		revalidate();
 		repaint();
 	}

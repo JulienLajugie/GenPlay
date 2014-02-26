@@ -25,10 +25,8 @@ package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.mainDia
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.border.TitledBorder;
 
 /**
  * @author Nicolas Fourel
@@ -51,10 +49,6 @@ class ValidationPane extends JPanel implements ActionListener  {
 	protected ValidationPane (MultiGenomeTrackActionDialog dialog) {
 		this.dialog = dialog;
 
-		// Create the field set effect
-		TitledBorder titledBorder = BorderFactory.createTitledBorder("Validation");
-		setBorder(titledBorder);
-
 		// Creates the ok button
 		jbOk = new JButton("Ok");
 		jbOk.addActionListener(this);
@@ -74,15 +68,6 @@ class ValidationPane extends JPanel implements ActionListener  {
 	}
 
 
-	/**
-	 * Sets the text of the "OK" button
-	 * @param text text to set
-	 */
-	protected void setValidationButtonText (String text) {
-		jbOk.setText(text);
-	}
-
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() instanceof JButton) {
@@ -95,4 +80,12 @@ class ValidationPane extends JPanel implements ActionListener  {
 		}
 	}
 
+
+	/**
+	 * Sets the text of the "OK" button
+	 * @param text text to set
+	 */
+	protected void setValidationButtonText (String text) {
+		jbOk.setText(text);
+	}
 }

@@ -152,9 +152,6 @@ final class HandlePanel extends JPanel implements MouseListener, MouseMotionList
 						setSelected(!isSelected());
 					}
 				}
-			} else if (arg0.getButton() == MouseEvent.BUTTON3) {
-				setSelected(true);
-				notifyTrackListeners(TrackEventType.RIGHT_CLICKED);
 			}
 		}
 	}
@@ -219,7 +216,10 @@ final class HandlePanel extends JPanel implements MouseListener, MouseMotionList
 	@Override
 	public void mousePressed(MouseEvent arg0) {
 		if (isEnabled()) {
-			if (arg0.getButton() == MouseEvent.BUTTON1) {
+			if (arg0.isPopupTrigger()) {
+				setSelected(true);
+				notifyTrackListeners(TrackEventType.POPUP_TRIGGERED);
+			} else if (arg0.getButton() == MouseEvent.BUTTON1) {
 				if ((getHeight() - arg0.getY()) <= MOVE_RESIZE_ZONE_HEIGHT) {
 					startDragY = arg0.getY();
 				} else {
@@ -236,6 +236,9 @@ final class HandlePanel extends JPanel implements MouseListener, MouseMotionList
 		if (isTrackDragged) {
 			isTrackDragged = false;
 			notifyTrackListeners(TrackEventType.RELEASED);
+		} else if (arg0.isPopupTrigger()) {
+			setSelected(true);
+			notifyTrackListeners(TrackEventType.POPUP_TRIGGERED);
 		}
 	}
 

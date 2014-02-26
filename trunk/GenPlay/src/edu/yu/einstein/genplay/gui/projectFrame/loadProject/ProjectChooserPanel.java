@@ -35,7 +35,7 @@ import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 
 import edu.yu.einstein.genplay.gui.fileFilter.GenPlayProjectFilter;
-import edu.yu.einstein.genplay.util.Utils;
+import edu.yu.einstein.genplay.util.FileChooser;
 
 /**
  * This class displays a field to write a project path.
@@ -68,7 +68,7 @@ class ProjectChooserPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				FileFilter[] fileFilters = {new GenPlayProjectFilter()};
-				File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Project", fileFilters, true);
+				File selectedFile = FileChooser.chooseFile(getRootPane(), FileChooser.OPEN_FILE_MODE, "Load Project", fileFilters, true);
 				if (selectedFile != null) {
 					path.setText(selectedFile.getPath());
 					getProjectListPanel().setButtonOther(selectedFile);

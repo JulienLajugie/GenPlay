@@ -39,11 +39,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
-import javax.swing.filechooser.FileFilter;
 
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportUtils;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.mainDialog.MultiGenomeTrackActionDialog;
+import edu.yu.einstein.genplay.gui.fileFilter.ExtendedFileFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.VCFFilter;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 
@@ -72,86 +72,15 @@ public class ExportVCFDialog extends MultiGenomeTrackActionDialog {
 	}
 
 
-	@Override
-	protected void initializeContentPanel() {
-		// Initialize the content panel
-		contentPanel = new JPanel();
-
-		// Create the field set effect
-		TitledBorder titledBorder = BorderFactory.createTitledBorder("Export settings");
-		contentPanel.setBorder(titledBorder);
-
-		// Create the layout
-		BorderLayout layout = new BorderLayout();
-		contentPanel.setLayout(layout);
-
-		// Add panels
-		contentPanel.add(getVCFPanel(), BorderLayout.CENTER);
-		contentPanel.add(getCompressionOptionPanel(), BorderLayout.SOUTH);
-	}
-
 	/**
-	 * @return the panel to select a path to export the track
+	 * @return true if the file has to be compressed
 	 */
-	private JPanel getVCFPanel () {
-		// Create the panel
-		JPanel panel = new JPanel();
-
-		// Create the layout
-		GridBagLayout layout = new GridBagLayout();
-		panel.setLayout(layout);
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-		gbc.insets = new Insets(0, 0, 0, 0);
-		gbc.gridwidth = 1;
-		gbc.weightx = 1;
-		gbc.weighty = 0;
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-
-		// Create the title label
-		JLabel label = new JLabel("Please select a destination file:");
-
-		// Create the text field
-		jtfFile = new JTextField();
-		jtfFile.setEditable(false);
-		Dimension jtfDim = new Dimension(MIN_DIALOG_WIDTH - 25, 21);
-		ExportUtils.setComponentSize(jtfFile, jtfDim);
-
-		// Create the button
-		JButton button = new JButton("...");
-		Dimension bDim = new Dimension(20, 20);
-		ExportUtils.setComponentSize(button, bDim);
-		button.setMargin(new Insets(0, 0, 0, 0));
-		button.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				FileFilter[] filters = {new VCFFilter()};
-				File file = ExportUtils.getFile(filters, false);
-				if (file != null) {
-					jtfFile.setText(file.getPath());
-					jcbCompress.setEnabled(true);
-				} else {
-					jcbCompress.setEnabled(false);
-					jcbIndex.setEnabled(false);
-				}
-			}
-		});
-
-		// Add components
-		panel.add(label, gbc);
-
-		gbc.gridy++;
-		gbc.weightx = 1;
-		panel.add(jtfFile, gbc);
-
-		gbc.gridx++;
-		gbc.weightx = 0;
-		panel.add(button, gbc);
-
-		return panel;
+	public boolean compressVCF () {
+		if (jcbCompress.isEnabled() && jcbCompress.isSelected()) {
+			return true;
+		}
+		return false;
 	}
-
 
 	/**
 	 * @return the panel to select the additional export options
@@ -191,22 +120,88 @@ public class ExportVCFDialog extends MultiGenomeTrackActionDialog {
 	}
 
 
+	@Override
+	protected String getErrors() {
+		String error = "";
+
+		String filePath = jtfFile.getText();
+		if (filePath == null) {
+			error += "The path of the file has not been found.";
+		} else if (filePath.isEmpty()){
+			error += "The path of the file has not been found.";
+		}
+
+		return error;
+	}
+
+
+	/**
+	 * @return the panel to select a path to export the track
+	 */
+	private JPanel getVCFPanel () {
+		// Create the panel
+		JPanel panel = new JPanel();
+
+		// Create the layout
+		GridBagLayout layout = new GridBagLayout();
+		panel.setLayout(layout);
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbc.insets = new Insets(0, 0, 0, 0);
+		gbc.gridwidth = 1;
+		gbc.weightx = 1;
+		gbc.weighty = 0;
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+
+		// Create the title label
+		JLabel label = new JLabel("Please select a destination file:");
+
+		// Create the text field
+		jtfFile = new JTextField();
+		jtfFile.setEditable(false);
+
+		// Create the button
+		JButton button = new JButton("...");
+		button.setPreferredSize(new Dimension(20, 20));
+		button.setMargin(new Insets(0, 0, 0, 0));
+		button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ExtendedFileFilter[] filters = {new VCFFilter()};
+				File file = ExportUtils.getFile(filters, false);
+				if (file != null) {
+					jtfFile.setText(file.getPath());
+					jcbCompress.setEnabled(true);
+				} else {
+					jcbCompress.setEnabled(false);
+					jcbIndex.setEnabled(false);
+				}
+			}
+		});
+
+		// Add components
+		panel.add(label, gbc);
+
+		gbc.gridy++;
+		gbc.weightx = 1;
+		gbc.fill = GridBagConstraints.BOTH;
+		panel.add(jtfFile, gbc);
+
+		gbc.gridx++;
+		gbc.weightx = 0;
+		gbc.fill = GridBagConstraints.NONE;
+		panel.add(button, gbc);
+
+		return panel;
+	}
+
+
 	/**
 	 * @return the path of the selected VCF
 	 */
 	public String getVCFPath () {
 		return jtfFile.getText();
-	}
-
-
-	/**
-	 * @return true if the file has to be compressed
-	 */
-	public boolean compressVCF () {
-		if (jcbCompress.isEnabled() && jcbCompress.isSelected()) {
-			return true;
-		}
-		return false;
 	}
 
 
@@ -222,16 +217,20 @@ public class ExportVCFDialog extends MultiGenomeTrackActionDialog {
 
 
 	@Override
-	protected String getErrors() {
-		String error = "";
+	protected void initializeContentPanel() {
+		// Initialize the content panel
+		contentPanel = new JPanel();
 
-		String filePath = jtfFile.getText();
-		if (filePath == null) {
-			error += "The path of the file has not been found.";
-		} else if (filePath.isEmpty()){
-			error += "The path of the file has not been found.";
-		}
+		// Create the field set effect
+		TitledBorder titledBorder = BorderFactory.createTitledBorder("Export settings");
+		contentPanel.setBorder(titledBorder);
 
-		return error;
+		// Create the layout
+		BorderLayout layout = new BorderLayout();
+		contentPanel.setLayout(layout);
+
+		// Add panels
+		contentPanel.add(getVCFPanel(), BorderLayout.CENTER);
+		contentPanel.add(getCompressionOptionPanel(), BorderLayout.SOUTH);
 	}
 }

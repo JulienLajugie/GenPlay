@@ -42,7 +42,7 @@ import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.trackList.TrackListModel;
 import edu.yu.einstein.genplay.gui.trackList.TrackListPanel;
-import edu.yu.einstein.genplay.util.Utils;
+import edu.yu.einstein.genplay.util.FileChooser;
 
 /**
  * Loads a project from a file
@@ -126,7 +126,7 @@ public class PALoadProject extends TrackListActionWorker<Track[]> {
 		// initialized.
 		if (!skipFileSelection) {
 			FileFilter[] fileFilters = { new GenPlayProjectFilter() };
-			File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Project", fileFilters, true);
+			File selectedFile = FileChooser.chooseFile(getRootPane(), FileChooser.OPEN_FILE_MODE, "Load Project", fileFilters, true);
 			if (selectedFile == null) {
 				return null;
 			}

@@ -26,7 +26,6 @@ import java.awt.Component;
 import java.io.File;
 
 import javax.swing.ActionMap;
-import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -36,7 +35,7 @@ import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.RNAPosToDNAPosOutputFileTypeDialog;
 import edu.yu.einstein.genplay.gui.fileFilter.BedFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.BedGraphFilter;
-import edu.yu.einstein.genplay.util.Utils;
+import edu.yu.einstein.genplay.util.FileChooser;
 
 /**
  * Replaces positions relative to a reference (RNA) to DNA positions
@@ -79,27 +78,16 @@ public final class PARNAPosToDNAPos extends TrackListActionWorker<Void> {
 
 		FileNameExtensionFilter textFileFilter = new FileNameExtensionFilter("Text file (*.txt)", "txt");
 		FileFilter[] fileFilters1 = { textFileFilter, new BedGraphFilter() };
-		fileData = Utils.chooseFileToLoad(parent, "Select Coverage File", fileFilters1, true);
+		fileData = FileChooser.chooseFile(parent, FileChooser.OPEN_FILE_MODE, "Select Coverage File", fileFilters1, true);
 		if (fileData != null) {
 			FileFilter[] fileFilters2 = { textFileFilter, new BedFilter() };
-			fileRef = Utils.chooseFileToLoad(parent, "Select Reference File", fileFilters2, true);
+			fileRef = FileChooser.chooseFile(parent, FileChooser.OPEN_FILE_MODE, "Select Reference File", fileFilters2, true);
 			if (fileRef != null) {
-
 				RNAPosToDNAPosOutputFileTypeDialog rnaToDnaDialog = new RNAPosToDNAPosOutputFileTypeDialog();
 				int rtddResult = rnaToDnaDialog.showDialog(getRootPane());
 				outputFileType = rnaToDnaDialog.getSelectedOutputFileType();
-
 				if (rtddResult == RNAPosToDNAPosOutputFileTypeDialog.APPROVE_OPTION) {
-					JFileChooser jfc = new JFileChooser();
-					Utils.setFileChooserSelectedDirectory(jfc);
-					jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-					jfc.setDialogTitle("Select Output BGR File");
-					jfc.addChoosableFileFilter(new BedGraphFilter());
-					jfc.setAcceptAllFileFilterUsed(false);
-					int returnVal = jfc.showSaveDialog(parent);
-					if (returnVal == JFileChooser.APPROVE_OPTION) {
-						fileOutput = Utils.addExtension(jfc.getSelectedFile(), "bgr");
-					}
+					fileOutput = FileChooser.chooseFile(parent, FileChooser.SAVE_FILE_MODE, "Select Output BGR File", new FileFilter[] {new BedGraphFilter()}, false);
 					if (fileOutput != null) {
 						final GeneRelativeToGenomePosition grtgp = new GeneRelativeToGenomePosition(fileData, fileRef, fileOutput, outputFileType);
 						notifyActionStart("Generating Output Files", 1, false);

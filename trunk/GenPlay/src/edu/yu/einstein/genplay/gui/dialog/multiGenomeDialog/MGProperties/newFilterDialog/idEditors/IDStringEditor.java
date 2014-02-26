@@ -60,8 +60,8 @@ public class IDStringEditor implements IDEditor {
 
 	private JPanel			panel;
 	private VCFHeaderType 	header;				// Header ID
-	private final JLabel 			constraintLabel;	// Label for naming the constraint
-	private final JLabel 			valueLabel;			// Label for naming the value
+	private final JLabel 	constraintLabel;	// Label for naming the constraint
+	private final JLabel 	valueLabel;			// Label for naming the value
 	private JComboBox		jcValue;			// Editable combo box for selecting the value
 	private List<String>	defaultElements;	// The default elements for the value box
 	private JRadioButton	present;			// Radio box for PRESENT value
@@ -82,62 +82,18 @@ public class IDStringEditor implements IDEditor {
 
 
 	@Override
-	public JPanel updatePanel() {
-		panel = new JPanel();
+	public String getErrors() {
+		String errors = "";
+		if (header == null) {
+			errors += "ID selection\n";
+		}
 
-		// Creates the radio boxes
-		present = new JRadioButton(PRESENT);
-		present.setToolTipText(PRESENT_TTT);
-		absent = new JRadioButton(ABSENT);
-		absent.setToolTipText(ABSENT_TTT);
-
-		// Creates the value box
-		jcValue = getValueBox();
-		jcValue.setToolTipText(VALUE_BOX_TTT);
-
-		// Creates the group
-		ButtonGroup group = new ButtonGroup();
-		group.add(present);
-		group.add(absent);
-
-		// Default setting
-		present.setSelected(true);
-
-		// Layout settings
-		GridBagLayout layout = new GridBagLayout();
-		panel.setLayout(layout);
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-		gbc.weightx = 1;
-		gbc.weighty = 0;
-
-		// Constraint label
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.insets = new Insets(10, 10, 10, 0);
-		panel.add(constraintLabel, gbc);
-
-		// "Present" box
-		gbc.gridy++;
-		gbc.insets = new Insets(5, 20, 0, 0);
-		panel.add(present, gbc);
-
-		// "Absent" box
-		gbc.gridy++;
-		panel.add(absent, gbc);
-
-		// Value label
-		gbc.gridy++;
-		gbc.insets = new Insets(10, 10, 10, 0);
-		panel.add(valueLabel, gbc);
-
-		// Value box
-		gbc.gridy++;
-		gbc.insets = new Insets(5, 20, 0, 0);
-		gbc.weighty = 1;
-		panel.add(jcValue, gbc);
-
-		return panel;
+		if (jcValue.getSelectedItem() == null) {
+			errors += "Value selection\n";
+		} else if (jcValue.getSelectedItem().toString().isEmpty()){
+			errors += "Value selection\n";
+		}
+		return errors;
 	}
 
 
@@ -167,12 +123,6 @@ public class IDStringEditor implements IDEditor {
 		}
 
 		return filter;
-	}
-
-
-	@Override
-	public void setHeaderType(VCFHeaderType id) {
-		this.header = id;
 	}
 
 
@@ -227,27 +177,17 @@ public class IDStringEditor implements IDEditor {
 	}
 
 
+	@Override
+	public boolean isEnabled() {
+		return panel.isEnabled();
+	}
+
+
 	/**
 	 * @param defaultElements the defaultElements to set
 	 */
 	public void setDefaultElements(List<String> defaultElements) {
 		this.defaultElements = defaultElements;
-	}
-
-
-	@Override
-	public String getErrors() {
-		String errors = "";
-		if (header == null) {
-			errors += "ID selection\n";
-		}
-
-		if (jcValue.getSelectedItem() == null) {
-			errors += "Value selection\n";
-		} else if (jcValue.getSelectedItem().toString().isEmpty()){
-			errors += "Value selection\n";
-		}
-		return errors;
 	}
 
 
@@ -265,8 +205,66 @@ public class IDStringEditor implements IDEditor {
 
 
 	@Override
-	public boolean isEnabled() {
-		return panel.isEnabled();
+	public void setHeaderType(VCFHeaderType id) {
+		header = id;
+	}
+
+
+	@Override
+	public JPanel updatePanel() {
+		panel = new JPanel();
+
+		// Creates the radio boxes
+		present = new JRadioButton(PRESENT);
+		present.setToolTipText(PRESENT_TTT);
+		absent = new JRadioButton(ABSENT);
+		absent.setToolTipText(ABSENT_TTT);
+
+		// Creates the value box
+		jcValue = getValueBox();
+		jcValue.setToolTipText(VALUE_BOX_TTT);
+
+		// Creates the group
+		ButtonGroup group = new ButtonGroup();
+		group.add(present);
+		group.add(absent);
+
+		// Default setting
+		present.setSelected(true);
+
+		// Layout settings
+		GridBagLayout layout = new GridBagLayout();
+		panel.setLayout(layout);
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+
+		// Constraint label
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		panel.add(constraintLabel, gbc);
+
+		// "Present" box
+		gbc.gridy++;
+		gbc.insets = new Insets(0, 10, 0, 0);
+		panel.add(present, gbc);
+
+		// "Absent" box
+		gbc.gridy++;
+		panel.add(absent, gbc);
+
+		// Value label
+		gbc.gridy++;
+		gbc.insets = new Insets(10, 0, 0, 0);
+		panel.add(valueLabel, gbc);
+
+		// Value box
+		gbc.gridy++;
+		gbc.insets = new Insets(0, 10, 0, 0);
+		panel.add(jcValue, gbc);
+
+		return panel;
 	}
 
 }

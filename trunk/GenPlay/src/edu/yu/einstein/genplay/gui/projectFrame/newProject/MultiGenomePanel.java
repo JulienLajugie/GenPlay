@@ -39,9 +39,9 @@ import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.filechooser.FileFilter;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -56,7 +56,7 @@ import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLoader.VCFData;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLoader.VCFLoaderDialog;
 import edu.yu.einstein.genplay.gui.fileFilter.XMLFilter;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
-import edu.yu.einstein.genplay.util.Utils;
+import edu.yu.einstein.genplay.util.FileChooser;
 
 /**
  * This class shows information and buttons about the multi genome
@@ -71,19 +71,12 @@ class MultiGenomePanel extends JPanel {
 	private VCFLoaderDialog						vcfLoaderDialog;		// the VCF loader
 	private List<VCFData> 						data;					// data
 	private Map<String, List<VCFFile>> 			genomeFileAssociation;
-	private final JFileChooser 					fc;						// file chooser
 
 
 	/**
 	 * Constructor of {@link MultiGenomePanel}
 	 */
 	protected MultiGenomePanel () {
-		//Create a file chooser
-		fc = new JFileChooser();
-		Utils.setFileChooserSelectedDirectory(fc);
-		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		fc.setFileFilter(new XMLFilter());
-
 		informationPanel = new MultiGenomeInformationPanel();
 
 		vcfLoaderDialog = new VCFLoaderDialog();
@@ -191,15 +184,11 @@ class MultiGenomePanel extends JPanel {
 	 */
 	private void exportXML () {
 		if (data.size() > 0) {
-			int returnVal = fc.showSaveDialog(getRootPane());
-			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				File file = fc.getSelectedFile();
-				file = Utils.addExtension(file, XMLFilter.EXTENSIONS[0]);
+			File file = FileChooser.chooseFile(getRootPane(), FileChooser.SAVE_FILE_MODE, "Export Configuration", new FileFilter[] {new XMLFilter()}, false);
+			if (file != null) {
 				SettingsHandler xmlParser = new SettingsHandler(file);
 				xmlParser.setData(data);
 				xmlParser.write();
-			} else if (returnVal == JFileChooser.ERROR_OPTION) {
-				JOptionPane.showMessageDialog(getRootPane(), "Please select a valid XML file", "Invalid XML selection", JOptionPane.WARNING_MESSAGE);
 			}
 		} else {
 			JOptionPane.showMessageDialog(getRootPane(), "No setting has been found", "Settings export process", JOptionPane.WARNING_MESSAGE);
@@ -238,9 +227,9 @@ class MultiGenomePanel extends JPanel {
 		File xmlFile = null;
 
 		// XML Chooser
-		int returnVal = fc.showOpenDialog(getRootPane());
-		if(returnVal == JFileChooser.APPROVE_OPTION) {
-			String xmlPath = fc.getSelectedFile().getPath();
+		File file = FileChooser.chooseFile(getRootPane(), FileChooser.OPEN_FILE_MODE, "Export Configuration", new FileFilter[] {new XMLFilter()}, false);
+		if(file != null) {
+			String xmlPath = file.getPath();
 			xmlFile = new File(xmlPath);
 
 			// Stream & Parsers

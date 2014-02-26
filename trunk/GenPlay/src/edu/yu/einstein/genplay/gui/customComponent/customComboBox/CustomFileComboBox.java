@@ -24,13 +24,11 @@ package edu.yu.einstein.genplay.gui.customComponent.customComboBox;
 
 import java.io.File;
 
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileFilter;
 
 import edu.yu.einstein.genplay.gui.customComponent.customComboBox.customComboBoxEvent.CustomComboBoxEvent;
 import edu.yu.einstein.genplay.gui.fileFilter.ExtendedFileFilter;
-import edu.yu.einstein.genplay.util.Utils;
+import edu.yu.einstein.genplay.util.FileChooser;
 
 /**
  * This class extends the {@link CustomComboBox} class.
@@ -46,8 +44,6 @@ public class CustomFileComboBox extends CustomComboBox<File> {
 	 * Generated default serial version
 	 */
 	private static final long serialVersionUID = -872347430907803557L;
-
-	private JFileChooser fc;
 	private ExtendedFileFilter[] filters;			// filters for adding files to the combo box
 
 
@@ -55,12 +51,6 @@ public class CustomFileComboBox extends CustomComboBox<File> {
 	 * Constructor of {@link CustomFileComboBox}
 	 */
 	public CustomFileComboBox () {
-		//Create a file chooser
-		fc = new JFileChooser();
-		Utils.setFileChooserSelectedDirectory(fc);
-		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		fc.setAcceptAllFileFilterUsed(false);
-		fc.setDialogTitle("Select a file");
 		filters = null;
 	}
 
@@ -94,12 +84,10 @@ public class CustomFileComboBox extends CustomComboBox<File> {
 	 */
 	@Override
 	protected void addAction () {
-		int returnVal = fc.showOpenDialog(getRootPane());
-		if(returnVal == JFileChooser.APPROVE_OPTION) {
-			String path = fc.getSelectedFile().getPath();
-			File element = new File(path);
-			element = actionPostSelection(element);
-			addElementToCombo(element);
+		File selectedFile = FileChooser.chooseFile(getRootPane(), FileChooser.OPEN_FILE_MODE, "Select a File", filters, false);
+		if(selectedFile != null) {
+			selectedFile = actionPostSelection(selectedFile);
+			addElementToCombo(selectedFile);
 		}
 	}
 
@@ -167,7 +155,7 @@ public class CustomFileComboBox extends CustomComboBox<File> {
 	 */
 	@Override
 	protected void replaceAction (File element) {
-		File newElement = Utils.chooseFileToLoad(getRootPane(), "Select a file", filters, false);
+		File newElement = FileChooser.chooseFile(getRootPane(), FileChooser.OPEN_FILE_MODE, "Select a File", filters, false);
 		if (newElement != null) {
 			elements.remove(element);
 			addElement(newElement);
@@ -182,9 +170,5 @@ public class CustomFileComboBox extends CustomComboBox<File> {
 	 */
 	public void setFilters(ExtendedFileFilter[] filters) {
 		this.filters = filters;
-		for (FileFilter filter: filters) {
-			fc.addChoosableFileFilter(filter);
-		}
 	};
-
 }

@@ -106,6 +106,14 @@ public class ProjectFrame extends JFrame {
 
 
 	/**
+	 * @return true if the project frame has been initialized, false otherwise
+	 */
+	public static boolean isInitialized() {
+		return instance != null;
+	}
+
+
+	/**
 	 * Shows a popup with several information
 	 * @param title title of the popup
 	 * @param info	information to display

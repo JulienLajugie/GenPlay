@@ -20,42 +20,29 @@
  * 
  * Website: <http://genplay.einstein.yu.edu>
  ******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.optionDialog;
+package edu.yu.einstein.genplay.gui.fileFilter;
 
-import javax.swing.JPanel;
-
-import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
+import javax.swing.filechooser.FileFilter;
 
 
 /**
- * Right panel of an {@link OptionDialog} Defines the common attributes of the
- * different panels of the configuration frame.
+ * A text file {@link FileFilter}
  * @author Julien Lajugie
  * @version 0.1
  */
-abstract class OptionPanel extends JPanel {
+public final class TextFileFilter extends ExtendedFileFilter {
 
-	private static final long serialVersionUID = 4821469631755757767L; 	// Generated ID
-	final ConfigurationManager configurationManager; 			// ConfigurationManager
-
-
-	/**
-	 * Constructor. Creates an instance of {@link OptionPanel}
-	 * @param name name of the category of configuration
-	 */
-	OptionPanel(String name) {
-		super();
-		setName(name);
-		configurationManager = ConfigurationManager.getInstance();
-	}
+	private static final long serialVersionUID = -7589647687815666483L; // generated ID
+	/** Valid extensions */
+	public static final String[] EXTENSIONS = {"txt"};
+	/** File type description */
+	public static final String DESCRIPTION = "Texte Files (*.txt)";
 
 
 	/**
-	 * Override of toString use for the JTree in order to set the name of a
-	 * category.
+	 * Creates an instance of {@link TextFileFilter}
 	 */
-	@Override
-	public String toString() {
-		return getName();
+	public TextFileFilter() {
+		super(EXTENSIONS, DESCRIPTION);
 	}
 }
