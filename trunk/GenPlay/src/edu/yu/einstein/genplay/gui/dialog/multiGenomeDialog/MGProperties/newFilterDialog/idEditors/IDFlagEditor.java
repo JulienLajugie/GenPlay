@@ -24,6 +24,7 @@ package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.newFil
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
@@ -40,10 +41,11 @@ import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.IDFilterInterface;
 public class IDFlagEditor implements IDEditor {
 
 	private final static String CONSTRAINT_LABEL_TTT 	= "Select a constraint for the value.";
-	private final static String PRESENT_TTT 			= "The flag in the associated file data will must be PRESENT in order to be accepted.";
-	private final static String ABSENT_TTT 				= "The flag in the associated file data will must be ABSENT in order to be accepted.";
-	private final static String PRESENT 				= "must contain";
-	private final static String ABSENT 					= "must not contain";
+	private final static String PRESENT_TTT 			= "The flag in the associated file data must be PRESENT in order to be accepted.";
+	private final static String ABSENT_TTT 				= "The flag in the associated file data must be ABSENT in order to be accepted.";
+	private final static String LABEL 					= "The selected flag field";
+	private final static String PRESENT 				= "Must be present";
+	private final static String ABSENT 					= "Must not be present";
 	private JPanel			panel;
 	private VCFHeaderType 	header;				// Header ID
 	private JLabel 			constraintLabel;	// Label for naming the constraint
@@ -92,19 +94,8 @@ public class IDFlagEditor implements IDEditor {
 
 
 	@Override
-	public boolean isEnabled() {
-		return panel.isEnabled();
-	}
-
-
-	@Override
-	public void setEnabled(boolean b) {
-		if (panel != null) {
-			panel.setEnabled(b);
-			constraintLabel.setEnabled(b);
-			present.setEnabled(b);
-			absent.setEnabled(b);
-		}
+	public boolean isVisible() {
+		return panel.isVisible();
 	}
 
 
@@ -115,11 +106,19 @@ public class IDFlagEditor implements IDEditor {
 
 
 	@Override
+	public void setVisible(boolean b) {
+		if (panel != null) {
+			panel.setVisible(b);
+		}
+	}
+
+
+	@Override
 	public JPanel updatePanel() {
 		panel = new JPanel();
 
 		// Creates the label
-		constraintLabel = new JLabel("Must be:");
+		constraintLabel = new JLabel(LABEL);
 		constraintLabel.setToolTipText(CONSTRAINT_LABEL_TTT);
 
 		// Creates the radio boxes
@@ -137,18 +136,22 @@ public class IDFlagEditor implements IDEditor {
 		present.setSelected(true);
 
 		// Layout settings
-		GridBagLayout layout = new GridBagLayout();
-		panel.setLayout(layout);
+		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 
 		// Label
 		gbc.gridx = 0;
 		gbc.gridy = 0;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.insets = new Insets(0, 0, 20, 0);
 		panel.add(constraintLabel, gbc);
 
 		// "Present" button
 		gbc.gridy = 1;
+		gbc.insets = new Insets(0, 10, 10, 0);
 		panel.add(present, gbc);
 
 		// "Absent" button

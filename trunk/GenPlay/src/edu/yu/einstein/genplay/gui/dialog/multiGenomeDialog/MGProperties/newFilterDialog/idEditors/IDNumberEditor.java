@@ -51,11 +51,11 @@ import edu.yu.einstein.genplay.dataStructure.enums.VCFColumnName;
  */
 public class IDNumberEditor implements IDEditor {
 
-	private final static String VALUE_LABEL_TTT 		= "The processing data in the file.";
+	private final static String VALUE_LABEL_TTT 		= "The data in the file.";
 	private final static String INEQUATION_TTT 			= "Select an operator.";
 	private final static String VALUE_JTF_TTT 			= "Constraint value.";
-	private final static String AND_OPERATOR_TTT 		= "Both equation will have to be true in order to accept the processing data.";
-	private final static String OR_OPERATOR_TTT 		= "Only one equation will have to be true in order to accept the processing data.";
+	private final static String AND_OPERATOR_TTT 		= "Both equation will have to be true in order to accept the VCF line.";
+	private final static String OR_OPERATOR_TTT 		= "Only one equation will have to be true in order to accept the VCF line.";
 
 	private JPanel			panel;
 	private VCFHeaderType 	header;				// Header ID
@@ -112,7 +112,7 @@ public class IDNumberEditor implements IDEditor {
 	public String getErrors() {
 		String errors = "";
 		if (header == null) {
-			errors += "bID selection\n";
+			errors += "ID selection\n";
 		}
 
 		// First value MUST be filed
@@ -212,14 +212,14 @@ public class IDNumberEditor implements IDEditor {
 	private JPanel getInequationPanel (JComboBox box, JTextField field) {
 		JPanel panel = new JPanel();
 
-		JLabel valueLabel = new JLabel("value");
+		JLabel valueLabel = new JLabel("Keep Values");
 		valueLabel.setToolTipText(VALUE_LABEL_TTT);
 
 		// Layout settings
 		GridBagLayout layout = new GridBagLayout();
 		panel.setLayout(layout);
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbc.anchor = GridBagConstraints.LINE_START;
 		gbc.weightx = 1;
 		gbc.weighty = 1;
 		gbc.gridy = 0;
@@ -261,7 +261,7 @@ public class IDNumberEditor implements IDEditor {
 		JPanel panel = new JPanel();
 
 		// Initializes radio boxes
-		andButton = new JRadioButton("and");
+		andButton = new JRadioButton("And");
 		andButton.setSelected(true);
 		andButton.setToolTipText(AND_OPERATOR_TTT);
 		andButton.addActionListener(new ActionListener() {
@@ -270,7 +270,7 @@ public class IDNumberEditor implements IDEditor {
 				refreshBoxes();
 			}
 		});
-		orButton = new JRadioButton("or");
+		orButton = new JRadioButton("Or");
 		orButton.setToolTipText(OR_OPERATOR_TTT);
 		orButton.addActionListener(new ActionListener() {
 			@Override
@@ -364,8 +364,8 @@ public class IDNumberEditor implements IDEditor {
 
 
 	@Override
-	public boolean isEnabled() {
-		return panel.isEnabled();
+	public boolean isVisible() {
+		return panel.isVisible();
 	}
 
 
@@ -413,20 +413,6 @@ public class IDNumberEditor implements IDEditor {
 
 
 	@Override
-	public void setEnabled(boolean b) {
-		if (panel != null) {
-			panel.setEnabled(b);
-			inequationBox01.setEnabled(b);
-			inequationBox02.setEnabled(b);
-			valueField01.setEnabled(b);
-			valueField02.setEnabled(b);
-			andButton.setEnabled(b);
-			orButton.setEnabled(b);
-		}
-	}
-
-
-	@Override
 	public void setHeaderType(VCFHeaderType id) {
 		header = id;
 	}
@@ -451,6 +437,14 @@ public class IDNumberEditor implements IDEditor {
 			comboBox.setSelectedItem(operator);
 		} else {
 			comboBox.setSelectedIndex(0);
+		}
+	}
+
+
+	@Override
+	public void setVisible(boolean b) {
+		if (panel != null) {
+			panel.setVisible(b);
 		}
 	}
 

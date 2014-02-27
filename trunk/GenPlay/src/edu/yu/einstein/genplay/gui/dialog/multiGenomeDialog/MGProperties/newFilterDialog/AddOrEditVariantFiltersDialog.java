@@ -74,6 +74,8 @@ public class AddOrEditVariantFiltersDialog extends JDialog implements PropertyCh
 	/** Preferred height of the layer chooser */
 	private static final int LAYER_PANEL_PREFERRED_HEIGHT = 200;
 
+	public static final int LARGE_PANELS_PREFERRED_WIDTH = 700;
+
 	public static FiltersData showAddDialog(Component parentComponent) {
 		AddOrEditVariantFiltersDialog dialog = new AddOrEditVariantFiltersDialog(null);
 		dialog.setTitle("Create Filter");
@@ -167,9 +169,11 @@ public class AddOrEditVariantFiltersDialog extends JDialog implements PropertyCh
 		add(valuePanel, gbc);
 
 		gbc.gridx = 1;
+		gbc.weightx = 0.9;
 		add(genomePanel, gbc);
 
 		gbc.gridwidth = 2;
+		gbc.weightx = 1;
 		gbc.gridy = 4;
 		gbc.gridx = 0;
 		add(validationPanel, gbc);
@@ -194,7 +198,8 @@ public class AddOrEditVariantFiltersDialog extends JDialog implements PropertyCh
 		TableColumnModel tcm = chooser.getTable().getColumnModel();
 		TableColumn layerTypeColumn = tcm.getColumn(LayerChooserTableModel.LAYER_TYPE_INDEX);
 		tcm.removeColumn(layerTypeColumn);
-		chooser.setPreferredSize(new Dimension(chooser.getPreferredSize().width, LAYER_PANEL_PREFERRED_HEIGHT));
+		chooser.setPreferredSize(new Dimension(LARGE_PANELS_PREFERRED_WIDTH, LAYER_PANEL_PREFERRED_HEIGHT));
+		chooser.setMinimumSize(chooser.getPreferredSize());
 		return chooser;
 	}
 
@@ -241,15 +246,18 @@ public class AddOrEditVariantFiltersDialog extends JDialog implements PropertyCh
 		if ((layerPanel.getSelectedLayers() == null) || layerPanel.getSelectedLayers().isEmpty()) {
 			return false;
 		}
+		if ((genomePanel != null) && genomePanel.isVisible() && !genomePanel.isSelectionValid()) {
+			return false;
+		}
 		return true;
 	}
 
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-
 		if (evt.getPropertyName().equals(FilePanel.FILE_CHANGE_PROPERTY_NAME)) {
 			VCFFile vcfFile = (VCFFile) evt.getNewValue();
+			genomePanel.setGenomeList(vcfFile.getHeader().getGenomeNames());
 			idPanel.setFilters(vcfFile.getHeader().getAllSortedHeader());
 		} else if (evt.getPropertyName().equals(LayerChooserPanel.SELECTED_LAYERS_PROPERTY_NAME)) {
 
@@ -265,6 +273,7 @@ public class AddOrEditVariantFiltersDialog extends JDialog implements PropertyCh
 		filePanel.addPropertyChangeListener(FilePanel.FILE_CHANGE_PROPERTY_NAME, this);
 		layerPanel.addPropertyChangeListener(LayerChooserPanel.SELECTED_LAYERS_PROPERTY_NAME, this);
 		idPanel.addPropertyChangeListener(FilterIDPanel.FILTER_ID_PROPERTY_NAME, this);
+		genomePanel.addPropertyChangeListener(MultiGenomePanel.IS_SELECTION_VALID_PROPERTY_NAME, this);
 	}
 }
 

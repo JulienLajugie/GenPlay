@@ -116,27 +116,22 @@ public class IDGTEditor implements IDEditor {
 
 
 	@Override
-	public boolean isEnabled() {
-		return panel.isEnabled();
-	}
-
-
-	@Override
-	public void setEnabled(boolean b) {
-		if (panel != null) {
-			panel.setEnabled(b);
-			constraintLabel.setEnabled(b);
-			homozygote.setEnabled(b);
-			heterozygote.setEnabled(b);
-			phased.setEnabled(b);
-			unPhased.setEnabled(b);
-		}
+	public boolean isVisible() {
+		return panel.isVisible();
 	}
 
 
 	@Override
 	public void setHeaderType(VCFHeaderType id) {
 		header = id;
+	}
+
+
+	@Override
+	public void setVisible(boolean b) {
+		if (panel != null) {
+			panel.setVisible(b);
+		}
 	}
 
 
@@ -160,9 +155,9 @@ public class IDGTEditor implements IDEditor {
 		group.add(heterozygote);
 
 		// Creates the checkboxes
-		phased = new JCheckBox("include phased GT");
+		phased = new JCheckBox("Include phased GT");
 		phased.setSelected(true);
-		unPhased = new JCheckBox("include unphased GT");
+		unPhased = new JCheckBox("Include unphased GT");
 		unPhased.setSelected(true);
 
 		// Default setting

@@ -49,6 +49,7 @@ import edu.yu.einstein.genplay.gui.customComponent.tableComponents.ComboBoxEdito
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 import edu.yu.einstein.genplay.gui.track.layer.ColoredLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
+import edu.yu.einstein.genplay.util.JTables;
 
 /**
  * Dialog for the settings of the layers of a track
@@ -68,7 +69,7 @@ public class LayerSettingsPanel extends JPanel {
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 			if (value == null) {
-				return null;
+				return table.getDefaultRenderer(String.class).getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 			}
 			Component renderedComponent = table.getDefaultRenderer(value.getClass()).getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 			renderedComponent.setEnabled(true);
@@ -84,6 +85,7 @@ public class LayerSettingsPanel extends JPanel {
 			return renderedComponent;
 		}
 	}
+
 
 	/** Column headers */
 	protected static final String[] COLUMN_NAMES = {"#", "Name", "Type", "Color", "Graph Type", "Visible", "Active", "Set For Deletion"};
@@ -237,7 +239,7 @@ public class LayerSettingsPanel extends JPanel {
 			column.setResizable(true);
 			switch (columnIndex) {
 			case LAYER_NUMBER_INDEX:
-				column.setPreferredWidth(5);
+				column.setPreferredWidth(8);
 				column.setCellRenderer(new DefaultLayerSettingsTableCellRenderer());
 				break;
 			case LAYER_COLOR_INDEX:
@@ -252,9 +254,14 @@ public class LayerSettingsPanel extends JPanel {
 				column.setCellEditor(new BooleanRadioButtonEditor());
 				column.setCellRenderer(new BooleanRadioButtonRenderer());
 				break;
+			case IS_LAYER_SET_FOR_DELETION_INDEX:
+				column.setCellRenderer(new DefaultLayerSettingsTableCellRenderer());
+				column.setPreferredWidth(110);
+				break;
 			default:
 				column.setCellRenderer(new DefaultLayerSettingsTableCellRenderer());
 			}
+			JTables.packColumn(layerSettingsTable, columnIndex, 2);
 		}
 	}
 }

@@ -97,7 +97,7 @@ public class MGAGlobalVCFExport extends TrackListActionWorker<Boolean> {
 			dialog = new ExportVCFDialog(settings, selectedLayer);
 
 			// Show the dialog
-			if (dialog.showDialog(null) == MultiGenomeTrackActionDialog.APPROVE_OPTION) {
+			if (dialog.showDialog(getRootPane()) == MultiGenomeTrackActionDialog.APPROVE_OPTION) {
 				outputFile = new File(dialog.getVCFPath());
 
 				// Create the VCF thread

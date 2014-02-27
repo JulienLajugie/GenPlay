@@ -55,7 +55,9 @@ public class FilePanel extends JPanel implements ItemListener {
 
 
 	/**
-	 * Constructor of {@link FilePanel}
+	 * Creates a {@link FilePanel}
+	 * @param fileList list of the file that can be selected
+	 * @param selectedFile a file already selected when the panel is created. Can be null
 	 */
 	public FilePanel(List<VCFFile> fileList, VCFFile selectedFile) {
 		super(new GridBagLayout());

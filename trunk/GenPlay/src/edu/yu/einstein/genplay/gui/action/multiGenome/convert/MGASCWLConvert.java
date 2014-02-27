@@ -118,7 +118,7 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 			dialog = new ConvertSCWDialog(settings, selectedLayer);
 
 			// Show the dialog
-			if (dialog.showDialog(null) == MultiGenomeTrackActionDialog.APPROVE_OPTION) {
+			if (dialog.showDialog(getRootPane()) == MultiGenomeTrackActionDialog.APPROVE_OPTION) {
 
 				// Initialize the engine if the export is about only one VCF file
 				int fileNumber = settings.getFileNumber();

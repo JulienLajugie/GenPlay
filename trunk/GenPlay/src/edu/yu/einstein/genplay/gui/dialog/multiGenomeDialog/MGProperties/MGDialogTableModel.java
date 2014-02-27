@@ -102,5 +102,4 @@ public class MGDialogTableModel extends AbstractTableModel {
 		data[row][col] = value;
 		fireTableCellUpdated(row, col);
 	}
-
 }

@@ -48,6 +48,7 @@ import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 import edu.yu.einstein.genplay.gui.track.layer.ColoredLayer;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.LayerType;
+import edu.yu.einstein.genplay.util.JTables;
 import edu.yu.einstein.genplay.util.Utils;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
@@ -67,8 +68,8 @@ public class LayerChooserPanel extends JPanel implements TableModelListener {
 		private static final long serialVersionUID = 9025676810770612025L; // generated serial ID
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-			if ((table == null) || (value == null)) {
-				return null;
+			if (value == null) {
+				return table.getDefaultRenderer(String.class).getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 			}
 			Component renderedComponent = table.getDefaultRenderer(value.getClass()).getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 			renderedComponent.setEnabled(true);
@@ -230,14 +231,13 @@ public class LayerChooserPanel extends JPanel implements TableModelListener {
 			column.setHeaderValue(LayerChooserTableModel.COLUMN_NAMES[i]);
 			column.setResizable(true);
 			column.setCellRenderer(tableCellRenderer);
+			JTables.packColumn(layerTable, i, 2);
 		}
 	}
 
 
 	@Override
 	public void tableChanged(TableModelEvent e) {
-		//if (e.getColumn() == LayerChooserTableModel.LAYER_SELECTION_INDEX) {
 		firePropertyChange(SELECTED_LAYERS_PROPERTY_NAME, null, selectedLayers);
-		//}
 	}
 }

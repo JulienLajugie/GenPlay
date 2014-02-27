@@ -35,7 +35,6 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderBasicType;
@@ -60,9 +59,8 @@ public class FilterValuesPanel extends JPanel implements ActionListener {
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -5350638693635564694L;
 
-	/** Preferred dimension of this panel */
-	private final Dimension PREFERRED_DIMENSION = new Dimension(280, 180);
-
+	/** Preferred height of this panel */
+	private final int PREFERRED_HEIGHT = 180;
 	private IDEditor filterEditor;
 	private IDEditor specialFilterEditor;
 	private JRadioButton regularRadioBox;
@@ -79,7 +77,7 @@ public class FilterValuesPanel extends JPanel implements ActionListener {
 		if (filterInterface != null) {
 			initialize(filterInterface);
 		}
-		setPreferredSize(PREFERRED_DIMENSION);
+		setPreferredSize(new Dimension(getPreferredSize().width, PREFERRED_HEIGHT));
 	}
 
 
@@ -88,40 +86,12 @@ public class FilterValuesPanel extends JPanel implements ActionListener {
 		if (arg0.getSource() instanceof JRadioButton) {
 			JRadioButton radio = (JRadioButton) arg0.getSource();
 			if (radio.equals(regularRadioBox)) {
-				specialFilterEditor.setEnabled(false);
-				filterEditor.setEnabled(true);
+				specialFilterEditor.setVisible(false);
+				filterEditor.setVisible(true);
 			} else {
-				filterEditor.setEnabled(false);
-				specialFilterEditor.setEnabled(true);
+				filterEditor.setVisible(false);
+				specialFilterEditor.setVisible(true);
 			}
-		}
-	}
-
-
-	/**
-	 * Enables the panel for regular filters
-	 */
-	private void enableRegularPanel () {
-		if (specialFilterEditor != null) {
-			specialFilterEditor.setEnabled(false);
-		}
-		if (regularRadioBox != null) {
-			regularRadioBox.setSelected(true);
-		}
-		filterEditor.setEnabled(true);
-	}
-
-
-	/**
-	 * Enables the panel for special filters
-	 */
-	private void enableSpecialPanel () {
-		filterEditor.setEnabled(false);
-		if (specialRadioBox != null) {
-			specialRadioBox.setSelected(true);
-		}
-		if (specialFilterEditor != null) {
-			specialFilterEditor.setEnabled(true);
 		}
 	}
 
@@ -154,13 +124,14 @@ public class FilterValuesPanel extends JPanel implements ActionListener {
 			gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 			gbc.gridx = 0;
 			gbc.gridy = 0;
-			gbc.weightx = 1 ;
+			gbc.weightx = 1;
+			gbc.weighty = 1;
 			panel.add(specialRadioBox, gbc);
 
 			gbc.gridy++;
 			gbc.insets = new Insets(0, 10, 0, 0);
 			panel.add(specialFilterEditor.updatePanel(), gbc);
-			specialFilterEditor.setEnabled(true);
+			specialFilterEditor.setVisible(true);
 
 			gbc.gridy++;
 			gbc.insets = new Insets(10, 0, 0, 0);
@@ -169,7 +140,7 @@ public class FilterValuesPanel extends JPanel implements ActionListener {
 			gbc.gridy++;
 			gbc.insets = new Insets(0, 10, 0, 0);
 			panel.add(filterEditor.updatePanel(), gbc);
-			filterEditor.setEnabled(false);
+			filterEditor.setVisible(false);
 		} else {
 			panel = filterEditor.updatePanel();
 		}
@@ -181,14 +152,14 @@ public class FilterValuesPanel extends JPanel implements ActionListener {
 	 * @return the ID filter
 	 */
 	public FilterInterface getFilter () {
-		if (filterEditor.isEnabled()) {
+		if (filterEditor.isVisible()) {
 			return filterEditor.getFilter();
 		}
 		return specialFilterEditor.getFilter();
 	}
 
 
-	private void initEditors (VCFHeaderType headerType) {
+	private void initEditors(VCFHeaderType headerType) {
 		filterEditor = null;
 		specialFilterEditor = null;
 
@@ -249,6 +220,7 @@ public class FilterValuesPanel extends JPanel implements ActionListener {
 		}
 		if (filterEditor != null) {
 			filterEditor.setHeaderType(headerType);
+		} else {
 		}
 		if (specialFilterEditor != null) {
 			specialFilterEditor.setHeaderType(headerType);
@@ -262,10 +234,10 @@ public class FilterValuesPanel extends JPanel implements ActionListener {
 				IDFilterInterface filter = (IDFilterInterface) element;
 				if (element instanceof GenotypeIDFilter) {
 					specialFilterEditor.initializesPanel(filter);
-					enableSpecialPanel();
+					showSpecialPanel();
 				} else {
 					filterEditor.initializesPanel(filter);
-					enableRegularPanel();
+					showRegularPanel();
 				}
 			}
 		}
@@ -281,17 +253,40 @@ public class FilterValuesPanel extends JPanel implements ActionListener {
 			panel = new JPanel();
 		}
 		removeAll();
-
-		JScrollPane jsp = new JScrollPane(panel);
-		jsp.setBorder(null);
-
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.BOTH;
 		gbc.weightx = 1;
 		gbc.weighty = 1;
-		add(jsp, gbc);
-
+		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		add(panel, gbc);
 		revalidate();
 		repaint();
+	}
+
+
+	/**
+	 * Shows the panel for regular filters
+	 */
+	private void showRegularPanel () {
+		if (specialFilterEditor != null) {
+			specialFilterEditor.setVisible(false);
+		}
+		if (regularRadioBox != null) {
+			regularRadioBox.setSelected(true);
+		}
+		filterEditor.setVisible(true);
+	}
+
+
+	/**
+	 * Shows the panel for special filters
+	 */
+	private void showSpecialPanel () {
+		filterEditor.setVisible(false);
+		if (specialRadioBox != null) {
+			specialRadioBox.setSelected(true);
+		}
+		if (specialFilterEditor != null) {
+			specialFilterEditor.setVisible(true);
+		}
 	}
 }
