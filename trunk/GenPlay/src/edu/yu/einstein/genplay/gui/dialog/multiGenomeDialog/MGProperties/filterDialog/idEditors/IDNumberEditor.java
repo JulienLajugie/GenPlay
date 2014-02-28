@@ -22,12 +22,13 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterDialog.idEditors;
 
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
@@ -48,15 +49,15 @@ import edu.yu.einstein.genplay.dataStructure.enums.VCFColumnName;
 
 /**
  * @author Nicolas Fourel
- * @version 0.1
+ * @author Julien Lajugie
  */
 public class IDNumberEditor implements IDEditor {
 
-	private final static String VALUE_LABEL_TTT 		= "The processing data in the file.";
+	private final static String VALUE_LABEL_TTT 		= "The data in the file.";
 	private final static String INEQUATION_TTT 			= "Select an operator.";
 	private final static String VALUE_JTF_TTT 			= "Constraint value.";
-	private final static String AND_OPERATOR_TTT 		= "Both equation will have to be true in order to accept the processing data.";
-	private final static String OR_OPERATOR_TTT 		= "Only one equation will have to be true in order to accept the processing data.";
+	private final static String AND_OPERATOR_TTT 		= "Both equation will have to be true in order to accept the VCF line.";
+	private final static String OR_OPERATOR_TTT 		= "Only one equation will have to be true in order to accept the VCF line.";
 
 	private JPanel			panel;
 	private VCFHeaderType 	header;				// Header ID
@@ -66,6 +67,43 @@ public class IDNumberEditor implements IDEditor {
 	private JTextField		valueField02;		// Second value
 	private JRadioButton	andButton;			// AND operator button
 	private JRadioButton	orButton;			// OR operator button
+	private boolean 		isSelectionValid;	// return true if the current selection is valid, false otherwise
+
+
+	/**
+	 * Checks if the current selection made by the user is valid and update the
+	 * {@link #isSelectionValid} property. Fire a property change event if the
+	 * property changes.
+	 */
+	private final void checkIfSelectionIsValid() {
+		if (panel != null) {
+			boolean newIsSelectionValid = true;
+			// First value MUST be filed
+			if (inequationBox01.isEnabled() && inequationBox01.getSelectedItem().toString().equals(" ")) {
+				newIsSelectionValid = false;
+			}
+			try {
+				Float.parseFloat(valueField01.getText());
+			} catch (Exception e) {
+				newIsSelectionValid =  false;
+			}
+
+
+			if (inequationBox02.isEnabled() && !inequationBox02.getSelectedItem().toString().equals(" ")) {
+				//errors += "Second equation operator invalid\n";
+				try {
+					Float.parseFloat(valueField02.getText());
+				} catch (Exception e) {
+					newIsSelectionValid =  false;
+				}
+			}
+			if (newIsSelectionValid != isSelectionValid) {
+				boolean oldIsSelectionValid = isSelectionValid;
+				isSelectionValid = newIsSelectionValid;
+				panel.firePropertyChange(IDEditor.IS_SELECTION_VALID_PROPERTY_NAME, oldIsSelectionValid, newIsSelectionValid);
+			}
+		}
+	}
 
 
 	/**
@@ -83,8 +121,6 @@ public class IDNumberEditor implements IDEditor {
 		model.addElement(ComparisonOperators.GREATER_OR_EQUAL);
 
 		box = new JComboBox(model);
-		Dimension dimension = new Dimension(40, box.getFontMetrics(box.getFont()).getHeight() + 2);
-		box.setPreferredSize(dimension);
 		box.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -108,37 +144,6 @@ public class IDNumberEditor implements IDEditor {
 		}
 
 		return operator;
-	}
-
-
-	@Override
-	public String getErrors() {
-		String errors = "";
-		if (header == null) {
-			errors += "bID selection\n";
-		}
-
-		// First value MUST be filed
-		if (inequationBox01.isEnabled() && inequationBox01.getSelectedItem().toString().equals(" ")) {
-			errors += "First equation operator invalid\n";
-		}
-		try {
-			Float.parseFloat(valueField01.getText());
-		} catch (Exception e) {
-			errors += "First equation value invalid\n";
-		}
-
-
-		if (inequationBox02.isEnabled() && !inequationBox02.getSelectedItem().toString().equals(" ")) {
-			//errors += "Second equation operator invalid\n";
-			try {
-				Float.parseFloat(valueField02.getText());
-			} catch (Exception e) {
-				errors += "Second equation value invalid\n";
-			}
-		}
-
-		return errors;
 	}
 
 
@@ -215,26 +220,20 @@ public class IDNumberEditor implements IDEditor {
 	private JPanel getInequationPanel (JComboBox box, JTextField field) {
 		JPanel panel = new JPanel();
 
-		Dimension dimension = new Dimension(185, 30);
-
-		JLabel valueLabel = new JLabel("value");
+		JLabel valueLabel = new JLabel("Keep Values");
 		valueLabel.setToolTipText(VALUE_LABEL_TTT);
-
-		// Restore size to former value
-		panel.setPreferredSize(dimension);
 
 		// Layout settings
 		GridBagLayout layout = new GridBagLayout();
 		panel.setLayout(layout);
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbc.anchor = GridBagConstraints.LINE_START;
 		gbc.weightx = 1;
-		gbc.weighty = 0;
+		gbc.weighty = 1;
 		gbc.gridy = 0;
 
 		// Label
 		gbc.gridx = 0;
-		gbc.insets = new Insets(0, 0, 0, 0);
 		panel.add(valueLabel, gbc);
 
 		// Combobox
@@ -269,13 +268,8 @@ public class IDNumberEditor implements IDEditor {
 	private JPanel getOperatorPanel () {
 		JPanel panel = new JPanel();
 
-		Dimension dimension = new Dimension(195, 30);
-
-		// Restore size to former value
-		panel.setPreferredSize(dimension);
-
 		// Initializes radio boxes
-		andButton = new JRadioButton("and");
+		andButton = new JRadioButton("And");
 		andButton.setSelected(true);
 		andButton.setToolTipText(AND_OPERATOR_TTT);
 		andButton.addActionListener(new ActionListener() {
@@ -284,7 +278,7 @@ public class IDNumberEditor implements IDEditor {
 				refreshBoxes();
 			}
 		});
-		orButton = new JRadioButton("or");
+		orButton = new JRadioButton("Or");
 		orButton.setToolTipText(OR_OPERATOR_TTT);
 		orButton.addActionListener(new ActionListener() {
 			@Override
@@ -316,6 +310,7 @@ public class IDNumberEditor implements IDEditor {
 		gbc.gridx = 1;
 		gbc.insets = new Insets(0, 20, 0, 0);
 		panel.add(orButton, gbc);
+		checkIfSelectionIsValid();
 
 		// Return the panel
 		return panel;
@@ -342,8 +337,12 @@ public class IDNumberEditor implements IDEditor {
 	 */
 	private JTextField getTextField (JTextField field) {
 		field = new JTextField();
-		Dimension dimension = new Dimension(80, field.getFontMetrics(field.getFont()).getHeight() + 3);
-		field.setPreferredSize(dimension);
+		field.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				checkIfSelectionIsValid();
+			}
+		});
 		return field;
 	}
 
@@ -375,13 +374,19 @@ public class IDNumberEditor implements IDEditor {
 			inequationBox02.setSelectedIndex(0);
 			valueField02.setText("");
 		}
-
+		checkIfSelectionIsValid();
 	}
 
 
 	@Override
-	public boolean isEnabled() {
-		return panel.isEnabled();
+	public boolean isSelectionValid() {
+		return isSelectionValid;
+	}
+
+
+	@Override
+	public boolean isVisible() {
+		return panel.isVisible();
 	}
 
 
@@ -425,20 +430,7 @@ public class IDNumberEditor implements IDEditor {
 			}
 			setSelectedItemInBox(inequationBox02, operator02);
 		}
-	}
-
-
-	@Override
-	public void setEnabled(boolean b) {
-		if (panel != null) {
-			panel.setEnabled(b);
-			inequationBox01.setEnabled(b);
-			inequationBox02.setEnabled(b);
-			valueField01.setEnabled(b);
-			valueField02.setEnabled(b);
-			andButton.setEnabled(b);
-			orButton.setEnabled(b);
-		}
+		checkIfSelectionIsValid();
 	}
 
 
@@ -472,6 +464,14 @@ public class IDNumberEditor implements IDEditor {
 
 
 	@Override
+	public void setVisible(boolean b) {
+		if (panel != null) {
+			panel.setVisible(b);
+		}
+	}
+
+
+	@Override
 	public JPanel updatePanel() {
 		panel = new JPanel();
 
@@ -484,8 +484,10 @@ public class IDNumberEditor implements IDEditor {
 		// Initializes text fields
 		valueField01 = getTextField(valueField01);
 		valueField01.setToolTipText(VALUE_JTF_TTT);
+		valueField01.setColumns(8);
 		valueField02 = getTextField(valueField02);
 		valueField02.setToolTipText(VALUE_JTF_TTT);
+		valueField02.setColumns(8);
 
 		// Default setting
 		inequationBox02.setEnabled(false);
@@ -497,12 +499,12 @@ public class IDNumberEditor implements IDEditor {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbc.weightx = 1;
-		gbc.weighty = 0;
+		gbc.weighty = 1;
 
 		// First inequation
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		gbc.insets = new Insets(10, 10, 10, 0);
+		gbc.insets = new Insets(0, 10, 0, 0);
 		panel.add(getInequationPanel(inequationBox01, valueField01), gbc);
 
 		// Operators
@@ -512,11 +514,11 @@ public class IDNumberEditor implements IDEditor {
 
 		// Second inequation
 		gbc.gridy++;
-		gbc.weighty = 1;
-		gbc.insets = new Insets(10, 10, 0, 0);
+		gbc.insets = new Insets(0, 10, 0, 0);
 		panel.add(getInequationPanel(inequationBox02, valueField02), gbc);
+
+		checkIfSelectionIsValid();
 
 		return panel;
 	}
-
 }

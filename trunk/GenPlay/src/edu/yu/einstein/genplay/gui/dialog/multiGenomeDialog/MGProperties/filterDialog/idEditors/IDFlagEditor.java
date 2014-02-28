@@ -37,71 +37,20 @@ import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.IDFilterInterface;
 
 /**
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class IDFlagEditor implements IDEditor {
 
 	private final static String CONSTRAINT_LABEL_TTT 	= "Select a constraint for the value.";
-	private final static String PRESENT_TTT 			= "The flag in the associated file data will must be PRESENT in order to be accepted.";
-	private final static String ABSENT_TTT 				= "The flag in the associated file data will must be ABSENT in order to be accepted.";
-	private final static String PRESENT 				= "must contain";
-	private final static String ABSENT 					= "must not contain";
-
+	private final static String PRESENT_TTT 			= "The flag in the associated file data must be PRESENT in order to be accepted.";
+	private final static String ABSENT_TTT 				= "The flag in the associated file data must be ABSENT in order to be accepted.";
+	private final static String LABEL 					= "The selected flag field";
+	private final static String PRESENT 				= "Must be present";
+	private final static String ABSENT 					= "Must not be present";
 	private JPanel			panel;
-	private VCFHeaderType 	header;			// Header ID
+	private VCFHeaderType 	header;				// Header ID
 	private JLabel 			constraintLabel;	// Label for naming the constraint
-	private JRadioButton	present;		// Radio box for PRESENT value
-	private JRadioButton	absent;			// Radio box for ABSENT value
-
-
-	@Override
-	public JPanel updatePanel() {
-		panel = new JPanel();
-
-		// Creates the label
-		constraintLabel = new JLabel("Must be:");
-		constraintLabel.setToolTipText(CONSTRAINT_LABEL_TTT);
-
-		// Creates the radio boxes
-		present = new JRadioButton(PRESENT);
-		present.setToolTipText(PRESENT_TTT);
-		absent = new JRadioButton(ABSENT);
-		absent.setToolTipText(ABSENT_TTT);
-
-		// Creates the group
-		ButtonGroup group = new ButtonGroup();
-		group.add(present);
-		group.add(absent);
-
-		// Default setting
-		present.setSelected(true);
-
-		// Layout settings
-		GridBagLayout layout = new GridBagLayout();
-		panel.setLayout(layout);
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-		gbc.weightx = 1;
-		gbc.weighty = 0;
-
-		// Label
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.insets = new Insets(10, 10, 10, 0);
-		panel.add(constraintLabel, gbc);
-
-		// "Present" button
-		gbc.gridy = 1;
-		gbc.insets = new Insets(5, 20, 0, 0);
-		panel.add(present, gbc);
-
-		// "Absent" button
-		gbc.gridy = 2;
-		gbc.weighty = 1;
-		panel.add(absent, gbc);
-
-		return panel;
-	}
+	private JRadioButton	present;			// Radio box for PRESENT value
+	private JRadioButton	absent;				// Radio box for ABSENT value
 
 
 	@Override
@@ -114,12 +63,6 @@ public class IDFlagEditor implements IDEditor {
 			filter.setRequired(false);
 		}
 		return filter;
-	}
-
-
-	@Override
-	public void setHeaderType(VCFHeaderType id) {
-		this.header = id;
 	}
 
 
@@ -141,29 +84,76 @@ public class IDFlagEditor implements IDEditor {
 
 
 	@Override
-	public String getErrors() {
-		String errors = "";
-		if (header == null) {
-			errors += "ID selection\n";
-		}
-		return errors;
+	public boolean isSelectionValid() {
+		return true;
 	}
 
 
 	@Override
-	public void setEnabled(boolean b) {
+	public boolean isVisible() {
+		return panel.isVisible();
+	}
+
+
+	@Override
+	public void setHeaderType(VCFHeaderType id) {
+		header = id;
+	}
+
+
+	@Override
+	public void setVisible(boolean b) {
 		if (panel != null) {
-			panel.setEnabled(b);
-			constraintLabel.setEnabled(b);
-			present.setEnabled(b);
-			absent.setEnabled(b);
+			panel.setVisible(b);
 		}
 	}
 
 
 	@Override
-	public boolean isEnabled() {
-		return panel.isEnabled();
-	}
+	public JPanel updatePanel() {
+		panel = new JPanel();
 
+		// Creates the label
+		constraintLabel = new JLabel(LABEL);
+		constraintLabel.setToolTipText(CONSTRAINT_LABEL_TTT);
+
+		// Creates the radio boxes
+		present = new JRadioButton(PRESENT);
+		present.setToolTipText(PRESENT_TTT);
+		absent = new JRadioButton(ABSENT);
+		absent.setToolTipText(ABSENT_TTT);
+
+		// Creates the group
+		ButtonGroup group = new ButtonGroup();
+		group.add(present);
+		group.add(absent);
+
+		// Default setting
+		present.setSelected(true);
+
+		// Layout settings
+		panel.setLayout(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+
+		// Label
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.insets = new Insets(0, 0, 20, 0);
+		panel.add(constraintLabel, gbc);
+
+		// "Present" button
+		gbc.gridy = 1;
+		gbc.insets = new Insets(0, 10, 10, 0);
+		panel.add(present, gbc);
+
+		// "Absent" button
+		gbc.gridy = 2;
+		panel.add(absent, gbc);
+
+		return panel;
+	}
 }

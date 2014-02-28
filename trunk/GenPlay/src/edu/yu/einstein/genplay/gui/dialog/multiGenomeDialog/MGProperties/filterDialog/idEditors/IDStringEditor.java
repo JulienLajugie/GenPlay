@@ -25,6 +25,10 @@ package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filter
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +38,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JTextField;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderBasicType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
@@ -46,27 +51,27 @@ import edu.yu.einstein.genplay.dataStructure.enums.VCFColumnName;
 
 /**
  * @author Nicolas Fourel
- * @version 0.1
+ * @author Julien Lajugie
  */
 public class IDStringEditor implements IDEditor {
 
 	private final static String CONSTRAINT_LABEL_TTT 	= "Select a constraint for the value.";
 	private final static String PRESENT_TTT 			= "The associated file data will must contain the value in order to be accepted.";
 	private final static String ABSENT_TTT 				= "The associated file data will must NOT contain the value in order to be accepted.";
-	private final static String PRESENT 				= "must contain";
-	private final static String ABSENT 					= "must not contain";
+	private final static String PRESENT 				= "Must contain";
+	private final static String ABSENT 					= "Must not contain";
 	private final static String VALUE_LABEL_TTT 		= "Define a pattern to filter.";
 	private final static String VALUE_BOX_TTT			= "Type or select a value.";
 
 	private JPanel			panel;
 	private VCFHeaderType 	header;				// Header ID
-	private final JLabel 			constraintLabel;	// Label for naming the constraint
-	private final JLabel 			valueLabel;			// Label for naming the value
+	private final JLabel 	constraintLabel;	// Label for naming the constraint
+	private final JLabel 	valueLabel;			// Label for naming the value
 	private JComboBox		jcValue;			// Editable combo box for selecting the value
 	private List<String>	defaultElements;	// The default elements for the value box
 	private JRadioButton	present;			// Radio box for PRESENT value
 	private JRadioButton	absent;				// Radio box for ABSENT value
-
+	private boolean 		isSelectionValid;	// return true if the current selection is valid, false otherwise
 
 	/**
 	 * Constructor of {@link IDStringEditor}
@@ -81,63 +86,21 @@ public class IDStringEditor implements IDEditor {
 	}
 
 
-	@Override
-	public JPanel updatePanel() {
-		panel = new JPanel();
-
-		// Creates the radio boxes
-		present = new JRadioButton(PRESENT);
-		present.setToolTipText(PRESENT_TTT);
-		absent = new JRadioButton(ABSENT);
-		absent.setToolTipText(ABSENT_TTT);
-
-		// Creates the value box
-		jcValue = getValueBox();
-		jcValue.setToolTipText(VALUE_BOX_TTT);
-
-		// Creates the group
-		ButtonGroup group = new ButtonGroup();
-		group.add(present);
-		group.add(absent);
-
-		// Default setting
-		present.setSelected(true);
-
-		// Layout settings
-		GridBagLayout layout = new GridBagLayout();
-		panel.setLayout(layout);
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-		gbc.weightx = 1;
-		gbc.weighty = 0;
-
-		// Constraint label
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.insets = new Insets(10, 10, 10, 0);
-		panel.add(constraintLabel, gbc);
-
-		// "Present" box
-		gbc.gridy++;
-		gbc.insets = new Insets(5, 20, 0, 0);
-		panel.add(present, gbc);
-
-		// "Absent" box
-		gbc.gridy++;
-		panel.add(absent, gbc);
-
-		// Value label
-		gbc.gridy++;
-		gbc.insets = new Insets(10, 10, 10, 0);
-		panel.add(valueLabel, gbc);
-
-		// Value box
-		gbc.gridy++;
-		gbc.insets = new Insets(5, 20, 0, 0);
-		gbc.weighty = 1;
-		panel.add(jcValue, gbc);
-
-		return panel;
+	/**
+	 * Checks if the current selection made by the user is valid and update the
+	 * {@link #isSelectionValid} property. Fire a property change event if the
+	 * property changes.
+	 */
+	private final void checkIfSelectionIsValid() {
+		if (panel != null) {
+			JTextField jtf = (JTextField) jcValue.getEditor().getEditorComponent();
+			boolean newIsSelectionValid = (jtf.getText() != null) && !jtf.getText().isEmpty();
+			if (newIsSelectionValid != isSelectionValid) {
+				boolean oldIsSelectionValid = isSelectionValid;
+				isSelectionValid = newIsSelectionValid;
+				panel.firePropertyChange(IDEditor.IS_SELECTION_VALID_PROPERTY_NAME, oldIsSelectionValid, newIsSelectionValid);
+			}
+		}
 	}
 
 
@@ -167,12 +130,6 @@ public class IDStringEditor implements IDEditor {
 		}
 
 		return filter;
-	}
-
-
-	@Override
-	public void setHeaderType(VCFHeaderType id) {
-		this.header = id;
 	}
 
 
@@ -224,6 +181,19 @@ public class IDStringEditor implements IDEditor {
 		}
 		((DefaultComboBoxModel)jcValue.getModel()).addElement(value);
 		jcValue.setSelectedItem(value);
+		checkIfSelectionIsValid();
+	}
+
+
+	@Override
+	public boolean isSelectionValid() {
+		return isSelectionValid;
+	}
+
+
+	@Override
+	public boolean isVisible() {
+		return panel.isVisible();
 	}
 
 
@@ -236,37 +206,86 @@ public class IDStringEditor implements IDEditor {
 
 
 	@Override
-	public String getErrors() {
-		String errors = "";
-		if (header == null) {
-			errors += "ID selection\n";
-		}
-
-		if (jcValue.getSelectedItem() == null) {
-			errors += "Value selection\n";
-		} else if (jcValue.getSelectedItem().toString().isEmpty()){
-			errors += "Value selection\n";
-		}
-		return errors;
+	public void setHeaderType(VCFHeaderType id) {
+		header = id;
 	}
 
 
 	@Override
-	public void setEnabled(boolean b) {
+	public void setVisible(boolean b) {
 		if (panel != null) {
-			panel.setEnabled(b);
-			constraintLabel.setEnabled(b);
-			valueLabel.setEnabled(b);
-			jcValue.setEnabled(b);
-			present.setEnabled(b);
-			absent.setEnabled(b);
+			panel.setVisible(b);
 		}
 	}
 
 
 	@Override
-	public boolean isEnabled() {
-		return panel.isEnabled();
-	}
+	public JPanel updatePanel() {
+		panel = new JPanel();
 
+		// Creates the radio boxes
+		present = new JRadioButton(PRESENT);
+		present.setToolTipText(PRESENT_TTT);
+		absent = new JRadioButton(ABSENT);
+		absent.setToolTipText(ABSENT_TTT);
+
+		// Creates the value box
+		jcValue = getValueBox();
+		jcValue.setToolTipText(VALUE_BOX_TTT);
+		jcValue.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				checkIfSelectionIsValid();
+			}
+		});
+		jcValue.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				checkIfSelectionIsValid();
+			}
+		});
+
+		// Creates the group
+		ButtonGroup group = new ButtonGroup();
+		group.add(present);
+		group.add(absent);
+
+		// Default setting
+		present.setSelected(true);
+
+		// Layout settings
+		GridBagLayout layout = new GridBagLayout();
+		panel.setLayout(layout);
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+
+		// Constraint label
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		panel.add(constraintLabel, gbc);
+
+		// "Present" box
+		gbc.gridy++;
+		gbc.insets = new Insets(0, 10, 0, 0);
+		panel.add(present, gbc);
+
+		// "Absent" box
+		gbc.gridy++;
+		panel.add(absent, gbc);
+
+		// Value label
+		gbc.gridy++;
+		gbc.insets = new Insets(10, 0, 0, 0);
+		panel.add(valueLabel, gbc);
+
+		// Value box
+		gbc.gridy++;
+		gbc.insets = new Insets(0, 10, 0, 0);
+		panel.add(jcValue, gbc);
+		checkIfSelectionIsValid();
+
+		return panel;
+	}
 }

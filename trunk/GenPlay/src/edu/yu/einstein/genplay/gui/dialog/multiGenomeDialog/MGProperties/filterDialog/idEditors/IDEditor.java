@@ -29,60 +29,61 @@ import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.IDFilterInterface;
 
 /**
  * @author Nicolas Fourel
- * @version 0.1
  */
 public interface IDEditor {
 
-
-	/**
-	 * @return a list of error gathered in one String
-	 */
-	public abstract String getErrors ();
-
+	/** Name of the property that is true when the selection in the editor is valid, false otherwise */
+	public static final String IS_SELECTION_VALID_PROPERTY_NAME = "Is Selection Valid";
 
 	/**
 	 * @return the filter
 	 */
-	public IDFilterInterface getFilter ();
+	public IDFilterInterface getFilter();
 
 
 	/**
 	 * @return the ID
 	 */
-	public VCFHeaderType getHeaderType ();
+	public VCFHeaderType getHeaderType();
 
 
 	/**
 	 * Initializes the panel using an existing filter
 	 * @param filter the filter
 	 */
-	public void initializesPanel (IDFilterInterface filter);
+	public void initializesPanel(IDFilterInterface filter);
 
 
 	/**
-	 * @return true if the panel is activated, false otherwise
+	 * @return a list of error gathered in one String
 	 */
-	public boolean isEnabled ();
+	public abstract boolean isSelectionValid();
 
 
 	/**
-	 * Enable/Disable the panel
-	 * @param b true if the panel must be enabled, false otherwise
+	 * @return true if the panel is visible, false otherwise
 	 */
-	public void setEnabled (boolean b);
+	public boolean isVisible();
 
 
 	/**
 	 * Sets the ID of the filter
 	 * @param header the ID
 	 */
-	public void setHeaderType (VCFHeaderType header);
+	public void setHeaderType(VCFHeaderType header);
+
+
+	/**
+	 * Show/Hide the panel
+	 * @param b true if the panel must be visible, false otherwise
+	 */
+	public void setVisible(boolean b);
 
 
 	/**
 	 * Creates and return the panel putting all necessary elements for selecting the filter.
 	 * @return the panel
 	 */
-	public JPanel updatePanel ();
+	public JPanel updatePanel();
 
 }

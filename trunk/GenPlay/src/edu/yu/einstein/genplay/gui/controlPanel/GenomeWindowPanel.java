@@ -241,7 +241,6 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 						jcbGenomeWindow.setSelectedItem(selectedBookmark.getGenomeWindow().toString());
 						updateGenomeWindow();
 					}
-
 				}
 			}
 		});

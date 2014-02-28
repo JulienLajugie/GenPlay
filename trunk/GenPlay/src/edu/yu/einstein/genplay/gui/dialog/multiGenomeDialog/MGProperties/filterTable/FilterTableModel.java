@@ -152,9 +152,7 @@ public class FilterTableModel extends AbstractTableModel {
 
 	protected JButton getNewButton () {
 		JButton button = new JButton();
-		//button.setMargin(new Insets(0, 0, 0, 0));
 		button.setText("e");
-		//button.setPreferredSize(new Dimension(10, 10));
 		button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {

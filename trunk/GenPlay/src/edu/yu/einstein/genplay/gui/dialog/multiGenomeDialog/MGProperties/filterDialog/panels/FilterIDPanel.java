@@ -20,7 +20,7 @@
  * 
  * Website: <http://genplay.einstein.yu.edu>
  ******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.newFilterDialog.panels;
+package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterDialog.panels;
 
 import java.awt.Dimension;
 import java.awt.event.ItemEvent;
@@ -40,7 +40,7 @@ import javax.swing.event.ListSelectionListener;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderInfoType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.newFilterDialog.AddOrEditVariantFiltersDialog;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterDialog.AddOrEditVariantFiltersDialog;
 
 
 /**

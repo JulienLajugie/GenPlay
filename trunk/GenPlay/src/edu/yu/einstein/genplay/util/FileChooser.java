@@ -53,7 +53,7 @@ public class FileChooser {
 	public static final int SAVE_FILE_MODE = 2;
 
 	/** True to use a AWT file chooser component, false to use a swing one*/
-	private static final boolean USE_AWT_CHOOSER = true;
+	private static final boolean USE_AWT_CHOOSER = Utils.isMacOS() || Utils.isWindowsOS();
 
 
 	/**

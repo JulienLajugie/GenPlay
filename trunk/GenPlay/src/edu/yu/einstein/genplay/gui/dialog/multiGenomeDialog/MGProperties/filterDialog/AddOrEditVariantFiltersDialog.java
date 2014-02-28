@@ -22,138 +22,207 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterDialog;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.FlowLayout;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
-import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
+import edu.yu.einstein.genplay.core.multiGenome.filter.FilterInterface;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFFilter;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.IDFilterInterface;
 import edu.yu.einstein.genplay.core.multiGenome.filter.utils.FormatFilterOperatorType;
 import edu.yu.einstein.genplay.dataStructure.enums.VCFColumnName;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.FiltersData;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterDialog.panels.EditingPanel;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterDialog.panels.FileSelectionPanel;
+import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserPanel;
+import edu.yu.einstein.genplay.gui.dialog.layerChooser.LayerChooserTableModel;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterDialog.panels.FilePanel;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterDialog.panels.FilterIDPanel;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterDialog.panels.FilterValuesPanel;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterDialog.panels.IDFilterSelectionPanel;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterDialog.panels.LayerSelectionPanel;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterDialog.panels.MultiGenomeEditingPanel;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterDialog.panels.OperatorEditingPanel;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterDialog.panels.MultiGenomePanel;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
+import edu.yu.einstein.genplay.gui.track.layer.LayerType;
 import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
- * @author Nicolas Fourel
+ * Dialog to create or edit filters
+ * @author Julien Lajugie
  */
-public class AddOrEditVariantFiltersDialog extends JDialog {
+public class AddOrEditVariantFiltersDialog extends JDialog implements PropertyChangeListener {
 
 	/** Generated serial ID */
-	private static final long serialVersionUID = -6130320386508798101L;
+	private static final long serialVersionUID = -8357422979931946414L;
 
 	/** Return value when OK has been clicked. */
-	public static final 	int 			APPROVE_OPTION 		= 0;
+	public static final int APPROVE_OPTION = 0;
 
 	/** Return value when Cancel has been clicked. */
-	public static final 	int 			CANCEL_OPTION 		= 1;
+	public static final int CANCEL_OPTION = 1;
 
-	private final List<EditingPanel<?>> 		editingPanelList;		// List of editing panel
-	private final LayerSelectionPanel 			layerEditingPanel;		// Panel to edit the tracks
-	private final FileSelectionPanel 			fileEditingPanel;		// Panel to edit the file
-	private final IDFilterSelectionPanel 		IDEditingPanel;			// Panel to edit the ID
-	private final MultiGenomeEditingPanel		genomeEditingPanel;		// Panel to edit the genomes
-	private final OperatorEditingPanel 			operatorEditingPanel;	// Panel to edit the operator
-	private final FilterValuesPanel 			filterValuesPanel;		// Panel to edit the filter
+	/** Preferred height of the layer chooser */
+	private static final int LAYER_PANEL_PREFERRED_HEIGHT = 200;
 
-	private FiltersData currentData;						// The current filter data (can be null)
-	private int			approved = CANCEL_OPTION;			// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
+	/** Preferred width of the panels that take up the entire dialog width */
+	public static final int LARGE_PANELS_PREFERRED_WIDTH = 700;
 
 
 	/**
-	 * Constructor of {@link AddOrEditVariantFiltersDialog}
+	 * Show a {@link AddOrEditVariantFiltersDialog} to create a filter
+	 * @param parentComponent parent component of the dialog
+	 * @return a new filter
 	 */
-	public AddOrEditVariantFiltersDialog () {
-		// Layers editing panel
-		layerEditingPanel = new LayerSelectionPanel();
-
-		// File editing panel
-		fileEditingPanel = new FileSelectionPanel();
-
-		// ID editing panel
-		IDEditingPanel = new IDFilterSelectionPanel();
-		fileEditingPanel.addPanelListener(IDEditingPanel);
-
-		// Genomes editing panel
-		genomeEditingPanel = new MultiGenomeEditingPanel(true);
-		fileEditingPanel.addPanelListener(genomeEditingPanel);
-		IDEditingPanel.addPanelListener(genomeEditingPanel);
-
-		// Operator editing panel
-		operatorEditingPanel = new OperatorEditingPanel();
-		fileEditingPanel.addPanelListener(operatorEditingPanel);
-		IDEditingPanel.addPanelListener(operatorEditingPanel);
-		genomeEditingPanel.addPanelListener(operatorEditingPanel);
-
-		// Filter editing panel
-		filterValuesPanel = new FilterValuesPanel();
-		IDEditingPanel.addPanelListener(filterValuesPanel);
-
-		// List of editing panel
-		editingPanelList = new ArrayList<EditingPanel<?>>();
-		editingPanelList.add(layerEditingPanel);
-		editingPanelList.add(fileEditingPanel);
-		editingPanelList.add(IDEditingPanel);
-		editingPanelList.add(genomeEditingPanel);
-		editingPanelList.add(operatorEditingPanel);
-		editingPanelList.add(filterValuesPanel);
-	}
-
-
-	/**
-	 * @return true is the current selection is valid
-	 */
-	private boolean approveSelection () {
-		String errors = "";
-		for (EditingPanel<?> panel: editingPanelList) {
-			errors += panel.getErrors();
-		}
-
-		if (errors.isEmpty()) {
-			return true;
+	public static FiltersData showAddDialog(Component parentComponent) {
+		AddOrEditVariantFiltersDialog dialog = new AddOrEditVariantFiltersDialog(null);
+		dialog.setTitle("Create Filter");
+		dialog.setLocationRelativeTo(parentComponent);
+		dialog.setVisible(true);
+		if (dialog.approved == APPROVE_OPTION) {
+			return dialog.filtersData;
 		} else {
-			showErrorDialog(errors);
-			return false;
+			return null;
 		}
 	}
 
 
 	/**
-	 * Create the panel containing all the editing panels
-	 * @param 	panelList the list of editing panels
-	 * @return	the panel containing all the editing panels
+	 * Show a {@link AddOrEditVariantFiltersDialog} to edit a filter
+	 * @param parentComponent parent component of the dialog
+	 * @return a filter edited
 	 */
-	private JPanel getPanel (List<EditingPanel<?>> panelList) {
-		JPanel panel = new JPanel();
-		FlowLayout layout = new FlowLayout(FlowLayout.LEFT, 0, 0);
-		panel.setLayout(layout);
+	public static FiltersData showEditDialog(Component parentComponent, FiltersData data) {
+		AddOrEditVariantFiltersDialog dialog = new AddOrEditVariantFiltersDialog(data);
+		dialog.setTitle("Edit Filter");
+		dialog.setLocationRelativeTo(parentComponent);
+		dialog.setVisible(true);
+		if (dialog.approved == APPROVE_OPTION) {
+			return dialog.filtersData;
+		} else {
+			return null;
+		}
+	}
 
-		for (EditingPanel<?> editingPanel: panelList) {
-			panel.add(editingPanel);
+
+	private final FilePanel 		filePanel;					// panel to select a file
+	private final LayerChooserPanel layerPanel;					// panel to select a layer
+	private final FilterIDPanel 	idPanel;					// panel to select the VCF field to filter
+	private final FilterValuesPanel valuePanel;					// panel to select the values of the filter
+	private final MultiGenomePanel 	genomePanel;				// panel to select a genome
+	private final JButton 			jbOk;						// ok button
+	private FiltersData 			filtersData;				// The current filter data (can be null)
+	private int						approved = CANCEL_OPTION;	// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
+
+
+	/**
+	 * Creates an instance of {@link AddOrEditVariantFiltersDialog}
+	 * @param filtersData {@link FiltersData} to edit. Should be null if the dialog is used to create a new filter
+	 */
+	private AddOrEditVariantFiltersDialog(FiltersData filtersData) {
+		super();
+
+		List<VCFFile> fileList = ProjectManager.getInstance().getMultiGenomeProject().getAllVCFFiles();
+		VCFFile selectedFile;
+		List<VCFHeaderType> headerList;
+		VCFHeaderType selectedHeader;
+		List<String> selectedGenomes = null;
+		FormatFilterOperatorType selectedOperator = null;
+		FilterInterface filterInterface = null;
+
+		if(filtersData == null) {
+			selectedFile = fileList.get(0);
+			headerList = selectedFile.getHeader().getAllSortedHeader();
+			selectedHeader = headerList.get(0);
+		} else {
+			this.filtersData  = filtersData;
+			selectedFile = filtersData.getReader();
+			headerList = selectedFile.getHeader().getAllSortedHeader();
+			selectedHeader = ((IDFilterInterface) filtersData.getFilter()).getHeaderType();
+			filterInterface = this.filtersData.getFilter();
+			selectedGenomes = ((IDFilterInterface) filtersData.getMGFilter().getFilter()).getGenomeNames();
+			selectedOperator = ((IDFilterInterface) filtersData.getMGFilter().getFilter()).getOperator();
 		}
 
-		return panel;
+		filePanel = new FilePanel(fileList, selectedFile);
+		layerPanel = createLayerChooserPanel();
+		idPanel = new FilterIDPanel(headerList, selectedHeader);
+		valuePanel = new FilterValuesPanel(selectedHeader, filterInterface);
+		genomePanel = new MultiGenomePanel(selectedFile.getHeader().getGenomeNames(), selectedHeader, selectedGenomes, selectedOperator);
+		jbOk = new JButton("Ok");
+		JPanel validationPanel = createValidationPanel();
+
+		registerListeners();
+
+		setLayout(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 1;
+		gbc.gridwidth = 2;
+		add(filePanel, gbc);
+
+		gbc.gridy = 1;
+		add(layerPanel, gbc);
+
+		gbc.gridy = 2;
+		add(idPanel, gbc);
+
+		gbc.gridwidth = 1;
+		gbc.gridy = 3;
+		add(valuePanel, gbc);
+
+		gbc.gridx = 1;
+		gbc.weightx = 0.9;
+		add(genomePanel, gbc);
+
+		gbc.gridwidth = 2;
+		gbc.weightx = 1;
+		gbc.gridy = 4;
+		gbc.gridx = 0;
+		add(validationPanel, gbc);
+
+		getContentPane().setBackground(validationPanel.getBackground());
+		setIconImages(Images.getApplicationImages());
+		setModalityType(ModalityType.APPLICATION_MODAL);
+		setResizable(false);
+		pack();
+	}
+
+
+	/**
+	 * @return create the panel to choose layers
+	 */
+	private LayerChooserPanel createLayerChooserPanel() {
+		List<Layer<?>> availableLayers = MainFrame.getInstance().getTrackListPanel().getModel().getAllLayers();
+		availableLayers = Utils.getLayers(availableLayers, new LayerType[] {LayerType.VARIANT_LAYER});
+		List<Layer<?>> selectedLayers = null;
+		if ((filtersData != null) && (filtersData.getLayers() != null)) {
+			selectedLayers = Arrays.asList(filtersData.getLayers());
+		}
+		LayerChooserPanel chooser = new LayerChooserPanel(availableLayers, selectedLayers, new LayerType[] {LayerType.VARIANT_LAYER}, true);
+		chooser.setBorder(new TitledBorder("Select layer(s) to filter"));
+		TableColumnModel tcm = chooser.getTable().getColumnModel();
+		TableColumn layerTypeColumn = tcm.getColumn(LayerChooserTableModel.LAYER_TYPE_INDEX);
+		tcm.removeColumn(layerTypeColumn);
+		chooser.setPreferredSize(new Dimension(LARGE_PANELS_PREFERRED_WIDTH, LAYER_PANEL_PREFERRED_HEIGHT));
+		chooser.setMinimumSize(chooser.getPreferredSize());
+		return chooser;
 	}
 
 
@@ -161,16 +230,14 @@ public class AddOrEditVariantFiltersDialog extends JDialog {
 	 * Creates the panel that contains OK and CANCEL buttons
 	 * @return the panel
 	 */
-	private JPanel getValidationPanel () {
+	private JPanel createValidationPanel() {
 		// Creates the ok button
-		JButton jbOk = new JButton("Ok");
 		jbOk.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (approveSelection()) {
-					approved = APPROVE_OPTION;
-					setVisible(false);
-				}
+				approved = APPROVE_OPTION;
+				updateFilter();
+				setVisible(false);
 			}
 		});
 
@@ -179,10 +246,12 @@ public class AddOrEditVariantFiltersDialog extends JDialog {
 		jbCancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				approved = CANCEL_OPTION;
 				setVisible(false);
 			}
 		});
+
+		jbOk.setPreferredSize(jbCancel.getPreferredSize());
+		jbOk.setEnabled(isSelectionValid());
 
 		// Creates the panel
 		JPanel panel = new JPanel();
@@ -196,41 +265,46 @@ public class AddOrEditVariantFiltersDialog extends JDialog {
 	}
 
 
-	private void initDialog() {
-		// Dialog layout
-		BorderLayout layout = new BorderLayout();
-		setLayout(layout);
-
-		// Add the panels
-		add(getPanel(editingPanelList), BorderLayout.CENTER);
-		add(getValidationPanel(), BorderLayout.SOUTH);
-
-		// Dialog settings
-		setTitle("Create Filters");
-		setIconImages(Images.getApplicationImages());
-		setModalityType(ModalityType.APPLICATION_MODAL);
-		setResizable(false);
-		setVisible(false);
-		pack();
+	/**
+	 * @return true if the current selection of filter is valid (all field filled, at least one layer selected ...)
+	 */
+	private boolean isSelectionValid() {
+		if ((layerPanel.getSelectedLayers() == null) || layerPanel.getSelectedLayers().isEmpty()) {
+			return false;
+		}
+		if ((genomePanel != null) && genomePanel.isVisible() && !genomePanel.isSelectionValid()) {
+			return false;
+		}
+		if (!valuePanel.isSelectionValid()) {
+			return false;
+		}
+		return true;
 	}
 
 
-	private void initializePanels () {
-		fileEditingPanel.update(ProjectManager.getInstance().getMultiGenomeProject().getAllVCFFiles());
-
-		if (currentData != null) {
-			fileEditingPanel.initialize(currentData.getReader());
-
-			IDEditingPanel.initialize(((IDFilterInterface) currentData.getFilter()).getHeaderType());
-
-			genomeEditingPanel.initialize(((IDFilterInterface) currentData.getMGFilter().getFilter()).getGenomeNames());
-
-			operatorEditingPanel.initialize(((IDFilterInterface) currentData.getMGFilter().getFilter()).getOperator());
-
-			filterValuesPanel.initialize(currentData.getFilter());
-
-			layerEditingPanel.initialize(currentData.getLayers());
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (evt.getPropertyName().equals(FilePanel.FILE_CHANGE_PROPERTY_NAME)) {
+			VCFFile vcfFile = (VCFFile) evt.getNewValue();
+			genomePanel.setGenomeList(vcfFile.getHeader().getGenomeNames());
+			idPanel.setFilters(vcfFile.getHeader().getAllSortedHeader());
+		} else if (evt.getPropertyName().equals(FilterIDPanel.FILTER_ID_PROPERTY_NAME)) {
+			valuePanel.setHeaderType((VCFHeaderType) evt.getNewValue());
+			genomePanel.setHeaderType((VCFHeaderType) evt.getNewValue());
 		}
+		jbOk.setEnabled(isSelectionValid());
+	}
+
+
+	/**
+	 * Register this listener to the different panel to receive event notifications
+	 */
+	private void registerListeners() {
+		filePanel.addPropertyChangeListener(FilePanel.FILE_CHANGE_PROPERTY_NAME, this);
+		layerPanel.addPropertyChangeListener(LayerChooserPanel.SELECTED_LAYERS_PROPERTY_NAME, this);
+		idPanel.addPropertyChangeListener(FilterIDPanel.FILTER_ID_PROPERTY_NAME, this);
+		valuePanel.addPropertyChangeListener(FilterValuesPanel.IS_SELECTION_VALID_PROPERTY_NAME, this);
+		genomePanel.addPropertyChangeListener(MultiGenomePanel.IS_SELECTION_VALID_PROPERTY_NAME, this);
 	}
 
 
@@ -238,16 +312,15 @@ public class AddOrEditVariantFiltersDialog extends JDialog {
 	 * Retrieves all the information from the panel in order to create/set the filter data object.
 	 * If a current filter data has been defined, it will be set and returned.
 	 * If no current filter data has been defined, a new one will be created.
-	 * @return the {@link FiltersData}
 	 */
-	private List<FiltersData> retrieveData () {
-		VCFFile vcfFile = fileEditingPanel.getSelectedVCFFile();
-		IDFilterInterface IDFilter = (IDFilterInterface) filterValuesPanel.getFilter();
-		Layer<?>[] layers = layerEditingPanel.getSelectedLayers();
+	private void updateFilter() {
+		VCFFile vcfFile = filePanel.getSelectedFile();
+		IDFilterInterface IDFilter = (IDFilterInterface) valuePanel.getFilter();
+		Layer<?>[] layers = layerPanel.getSelectedLayers().toArray(new Layer<?>[0]);
 
 		if ((IDFilter.getHeaderType() != null) && (IDFilter.getHeaderType().getColumnCategory() == VCFColumnName.FORMAT)) {
-			List<String> genomeNames = genomeEditingPanel.getSelectedGenomes();
-			FormatFilterOperatorType operator = operatorEditingPanel.getSelectedOperator();
+			List<String> genomeNames = genomePanel.getSelectedGenomes();
+			FormatFilterOperatorType operator = genomePanel.getSelectedOperator();
 			IDFilter.setGenomeNames(genomeNames);
 			IDFilter.setOperator(operator);
 		} else {
@@ -255,67 +328,13 @@ public class AddOrEditVariantFiltersDialog extends JDialog {
 			IDFilter.setOperator(null);
 		}
 
-		List<FiltersData> result = new ArrayList<FiltersData>();
-		FiltersData data;
-
-		if (currentData != null) {
-			((VCFFilter) currentData.getMGFilter()).setVCFFile(vcfFile);
-			currentData.getMGFilter().setFilter(IDFilter);
-			currentData.setLayers(layers);
-
-			data = currentData;
+		if (filtersData != null) {
+			((VCFFilter) filtersData.getMGFilter()).setVCFFile(vcfFile);
+			filtersData.getMGFilter().setFilter(IDFilter);
+			filtersData.setLayers(layers);
 		} else {
-			MGFilter filter = new VCFFilter(IDFilter, vcfFile);
-			data = new FiltersData(filter, layers);
+			filtersData = new FiltersData(new VCFFilter(IDFilter, vcfFile), layers);
 		}
-
-		result.add(data);
-
-		return result;
-	}
-
-
-	public void setData(FiltersData data) {
-		currentData = data;
-	}
-
-
-	/**
-	 * Shows the component.
-	 * @param parent the parent component of the dialog, can be null;
-	 * @return APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
-	 */
-	public List<FiltersData> showDialog(Component parent) {
-		initializePanels();
-		List<FiltersData> data = null;
-		initDialog();
-		setLocationRelativeTo(parent);
-		setModalityType(ModalityType.APPLICATION_MODAL);
-		setVisible(true);
-		if (approved == APPROVE_OPTION) {
-			data = retrieveData();
-		}
-		currentData = null;
-		return data;
-	}
-
-
-	/**
-	 * Shows an error message
-	 * @param errors error message
-	 */
-	private void showErrorDialog (String errors) {
-		String message = "Some errors have been found, please check out the following points:\n";
-		//String[] errorsArray = errors.split("\n");
-		String[] errorsArray = Utils.split(errors, '\n');
-		for (int i = 0; i < errorsArray.length; i++) {
-			if (!errorsArray[i].isEmpty()) {
-				message += i + 1 + ": " + errorsArray[i];
-				if (i < (errorsArray.length - 1)) {
-					message += "\n";
-				}
-			}
-		}
-		JOptionPane.showMessageDialog(this, message, "Settings are not valid", JOptionPane.ERROR_MESSAGE);
 	}
 }
+

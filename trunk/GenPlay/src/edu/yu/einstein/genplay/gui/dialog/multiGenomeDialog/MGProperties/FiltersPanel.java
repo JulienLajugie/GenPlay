@@ -37,9 +37,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.FiltersData;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterDialog.AddOrEditVariantFiltersDialog;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterTable.FilterTable;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterTable.TableHeaderPanel;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.newFilterDialog.AddOrEditVariantFiltersDialog;
 
 /**
  * @author Nicolas Fourel

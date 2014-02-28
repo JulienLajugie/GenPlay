@@ -86,7 +86,7 @@ public class VariantInformationDialog extends JDialog {
 		options = new SearchOption();
 		track = MainFrame.getInstance().getTrackListPanel().getTrackFromGenomeDrawer(multiGenomeDrawer);
 		int trackNumber = track.getNumber();
-		String title = "Variant properties";
+		String title = "Variant Properties";
 		if (trackNumber > 0) {
 			title += " (Track " + trackNumber + ")";
 		}

@@ -20,7 +20,7 @@
  * 
  * Website: <http://genplay.einstein.yu.edu>
  ******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.newFilterDialog.panels;
+package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterDialog.panels;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -77,6 +77,15 @@ public class FilePanel extends JPanel implements ItemListener {
 			jcbFileSelection = null;
 			setVisible(false);
 		}
+		this.selectedFile = selectedFile;
+	}
+
+
+	/**
+	 * @return the selected file
+	 */
+	public VCFFile getSelectedFile() {
+		return selectedFile;
 	}
 
 

@@ -22,14 +22,18 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterDialog.panels;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -50,23 +54,39 @@ import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterD
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterDialog.idEditors.IDStringEditor;
 
 /**
+ * Panels to select values for a filter
  * @author Nicolas Fourel
+ * @author Julien Lajugie
  */
-public class FilterValuesPanel extends EditingPanel<FilterInterface> implements ActionListener {
+public class FilterValuesPanel extends JPanel implements ActionListener, PropertyChangeListener {
+
+	/** Name of the property that is true when the selection in this panel is valid, false otherwise */
+	public static final String IS_SELECTION_VALID_PROPERTY_NAME = "Is selection valid";
 
 	/** Generated serial version ID */
-	private static final long serialVersionUID = -4060807866730514644L;
-	private IDEditor filterEditor;
-	private IDEditor specialFilterEditor;
-	private JRadioButton regularRadioBox;
-	private JRadioButton specialRadioBox;
+	private static final long serialVersionUID = -5350638693635564694L;
+
+	/** Preferred height of this panel */
+	private final int PREFERRED_HEIGHT = 180;
+
+	private IDEditor 		filterEditor;			// regular editor
+	private IDEditor 		specialFilterEditor;	// editor for GT field
+	private JRadioButton 	regularRadioBox;		// box to choose the regular editor to edit a GT field
+	private JRadioButton 	specialRadioBox;		// box to choose the special editor to edit a GT fied
+	private boolean 		isSelectionValid;		// return true if the current selection is valid, false otherwise
 
 
 	/**
 	 * Constructor of {@link FilterValuesPanel}
 	 */
-	public FilterValuesPanel() {
-		super("Filter Values");
+	public FilterValuesPanel(VCFHeaderType headerType, FilterInterface filterInterface) {
+		super(new GridBagLayout());
+		setBorder(BorderFactory.createTitledBorder("Select filter values"));
+		setHeaderType(headerType);
+		if (filterInterface != null) {
+			initialize(filterInterface);
+		}
+		setPreferredSize(new Dimension(getPreferredSize().width, PREFERRED_HEIGHT));
 	}
 
 
@@ -75,41 +95,33 @@ public class FilterValuesPanel extends EditingPanel<FilterInterface> implements 
 		if (arg0.getSource() instanceof JRadioButton) {
 			JRadioButton radio = (JRadioButton) arg0.getSource();
 			if (radio.equals(regularRadioBox)) {
-				specialFilterEditor.setEnabled(false);
-				filterEditor.setEnabled(true);
+				specialFilterEditor.setVisible(false);
+				filterEditor.setVisible(true);
 			} else {
-				filterEditor.setEnabled(false);
-				specialFilterEditor.setEnabled(true);
+				filterEditor.setVisible(false);
+				specialFilterEditor.setVisible(true);
 			}
+			checkIfSelectionIsValid();
 		}
 	}
 
 
 	/**
-	 * Enables the panel for regular filters
+	 * Checks if the current selection made by the user is valid and update the
+	 * {@link #isSelectionValid} property. Fire a property change event if the
+	 * property changes.
 	 */
-	private void enableRegularPanel () {
-		if (specialFilterEditor != null) {
-			specialFilterEditor.setEnabled(false);
+	private final void checkIfSelectionIsValid() {
+		boolean newIsSelectionValid = false;
+		if ((regularRadioBox == null) || !regularRadioBox.isVisible() || regularRadioBox.isSelected()) {
+			newIsSelectionValid = filterEditor.isSelectionValid();
+		} else if (specialFilterEditor != null) {
+			newIsSelectionValid = specialFilterEditor.isSelectionValid();
 		}
-		if (regularRadioBox != null) {
-			regularRadioBox.setSelected(true);
-		}
-		filterEditor.setEnabled(true);
-	}
-
-
-
-	/**
-	 * Enables the panel for special filters
-	 */
-	private void enableSpecialPanel () {
-		filterEditor.setEnabled(false);
-		if (specialRadioBox != null) {
-			specialRadioBox.setSelected(true);
-		}
-		if (specialFilterEditor != null) {
-			specialFilterEditor.setEnabled(true);
+		if (newIsSelectionValid != isSelectionValid) {
+			boolean oldIsSelectionValid = isSelectionValid;
+			isSelectionValid = newIsSelectionValid;
+			firePropertyChange(IS_SELECTION_VALID_PROPERTY_NAME, oldIsSelectionValid, newIsSelectionValid);
 		}
 	}
 
@@ -121,8 +133,14 @@ public class FilterValuesPanel extends EditingPanel<FilterInterface> implements 
 	 */
 	private JPanel getCustomPanel () {
 		JPanel panel = null;
+		JPanel regularPanel = filterEditor.updatePanel();
+		regularPanel.addPropertyChangeListener(IDEditor.IS_SELECTION_VALID_PROPERTY_NAME, this);
+
 		if (specialFilterEditor != null) {
 			panel = new JPanel();
+
+			JPanel specialPanel = specialFilterEditor.updatePanel();
+			specialPanel.addPropertyChangeListener(IDEditor.IS_SELECTION_VALID_PROPERTY_NAME, this);
 
 			regularRadioBox = new JRadioButton("<html><i>Regular Editor:</i><html>");
 			regularRadioBox.addActionListener(this);
@@ -140,46 +158,29 @@ public class FilterValuesPanel extends EditingPanel<FilterInterface> implements 
 			panel.setLayout(layout);
 			GridBagConstraints gbc = new GridBagConstraints();
 			gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-			gbc.weightx = 1;
-			gbc.weighty = 0;
-
 			gbc.gridx = 0;
 			gbc.gridy = 0;
+			gbc.weightx = 1;
+			gbc.weighty = 1;
 			panel.add(specialRadioBox, gbc);
 
 			gbc.gridy++;
-			panel.add(specialFilterEditor.updatePanel(), gbc);
-			specialFilterEditor.setEnabled(true);
+			gbc.insets = new Insets(0, 10, 0, 0);
+			panel.add(specialPanel, gbc);
+			specialFilterEditor.setVisible(true);
 
 			gbc.gridy++;
 			gbc.insets = new Insets(10, 0, 0, 0);
 			panel.add(regularRadioBox, gbc);
 
 			gbc.gridy++;
-			gbc.weighty = 1;
-			panel.add(filterEditor.updatePanel(), gbc);
-			filterEditor.setEnabled(false);
+			gbc.insets = new Insets(0, 10, 0, 0);
+			panel.add(regularPanel, gbc);
+			filterEditor.setVisible(false);
 		} else {
-			panel = filterEditor.updatePanel();
+			panel = regularPanel;
 		}
-
 		return panel;
-	}
-
-
-	@Override
-	public String getErrors() {
-		String errors = "";
-
-		if (filterEditor == null) {
-			errors += "Filter selection\n";
-		} else if (filterEditor.isEnabled()) {
-			errors += filterEditor.getErrors();
-		} else if (specialFilterEditor.isEnabled()) {
-			errors += specialFilterEditor.getErrors();
-		}
-
-		return errors;
 	}
 
 
@@ -187,19 +188,24 @@ public class FilterValuesPanel extends EditingPanel<FilterInterface> implements 
 	 * @return the ID filter
 	 */
 	public FilterInterface getFilter () {
-		if (filterEditor.isEnabled()) {
+		if (filterEditor.isVisible()) {
 			return filterEditor.getFilter();
 		}
 		return specialFilterEditor.getFilter();
 	}
 
 
-	private void initEditors (Object object) {
+	/**
+	 * Initializes the editors. Select editors adapted to the VCF
+	 * field to edit.
+	 * @param headerType
+	 */
+	private void initEditors(VCFHeaderType headerType) {
 		filterEditor = null;
 		specialFilterEditor = null;
 
-		if (object instanceof VCFHeaderBasicType) {
-			VCFHeaderBasicType header = (VCFHeaderBasicType) object;
+		if (headerType instanceof VCFHeaderBasicType) {
+			VCFHeaderBasicType header = (VCFHeaderBasicType) headerType;
 			VCFColumnName column = header.getColumnCategory();
 			if (column == VCFColumnName.ALT) {
 				filterEditor = new IDStringEditor();
@@ -222,8 +228,8 @@ public class FilterValuesPanel extends EditingPanel<FilterInterface> implements 
 					((IDStringEditor)filterEditor).setDefaultElements(elements);
 				}
 			}
-		} else if (object instanceof VCFHeaderAdvancedType) {
-			VCFHeaderAdvancedType advancedHeader = (VCFHeaderAdvancedType) object;
+		} else if (headerType instanceof VCFHeaderAdvancedType) {
+			VCFHeaderAdvancedType advancedHeader = (VCFHeaderAdvancedType) headerType;
 			if ((advancedHeader.getType() == Integer.class) || (advancedHeader.getType() == Float.class)) {
 				filterEditor = new IDNumberEditor();
 			} else if (advancedHeader.getType() == Boolean.class){
@@ -245,68 +251,108 @@ public class FilterValuesPanel extends EditingPanel<FilterInterface> implements 
 			if (advancedHeader.getId().equals("GT")) {
 				specialFilterEditor = new IDGTEditor();
 			}
-		} else if (object instanceof VCFHeaderType) {
-			VCFHeaderType header = (VCFHeaderType) object;
+		} else if (headerType instanceof VCFHeaderType) {
+			VCFHeaderType header = headerType;
 			if (header.getColumnCategory() == VCFColumnName.ALT) {
 				filterEditor = new IDStringEditor();
-			} else if (object instanceof VCFHeaderFilterType) {
+			} else if (headerType instanceof VCFHeaderFilterType) {
 				filterEditor = new IDFlagEditor();
 			}
 		}
-
 		if (filterEditor != null) {
-			filterEditor.setHeaderType((VCFHeaderType) object);
+			filterEditor.setHeaderType(headerType);
 		}
-
 		if (specialFilterEditor != null) {
-			specialFilterEditor.setHeaderType((VCFHeaderType) object);
+			specialFilterEditor.setHeaderType(headerType);
 		}
 	}
 
 
-	@Override
-	public void initialize(FilterInterface element) {
-		if (filterEditor != null) {
+	/**
+	 * First initialization when the component is created.
+	 * Restores the values of a filter if this filter is edited
+	 * @param element
+	 */
+	private void initialize(FilterInterface element) {
+		if( (filterEditor != null) && (element != null)) {
 			if (element instanceof IDFilterInterface) {
 				IDFilterInterface filter = (IDFilterInterface) element;
 				if (element instanceof GenotypeIDFilter) {
 					specialFilterEditor.initializesPanel(filter);
-					enableSpecialPanel();
+					showSpecialPanel();
 				} else {
 					filterEditor.initializesPanel(filter);
-					enableRegularPanel();
+					showRegularPanel();
 				}
 			}
 		}
+		checkIfSelectionIsValid();
+	}
+
+
+	/**
+	 * @return true if the current values selected by the user are valid, false otherwise
+	 */
+	public boolean isSelectionValid() {
+		return isSelectionValid;
 	}
 
 
 	@Override
-	protected void initializeContentPanel() {}
-
-
-	@Override
-	public void reset() {
-		resetContentPanel();
-		element = null;
-		filterEditor = null;
+	public void propertyChange(PropertyChangeEvent evt) {
+		checkIfSelectionIsValid();
 	}
 
 
-	@Override
-	public void update(Object object) {
-		initEditors(object);
-
+	/**
+	 * Sets the VCF field being edited and adapt
+	 * the panel to the type of this field.
+	 * @param headerType
+	 */
+	public void setHeaderType(VCFHeaderType headerType) {
+		initEditors(headerType);
 		JPanel panel;
 		if (filterEditor != null) {
 			panel = getCustomPanel();
 		} else {
 			panel = new JPanel();
 		}
-
-		setNewContentPanel(panel);
-		initializeContentPanelSize(MINIMUM_WIDTH, panel.getPreferredSize().height + 10);
+		removeAll();
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		add(panel, gbc);
+		revalidate();
 		repaint();
+		checkIfSelectionIsValid();
 	}
 
+
+	/**
+	 * Shows the panel for regular filters
+	 */
+	private void showRegularPanel () {
+		if (specialFilterEditor != null) {
+			specialFilterEditor.setVisible(false);
+		}
+		if (regularRadioBox != null) {
+			regularRadioBox.setSelected(true);
+		}
+		filterEditor.setVisible(true);
+	}
+
+
+	/**
+	 * Shows the panel for special filters
+	 */
+	private void showSpecialPanel () {
+		filterEditor.setVisible(false);
+		if (specialRadioBox != null) {
+			specialRadioBox.setSelected(true);
+		}
+		if (specialFilterEditor != null) {
+			specialFilterEditor.setVisible(true);
+		}
+	}
 }

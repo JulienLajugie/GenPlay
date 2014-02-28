@@ -20,13 +20,14 @@
  * 
  * Website: <http://genplay.einstein.yu.edu>
  ******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.newFilterDialog.panels;
+package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.filterDialog.panels;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -35,7 +36,6 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
@@ -53,13 +53,12 @@ public class MultiGenomePanel extends JPanel implements ItemListener {
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -4060807866730514644L;
 
-	/** Name of the property that is true when the selection in this panel is true, false otherwise */
+	/** Name of the property that is true when the selection in this panel is valid, false otherwise */
 	public static final String IS_SELECTION_VALID_PROPERTY_NAME = "Is selection valid";
 
-	private final JCheckBox[] 	genomeBoxes;		// check boxes to select genomes
 	private final JScrollPane	genomeScroll;		// scroll pane with the check boxes
 	private final JComboBox 	operatorCombobox;	// combo box to choose an operator
-
+	private JCheckBox[] 		genomeBoxes;		// check boxes to select genomes
 	private boolean 			isSelectionValid;	// true if the current selection is valid
 
 
@@ -74,7 +73,13 @@ public class MultiGenomePanel extends JPanel implements ItemListener {
 		super(new GridBagLayout());
 		setBorder(BorderFactory.createTitledBorder("Select Genome(s)"));
 
-		genomeBoxes = new JCheckBox[genomeNames.size()];
+		// create the components
+		JLabel jlGenome = new JLabel("Apply FORMAT filter on:");
+
+		genomeScroll = new JScrollPane();
+		setGenomeList(genomeNames, selectedGenomes);
+
+		JLabel jlOperator = new JLabel("Using operator:");
 
 		operatorCombobox = new JComboBox();
 		operatorCombobox.setPrototypeDisplayValue("Mean");
@@ -83,22 +88,18 @@ public class MultiGenomePanel extends JPanel implements ItemListener {
 			operatorCombobox.setSelectedItem(selectedOperator);
 		}
 
+		// add the components
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbc.weightx = 1;
 		gbc.weighty = 1;
 
-		JLabel jlGenome = new JLabel("Apply FORMAT filter on:");
 		add(jlGenome, gbc);
 
-		genomeScroll = new JScrollPane();
-		genomeScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		setGenomeList(genomeNames, selectedGenomes);
 		gbc.gridy = 1;
 		add(genomeScroll, gbc);
 
-		JLabel jlOperator = new JLabel("Using operator:");
 		gbc.gridy = 2;
 		gbc.insets = new Insets(20, 0, 0, 0);
 		add(jlOperator, gbc);
@@ -112,6 +113,48 @@ public class MultiGenomePanel extends JPanel implements ItemListener {
 
 
 	/**
+	 * Checks if the current selection made by the user is valid and update the
+	 * {@link #isSelectionValid} property. Fire a property change event if the
+	 * property changes.
+	 */
+	private final void checkIfSelectionIsValid() {
+		boolean newIsSelectionValid = false;
+		for (int i = 0; (i < genomeBoxes.length) && !newIsSelectionValid; i++) {
+			if (genomeBoxes[i].isSelected()) {
+				newIsSelectionValid = true;
+			}
+		}
+		if (newIsSelectionValid != isSelectionValid) {
+			boolean oldIsSelectionValid = isSelectionValid;
+			isSelectionValid = newIsSelectionValid;
+			firePropertyChange(IS_SELECTION_VALID_PROPERTY_NAME, oldIsSelectionValid, newIsSelectionValid);
+		}
+	}
+
+
+	/**
+	 * The list of the selected genomes
+	 */
+	public List<String> getSelectedGenomes() {
+		List<String> resultList = new ArrayList<String>();
+		for (JCheckBox jcb: genomeBoxes) {
+			if (jcb.isSelected()) {
+				resultList.add(jcb.getText());
+			}
+		}
+		return resultList;
+	}
+
+
+	/**
+	 * @return the selected operator
+	 */
+	public FormatFilterOperatorType getSelectedOperator() {
+		return (FormatFilterOperatorType) operatorCombobox.getSelectedItem();
+	}
+
+
+	/**
 	 * @return true if the current selection is valid, false otherwise
 	 */
 	public boolean isSelectionValid() {
@@ -119,28 +162,9 @@ public class MultiGenomePanel extends JPanel implements ItemListener {
 	}
 
 
-	/**
-	 * @param genomeBoxes a list of check boxes
-	 * @return true if at least one check box is selected, false otherwise
-	 */
-	private final boolean isSelectionValid(JCheckBox[] genomeBoxes) {
-		for (JCheckBox jcb: genomeBoxes) {
-			if (jcb.isSelected()) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-		boolean newIsSelectionValid = isSelectionValid(genomeBoxes);
-		if (newIsSelectionValid != isSelectionValid) {
-			boolean oldIsSelectionValid = isSelectionValid;
-			isSelectionValid = newIsSelectionValid;
-			firePropertyChange(IS_SELECTION_VALID_PROPERTY_NAME, oldIsSelectionValid, newIsSelectionValid);
-		}
+		checkIfSelectionIsValid();
 	}
 
 
@@ -169,6 +193,7 @@ public class MultiGenomePanel extends JPanel implements ItemListener {
 		gbc.weightx = 1;
 		gbc.weighty = 1;
 
+		genomeBoxes = new JCheckBox[genomeNames.size()];
 		for (int i = 0; i < genomeNames.size(); i++) {
 			JCheckBox checkBox = new JCheckBox(genomeNames.get(i));
 			if (selectedGenomes != null) {
@@ -176,21 +201,23 @@ public class MultiGenomePanel extends JPanel implements ItemListener {
 			} else {
 				checkBox.setSelected(true);
 			}
+			checkBox.addItemListener(this);
 			genomeBoxes[i] = checkBox;
 			content.add(genomeBoxes[i], gbc);
-			genomeBoxes[i].addItemListener(this);
 			gbc.gridy++;
 		}
 		genomeScroll.setViewportView(content);
 		if (genomeNames.size() <= 1) {
 			setVisible(false);
 		}
+		checkIfSelectionIsValid();
 	}
 
 
 	/**
-	 * 
-	 * @param vcfHeaderType
+	 * Sets the VCF filed that is selected. The content of this panel will
+	 * adapt to the type of the field
+	 * @param vcfHeaderType a VCF field
 	 */
 	public void setHeaderType(VCFHeaderType vcfHeaderType) {
 		if ((genomeBoxes.length <= 1) || (vcfHeaderType.getColumnCategory() != VCFColumnName.FORMAT)) {
