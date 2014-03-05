@@ -53,7 +53,7 @@ public class FileChooser {
 	public static final int SAVE_FILE_MODE = 2;
 
 	/** True to use a AWT file chooser component, false to use a swing one*/
-	private static final boolean USE_AWT_CHOOSER = Utils.isMacOS() || Utils.isWindowsOS();
+	private static final boolean USE_AWT_CHOOSER = Utils.isMacOS();
 
 
 	/**
@@ -167,6 +167,9 @@ public class FileChooser {
 	private final static File chooseFileUsingSwing(Component parentComponent, int mode, String title, FileFilter[] choosableFileFilters, boolean allFiles, File selectedFile) {
 		JFileChooser jfc = new JFileChooser();
 		setFileChooserSelectedDirectory(jfc);
+		if (selectedFile != null) {
+			jfc.setSelectedFile(selectedFile);
+		}
 		if (mode == OPEN_DIRECTORY_MODE) {
 			jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		} else {
@@ -191,7 +194,7 @@ public class FileChooser {
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			if ((mode == SAVE_FILE_MODE) && (choosableFileFilters != null) && (jfc.getFileFilter() instanceof ExtendedFileFilter)) {
 				// add the extension of the file if needed
-				return Utils.addExtension(selectedFile, ((ExtendedFileFilter) jfc.getFileFilter()).getExtensions());
+				return Utils.addExtension(jfc.getSelectedFile(), ((ExtendedFileFilter) jfc.getFileFilter()).getExtensions());
 			} else {
 				return jfc.getSelectedFile();
 			}

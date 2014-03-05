@@ -257,6 +257,10 @@ public class MGSynchronizer implements VCFScannerReceiver, Serializable {
 	public void processLine(VCFLine line) {
 		// Set global information
 		Chromosome chromosome = line.getChromosome();
+		if (chromosome == null) {
+			return;
+		}
+
 		int referencePosition = line.getReferencePosition();								// get the reference genome position (POS field)
 
 		updateFileStatistics(currentStatistics, line.getAlternativesTypes(), line.getAlternatives());
