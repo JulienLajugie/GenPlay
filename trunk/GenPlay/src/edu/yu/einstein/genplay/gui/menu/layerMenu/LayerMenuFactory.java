@@ -77,13 +77,15 @@ public class LayerMenuFactory {
 				for (Layer<?> currentLayer: trackLayers) {
 					JMenu layerMenu = LayerMenuFactory.createLayerMenu(currentLayer);
 					// active layer is in fold and italic
-					if (track.getActiveLayer() == currentLayer) {
-						layerMenu.setFont(layerMenu.getFont().deriveFont(Font.ITALIC | Font.BOLD));
-					} else {
-						// all layers are in bold
-						layerMenu.setFont(layerMenu.getFont().deriveFont(Font.BOLD));
+					if (layerMenu != null) {
+						if (track.getActiveLayer() == currentLayer) {
+							layerMenu.setFont(layerMenu.getFont().deriveFont(Font.ITALIC | Font.BOLD));
+						} else {
+							// all layers are in bold
+							layerMenu.setFont(layerMenu.getFont().deriveFont(Font.BOLD));
+						}
+						menus.add(layerMenu);
 					}
-					menus.add(layerMenu);
 				}
 			}
 		}
