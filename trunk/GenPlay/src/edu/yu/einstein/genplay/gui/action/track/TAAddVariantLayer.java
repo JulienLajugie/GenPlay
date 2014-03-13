@@ -80,7 +80,6 @@ public class TAAddVariantLayer extends TrackListAction {
 				newLayer.setData(data);
 				selectedTrack.getLayers().add(newLayer);
 				selectedTrack.setActiveLayer(newLayer);
-
 				// Updates track (filters, display)
 				MGARefresh action = new MGARefresh();
 				action.setPreviousFilterList(settings.getFilterSettings().getAllMGFilters());
@@ -88,5 +87,4 @@ public class TAAddVariantLayer extends TrackListAction {
 			}
 		}
 	}
-
 }

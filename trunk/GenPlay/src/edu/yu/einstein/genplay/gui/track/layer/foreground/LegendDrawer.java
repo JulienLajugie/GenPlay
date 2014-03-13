@@ -221,7 +221,7 @@ public class LegendDrawer implements Drawer, MouseListener, MouseMotionListener 
 				}
 
 				// Draw the current layer name
-				if (layer instanceof VariantLayer) {
+				if ((layer instanceof VariantLayer) && (layer.getName().equals(((VariantLayer) layer).getData().getDescription()))) {
 					drawVariantLayerName((VariantLayer) layer, y);
 				} else {
 					gLegend.drawString(layer.getName(), widthOffset, y);
@@ -240,9 +240,9 @@ public class LegendDrawer implements Drawer, MouseListener, MouseMotionListener 
 	private void drawLegendArea () {
 		Color rect = Colors.addTransparency(Colors.TRACK_BACKGROUND, transparency);
 		gLegend.setColor(rect);
-		gLegend.fillRect(0, 0, gLegend.getClipBounds().width, gLegend.getClipBounds().height - 1);
+		gLegend.fillRect(0, 0, legendWidth, legendHeight - 1);
 		gLegend.setColor(Colors.BLACK);
-		gLegend.drawRect(0, 0, gLegend.getClipBounds().width, gLegend.getClipBounds().height - 1);
+		gLegend.drawRect(0, 0, legendWidth, legendHeight - 1);
 	}
 
 
@@ -251,17 +251,15 @@ public class LegendDrawer implements Drawer, MouseListener, MouseMotionListener 
 	 */
 	private void drawRoller () {
 		// Set metrics
-		int backgroundHeight = gRoller.getClipBounds().height;
-		int backgroundWidth = gRoller.getClipBounds().width;
 		int dotDiameter = 3;
 		int dotNumber = 3;
-		int dotOffset = (backgroundHeight / dotNumber) - 1;
-		int dotX = (backgroundWidth - dotDiameter) / 2;
+		int dotOffset = (rollerHeight / dotNumber) - 1;
+		int dotX = (rollerWidth - dotDiameter) / 2;
 
 		// Draw background
 		Color backgroundColor = Colors.addTransparency(Colors.LIGHT_GREY, transparency);
 		gRoller.setColor(backgroundColor);
-		gRoller.fillRect(0, 0, backgroundWidth, backgroundHeight);
+		gRoller.fillRect(0, 0, rollerWidth, rollerHeight);
 
 		// Draw dots
 		gRoller.setColor(Colors.BLACK);
@@ -293,28 +291,26 @@ public class LegendDrawer implements Drawer, MouseListener, MouseMotionListener 
 	 * @param y
 	 */
 	private void drawVariantLayerName (VariantLayer layer, int y) {
-		if (layer.getName() != null) {
-			VariantLayerDisplaySettings data = layer.getData();
-			if (data != null) {
-				int x = widthOffset;
-				String s = data.getGenome() + " (";
-				x = printString(s,  x, y, Colors.BLACK);
-				for (int i = 0; i < data.getVariationTypeList().size(); i++) {
-					VariantType type = data.getVariationTypeList().get(i);
-					if (type == VariantType.INSERTION) {
-						s = "I";
-					} else if (type == VariantType.DELETION) {
-						s = "D";
-					} else if (type == VariantType.SNPS) {
-						s = "SNPs";
-					}
-					x = printString(s,  x, y, data.getColorList().get(i));
-					if (i < (data.getVariationTypeList().size() - 1)) {
-						x = printString(", ",  x, y, Colors.BLACK);
-					}
+		VariantLayerDisplaySettings data = layer.getData();
+		if (data != null) {
+			int x = widthOffset;
+			String s = data.getGenome() + " (";
+			x = printString(s,  x, y, Colors.BLACK);
+			for (int i = 0; i < data.getVariationTypeList().size(); i++) {
+				VariantType type = data.getVariationTypeList().get(i);
+				if (type == VariantType.INSERTION) {
+					s = "I";
+				} else if (type == VariantType.DELETION) {
+					s = "D";
+				} else if (type == VariantType.SNPS) {
+					s = "SNPs";
 				}
-				printString(")", x, y, Colors.BLACK);
+				x = printString(s,  x, y, data.getColorList().get(i));
+				if (i < (data.getVariationTypeList().size() - 1)) {
+					x = printString(", ",  x, y, Colors.BLACK);
+				}
 			}
+			printString(")", x, y, Colors.BLACK);
 		}
 	}
 
@@ -509,7 +505,7 @@ public class LegendDrawer implements Drawer, MouseListener, MouseMotionListener 
 	 * @return the x position the string continues
 	 */
 	private int printString (String s, int x, int y, Color color) {
-		gLegend.setColor(Colors.BLACK);
+		gLegend.setColor(color);
 		gLegend.drawString(s, x, y);
 		return x += gLegend.getFontMetrics().stringWidth(s);
 	}

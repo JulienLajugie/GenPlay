@@ -65,7 +65,7 @@ public class TrackSettingsDialog extends JDialog implements TreeSelectionListene
 	/** Text for SETTINGS tree node */
 	public static final		String			LAYER 						= "Layer(s)";
 	/** Right panel minimum width */
-	private static final 	int 			RIGHT_PANEL_MINIMUM_WIDTH	= 600;
+	private static final 	int 			RIGHT_PANEL_MINIMUM_WIDTH	= 800;
 
 	private final TreeContent 						treeContent;			// the tree manager
 	private final JTree 							tree;					// the tree of the dialog

@@ -101,9 +101,19 @@ public class VariantLayer extends AbstractLayer<VariantLayerDisplaySettings> imp
 
 
 	@Override
+	public String getName() {
+		if ((super.getName() == null) || (super.getName().isEmpty())) {
+			return getData().getDescription();
+		} else {
+			return super.getName();
+		}
+	}
+
+	@Override
 	public LayerType getType() {
 		return LayerType.VARIANT_LAYER;
 	}
+
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -129,15 +139,14 @@ public class VariantLayer extends AbstractLayer<VariantLayerDisplaySettings> imp
 	}
 
 
+	// MouseListener implementation
+
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		if (!ScrollingManager.getInstance().isScrollingEnabled() && (genomeDrawer != null) && genomeDrawer.isOverVariant(getTrack().getHeight(), e)) {
 			getTrack().repaint();
 		}
 	}
-
-
-	// MouseListener implementation
 
 	@Override
 	public void mousePressed(MouseEvent e) {}
@@ -152,6 +161,7 @@ public class VariantLayer extends AbstractLayer<VariantLayerDisplaySettings> imp
 		setData(getData(), filters);
 	}
 
+
 	/**
 	 * @param data the {@link VariantLayerDisplaySettings}
 	 * @param filters the list of {@link MGFilter}
@@ -159,12 +169,8 @@ public class VariantLayer extends AbstractLayer<VariantLayerDisplaySettings> imp
 	private void setData (VariantLayerDisplaySettings data, List<MGFilter> filters) {
 		this.filters = filters;
 		super.setData(data);
-		if (data != null) {
-			setName(data.getDescription());
-		}
 		updateMultiGenomeInformation();
 	}
-
 
 	// MouseMotion implementation
 

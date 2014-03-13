@@ -34,6 +34,7 @@ import javax.swing.event.MenuListener;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.project.PAAbout;
+import edu.yu.einstein.genplay.gui.action.project.PACheckForUpdates;
 import edu.yu.einstein.genplay.gui.action.project.PAExit;
 import edu.yu.einstein.genplay.gui.action.project.PAFullScreen;
 import edu.yu.einstein.genplay.gui.action.project.PAHelp;
@@ -200,6 +201,10 @@ public class MenuBar extends JMenuBar {
 			jmHelp.add(actionMap.get(PAOption.ACTION_KEY));
 		}
 		jmHelp.add(actionMap.get(PAHelp.ACTION_KEY));
+		if (PACheckForUpdates.isUpdaterAvailable()) {
+			jmHelp.add(actionMap.get(PACheckForUpdates.ACTION_KEY));
+
+		}
 		if (!Utils.isMacOS() || !LookAndFeels.isNativeLookAndFeel()) {
 			jmHelp.add(actionMap.get(PAAbout.ACTION_KEY));
 		}

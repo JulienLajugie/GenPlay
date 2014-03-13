@@ -50,129 +50,26 @@ public class VariantDisplayListIterator implements Iterator<Variant> {
 	 */
 	public VariantDisplayListIterator (VariantDisplayList displayList, int alleleIndex) {
 		this.displayList = displayList;
-		this.variantList = displayList.getVariants().get(alleleIndex);
-		this.display = displayList.getDisplay()[alleleIndex];
+		variantList = displayList.getVariants().get(alleleIndex);
+		display = displayList.getDisplay()[alleleIndex];
 		currentIndex = -1;
 		displayDependant = false;
 	}
 
 
 	/**
-	 * @return true if there is an element at the next position, false otherwise
+	 * @return the display policy of the current variant
 	 */
-	@Override
-	public boolean hasNext() {
-		if (displayDependant) {
-			return hasVariantAfterPosition(getCurrentMetaGenomePosition());
-		}
-		return inBound(currentIndex + 1) && isVariantVisible(currentIndex + 1);
+	public byte getCurrentDisplay () {
+		return getVariantDisplay(currentIndex);
 	}
 
 
 	/**
-	 * @param metaGenomePosition a position on the meta genome
-	 * @return true if there is a variant after the given meta genome position, false otherwise
+	 * @return the currentIndex
 	 */
-	public boolean hasVariantAfterPosition (int metaGenomePosition) {
-		boolean found = false;
-		int index = currentIndex;
-		while (inBound(index) && !found) {
-			if ((variantList.get(index).getStart() > metaGenomePosition) && isVariantVisible(index)) {
-				found = true;
-			}
-			index++;
-		}
-		return found;
-	}
-
-
-	/**
-	 * @return true if there is an element at the previous position, false otherwise
-	 */
-	public boolean hasPrevious() {
-		if (displayDependant) {
-			return hasVariantBeforePosition(getCurrentMetaGenomePosition());
-		}
-		return inBound(currentIndex - 1) && isVariantVisible(currentIndex - 1);
-	}
-
-
-	/**
-	 * @param metaGenomePosition a position on the meta genome
-	 * @return true if there is a variant before the given meta genome position, false otherwise
-	 */
-	public boolean hasVariantBeforePosition (int metaGenomePosition) {
-		boolean found = false;
-		int index = currentIndex;
-		while (inBound(index) && !found) {
-			if ((variantList.get(index).getStart() < metaGenomePosition) && isVariantVisible(index)) {
-				found = true;
-			}
-			index--;
-		}
-		return found;
-	}
-
-
-	/**
-	 * @return the next element in the list
-	 */
-	@Override
-	public Variant next() {
-		moveIndexForward();
-		return getCurrentVariant();
-	}
-
-
-	/**
-	 * @return the previous element in the list
-	 */
-	public Variant previous() {
-		moveIndexBackward();
-		return getCurrentVariant();
-	}
-
-
-	/**
-	 * Move the index forward
-	 */
-	private void moveIndexForward () {
-		boolean moved = false;
-		int index = currentIndex + 1;
-		while (inBound(index) && !moved) {
-			if (isVariantVisible(index)) {
-				moved = true;
-				currentIndex = index;
-			}
-			index++;
-		}
-	}
-
-
-	/**
-	 * Move the index backward
-	 */
-	private void moveIndexBackward () {
-		boolean moved = false;
-		int index = currentIndex - 1;
-		while (inBound(index) && !moved) {
-			if (isVariantVisible(index)) {
-				moved = true;
-				currentIndex = index;
-			}
-			index--;
-		}
-	}
-
-
-	/**
-	 * @return the current {@link Variant}
-	 */
-	public Variant getCurrentVariant () {
-		if (inBound() && isCurrentVariantVisible()) {
-			return variantList.get(currentIndex);
-		}
-		return null;
+	public int getCurrentIndex() {
+		return currentIndex;
 	}
 
 
@@ -188,61 +85,21 @@ public class VariantDisplayListIterator implements Iterator<Variant> {
 
 
 	/**
-	 * @return true if the current index is in the list bounds, false otherwise
+	 * @return the current {@link Variant}
 	 */
-	private boolean inBound () {
-		return inBound(currentIndex);
-	}
-
-
-	/**
-	 * @param index and index
-	 * @return	true if the given index is in the list bounds, false otherwise
-	 */
-	private boolean inBound (int index) {
-		if ((index >= 0) && (index < variantList.size())) {
-			return true;
+	public Variant getCurrentVariant () {
+		if (inBound() && isCurrentVariantVisible()) {
+			return variantList.get(currentIndex);
 		}
-		return false;
+		return null;
 	}
 
 
 	/**
-	 * @param index the index of a variant
-	 * @return the display policy of the current variant
+	 * @return the displayList
 	 */
-	private byte getVariantDisplay (int index) {
-		Variant current = variantList.get(index);
-		if (current instanceof MixVariant) {
-			return VariantDisplayList.SHOW;
-		}
-		return display[index];
-	}
-
-
-	/**
-	 * @return the display policy of the current variant
-	 */
-	public byte getCurrentDisplay () {
-		return getVariantDisplay(currentIndex);
-	}
-
-
-	@Override
-	public void remove() {}
-
-
-	/**
-	 * Recursive function. Seeks the index of the variant for the given position in order to set the current index.
-	 * If no variant is at the position, the next variant is then selected.
-	 * @param position	a position on the meta genome
-	 */
-	public void setIteratorPosition (int position) {
-		int index = -1;
-		if (variantList.size() > 0) {
-			index = getIndex(variantList, position, 0, variantList.size() - 1);
-		}
-		currentIndex = index;
+	public VariantDisplayList getDisplayList() {
+		return displayList;
 	}
 
 
@@ -273,6 +130,96 @@ public class VariantDisplayListIterator implements Iterator<Variant> {
 
 
 	/**
+	 * @param index the index of a variant
+	 * @return the display policy of the current variant
+	 */
+	private byte getVariantDisplay (int index) {
+		Variant current = variantList.get(index);
+		if (current instanceof MixVariant) {
+			return VariantDisplayList.SHOW;
+		}
+		return display[index];
+	}
+
+
+	/**
+	 * @return true if there is an element at the next position, false otherwise
+	 */
+	@Override
+	public boolean hasNext() {
+		if (displayDependant) {
+			return hasVariantAfterPosition(getCurrentMetaGenomePosition());
+		}
+		return inBound(currentIndex + 1) && isVariantVisible(currentIndex + 1);
+	}
+
+
+	/**
+	 * @return true if there is an element at the previous position, false otherwise
+	 */
+	public boolean hasPrevious() {
+		if (displayDependant) {
+			return hasVariantBeforePosition(getCurrentMetaGenomePosition());
+		}
+		return inBound(currentIndex - 1) && isVariantVisible(currentIndex - 1);
+	}
+
+
+	/**
+	 * @param metaGenomePosition a position on the meta genome
+	 * @return true if there is a variant after the given meta genome position, false otherwise
+	 */
+	public boolean hasVariantAfterPosition (int metaGenomePosition) {
+		boolean found = false;
+		int index = currentIndex;
+		while (inBound(index) && !found) {
+			if ((variantList.get(index).getStart() > metaGenomePosition) && isVariantVisible(index)) {
+				found = true;
+			}
+			index++;
+		}
+		return found;
+	}
+
+
+	/**
+	 * @param metaGenomePosition a position on the meta genome
+	 * @return true if there is a variant before the given meta genome position, false otherwise
+	 */
+	public boolean hasVariantBeforePosition (int metaGenomePosition) {
+		boolean found = false;
+		int index = currentIndex;
+		while (inBound(index) && !found) {
+			if ((variantList.get(index).getStart() < metaGenomePosition) && isVariantVisible(index)) {
+				found = true;
+			}
+			index--;
+		}
+		return found;
+	}
+
+
+	/**
+	 * @return true if the current index is in the list bounds, false otherwise
+	 */
+	private boolean inBound () {
+		return inBound(currentIndex);
+	}
+
+
+	/**
+	 * @param index and index
+	 * @return	true if the given index is in the list bounds, false otherwise
+	 */
+	private boolean inBound (int index) {
+		if ((index >= 0) && (index < variantList.size())) {
+			return true;
+		}
+		return false;
+	}
+
+
+	/**
 	 * @return true if the current {@link Variant} is shown, false otherwise
 	 */
 	private boolean isCurrentVariantVisible () {
@@ -291,12 +238,59 @@ public class VariantDisplayListIterator implements Iterator<Variant> {
 		return true;
 	}
 
+
 	/**
-	 * @return the displayList
+	 * Move the index backward
 	 */
-	public VariantDisplayList getDisplayList() {
-		return displayList;
+	private void moveIndexBackward () {
+		boolean moved = false;
+		int index = currentIndex - 1;
+		while (inBound(index) && !moved) {
+			if (isVariantVisible(index)) {
+				moved = true;
+				currentIndex = index;
+			}
+			index--;
+		}
 	}
+
+
+	/**
+	 * Move the index forward
+	 */
+	private void moveIndexForward () {
+		boolean moved = false;
+		int index = currentIndex + 1;
+		while (inBound(index) && !moved) {
+			if (isVariantVisible(index)) {
+				moved = true;
+				currentIndex = index;
+			}
+			index++;
+		}
+	}
+
+
+	/**
+	 * @return the next element in the list
+	 */
+	@Override
+	public Variant next() {
+		moveIndexForward();
+		return getCurrentVariant();
+	}
+
+
+	/**
+	 * @return the previous element in the list
+	 */
+	public Variant previous() {
+		moveIndexBackward();
+		return getCurrentVariant();
+	}
+
+	@Override
+	public void remove() {}
 
 
 	/**
@@ -308,10 +302,16 @@ public class VariantDisplayListIterator implements Iterator<Variant> {
 
 
 	/**
-	 * @return the currentIndex
+	 * Recursive function. Seeks the index of the variant for the given position in order to set the current index.
+	 * If no variant is at the position, the next variant is then selected.
+	 * @param position	a position on the meta genome
 	 */
-	public int getCurrentIndex() {
-		return currentIndex;
+	public void setIteratorPosition (int position) {
+		int index = -1;
+		if (variantList.size() > 0) {
+			index = getIndex(variantList, position, 0, variantList.size() - 1);
+		}
+		currentIndex = index;
 	}
 
 }

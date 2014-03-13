@@ -76,6 +76,7 @@ public final class TAAddRepeatLayer extends TrackListActionExtractorWorker<Repea
 			RepeatLayer newLayer = new RepeatLayer(selectedTrack, actionResult, name);
 			selectedTrack.getLayers().add(newLayer);
 			selectedTrack.setActiveLayer(newLayer);
+			selectedTrack.repaint();
 		}
 	}
 

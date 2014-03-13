@@ -27,6 +27,7 @@ import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
@@ -96,9 +97,12 @@ class MultiGenomeVariantDrawer implements Serializable {
 	/**
 	 * Draws the list of variation for a genome
 	 * @param g				Graphics object
+	 * @param width			width of the graphics
+	 * @param height		height of the graphics
+	 * @param genomeWindow  genome window currently displayed
 	 * @param variantList	list of variants
 	 */
-	protected void drawGenome (Graphics g, GenomeWindow genomeWindow, List<VariantDisplay> variants) {
+	protected void drawGenome (Graphics g, int width, int height, GenomeWindow genomeWindow, List<VariantDisplay> variants) {
 		if ((variants != null) && (variants.size() > 0)) {
 			Color mixColor = new Color(Colors.BLUE.getRed(), Colors.BLUE.getGreen(), Colors.BLUE.getBlue());			// color for mixed variant
 			for (int i = 0; i < variants.size(); i++) {
@@ -119,7 +123,7 @@ class MultiGenomeVariantDrawer implements Serializable {
 					color = getVariantColor(variant.getGenomeName(), type);																		// in order to get which color has been defined
 				}
 
-				drawVariant(g, variant, color, genomeWindow);	// draw the variant
+				drawVariant(g, height, variant, color, genomeWindow);	// draw the variant
 			}
 		}
 	}
@@ -145,13 +149,14 @@ class MultiGenomeVariantDrawer implements Serializable {
 	/**
 	 * Draws the letters (nucleotides) over the stripe.
 	 * @param g					graphics object
+	 * @param graphicsHeigth	height of the graphics object
 	 * @param x					x coordinate
 	 * @param width				width of the stripe
 	 * @param height			height of the stripe
-	 * @param variantDisplay			variant
+	 * @param variantDisplay	variant
 	 * @param nucleotideNumber	number of nucleotide to display
 	 */
-	private void drawLetters (Graphics g, int x, int width, int height, VariantDisplay variantDisplay, int nucleotideNumber) {
+	private void drawLetters (Graphics g, int graphicsHeigth, int x, int width, int height, VariantDisplay variantDisplay, int nucleotideNumber) {
 		Variant variant = variantDisplay.getVariant();
 		VariantType variantType = variant.getType();		// gets the variant type
 		if (	((variantType == VariantType.INSERTION) && 	(MGDisplaySettings.DRAW_INSERTION_LETTERS 	== MGDisplaySettings.YES_MG_OPTION)) ||	// checks all options in order to determine if the letters must be drawn
@@ -164,14 +169,14 @@ class MultiGenomeVariantDrawer implements Serializable {
 			FontMetrics fm = g.getFontMetrics();											// get the font metrics
 			if ((fm.getHeight() < height) && (fm.stringWidth("A") < windowWidth)) {			// verifies if the height of the font is smaller than the height of the stripe AND if the width of a reference letter (A) is smaller than a window size
 				String letters = variantDisplay.getVariantSequence();
-				g.setColor(Colors.BLACK);												// set the color of the letters
-				int letterHeight = ((height + fm.getHeight()) / 2);						// define where the draw will start on the Y axis
-				Graphics2D g2d = (Graphics2D) g.create();						// we reverse all coordinates to display the letter on the right way
+				g.setColor(Colors.BLACK);													// set the color of the letters
+				int letterHeight = ((height + fm.getHeight()) / 2);							// define where the draw will start on the Y axis
+				Graphics2D g2d = (Graphics2D) g.create();									// we reverse all coordinates to display the letter on the right way
 				if (currentDrawingAllele == AlleleType.ALLELE02) {
 					g2d.scale(1, -1);
-					g2d.translate(0, -g2d.getClipBounds().height - 1);
+					g2d.translate(0, -height - 1);
 				} else {
-					letterHeight += (g2d.getClipBounds().height - height);						// define where the draw will start on the Y axis
+					letterHeight += (graphicsHeigth - height);					// define where the draw will start on the Y axis
 				}
 
 				int firstNucleotide = projectWindow.getGenomeWindow().getStart() - variant.getStart();	// retrieve the position of the first displayed nucleotide in the variant
@@ -179,7 +184,7 @@ class MultiGenomeVariantDrawer implements Serializable {
 
 				for (int i = 0; i < nucleotideNumber; i++) {								// for all the nucleotide that are supposed to be displayed
 					String letter = "-";													// the default letter is the question mark
-					if ((letters != "-") && ((i + firstNucleotide) < letters.length())) {		// if the letters are different to the question mark and if the current index is smaller than the string length
+					if ((letters != "-") && ((i + firstNucleotide) < letters.length())) {	// if the letters are different to the question mark and if the current index is smaller than the string length
 						letter = letters.charAt(i + firstNucleotide) + "";					// we get the current character
 					}
 					int xC = (int) Math.round(x + (i * windowWidth) + ((windowWidth - fm.stringWidth(letter)) * 0.5));	// the horizontal position from where the draw starts: x (of the stripe) + size of a window * current window number + (windows width - letter width) / 2 (for the middle)
@@ -194,21 +199,21 @@ class MultiGenomeVariantDrawer implements Serializable {
 	 * Draws the line on the middle of a multi genome track
 	 * @param g	graphics object
 	 */
-	protected void drawMultiGenomeLine (Graphics g) {
+	protected void drawMultiGenomeLine (Graphics g, int width, int height) {
 		Color color = new Color(Colors.GREY.getRed(), Colors.GREY.getGreen(), Colors.GREY.getBlue(), variantOpacity);
 		g.setColor(color);
-		int y = g.getClipBounds().height / 2;
-		g.drawLine(0, y, g.getClipBounds().width, y);
+		int y = height / 2;
+		g.drawLine(0, y, width, y);
 	}
 
 
 	/**
 	 * Draw a light gray mask over the track with a text
 	 * @param g		graphics object
+	 * @param height height of the graphics
 	 * @param text	a text to display
 	 */
-	protected void drawMultiGenomeMask (Graphics g, String text) {
-		int height = g.getClipBounds().height;
+	protected void drawMultiGenomeMask (Graphics g, int height, String text) {
 		g.setColor(Colors.RED);
 		g.drawString(text, 10, height -5);
 	}
@@ -222,6 +227,8 @@ class MultiGenomeVariantDrawer implements Serializable {
 	 * @param height	height of the stripe
 	 */
 	private void drawPatternFilter (Graphics g, int x, int y, int width, int height) {
+		Graphics2D g2d = (Graphics2D) g;
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setColor(Colors.GREY);
 		g.drawLine(x, y, x + width, y + height);
 		g.drawLine(x, y + height, x + width, y);
@@ -234,19 +241,22 @@ class MultiGenomeVariantDrawer implements Serializable {
 	 * @param g		graphics object
 	 * @param x		x coordinate
 	 * @param width	width of the stripe
+	 * @param height height of the graphics
 	 */
-	private void drawReference (Graphics g, int x, int width) {
-		g.fillRect(x, 0, width, g.getClipBounds().height);
+	private void drawReference (Graphics g, int x, int width, int height) {
+		g.fillRect(x, 0, width, height);
 	}
 
 
 	/**
 	 * Draws a rectangle symbolizing a variant
-	 * @param g			graphics object
-	 * @param variant	the variant
-	 * @param color		the color of the stripe
+	 * @param g					graphics object
+	 * @param height			height of the graphics
+	 * @param variantDisplay	the variant
+	 * @param color				the color of the stripe
+	 * @param genomeWindow		the displayed genome window
 	 */
-	private void drawVariant (Graphics g, VariantDisplay variantDisplay, Color color, GenomeWindow genomeWindow) {
+	private void drawVariant (Graphics g, int height, VariantDisplay variantDisplay, Color color, GenomeWindow genomeWindow) {
 		Variant variant = variantDisplay.getVariant();
 
 		// Get start and stop position
@@ -270,8 +280,7 @@ class MultiGenomeVariantDrawer implements Serializable {
 		}
 
 		// Get the height of the clip and of the stripe
-		int clipHeight = g.getClipBounds().height;									// get the height of the clip
-		int height = getVariantHeight(variant, clipHeight);																	// Instantiate the int for the height of the variant
+		int variantHeight = getVariantHeight(variant, height);																	// Instantiate the int for the height of the variant
 
 		// Sets the stripe color
 		Color newColor;
@@ -283,27 +292,27 @@ class MultiGenomeVariantDrawer implements Serializable {
 		g.setColor(newColor);														// we set the graphic object color
 
 		// if it is not a blank of synchronization
-		int y = clipHeight - height;												// y represents the top left corner of the stripes, the axis goes down to the bottom
+		int y = height - variantHeight;												// y represents the top left corner of the stripes, the axis goes down to the bottom
 
 		// Draws the variant
 		int nucleotideNumber;
 		if (variant instanceof ReferenceVariant) {					// drawing a reference stripe requires a different method (shorter and more simple)
 			if (color != null) {						// if color is null, it means we don't want to draw the reference
-				drawReference(g, x, width);
+				drawReference(g, x, width, height);
 			}
 		} else {
-			g.fillRect(x, y, width, height);									// draw the stripe
+			g.fillRect(x, y, width, variantHeight);									// draw the stripe
 
 			// Draws the edge line of stripes
 			if (variant.getType() == VariantType.INSERTION) {					// the edge of an insertion and a deletion are different
-				drawInsertion(g, x, y, width, height);
+				drawInsertion(g, x, y, width, variantHeight);
 			} else if (variant.getType() == VariantType.DELETION) {
-				drawDeletion(g, x, y, width, height);
+				drawDeletion(g, x, y, width, variantHeight);
 			}
 		}
 
 		if (variantDisplay.getDisplay() == VariantDisplayList.SHOW_FILTER) {
-			drawPatternFilter(g, x, y, width, height);
+			drawPatternFilter(g, x, y, width, variantHeight);
 		}
 		nucleotideNumber = stop - start;
 		if (nucleotideNumber == 0) {
@@ -312,7 +321,7 @@ class MultiGenomeVariantDrawer implements Serializable {
 
 		// Draw the variant letters
 		if (variant.getType() != VariantType.MIX) {
-			drawLetters(g, x, width, height, variantDisplay, nucleotideNumber);					// draw the letters (nucleotides) over the stripe
+			drawLetters(g, height, x, width, variantHeight, variantDisplay, nucleotideNumber);					// draw the letters (nucleotides) over the stripe
 		}
 	}
 

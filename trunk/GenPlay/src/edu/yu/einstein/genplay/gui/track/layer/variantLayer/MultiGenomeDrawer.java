@@ -113,18 +113,18 @@ public class MultiGenomeDrawer implements Serializable {
 				Graphics2D allele02Graphic = (Graphics2D) g.create(0, halfHeight, width, halfHeight); 			// create a 2D graphics for the second allele that correspond to the lower
 				// half of the track
 				allele02Graphic.scale(1, -1); 																	// all Y axis (vertical) coordinates must be reversed for the second allele
-				allele02Graphic.translate(0, -allele02Graphic.getClipBounds().height - 1); 						// translates all coordinates of the graphic for the second allele
+				allele02Graphic.translate(0, -halfHeight); 														// translates all coordinates of the graphic for the second allele
 				if (forceFitToScreen) {
 					handler.forceFitToScreen(xRatio);
 					forceFitToScreen = false;
 				}
 				variantDrawer.setCurrentAllele(AlleleType.ALLELE01);
-				variantDrawer.drawGenome(allele01Graphic, genomeWindow, handler.getFittedData(genomeWindow, xRatio, 0)); // draw the stripes for the first allele
+				variantDrawer.drawGenome(allele01Graphic, width, halfHeight, genomeWindow, handler.getFittedData(genomeWindow, xRatio, 0)); // draw the stripes for the first allele
 				variantDrawer.setCurrentAllele(AlleleType.ALLELE02);
-				variantDrawer.drawGenome(allele02Graphic, genomeWindow, handler.getFittedData(genomeWindow, xRatio, 1)); // draw the stripes for the second allele
-				variantDrawer.drawMultiGenomeLine(g); // draw a line in the middle of the track to distinguish upper and lower half.
+				variantDrawer.drawGenome(allele02Graphic, width, halfHeight, genomeWindow, handler.getFittedData(genomeWindow, xRatio, 1)); // draw the stripes for the second allele
+				variantDrawer.drawMultiGenomeLine(g, width, height); // draw a line in the middle of the track to distinguish upper and lower half.
 			} else {
-				variantDrawer.drawMultiGenomeMask(g, "Multi genome display interupted while loading information.");
+				variantDrawer.drawMultiGenomeMask(g, height, "Multi genome display interupted while loading information.");
 			}
 		}
 	}
@@ -444,7 +444,7 @@ public class MultiGenomeDrawer implements Serializable {
 			if (variantUnderMouse != null) {
 				VariantInformationDialog toolTip = new VariantInformationDialog(this); // we create the information dialog
 				variantDialogs.add(toolTip);
-				int pos = Math.round(ProjectManager.getInstance().getProjectWindow().screenToGenomePosition(e.getX())); // we translate the position on the screen into a position on the genome
+				int pos = Math.round(ProjectManager.getInstance().getProjectWindow().screenToGenomePosition(e.getX())) - 1; // we translate the position on the screen into a position on the genome
 				VariantDisplayMultiListScanner iterator = new VariantDisplayMultiListScanner(variantDisplayList);
 				iterator.initializeDiploide();
 				iterator.setPosition(pos);

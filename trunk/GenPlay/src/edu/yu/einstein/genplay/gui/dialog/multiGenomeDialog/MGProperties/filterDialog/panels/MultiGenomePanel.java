@@ -88,6 +88,8 @@ public class MultiGenomePanel extends JPanel implements ItemListener {
 			operatorCombobox.setSelectedItem(selectedOperator);
 		}
 
+		checkIfGenomeComboEnabled();
+
 		// add the components
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.BOTH;
@@ -109,6 +111,21 @@ public class MultiGenomePanel extends JPanel implements ItemListener {
 		gbc.insets = new Insets(0, 10, 0, 0);
 		gbc.weighty = 1;
 		add(operatorCombobox, gbc);
+	}
+
+
+	/**
+	 * Enables the operator combo box if more than one genome is selected. \
+	 * Disables it otherwise
+	 */
+	private void checkIfGenomeComboEnabled() {
+		int selectedGenomeCount = 0;
+		for (JCheckBox jcb: genomeBoxes) {
+			if (jcb.isSelected()) {
+				selectedGenomeCount++;
+			}
+		}
+		operatorCombobox.setEnabled(selectedGenomeCount > 1);
 	}
 
 
@@ -165,6 +182,7 @@ public class MultiGenomePanel extends JPanel implements ItemListener {
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		checkIfSelectionIsValid();
+		checkIfGenomeComboEnabled();
 	}
 
 
