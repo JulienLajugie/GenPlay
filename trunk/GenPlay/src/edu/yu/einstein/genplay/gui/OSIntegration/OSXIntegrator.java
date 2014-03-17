@@ -22,7 +22,9 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.OSIntegration;
 
+import java.awt.Image;
 import java.io.File;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -32,6 +34,8 @@ import com.apple.eawt.AppEvent.AboutEvent;
 import com.apple.eawt.AppEvent.OpenFilesEvent;
 import com.apple.eawt.AppEvent.PreferencesEvent;
 import com.apple.eawt.AppEvent.QuitEvent;
+import com.apple.eawt.Application;
+import com.apple.eawt.FullScreenUtilities;
 import com.apple.eawt.OpenFilesHandler;
 import com.apple.eawt.PreferencesHandler;
 import com.apple.eawt.QuitHandler;
@@ -45,6 +49,7 @@ import edu.yu.einstein.genplay.gui.action.track.TAInsert;
 import edu.yu.einstein.genplay.gui.fileFilter.GenPlayTrackFilter;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.trackList.TrackListPanel;
+import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.Utils;
 
 /**
@@ -52,7 +57,52 @@ import edu.yu.einstein.genplay.util.Utils;
  * launched GenPlay by double clicking on a project file, or menus in the main menu bar
  * @author Julien Lajugie
  */
-public class OSXHandler implements AboutHandler, PreferencesHandler, QuitHandler, OpenFilesHandler {
+public class OSXIntegrator implements AboutHandler, PreferencesHandler, QuitHandler, OpenFilesHandler {
+
+	/**
+	 * Integrate the GenPlay app into the OSX environment
+	 */
+	public static void integrateApplication() {
+		// set the menu bar for OSX
+		System.setProperty("apple.laf.useScreenMenuBar", "true");
+		// set the application name for OSX
+		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "GenPlay");
+		Application macApplication = Application.getApplication();
+		macApplication.setOpenFileHandler(getInstance());
+		// if it's not a mac install with a icns resource we need to set the
+		// icon image manually
+		if (!Utils.isMacInstall()) {
+			List<Image> appImages = Images.getApplicationImages();
+			macApplication.setDockIconImage(appImages.get(appImages.size() - 1));
+		}
+	}
+
+
+	/**
+	 * Integrate GenPlay {@link MainFrame} window into the OSX environment
+	 */
+	public static void integrateMainFrame() {
+		// add a menu bar for OSX
+		Application macApplication = Application.getApplication();
+		try {
+			macApplication.setDefaultMenuBar(MainFrame.getInstance().getJMenuBar());
+		} catch (IllegalStateException e) {}// case where the menu bar is not suported by the look and feel
+		macApplication.setAboutHandler(getInstance());
+		macApplication.setPreferencesHandler(getInstance());
+		macApplication.setQuitHandler(getInstance());
+		FullScreenUtilities.setWindowCanFullScreen(MainFrame.getInstance(), true);
+	}
+
+
+	/**
+	 * Toggles the full screen mode of GenPlay {@link MainFrame}
+	 */
+	public static void toggleMainFrameFullScreen() {
+		if (MainFrame.isInitialized()) {
+			Application.getApplication().requestToggleFullScreen(MainFrame.getInstance());
+		}
+	}
+
 
 	/**
 	 * GenPlay project file to open in Mac OSX if the user
@@ -62,20 +112,20 @@ public class OSXHandler implements AboutHandler, PreferencesHandler, QuitHandler
 
 
 	/**
-	 * Instance of the singleton {@link OSXHandler}
+	 * Instance of the singleton {@link OSXIntegrator}
 	 */
-	private static OSXHandler instance = null;
+	private static OSXIntegrator instance = null;
 
 
 	/**
-	 * @return an instance of a {@link OSXHandler}.
+	 * @return an instance of a {@link OSXIntegrator}.
 	 * Makes sure that there is only one unique instance as specified in the singleton pattern
 	 */
-	public static OSXHandler getInstance() {
+	public static OSXIntegrator getInstance() {
 		if (instance == null) {
 			synchronized(MGFiltersManager.class) {
 				if (instance == null) {
-					instance = new OSXHandler();
+					instance = new OSXIntegrator();
 				}
 			}
 		}
@@ -84,11 +134,12 @@ public class OSXHandler implements AboutHandler, PreferencesHandler, QuitHandler
 
 
 	/**
-	 * Private constructor, creates an instance of {@link OSXHandler}
+	 * Private constructor, creates an instance of {@link OSXIntegrator}
 	 */
-	private OSXHandler() {
+	private OSXIntegrator() {
 		super();
 	}
+
 
 
 	/**
@@ -105,7 +156,6 @@ public class OSXHandler implements AboutHandler, PreferencesHandler, QuitHandler
 		JFrame jf = MainFrame.getInstance();
 		new PAAbout(jf).actionPerformed(null);
 	}
-
 
 
 	@Override

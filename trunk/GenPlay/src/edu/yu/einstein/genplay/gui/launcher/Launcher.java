@@ -23,16 +23,12 @@
 package edu.yu.einstein.genplay.gui.launcher;
 
 import java.awt.EventQueue;
-import java.awt.Image;
 import java.io.File;
 import java.io.InputStream;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import javax.swing.JOptionPane;
 import javax.swing.ToolTipManager;
-
-import com.apple.eawt.Application;
 
 import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
@@ -42,7 +38,7 @@ import edu.yu.einstein.genplay.dataStructure.genome.Clade;
 import edu.yu.einstein.genplay.dataStructure.genome.Genome;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.SimpleGenomeWindow;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
-import edu.yu.einstein.genplay.gui.OSIntegration.OSXHandler;
+import edu.yu.einstein.genplay.gui.OSIntegration.OSXIntegrator;
 import edu.yu.einstein.genplay.gui.OSIntegration.X11Integrator;
 import edu.yu.einstein.genplay.gui.action.multiGenome.synchronization.MGASynchronizing;
 import edu.yu.einstein.genplay.gui.action.project.PAInitMGManager;
@@ -52,7 +48,6 @@ import edu.yu.einstein.genplay.gui.dialog.quickViewDialog.QuickViewDialog;
 import edu.yu.einstein.genplay.gui.fileFilter.GenPlayTrackFilter;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
-import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -90,10 +85,12 @@ public class Launcher {
 		}
 	}
 
+
 	/**
 	 * Tooltip dismissal delay value for the entire program
 	 */
 	private static final int TOOLTIP_DISMISS_DELAY = Integer.MAX_VALUE;
+
 
 	/**
 	 * Tooltip initial delay value for the entire program
@@ -218,23 +215,13 @@ public class Launcher {
 	 * screen will be skipped and the project file will be directly loaded
 	 */
 	public static void main(final String[] args) {
-		// set the menu bar for OSX
-		System.setProperty("apple.laf.useScreenMenuBar", "true");
-		// set the application name for OSX
-		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "GenPlay");
 		if (Utils.isMacOS()) {
 			// Handle mac-specific events (if we're running under OS X).
-			Application macApplication = Application.getApplication();
-			macApplication.setOpenFileHandler(OSXHandler.getInstance());
-			// if it's not a mac install with a icns resource we need to set the
-			// icon image manually
-			if (!Utils.isMacInstall()) {
-				List<Image> appImages = Images.getApplicationImages();
-				macApplication.setDockIconImage(appImages.get(appImages.size() - 1));
-			}
+			OSXIntegrator.integrateApplication();
+		} else if (!Utils.isWindowsOS()) {
+			// set the WM_CLASS property for X11
+			X11Integrator.setWMClassName();
 		}
-		// set the WM_CLASS property for X11
-		X11Integrator.setWMClassName();
 		// load the application settings
 		try {
 			ConfigurationManager.getInstance().loadConfiguration();
@@ -267,8 +254,8 @@ public class Launcher {
 				// if the DEMO_PROJECT_PATH constant has been set it means that we're starting a demo project
 				boolean isDemo = (DEMO_PROJECT_PATH != null);
 				// mac only
-				if (OSXHandler.getInstance().getFileToOpen() != null) {
-					startProjectFromFile(OSXHandler.getInstance().getFileToOpen());
+				if (OSXIntegrator.getInstance().getFileToOpen() != null) {
+					startProjectFromFile(OSXIntegrator.getInstance().getFileToOpen());
 				} else if (isDemo) {
 					startDemoProject();
 				} else if (args.length == 1) { // if a project file path has been specified to the main method we load this file

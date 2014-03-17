@@ -39,16 +39,13 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 
-import com.apple.eawt.Application;
-import com.apple.eawt.FullScreenUtilities;
-
 import edu.yu.einstein.genplay.core.manager.application.ConfigurationManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosomes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
-import edu.yu.einstein.genplay.gui.OSIntegration.OSXHandler;
+import edu.yu.einstein.genplay.gui.OSIntegration.OSXIntegrator;
 import edu.yu.einstein.genplay.gui.action.multiGenome.properties.MGARefresh;
 import edu.yu.einstein.genplay.gui.action.project.PAAbout;
 import edu.yu.einstein.genplay.gui.action.project.PABookmarkCurrentPosition;
@@ -244,15 +241,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		setJMenuBar(new MenuBar(getRootPane().getActionMap()));
 
 		if (Utils.isMacOS()) {
-			// add a menu bar for OSX
-			Application macApplication = Application.getApplication();
-			try {
-				macApplication.setDefaultMenuBar(getJMenuBar());
-			} catch (IllegalStateException e) {}// case where the menu bar is not suported by the look and feel
-			macApplication.setAboutHandler(OSXHandler.getInstance());
-			macApplication.setPreferencesHandler(OSXHandler.getInstance());
-			macApplication.setQuitHandler(OSXHandler.getInstance());
-			FullScreenUtilities.setWindowCanFullScreen(this, true);
+			OSXIntegrator.integrateMainFrame();
 		}
 
 		showMenuBar();
@@ -389,6 +378,9 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 			ruler.lock();
 			trackListPanel.lockTrackHandles();
 			controlPanel.setEnabled(false);
+			if (getJMenuBar() != null) {
+				getJMenuBar().setEnabled(false);
+			}
 			isLocked = true;
 		}
 	}
@@ -559,7 +551,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 	public void toggleFullScreenMode() {
 		if (Utils.isMacOS()) {
 			// full screen for integration in OSX
-			Application.getApplication().requestToggleFullScreen(this);
+			OSXIntegrator.toggleMainFrameFullScreen();
 		} else {
 			// full screen on linux and windows
 			if (!isUndecorated()) {
@@ -592,6 +584,9 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 			ruler.unlock();
 			trackListPanel.unlockTrackHandles();
 			controlPanel.setEnabled(true);
+			if (getJMenuBar() != null) {
+				getJMenuBar().setEnabled(true);
+			}
 			isLocked = false;
 		}
 	}
