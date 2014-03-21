@@ -25,6 +25,7 @@ package edu.yu.einstein.genplay.gui.projectFrame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.HeadlessException;
+import java.awt.Insets;
 import java.util.List;
 import java.util.Map;
 
@@ -290,16 +291,19 @@ public class ProjectFrame extends JFrame {
 		gbc.gridy = 2;
 		gbc.weighty = 1;
 		newProjectPanel.setPreferredSize(projectTypePanel.getPreferredSize());
-		gbc.fill = GridBagConstraints.VERTICAL;
+		gbc.fill = GridBagConstraints.BOTH;
+
 		add(newProjectPanel, gbc);
 
 		//loadProject
 		loadProjectPanel.setPreferredSize(projectTypePanel.getPreferredSize());
+		gbc.insets = new Insets(0, 50, 0, 50);
 		add(loadProjectPanel, gbc);
 
 		//confirmPanel
 		gbc.gridy = 3;
 		gbc.weighty = 0;
+		gbc.insets = new Insets(0, 0, 0, 0);
 		gbc.anchor = GridBagConstraints.PAGE_END;
 		add(confirmPanel, gbc);
 

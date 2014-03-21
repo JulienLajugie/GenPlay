@@ -67,7 +67,7 @@ import edu.yu.einstein.genplay.util.Images;
 public final class Track implements Serializable, GenomeWindowListener, TrackListener, TrackEventsGenerator, ListDataListener {
 
 	private static final long 				serialVersionUID = 818958034840761257L;	// generated ID
-	private static final int  				SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
+	private static final int  				SAVED_FORMAT_VERSION_NUMBER = 1;		// saved format version
 	private transient List<TrackListener>	trackListeners;							// list of track listeners
 	private transient int 					defaultHeight;							// default height of a track
 	private transient JPanel				trackPanel;								// panel containing the track
@@ -387,7 +387,7 @@ public final class Track implements Serializable, GenomeWindowListener, TrackLis
 	 * @throws ClassNotFoundException
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
+		int savedVersion = in.readInt();
 		trackNumber = in.readInt();
 		// recreate panels
 		trackPanel = new JPanel();
@@ -417,6 +417,9 @@ public final class Track implements Serializable, GenomeWindowListener, TrackLis
 		initTrack();
 		// restore the height of the track
 		setPreferredHeight(in.readInt());
+		if (savedVersion >= 1) {
+			trackName = (String) in.readObject();
+		}
 	}
 
 
@@ -664,5 +667,8 @@ public final class Track implements Serializable, GenomeWindowListener, TrackLis
 		out.writeObject(score);
 		// save the height of the track
 		out.writeInt(trackPanel.getHeight());
+		if (SAVED_FORMAT_VERSION_NUMBER >= 1) {
+			out.writeObject(getName());
+		}
 	}
 }

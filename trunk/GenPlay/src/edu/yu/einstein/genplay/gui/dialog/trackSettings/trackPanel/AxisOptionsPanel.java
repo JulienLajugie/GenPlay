@@ -64,15 +64,15 @@ class AxisOptionsPanel extends JPanel {
 		setBorder(BorderFactory.createTitledBorder("Axis Options"));
 
 		// horizontal lines
-		jlHorizontalLines = new JLabel("Show horizontal lines");
+		jlHorizontalLines = new JLabel("Show Horizontal Lines");
 		jcbHorizontalLines = new JCheckBox();
-		jlHorizontalLineCount = new JLabel("Horizontal line count");
+		jlHorizontalLineCount = new JLabel("Horizontal Line Count");
 		jftfHorizontalLineCount = new JFormattedTextField(createLineCountFormatter(TrackConstants.MAXIMUM_HORIZONTAL_LINE_COUNT));
 
 		// vertical lines
-		jlVerticalLines = new JLabel("Show vertical lines");
+		jlVerticalLines = new JLabel("Show Vertical Lines");
 		jcbVerticalLines = new JCheckBox();
-		jlVerticalLineCount = new JLabel("Vertical line count");
+		jlVerticalLineCount = new JLabel("Vertical Line Count");
 		jftfVerticalLineCount = new JFormattedTextField(createLineCountFormatter(TrackConstants.MAXIMUM_VERTICAL_LINE_COUNT));
 
 		// Format components

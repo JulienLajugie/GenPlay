@@ -56,6 +56,10 @@ public class ProjectFiles {
 	/** Separator on Unix platforms */
 	private final static char UNIX_FILE_SEPARATOR = '/';
 
+	/** Network separator on windows platforms */
+	private final static String WINDOWS_NETWORK_SEPARATOR = "\\\\";
+
+
 	private static	ProjectFiles	instance = null;		// unique instance of the singleton
 
 
@@ -87,7 +91,12 @@ public class ProjectFiles {
 	}
 
 
-	private String createPlatformIndependantFileName(String path) {
+	public String createPlatformIndependantFileName(String path) {
+		if (path != null) {
+			if (path.startsWith(WINDOWS_NETWORK_SEPARATOR)) {
+				path = path.substring(WINDOWS_NETWORK_SEPARATOR.length() - 1);
+			}
+		}
 		return path.replace(WINDOWS_FILE_SEPARATOR, UNIX_FILE_SEPARATOR);
 	}
 

@@ -88,7 +88,7 @@ class ScoreOptionsPanel extends JPanel implements ActionListener, ChangeListener
 		jcbScoreAuto = new JCheckBox();
 		jcbScoreAuto.addChangeListener(this);
 
-		jlScorePosition = new JLabel("Score Position:");
+		jlScorePosition = new JLabel("Score Position");
 		jrbTopPosition = new JRadioButton("Top");
 		jrbBottomPosition = new JRadioButton("Bottom");
 
@@ -97,7 +97,7 @@ class ScoreOptionsPanel extends JPanel implements ActionListener, ChangeListener
 		scorePositionGroup.add(jrbTopPosition);
 		scorePositionGroup.add(jrbBottomPosition);
 
-		jlScoreColor = new JLabel("Score Color:");
+		jlScoreColor = new JLabel("Score Color");
 		jbScoreColor = new JButton("Color");
 		jbScoreColor.addActionListener(this);
 
@@ -113,59 +113,54 @@ class ScoreOptionsPanel extends JPanel implements ActionListener, ChangeListener
 		c.gridx = 0;
 		c.gridy = 0;
 		c.weightx = 0.1;
-		c.weighty = 0.5;
+		c.weighty = 1;
 		add(jlScoreMin, c);
 
 		c.gridx = 1;
 		c.gridy = 0;
-		c.weightx = 0.9;
+		c.gridwidth = 2;
 		add(jftfScoreMin, c);
 
 		c.gridx = 0;
 		c.gridy = 1;
-		c.weightx = 0.1;
+		c.gridwidth = 1;
 		add(jlScoreMax, c);
 
 		c.gridx = 1;
 		c.gridy = 1;
-		c.weightx = 0.9;
+		c.gridwidth = 2;
 		add(jftfScoreMax, c);
 
 		c.gridx = 0;
 		c.gridy = 2;
-		c.weightx = 0.1;
+		c.gridwidth = 1;
 		add(jlScoreAuto, c);
 
 		c.gridx = 1;
 		c.gridy = 2;
-		c.weightx = 0.9;
+		c.gridwidth = 2;
 		add(jcbScoreAuto, c);
 
 		c.gridx = 0;
 		c.gridy = 3;
-		c.weightx = 0.1;
-		c.gridwidth = 2;
+		c.gridwidth = 1;
 		add(jlScorePosition, c);
 
-		c.gridx = 0;
-		c.gridy = 4;
-		c.weightx = 0.1;
-		c.gridwidth = 1;
+		c.gridx = 1;
 		add(jrbTopPosition, c);
 
-		c.gridx = 1;
-		c.gridy = 4;
+		c.gridx = 2;
 		c.weightx = 0.9;
 		add(jrbBottomPosition, c);
 
 		c.gridx = 0;
-		c.gridy = 5;
+		c.gridy = 4;
 		c.weightx = 0.1;
 		add(jlScoreColor, c);
 
 		c.gridx = 1;
-		c.gridy = 5;
-		c.weightx = 0.9;
+		c.gridy = 4;
+		c.gridwidth = 2;
 		add(jbScoreColor, c);
 	}
 

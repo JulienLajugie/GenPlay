@@ -27,6 +27,7 @@ import java.awt.Dimension;
 import java.text.NumberFormat;
 
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JProgressBar;
 import javax.swing.UIManager;
 import javax.swing.plaf.basic.BasicProgressBarUI;
@@ -41,12 +42,6 @@ import edu.yu.einstein.genplay.util.colors.Colors;
  * @version 0.1
  */
 public final class MemoryPanel extends JProgressBar {
-
-	private static final long serialVersionUID = 5175483247820204875L; 	// generated ID
-	private static final int 		HEIGHT = 15; 						// height of the progress bar
-	private static final Runtime 	RUN_TIME = Runtime.getRuntime();	// application runtime
-	private static final long 		B_TO_MB_FACTOR = 1048576;			// number of bytes in a megabyte
-
 
 	/**
 	 * Thread checking the memory usage and updating the label at regular interval
@@ -67,7 +62,13 @@ public final class MemoryPanel extends JProgressBar {
 				}
 			}
 		}
-	};
+	}
+	private static final long serialVersionUID = 5175483247820204875L; 	// generated ID
+	private static final int 		HEIGHT = 15; 						// height of the progress bar
+	private static final Runtime 	RUN_TIME = Runtime.getRuntime();	// application runtime
+
+
+	private static final long 		B_TO_MB_FACTOR = 1048576;			// number of bytes in a megabyte;
 
 
 	/**
@@ -101,10 +102,22 @@ public final class MemoryPanel extends JProgressBar {
 	}
 
 
-	@Override
-	public void updateUI() {
-		super.updateUI();
-		customizeUI();
+	/**
+	 * Associates a color to a memory usage.
+	 * Green = low usage / Yellow = medium usage / Red = high usage
+	 * @param memoryUsage a memory usage
+	 * @return a Color
+	 */
+	private Color memoryToColor(int memoryUsage) {
+		int red = 255;
+		int green = 255;
+		int blue = 0;
+		if (memoryUsage < 50) {
+			red = (int) ((memoryUsage / 50d) * 255);
+		} else {
+			green = (int) (255 - (((memoryUsage - 50) / 50d) * 255));
+		}
+		return new Color(red, green, blue);
 	}
 
 
@@ -128,27 +141,18 @@ public final class MemoryPanel extends JProgressBar {
 		// if the string is too large for the component we make the component bigger
 		if ((width + 10) > getMinimumSize().width) {
 			setMinimumSize(new Dimension(width + 10, getMinimumSize().height));
+			if ((getParent() != null) && (getParent() instanceof JComponent)) {
+				((JComponent) getParent()).revalidate();
+			}
 		}
 		// print the new string
 		setString(stringToPrint);
 	}
 
 
-	/**
-	 * Associates a color to a memory usage.
-	 * Green = low usage / Yellow = medium usage / Red = high usage
-	 * @param memoryUsage a memory usage
-	 * @return a Color
-	 */
-	private Color memoryToColor(int memoryUsage) {
-		int red = 255;
-		int green = 255;
-		int blue = 0;
-		if (memoryUsage < 50) {
-			red = (int) ((memoryUsage / 50d) * 255);
-		} else {
-			green = (int) (255 - (((memoryUsage - 50) / 50d) * 255));
-		}
-		return new Color(red, green, blue);
+	@Override
+	public void updateUI() {
+		super.updateUI();
+		customizeUI();
 	}
 }

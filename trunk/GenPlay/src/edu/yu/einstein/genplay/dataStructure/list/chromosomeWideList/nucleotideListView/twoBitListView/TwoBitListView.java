@@ -154,12 +154,12 @@ public final class TwoBitListView extends AbstractListView<Nucleotide> implement
 	 */
 	@Override
 	public Nucleotide get(int position) {
-		if ((position <= 0) || (position > dnaSize)) {
-			return null;
-		}
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			position = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, alleleType, position, chromosome, genomeName);
 			//position = ShiftCompute.computeReversedShift(genomeName, chromosome, alleleType, position);
+			if ((position <= 0) || (position > dnaSize)) {
+				return null;
+			}
 			if (position == MISSING_POSITION) {
 				return Nucleotide.BLANK;
 			}

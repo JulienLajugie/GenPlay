@@ -126,7 +126,7 @@ public class OperationWithConstantDialog extends JDialog {
 		jcbOperationType.setSelectedItem(OperationWithConstant.ADDITION);
 		jlOperationDescription.setText(((OperationWithConstant) jcbOperationType.getSelectedItem()).getDescription());
 
-		jcbApplyToNullWindows = new JCheckBox("Apply to null windows: ");
+		jcbApplyToNullWindows = new JCheckBox("Apply to null windows");
 
 
 		// Creates the panel

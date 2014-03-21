@@ -279,7 +279,7 @@ public class GlobalInformationPanel extends JPanel {
 		addObjectRow("Genome: ", genome);
 		addObjectRow("Group: ",group);
 		addObjectRow("Position: ", startPosition + " to " + stopPosition);
-		addObjectRow("Length: ", "" + length);
+		addObjectRow("Length: ", "" + (length - 1));
 		addObjectRow("Type: ", type);
 		if (idLabel != null) {
 			addLabelRow("ID: ", idLabel);
