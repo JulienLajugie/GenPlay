@@ -209,10 +209,16 @@ public class GlobalInformationPanel extends JPanel {
 		// Length
 		length = (stopPosition - startPosition) + 1;
 
+
 		if (isMix) {
 			description = "<html><i>When variation stripes are too small to be displayed one by one, GenPlay merges them creating a <b>" + VariantType.MIX.toString() + "</b> type.";
 		} else {
 			idString = variantInformation.getID();
+			// id field
+			if (!idString.equals(".")) {
+				idLabel = getIDLabel(idString);
+			}
+
 			filter = variantInformation.getFILTER();
 			if (isReference) {
 				// Description
@@ -244,15 +250,11 @@ public class GlobalInformationPanel extends JPanel {
 				// Description
 				if (isSNP) {
 					description = "<html><i>This stripe represents a SNP.\n";
-					if (!idString.equals(".")) {
-						idLabel = getIDLabel(idString);
-					}
 				} else if (variant.getType() == VariantType.INSERTION) {
 					description = "<html><i>This stripe represents a small insertion.\n";
 				} else if (variant.getType() == VariantType.DELETION) {
 					description = "<html><i>This stripe represents a small deletion.\n";
 				}
-
 				// Genome names
 				if (genomeName != null) {
 					genome = FormattedMultiGenomeName.getUsualName(genomeName) + " (" + FormattedMultiGenomeName.getRawName(genomeName) + ")";

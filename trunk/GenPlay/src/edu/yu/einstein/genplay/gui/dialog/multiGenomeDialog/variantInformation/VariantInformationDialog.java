@@ -76,6 +76,7 @@ public class VariantInformationDialog extends JDialog {
 
 	private final Track track;
 
+
 	/**
 	 * Constructor of {@link VariantInformationDialog}
 	 * @param multiGenomeDrawer the multigenome drawer
@@ -153,12 +154,14 @@ public class VariantInformationDialog extends JDialog {
 		return iterator.getCurrentVariantDisplayList(currentVariant).getGenomeName();
 	}
 
+
 	/**
 	 * @return the search options
 	 */
 	protected SearchOption getOptions() {
 		return options;
 	}
+
 
 	/**
 	 * @return the variant
@@ -320,13 +323,13 @@ public class VariantInformationDialog extends JDialog {
 	}
 
 
-
 	/**
 	 * @param options the options to set
 	 */
 	protected void setOptions(SearchOption options) {
 		this.options = options;
 	}
+
 
 	/**
 	 * Method for showing the dialog box.
@@ -342,11 +345,12 @@ public class VariantInformationDialog extends JDialog {
 		setVisible(true);
 	}
 
+
 	/**
 	 * Shows the vcf line dialog
 	 */
 	protected void showVCFLine() {
-		vcfLineDialog.show(currentLine);
+		vcfLineDialog.show(this, currentLine);
 	}
 
 

@@ -170,13 +170,11 @@ class MultiGenomeVariantDrawer implements Serializable {
 			if ((fm.getHeight() < height) && (fm.stringWidth("A") < windowWidth)) {			// verifies if the height of the font is smaller than the height of the stripe AND if the width of a reference letter (A) is smaller than a window size
 				String letters = variantDisplay.getVariantSequence();
 				g.setColor(Colors.BLACK);													// set the color of the letters
-				int letterHeight = ((height + fm.getHeight()) / 2);							// define where the draw will start on the Y axis
+				int letterY = graphicsHeigth - ((height - fm.getHeight()) / 2);				// define where the draw will start on the Y axis
 				Graphics2D g2d = (Graphics2D) g.create();									// we reverse all coordinates to display the letter on the right way
 				if (currentDrawingAllele == AlleleType.ALLELE02) {
 					g2d.scale(1, -1);
-					g2d.translate(0, -height - 1);
-				} else {
-					letterHeight += (graphicsHeigth - height);					// define where the draw will start on the Y axis
+					letterY *= -1;
 				}
 
 				int firstNucleotide = projectWindow.getGenomeWindow().getStart() - variant.getStart();	// retrieve the position of the first displayed nucleotide in the variant
@@ -188,7 +186,7 @@ class MultiGenomeVariantDrawer implements Serializable {
 						letter = letters.charAt(i + firstNucleotide) + "";					// we get the current character
 					}
 					int xC = (int) Math.round(x + (i * windowWidth) + ((windowWidth - fm.stringWidth(letter)) * 0.5));	// the horizontal position from where the draw starts: x (of the stripe) + size of a window * current window number + (windows width - letter width) / 2 (for the middle)
-					g2d.drawString(letter, xC, letterHeight);							// we draw the letter
+					g2d.drawString(letter, xC, letterY);							// we draw the letter
 				}
 			}
 		}

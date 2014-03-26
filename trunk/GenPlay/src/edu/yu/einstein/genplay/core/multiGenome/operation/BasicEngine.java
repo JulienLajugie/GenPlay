@@ -56,19 +56,28 @@ public abstract class BasicEngine {
 
 
 	/**
-	 * @param fileMap		map between genome names and their related files
-	 * @param variationMap	map between genome names and their required variations
-	 * @param filterList	list of filters
-	 * @param includeReferences include the references (0)
-	 * @param includeNoCall 	include the no call (.)
+	 * Add a message to a full error message
+	 * @param errors	the full error message
+	 * @param message	the message
+	 * @return			the full error message containing the new message
 	 */
-	public void initializeEngine (Map<String, List<VCFFile>> fileMap, Map<String, List<VariantType>> variationMap, List<MGFilter> filterList, boolean includeReferences, boolean includeNoCall) {
-		this.fileMap = fileMap;
-		this.variationMap = variationMap;
-		this.filterList = filterList;
-		this.includeReferences = includeReferences;
-		this.includeNoCall = includeNoCall;
+	protected String addErrorMessage (String errors, String message) {
+		if (errors == null) {
+			errors = message;
+		} else if (errors.length() > 0) {
+			errors += "\n" + message;
+		} else {
+			errors += message;
+		}
+		return errors;
 	}
+
+
+	/**
+	 * @return true if the export can start, false otherwise
+	 * @throws Exception
+	 */
+	protected abstract boolean canStart () throws Exception;
 
 
 	/**
@@ -84,6 +93,49 @@ public abstract class BasicEngine {
 		} else {
 			System.err.println("BasicEngine.process()\n" + errors);
 		}
+	}
+
+
+	/**
+	 * @return the list of files
+	 */
+	public List<VCFFile> getFileList () {
+		List<VCFFile> fileList = new ArrayList<VCFFile>();
+		for (String genome: fileMap.keySet()) {
+			List<VCFFile> projectList = fileMap.get(genome);
+			for (VCFFile file: projectList) {
+				if (!fileList.contains(file)) {
+					fileList.add(file);
+				}
+			}
+		}
+		return fileList;
+	}
+
+
+	/**
+	 * @return the fileMap
+	 */
+	public Map<String, List<VCFFile>> getFileMap() {
+		return fileMap;
+	}
+
+
+	/**
+	 * @return the filterList
+	 */
+	public List<MGFilter> getFilterList() {
+		return filterList;
+	}
+
+
+	/**
+	 * @return the sorted list of genome names
+	 */
+	public List<String> getGenomeList () {
+		List<String> result = new ArrayList<String>(variationMap.keySet());
+		Collections.sort(result);
+		return result;
 	}
 
 
@@ -123,133 +175,6 @@ public abstract class BasicEngine {
 
 
 	/**
-	 * Add a message to a full error message
-	 * @param errors	the full error message
-	 * @param message	the message
-	 * @return			the full error message containing the new message
-	 */
-	protected String addErrorMessage (String errors, String message) {
-		if (errors == null) {
-			errors = message;
-		} else if (errors.length() > 0) {
-			errors += "\n" + message;
-		} else {
-			errors += message;
-		}
-		return errors;
-	}
-
-
-	/**
-	 * @return true if the export is from only one file, false if several files are involved
-	 */
-	public boolean isSingleExport () {
-		if (getFileList().size() == 1) {
-			return true;
-		}
-		return false;
-	}
-
-
-	/**
-	 * @return the sorted list of genome names
-	 */
-	public List<String> getGenomeList () {
-		List<String> result = new ArrayList<String>(variationMap.keySet());
-		Collections.sort(result);
-		return result;
-	}
-
-
-	/**
-	 * @return the list of files
-	 */
-	public List<VCFFile> getFileList () {
-		List<VCFFile> fileList = new ArrayList<VCFFile>();
-		for (String genome: fileMap.keySet()) {
-			List<VCFFile> projectList = fileMap.get(genome);
-			for (VCFFile file: projectList) {
-				if (!fileList.contains(file)) {
-					fileList.add(file);
-				}
-			}
-		}
-		return fileList;
-	}
-
-
-	/**
-	 * @return true if the export can start, false otherwise
-	 * @throws Exception
-	 */
-	protected abstract boolean canStart () throws Exception;
-
-
-	/**
-	 * Processes the export
-	 * @throws Exception
-	 */
-	protected abstract void process () throws Exception;
-
-
-	/**
-	 * Processes a line
-	 * @param src the VCF file to use as reference for phasing
-	 * @param dest the VCF file to apply the phasing
-	 * @throws IOException
-	 */
-	public abstract void processLine (VCFLine src, VCFLine dest) throws IOException;
-
-
-	/**
-	 * Processes a line
-	 * @param fileAlgorithm the file reading algorithm
-	 * @throws IOException
-	 */
-	public abstract void processLine (FileScannerInterface fileAlgorithm) throws IOException;
-
-
-	/**
-	 * @return the fileMap
-	 */
-	public Map<String, List<VCFFile>> getFileMap() {
-		return fileMap;
-	}
-
-
-	/**
-	 * @return the variationMap
-	 */
-	public Map<String, List<VariantType>> getVariationMap() {
-		return variationMap;
-	}
-
-
-	/**
-	 * @return the filterList
-	 */
-	public List<MGFilter> getFilterList() {
-		return filterList;
-	}
-
-
-	/**
-	 * @return the includeReferences
-	 */
-	public boolean isIncludeReferences() {
-		return includeReferences;
-	}
-
-
-	/**
-	 * @return the includeNoCall
-	 */
-	public boolean isIncludeNoCall() {
-		return includeNoCall;
-	}
-
-
-	/**
 	 * @return a description of the genomes and their variants
 	 */
 	protected String getVariantDescription () {
@@ -277,4 +202,77 @@ public abstract class BasicEngine {
 	}
 
 
+	/**
+	 * @return the variationMap
+	 */
+	public Map<String, List<VariantType>> getVariationMap() {
+		return variationMap;
+	}
+
+
+	/**
+	 * @param fileMap		map between genome names and their related files
+	 * @param variationMap	map between genome names and their required variations
+	 * @param filterList	list of filters
+	 * @param includeReferences include the references (0)
+	 * @param includeNoCall 	include the no call (.)
+	 */
+	public void initializeEngine (Map<String, List<VCFFile>> fileMap, Map<String, List<VariantType>> variationMap, List<MGFilter> filterList, boolean includeReferences, boolean includeNoCall) {
+		this.fileMap = fileMap;
+		this.variationMap = variationMap;
+		this.filterList = filterList;
+		this.includeReferences = includeReferences;
+		this.includeNoCall = includeNoCall;
+	}
+
+
+	/**
+	 * @return the includeNoCall
+	 */
+	public boolean isIncludeNoCall() {
+		return includeNoCall;
+	}
+
+
+	/**
+	 * @return the includeReferences
+	 */
+	public boolean isIncludeReferences() {
+		return includeReferences;
+	}
+
+
+	/**
+	 * @return true if the export is from only one file, false if several files are involved
+	 */
+	public boolean isSingleExport () {
+		if (getFileList().size() == 1) {
+			return true;
+		}
+		return false;
+	}
+
+
+	/**
+	 * Processes the export
+	 * @throws Exception
+	 */
+	protected abstract void process () throws Exception;
+
+
+	/**
+	 * Processes a line
+	 * @param fileAlgorithm the file reading algorithm
+	 * @throws IOException
+	 */
+	public abstract void processLine (FileScannerInterface fileAlgorithm) throws IOException;
+
+
+	/**
+	 * Processes a line
+	 * @param src the VCF file to use as reference for phasing
+	 * @param dest the VCF file to apply the phasing
+	 * @throws IOException
+	 */
+	public abstract void processLine (VCFLine src, VCFLine dest) throws IOException;
 }

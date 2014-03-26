@@ -128,7 +128,7 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 				updateBookmarkDropdownList();
 			}
 		});
-		jbBookmark.addActionListener(new PABookmarkCurrentPosition(getRootPane()));
+		jbBookmark.addActionListener(new PABookmarkCurrentPosition());
 		jbBookmark.setBorderPainted(false);
 		jbBookmark.setMargin(new Insets(0, 0, 0, 0));
 		jbBookmark.setContentAreaFilled(false);
@@ -236,14 +236,18 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 					} else {
 						// goto bookmark
 						if (jcbGenomeSelection != null) {
-							MainFrame.getInstance().setNewGenomeCoordinate(selectedBookmark.getGenomeName());
+							MainFrame.getInstance().setNewGenomeCoordinate(CoordinateSystemType.METAGENOME.toString());
 						}
 						jcbGenomeWindow.setSelectedItem(selectedBookmark.getGenomeWindow().toString());
 						updateGenomeWindow();
+						if (jcbGenomeSelection != null) {
+							MainFrame.getInstance().setNewGenomeCoordinate(selectedBookmark.getGenomeName());
+						}
 					}
 				}
 			}
 		});
+		updateBookmarkDropdownList();
 	}
 
 

@@ -74,6 +74,7 @@ public class AlleleSettingsBedConvert extends AlleleSettingsBed {
 			valid = false;
 		}
 		if (valid) {
+			System.out.println(currentStart);
 			gwPileupFlattener.addWindow(chromosome, currentStart, currentStop, dbScore);
 		} else {
 			System.err.println("AlleleSettingsBedConvert.addCurrentInformation() Could not convert '" + score + "' into a double.");

@@ -22,7 +22,6 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.project;
 
-import java.awt.Component;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -36,6 +35,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.dataStructure.genomeWindow.GenomeWindow;
 import edu.yu.einstein.genplay.dataStructure.gwBookmark.GWBookmark;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 
 
 /**
@@ -61,15 +61,13 @@ public final class PABookmarkCurrentPosition extends AbstractAction {
 	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_D, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
 
 	private static int regionNumber = 1;	// the number of the region to bookmark
-	private final Component parent;			// parent component
 
 
 	/**
 	 * Creates an instance of {@link PABookmarkCurrentPosition}
 	 */
-	public PABookmarkCurrentPosition(Component parent) {
+	public PABookmarkCurrentPosition() {
 		super();
-		this.parent = parent;
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -86,7 +84,7 @@ public final class PABookmarkCurrentPosition extends AbstractAction {
 		GenomeWindow genomeWindow = ProjectManager.getInstance().getProjectWindow().getGenomeWindow();
 
 		String defaultDescription = "Region " + regionNumber;
-		String bookmarkDescription = (String) JOptionPane.showInputDialog(parent,
+		String bookmarkDescription = (String) JOptionPane.showInputDialog(MainFrame.getInstance().getRootPane(),
 				"Please enter a name for the bookmark",
 				"Enter Bookmark Name",
 				JOptionPane.QUESTION_MESSAGE,

@@ -20,7 +20,7 @@
  * 
  * Website: <http://genplay.einstein.yu.edu>
  ******************************************************************************/
-package edu.yu.einstein.genplay.gui.controlPanel;
+package edu.yu.einstein.genplay.gui.menu;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

@@ -63,6 +63,7 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 	private transient Integer baseUnderMouseIndex = null; // index of the base under the mouse
 	private transient boolean nucleotidePrinted = false; // true if the nucleotide are printed
 
+
 	/**
 	 * Creates an instance of {@link NucleotideLayer} with the same properties as the specified {@link NucleotideLayer}. The copy of the data is shallow.
 	 * 
@@ -74,6 +75,7 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 		baseUnderMouseIndex = null;
 		nucleotidePrinted = nucleotideLayer.nucleotidePrinted;
 	}
+
 
 	/**
 	 * Creates an instance of a {@link NucleotideLayer}
@@ -90,10 +92,12 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 		maxBaseWidth = computeMaximumBaseWidth();
 	}
 
+
 	@Override
 	public NucleotideLayer clone() {
 		return new NucleotideLayer(this);
 	}
+
 
 	/**
 	 * @return the maximum width in pixel that a base can take up
@@ -107,6 +111,7 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 		}
 		return maxWidth;
 	}
+
 
 	@Override
 	public void draw(Graphics g, int width, int height) {
@@ -123,6 +128,7 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 			drawNucleotideLetters(g, width, height);
 		}
 	}
+
 
 	/**
 	 * Draws the backgrounds of the nucleotide
@@ -167,6 +173,7 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 		}
 	}
 
+
 	/**
 	 * Draws the letter of the nucleotides
 	 * 
@@ -183,7 +190,7 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 				Nucleotide[] nucleotides = DataScalerManager.getInstance().getScaledData(this);
 				for (int position = projectWindow.getGenomeWindow().getStart(); position <= projectWindow.getGenomeWindow().getStop(); position++) {
 					int index = position - projectWindow.getGenomeWindow().getStart();
-					if (nucleotides[index] != null) {
+					if ((index >= 0) && (nucleotides[index] != null)) {
 						Nucleotide nucleotide = nucleotides[index];
 						long baseToPrintCount = projectWindow.getGenomeWindow().getSize();
 						if ((maxBaseWidth * baseToPrintCount) <= width) {
@@ -207,14 +214,17 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 		}
 	}
 
+
 	@Override
 	public LayerType getType() {
 		return LayerType.NUCLEOTIDE_LAYER;
 	}
 
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
 	}
+
 
 	/**
 	 * Resets the tooltip and the highlighted base when the mouse is dragged
@@ -230,9 +240,11 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 		}
 	}
 
+
 	@Override
 	public void mouseEntered(MouseEvent e) {
 	}
+
 
 	/**
 	 * Resets the tooltip and the highlighted base when the mouse exits the track
@@ -245,6 +257,7 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 			getTrack().repaint();
 		}
 	}
+
 
 	/**
 	 * Sets the tooltip and the base with the mouse over when the mouse move
@@ -278,19 +291,24 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 					Nucleotide nucleotide = DataScalerManager.getInstance().getScaledData(this)[baseUnderMouseIndex];
 					if (nucleotide != null) {
 						getTrack().getGraphicsPanel().setToolTipText(nucleotide.name());
+					} else {
+						getTrack().getGraphicsPanel().setToolTipText(null);
 					}
 				}
 			}
 		}
 	}
 
+
 	@Override
 	public void mousePressed(MouseEvent e) {
 	}
 
+
 	@Override
 	public void mouseReleased(MouseEvent e) {
 	}
+
 
 	/**
 	 * Method used for unserialization
@@ -305,6 +323,7 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 		nucleotidePrinted = false;
 		twoBitSequenceListUnserialization();
 	}
+
 
 	/**
 	 * Handle the unserialization of a {@link TwoBitSequenceList}.

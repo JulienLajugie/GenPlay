@@ -188,7 +188,21 @@ public abstract class Variant implements Serializable {
 
 
 		if ((results != null) && (results.size() > 0)) {
-			return new VCFLine(results.get(0), file.getHeader());
+			if ((results.size() == 1) || isReference()) {
+				return new VCFLine(results.get(0), file.getHeader());
+			} else {
+				for (String currentLine: results) {
+					// if there is more than one line at the variant position we search
+					// for a line with at least one variant type corresponding to this variant's type
+					VCFLine line = new VCFLine(currentLine, file.getHeader());
+					line.processForAnalyse();
+					for (VariantType currentType: line.getAlternativesTypes()) {
+						if (currentType == getType()) {
+							return line;
+						}
+					}
+				}
+			}
 		}
 
 		return null;

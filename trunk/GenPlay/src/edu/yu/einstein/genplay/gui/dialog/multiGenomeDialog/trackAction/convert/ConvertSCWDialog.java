@@ -146,8 +146,8 @@ public class ConvertSCWDialog extends MultiGenomeTrackActionDialog {
 
 		// Create the boxes
 		JComboBox jcbGenome = getGenomeComboBox(genomeList);
-		alleleTrackLabel01 = new JLabel("Select the track for the " + AlleleType.ALLELE01.toString() + " allele:");
-		alleleTrackLabel02 = new JLabel("Select the track for the " + AlleleType.ALLELE02.toString() + " allele:");
+		alleleTrackLabel01 = new JLabel("Select the output track for the " + AlleleType.ALLELE01.toString() + " allele:");
+		alleleTrackLabel02 = new JLabel("Select the output track for the " + AlleleType.ALLELE02.toString() + " allele:");
 		jcbAlleleTrack01 = getTrackListBox();
 		jcbAlleleTrack02 = getTrackListBox();
 

@@ -23,6 +23,7 @@
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLineDialog;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.datatransfer.Clipboard;
@@ -234,7 +235,7 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 	 * Shows the dialog
 	 * @param line information about the position
 	 */
-	public void show (VCFLine line) {
+	public void show (Component parentComponent, VCFLine line) {
 		// Initializes the table
 		initColumnList(line);
 		initTable(line);
@@ -245,7 +246,8 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 		pack();
 
 		// Show the dialog
-		setLocationRelativeTo(getRootPane());
+		setLocationRelativeTo(parentComponent);
+		setModalityType(ModalityType.DOCUMENT_MODAL);
 		setVisible(true);
 
 	}

@@ -193,14 +193,13 @@ public class MultiGenomeDrawer implements Serializable {
 		List<Variant> results = new ArrayList<Variant>();
 		for (VariantDisplayList list: variantDisplayList) {
 			List<Variant> result = list.getVariantsInArea(alleleIndex, pos);
-			if (result != null) {
+			if ((result != null) && !result.isEmpty()) {
 				results.addAll(result);
 			}
 		}
 
 		// If at least one variant has been found
 		if (results.size() > 0) {
-
 			// Sort the list by score
 			Collections.sort(results, new Comparator<Variant>() {
 				@Override

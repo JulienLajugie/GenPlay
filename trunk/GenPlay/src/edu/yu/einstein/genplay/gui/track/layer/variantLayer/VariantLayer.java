@@ -76,6 +76,7 @@ public class VariantLayer extends AbstractLayer<VariantLayerDisplaySettings> imp
 		return new VariantLayer(this);
 	}
 
+
 	@Override
 	public void draw(Graphics g, int width, int height) {
 		if (isVisible()) {
@@ -108,6 +109,7 @@ public class VariantLayer extends AbstractLayer<VariantLayerDisplaySettings> imp
 			return super.getName();
 		}
 	}
+
 
 	@Override
 	public LayerType getType() {
@@ -148,11 +150,14 @@ public class VariantLayer extends AbstractLayer<VariantLayerDisplaySettings> imp
 		}
 	}
 
+
 	@Override
 	public void mousePressed(MouseEvent e) {}
 
+
 	@Override
 	public void mouseReleased(MouseEvent e) {}
+
 
 	/**
 	 * @param filters the list of {@link MGFilter}
@@ -167,10 +172,14 @@ public class VariantLayer extends AbstractLayer<VariantLayerDisplaySettings> imp
 	 * @param filters the list of {@link MGFilter}
 	 */
 	private void setData (VariantLayerDisplaySettings data, List<MGFilter> filters) {
+		if ((getData() != null) && getData().getDescription().equals(getName())) {
+			setName(null);
+		}
 		this.filters = filters;
 		super.setData(data);
 		updateMultiGenomeInformation();
 	}
+
 
 	// MouseMotion implementation
 
@@ -179,6 +188,7 @@ public class VariantLayer extends AbstractLayer<VariantLayerDisplaySettings> imp
 		super.setVisible(isVisible);
 		updateMultiGenomeInformation();
 	}
+
 
 	/**
 	 * Updates the multi genome information

@@ -24,9 +24,7 @@ package edu.yu.einstein.genplay.gui.dialog.invalidFileDialog;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.FontMetrics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -57,34 +55,26 @@ import edu.yu.einstein.genplay.util.Images;
  * That way, the developer never has to change the length of his array which makes it easier to match former and new paths.
  * 
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class InvalidFileDialog extends JDialog {
 
-	/**
-	 * Generated serial version ID
-	 */
+	/** Generated serial version ID */
 	private static final long serialVersionUID = -6703399045694111551L;
 
 	/** Return value when OK has been clicked. */
+
 	public static final 	int 			APPROVE_OPTION 			= 0;
+
 	/** Return value when Cancel has been clicked. */
 	public static final 	int 			CANCEL_OPTION 			= 1;
 
-	private 				int				approved 				= CANCEL_OPTION;	// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
-	private final 			int				inset					= 10;				// unique inset used
-	private					int				dialogWidth;								// width of the dialog
-	private					int				dialogHeight;								// height of the dialog
-	private final			int				titlePanelHeight		= 40;				// height of the title panel
-	private					int				filePanelHeight;							// height of the file selection panel
-	private final			int				validationPanelHeight	= 40;				// height of the validation panel
-	private final			int				lineHeight				= 20;				// height of a line in the file selection panel
 
-	private JPanel 					filePanel;											// the file selection panel
-	private JPanel 					validationPanel;									// the validation panel
-	private final String[] 			files;												// the input files
-	private CustomFileComboBox[] 	correctedFiles;										// the array of combo box containing the corrected files
-	private final int 				invalidFileNumber;
+	private 		int						approved 		= CANCEL_OPTION;	// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
+	private 		JPanel 					filePanel;							// the file selection panel
+	private 		JPanel 					validationPanel;					// the validation panel
+	private 		CustomFileComboBox[] 	correctedFiles;						// the array of combo box containing the corrected files
+	private final 	String[] 				files;								// the input files
+	private final 	int						inset			= 10;				// unique inset used
 
 
 	/**
@@ -93,16 +83,6 @@ public class InvalidFileDialog extends JDialog {
 	 */
 	public InvalidFileDialog (String[] files) {
 		this.files = files;
-
-		invalidFileNumber = getNumberOfInvalidFile();
-
-		// Dimensions
-		updateDimensions();
-		Dimension dialogDimension = new Dimension(dialogWidth, dialogHeight);
-		setSize(dialogDimension);
-		setMinimumSize(dialogDimension);
-		setPreferredSize(dialogDimension);
-
 		// Dialog
 		setTitle("Invalid File(s) Correction");
 		setIconImages(Images.getApplicationImages());
@@ -112,14 +92,7 @@ public class InvalidFileDialog extends JDialog {
 		add(getTitlePanel(), BorderLayout.NORTH);
 		add(getFilesPanel(), BorderLayout.CENTER);
 		add(getValidationPanel(), BorderLayout.SOUTH);
-	}
-
-
-	/**
-	 * Closes the VCF loader dialog
-	 */
-	public void closeDialog () {
-		setVisible(false);
+		pack();
 	}
 
 
@@ -128,7 +101,6 @@ public class InvalidFileDialog extends JDialog {
 	 */
 	public String[] getCorrectedPaths () {
 		String[] correctedPaths = new String[files.length];
-
 		if (correctedFiles != null) {
 			for (int i = 0; i < correctedFiles.length; i++) {
 				if ((correctedFiles[i] != null) && !correctedFiles[i].getSelectedItem().equals(CustomComboBox.ADD_TEXT)) {
@@ -138,7 +110,6 @@ public class InvalidFileDialog extends JDialog {
 				}
 			}
 		}
-
 		return correctedPaths;
 	}
 
@@ -149,9 +120,6 @@ public class InvalidFileDialog extends JDialog {
 	 */
 	private JPanel getFilesPanel () {
 		filePanel = new JPanel();
-		Dimension filePanelDimension = new Dimension(dialogWidth, filePanelHeight);
-		filePanel.setPreferredSize(filePanelDimension);
-		filePanel.setMinimumSize(filePanelDimension);
 		GridBagLayout layout = new GridBagLayout();
 		filePanel.setLayout(layout);
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -165,7 +133,6 @@ public class InvalidFileDialog extends JDialog {
 		gbc.weighty = 1;
 
 		correctedFiles = new CustomFileComboBox[files.length];
-		Dimension comboDimension = new Dimension(dialogWidth - (2 * inset), lineHeight);
 
 		VCFGZFilter[] filter = {new VCFGZFilter()};
 
@@ -178,9 +145,6 @@ public class InvalidFileDialog extends JDialog {
 				gbc.gridy++;
 
 				correctedFiles[i] = new CustomFileComboBox();
-				correctedFiles[i].setSize(comboDimension);
-				correctedFiles[i].setMinimumSize(comboDimension);
-				correctedFiles[i].setPreferredSize(comboDimension);
 				correctedFiles[i].setFilters(filter);
 				gbc.insets = new Insets(0, inset, inset, inset);
 				filePanel.add(correctedFiles[i], gbc);
@@ -195,40 +159,6 @@ public class InvalidFileDialog extends JDialog {
 
 
 	/**
-	 * @return the longest path length
-	 */
-	private int getMaxLength () {
-		int result = 0;
-		JPanel p = new JPanel();
-		FontMetrics fm = getFontMetrics(p.getFont());
-		for (String path: files) {
-			if (path != null) {
-				int pathLength = fm.stringWidth(path);
-				if (pathLength > result) {
-					result = pathLength;
-				}
-			}
-		}
-		return result;
-	}
-
-
-	/**
-	 * Calculate the number of invalid files
-	 * @return the number of invalid files.
-	 */
-	private int getNumberOfInvalidFile () {
-		int result = 0;
-		for (String path: files) {
-			if (path != null) {
-				result++;
-			}
-		}
-		return result;
-	}
-
-
-	/**
 	 * @return the upper panel with the description of the dialog
 	 */
 	private JPanel getTitlePanel () {
@@ -236,9 +166,6 @@ public class InvalidFileDialog extends JDialog {
 		FlowLayout layout = new FlowLayout(FlowLayout.LEFT, inset, 0);
 		panel.setLayout(layout);
 		JLabel titleLabel = new JLabel("<html>Some files have been moved,<br>please select the new paths.</html>");
-		Dimension titleLabelDimension = new Dimension(dialogWidth, titlePanelHeight);
-		titleLabel.setPreferredSize(titleLabelDimension);
-		titleLabel.setMinimumSize(titleLabelDimension);
 		panel.add(titleLabel);
 		return panel;
 	}
@@ -250,11 +177,9 @@ public class InvalidFileDialog extends JDialog {
 	 * @return			the panel
 	 */
 	private JPanel getValidationPanel () {
-		Dimension buttonDim = new Dimension(60, 30);
 		Insets inset = new Insets(0, 0, 0, 0);
 
 		JButton confirm = new JButton("Ok");
-		confirm.setPreferredSize(buttonDim);
 		confirm.setToolTipText("Ok");
 		confirm.setMargin(inset);
 		getRootPane().setDefaultButton(confirm);
@@ -262,12 +187,11 @@ public class InvalidFileDialog extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				approved = APPROVE_OPTION;
-				closeDialog();
+				setVisible(false);
 			}
 		});
 
 		JButton cancel = new JButton("Cancel");
-		cancel.setPreferredSize(buttonDim);
 		cancel.setToolTipText("Cancel");
 		cancel.setMargin(inset);
 		cancel.addActionListener(new ActionListener() {
@@ -276,17 +200,13 @@ public class InvalidFileDialog extends JDialog {
 				int n = JOptionPane.showConfirmDialog(null, "If you cancel, the project will not be load. Do you really want to cancel?", "Invalid File(s) Correction", JOptionPane.YES_NO_OPTION);
 				if (n == JOptionPane.YES_OPTION) {
 					approved = CANCEL_OPTION;
-					closeDialog();
+					setVisible(false);
 				}
 			}
 		});
-
 		validationPanel = new JPanel();
-		Dimension validationPanelDimension = new Dimension(dialogWidth, validationPanelHeight);
-		validationPanel.setPreferredSize(validationPanelDimension);
 		validationPanel.add(confirm);
 		validationPanel.add(cancel);
-
 		return validationPanel;
 	}
 
@@ -302,16 +222,4 @@ public class InvalidFileDialog extends JDialog {
 		setVisible(true);
 		return approved;
 	}
-
-
-	/**
-	 * Updates the parameters used to calculate the dimensions
-	 */
-	private void updateDimensions () {
-		dialogWidth = (int) ((getMaxLength() * 1.3) + (inset * 2));
-		int numberOfLines = invalidFileNumber * 2;
-		filePanelHeight = (lineHeight + (2 * inset)) * numberOfLines;
-		dialogHeight = titlePanelHeight + filePanelHeight + validationPanelHeight;
-	}
-
 }
