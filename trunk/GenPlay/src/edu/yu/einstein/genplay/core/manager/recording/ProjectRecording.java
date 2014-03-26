@@ -287,7 +287,7 @@ public class ProjectRecording {
 				currentTrack.addTrackListener(trackListPanel);
 			}
 			// ProjectManager.getInstance().getProjectConfiguration().writeConfigurationFile();
-			// // deactivate the configuration file saving
+			// deactivate the configuration file saving
 		} catch (IOException e) {
 			ExceptionManager.getInstance().caughtException(Thread.currentThread(), e, "An error occurred while saving the project");
 			return false;

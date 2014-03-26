@@ -66,7 +66,7 @@ public enum LayerType {
 	/**
 	 * Generic ScoredChromosomeWindowList layer
 	 */
-	SCW_LAYER ("Sequencing/Microarray Layer"),
+	SCW_LAYER ("Window Layer (Sequencing/Microarray Data)"),
 
 	/**
 	 * Simple SCW layer

@@ -52,6 +52,7 @@ class BinSizePanel extends JPanel {
 	private final JLabel 		jlCreateBinListHelp;					// label create bin list help
 	private final JLabel		jlBinSize; 								// label bin size
 	private final JSpinner 		jsBinSize; 								// spinner for the binsize input
+	private final JLabel		jlInformation;							// label with important informations
 	private static int 			defaultBinSize = 1000; 					// default binsize
 	private static boolean		defaultIsCreateBinListSelected;			// default state of the check box to create bin lists
 
@@ -86,6 +87,11 @@ class BinSizePanel extends JPanel {
 		jsBinSize = new JSpinner(snm);
 		jsBinSize.setEnabled(defaultIsCreateBinListSelected);
 
+		String infoText = "<html><i><b>Important:</b> The type of the new layer will be:<br/>";
+		infoText += "- <u>Fixed Window</u> if Bin Data is checked<br/>";
+		infoText += "- <u>Variable Window</u> if Bin Data is unchecked</i></html>";
+		jlInformation = new JLabel(infoText);
+
 		// add components
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -101,11 +107,16 @@ class BinSizePanel extends JPanel {
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.gridwidth = 1;
-		gbc.insets = new Insets(0, 0, 10, 0);
 		add(jlBinSize, gbc);
 		gbc.gridx = 1;
 		gbc.gridwidth = 2;
 		add(jsBinSize, gbc);
+		gbc.insets = new Insets(5, 5, 10, 5);
+		gbc.gridx = 0;
+		gbc.gridy = 2;
+		gbc.gridwidth = 3;
+		add(jlInformation, gbc);
+
 		setBorder(BorderFactory.createTitledBorder("Bin"));
 	}
 

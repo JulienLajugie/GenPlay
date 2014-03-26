@@ -158,14 +158,12 @@ public final class PAInitManagers extends AbstractAction {
 										ProjectFiles.getInstance().setCurrentFiles(formerPaths);
 										ProjectFiles.getInstance().setNewFiles(newPaths);
 									} else {
-
 										// Warn the user about the .gz and .gz.tbi files
 										if (!projectInformation.isSingleProject()) {
 											JOptionPane.showMessageDialog(null, "You are about to load a Multi Genome Project but some files have been moved.\n" +
 													"The next window will allow you to define their new location.\n" +
 													"Please keep in mind that .gz and .gz.tbi files must have the same name and location.");
 										}
-
 										InvalidFileDialog invalidFileDialog = new InvalidFileDialog(invalidPaths);
 										if (invalidFileDialog.showDialog(null) == InvalidFileDialog.APPROVE_OPTION) {
 											newPaths = invalidFileDialog.getCorrectedPaths();
