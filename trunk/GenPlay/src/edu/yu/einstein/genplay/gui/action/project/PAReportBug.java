@@ -35,31 +35,31 @@ import edu.yu.einstein.genplay.exception.ExceptionManager;
 
 
 /**
- * Opens the about GenPlay webpage in a web browser
+ * Open the webpage to report a bug
  * @author Julien Lajugie
  */
-public final class PAAbout extends AbstractAction {
+public final class PAReportBug extends AbstractAction {
 
-	private static final long serialVersionUID = 2102571378866219218L; // generated ID
-	private static final String 	ABOUT_URL =
-			"http://www.genplay.net/wiki/index.php/About_GenPlay";		// URL of the about webpage
-	private static final String 	DESCRIPTION = "Show About GenPlay"; // tooltip
+	private static final long serialVersionUID = 8939765494773755387L;	// generated serial ID
+	private static final String 	BUG_REPO_URL =
+			"https://github.com/JulienLajugie/GenPlay/issues";			// URL of the bug repository
+	private static final String 	DESCRIPTION = "Report a bug"; 		// tooltip
 	private static final int 		MNEMONIC = KeyEvent.VK_A; 			// mnemonic key
-	private static final String 	ACTION_NAME = "About GenPlay";		// action name
+	private static final String 	ACTION_NAME = "Report Bug";			// action name
 	private final 		Component 	parent;								// parent component
 
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = PAAbout.class.getName();
+	public static final String ACTION_KEY = PAReportBug.class.getName();
 
 
 	/**
-	 * Creates an instance of {@link PAAbout}
+	 * Creates an instance of {@link PAReportBug}
 	 * @param parent parent component
 	 */
-	public PAAbout(Component parent) {
+	public PAReportBug(Component parent) {
 		super();
 		this.parent = parent;
 		putValue(NAME, ACTION_NAME);
@@ -76,11 +76,11 @@ public final class PAAbout extends AbstractAction {
 	public void actionPerformed(ActionEvent evt) {
 		try {
 			if (Desktop.isDesktopSupported()) {
-				URI uri = new URI(ABOUT_URL);
+				URI uri = new URI(BUG_REPO_URL);
 				Desktop.getDesktop().browse(uri);
 			}
 		} catch (Exception e) {
-			ExceptionManager.getInstance().notifyUser(parent, e, "Cannot open Internet Browser.");
+			ExceptionManager.getInstance().notifyUser(parent, e, "Cannot open Internet Browser");
 		}
 	}
 }

@@ -35,20 +35,18 @@ import javax.swing.KeyStroke;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 
 
-
 /**
- * Shows the help dialog window
+ * Opens the help webpage in an Internet browser
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class PAHelp extends AbstractAction {
 
 	private static final long serialVersionUID = -8315224036423121225L; // generated ID
 	private static final String 	HELP_URL =
-			"http://www.genplay.net/wiki/index.php/Documentation";	// URL of the help file
-	private static final int 		MNEMONIC = KeyEvent.VK_H; 	// mnemonic key
-	private static final String 	ACTION_NAME = "Help";		// action name
-	private final 		 Component 	parent;						// parent component
+			"http://www.genplay.net/wiki/index.php/Documentation";	// URL of the help webpage
+	private static final int 		MNEMONIC = KeyEvent.VK_H; 		// mnemonic key
+	private static final String 	ACTION_NAME = "Help";			// action name
+	private final 		 Component 	parent;							// parent component
 
 
 	/**
@@ -88,7 +86,7 @@ public final class PAHelp extends AbstractAction {
 				Desktop.getDesktop().browse(uri);
 			}
 		} catch (Exception e) {
-			ExceptionManager.getInstance().notifyUser(parent, e, "The help file can't be loaded");
+			ExceptionManager.getInstance().notifyUser(parent, e, "Cannot open Internet Browser");
 		}
 	}
 }

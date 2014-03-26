@@ -50,6 +50,7 @@ import edu.yu.einstein.genplay.gui.action.multiGenome.properties.MGARefresh;
 import edu.yu.einstein.genplay.gui.action.project.PAAbout;
 import edu.yu.einstein.genplay.gui.action.project.PABookmarkCurrentPosition;
 import edu.yu.einstein.genplay.gui.action.project.PACheckForUpdates;
+import edu.yu.einstein.genplay.gui.action.project.PAContactUs;
 import edu.yu.einstein.genplay.gui.action.project.PACopyCurrentPosition;
 import edu.yu.einstein.genplay.gui.action.project.PAExit;
 import edu.yu.einstein.genplay.gui.action.project.PAFullScreen;
@@ -62,6 +63,7 @@ import edu.yu.einstein.genplay.gui.action.project.PAMoveRight;
 import edu.yu.einstein.genplay.gui.action.project.PANewProject;
 import edu.yu.einstein.genplay.gui.action.project.PAOption;
 import edu.yu.einstein.genplay.gui.action.project.PARNAPosToDNAPos;
+import edu.yu.einstein.genplay.gui.action.project.PAReportBug;
 import edu.yu.einstein.genplay.gui.action.project.PASaveProject;
 import edu.yu.einstein.genplay.gui.action.project.PASaveProjectAs;
 import edu.yu.einstein.genplay.gui.action.project.PAShowErrorReport;
@@ -241,7 +243,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		setJMenuBar(new MenuBar(getRootPane().getActionMap()));
 
 		if (Utils.isMacOS()) {
-			OSXIntegrator.integrateMainFrame();
+			OSXIntegrator.integrateMainFrame(this);
 		}
 
 		showMenuBar();
@@ -394,10 +396,13 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		// Add project actions to action map
 		getRootPane().getActionMap().put(PASortFile.ACTION_KEY, new PASortFile());
 		getRootPane().getActionMap().put(PACheckForUpdates.ACTION_KEY, new PACheckForUpdates());
-		getRootPane().getActionMap().put(PAAbout.ACTION_KEY, new PAAbout(getRootPane()));
+		getRootPane().getActionMap().put(PAAbout.ACTION_KEY, new PAAbout(this));
+		getRootPane().getActionMap().put(PAContactUs.ACTION_KEY, new PAContactUs(this));
+		getRootPane().getActionMap().put(PAReportBug.ACTION_KEY, new PAReportBug(this));
+		getRootPane().getActionMap().put(PAAbout.ACTION_KEY, new PAAbout(this));
 		getRootPane().getActionMap().put(PAExit.ACTION_KEY, new PAExit(this));
 		getRootPane().getActionMap().put(PAFullScreen.ACTION_KEY, new PAFullScreen(this));
-		getRootPane().getActionMap().put(PAHelp.ACTION_KEY, new PAHelp(getRootPane()));
+		getRootPane().getActionMap().put(PAHelp.ACTION_KEY, new PAHelp(this));
 		getRootPane().getActionMap().put(PALoadProject.ACTION_KEY, new PALoadProject());
 		getRootPane().getActionMap().put(PANewProject.ACTION_KEY, new PANewProject());
 		getRootPane().getActionMap().put(PAOption.ACTION_KEY, new PAOption(this));

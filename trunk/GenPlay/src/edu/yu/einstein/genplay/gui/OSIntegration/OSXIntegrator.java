@@ -80,17 +80,18 @@ public class OSXIntegrator implements AboutHandler, PreferencesHandler, QuitHand
 
 	/**
 	 * Integrate GenPlay {@link MainFrame} window into the OSX environment
+	 * @param mainFrame GenPlay main frame
 	 */
-	public static void integrateMainFrame() {
+	public static void integrateMainFrame(MainFrame mainFrame) {
 		// add a menu bar for OSX
 		Application macApplication = Application.getApplication();
 		try {
-			macApplication.setDefaultMenuBar(MainFrame.getInstance().getJMenuBar());
+			macApplication.setDefaultMenuBar(mainFrame.getJMenuBar());
 		} catch (IllegalStateException e) {}// case where the menu bar is not suported by the look and feel
 		macApplication.setAboutHandler(getInstance());
 		macApplication.setPreferencesHandler(getInstance());
 		macApplication.setQuitHandler(getInstance());
-		FullScreenUtilities.setWindowCanFullScreen(MainFrame.getInstance(), true);
+		FullScreenUtilities.setWindowCanFullScreen(mainFrame, true);
 	}
 
 

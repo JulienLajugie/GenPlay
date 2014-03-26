@@ -35,6 +35,7 @@ import javax.swing.event.MenuListener;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.project.PAAbout;
 import edu.yu.einstein.genplay.gui.action.project.PACheckForUpdates;
+import edu.yu.einstein.genplay.gui.action.project.PAContactUs;
 import edu.yu.einstein.genplay.gui.action.project.PAExit;
 import edu.yu.einstein.genplay.gui.action.project.PAFullScreen;
 import edu.yu.einstein.genplay.gui.action.project.PAHelp;
@@ -42,6 +43,7 @@ import edu.yu.einstein.genplay.gui.action.project.PALoadProject;
 import edu.yu.einstein.genplay.gui.action.project.PANewProject;
 import edu.yu.einstein.genplay.gui.action.project.PAOption;
 import edu.yu.einstein.genplay.gui.action.project.PARNAPosToDNAPos;
+import edu.yu.einstein.genplay.gui.action.project.PAReportBug;
 import edu.yu.einstein.genplay.gui.action.project.PASaveProject;
 import edu.yu.einstein.genplay.gui.action.project.PASaveProjectAs;
 import edu.yu.einstein.genplay.gui.action.project.PAShowErrorReport;
@@ -195,18 +197,22 @@ public class MenuBar extends JMenuBar {
 	 * Creates Help menu
 	 */
 	private void createHelpMenu() {
+		if (PACheckForUpdates.isUpdaterAvailable()) {
+			jmHelp.add(actionMap.get(PACheckForUpdates.ACTION_KEY));
+			jmHelp.addSeparator();
+		}
+		jmHelp.add(actionMap.get(PAReportBug.ACTION_KEY));
+		jmHelp.add(actionMap.get(PAContactUs.ACTION_KEY));
+		if (!Utils.isMacOS() || !LookAndFeels.isNativeLookAndFeel()) {
+			jmHelp.add(actionMap.get(PAAbout.ACTION_KEY));
+		}
+		jmHelp.addSeparator();
+		jmHelp.add(actionMap.get(PAHelp.ACTION_KEY));
 		if (!Utils.isMacOS() || !LookAndFeels.isNativeLookAndFeel()) {
 			// on mac the option and about menu items are available from the
 			// application menu so we don't need them in the help menu
+			jmHelp.addSeparator();
 			jmHelp.add(actionMap.get(PAOption.ACTION_KEY));
-		}
-		jmHelp.add(actionMap.get(PAHelp.ACTION_KEY));
-		if (PACheckForUpdates.isUpdaterAvailable()) {
-			jmHelp.add(actionMap.get(PACheckForUpdates.ACTION_KEY));
-
-		}
-		if (!Utils.isMacOS() || !LookAndFeels.isNativeLookAndFeel()) {
-			jmHelp.add(actionMap.get(PAAbout.ACTION_KEY));
 		}
 		add(jmHelp);
 	}

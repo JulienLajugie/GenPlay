@@ -32,6 +32,7 @@ import javax.swing.event.PopupMenuListener;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.project.PAAbout;
 import edu.yu.einstein.genplay.gui.action.project.PACheckForUpdates;
+import edu.yu.einstein.genplay.gui.action.project.PAContactUs;
 import edu.yu.einstein.genplay.gui.action.project.PAExit;
 import edu.yu.einstein.genplay.gui.action.project.PAFullScreen;
 import edu.yu.einstein.genplay.gui.action.project.PAHelp;
@@ -39,6 +40,7 @@ import edu.yu.einstein.genplay.gui.action.project.PALoadProject;
 import edu.yu.einstein.genplay.gui.action.project.PANewProject;
 import edu.yu.einstein.genplay.gui.action.project.PAOption;
 import edu.yu.einstein.genplay.gui.action.project.PARNAPosToDNAPos;
+import edu.yu.einstein.genplay.gui.action.project.PAReportBug;
 import edu.yu.einstein.genplay.gui.action.project.PASaveProject;
 import edu.yu.einstein.genplay.gui.action.project.PASaveProjectAs;
 import edu.yu.einstein.genplay.gui.action.project.PAShowErrorReport;
@@ -61,12 +63,14 @@ public final class MainMenu extends JPopupMenu {
 	private final JMenuItem jmiFullScreen;		// full screen
 	private final JMenuItem jmiWarningReport;	// warning report
 	private final JMenuItem jmiErrorReport;		// exception report
-	private final JMenuItem jmiOption;			// option
 	private final JMenuItem jmiSortFile;		// sort file
 	private final JMenuItem jmiRNAToDNAPos;		// option
 	private final JMenuItem jmiUpdate;			// update
-	private final JMenuItem jmiHelp;			// help
+	private final JMenuItem jmiReportBug;		// report bug
+	private final JMenuItem jmiContactUs;		// contact us
 	private final JMenuItem jmiAbout;			// about
+	private final JMenuItem jmiHelp;			// help
+	private final JMenuItem jmiOption;			// option
 	private final JMenuItem jmiExit;			// exit
 
 
@@ -83,12 +87,14 @@ public final class MainMenu extends JPopupMenu {
 		jmiFullScreen = new JMenuItem(actionMap.get(PAFullScreen.ACTION_KEY));
 		jmiWarningReport = new JMenuItem(actionMap.get(PAShowWarningReport.ACTION_KEY));
 		jmiErrorReport = new JMenuItem(actionMap.get(PAShowErrorReport.ACTION_KEY));
-		jmiOption = new JMenuItem(actionMap.get(PAOption.ACTION_KEY));
 		jmiRNAToDNAPos = new JMenuItem(actionMap.get(PARNAPosToDNAPos.ACTION_KEY));
 		jmiSortFile = new JMenuItem(actionMap.get(PASortFile.ACTION_KEY));
 		jmiUpdate = new JMenuItem(actionMap.get(PACheckForUpdates.ACTION_KEY));
-		jmiHelp = new JMenuItem(actionMap.get(PAHelp.ACTION_KEY));
+		jmiReportBug = new JMenuItem(actionMap.get(PAReportBug.ACTION_KEY));
+		jmiContactUs = new JMenuItem(actionMap.get(PAContactUs.ACTION_KEY));
 		jmiAbout = new JMenuItem(actionMap.get(PAAbout.ACTION_KEY));
+		jmiHelp = new JMenuItem(actionMap.get(PAHelp.ACTION_KEY));
+		jmiOption = new JMenuItem(actionMap.get(PAOption.ACTION_KEY));
 		jmiExit = new JMenuItem(actionMap.get(PAExit.ACTION_KEY));
 
 		add(jmiNewProject);
@@ -106,9 +112,13 @@ public final class MainMenu extends JPopupMenu {
 		if (PACheckForUpdates.isUpdaterAvailable()) {
 			add(jmiUpdate);
 		}
-		add(jmiOption);
-		add(jmiHelp);
+		add(jmiReportBug);
+		add(jmiContactUs);
 		add(jmiAbout);
+		addSeparator();
+		add(jmiHelp);
+		addSeparator();
+		add(jmiOption);
 		addSeparator();
 		add(jmiExit);
 

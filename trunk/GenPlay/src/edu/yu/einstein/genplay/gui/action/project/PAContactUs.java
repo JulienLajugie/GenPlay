@@ -35,31 +35,31 @@ import edu.yu.einstein.genplay.exception.ExceptionManager;
 
 
 /**
- * Opens the about GenPlay webpage in a web browser
+ * Open a new mail from user mailbox to contact us
  * @author Julien Lajugie
  */
-public final class PAAbout extends AbstractAction {
+public final class PAContactUs extends AbstractAction {
 
 	private static final long serialVersionUID = 2102571378866219218L; // generated ID
-	private static final String 	ABOUT_URL =
-			"http://www.genplay.net/wiki/index.php/About_GenPlay";		// URL of the about webpage
-	private static final String 	DESCRIPTION = "Show About GenPlay"; // tooltip
+	private static final String 	MAILTO_GENPLAY_URI =
+			"mailto:genplay.einstein.yu.edu";							// URI to send mail to genplay address
+	private static final String 	DESCRIPTION = "Open a blank email to contact us"; 		// tooltip
 	private static final int 		MNEMONIC = KeyEvent.VK_A; 			// mnemonic key
-	private static final String 	ACTION_NAME = "About GenPlay";		// action name
+	private static final String 	ACTION_NAME = "Contact Us";			// action name
 	private final 		Component 	parent;								// parent component
 
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = PAAbout.class.getName();
+	public static final String ACTION_KEY = PAContactUs.class.getName();
 
 
 	/**
-	 * Creates an instance of {@link PAAbout}
+	 * Creates an instance of {@link PAContactUs}
 	 * @param parent parent component
 	 */
-	public PAAbout(Component parent) {
+	public PAContactUs(Component parent) {
 		super();
 		this.parent = parent;
 		putValue(NAME, ACTION_NAME);
@@ -76,11 +76,11 @@ public final class PAAbout extends AbstractAction {
 	public void actionPerformed(ActionEvent evt) {
 		try {
 			if (Desktop.isDesktopSupported()) {
-				URI uri = new URI(ABOUT_URL);
-				Desktop.getDesktop().browse(uri);
+				URI uri = new URI(MAILTO_GENPLAY_URI);
+				Desktop.getDesktop().mail(uri);
 			}
 		} catch (Exception e) {
-			ExceptionManager.getInstance().notifyUser(parent, e, "Cannot open Internet Browser.");
+			ExceptionManager.getInstance().notifyUser(parent, e, "Cannot open mailbox");
 		}
 	}
 }

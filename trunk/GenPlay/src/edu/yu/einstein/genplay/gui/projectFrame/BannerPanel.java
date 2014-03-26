@@ -48,7 +48,7 @@ public class BannerPanel extends JPanel {
 	protected BannerPanel (int bannerHeight) {
 		//Size Panel
 		setPreferredSize(new Dimension(getPreferredSize().width, bannerHeight));
-
+		setMinimumSize(getPreferredSize());
 		//Load the image
 		banner = Images.getBannerImage();
 	}
