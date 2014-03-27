@@ -59,7 +59,7 @@ public class VariantDisplayList implements Serializable {
 
 	/** Default serial version ID */
 	private static final long serialVersionUID = 2664998644351746289L;
-	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 1;		// saved format version
 	/** When a variant is shown */
 	public static byte SHOW = 1;
 	/** When a variant is filtered but shown */
@@ -273,11 +273,16 @@ public class VariantDisplayList implements Serializable {
 	 */
 	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		variants = (List<List<Variant>>) in.readObject();
+		int savedVersion = in.readInt();
+		if (savedVersion == 0) { // after version 0 we don't load the variant list anymore, we regenerate it instead
+			variants = (List<List<Variant>>) in.readObject();
+		}
 		display = (byte[][]) in.readObject();
 		genomeName = (String) in.readObject();
 		types = (List<VariantType>) in.readObject();
+		if (savedVersion > 0) { // regenerate the list instead of loading it
+			generateLists();
+		}
 	}
 
 
@@ -407,7 +412,6 @@ public class VariantDisplayList implements Serializable {
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(variants);
 		out.writeObject(display);
 		out.writeObject(genomeName);
 		out.writeObject(types);

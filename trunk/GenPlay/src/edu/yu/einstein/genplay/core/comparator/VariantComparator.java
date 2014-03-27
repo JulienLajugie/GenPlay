@@ -46,6 +46,15 @@ public class VariantComparator implements Comparator<Variant> {
 		if (position1 < position2) {
 			return -1;
 		} else if (position1 == position2) {
+			// SNPs are before Indel if start positions are equal because
+			// Indel actually start 1bp after the position specified in the VCF
+			boolean isSNP1 = o1.getLength() == 1;
+			boolean isSNP2 = o2.getLength() == 1;
+			if (isSNP1 && !isSNP2) {
+				return -1;
+			} else if (isSNP2 && !isSNP1) {
+				return 1;
+			}
 			boolean isReference01 = (o1 instanceof ReferenceVariant);
 			boolean isReference02 = (o2 instanceof ReferenceVariant);
 			if (isReference01 && !isReference02) {

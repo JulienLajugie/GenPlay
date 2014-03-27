@@ -215,15 +215,15 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<SCWList>
 					notifyActionStart("Generating Fixed-Window Layer", (BinList.getCreationStepCount(SCWListType.BIN) * 3) + 2, true);
 					scwList = SCWListFactory.createStrandSafeBinList((SCWReader) extractor, binSize, scoreCalculation);
 				} else {
-					notifyActionStart("Generating Sequencing/Microarray Layer", (SimpleSCWList.getCreationStepCount(SCWListType.GENERIC) * 3) + 2, true);
+					notifyActionStart("Generating Variable-Window Layer", (SimpleSCWList.getCreationStepCount(SCWListType.GENERIC) * 3) + 2, true);
 					scwList = SCWListFactory.createStrandSafeDenseSCWList((SCWReader) extractor, scoreCalculation);
 				}
 			} else {
 				if (isBinList) {
-					notifyActionStart("Generating Sequencing/Microarray Layer", BinList.getCreationStepCount(SCWListType.BIN) + 1, true);
+					notifyActionStart("Generating Fixed-Window Layer", BinList.getCreationStepCount(SCWListType.BIN) + 1, true);
 					scwList = SCWListFactory.createBinList((SCWReader) extractor, binSize, scoreCalculation);
 				} else {
-					notifyActionStart("Generating Sequencing/Microarray Layer", SimpleSCWList.getCreationStepCount(SCWListType.GENERIC) + 1, true);
+					notifyActionStart("Generating Variable-Window Layer", SimpleSCWList.getCreationStepCount(SCWListType.GENERIC) + 1, true);
 					scwList = SCWListFactory.createDenseSCWList((SCWReader) extractor, scoreCalculation);
 				}
 			}

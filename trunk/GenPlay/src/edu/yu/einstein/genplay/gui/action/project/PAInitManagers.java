@@ -149,11 +149,10 @@ public final class PAInitManagers extends AbstractAction {
 							// Gets the files dependant to the project
 							formerPaths = projectInformation.getProjectFiles();
 
-							if (formerPaths != null) {									// if the project is file dependent
-								invalidPaths = getInvalidPath(formerPaths);				// we get the invalid files
-								if (hasInvalidFiles()) {		// if some invalid files exist,
-									newPaths = getPathInProjectDirectory(invalidPaths); // try to see if the files are not in the same directory as the project
-
+							if (formerPaths != null) {											// if the project is file dependent
+								invalidPaths = getInvalidPath(formerPaths);						// we get the invalid files
+								if (hasInvalidFiles()) {										// if some invalid files exist,
+									newPaths = getPathInProjectDirectory(invalidPaths); 		// try to see if the files are not in the same directory as the project
 									if (getNumberOfInvalidFiles(newPaths) == 0) {
 										ProjectFiles.getInstance().setCurrentFiles(formerPaths);
 										ProjectFiles.getInstance().setNewFiles(newPaths);

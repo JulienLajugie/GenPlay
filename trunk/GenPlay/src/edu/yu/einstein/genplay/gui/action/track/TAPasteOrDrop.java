@@ -118,6 +118,7 @@ public final class TAPasteOrDrop extends TrackListActionWorker<Void> {
 							} else {
 								Layer<?>[] layers = copiedTrack.getLayers().getLayers();
 								for (Layer<?> currentLayer: layers) {
+									currentLayer = currentLayer.clone();
 									currentLayer.setTrack(selectedTrack);
 									selectedTrack.getLayers().add(currentLayer);
 									selectedTrack.setActiveLayer(currentLayer);

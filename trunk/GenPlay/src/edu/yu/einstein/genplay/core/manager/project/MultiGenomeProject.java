@@ -294,6 +294,7 @@ public class MultiGenomeProject implements Serializable {
 		multiGenome = (MGSMultiGenome) in.readObject();
 		multiGenomeSynchronizer = (MGSynchronizer) in.readObject();
 		fileContentManager = (MGFileContentManager) in.readObject();
+		initializeFileDependancy();
 	}
 
 

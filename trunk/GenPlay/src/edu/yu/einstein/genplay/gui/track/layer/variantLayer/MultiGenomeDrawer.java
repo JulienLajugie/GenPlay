@@ -124,7 +124,7 @@ public class MultiGenomeDrawer implements Serializable {
 				variantDrawer.drawGenome(allele02Graphic, width, halfHeight, genomeWindow, handler.getFittedData(genomeWindow, xRatio, 1)); // draw the stripes for the second allele
 				variantDrawer.drawMultiGenomeLine(g, width, height); // draw a line in the middle of the track to distinguish upper and lower half.
 			} else {
-				variantDrawer.drawMultiGenomeMask(g, height, "Multi genome display interupted while loading information.");
+				variantDrawer.drawMultiGenomeMask(g, height, "Multi genome display interrupted while loading information.");
 			}
 		}
 	}

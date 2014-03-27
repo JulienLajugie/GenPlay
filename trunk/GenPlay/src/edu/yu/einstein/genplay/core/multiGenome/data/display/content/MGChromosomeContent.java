@@ -63,7 +63,7 @@ public class MGChromosomeContent implements Iterable<MGLineContent>, Serializabl
 	/** Default serial version ID */
 	private static final long serialVersionUID = -8385957556240550523L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
-	private String	 						chromosomeName;				// The chromosome represented here.
+	private String	 						chromosomeName;			// The chromosome represented here.
 	private MGIntegerArray 					positions;				// The array of reference genome positions.
 	private MGFloatArray 					scores;					// The array of scores.
 	private List<MGIntegerArray> 			alternatives;			// The list of alternatives.
@@ -77,7 +77,7 @@ public class MGChromosomeContent implements Iterable<MGLineContent>, Serializabl
 	 * @param genomeNames
 	 */
 	public MGChromosomeContent (String chromosome, List<String> genomeNames) {
-		this.chromosomeName = chromosome;
+		chromosomeName = chromosome;
 		positions = new MGIntegerArray();
 		scores = new MGFloatArray();
 		alternatives = new ArrayList<MGIntegerArray>();
