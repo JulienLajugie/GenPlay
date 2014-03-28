@@ -22,6 +22,7 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.multiGenome.export;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.concurrent.CountDownLatch;
@@ -31,7 +32,7 @@ import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
-import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
+import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.action.multiGenome.VCFAction.MGABGZIPCompression;
 import edu.yu.einstein.genplay.gui.action.multiGenome.VCFAction.MGATBIIndex;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSettings;
@@ -44,7 +45,7 @@ import edu.yu.einstein.genplay.gui.track.layer.variantLayer.VariantLayer;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGAGlobalVCFExport extends TrackListActionWorker<Boolean> {
+public class MGAGlobalVCFExport extends TrackListAction {
 
 	private static final long serialVersionUID = 6498078428524511709L;	// generated ID
 	private static final String 	DESCRIPTION =
@@ -61,7 +62,6 @@ public class MGAGlobalVCFExport extends TrackListActionWorker<Boolean> {
 	private ExportVCFDialog dialog;
 	private ExportSettings settings;
 	private File outputFile;
-	private boolean hasBeenCancelled = false;
 
 	private MGAVCFExport 			exportVCFAction;
 	private MGABGZIPCompression 	compressionAction;
@@ -82,83 +82,10 @@ public class MGAGlobalVCFExport extends TrackListActionWorker<Boolean> {
 	}
 
 
-	@Override
-	protected Boolean processAction() {
-		ProjectManager projectManager = ProjectManager.getInstance();
-		if (projectManager.isMultiGenomeProject()) {
-
-			// Get layer information
-			VariantLayer selectedLayer = (VariantLayer) getValue("Layer");
-
-			// Create the export settings
-			settings = new ExportSettings(selectedLayer);
-
-			// Create the dialog
-			dialog = new ExportVCFDialog(settings, selectedLayer);
-
-			// Show the dialog
-			if (dialog.showDialog(getRootPane()) == MultiGenomeTrackActionDialog.APPROVE_OPTION) {
-				outputFile = new File(dialog.getVCFPath());
-
-				// Create the VCF thread
-				ExportVCFThread vcfThread = new ExportVCFThread();
-				CountDownLatch vcfLatch = new CountDownLatch(1);
-				vcfThread.setLatch(vcfLatch);
-				vcfThread.start();
-
-				// The current thread is waiting for the VCF thread to finish
-				try {
-					vcfLatch.await();
-				} catch (InterruptedException e) {
-					ExceptionManager.getInstance().caughtException(e);
-				}
-
-				// Compress the VCF
-				if (dialog.compressVCF() && exportVCFAction.hasBeenDone()) {
-					// Create the compress thread
-					CompressThread compressThread = new CompressThread();
-					CountDownLatch compressLatch = new CountDownLatch(1);
-					compressThread.setLatch(compressLatch);
-					compressThread.start();
-
-					// The current thread is waiting for the compress thread to finish
-					try {
-						compressLatch.await();
-					} catch (InterruptedException e) {
-						ExceptionManager.getInstance().caughtException(e);
-					}
-
-					// Index the BGZIP
-					if (dialog.indexVCF() && compressionAction.hasBeenDone()) {
-						// Create the index thread
-						IndexThread indexThread = new IndexThread();
-						CountDownLatch indexLatch = new CountDownLatch(1);
-						indexThread.setLatch(indexLatch);
-						indexThread.start();
-						// The current thread is waiting for the index thread to finish
-						try {
-							indexLatch.await();
-						} catch (InterruptedException e) {
-							ExceptionManager.getInstance().caughtException(e);
-						}
-					}
-				}
-				return true;
-			} else {
-				hasBeenCancelled = true;
-			}
-		}
-		return false;
-	}
-
 
 	@Override
-	protected void doAtTheEnd(Boolean actionResult) {
-		if (!hasBeenCancelled && actionResult) {
-			String description = getMessageDescription();
-			JOptionPane.showMessageDialog(getRootPane(), description, "Export report", JOptionPane.INFORMATION_MESSAGE);
-		}
-
+	public void actionPerformed(ActionEvent evt) {
+		new MainExportVCFThread().start();
 	}
 
 
@@ -213,6 +140,81 @@ public class MGAGlobalVCFExport extends TrackListActionWorker<Boolean> {
 
 
 	/////////////////////////////////////////////////////////////////////// ExportVCFThread class
+	
+	
+	/**
+	 * Main export VCF thread
+	 * @author Nicolas Fourel
+	 */
+	private class MainExportVCFThread extends Thread {
+		@Override
+		public void run() {
+			ProjectManager projectManager = ProjectManager.getInstance();
+			if (projectManager.isMultiGenomeProject()) {
+
+				// Get layer information
+				VariantLayer selectedLayer = (VariantLayer) getValue("Layer");
+
+				// Create the export settings
+				settings = new ExportSettings(selectedLayer);
+
+				// Create the dialog
+				dialog = new ExportVCFDialog(settings, selectedLayer);
+
+				// Show the dialog
+				if (dialog.showDialog(getRootPane()) == MultiGenomeTrackActionDialog.APPROVE_OPTION) {
+					outputFile = new File(dialog.getVCFPath());
+
+					// Create the VCF thread
+					ExportVCFThread vcfThread = new ExportVCFThread();
+					CountDownLatch vcfLatch = new CountDownLatch(1);
+					vcfThread.setLatch(vcfLatch);
+					vcfThread.start();
+
+					// The current thread is waiting for the VCF thread to finish
+					try {
+						vcfLatch.await();
+					} catch (InterruptedException e) {
+						ExceptionManager.getInstance().caughtException(e);
+					}
+
+					// Compress the VCF
+					if (dialog.compressVCF() && exportVCFAction.hasBeenDone()) {
+						// Create the compress thread
+						CompressThread compressThread = new CompressThread();
+						CountDownLatch compressLatch = new CountDownLatch(1);
+						compressThread.setLatch(compressLatch);
+						compressThread.start();
+
+						// The current thread is waiting for the compress thread to finish
+						try {
+							compressLatch.await();
+						} catch (InterruptedException e) {
+							ExceptionManager.getInstance().caughtException(e);
+						}
+
+						// Index the BGZIP
+						if (dialog.indexVCF() && compressionAction.hasBeenDone()) {
+							// Create the index thread
+							IndexThread indexThread = new IndexThread();
+							CountDownLatch indexLatch = new CountDownLatch(1);
+							indexThread.setLatch(indexLatch);
+							indexThread.start();
+							// The current thread is waiting for the index thread to finish
+							try {
+								indexLatch.await();
+							} catch (InterruptedException e) {
+								ExceptionManager.getInstance().caughtException(e);
+							}
+						}
+					}
+					String description = getMessageDescription();
+					JOptionPane.showMessageDialog(getRootPane(), description, "Export report", JOptionPane.INFORMATION_MESSAGE);
+				}
+			}
+		}
+	}
+	
 
 	/**
 	 * The export VCF thread class.
@@ -304,5 +306,4 @@ public class MGAGlobalVCFExport extends TrackListActionWorker<Boolean> {
 			indexAction.setLatch(latch);
 		}
 	}
-
 }

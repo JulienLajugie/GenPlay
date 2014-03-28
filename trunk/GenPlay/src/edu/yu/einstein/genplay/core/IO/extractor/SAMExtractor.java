@@ -26,12 +26,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.NavigableSet;
 import java.util.Queue;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.sf.samtools.AlignmentBlock;
 import net.sf.samtools.SAMFileHeader;
@@ -122,9 +122,9 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 		readGroups = retrieveReadGroups();
 		programNames = retrieveProgramNames();
 		iterator = samReader.iterator();
-		startQueue = new LinkedList<Integer>();
-		stopQueue = new LinkedList<Integer>();
-		strandQueue = new LinkedList<Strand>();
+		startQueue = new ConcurrentLinkedQueue<Integer>();
+		stopQueue = new ConcurrentLinkedQueue<Integer>();
+		strandQueue = new ConcurrentLinkedQueue<Strand>();
 		recordFilters = new ArrayList<SAMRecordFilter>();
 		waitingAlignmentBlocks = new TreeSet<Gene>(new NeverEqualChromosomeWindowStartComparator());
 	}
@@ -139,11 +139,11 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 		int start = blockToAdd.getReferenceStart();
 		int stop = start + blockToAdd.getLength();
 		// compute the read position with specified strand shift and read length
-		/*if (strandOptions != null) {
+		if (strandOptions != null) {
 			SimpleChromosomeWindow resultStartStop = strandOptions.computeStartStop(chromosome, start, stop, strand);
 			start = resultStartStop.getStart();
 			stop = resultStartStop.getStop();
-		}*/
+		}
 		// if we are in a multi-genome project, we compute the position on the meta genome
 		start = getRealGenomePosition(chromosome, start);
 		stop = getRealGenomePosition(chromosome, stop);

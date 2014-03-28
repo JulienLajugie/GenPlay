@@ -22,6 +22,7 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.operation.BED;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.pileupFlattener.GenomeWideFlattener;
@@ -46,6 +47,11 @@ public class AlleleSettingsBedConvert extends AlleleSettingsBed {
 
 	private final GenomeWideFlattener gwPileupFlattener;
 
+	private Chromosome retainedChromo;
+	private int retainedStart;
+	private final List<Integer> retainedStops;
+	private final List<Float>	retainedScores;
+
 
 	/**
 	 * Constructor of {@link AlleleSettingsBedConvert}
@@ -57,6 +63,8 @@ public class AlleleSettingsBedConvert extends AlleleSettingsBed {
 		super(allele, coordinateSystem);
 		PileupFlattener flattenerPrototype = new SimpleSCWPileupFlattener(ScoreOperation.ADDITION, SCWListType.GENERIC);
 		gwPileupFlattener = new GenomeWideFlattener(flattenerPrototype);
+		retainedStops = new ArrayList<Integer>();
+		retainedScores = new ArrayList<Float>();
 	}
 
 
@@ -68,14 +76,24 @@ public class AlleleSettingsBedConvert extends AlleleSettingsBed {
 	 * @param includeNoCall 	include the no call (.)
 	 */
 	public void addCurrentInformation (Chromosome chromosome, Object score, boolean includeReferences, boolean includeNoCall) {
-		boolean valid = true;
 		Float dbScore = Float.parseFloat(score.toString());
-		if (dbScore == null) {
-			valid = false;
-		}
-		if (valid) {
-			System.out.println(currentStart);
-			gwPileupFlattener.addWindow(chromosome, currentStart, currentStop, dbScore);
+		if (dbScore != null) {
+			if (retainedStops.isEmpty()) {
+				retainedChromo = chromosome;
+				retainedStart = currentStart;
+			} else {
+				if ((currentStart > retainedStart) || (chromosome != retainedChromo)) {
+					for (int i = 0; i < retainedStops.size(); i++) {
+						gwPileupFlattener.addWindow(retainedChromo, retainedStart, retainedStops.get(i), retainedScores.get(i));
+					}
+					retainedStops.clear();
+					retainedScores.clear();
+					retainedChromo = chromosome;
+					retainedStart = currentStart;
+				}
+			}
+			retainedStops.add(currentStop);
+			retainedScores.add(dbScore);
 		} else {
 			System.err.println("AlleleSettingsBedConvert.addCurrentInformation() Could not convert '" + score + "' into a double.");
 		}

@@ -348,4 +348,16 @@ public class MenuBar extends JMenuBar {
 		});
 		add(jmWindow);
 	}
+
+
+	@Override
+	public void setEnabled(boolean enabled) {
+		for (int i = 0; i < getMenuCount(); i++) {
+			JMenu menu = getMenu(i);
+			if (menu != null) {
+				menu.setEnabled(enabled);
+			}
+		}
+		super.setEnabled(enabled);
+	}
 }

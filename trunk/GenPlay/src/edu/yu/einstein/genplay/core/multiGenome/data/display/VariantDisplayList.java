@@ -121,10 +121,12 @@ public class VariantDisplayList implements Serializable {
 	 */
 	public int getIndex (List<Variant> list, int value) {
 		int index = getIndex(list, value, 0, list.size() - 1);
-		int start = list.get(index).getStart();
-		int stop = list.get(index).getStop();
-		if ((value >= start) && (value < stop)) {
-			return index;
+		if (index >= 0) {
+			int start = list.get(index).getStart();
+			int stop = list.get(index).getStop();
+			if ((value >= start) && (value < stop)) {
+				return index;
+			}
 		}
 		return -1;
 	}
@@ -139,6 +141,9 @@ public class VariantDisplayList implements Serializable {
 	 * @return the index where the start value of the window is found or the index right after if the exact value is not found
 	 */
 	private int getIndex (List<Variant> list, int value, int indexStart, int indexStop) {
+		if (list.isEmpty()) {
+			return -1;
+		}
 		int middle = (indexStop - indexStart) / 2;
 		if (indexStart == indexStop) {
 			return indexStart;

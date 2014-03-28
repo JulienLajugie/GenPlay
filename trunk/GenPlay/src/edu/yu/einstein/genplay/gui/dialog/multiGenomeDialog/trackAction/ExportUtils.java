@@ -22,9 +22,11 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction;
 
+import java.awt.Component;
 import java.io.File;
 
 import edu.yu.einstein.genplay.gui.fileFilter.ExtendedFileFilter;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.util.FileChooser;
 import edu.yu.einstein.genplay.util.Utils;
 
@@ -47,7 +49,11 @@ public class ExportUtils {
 		} else {
 			mode = FileChooser.SAVE_FILE_MODE;
 		}
-		File selectedFile = FileChooser.chooseFile(null, mode, "Select an Output File", filters, false);
+		Component parentWindow = null;
+		if (MainFrame.isInitialized()) {
+			parentWindow = MainFrame.getInstance();
+		}
+		File selectedFile = FileChooser.chooseFile(parentWindow, mode, "Select an Output File", filters, false);
 		if(selectedFile != null) {
 			selectedFile = Utils.addExtension(selectedFile, filters[0].getExtensions()[0]);
 			return selectedFile;
