@@ -59,9 +59,17 @@ public class GlobalInformationPanel extends JPanel {
 	 * Generated serial version ID
 	 */
 	private static final long serialVersionUID = -120050377469385302L;
-	private static final int LABEL_HEIGHT = 20;		// height of a label
-	private static final int KEY_WIDTH = 50;		// width of a label used to display a key
-	private static final int VALUE_WIDTH = 100;		// width of a label used to display a value
+
+	/**
+	 * Maximum number of nucleotides displayed in the REF and ALT fields
+	 */
+	private static final int MAX_SEQUENCE_LENGTH = 20;
+
+	/**
+	 * Dimensions of the description label
+	 */
+	private static final Dimension DESC_LABEL_DIMENSION = new Dimension(VariantInformationDialog.WIDTH - 20, 80);
+
 	private final Variant variant;
 	private final VCFLine variantInformation;			// the variant to display the information of
 	private final String genomeName;
@@ -76,9 +84,6 @@ public class GlobalInformationPanel extends JPanel {
 		variant = variantDisplay;
 		this.variantInformation = variantInformation;
 		this.genomeName = genomeName;
-
-		//Dimension dimension = new Dimension(WIDTH, getPanelHeight());
-		//setPreferredSize(dimension);
 
 		GridBagLayout layout = new GridBagLayout();
 		setLayout(layout);
@@ -97,14 +102,8 @@ public class GlobalInformationPanel extends JPanel {
 	 */
 	private void addDescriptionRow (String text) {
 		if ((text != null) && !text.isEmpty()) {
-			Dimension keyDimension = new Dimension(VariantInformationDialog.WIDTH - 20, LABEL_HEIGHT * 4);
-
 			JLabel descriptionLabel = new JLabel(text);
-			descriptionLabel.setSize(keyDimension);
-			descriptionLabel.setPreferredSize(keyDimension);
-			descriptionLabel.setMinimumSize(keyDimension);
-			descriptionLabel.setMaximumSize(keyDimension);
-
+			descriptionLabel.setPreferredSize(DESC_LABEL_DIMENSION);
 			gbc.gridx = 0;
 			gbc.gridwidth = GridBagConstraints.REMAINDER;
 			gbc.weightx = 1;
@@ -127,13 +126,7 @@ public class GlobalInformationPanel extends JPanel {
 			header = (VCFHeader) variantInformation.getGenomeIndexer();
 		}
 
-		Dimension keyDimension = new Dimension(KEY_WIDTH, LABEL_HEIGHT);
-		Dimension valueDimension = new Dimension(VALUE_WIDTH, LABEL_HEIGHT);
-
 		JLabel keyLabel = new JLabel(key);
-		keyLabel.setSize(keyDimension);
-		valueLabel.setSize(valueDimension);
-		valueLabel.setMaximumSize(valueDimension);
 		String toolTip = valueLabel.getText();
 		if ((variantInformation != null) && (header != null) && key.equals("ALT: ") && (valueLabel.getText().charAt(0) == '<')) {
 			String id = valueLabel.getText().substring(1, valueLabel.getText().length() - 1);
@@ -229,20 +222,10 @@ public class GlobalInformationPanel extends JPanel {
 
 				// Type
 				if (variant.getType() == VariantType.REFERENCE_INSERTION) {
-					//type += " (blank of synchronization)";
-					//description += "<html><i>A blank of synchronization is the display of an insertion that occured in an other allele/genome within the project.</i></html>";
 					description += "A blank of synchronization is the display of an insertion that occured in an other allele/genome within the project.";
 				}
 
 				description += "</i></html>";
-				// Reference
-				reference = variantInformation.getREF();
-				if (reference.length() > 1) {
-					reference = reference.substring(1);
-				}
-
-				// Alternative
-				alternative = variantInformation.getStringAlternatives();
 
 				// Quality
 				quality = variantInformation.getQUAL();
@@ -263,15 +246,20 @@ public class GlobalInformationPanel extends JPanel {
 
 				// Reference
 				reference = variantInformation.getREF();
+				if (reference.length() > MAX_SEQUENCE_LENGTH) {
+					reference = reference.substring(0, 20) + "...";
+				}
 
 				// Alternative
-				alternative = "" + variantInformation.getALT();
+				alternative = variantInformation.getALT();
+				if (alternative.length() > MAX_SEQUENCE_LENGTH) {
+					alternative = alternative.substring(0, 20) + "...";
+				}
 
 				// Quality
 				quality = "" + variant.getScore();
 			}
 		}
-
 		addPanel(description, genome, group, startPosition, stopPosition, length, type, idString, idLabel, reference, alternative, quality, filter);
 	}
 
@@ -339,5 +327,4 @@ public class GlobalInformationPanel extends JPanel {
 		});
 		return idLabel;
 	}
-
 }

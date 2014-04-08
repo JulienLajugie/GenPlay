@@ -40,27 +40,11 @@ public class DeletionVariant extends MultiNucleotideVariant {
 	 * Constructor of {@link DeletionVariant}
 	 * @param chromosomeContent the {@link MGChromosomeContent}
 	 * @param referencePositionIndex the index position on the reference genome
-	 */
-	public DeletionVariant(MGChromosomeContent chromosomeContent, int referencePositionIndex) {
-		super(chromosomeContent, referencePositionIndex);
-	}
-
-
-	/**
-	 * Constructor of {@link DeletionVariant}
-	 * @param chromosomeContent the {@link MGChromosomeContent}
-	 * @param referencePositionIndex the index position on the reference genome
 	 * @param start start position
 	 * @param stop stop position
 	 */
 	public DeletionVariant(MGChromosomeContent chromosomeContent, int referencePositionIndex, int start, int stop) {
 		super(chromosomeContent, referencePositionIndex, start, stop);
-	}
-
-
-	@Override
-	public VariantType getType() {
-		return VariantType.DELETION;
 	}
 
 
@@ -72,6 +56,12 @@ public class DeletionVariant extends MultiNucleotideVariant {
 		String description = super.getDescription();
 		description += " TYPE: DELETION;";
 		return description;
+	}
+
+
+	@Override
+	public VariantType getType() {
+		return VariantType.DELETION;
 	}
 
 

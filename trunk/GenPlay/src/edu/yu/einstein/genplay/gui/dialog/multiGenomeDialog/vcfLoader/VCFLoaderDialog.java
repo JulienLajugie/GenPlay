@@ -396,5 +396,4 @@ public class VCFLoaderDialog extends JDialog {
 		setVisible(true);
 		return approved;
 	}
-
 }

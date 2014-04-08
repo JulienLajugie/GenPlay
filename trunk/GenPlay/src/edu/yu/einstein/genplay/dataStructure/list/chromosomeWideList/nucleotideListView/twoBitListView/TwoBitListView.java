@@ -31,6 +31,7 @@ import java.io.RandomAccessFile;
 import java.io.Serializable;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.data.synchronization.MGSOffset;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 import edu.yu.einstein.genplay.dataStructure.chromosome.Chromosome;
@@ -52,9 +53,6 @@ public final class TwoBitListView extends AbstractListView<Nucleotide> implement
 
 	/** Version number of the class */
 	private static final transient int CLASS_VERSION_NUMBER = 0;
-
-	/** Code for a missing genome position (a billion) in multi genome project. */
-	public static final int MISSING_POSITION = -1000000000;
 
 	/** 2bit random access file */
 	private transient RandomAccessFile raf;
@@ -156,12 +154,11 @@ public final class TwoBitListView extends AbstractListView<Nucleotide> implement
 	public Nucleotide get(int position) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			position = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, alleleType, position, chromosome, genomeName);
-			//position = ShiftCompute.computeReversedShift(genomeName, chromosome, alleleType, position);
+			if (position == MGSOffset.MISSING_POSITION_CODE) {
+				return Nucleotide.BLANK;
+			}
 			if ((position <= 0) || (position > dnaSize)) {
 				return null;
-			}
-			if (position == MISSING_POSITION) {
-				return Nucleotide.BLANK;
 			}
 			if (position < 0) {
 				return Nucleotide.ANY;

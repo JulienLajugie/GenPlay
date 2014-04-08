@@ -100,6 +100,7 @@ public class NavigationPanel extends JPanel {
 		jbNext.setOpaque(false);
 		jbNext.setToolTipText("Next variant on the track");
 		jbNext.setMargin(inset);
+		jbNext.setEnabled(getOrigin().getIterator().hasNext());
 		jbNext.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -117,6 +118,7 @@ public class NavigationPanel extends JPanel {
 		jbPrevious.setOpaque(false);
 		jbPrevious.setToolTipText("Next variant on the track");
 		jbPrevious.setMargin(inset);
+		jbPrevious.setEnabled(getOrigin().getIterator().hasPrevious());
 		jbPrevious.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -161,5 +163,4 @@ public class NavigationPanel extends JPanel {
 	private VariantInformationDialog getOrigin () {
 		return origin;
 	}
-
 }

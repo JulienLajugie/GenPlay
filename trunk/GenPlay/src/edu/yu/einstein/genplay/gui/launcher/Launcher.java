@@ -254,7 +254,7 @@ public class Launcher {
 				// if the DEMO_PROJECT_PATH constant has been set it means that we're starting a demo project
 				boolean isDemo = (DEMO_PROJECT_PATH != null);
 				// mac only
-				if (OSXIntegrator.getInstance().getFileToOpen() != null) {
+				if (Utils.isMacOS() && (OSXIntegrator.getInstance().getFileToOpen() != null)) {
 					startProjectFromFile(OSXIntegrator.getInstance().getFileToOpen());
 				} else if (isDemo) {
 					startDemoProject();

@@ -47,31 +47,6 @@ public class MGVariantArray implements Serializable {
 
 
 	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(data);
-		out.writeInt(size);
-	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		data = (Variant[]) in.readObject();
-		size = in.readInt();
-	}
-
-
-	/**
 	 * Creates an instance of {@link MGVariantArray}
 	 */
 	public MGVariantArray() {
@@ -89,49 +64,6 @@ public class MGVariantArray implements Serializable {
 
 
 	/**
-	 * Initialize the data array
-	 * @param size size of the array
-	 */
-	private void initialize (int size) {
-		this.data = new Variant[size];
-		this.size = size;
-		fill(null);
-	}
-
-
-	/**
-	 * Fill the data array with an unique value
-	 * @param value the value to set
-	 */
-	private void fill (Variant value) {
-		for (int i = 0; i < size; i++) {
-			data[i] = value;
-		}
-	}
-
-
-	/**
-	 * Resize the array
-	 */
-	@SuppressWarnings("unused")
-	private void resize () {
-		if (size >= data.length) {
-			// we multiply the current size by the resize multiplication factor
-			int newLength = data.length * RESIZE_FACTOR;
-			// we make sure we don't add less than RESIZE_MIN elements
-			newLength = Math.max(newLength, data.length + RESIZE_MIN);
-			// we make sure we don't add more than RESIZE_MAX elements
-			newLength = Math.min(newLength, data.length + RESIZE_MAX);
-			Variant[] newData = new Variant[newLength];
-			for (int i = 0; i < data.length; i++) {
-				newData[i] = data[i];
-			}
-			data = newData;
-		}
-	}
-
-
-	/**
 	 * @param index the index of the element to get
 	 * @return	the element at the given index
 	 */
@@ -141,22 +73,44 @@ public class MGVariantArray implements Serializable {
 
 
 	/**
-	 * @param index index to set the element
-	 * @param element element to set
-	 * @return the element at the index before the set
+	 * Initialize the data array
+	 * @param size size of the array
 	 */
-	public Variant set(int index, Variant element) {
-		Variant old = data[index];
-		data[index] = element;
-		return old;
+	private void initialize (int size) {
+		data = new Variant[size];
+		this.size = size;
 	}
 
 
 	/**
-	 * @return the size of the array
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
 	 */
-	public int size() {
-		return size;
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		data = (Variant[]) in.readObject();
+		size = in.readInt();
+	}
+
+
+	/**
+	 * Resize the array
+	 */
+	private void resize () {
+		// we multiply the current size by the resize multiplication factor
+		int newLength = data.length * RESIZE_FACTOR;
+		// we make sure we don't add less than RESIZE_MIN elements
+		newLength = Math.max(newLength, data.length + RESIZE_MIN);
+		// we make sure we don't add more than RESIZE_MAX elements
+		newLength = Math.min(newLength, data.length + RESIZE_MAX);
+		Variant[] newData = new Variant[newLength];
+		for (int i = 0; i < data.length; i++) {
+			newData[i] = data[i];
+		}
+		data = newData;
+		size = newLength;
 	}
 
 
@@ -166,11 +120,26 @@ public class MGVariantArray implements Serializable {
 	 */
 	public void resize (int newSize) {
 		Variant[] newData = new Variant[newSize];
-		for (int i = 0; i < newSize; i++) {
+		for (int i = 0; (i < newSize) && (i < data.length); i++) {
 			newData[i] = data[i];
 		}
 		data = newData;
 		size = newSize;
+	}
+
+
+	/**
+	 * @param index index to set the element
+	 * @param element element to set
+	 * @return the element at the index before the set
+	 */
+	public Variant set(int index, Variant element) {
+		while (index >= size) {
+			resize();
+		}
+		Variant old = data[index];
+		data[index] = element;
+		return old;
 	}
 
 
@@ -186,4 +155,22 @@ public class MGVariantArray implements Serializable {
 	}
 
 
+	/**
+	 * @return the size of the array
+	 */
+	public int size() {
+		return size;
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(data);
+		out.writeInt(size);
+	}
 }

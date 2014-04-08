@@ -57,55 +57,6 @@ public class MGChromosomeVariants implements Serializable {
 
 
 	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(variants);
-	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	@SuppressWarnings("unchecked")
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		variants = (List<MGVariantArray>) in.readObject();
-	}
-
-
-	/**
-	 * Generates the variants based on {@link MGChromosomeContent} information.
-	 * @param chromosomeContent the {@link MGChromosomeContent}
-	 */
-	public void generateVariants (MGChromosomeContent chromosomeContent) {
-		int alternativeNumber = chromosomeContent.getMaxAlternativeNumber();
-		int lineNumber = chromosomeContent.getSize();
-		initializeLists(alternativeNumber, lineNumber);
-		compute(chromosomeContent);
-	}
-
-
-	/**
-	 * Initializes the variant lists
-	 * @param alternativeNumber the maximum number of alternatives in a line
-	 * @param lineNumber the number of lines
-	 */
-	private void initializeLists (int alternativeNumber, int lineNumber) {
-		variants = new ArrayList<MGVariantArray>();
-		for (int i = 0; i < alternativeNumber; i++) {
-			variants.add(new MGVariantArray(lineNumber));
-		}
-	}
-
-
-	/**
 	 * Insert information into the variant list as {@link Variant}
 	 * @param chromosomeContent the {@link MGChromosomeContent}
 	 */
@@ -116,7 +67,6 @@ public class MGChromosomeVariants implements Serializable {
 		String metaGenomeName = FormattedMultiGenomeName.META_GENOME_NAME;								// Get the name of the meta genome.
 		Chromosome chromosome = chromosomeContent.getChromosome();										// Get the chromosome the variants will refer to.
 		for (int i = 0; i < size; i++) {																// Scan over the lines
-
 			for (int j = 0; j < alternativeNumber; j++) {												// Scan over the different alternatives of a line
 				Variant variant = null;
 				int referencePosition = chromosomeContent.getPositions().get(i);						// Get the current reference genome position.
@@ -129,6 +79,8 @@ public class MGChromosomeVariants implements Serializable {
 				} else if (length < 0) {																// In case of a deletion
 					start++;																			// The actual variation starts one nucleotide further
 					int stop = start + (length * -1);													// Calculate the stop position: only start + length (the length is here negative since it's a deletion)
+					//stop = ShiftCompute.getPosition(referenceGenomeName, null, stop, chromosome, metaGenomeName);	// Calculate the stop position of the variant.
+					//chromosomeContent.getAlternatives().get(j).set(i, start - stop);
 					variant = new DeletionVariant(chromosomeContent, i, start, stop);					// Create the variant.
 				} else {																				// A 0 nulceotide length can only be a SNP.
 					variant = new SNPVariant(chromosomeContent, i, start);								// Create the variant.
@@ -136,6 +88,18 @@ public class MGChromosomeVariants implements Serializable {
 				variants.get(j).set(i, variant);														// Add the variant to the lists.
 			}
 		}
+	}
+
+
+	/**
+	 * Generates the variants based on {@link MGChromosomeContent} information.
+	 * @param chromosomeContent the {@link MGChromosomeContent}
+	 */
+	public void generateVariants (MGChromosomeContent chromosomeContent) {
+		int alternativeNumber = chromosomeContent.getMaxAlternativeNumber();
+		int lineNumber = chromosomeContent.getSize();
+		initializeLists(alternativeNumber, lineNumber);
+		compute(chromosomeContent);
 	}
 
 
@@ -163,6 +127,32 @@ public class MGChromosomeVariants implements Serializable {
 
 
 	/**
+	 * Initializes the variant lists
+	 * @param alternativeNumber the maximum number of alternatives in a line
+	 * @param lineNumber the number of lines
+	 */
+	private void initializeLists (int alternativeNumber, int lineNumber) {
+		variants = new ArrayList<MGVariantArray>();
+		for (int i = 0; i < alternativeNumber; i++) {
+			variants.add(new MGVariantArray(lineNumber));
+		}
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		variants = (List<MGVariantArray>) in.readObject();
+	}
+
+
+	/**
 	 * Shows information
 	 */
 	public void show () {
@@ -182,4 +172,14 @@ public class MGChromosomeVariants implements Serializable {
 		System.out.println(info);
 	}
 
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(variants);
+	}
 }

@@ -40,31 +40,6 @@ public abstract class MultiNucleotideVariant extends Variant {
 
 
 	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	@Override
-	protected void writeObject(ObjectOutputStream out) throws IOException {
-		super.writeObject(out);
-		out.writeInt(stop);
-	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	@Override
-	protected void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		super.readObject(in);
-		stop = in.readInt();
-	}
-
-
-	/**
 	 * Constructor of  {@link MultiNucleotideVariant}
 	 * @param chromosomeContent the {@link MGChromosomeContent}
 	 * @param referencePositionIndex the index position on the reference genome
@@ -87,18 +62,6 @@ public abstract class MultiNucleotideVariant extends Variant {
 	}
 
 
-	@Override
-	public int getStop() {
-		return stop;
-	}
-
-
-	@Override
-	public void setStop(int stop) {
-		this.stop = stop;
-	}
-
-
 	/**
 	 * @return a description of the {@link Variant}
 	 */
@@ -109,4 +72,40 @@ public abstract class MultiNucleotideVariant extends Variant {
 		return description;
 	}
 
+
+	@Override
+	public int getStop() {
+		return stop;
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@Override
+	protected void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		super.readObject(in);
+		stop = in.readInt();
+	}
+
+
+	@Override
+	public void setStop(int stop) {
+		this.stop = stop;
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	@Override
+	protected void writeObject(ObjectOutputStream out) throws IOException {
+		super.writeObject(out);
+		out.writeInt(stop);
+	}
 }

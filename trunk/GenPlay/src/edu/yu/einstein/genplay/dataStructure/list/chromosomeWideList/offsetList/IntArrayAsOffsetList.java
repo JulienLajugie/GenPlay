@@ -30,7 +30,6 @@ import java.util.AbstractList;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.multiGenome.data.synchronization.MGSOffset;
-import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.nucleotideListView.twoBitListView.TwoBitListView;
 
 
 /**
@@ -42,7 +41,7 @@ import edu.yu.einstein.genplay.dataStructure.list.chromosomeWideList.nucleotideL
  */
 public class IntArrayAsOffsetList extends AbstractList<MGSOffset> implements Serializable, List<MGSOffset> {
 
-	private static final long serialVersionUID = -8787392051503707843L; // generated ID
+	private static final long serialVersionUID = -8787392051503707843L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private static final int 	RESIZE_MIN = 1000;		// minimum length added every time the array is resized
 	private static final int 	RESIZE_MAX = 10000000;	// maximum length added every time the array is resized
@@ -53,39 +52,12 @@ public class IntArrayAsOffsetList extends AbstractList<MGSOffset> implements Ser
 
 
 	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(position);
-		out.writeObject(value);
-		out.writeInt(size);
-	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		position = (int[]) in.readObject();
-		value = (int[]) in.readObject();
-		size = in.readInt();
-	}
-
-
-	/**
 	 * Creates an instance of {@link IntArrayAsOffsetList}
 	 */
 	public IntArrayAsOffsetList() {
-		this.position = new int[0];
-		this.value = new int[0];
-		this.size = 0;
+		position = new int[0];
+		value = new int[0];
+		size = 0;
 	}
 
 
@@ -94,8 +66,8 @@ public class IntArrayAsOffsetList extends AbstractList<MGSOffset> implements Ser
 	 * @param size size of the array
 	 */
 	public IntArrayAsOffsetList(int size) {
-		this.position = new int[size];
-		this.value = new int[size];
+		position = new int[size];
+		value = new int[size];
 		this.size = size;
 	}
 
@@ -127,29 +99,6 @@ public class IntArrayAsOffsetList extends AbstractList<MGSOffset> implements Ser
 	}
 
 
-	@Override
-	public MGSOffset get(int index) {
-		return new MGSOffset(position[index], value[index]);
-	}
-
-
-	/**
-	 * @return null in order to accelerate the operation
-	 */
-	@Override
-	public MGSOffset set(int index, MGSOffset offset) {
-		position[index] = offset.getPosition();
-		value[index] = offset.getValue();
-		return null;
-	}
-
-
-	@Override
-	public int size() {
-		return size;
-	}
-
-
 	/**
 	 * Recreates the arrays with the right size in order to optimize the memory usage.
 	 */
@@ -164,46 +113,6 @@ public class IntArrayAsOffsetList extends AbstractList<MGSOffset> implements Ser
 		value = valueTmp;
 	}
 
-
-	/**
-	 * @param genomePosition the position on the genome
-	 * @return the meta genome position associated to the given genome position
-	 */
-	public int getMetaGenomePosition (int genomePosition) {
-		if (size == 0) {
-			return genomePosition;
-		}
-		int genomePositionIndex = findGenomeIndex(genomePosition, 0, size - 1);	// get the index of the position (or the one right after)
-		if (genomePosition < position[genomePositionIndex]) {					// if the position is lower than the one found (ie we want the index right before)
-			if (genomePositionIndex == 0) {										// if the index found is the first one in the list
-				return genomePosition;											// there is no offset yet therefore genome position and meta genome position are similar
-			} else {															// if there is at least one index before
-				genomePositionIndex--;											// it is the one we are looking for
-			}
-		}
-		int difference  = genomePosition - position[genomePositionIndex];
-		int metaGenomePosition = position[genomePositionIndex] + value[genomePositionIndex] + difference; // the meta genome position is the genome position plus its offset
-
-		return metaGenomePosition;												// we return the meta genome position
-	}
-
-
-	/**
-	 * @param genomePosition a position on the genome
-	 * @return the index of the {@link MGSOffset} at the given genome position, or the index before if no exact match
-	 */
-	public int getIndex (int genomePosition) {
-		if (size == 0) {
-			return -1;
-		}
-		int genomePositionIndex = findGenomeIndex(genomePosition, 0, size - 1);	// get the index of the position (or the one right after)
-		if (genomePosition < position[genomePositionIndex]) {					// if the position is lower than the one found (ie we want the index right before)
-			if (genomePositionIndex > 0) {										// if the index found is not the first one in the list
-				genomePositionIndex--;											// it is the one we are looking for
-			}
-		}
-		return genomePositionIndex;
-	}
 
 	/**
 	 * Recursive function. Returns the index where the genome position is found
@@ -224,6 +133,36 @@ public class IntArrayAsOffsetList extends AbstractList<MGSOffset> implements Ser
 		} else {
 			return findGenomeIndex(value, indexStart, indexStart + middle);
 		}
+	}
+
+
+	/**
+	 * Recursive function. Returns the index where the meta genome position is found
+	 * or the index right after if the exact value is not found.
+	 * @param value			value of a meta genome position
+	 * @param indexStart
+	 * @param indexStop
+	 * @return the index where the start value of the window is found or the index right after if the exact value is not find
+	 */
+	private int findMetaGenomeIndex (int value, int indexStart, int indexStop) {
+		int middle = (indexStop - indexStart) / 2;
+		if (indexStart == indexStop) {
+			return indexStart;
+		} else {
+			int currentMetaGenomePosition = position[indexStart + middle] + this.value[indexStart + middle];
+			if (value == currentMetaGenomePosition) {
+				return indexStart + middle;
+			} else if (value > currentMetaGenomePosition) {
+				return findMetaGenomeIndex(value, indexStart + middle + 1, indexStop);
+			}
+			return findMetaGenomeIndex(value, indexStart, indexStart + middle);
+		}
+	}
+
+
+	@Override
+	public MGSOffset get(int index) {
+		return new MGSOffset(position[index], value[index]);
 	}
 
 
@@ -253,7 +192,7 @@ public class IntArrayAsOffsetList extends AbstractList<MGSOffset> implements Ser
 			}
 
 			if (difference <= variationLength) {								// if the seek meta genome position is included in the variation length,
-				return TwoBitListView.MISSING_POSITION;							// this meta genome position does not match with a position of the genome
+				return MGSOffset.MISSING_POSITION_CODE;							// this meta genome position does not match with a position of the genome
 			} else {															// if the seek meta genome position is not included in the variation length,
 				difference -= variationLength;									// we calculate the difference between the current genome position and the one we are looking for
 				return position[genomePositionIndex] - difference;				// we subtract this difference to the genome position found.
@@ -263,26 +202,67 @@ public class IntArrayAsOffsetList extends AbstractList<MGSOffset> implements Ser
 
 
 	/**
-	 * Recursive function. Returns the index where the meta genome position is found
-	 * or the index right after if the exact value is not found.
-	 * @param value			value of a meta genome position
-	 * @param indexStart
-	 * @param indexStop
-	 * @return the index where the start value of the window is found or the index right after if the exact value is not find
+	 * @param genomePosition a position on the genome
+	 * @return the index of the {@link MGSOffset} at the given genome position, or the index before if no exact match
 	 */
-	private int findMetaGenomeIndex (int value, int indexStart, int indexStop) {
-		int middle = (indexStop - indexStart) / 2;
-		if (indexStart == indexStop) {
-			return indexStart;
-		} else {
-			int currentMetaGenomePosition = position[indexStart + middle] + this.value[indexStart + middle];
-			if (value == currentMetaGenomePosition) {
-				return indexStart + middle;
-			} else if (value > currentMetaGenomePosition) {
-				return findMetaGenomeIndex(value, indexStart + middle + 1, indexStop);
-			}
-			return findMetaGenomeIndex(value, indexStart, indexStart + middle);
+	public int getIndex (int genomePosition) {
+		if (size == 0) {
+			return -1;
 		}
+		int genomePositionIndex = findGenomeIndex(genomePosition, 0, size - 1);	// get the index of the position (or the one right after)
+		if (genomePosition < position[genomePositionIndex]) {					// if the position is lower than the one found (ie we want the index right before)
+			if (genomePositionIndex > 0) {										// if the index found is not the first one in the list
+				genomePositionIndex--;											// it is the one we are looking for
+			}
+		}
+		return genomePositionIndex;
+	}
+
+
+	/**
+	 * @param genomePosition the position on the genome
+	 * @return the meta genome position associated to the given genome position
+	 */
+	public int getMetaGenomePosition (int genomePosition) {
+		if (size == 0) {
+			return genomePosition;
+		}
+		int genomePositionIndex = findGenomeIndex(genomePosition, 0, size - 1);	// get the index of the position (or the one right after)
+		if (genomePosition < position[genomePositionIndex]) {					// if the position is lower than the one found (ie we want the index right before)
+			if (genomePositionIndex == 0) {										// if the index found is the first one in the list
+				return genomePosition;											// there is no offset yet therefore genome position and meta genome position are similar
+			} else {															// if there is at least one index before
+				genomePositionIndex--;											// it is the one we are looking for
+			}
+		}
+		int difference  = genomePosition - position[genomePositionIndex];
+		int metaGenomePosition = position[genomePositionIndex] + value[genomePositionIndex] + difference; // the meta genome position is the genome position plus its offset
+
+		return metaGenomePosition;												// we return the meta genome position
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		position = (int[]) in.readObject();
+		value = (int[]) in.readObject();
+		size = in.readInt();
+	}
+
+	/**
+	 * @return null in order to accelerate the operation
+	 */
+	@Override
+	public MGSOffset set(int index, MGSOffset offset) {
+		position[index] = offset.getPosition();
+		value[index] = offset.getValue();
+		return null;
 	}
 
 
@@ -295,5 +275,24 @@ public class IntArrayAsOffsetList extends AbstractList<MGSOffset> implements Ser
 			info += "[" + position[i] + "; " + value[i] + "] ";
 		}
 		System.out.println(info);
+	}
+
+
+	@Override
+	public int size() {
+		return size;
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(position);
+		out.writeObject(value);
+		out.writeInt(size);
 	}
 }

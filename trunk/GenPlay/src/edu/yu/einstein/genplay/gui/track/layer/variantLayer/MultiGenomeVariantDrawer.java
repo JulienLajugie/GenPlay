@@ -170,14 +170,17 @@ class MultiGenomeVariantDrawer implements Serializable {
 			if ((fm.getHeight() < height) && (fm.stringWidth("A") < windowWidth)) {			// verifies if the height of the font is smaller than the height of the stripe AND if the width of a reference letter (A) is smaller than a window size
 				String letters = variantDisplay.getVariantSequence();
 				g.setColor(Colors.BLACK);													// set the color of the letters
-				int letterY = graphicsHeigth - ((height - fm.getHeight()) / 2);				// define where the draw will start on the Y axis
+				int letterY = (int) (graphicsHeigth - (height / 2d));						// define where the draw will start on the Y axis
 				Graphics2D g2d = (Graphics2D) g.create();									// we reverse all coordinates to display the letter on the right way
 				if (currentDrawingAllele == AlleleType.ALLELE02) {
 					g2d.scale(1, -1);
 					letterY *= -1;
+					letterY -= fm.getHeight() / 2d;
+				} else {
+					letterY += fm.getHeight() / 2d;
 				}
 
-				int firstNucleotide = projectWindow.getGenomeWindow().getStart() - variant.getStart();	// retrieve the position of the first displayed nucleotide in the variant
+				int firstNucleotide = projectWindow.screenToGenomePosition(x) - variant.getStart();	// retrieve the position of the first displayed nucleotide in the variant
 				firstNucleotide = Math.max(0, firstNucleotide);
 
 				for (int i = 0; i < nucleotideNumber; i++) {								// for all the nucleotide that are supposed to be displayed
@@ -224,7 +227,7 @@ class MultiGenomeVariantDrawer implements Serializable {
 	 * @param width		width of the stripe
 	 * @param height	height of the stripe
 	 */
-	private void drawPatternFilter (Graphics g, int x, int y, int width, int height) {
+	private void drawFilterPattern (Graphics g, int x, int y, int width, int height) {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setColor(Colors.GREY);
@@ -310,7 +313,7 @@ class MultiGenomeVariantDrawer implements Serializable {
 		}
 
 		if (variantDisplay.getDisplay() == VariantDisplayList.SHOW_FILTER) {
-			drawPatternFilter(g, x, y, width, variantHeight);
+			drawFilterPattern(g, x, y, width, variantHeight);
 		}
 		nucleotideNumber = stop - start;
 		if (nucleotideNumber == 0) {
@@ -420,5 +423,4 @@ class MultiGenomeVariantDrawer implements Serializable {
 		out.writeObject(currentDrawingAllele);
 		out.writeInt(variantOpacity);
 	}
-
 }

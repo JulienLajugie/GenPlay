@@ -105,7 +105,7 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 	private int computeMaximumBaseWidth() {
 		int maxWidth = 0;
 		// compute the length in pixels of the widest base to display
-		String[] bases = { "N", "A", "C", "G", "T" };
+		String[] bases = { "N", "A", "C", "G", "T", "X"};
 		for (String currBase : bases) {
 			maxWidth = Math.max(maxWidth, getTrack().getFontMetrics(TrackConstants.FONT_DEFAULT).stringWidth(currBase));
 		}
@@ -151,7 +151,6 @@ public class NucleotideLayer extends AbstractLayer<NucleotideList> implements La
 						Nucleotide nucleotide = nucleotides[index];
 						// compute the position on the screen
 						int x = projectWindow.genomeToScreenPosition(position);
-						// int nucleoWith = projectWindow.twoGenomePosToScreenWidth(position, position + 1);
 						int nucleoWith = projectWindow.genomeToScreenPosition(position + 1) - x;
 						// select a different color for each type of base
 						Color nucleoColor = Colors.nucleotideToColor(nucleotide);

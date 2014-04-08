@@ -38,6 +38,7 @@ import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
+import edu.yu.einstein.genplay.core.multiGenome.data.synchronization.MGSOffset;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 import edu.yu.einstein.genplay.core.parser.genomeWindowParser.GenomeWindowInputHandler;
@@ -53,6 +54,7 @@ import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.util.Images;
+import edu.yu.einstein.genplay.util.NumberFormats;
 
 
 /**
@@ -339,7 +341,18 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 			AlleleType inputAlleleType = FormattedMultiGenomeName.getAlleleName(MGDisplaySettings.SELECTED_GENOME);
 			int positionStart = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, inputAlleleType, genomeWindow.getStart(), currentChromosome, genomeName);
 			int positionStop = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, inputAlleleType, genomeWindow.getStop(), currentChromosome, genomeName);
-			text = currentChromosome.getName() + ":" + positionStart + "-" + positionStop;
+			String positionStartStr, positionStopStr;
+			if (positionStart == MGSOffset.MISSING_POSITION_CODE) {
+				positionStartStr = "Insertion";
+			} else {
+				positionStartStr = NumberFormats.getPositionFormat().format(positionStart);
+			}
+			if (positionStop == MGSOffset.MISSING_POSITION_CODE) {
+				positionStopStr = "Insertion";
+			} else {
+				positionStopStr = NumberFormats.getPositionFormat().format(positionStop);
+			}
+			text = currentChromosome.toString() + ":" + positionStartStr + "-" + positionStopStr;
 		}
 		jcbGenomeWindow.setSelectedItem(text);
 	}

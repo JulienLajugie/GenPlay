@@ -58,16 +58,6 @@ public class MGByteArray implements Serializable {
 
 
 	/**
-	 * Creates an instance of {@link MGByteArray}
-	 * @param size size of the array
-	 */
-	public MGByteArray(int size) {
-		data = new byte[size];
-		this.size = size;
-	}
-
-
-	/**
 	 * @param index the index of the element to get
 	 * @return	the element at the given index
 	 */
@@ -137,21 +127,19 @@ public class MGByteArray implements Serializable {
 	/**
 	 * Resize the array
 	 */
-	@SuppressWarnings("unused")
 	private void resize () {
-		if (size >= data.length) {
-			// we multiply the current size by the resize multiplication factor
-			int newLength = data.length * RESIZE_FACTOR;
-			// we make sure we don't add less than RESIZE_MIN elements
-			newLength = Math.max(newLength, data.length + RESIZE_MIN);
-			// we make sure we don't add more than RESIZE_MAX elements
-			newLength = Math.min(newLength, data.length + RESIZE_MAX);
-			byte[] newData = new byte[newLength];
-			for (int i = 0; i < data.length; i++) {
-				newData[i] = data[i];
-			}
-			data = newData;
+		// we multiply the current size by the resize multiplication factor
+		int newLength = data.length * RESIZE_FACTOR;
+		// we make sure we don't add less than RESIZE_MIN elements
+		newLength = Math.max(newLength, data.length + RESIZE_MIN);
+		// we make sure we don't add more than RESIZE_MAX elements
+		newLength = Math.min(newLength, data.length + RESIZE_MAX);
+		byte[] newData = new byte[newLength];
+		for (int i = 0; i < data.length; i++) {
+			newData[i] = data[i];
 		}
+		data = newData;
+		size = newLength;
 	}
 
 
@@ -161,7 +149,7 @@ public class MGByteArray implements Serializable {
 	 */
 	public void resize (int newSize) {
 		byte[] newData = new byte[newSize];
-		for (int i = 0; i < newSize; i++) {
+		for (int i = 0; (i < newSize) && (i < data.length); i++) {
 			newData[i] = data[i];
 		}
 		data = newData;
@@ -175,6 +163,9 @@ public class MGByteArray implements Serializable {
 	 * @return the element at the index before the set
 	 */
 	public byte set(int index, byte element) {
+		while (index >= size) {
+			resize();
+		}
 		byte old = data[index];
 		data[index] = element;
 		return old;
@@ -191,7 +182,9 @@ public class MGByteArray implements Serializable {
 		if ((element > MAX_VALUE) || (element < MIN_VALUE)) {
 			throw new InvalidParameterException("The value of the element to set must be smaller than " + MAX_VALUE + " greater than " + MIN_VALUE);
 		}
-
+		while (index >= size) {
+			resize();
+		}
 		int old = data[index];
 		data[index] = element.byteValue();
 		return old;
@@ -228,6 +221,4 @@ public class MGByteArray implements Serializable {
 		out.writeObject(data);
 		out.writeInt(size);
 	}
-
-
 }

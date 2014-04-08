@@ -89,6 +89,7 @@ public class WarningReportDialog extends JDialog {
 		setIconImages(Images.getApplicationImages());
 		//setAlwaysOnTop(true);
 		setResizable(true);
+		setAlwaysOnTop(true);
 		setVisible(false);
 		pack();
 	}

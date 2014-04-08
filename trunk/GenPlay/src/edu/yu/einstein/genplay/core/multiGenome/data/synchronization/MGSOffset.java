@@ -39,6 +39,9 @@ package edu.yu.einstein.genplay.core.multiGenome.data.synchronization;
  */
 public class MGSOffset {
 
+	/** Code for a missing genome position (a billion) in multi genome project. */
+	public static final int MISSING_POSITION_CODE = -1000000000;
+
 	private int position;	// position where the offset must be applied
 	private int value;		// value of the offset
 
@@ -47,8 +50,8 @@ public class MGSOffset {
 	 * Constructor of {@link MGSOffset}
 	 */
 	public MGSOffset () {
-		this.position = 0;
-		this.value = 0;
+		position = 0;
+		value = 0;
 	}
 
 
@@ -72,18 +75,18 @@ public class MGSOffset {
 
 
 	/**
-	 * @param position the position to set
-	 */
-	public void setPosition(int position) {
-		this.position = position;
-	}
-
-
-	/**
 	 * @return the value
 	 */
 	public int getValue() {
 		return value;
+	}
+
+
+	/**
+	 * @param position the position to set
+	 */
+	public void setPosition(int position) {
+		this.position = position;
 	}
 
 

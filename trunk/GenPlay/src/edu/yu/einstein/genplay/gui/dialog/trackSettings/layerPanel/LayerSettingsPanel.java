@@ -79,6 +79,8 @@ public class LayerSettingsPanel extends JPanel {
 				if ((layer != null) && (layer instanceof ColoredLayer) && !isSelected) {
 					Color layerColor = ((ColoredLayer) layer).getColor();
 					renderedComponent.setForeground(layerColor);
+				} else {
+					renderedComponent.setForeground(Color.BLACK);
 				}
 				renderedComponent.setFont(renderedComponent.getFont().deriveFont(Font.BOLD));
 			}

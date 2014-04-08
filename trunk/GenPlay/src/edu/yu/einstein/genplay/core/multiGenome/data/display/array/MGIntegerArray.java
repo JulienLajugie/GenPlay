@@ -47,130 +47,10 @@ public class MGIntegerArray implements Serializable {
 
 
 	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(data);
-		out.writeInt(size);
-	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		data = (int[]) in.readObject();
-		size = in.readInt();
-	}
-
-
-	/**
 	 * Creates an instance of {@link MGIntegerArray}
 	 */
 	public MGIntegerArray() {
 		initialize(DEFAULT_SIZE);
-	}
-
-
-	/**
-	 * Creates an instance of {@link MGIntegerArray}
-	 * @param size size of the array
-	 */
-	public MGIntegerArray(int size) {
-		initialize(size);
-	}
-
-
-	/**
-	 * Initialize the data array
-	 * @param size size of the array
-	 */
-	private void initialize (int size) {
-		this.data = new int[size];
-		this.size = size;
-		fill(MGLineContent.NO_ALTERNATIVE);
-	}
-
-
-	/**
-	 * Fill the data array with an unique value
-	 * @param value the value to set
-	 */
-	private void fill (int value) {
-		for (int i = 0; i < size; i++) {
-			data[i] = value;
-		}
-	}
-
-
-	/**
-	 * Resize the array
-	 */
-	@SuppressWarnings("unused")
-	private void resize () {
-		if (size >= data.length) {
-			// we multiply the current size by the resize multiplication factor
-			int newLength = data.length * RESIZE_FACTOR;
-			// we make sure we don't add less than RESIZE_MIN elements
-			newLength = Math.max(newLength, data.length + RESIZE_MIN);
-			// we make sure we don't add more than RESIZE_MAX elements
-			newLength = Math.min(newLength, data.length + RESIZE_MAX);
-			int[] newData = new int[newLength];
-			for (int i = 0; i < data.length; i++) {
-				newData[i] = data[i];
-			}
-			data = newData;
-		}
-	}
-
-
-	/**
-	 * @param index the index of the element to get
-	 * @return	the element at the given index
-	 */
-	public Integer get(int index) {
-		return data[index];
-	}
-
-
-	/**
-	 * @param index index to set the element
-	 * @param element element to set
-	 * @return the element at the index before the set
-	 */
-	public Integer set(int index, Integer element) {
-		int old = data[index];
-		data[index] = element;
-		return old;
-	}
-
-
-	/**
-	 * @return the size of the array
-	 */
-	public int size() {
-		return size;
-	}
-
-
-	/**
-	 * Resize the array copying every value to a new array from the beginning until the new size
-	 * @param newSize the new size
-	 */
-	public void resize (int newSize) {
-		int[] newData = new int[newSize];
-		for (int i = 0; i < newSize; i++) {
-			newData[i] = data[i];
-		}
-		data = newData;
-		size = newSize;
 	}
 
 
@@ -196,6 +76,25 @@ public class MGIntegerArray implements Serializable {
 		size = data.length;
 	}
 
+
+	/**
+	 * Fill the data array with an unique value
+	 * @param value the value to set
+	 */
+	private void fill (int value) {
+		for (int i = 0; i < size; i++) {
+			data[i] = value;
+		}
+	}
+
+
+	/**
+	 * @param index the index of the element to get
+	 * @return	the element at the given index
+	 */
+	public Integer get(int index) {
+		return data[index];
+	}
 
 
 	/**
@@ -235,6 +134,86 @@ public class MGIntegerArray implements Serializable {
 
 
 	/**
+	 * Initialize the data array
+	 * @param size size of the array
+	 */
+	private void initialize (int size) {
+		data = new int[size];
+		this.size = size;
+		fill(MGLineContent.NO_ALTERNATIVE);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		data = (int[]) in.readObject();
+		size = in.readInt();
+	}
+
+
+	/**
+	 * Resize the array
+	 */
+	private void resize () {
+		// we multiply the current size by the resize multiplication factor
+		int newLength = data.length * RESIZE_FACTOR;
+		// we make sure we don't add less than RESIZE_MIN elements
+		newLength = Math.max(newLength, data.length + RESIZE_MIN);
+		// we make sure we don't add more than RESIZE_MAX elements
+		newLength = Math.min(newLength, data.length + RESIZE_MAX);
+		int[] newData = new int[newLength];
+		for (int i = 0; i < data.length; i++) {
+			newData[i] = data[i];
+		}
+		for (int i = data.length; i < newLength; i++) {
+			newData[i] = MGLineContent.NO_ALTERNATIVE;
+		}
+		data = newData;
+		size = newLength;
+	}
+
+
+	/**
+	 * Resize the array copying every value to a new array from the beginning until the new size
+	 * @param newSize the new size
+	 */
+	public void resize (int newSize) {
+		int[] newData = new int[newSize];
+		for (int i = 0; i < newSize; i++) {
+			if (i < data.length) {
+				newData[i] = data[i];
+			} else {
+				newData[i] = MGLineContent.NO_ALTERNATIVE;
+			}
+		}
+		data = newData;
+		size = newSize;
+	}
+
+
+	/**
+	 * @param index index to set the element
+	 * @param element element to set
+	 * @return the element at the index before the set
+	 */
+	public Integer set(int index, Integer element) {
+		while(index >= size) {
+			resize();
+		}
+		int old = data[index];
+		data[index] = element;
+		return old;
+	}
+
+
+
+	/**
 	 * Shows the content of the list
 	 */
 	public void show () {
@@ -246,4 +225,22 @@ public class MGIntegerArray implements Serializable {
 	}
 
 
+	/**
+	 * @return the size of the array
+	 */
+	public int size() {
+		return size;
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(data);
+		out.writeInt(size);
+	}
 }

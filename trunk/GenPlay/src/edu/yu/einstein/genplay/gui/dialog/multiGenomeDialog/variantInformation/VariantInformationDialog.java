@@ -156,12 +156,19 @@ public class VariantInformationDialog extends JDialog {
 
 
 	/**
+	 * @return the iterator on variants
+	 */
+	public VariantDisplayMultiListScanner getIterator() {
+		return iterator;
+	}
+
+
+	/**
 	 * @return the search options
 	 */
 	protected SearchOption getOptions() {
 		return options;
 	}
-
 
 	/**
 	 * @return the variant
@@ -169,6 +176,7 @@ public class VariantInformationDialog extends JDialog {
 	public Variant getVariant() {
 		return currentVariant;
 	}
+
 
 	/**
 	 * Looks for the next variant and run the dialog initialization.
@@ -184,6 +192,8 @@ public class VariantInformationDialog extends JDialog {
 					refreshDialog();
 					return true;
 				}
+			} else {
+				exit = true;
 			}
 		}
 		return false;

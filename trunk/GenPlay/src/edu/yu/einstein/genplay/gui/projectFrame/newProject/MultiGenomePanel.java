@@ -84,7 +84,7 @@ class MultiGenomePanel extends JPanel {
 
 		//Edit button
 		JButton editVCFFile = new JButton("Select VCF");
-		editVCFFile.setToolTipText("Edit multi genome information");
+		editVCFFile.setToolTipText("Edit multi-genome information");
 		editVCFFile.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -273,7 +273,6 @@ class MultiGenomePanel extends JPanel {
 	 */
 	private void initializesGenomeFileAssociation () {
 		genomeFileAssociation = new HashMap<String, List<VCFFile>>();
-		List<VCFFile> readerList = new ArrayList<VCFFile>();
 
 		for (VCFData vcfData: data) {
 			String fullName = FormattedMultiGenomeName.getFullFormattedGenomeName(vcfData.getGroup(), vcfData.getNickname(), vcfData.getRaw());
@@ -282,7 +281,6 @@ class MultiGenomePanel extends JPanel {
 			}
 			VCFFile vcfFile = vcfLoaderDialog.getVCFFile(vcfData.getFile());
 			genomeFileAssociation.get(fullName).add(vcfFile);
-			readerList.add(vcfFile);
 		}
 	}
 

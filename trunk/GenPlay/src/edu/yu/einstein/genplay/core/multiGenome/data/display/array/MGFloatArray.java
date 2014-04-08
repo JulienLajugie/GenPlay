@@ -45,67 +45,11 @@ public class MGFloatArray implements Serializable {
 
 
 	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(data);
-		out.writeInt(size);
-	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		data = (float[]) in.readObject();
-		size = in.readInt();
-	}
-
-
-	/**
 	 * Creates an instance of {@link MGFloatArray}
 	 */
 	public MGFloatArray() {
-		this.data = new float[DEFAULT_SIZE];
-		this.size = DEFAULT_SIZE;
-	}
-
-
-	/**
-	 * Creates an instance of {@link MGFloatArray}
-	 * @param size size of the array
-	 */
-	public MGFloatArray(int size) {
-		this.data = new float[size];
-		this.size = size;
-	}
-
-
-	/**
-	 * Resize the array
-	 */
-	@SuppressWarnings("unused")
-	private void resize () {
-		if (size >= data.length) {
-			// we multiply the current size by the resize multiplication factor
-			int newLength = data.length * RESIZE_FACTOR;
-			// we make sure we don't add less than RESIZE_MIN elements
-			newLength = Math.max(newLength, data.length + RESIZE_MIN);
-			// we make sure we don't add more than RESIZE_MAX elements
-			newLength = Math.min(newLength, data.length + RESIZE_MAX);
-			float[] newData = new float[newLength];
-			for (int i = 0; i < data.length; i++) {
-				newData[i] = data[i];
-			}
-			data = newData;
-		}
+		data = new float[DEFAULT_SIZE];
+		size = DEFAULT_SIZE;
 	}
 
 
@@ -115,40 +59,6 @@ public class MGFloatArray implements Serializable {
 	 */
 	public Float get(int index) {
 		return data[index];
-	}
-
-
-	/**
-	 * @param index index to set the element
-	 * @param element element to set
-	 * @return the element at the index before the set
-	 */
-	public Float set(int index, float element) {
-		float old = data[index];
-		data[index] = element;
-		return old;
-	}
-
-
-	/**
-	 * @return the size of the array
-	 */
-	public int size() {
-		return size;
-	}
-
-
-	/**
-	 * Resize the array copying every value to a new array from the beginning until the new size
-	 * @param newSize the new size
-	 */
-	public void resize (int newSize) {
-		float[] newData = new float[newSize];
-		for (int i = 0; i < newSize; i++) {
-			newData[i] = data[i];
-		}
-		data = newData;
-		size = newSize;
 	}
 
 
@@ -189,6 +99,67 @@ public class MGFloatArray implements Serializable {
 
 
 	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		data = (float[]) in.readObject();
+		size = in.readInt();
+	}
+
+
+	/**
+	 * Resize the array
+	 */
+	private void resize () {
+		// we multiply the current size by the resize multiplication factor
+		int newLength = data.length * RESIZE_FACTOR;
+		// we make sure we don't add less than RESIZE_MIN elements
+		newLength = Math.max(newLength, data.length + RESIZE_MIN);
+		// we make sure we don't add more than RESIZE_MAX elements
+		newLength = Math.min(newLength, data.length + RESIZE_MAX);
+		float[] newData = new float[newLength];
+		for (int i = 0; i < data.length; i++) {
+			newData[i] = data[i];
+		}
+		data = newData;
+		size = newLength;
+	}
+
+
+	/**
+	 * Resize the array copying every value to a new array from the beginning until the new size
+	 * @param newSize the new size
+	 */
+	public void resize (int newSize) {
+		float[] newData = new float[newSize];
+		for (int i = 0; (i < newSize) && (i < data.length); i++) {
+			newData[i] = data[i];
+		}
+		data = newData;
+		size = newSize;
+	}
+
+
+	/**
+	 * @param index index to set the element
+	 * @param element element to set
+	 * @return the element at the index before the set
+	 */
+	public Float set(int index, float element) {
+		while (index >= size) {
+			resize();
+		}
+		float old = data[index];
+		data[index] = element;
+		return old;
+	}
+
+
+	/**
 	 * Shows the content of the list
 	 */
 	public void show () {
@@ -200,4 +171,22 @@ public class MGFloatArray implements Serializable {
 	}
 
 
+	/**
+	 * @return the size of the array
+	 */
+	public int size() {
+		return size;
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(data);
+		out.writeInt(size);
+	}
 }

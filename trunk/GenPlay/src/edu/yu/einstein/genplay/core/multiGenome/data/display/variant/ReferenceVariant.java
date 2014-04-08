@@ -42,14 +42,50 @@ public class ReferenceVariant extends MultiNucleotideVariant {
 
 
 	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
+	 * Constructor of {@link ReferenceVariant}
+	 * @param chromosomeContent the {@link MGChromosomeContent}
+	 * @param referencePositionIndex the index position on the reference genome
+	 * @param start start position
+	 * @param stop stop position
+	 * @param type the type of the reference variant
+	 */
+	public ReferenceVariant(MGChromosomeContent chromosomeContent, int referencePositionIndex, int start, int stop, VariantType type) {
+		super(chromosomeContent, referencePositionIndex, start, stop);
+		this.type = type;
+	}
+
+
+	/**
+	 * @return a description of the {@link Variant}
 	 */
 	@Override
-	protected void writeObject(ObjectOutputStream out) throws IOException {
-		super.writeObject(out);
-		out.writeObject(type);
+	public String getDescription () {
+		String description = super.getDescription();
+		description += " TYPE: " + type.name() + ";";
+		return description;
+	}
+
+
+	@Override
+	public VariantType getType() {
+		return type;
+	}
+
+
+	@Override
+	public String getVariantSequence() {
+		VCFLine line = getVCFLine();
+		if (line != null) {
+			String chain = "-";
+			String ref = line.getREF();
+			if (type == VariantType.REFERENCE_SNP) {
+				chain = ref.substring(0, 1);
+			} else if (ref.length() > 1) {
+				chain = ref.substring(1);
+			}
+			return chain;
+		}
+		return super.getVariantSequence();
 	}
 
 
@@ -67,63 +103,13 @@ public class ReferenceVariant extends MultiNucleotideVariant {
 
 
 	/**
-	 * Constructor of {@link ReferenceVariant}
-	 * @param chromosomeContent the {@link MGChromosomeContent}
-	 * @param referencePositionIndex the index position on the reference genome
-	 * @param type the type of the reference variant
-	 */
-	public ReferenceVariant(MGChromosomeContent chromosomeContent, int referencePositionIndex, VariantType type) {
-		super(chromosomeContent, referencePositionIndex);
-		this.type = type;
-	}
-
-
-	/**
-	 * Constructor of {@link ReferenceVariant}
-	 * @param chromosomeContent the {@link MGChromosomeContent}
-	 * @param referencePositionIndex the index position on the reference genome
-	 * @param start start position
-	 * @param stop stop position
-	 * @param type the type of the reference variant
-	 */
-	public ReferenceVariant(MGChromosomeContent chromosomeContent, int referencePositionIndex, int start, int stop, VariantType type) {
-		super(chromosomeContent, referencePositionIndex, start, stop);
-		this.type = type;
-	}
-
-
-	@Override
-	public VariantType getType() {
-		return type;
-	}
-
-
-	/**
-	 * @return a description of the {@link Variant}
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
 	 */
 	@Override
-	public String getDescription () {
-		String description = super.getDescription();
-		description += " TYPE: " + type.name() + ";";
-		return description;
-	}
-
-
-	@Override
-	public String getVariantSequence() {
-		VCFLine line = getVCFLine();
-		if (line != null) {
-			String chain = "-";
-			String ref = line.getREF();
-			int length = getLength();
-			if (length == 1) {
-				chain = ref;
-				//} else if (length < 0) {
-			} else {
-				chain = ref.substring(1);
-			}
-			return chain;
-		}
-		return super.getVariantSequence();
+	protected void writeObject(ObjectOutputStream out) throws IOException {
+		super.writeObject(out);
+		out.writeObject(type);
 	}
 }
