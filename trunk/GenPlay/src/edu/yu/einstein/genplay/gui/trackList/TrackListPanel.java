@@ -27,7 +27,6 @@ import java.awt.Component;
 import java.awt.Point;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
@@ -255,21 +254,16 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 	 */
 	public boolean isPasteEnable() {
 		Clipboard clipboard = Utils.getClipboard();
-		Transferable clipboardContent = clipboard.getContents(this);
-		DataFlavor[] flavors = clipboardContent.getTransferDataFlavors();
-		int i = 0;
-		boolean isPasteEnabled = false;
-		while ((i < flavors.length) && !isPasteEnabled) {
-			if (flavors[i].match(TransferableTrack.TRACK_FLAVOR)) {
-				isPasteEnabled = true;
-			} else if (flavors[i].match(DataFlavor.javaFileListFlavor)) {
-				isPasteEnabled = true;
-			} else if (flavors[i].match(TransferableTrack.uriListFlavor)) {
-				isPasteEnabled = true;
-			}
-			i++;
+		if (clipboard.isDataFlavorAvailable(TransferableTrack.TRACK_FLAVOR)) {
+			return true;
 		}
-		return isPasteEnabled;
+		if (clipboard.isDataFlavorAvailable(DataFlavor.javaFileListFlavor)) {
+			return true;
+		}
+		if (clipboard.isDataFlavorAvailable(TransferableTrack.uriListFlavor)) {
+			return true;
+		}
+		return false;
 	}
 
 

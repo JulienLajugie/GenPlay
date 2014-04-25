@@ -78,7 +78,7 @@ public class TransferableTrack implements Transferable {
 	private static 	TransferableTrack 	instance = null; // singleton instance
 
 	/** Data flavors supported by {@link TransferableTrack} */
-	public static final DataFlavor[] TRANSFERABLE_TRACK_FLAVOR =  {
+	public static final DataFlavor[] TRANSFERABLE_TRACK_FLAVORS =  {
 		DataFlavor.imageFlavor,
 		DataFlavor.javaFileListFlavor,
 		DataFlavor.stringFlavor,
@@ -161,7 +161,8 @@ public class TransferableTrack implements Transferable {
 	private List<File> getDataAsFileList() {
 		ObjectOutputStream oos = null;
 		try {
-			File tmpFile = new File(Utils.getTmpDirectoryPath(), track.getTrackForTransfer().getName() + "." + GenPlayTrackFilter.EXTENSIONS[0]);
+			String projectName = ProjectManager.getInstance().getProjectName();
+			File tmpFile = new File(Utils.getTmpDirectoryPath(), projectName + "-" + track.getTrackForTransfer().getName() + "." + GenPlayTrackFilter.EXTENSIONS[0]);
 			TransferableTrackWriter writer = new TransferableTrackWriter(track.getTrackForTransfer(), tmpFile);
 			writer.write();
 			List<File> fileList = new ArrayList<File>();
@@ -270,13 +271,13 @@ public class TransferableTrack implements Transferable {
 
 	@Override
 	public DataFlavor[] getTransferDataFlavors() {
-		return TRANSFERABLE_TRACK_FLAVOR;
+		return TRANSFERABLE_TRACK_FLAVORS;
 	}
 
 
 	@Override
 	public boolean isDataFlavorSupported(DataFlavor flavor) {
-		for(DataFlavor supportedFlavor: TRANSFERABLE_TRACK_FLAVOR) {
+		for(DataFlavor supportedFlavor: TRANSFERABLE_TRACK_FLAVORS) {
 			if (flavor.match(supportedFlavor)) {
 				return true;
 			}

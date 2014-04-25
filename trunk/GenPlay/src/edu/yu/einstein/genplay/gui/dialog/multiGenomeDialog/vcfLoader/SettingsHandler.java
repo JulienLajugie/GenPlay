@@ -49,6 +49,7 @@ public class SettingsHandler extends DefaultHandler {
 	private final File		file;	// the file
 	private List<VCFData> 	data;	// the data
 
+
 	/**
 	 * Constructor of {@link SettingsHandler}
 	 * @param file the file
@@ -117,10 +118,4 @@ public class SettingsHandler extends DefaultHandler {
 			System.err.println("Error: " + e.getMessage());
 		}
 	}
-
-
-	/*private String getFormattedString (String s) {
-		return s.toLowerCase().replace(' ', '_');
-	}*/
-
 }

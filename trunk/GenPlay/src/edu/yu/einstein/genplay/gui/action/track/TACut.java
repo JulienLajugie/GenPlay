@@ -22,15 +22,18 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.track;
 
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.Transferable;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 import javax.swing.ActionMap;
 import javax.swing.KeyStroke;
 
+import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.trackTransfer.TransferableTrack;
@@ -41,7 +44,7 @@ import edu.yu.einstein.genplay.util.Utils;
  * Cuts the selected track
  * @author Julien Lajugie
  */
-public final class TACut extends TrackListActionWorker<Void> implements ClipboardOwner{
+public final class TACut extends TrackListAction implements ClipboardOwner{
 
 	private static final long serialVersionUID = 5387375446702872880L;  // generated ID
 	private static final String ACTION_NAME = "Cut"; 					// action name
@@ -75,20 +78,33 @@ public final class TACut extends TrackListActionWorker<Void> implements Clipboar
 
 
 	@Override
-	public void lostOwnership(Clipboard clipboard, Transferable contents) {}
+	public void actionPerformed(ActionEvent e) {
+		final Track selectedTrack = getTrackListPanel().getSelectedTrack();
+		if (selectedTrack != null) {
+			// create image needs to be done on the EDT, that's why the cut class is not a swing worker
+			final Image trackImage = TASaveAsImage.createImage(selectedTrack);
+
+			new TrackListActionWorker<Void>() {
+				private static final long serialVersionUID = 6666475714903356647L;
+				@Override
+				protected Void processAction() throws Exception {
+					notifyActionStart("Cutting Track #" + selectedTrack.getNumber(), 1, false);
+					TransferableTrack data = TransferableTrack.getInstance();
+					data.setTrackToTransfer(selectedTrack);
+					data.setImageToTransfer(trackImage);
+					Clipboard clipboard = Utils.getClipboard();
+					clipboard.setContents(data, TACut.this);
+					getTrackListPanel().cutTrack();
+					return null;
+				}
+			}.actionPerformed(e);
+
+		}
+	}
 
 
 	@Override
-	protected Void processAction() throws Exception {
-		Track selectedTrack = getTrackListPanel().getSelectedTrack();
-		if (selectedTrack != null) {
-			notifyActionStart("Cutting Track #" + selectedTrack.getNumber(), 1, false);
-			TransferableTrack data = TransferableTrack.getInstance();
-			data.setTrackToTransfer(selectedTrack);
-			Clipboard clipboard = Utils.getClipboard();
-			clipboard.setContents(data, this);
-			getTrackListPanel().cutTrack();
-		}
-		return null;
-	}
+	public void lostOwnership(Clipboard clipboard, Transferable contents) {}
+
+
 }

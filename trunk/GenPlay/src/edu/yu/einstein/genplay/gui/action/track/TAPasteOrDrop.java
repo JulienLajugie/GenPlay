@@ -34,6 +34,7 @@ import javax.swing.KeyStroke;
 
 import edu.yu.einstein.genplay.exception.exceptions.IncompatibleAssembliesException;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.trackTransfer.TransferableTrack;
@@ -66,6 +67,7 @@ public final class TAPasteOrDrop extends TrackListActionWorker<Void> {
 
 	private Transferable transferable = null;	// transferable to load
 	private boolean isDrop = false;				// true if it's a drop action, false if it's a paste action
+	File fileFromClipboard;
 
 	/**
 	 * Creates an instance of {@link TAPasteOrDrop}
@@ -104,47 +106,48 @@ public final class TAPasteOrDrop extends TrackListActionWorker<Void> {
 			if (selectedTrack != null) {
 				String actionStr = isDrop ? "Dropping" : "Pasting";
 				notifyActionStart(actionStr + " Data on Track #" + selectedTrack.getNumber(), 1, false);
-				if (selectedTrack != null) {
-					if (transferable == null) {
-						Clipboard clipboard = Utils.getClipboard();
-						// try to retrieve TRACK_FLAVOR data
-						transferable = clipboard.getContents(null);
-					}
-					if (transferable.isDataFlavorSupported(TransferableTrack.TRACK_FLAVOR)) {
-						Track copiedTrack = TransferableTrack.getTrackFromTransferable(transferable);
-						if (copiedTrack != null) {
-							if (selectedTrack.getLayers().isEmpty()) {
-								selectedTrack.setContentAs(copiedTrack);
-							} else {
-								Layer<?>[] layers = copiedTrack.getLayers().getLayers();
-								for (Layer<?> currentLayer: layers) {
-									currentLayer = currentLayer.clone();
-									currentLayer.setTrack(selectedTrack);
-									selectedTrack.getLayers().add(currentLayer);
-									selectedTrack.setActiveLayer(currentLayer);
-								}
+				if (transferable == null) {
+					Clipboard clipboard = Utils.getClipboard();
+					// try to retrieve TRACK_FLAVOR data
+					transferable = clipboard.getContents(null);
+				}
+				if (transferable.isDataFlavorSupported(TransferableTrack.TRACK_FLAVOR)) {
+					Track copiedTrack = TransferableTrack.getTrackFromTransferable(transferable);
+					if (copiedTrack != null) {
+						if (selectedTrack.getLayers().isEmpty()) {
+							selectedTrack.setContentAs(copiedTrack);
+						} else {
+							Layer<?>[] layers = copiedTrack.getLayers().getLayers();
+							for (Layer<?> currentLayer: layers) {
+								currentLayer = currentLayer.clone();
+								currentLayer.setTrack(selectedTrack);
+								selectedTrack.getLayers().add(currentLayer);
+								selectedTrack.setActiveLayer(currentLayer);
 							}
-							selectedTrack.repaint();
 						}
-					} else {
-						// try to retrieve a file from the clipboard
-						File fileFromClipboard = TransferableTrack.getFileFromTransferable(transferable);
-						if (fileFromClipboard != null) {
-							notifyActionStop();
-							new TAAddLayer(fileFromClipboard).actionPerformed(null);
-						}
+						selectedTrack.repaint();
+					}
+				} else {
+					// try to retrieve a file from the clipboard
+					File fileFromClipboard = TransferableTrack.getFileFromTransferable(transferable);
+					if (fileFromClipboard != null) {
+						notifyActionStop();
+						MainFrame.getInstance().unlock();
+						new TAAddLayer(fileFromClipboard).actionPerformed(null);
 					}
 				}
+				transferable = null;
 			}
 		} catch (IllegalStateException e) {
 			JOptionPane.showMessageDialog(getRootPane(), "The clipboard is unavailable. It might be accessed by another application.", "Clipboard Unavailable", JOptionPane.WARNING_MESSAGE, null);
-		}catch (IncompatibleAssembliesException e) {
+		} catch (IncompatibleAssembliesException e) {
 			JOptionPane.showMessageDialog(getRootPane(), "The selected file in cannot be loaded. "
 					+ "\nIt contains a track from a project with different assembly or multigenome parameters.", "Invalid File", JOptionPane.WARNING_MESSAGE, null);
 		} catch (Exception e) {
 			String title = isDrop ? "Cannot Drop Data" : "Invalid Clipboard Content";
 			String message = isDrop ? "the selected file cannot be Dropped." : "The content of the clipboard cannot be loaded.";
 			JOptionPane.showMessageDialog(getRootPane(), message, title, JOptionPane.WARNING_MESSAGE, null);
+			e.printStackTrace();
 		}
 		return null;
 	}

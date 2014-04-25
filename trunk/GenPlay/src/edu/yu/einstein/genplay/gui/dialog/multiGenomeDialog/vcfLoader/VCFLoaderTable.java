@@ -160,7 +160,7 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener, Ac
 				}
 				return new DefaultCellEditor(combo);
 			} catch (Exception e) {
-				System.out.println("not a valid file : " + getValueAt(row, VCFData.FILE_INDEX));
+				System.out.println("not a valid file: " + getValueAt(row, VCFData.FILE_INDEX));
 				return super.getCellEditor(row, column);
 			}
 		default:

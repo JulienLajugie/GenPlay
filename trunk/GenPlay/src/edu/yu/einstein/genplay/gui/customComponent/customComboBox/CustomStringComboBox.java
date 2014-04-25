@@ -44,19 +44,22 @@ public class CustomStringComboBox extends CustomComboBox<String> {
 
 
 	/**
-	 * Resets the combo list removing all items and adding the new ones.
-	 * It also adds the ADD_TEXT value.
+	 * Adds a new element to the combo box.
+	 * Shows a popup in order to define the new entry.
 	 */
 	@Override
-	public void resetCombo () {
-		this.removeAllItems();
-		Collections.sort(elements);
-		for (String element: elements) {
-			if (!element.toString().equals("")) {
-				this.addItem(element);
-			}
+	protected void addAction () {
+		String element = JOptionPane.showInputDialog(this,
+				"Please enter a new entry:",
+				"Insert Entry",
+				JOptionPane.PLAIN_MESSAGE);
+		if ((element != null) && !element.equals("")) {
+			addElement(element);
+			resetCombo();
+			setSelectedItem(element);
+		} else {
+			setSelectedItem("");
 		}
-		this.addItem(ADD_TEXT);
 	}
 
 
@@ -75,26 +78,6 @@ public class CustomStringComboBox extends CustomComboBox<String> {
 
 
 	/**
-	 * Adds a new element to the combo box.
-	 * Shows a popup in order to define the new entry.
-	 */
-	@Override
-	protected void addAction () {
-		String element = JOptionPane.showInputDialog(this,
-				"Please type a new entry.",
-				"Entry insertion",
-				JOptionPane.PLAIN_MESSAGE);
-		if ((element != null) && !element.equals("")) {
-			addElement(element);
-			resetCombo();
-			setSelectedItem(element);
-		} else {
-			setSelectedItem("");
-		}
-	}
-
-
-	/**
 	 * Removes an element from the combo box.
 	 * Shows a popup in order to confirm the action.
 	 * @param element element to remove
@@ -103,8 +86,8 @@ public class CustomStringComboBox extends CustomComboBox<String> {
 	protected void removeAction (String element) {
 		Object[] options = {"Yes", "No"};
 		int n = JOptionPane.showOptionDialog(this,
-				"Do you really want to erase '" + element + "' ?",
-				"Entry deletion",
+				"Do you really want to erase '" + element + "'?",
+				"Delete Entry",
 				JOptionPane.YES_NO_OPTION,
 				JOptionPane.WARNING_MESSAGE,
 				null,
@@ -128,8 +111,8 @@ public class CustomStringComboBox extends CustomComboBox<String> {
 	protected void replaceAction (String element) {
 		String newElement = (String) JOptionPane.showInputDialog(
 				this,
-				"The new entry will replace '" + element + "'.",
-				"Entry modification",
+				"Edit '" + element + "' entry:",
+				"Edit Entry",
 				JOptionPane.PLAIN_MESSAGE,
 				null,
 				null,
@@ -141,6 +124,23 @@ public class CustomStringComboBox extends CustomComboBox<String> {
 			resetCombo();
 			setSelectedItem(element);
 		}
+	}
+
+
+	/**
+	 * Resets the combo list removing all items and adding the new ones.
+	 * It also adds the ADD_TEXT value.
+	 */
+	@Override
+	public void resetCombo () {
+		removeAllItems();
+		Collections.sort(elements);
+		for (String element: elements) {
+			if (!element.toString().equals("")) {
+				addItem(element);
+			}
+		}
+		addItem(ADD_TEXT);
 	}
 
 }

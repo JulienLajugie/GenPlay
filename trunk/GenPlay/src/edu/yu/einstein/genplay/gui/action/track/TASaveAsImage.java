@@ -24,6 +24,7 @@ package edu.yu.einstein.genplay.gui.action.track;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -36,7 +37,7 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import edu.yu.einstein.genplay.exception.ExceptionManager;
-import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
+import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.FileChooser;
@@ -47,7 +48,7 @@ import edu.yu.einstein.genplay.util.FileChooser;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class TASaveAsImage extends TrackListActionWorker<Void> {
+public final class TASaveAsImage extends TrackListAction {
 
 	private static final long serialVersionUID = -4363481310731795005L; 				// generated ID
 	private static final String ACTION_NAME = "Save as Image"; 							// action name
@@ -81,7 +82,7 @@ public final class TASaveAsImage extends TrackListActionWorker<Void> {
 		int rulerHeight = rulerImage.getHeight();
 		int imageHeight = trackHeight + rulerHeight;
 		// we create an image that will contains both the ruler and the selected track
-		BufferedImage image = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB);
+		BufferedImage image = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_3BYTE_BGR); // used to be TYPE_INT_ARGB but it was producing an error on Linux with Open JDK
 		Graphics g = image.getGraphics();
 		// we draw the image containing the ruler and the track
 		g.drawImage(rulerImage, 0, 0, null);
@@ -107,21 +108,21 @@ public final class TASaveAsImage extends TrackListActionWorker<Void> {
 
 
 	@Override
-	protected Void processAction() throws Exception {
+	public void actionPerformed(ActionEvent evt) {
 		Track selectedTrack = getTrackListPanel().getSelectedTrack();
 		if (selectedTrack != null) {
 			FileFilter[] filters = {new FileNameExtensionFilter("PNG file (*.PNG)", "png")};
 			File f = new File(selectedTrack.getName() + ".png");
 			File selectedFile = FileChooser.chooseFile(getRootPane(), FileChooser.SAVE_FILE_MODE, "Save Image As", filters, false, f);
 			if(selectedFile != null) {
-				notifyActionStart("Saving Track #" + selectedTrack.getNumber() + " As Image", 1, false);
+				MainFrame.getInstance().getStatusBar().actionStart("Saving Track as Image", 0, null);
 				try {
 					ImageIO.write(createImage(selectedTrack), "PNG", selectedFile);
 				}catch(Exception e) {
 					ExceptionManager.getInstance().caughtException(Thread.currentThread(), e, "Error while saving the tracks as an image");
 				}
+				MainFrame.getInstance().getStatusBar().actionStop("Operation Done");
 			}
 		}
-		return null;
 	}
 }

@@ -152,14 +152,23 @@ class MultiGenomePanel extends JPanel {
 	 * Adds data to the current list.
 	 * Case of importing data.
 	 * (importing do not erase current settings but add new ones!)
+	 * If the VCF file is not found we look into the directory containing xml
+	 * config to check if the vcf is not there.
 	 * @param newData
+	 * @param xmlPath path to xml config file
 	 */
-	private void addData (List<VCFData> newData) {
+	private void addData (List<VCFData> newData, File xmlPath) {
 		if (data == null) {
 			data = new ArrayList<VCFData>();
 		}
 		for (VCFData vcfData: newData) {
 			data.add(vcfData);
+			if (!vcfData.getFile().exists() && (xmlPath != null)) {
+				File newVcf = new File(xmlPath, vcfData.getFile().getName());
+				if (newVcf.exists()) {
+					vcfData.setFile(newVcf);
+				}
+			}
 		}
 	}
 
@@ -258,7 +267,7 @@ class MultiGenomePanel extends JPanel {
 			}
 			closeXML(xml);
 			// Manager initialization
-			addData(xmlParser.getData());
+			addData(xmlParser.getData(), file.getParentFile());
 
 			vcfLoaderDialog.setData(data);
 			initializesGenomeFileAssociation();

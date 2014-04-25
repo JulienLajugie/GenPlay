@@ -288,9 +288,13 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 			Strand strand = samRecord.getFirstOfPairFlag() ? Strand.FIVE : Strand.THREE;
 			// compute the read position with specified strand shift and read length
 			if (strandOptions != null) {
-				SimpleChromosomeWindow resultStartStop = strandOptions.computeStartStop(chromosome, start, stop, strand);
-				start = resultStartStop.getStart();
-				stop = resultStartStop.getStop();
+				if (strandOptions.isSelected(strand)) {
+					SimpleChromosomeWindow resultStartStop = strandOptions.computeStartStop(chromosome, start, stop, strand);
+					start = resultStartStop.getStart();
+					stop = resultStartStop.getStop();
+				} else {
+					return false;
+				}
 			}
 			// if we are in a multi-genome project, we compute the position on the meta genome
 			start = getRealGenomePosition(chromosome, start);
@@ -340,9 +344,13 @@ public class SAMExtractor extends Extractor implements DataReader, ChromosomeWin
 			int stop = start + firstBlock.getLength();
 			// compute the read position with specified strand shift and read length
 			if (strandOptions != null) {
-				SimpleChromosomeWindow resultStartStop = strandOptions.computeStartStop(chromosome, start, stop, strand);
-				start = resultStartStop.getStart();
-				stop = resultStartStop.getStop();
+				if (strandOptions.isSelected(strand)) {
+					SimpleChromosomeWindow resultStartStop = strandOptions.computeStartStop(chromosome, start, stop, strand);
+					start = resultStartStop.getStart();
+					stop = resultStartStop.getStop();
+				} else {
+					return false;
+				}
 			}
 			// if we are in a multi-genome project, we compute the position on the meta genome
 			start = getRealGenomePosition(chromosome, start);

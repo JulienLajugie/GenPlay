@@ -105,7 +105,7 @@ public final class SCWLAScoreDistribution extends TrackListActionOperationWorker
 		AbstractSCWLayer<?> selectedLayer = (AbstractSCWLayer<?>) getValue("Layer");
 		if (selectedLayer != null) {
 			Object[] graphTypes = {"Score vs Window Count", "Score vs Base Pair Count"};
-			String selectedValue = (String) JOptionPane.showInputDialog(null, "Select the operation", "Graph Operation", JOptionPane.PLAIN_MESSAGE, null, graphTypes, graphTypes[0]);
+			String selectedValue = (String) JOptionPane.showInputDialog(getRootPane(), "Select the operation", "Graph Operation", JOptionPane.PLAIN_MESSAGE, null, graphTypes, graphTypes[0]);
 			if (selectedValue != null) {
 				if (selectedValue.toString().equals(graphTypes[0])) {
 					// graph of score vs window count

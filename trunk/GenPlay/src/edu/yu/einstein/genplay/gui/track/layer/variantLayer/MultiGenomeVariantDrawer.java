@@ -188,7 +188,8 @@ class MultiGenomeVariantDrawer implements Serializable {
 					if ((letters != "-") && ((i + firstNucleotide) < letters.length())) {	// if the letters are different to the question mark and if the current index is smaller than the string length
 						letter = letters.charAt(i + firstNucleotide) + "";					// we get the current character
 					}
-					int xC = (int) Math.round(x + (i * windowWidth) + ((windowWidth - fm.stringWidth(letter)) * 0.5));	// the horizontal position from where the draw starts: x (of the stripe) + size of a window * current window number + (windows width - letter width) / 2 (for the middle)
+					//int xC = (int) Math.round(x + (i * windowWidth) + ((windowWidth - fm.stringWidth(letter)) * 0.5));	// the horizontal position from where the draw starts: x (of the stripe) + size of a window * current window number + (windows width - letter width) / 2 (for the middle)
+					int xC = projectWindow.genomeToScreenPosition(variant.getStart() + i + firstNucleotide);
 					g2d.drawString(letter, xC, letterY);							// we draw the letter
 				}
 			}
