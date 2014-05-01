@@ -439,7 +439,6 @@ public class MultiGenomeDrawer implements Serializable {
 	 */
 	public void showVariantInformationDialog(int height, MouseEvent e) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) { // we must be in a multi genome project
-			//if (isOverVariant(height, e)) {
 			if (variantUnderMouse != null) {
 				VariantInformationDialog toolTip = new VariantInformationDialog(this); // we create the information dialog
 				variantDialogs.add(toolTip);

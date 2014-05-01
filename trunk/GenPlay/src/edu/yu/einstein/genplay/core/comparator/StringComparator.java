@@ -49,10 +49,10 @@ public class StringComparator implements Comparator<String> {
 	public int compareWords(String s1, String s2) {
 		int index = 0;
 		while ((index < s1.length()) && (index < s2.length())) {			// while the index is lower than the length of both string
-			String c1 = s1.substring(index, (index + 1));				// gets the character at the current index for the first string
-			String c2 = s2.substring(index, (index + 1));				// gets the character at the current index for the second string
+			String c1 = s1.substring(index, (index + 1));					// gets the character at the current index for the first string
+			String c2 = s2.substring(index, (index + 1));					// gets the character at the current index for the second string
 
-			Integer i1 = null;											// Tries to parse the current characters into integer value
+			Integer i1 = null;												// Tries to parse the current characters into integer value
 			Integer i2 = null;
 			try {
 				i1 = Integer.parseInt(c1);
@@ -62,37 +62,36 @@ public class StringComparator implements Comparator<String> {
 			} catch (Exception e) {}
 
 			if ((i1 != null) && (i2 != null) ) {							// If both current characters are integer
-				Integer i3 = Utils.getFullIntegerPart(s1, index);		// gets the full integer present in the string
+				Integer i3 = Utils.getFullIntegerPart(s1, index);			// gets the full integer present in the string
 				Integer i4 = Utils.getFullIntegerPart(s2, index);
 
-				int compare = i3.compareTo(i4);							// regular integer comparison
+				int compare = i3.compareTo(i4);								// regular integer comparison
 
-				if (compare == 0) {										// if they are equal, string comparison must continue
-					index += i3.toString().length();					// the new index continues after the integer
+				if (compare == 0) {											// if they are equal, string comparison must continue
+					index += i3.toString().length();						// the new index continues after the integer
 				} else {
-					return compare;										// if they are not equal, we return the comparison result
+					return compare;											// if they are not equal, we return the comparison result
 				}
 
 			} else if ((i1 != null) && (i2 == null) ) {						// if there is an integer in the first string but in the second string
-				return -1;												// the first string is before
+				return -1;													// the first string is before
 			} else if ((i1 == null) && (i2 != null) ) {						// if there is an integer in the second string but in the first string
-				return 1;												// the first string is after
-			} else {													// if there is no integer, we continue the scan
-				index++;												// increase index by 1
+				return 1;													// the first string is after
+			} else {														// if there is no integer, we continue the scan
+				index++;													// increase index by 1
 			}
 
 			if ((index >= s1.length()) && (index < s2.length())) {			// if the first string is shorter than the second
-				return -1;												// the first string is before
+				return -1;													// the first string is before
 			} else if ((index < s1.length()) && (index >= s2.length())) {	// if the first string is longer than the second
-				return 1;												// the first string is after
+				return 1;													// the first string is after
 			}
 
-			int result = c1.compareToIgnoreCase(c2);					// compares characters
-			if (result != 0) {											// if they are not equal
-				return result;											// we return the result
+			int result = c1.compareToIgnoreCase(c2);						// compares characters
+			if (result != 0) {												// if they are not equal
+				return result;												// we return the result
 			}
 		}
-		return 0;														// if scan is here, both sting are equal.
+		return 0;															// if scan is here, both sting are equal.
 	}
-
 }

@@ -45,9 +45,9 @@ import edu.yu.einstein.genplay.dataStructure.genome.Genome;
 public class AssemblyListLoader {
 
 	private final static String XML_ASSEMBLIES_ROOT_PATH = "edu/yu/einstein/genplay/resource/assemblies/";
-	private final List<String> 		xmlAssembliesPath;
+	private final List<String> 			xmlAssembliesPath;
 	private final Map<String, Clade> 	cladeList;
-	private GenomeListLoader 		genomeParser;
+	private GenomeListLoader 			genomeParser;
 
 
 	/**
@@ -146,6 +146,8 @@ public class AssemblyListLoader {
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("mammal_human_2006_03_NCBI36.xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("mammal_human_2009_02_GRCh37.xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("mammal_human_2009_02_hg19.xml"));
+		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("mammal_human_2013_12_GRCh38.xml"));
+		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("mammal_human_2013_12_hg38.xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("mammal_mouse_2005_08_NCBI35_mm7.xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("mammal_mouse_2006_02_NCBI36_mm8.xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("mammal_mouse_2007_07_NCBI37_mm9.xml"));

@@ -181,7 +181,13 @@ public abstract class Variant implements Serializable {
 		List<String> results = null;
 
 		try {
-			results = file.getReader().query(chromosome.getName(), referencePosition - 1, referencePosition);
+			int start = referencePosition - 1;
+			int stop = referencePosition;
+			if (start < 0) {
+				start = 0;
+				stop = 1;
+			}
+			results = file.getReader().query(chromosome.getName(), start, stop);
 		} catch (IOException e) {
 			ExceptionManager.getInstance().caughtException(e);
 		}

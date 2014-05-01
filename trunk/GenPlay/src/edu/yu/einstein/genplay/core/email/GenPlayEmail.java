@@ -60,7 +60,8 @@ public class GenPlayEmail {
 	public static final String PASSWORD_PATH = "edu/yu/einstein/genplay/resource/email/pwd";
 
 	/** SMTP host */
-	private static final String SMTP_HOST = "owa.yu.edu";
+	//private static final String SMTP_HOST = "owa.yu.edu";
+	private static final String SMTP_HOST = "smtp.aecom.yu.edu";
 
 	/** SMTP port */
 	private static final int SMTP_PORT = 587;

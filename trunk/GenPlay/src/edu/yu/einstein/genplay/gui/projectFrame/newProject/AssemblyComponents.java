@@ -55,6 +55,7 @@ class AssemblyComponents implements ActionListener {
 
 	private static final String CLADE_DEFAULT_VALUE = "mammal";	// Default clade value
 	private static final String GENOME_DEFAULT_VALUE = "human";	// Default genome value
+	private static final String ASSEMBLY_DEFAULT_VALUE = new Assembly("hg19", "02 2009").getIndexName(); // Default assembly
 
 	private final JLabel 		jlClade;			// Clade label
 	private final JLabel 		jlGenome;			// Genome label
@@ -260,9 +261,11 @@ class AssemblyComponents implements ActionListener {
 		for (int i = (assemblies.size()-1); i >= 0; i--) {
 			jcAssembly.addItem(selectedGenome.getAssemblyList().get(assemblies.get(i)));
 		}
-		jcAssembly.setSelectedIndex(0);
-		selectedAssembly = (Assembly) jcAssembly.getSelectedItem();
-		//fullChromosomeList = new ArrayList<Chromosome>(selectedAssembly.getChromosomeList().values());
+		selectedAssembly = selectedGenome.getAssemblyList().get(ASSEMBLY_DEFAULT_VALUE);
+		if (selectedAssembly == null) {
+			selectedAssembly = (Assembly) jcAssembly.getItemAt(0);
+		}
+		jcAssembly.setSelectedItem(selectedAssembly);
 		fullChromosomeList = selectedAssembly.getChromosomeList();
 		Collections.sort(fullChromosomeList);
 		selectedChromosomes = fullChromosomeList;

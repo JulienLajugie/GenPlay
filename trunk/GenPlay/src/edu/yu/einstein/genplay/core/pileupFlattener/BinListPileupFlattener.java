@@ -71,7 +71,7 @@ public class BinListPileupFlattener implements PileupFlattener {
 	public void addWindow(int windowStart, int windowStop, float windowScore) throws ElementAddedNotSortedException {
 		if (windowQueue.isEmpty()) {
 			windowQueue.add(windowStart, windowStop, windowScore);
-			int firstBinStart = windowStart / binSize;
+			int firstBinStart = (windowStart - 1) / binSize;
 			for (int i = 0; i < firstBinStart; i++) {
 				resultLVBuilder.addElementToBuild(0);
 			}
@@ -187,7 +187,7 @@ public class BinListPileupFlattener implements PileupFlattener {
 			int lastWindowStart = windowQueue.get(windowQueue.size() - 1).getStart();
 			int lastWindowStop = windowQueue.get(windowQueue.size() - 1).getStop();
 			int firstBinStart = (((lastWindowStart - 1) / binSize) * binSize) + 1;
-			int lastBinStop = (((lastWindowStop - 1) / binSize) * binSize) + 1;
+			int lastBinStop = (((lastWindowStop) / binSize) * binSize) + binSize + 1;
 			flattenPileup(firstBinStart, lastBinStop);
 		}
 	}

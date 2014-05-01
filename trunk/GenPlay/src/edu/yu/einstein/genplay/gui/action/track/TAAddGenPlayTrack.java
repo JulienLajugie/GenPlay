@@ -85,6 +85,7 @@ public class TAAddGenPlayTrack extends TrackListActionWorker<Track> {
 	@Override
 	protected Track processAction() throws Exception {
 		try {
+			notifyActionStart("Loading Track", 1, false);
 			TransferableTrackExtractor transferableTrackExtractor = (TransferableTrackExtractor) extractor;
 			return transferableTrackExtractor.extract().getTrackForTransfer();
 		} catch (IncompatibleAssembliesException e) {
