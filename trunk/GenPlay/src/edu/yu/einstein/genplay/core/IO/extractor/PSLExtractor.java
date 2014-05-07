@@ -141,6 +141,7 @@ public final class PSLExtractor extends TextFileExtractor implements SCWReader, 
 		}
 
 		// if we are in a multi-genome project, we compute the position on the meta genome
+		int refGenomeStart = start;
 		start = getRealGenomePosition(chromosome, start);
 		stop = getRealGenomePosition(chromosome, stop);
 
@@ -153,8 +154,11 @@ public final class PSLExtractor extends TextFileExtractor implements SCWReader, 
 			// exons are for genes only so we don't need to
 			// worry about the strand shift and the read length
 			// since these operations are not available for genes
-			int exonStart = Extractors.getInt(exonStartsStr[i]) + start;
+			int exonStart = Extractors.getInt(exonStartsStr[i]) + refGenomeStart;
 			int exonStop = exonStart + Extractors.getInt(exonLengthsStr[i]);
+			// compute the position on the meta-genome
+			exonStart = getRealGenomePosition(chromosome, exonStart);
+			exonStop = getRealGenomePosition(chromosome, exonStop);
 			exonListBuilder.addElementToBuild(exonStart, exonStop, 0f);
 		}
 		exons = exonListBuilder.getListView();

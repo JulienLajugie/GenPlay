@@ -149,7 +149,8 @@ public class BedExtractor extends TextFileExtractor implements SCWReader, GeneRe
 			stop = resultStartStop.getStop();
 		}
 
-		// if we are in a multi-genome project, we compute the position on the meta genome
+		// if we are in a multi-genome project, we compute the position on the meta-genome
+		int refGenomeStart = start;
 		start = getRealGenomePosition(chromosome, start);
 		stop = getRealGenomePosition(chromosome, stop);
 
@@ -195,8 +196,11 @@ public class BedExtractor extends TextFileExtractor implements SCWReader, GeneRe
 			}
 			GenericSCWListViewBuilder exonListBuilder = new GenericSCWListViewBuilder();
 			for (int i = 0; i < exonLengthsStr.length; i++) {
-				int exonStart = Extractors.getInt(exonStartsStr[i]) + start;
+				int exonStart = Extractors.getInt(exonStartsStr[i]) + refGenomeStart;
 				int exonStop = exonStart + Extractors.getInt(exonLengthsStr[i]);
+				// compute the position on the meta-genome
+				exonStart = getRealGenomePosition(chromosome, exonStart);
+				exonStop = getRealGenomePosition(chromosome, exonStop);
 				float exonScore = Float.NaN;
 				if (exonScoresStr != null) {
 					exonScore = Extractors.getFloat(exonScoresStr[i], Float.NaN);

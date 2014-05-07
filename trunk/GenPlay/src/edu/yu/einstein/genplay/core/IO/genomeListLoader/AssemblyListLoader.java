@@ -175,6 +175,7 @@ public class AssemblyListLoader {
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("other_s. cerevisiae_2003_10_SGD_sacCer1.xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("other_s. cerevisiae_2008_07_SGD_sacCer2.xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("other_sea hare_2008_09_Broad_2.0_aplCal1.xml"));
+		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("plant_a. thaliana_2010_11_TAIR10.xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("S. pombe_2002_02(Nature_paper).xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("S. pombe_2011_05(GFF).xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("vertebrate_chicken_2004_02_WUGSC_1.0_galGal2.xml"));

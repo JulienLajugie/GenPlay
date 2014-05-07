@@ -1,0 +1,9 @@
+<assembly clade="plant" genome="a. thaliana" name="TAIR10" date="11 2010">
+	<chromosome name="chr1" length="30427671"/>
+	<chromosome name="chr2" length="19698289"/>
+	<chromosome name="chr3" length="23459830"/>
+	<chromosome name="chr4" length="18585056"/>
+	<chromosome name="chr5" length="26975502"/>
+	<chromosome name="chrC" length="154478"/>
+	<chromosome name="chrM" length="366924"/>
+</assembly>
