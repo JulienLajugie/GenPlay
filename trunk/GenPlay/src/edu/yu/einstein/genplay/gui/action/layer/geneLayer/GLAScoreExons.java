@@ -41,7 +41,6 @@ import edu.yu.einstein.genplay.util.Utils;
 /**
  * Gives a score to the exons of the genes from a scored layer
  * @author Julien Lajugie
- * @version 0.1
  */
 public class GLAScoreExons  extends TrackListActionOperationWorker<GeneList> {
 

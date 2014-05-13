@@ -52,7 +52,7 @@ public class LayerMenuFactory {
 		case MASK_LAYER:
 			return new MaskLayerMenu(layer);
 		case NUCLEOTIDE_LAYER:
-			return null;
+			return new NucleotideLayerMenu(layer);
 		case REPEAT_FAMILY_LAYER:
 			return new RepeatLayerMenu(layer);
 		case SIMPLE_SCW_LAYER:
