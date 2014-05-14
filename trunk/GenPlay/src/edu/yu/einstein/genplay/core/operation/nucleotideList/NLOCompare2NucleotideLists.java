@@ -43,6 +43,11 @@ import edu.yu.einstein.genplay.dataStructure.list.listView.ListView;
  */
 public class NLOCompare2NucleotideLists implements Operation<SCWList> {
 
+	private static final int A_SCORE = 1;
+	private static final int C_SCORE = 2;
+	private static final int G_SCORE = 3;
+	private static final int T_SCORE = 4;
+
 	private boolean					stopped = false;	// true if the operation must be stopped
 	private final NucleotideList 	list1;				// first nucleotide
 	private final NucleotideList 	list2;				// second nucleotide list
@@ -76,11 +81,17 @@ public class NLOCompare2NucleotideLists implements Operation<SCWList> {
 						System.out.println(chromosome.getName() + ": " + i);
 					}
 
-					float score = 0f;
-					if ((i >= chrList1.size()) || (i >= chrList2.size()) || (chrList1.get(i) != chrList2.get(i) )) {
-						score = 1;
+					float score = 0;
+					if ((i < chrList1.size()) && (i < chrList2.size())) {
+						Nucleotide n1 = chrList1.get(i);
+						Nucleotide n2 = chrList2.get(i);
+						if ((isACGT(n1, n2) && (n1 != n2))) {
+							score = nucleotidesToScore(n1, n2);
+						}
 					}
-					resultListBuilder.addElementToBuild(chromosome, i, i + 1, score);
+					if (score != 0) {
+						resultListBuilder.addElementToBuild(chromosome, i, i + 1, score);
+					}
 				}
 			}
 		}
@@ -103,6 +114,62 @@ public class NLOCompare2NucleotideLists implements Operation<SCWList> {
 	@Override
 	public int getStepCount() {
 		return 1 + SimpleSCWList.getCreationStepCount(SCWListType.DENSE);
+	}
+
+
+	/**
+	 * @param n1
+	 * @param n2
+	 * @return true if the two nucleotide are either A, C, G or T. Returs false otherwise
+	 */
+	private boolean isACGT(Nucleotide n1, Nucleotide n2) {
+		if ((n1 == Nucleotide.ADENINE) ||
+				(n1 == Nucleotide.CYTOSINE) ||
+				(n1 == Nucleotide.GUANINE) ||
+				(n1 == Nucleotide.THYMINE)) {
+			if ((n2 == Nucleotide.ADENINE) ||
+					(n2 == Nucleotide.CYTOSINE) ||
+					(n2 == Nucleotide.GUANINE) ||
+					(n2 == Nucleotide.THYMINE)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	/**
+	 * @param n1
+	 * @param n2
+	 * @return a score computed from the 2 input nucleotides
+	 */
+	private final int nucleotidesToScore(Nucleotide n1, Nucleotide n2) {
+		int score = 0;
+		if (n1 == Nucleotide.ADENINE) {
+			score += A_SCORE * 10;
+		}
+		if (n1 == Nucleotide.CYTOSINE) {
+			score += C_SCORE * 10;
+		}
+		if (n1 == Nucleotide.GUANINE) {
+			score += G_SCORE * 10;
+		}
+		if (n1 == Nucleotide.THYMINE) {
+			score += T_SCORE * 10;
+		}
+		if (n2 == Nucleotide.ADENINE) {
+			score += A_SCORE;
+		}
+		if (n2 == Nucleotide.CYTOSINE) {
+			score += C_SCORE;
+		}
+		if (n2 == Nucleotide.GUANINE) {
+			score += G_SCORE;
+		}
+		if (n2 == Nucleotide.THYMINE) {
+			score += T_SCORE;
+		}
+		return score;
 	}
 
 
