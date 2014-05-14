@@ -68,7 +68,8 @@ public final class WriterFactory {
 		} else if (new WiggleFilter().accept(outputFile)) {
 			return new BinListAsWiggleWriter(outputFile, data, name);
 		} else {
-			return null;
+			// default binlist writer
+			return new SCWListAsBedGraphWriter(outputFile, data, name);
 		}
 	}
 
@@ -84,7 +85,8 @@ public final class WriterFactory {
 		if (new BedFilter().accept(outputFile)) {
 			return new GeneListAsBedWriter(outputFile, data, name);
 		} else {
-			return null;
+			// default genlist writer
+			return new GeneListAsBedWriter(outputFile, data, name);
 		}
 	}
 
@@ -106,7 +108,8 @@ public final class WriterFactory {
 		} else if (new GFFFilter().accept(outputFile)) {
 			return new SCWListAsGFFWriter(outputFile, data, name);
 		} else {
-			return null;
+			// default scwlist writer
+			return new SCWListAsBedGraphWriter(outputFile, data, name);
 		}
 	}
 
