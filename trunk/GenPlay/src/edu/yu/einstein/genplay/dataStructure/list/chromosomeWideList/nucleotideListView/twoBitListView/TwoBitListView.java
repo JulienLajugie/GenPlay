@@ -29,6 +29,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.data.synchronization.MGSOffset;
@@ -53,6 +55,9 @@ public final class TwoBitListView extends AbstractListView<Nucleotide> implement
 
 	/** Version number of the class */
 	private static final transient int CLASS_VERSION_NUMBER = 0;
+
+	/** Size of the cached region. Should be a multiple of 4 */
+	private static final transient int CACHED_REGION_SIZE = 800000;
 
 	/** 2bit random access file */
 	private transient RandomAccessFile raf;
@@ -83,6 +88,12 @@ public final class TwoBitListView extends AbstractListView<Nucleotide> implement
 
 	/** Chromosome of the current list */
 	private final Chromosome chromosome;
+
+	/** Start position of the region cached */
+	private transient int cachedRegionStart;
+
+	/**  Stop position of the region cached */
+	private transient List<Nucleotide> cachedRegion;
 
 
 	/**
@@ -121,6 +132,7 @@ public final class TwoBitListView extends AbstractListView<Nucleotide> implement
 		this.alleleType = alleleType;
 		this.chromosome = chromosome;
 		this.raf = raf;
+		cachedRegion  = new ArrayList<Nucleotide>(CACHED_REGION_SIZE);
 	}
 
 
@@ -143,7 +155,40 @@ public final class TwoBitListView extends AbstractListView<Nucleotide> implement
 		genomeName = listView.genomeName;
 		alleleType = listView.alleleType;
 		chromosome = listView.chromosome;
+		cachedRegion  = new ArrayList<Nucleotide>(CACHED_REGION_SIZE);
 		reinitDataFile();
+	}
+
+
+	private void cacheRegion(int position) {
+		cachedRegion.clear();
+		cachedRegionStart = position - (CACHED_REGION_SIZE / 2);
+		cachedRegionStart -= cachedRegionStart % 4; // make sure we start on a position that can be divided by 4
+		cachedRegionStart = Math.max(cachedRegionStart, 0); // cannot be negative
+		int offsetStart = cachedRegionStart / 4;
+		int size = (int) Math.ceil((CACHED_REGION_SIZE / 4));
+		byte[] readBytes = new byte[size];
+		try {
+			raf.seek(offsetStart + offset + headerSize);
+			raf.readFully(readBytes);
+		} catch (IOException e) {
+			return;	// leave if the file cannot be read
+		}
+		for(int i = 0; i < CACHED_REGION_SIZE; i++) {
+			int curPos = cachedRegionStart + i;
+			if (isInNBlock(curPos)) {
+				cachedRegion.add(Nucleotide.ANY) ;
+			} else {
+				// position of the nucleotide inside the integer
+				int offsetInsideByte = 3 - (i % 4);
+				// rotate the result until the two bits we want are on the far right
+				// and then apply a 0x0003 filter
+				int result2Bit = Integer.rotateRight(readBytes[i / 4], offsetInsideByte * 2) & 0x3;
+				Nucleotide resultNucleo = Nucleotide.get((byte)result2Bit);
+				cachedRegion.add(resultNucleo) ;
+			}
+		}
+
 	}
 
 
@@ -157,33 +202,17 @@ public final class TwoBitListView extends AbstractListView<Nucleotide> implement
 			if (position == MGSOffset.MISSING_POSITION_CODE) {
 				return Nucleotide.BLANK;
 			}
-			if ((position <= 0) || (position > dnaSize)) {
-				return null;
-			}
-			if (position < 0) {
-				return Nucleotide.ANY;
-			}
 		}
-
-		position--;
-		int i = 0;
-		while ((i < nBlockStarts.length) && (nBlockStarts[i] <= position)) {
-			if (position < (nBlockStarts[i] + nBlockSizes[i])) {
-				return Nucleotide.ANY;
-			}
-			i++;
+		if ((position <= 0) || (position > dnaSize)) {
+			return null;
 		}
-		// integer in the file containing the position we look for
-		int offsetPosition = position / 4;
-		// position of the nucleotide inside the integer
-		int offsetInsideByte = 3 - (position % 4);
-		try {
-			raf.seek(offsetPosition + offset + headerSize);
-			// rotate the result until the two bits we want are on the far right
-			// and then apply a 0x0003 filter
-			int result2Bit = Integer.rotateRight(raf.readByte(), offsetInsideByte * 2) & 0x3;
-			return Nucleotide.get((byte)result2Bit);
-		} catch (IOException e) {
+		if ((position < cachedRegionStart) || (position >= (cachedRegionStart + cachedRegion.size()))) {
+			cacheRegion(position);
+		}
+		int index = position - cachedRegionStart;
+		if (index < cachedRegion.size()) {
+			return cachedRegion.get(index);
+		} else {
 			return null;
 		}
 	}
@@ -230,6 +259,24 @@ public final class TwoBitListView extends AbstractListView<Nucleotide> implement
 
 
 	/**
+	 * Note: this method can be optimized
+	 * @param position
+	 * @return true if the specified position is in a N block
+	 */
+	private boolean isInNBlock(int position) {
+		position--;
+		int i = 0;
+		while ((i < nBlockStarts.length) && (nBlockStarts[i] <= position)) {
+			if (position < (nBlockStarts[i] + nBlockSizes[i])) {
+				return true;
+			}
+			i++;
+		}
+		return false;
+	}
+
+
+	/**
 	 * Method used for unserialization
 	 * @param in
 	 * @throws IOException
@@ -240,6 +287,7 @@ public final class TwoBitListView extends AbstractListView<Nucleotide> implement
 		in.readInt();
 		// read the final fields
 		in.defaultReadObject();
+		cachedRegion  = new ArrayList<Nucleotide>(CACHED_REGION_SIZE);
 	}
 
 

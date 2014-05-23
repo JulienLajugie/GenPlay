@@ -102,7 +102,7 @@ public class MGSynchronizer implements VCFScannerReceiver, Serializable {
 		int newOffsetValue = 0;
 
 		if (offsetList.size() == 0) {
-			newGenomePosition = currentOffset.getPosition();
+			newGenomePosition = currentOffset.getPosition() + additionalLength;
 		} else {
 			newGenomePosition = (currentOffset.getPosition() - lastRefPosition) + getOffset(offsetList).getPosition() + additionalLength;
 			newOffsetValue = getOffset(offsetList).getValue();
@@ -418,7 +418,7 @@ public class MGSynchronizer implements VCFScannerReceiver, Serializable {
 					referenceOffsetIndex++;																								// increase the current reference offset only
 				}
 
-			} else if ((currentReferenceOffset == null) && (currentAlleleOffset != null)) {													// if only the offset from the current genome exists
+			} else if ((currentReferenceOffset == null) && (currentAlleleOffset != null)) {												// if only the offset from the current genome exists
 
 				if (currentAlleleOffset.getValue() < 0) {																				// if the current offset is related to a deletion
 					newOffset = getNewOffset(list, currentAlleleOffset, lastRefPosition, length, 0);									// get the new offset
@@ -429,7 +429,7 @@ public class MGSynchronizer implements VCFScannerReceiver, Serializable {
 				}
 				alleleOffsetIndex++;																									// increase the current genome offset
 
-			} else if ((currentReferenceOffset != null) && (currentAlleleOffset == null)) {													// if only the current offset from the reference exists
+			} else if ((currentReferenceOffset != null) && (currentAlleleOffset == null)) {												// if only the current offset from the reference exists
 
 				newOffset = getNewOffset(list, currentReferenceOffset, lastRefPosition, length, 0);										// get the new offset
 				lastRefPosition = currentReferenceOffset.getPosition() + 1;
