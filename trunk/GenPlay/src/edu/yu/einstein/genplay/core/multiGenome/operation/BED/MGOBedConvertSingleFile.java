@@ -247,7 +247,11 @@ public class MGOBedConvertSingleFile extends ExportEngine {
 			for (AlleleSettingsBedConvert alleleExport: alleleListToConvert) {
 				Object score = getScore(currentLine, alleleExport);
 				if (score != null) {
-					alleleExport.addCurrentInformation(chromosome, score, includeReferences, includeNoCall);
+					try {
+						alleleExport.addCurrentInformation(chromosome, score, includeReferences, includeNoCall);
+					} catch (Exception e) {
+						System.err.println(currentLine);
+					}
 				} else {
 					//System.err.println("The line could not be exported. It seems the ID '" + header.getId() + "' has not been found in the line: " + currentLine.toString());
 				}
