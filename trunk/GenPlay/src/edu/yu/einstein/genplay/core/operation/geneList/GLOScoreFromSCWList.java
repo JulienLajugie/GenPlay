@@ -110,7 +110,6 @@ public class GLOScoreFromSCWList implements Operation<GeneList> {
 											if (currentScore != 0) {
 												if (geneScoreType == GeneScoreType.MAXIMUM_COVERAGE) {
 													scores[k] = Math.max(scores[k], currentScore);
-													break;
 												} else { // case RPKM and BASE_COVERAGE_SUM
 													double start = Math.max(currentExonSCW.get(l).getStart(), currentGene.getExons().get(k).getStart());
 													double stop = Math.min(currentExonSCW.get(l).getStop(), currentGene.getExons().get(k).getStop());
