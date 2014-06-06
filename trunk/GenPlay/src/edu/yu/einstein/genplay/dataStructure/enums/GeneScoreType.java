@@ -40,9 +40,28 @@ public enum GeneScoreType {
 	MAXIMUM_COVERAGE ("Maximum Coverage"),
 
 	/**
+	 * Minimum coverage on the gene or exon
+	 */
+	MINIMUM_COVERAGE ("Minimum Coverage"),
+
+	/**
 	 * RPKM score (Read count Per Kilobase per Million mapped reads)
 	 */
 	RPKM ("RPKM");
+
+
+	/**
+	 * @param description a description of a {@link GeneScoreType}
+	 * @return the {@link GeneScoreType} element having the specified description. Null if none
+	 */
+	public static GeneScoreType lookup(String description) {
+		for (GeneScoreType currentScoreType: GeneScoreType.values()) {
+			if (currentScoreType.getDescription().equals(description)) {
+				return currentScoreType;
+			}
+		}
+		return null;
+	}
 
 
 	/**
@@ -65,25 +84,11 @@ public enum GeneScoreType {
 	 */
 	public String getDescription() {
 		return description;
-	}
+	};
 
 
 	@Override
 	public String toString() {
 		return description;
-	};
-
-
-	/**
-	 * @param description a description of a {@link GeneScoreType}
-	 * @return the {@link GeneScoreType} element having the specified description. Null if none
-	 */
-	public static GeneScoreType lookup(String description) {
-		for (GeneScoreType currentScoreType: GeneScoreType.values()) {
-			if (currentScoreType.getDescription().equals(description)) {
-				return currentScoreType;
-			}
-		}
-		return null;
 	}
 }

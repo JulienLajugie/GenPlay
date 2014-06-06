@@ -100,6 +100,12 @@ public class GLOScoreFromSCWList implements Operation<GeneList> {
 							Gene currentGene = currentGeneList.get(j);
 							if ((currentGene != null) && (currentGene.getExons() != null) && (!currentGene.getExons().isEmpty()))  {
 								double[] scores = new double[currentGene.getExons().size()] ; // array for the exon scores (1 score / exon)
+								if (geneScoreType == GeneScoreType.MINIMUM_COVERAGE) {
+									for (int i = 0; i < scores.length; i++) {
+										scores[i] = Float.MAX_VALUE;
+									}
+								}
+
 								double score = 0; // gene score
 								// set the score per exon
 								for (int k = 0; (k < currentGene.getExons().size()) && !stopped; k++) {
@@ -110,6 +116,8 @@ public class GLOScoreFromSCWList implements Operation<GeneList> {
 											if (currentScore != 0) {
 												if (geneScoreType == GeneScoreType.MAXIMUM_COVERAGE) {
 													scores[k] = Math.max(scores[k], currentScore);
+												} else if (geneScoreType == GeneScoreType.MINIMUM_COVERAGE) {
+													scores[k] = Math.min(scores[k], currentScore);
 												} else { // case RPKM and BASE_COVERAGE_SUM
 													double start = Math.max(currentExonSCW.get(l).getStart(), currentGene.getExons().get(k).getStart());
 													double stop = Math.min(currentExonSCW.get(l).getStop(), currentGene.getExons().get(k).getStop());
@@ -131,6 +139,23 @@ public class GLOScoreFromSCWList implements Operation<GeneList> {
 										score = scores[0];
 										for (int i = 1; i < scores.length; i++) {
 											score = Math.max(score, scores[i]);
+										}
+									}
+									break;
+								case MINIMUM_COVERAGE:
+									if (scores.length > 0) {
+										score = scores[0];
+										if (scores[0] == Float.MAX_VALUE) {
+											scores[0] = 0;
+										}
+										for (int i = 1; i < scores.length; i++) {
+											score = Math.min(score, scores[i]);
+											if (scores[i] == Float.MAX_VALUE) {
+												scores[i] = 0;
+											}
+										}
+										if (score == Float.MAX_VALUE) {
+											score = 0;
 										}
 									}
 									break;
