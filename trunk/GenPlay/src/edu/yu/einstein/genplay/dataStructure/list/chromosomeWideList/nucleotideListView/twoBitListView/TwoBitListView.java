@@ -160,6 +160,10 @@ public final class TwoBitListView extends AbstractListView<Nucleotide> implement
 	}
 
 
+	/**
+	 * Save the region surrounding the specified position in cache
+	 * @param position
+	 */
 	private void cacheRegion(int position) {
 		cachedRegion.clear();
 		cachedRegionStart = position - (CACHED_REGION_SIZE / 2);
@@ -188,7 +192,7 @@ public final class TwoBitListView extends AbstractListView<Nucleotide> implement
 				cachedRegion.add(resultNucleo) ;
 			}
 		}
-
+		cachedRegionStart++;
 	}
 
 
@@ -209,7 +213,7 @@ public final class TwoBitListView extends AbstractListView<Nucleotide> implement
 		if ((position < cachedRegionStart) || (position >= (cachedRegionStart + cachedRegion.size()))) {
 			cacheRegion(position);
 		}
-		int index = position - cachedRegionStart;
+		int index = position - cachedRegionStart; // -1 because positions are 1-based
 		if (index < cachedRegion.size()) {
 			return cachedRegion.get(index);
 		} else {
@@ -264,7 +268,6 @@ public final class TwoBitListView extends AbstractListView<Nucleotide> implement
 	 * @return true if the specified position is in a N block
 	 */
 	private boolean isInNBlock(int position) {
-		position--;
 		int i = 0;
 		while ((i < nBlockStarts.length) && (nBlockStarts[i] <= position)) {
 			if (position < (nBlockStarts[i] + nBlockSizes[i])) {

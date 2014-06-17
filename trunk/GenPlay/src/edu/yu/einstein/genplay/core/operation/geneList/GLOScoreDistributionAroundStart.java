@@ -121,10 +121,18 @@ public class GLOScoreDistributionAroundStart implements Operation<double[][]> {
 							for (int j = 0; j < totalBinCount; j++) {
 								double currentScore;
 								if (currentGene.getStrand().equals(Strand.FIVE)) {
-									currentScore = SCWListViews.average(binList.get(currentChromo), startPos, startPos + binSize);
+									if (startPos >= 0) {
+										currentScore = SCWListViews.average(binList.get(currentChromo), startPos, startPos + binSize);
+									} else {
+										currentScore = 0;
+									}
 									startPos += binSize;
 								} else {
-									currentScore = SCWListViews.average(binList.get(currentChromo), startPos - binSize, startPos);
+									if ((startPos - binSize) >= 0) {
+										currentScore = SCWListViews.average(binList.get(currentChromo), startPos - binSize, startPos);
+									} else {
+										currentScore = 0;
+									}
 									startPos -= binSize;
 								}
 								switch (scoreOperation) {

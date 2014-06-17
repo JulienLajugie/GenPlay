@@ -49,7 +49,6 @@ import edu.yu.einstein.genplay.util.colors.Colors;
 /**
  * Generates a chart showing the score distribution around the start
  * @author Julien Lajugie
- * @version 0.1
  */
 public class GLAScoreDistributionAroundStart extends TrackListActionOperationWorker<double[][]> {
 
@@ -78,6 +77,16 @@ public class GLAScoreDistributionAroundStart extends TrackListActionOperationWor
 
 
 	@Override
+	protected void doAtTheEnd(double[][] actionResult) {
+		if (actionResult != null) {
+			List<ScatterPlotData> scatPlotData = new ArrayList<ScatterPlotData>();
+			scatPlotData.add(new ScatterPlotData(actionResult, "Score Distribution around promoters of " + selectedLayer.toString(), Colors.RED));
+			ScatterPlotPane.showDialog(getRootPane(), "Distance", "Score", scatPlotData);
+		}
+	}
+
+
+	@Override
 	public Operation<double[][]> initializeOperation() {
 		selectedLayer = (GeneLayer) getValue("Layer");
 		if (selectedLayer != null) {
@@ -85,7 +94,7 @@ public class GLAScoreDistributionAroundStart extends TrackListActionOperationWor
 			LayerType[] availableLayerTypes = {LayerType.BIN_LAYER};
 			Layer<?>[] scwLayers = Utils.getLayers(getTrackListPanel().getModel().getTracks(), availableLayerTypes);
 			if ((scwLayers == null) || (scwLayers.length == 0)) {
-				JOptionPane.showMessageDialog(getRootPane(), "You need to load at least one Fixed or Variable Window layer before using this operation", "Warning", JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(getRootPane(), "You need to load at least one Fixed Window layer before using this operation", "Warning", JOptionPane.WARNING_MESSAGE);
 			} else {
 				LayerChooserDialog layerChooserDialog = new LayerChooserDialog();
 				layerChooserDialog.setLayers(getTrackListPanel().getModel().getAllLayers());
@@ -114,15 +123,5 @@ public class GLAScoreDistributionAroundStart extends TrackListActionOperationWor
 			}
 		}
 		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(double[][] actionResult) {
-		if (actionResult != null) {
-			List<ScatterPlotData> scatPlotData = new ArrayList<ScatterPlotData>();
-			scatPlotData.add(new ScatterPlotData(actionResult, "Score Distribution around promoters of " + selectedLayer.toString(), Colors.RED));
-			ScatterPlotPane.showDialog(getRootPane(), "Distance", "Score", scatPlotData);
-		}
 	}
 }

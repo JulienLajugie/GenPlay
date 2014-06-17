@@ -77,10 +77,6 @@ public class NLOCompare2NucleotideLists implements Operation<SCWList> {
 			if ((chrList1 != null) && (chrList2 != null)) {
 				int maxLength = Math.max(chrList1.size(), chrList2.size());
 				for (int i = 0; (i < maxLength) && !stopped; i++) {
-					if ((i % 1000000) == 0) {
-						System.out.println(chromosome.getName() + ": " + i);
-					}
-
 					float score = 0;
 					if ((i < chrList1.size()) && (i < chrList2.size())) {
 						Nucleotide n1 = chrList1.get(i);
