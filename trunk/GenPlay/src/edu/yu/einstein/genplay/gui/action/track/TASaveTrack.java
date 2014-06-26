@@ -47,7 +47,8 @@ public final class TASaveTrack extends TrackListActionWorker<Void> {
 
 	private static final long serialVersionUID = -1893808843074231009L;							// generated ID
 	private static final String ACTION_NAME = "Save Track"; 									// action name
-	private static final String DESCRIPTION = "Save the selected track with all its layers";	// tooltip
+	private static final String DESCRIPTION = "Save the selected track with all its layers" + HELP_TOOLTIP_SUFFIX;	// tooltip
+	private static final String	HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Saving_an_Entire_Track";
 	private static final int 	MNEMONIC = KeyEvent.VK_S; 										// mnemonic key
 
 
@@ -73,6 +74,7 @@ public final class TASaveTrack extends TrackListActionWorker<Void> {
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(ACCELERATOR_KEY, ACCELERATOR);
 		putValue(MNEMONIC_KEY, MNEMONIC);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

@@ -45,14 +45,15 @@ import edu.yu.einstein.genplay.gui.track.layer.variantLayer.VariantLayer;
 public class TAEditVariantLayer extends TrackListAction {
 
 	private static final long serialVersionUID = 5229478480046927796L;
-	private static final String ACTION_NAME = "Edit Variant Layer"; 				// action name
-	private static final String DESCRIPTION = "Edit the layer information"; 		// tooltip
+	private static final String ACTION_NAME = "Edit Variant Layer"; // action name
+	private static final String DESCRIPTION = "Edit the layer information" + HELP_TOOLTIP_SUFFIX; // tooltip
+	private static final String	HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Edit_Variant_Layer";
 
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "TAEditVariantLayer";
+	public static final String ACTION_KEY = TAEditVariantLayer.class.getName();
 
 
 	/**
@@ -63,6 +64,7 @@ public class TAEditVariantLayer extends TrackListAction {
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

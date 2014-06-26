@@ -42,7 +42,7 @@ public class SCWLAOperationWithConstant extends TrackListActionOperationWorker<S
 	private static final long serialVersionUID = 4027173438789911860L; 								// generated ID
 	private static final String 		ACTION_NAME = "Constant Operation";							// action name
 	private static final String 		DESCRIPTION =
-			"Performs an arithmetic operation with a constant on the scores of the selected layer";	// tooltip
+			"Performs an arithmetic operation with a constant on the scores of the selected layer" + HELP_TOOLTIP_SUFFIX;	// tooltip
 	private static final String			HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Constant_Operation";
 	private AbstractSCWLayer<SCWList>	selectedLayer;												// selected layer
 

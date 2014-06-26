@@ -35,14 +35,14 @@ import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
 /**
  * Sets a unique score for all exons
  * @author Julien Lajugie
- * @version 0.1
  */
 public class GLAUniqueScore  extends TrackListActionOperationWorker<GeneList> {
 
 	private static final long serialVersionUID = 2102571378866219218L; 		// generated ID
 	private static final String 	ACTION_NAME = "Unique Score (Constant)";// action name
 	private static final String 	DESCRIPTION =
-			"Set a unique score for all exons.";							// tooltip
+			"Set a unique score for all exons" + HELP_TOOLTIP_SUFFIX;		// tooltip
+	private static final String		HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Unique_Score";
 	private GeneLayer	 			selectedLayer;							// selected layer
 
 
@@ -60,6 +60,7 @@ public class GLAUniqueScore  extends TrackListActionOperationWorker<GeneList> {
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

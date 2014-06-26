@@ -46,13 +46,13 @@ import edu.yu.einstein.genplay.util.FileChooser;
 /**
  * Saves the selected track as a PNG image
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class TASaveAsImage extends TrackListAction {
 
 	private static final long serialVersionUID = -4363481310731795005L; 				// generated ID
 	private static final String ACTION_NAME = "Save as Image"; 							// action name
-	private static final String DESCRIPTION = "Save the selected track as a PNG image"; // tooltip
+	private static final String DESCRIPTION = "Save the selected track as a PNG image" + HELP_TOOLTIP_SUFFIX; // tooltip
+	private static final String	HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Taking_a_Screenshot_of_the_Track";
 	private static final int 	MNEMONIC = KeyEvent.VK_V; 								// mnemonic key
 
 
@@ -104,6 +104,7 @@ public final class TASaveAsImage extends TrackListAction {
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
 		putValue(ACCELERATOR_KEY, ACCELERATOR);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

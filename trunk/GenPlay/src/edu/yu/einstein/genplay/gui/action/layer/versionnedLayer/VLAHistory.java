@@ -36,14 +36,14 @@ import edu.yu.einstein.genplay.util.History;
 /**
  * Shows the history of the selected {@link VersionedLayer}
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class VLAHistory extends TrackListAction {
 
 	private static final long serialVersionUID = 6153915221242216274L;  // generated ID
 	private static final String 	ACTION_NAME = "Show History";		// action name
 	private static final String 	DESCRIPTION =
-			"Show the history of the selected layer";				 	// tooltip
+			"Show the history of the selected layer" + HELP_TOOLTIP_SUFFIX;	// tooltip
+	private static final String		HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Show_History";
 
 
 	/**
@@ -60,6 +60,7 @@ public final class VLAHistory extends TrackListAction {
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

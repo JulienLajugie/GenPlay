@@ -55,7 +55,8 @@ public class GLAScoreDistributionAroundStart extends TrackListActionOperationWor
 	private static final long serialVersionUID = -3916743291195449577L; 				// generated id
 	private static final String 	ACTION_NAME = "Score Distribution Around Start";	// action name
 	private static final String 	DESCRIPTION = "Generates a chart showing the " +
-			"score distribution around the start"; 										// tooltip
+			"score distribution around the start" + HELP_TOOLTIP_SUFFIX;				// tooltip
+	private static final String		HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Score_Repartition_Around_Start";
 	private GeneLayer				selectedLayer;										// selected layer
 
 
@@ -73,6 +74,7 @@ public class GLAScoreDistributionAroundStart extends TrackListActionOperationWor
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

@@ -43,7 +43,8 @@ public final class SCWLALog extends TrackListActionOperationWorker<SCWList> {
 	private static final long serialVersionUID = -7633526345952471304L; // generated ID
 	private static final String 		ACTION_NAME = "Log";			// action name
 	private static final String 		DESCRIPTION =
-			"Apply a log function to the scores of the selected layer";	// tooltip
+			"Apply a log function to the scores of the selected layer" + HELP_TOOLTIP_SUFFIX;	// tooltip
+	private static final String			HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Log";
 	private AbstractSCWLayer<SCWList>	selectedLayer;					// selected layer
 
 
@@ -61,6 +62,7 @@ public final class SCWLALog extends TrackListActionOperationWorker<SCWList> {
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

@@ -31,14 +31,14 @@ import edu.yu.einstein.genplay.gui.track.layer.VersionedLayer;
 /**
  * Redoes the last action performed on the selected {@link VersionedLayer}
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class VLARedo extends TrackListActionWorker<Void> {
 
 	private static final long serialVersionUID = 6836640129258678255L; 	// generated ID
 	private static final String 	ACTION_NAME = "Redo";				// action name
 	private static final String 	DESCRIPTION =
-			"Redo the last action performed on the selected layer";		// tooltip
+			"Redo the last action performed on the selected layer" + HELP_TOOLTIP_SUFFIX;		// tooltip
+	private static final String		HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Using_the_Undo_.2F_Redo_.2F_Reset_Options";
 
 
 	/**
@@ -55,6 +55,7 @@ public final class VLARedo extends TrackListActionWorker<Void> {
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

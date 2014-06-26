@@ -53,7 +53,8 @@ public final class TACopy extends TrackListAction implements ClipboardOwner {
 
 	private static final long serialVersionUID = -1436541643590614314L; // generated ID
 	private static final String ACTION_NAME = "Copy"; 					// action name
-	private static final String DESCRIPTION = "Copy the selected track";// tooltip
+	private static final String DESCRIPTION = "Copy the selected track" + HELP_TOOLTIP_SUFFIX;// tooltip
+	private static final String	HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Copying.2C_Cutting_and_Pasting_a_Layer";
 	private static final int 	MNEMONIC = KeyEvent.VK_C; 				// mnemonic key
 
 
@@ -79,8 +80,13 @@ public final class TACopy extends TrackListAction implements ClipboardOwner {
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(ACCELERATOR_KEY, ACCELERATOR);
 		putValue(MNEMONIC_KEY, MNEMONIC);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
+
+
+	@Override
+	public void lostOwnership(Clipboard clipboard, Transferable contents) {}
 
 
 	@Override
@@ -134,10 +140,6 @@ public final class TACopy extends TrackListAction implements ClipboardOwner {
 			}.actionPerformed(e);
 		}
 	}
-
-
-	@Override
-	public void lostOwnership(Clipboard clipboard, Transferable contents) {}
 
 
 }

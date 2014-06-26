@@ -38,7 +38,6 @@ import edu.yu.einstein.genplay.gui.track.layer.LayerType;
  * Computes the coefficient of correlation for every chromosome between
  * the selected {@link BinLayer} and another {@link BinLayer}.
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class BLACorrelate extends TrackListActionOperationWorker<Double[]> {
 
@@ -46,9 +45,10 @@ public final class BLACorrelate extends TrackListActionOperationWorker<Double[]>
 	private static final String 	ACTION_NAME = "Correlation";		// action name
 	private static final String 	DESCRIPTION =
 			"Compute the coefficient of correlation between " +
-					"the selected layer and another layer";				// tooltip
+					"the selected layer and another layer" + HELP_TOOLTIP_SUFFIX;	// tooltip
 	private BinLayer 				selectedLayer;						// 1st selected layer
 	private BinLayer 				otherLayer;							// 2nd selected layer
+	private static final String		HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Correlation";
 
 
 	/**
@@ -65,6 +65,15 @@ public final class BLACorrelate extends TrackListActionOperationWorker<Double[]>
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
+	}
+
+
+	@Override
+	protected void doAtTheEnd(Double[] actionResult) {
+		if (actionResult != null) {
+			CorrelationReportDialog.showDialog(getRootPane(), actionResult, selectedLayer, otherLayer);
+		}
 	}
 
 
@@ -88,13 +97,5 @@ public final class BLACorrelate extends TrackListActionOperationWorker<Double[]>
 			}
 		}
 		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(Double[] actionResult) {
-		if (actionResult != null) {
-			CorrelationReportDialog.showDialog(getRootPane(), actionResult, selectedLayer, otherLayer);
-		}
 	}
 }

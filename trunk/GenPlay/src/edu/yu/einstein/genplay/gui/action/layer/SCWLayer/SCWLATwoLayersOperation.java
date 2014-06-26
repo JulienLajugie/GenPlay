@@ -53,7 +53,8 @@ public final class SCWLATwoLayersOperation extends TrackListActionOperationWorke
 	private static final long 				serialVersionUID = 4027173438789911860L; 		// generated ID
 	private static final String 			ACTION_NAME = "Two Layers Operation";			// action name
 	private static final String 			DESCRIPTION =
-			"Performs an arithmetic operation between two layers";							// tooltip
+			"Performs an arithmetic operation between two layers" + HELP_TOOLTIP_SUFFIX;	// tooltip
+	private static final String				HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Two_Layers_Operation";
 	private Layer<SCWList>					selectedLayer;									// selected layer
 	private Layer<SCWList>					otherLayer = null;								// other layer
 	private Track							resultTrack = null;								// result track
@@ -74,6 +75,7 @@ public final class SCWLATwoLayersOperation extends TrackListActionOperationWorke
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

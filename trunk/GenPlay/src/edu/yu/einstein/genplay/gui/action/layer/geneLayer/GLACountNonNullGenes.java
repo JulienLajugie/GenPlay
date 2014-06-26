@@ -44,7 +44,8 @@ public final class GLACountNonNullGenes extends TrackListActionOperationWorker<L
 
 	private static final long serialVersionUID = -7198642565173540167L;	// generated ID
 	private static final String 	ACTION_NAME = "Count Genes with Non-Null Score";								// action name
-	private static final String 	DESCRIPTION = "Count the number of genes with a score different than 0";		// tooltip
+	private static final String 	DESCRIPTION = "Count the number of genes with a score different than 0" + HELP_TOOLTIP_SUFFIX; // tooltip
+	private static final String		HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Count_Genes_with_Non-Null_Score";
 
 
 	/**
@@ -61,6 +62,7 @@ public final class GLACountNonNullGenes extends TrackListActionOperationWorker<L
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

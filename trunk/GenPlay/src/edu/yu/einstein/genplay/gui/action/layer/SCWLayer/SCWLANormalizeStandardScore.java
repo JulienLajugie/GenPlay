@@ -41,7 +41,8 @@ public class SCWLANormalizeStandardScore extends TrackListActionOperationWorker<
 	private static final long serialVersionUID = 4481408947601757066L;	// generated ID
 	private static final String 		ACTION_NAME = "Standard Score";		// action name
 	private static final String 		DESCRIPTION =
-			"Compute the standard score of the selected layer";				// tooltip
+			"Compute the standard score of the selected layer" + HELP_TOOLTIP_SUFFIX;	// tooltip
+	private static final String		HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Standard_Score";
 	private AbstractSCWLayer<SCWList> 	selectedLayer;						// selected layer
 
 
@@ -59,6 +60,7 @@ public class SCWLANormalizeStandardScore extends TrackListActionOperationWorker<
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

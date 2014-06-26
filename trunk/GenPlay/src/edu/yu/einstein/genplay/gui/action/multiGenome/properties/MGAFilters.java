@@ -41,7 +41,6 @@ import edu.yu.einstein.genplay.gui.track.Track;
  * 
  * @author Julien Lajugie
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class MGAFilters extends TrackListActionWorker<Track[]> {
 
@@ -72,41 +71,6 @@ public class MGAFilters extends TrackListActionWorker<Track[]> {
 		putValue(MNEMONIC_KEY, MNEMONIC);
 		filterManager = MGFiltersManager.getInstance();
 		hasBeenInitialized = false;
-	}
-
-
-	@Override
-	protected Track[] processAction() throws Exception {
-		ProjectManager projectManager = ProjectManager.getInstance();
-
-		// Checks if the project is multi-genome
-		if (projectManager.isMultiGenomeProject()) {
-
-			if (!hasBeenInitialized) {
-				filterManager.initializeFilterLists();
-			}
-
-			if (filterManager.hasToBeRun()) {
-
-				// Notifies the action
-				notifyActionStart(ACTION_NAME, 1, false);
-
-				filterManager.retrieveDataFromVCF();
-
-				List<MGFilter> filterListToUpdate = filterManager.getFilterListToUpdate();
-
-				for (MGFilter filter: filterListToUpdate) {
-					if (filter instanceof VCFFilter) {
-						VCFFilter vcfFilter = (VCFFilter) filter;
-						vcfFilter.generateFilter(filterManager.getResultOfFilter(vcfFilter));
-					} else {
-						filter.generateFilter();
-					}
-				}
-			}
-		}
-
-		return null;
 	}
 
 
@@ -146,12 +110,38 @@ public class MGAFilters extends TrackListActionWorker<Track[]> {
 	}
 
 
-	/**
-	 * @param previousFilterList the previousFilterList to set
-	 */
-	public void setPreviousFilterList(List<MGFilter> previousFilterList) {
-		filterManager.setPreviousFilterList(previousFilterList);
-		hasBeenInitialized = false;
+	@Override
+	protected Track[] processAction() throws Exception {
+		ProjectManager projectManager = ProjectManager.getInstance();
+
+		// Checks if the project is multi-genome
+		if (projectManager.isMultiGenomeProject()) {
+
+			if (!hasBeenInitialized) {
+				filterManager.initializeFilterLists();
+			}
+
+			if (filterManager.hasToBeRun()) {
+
+				// Notifies the action
+				notifyActionStart(ACTION_NAME, 1, false);
+
+				filterManager.retrieveDataFromVCF();
+
+				List<MGFilter> filterListToUpdate = filterManager.getFilterListToUpdate();
+
+				for (MGFilter filter: filterListToUpdate) {
+					if (filter instanceof VCFFilter) {
+						VCFFilter vcfFilter = (VCFFilter) filter;
+						vcfFilter.generateFilter(filterManager.getResultOfFilter(vcfFilter));
+					} else {
+						filter.generateFilter();
+					}
+				}
+			}
+		}
+
+		return null;
 	}
 
 
@@ -169,6 +159,15 @@ public class MGAFilters extends TrackListActionWorker<Track[]> {
 	 */
 	public void setLatch(CountDownLatch latch) {
 		this.latch = latch;
+	}
+
+
+	/**
+	 * @param previousFilterList the previousFilterList to set
+	 */
+	public void setPreviousFilterList(List<MGFilter> previousFilterList) {
+		filterManager.setPreviousFilterList(previousFilterList);
+		hasBeenInitialized = false;
 	}
 
 }

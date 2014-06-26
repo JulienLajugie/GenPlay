@@ -36,14 +36,14 @@ import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
 /**
  * Extract Exons
  * @author Chirag Gorasia
- * @version 0.1
  */
 public class GLAExtractExons extends TrackListActionOperationWorker<GeneList> {
 
 	private static final long serialVersionUID = 4450568171298987897L;
 	private static final String 	ACTION_NAME = "Extract Exons"; 		// action name
 	private static final String 	DESCRIPTION = "Extract Exons " +
-			"defined relative to genes"; 								// tooltip
+			"defined relative to genes" + HELP_TOOLTIP_SUFFIX;			// tooltip
+	private static final String		HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Extract_Exons";
 	private GeneLayer 			selectedLayer;							// selected layer
 
 
@@ -61,6 +61,15 @@ public class GLAExtractExons extends TrackListActionOperationWorker<GeneList> {
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
+	}
+
+
+	@Override
+	protected void doAtTheEnd(GeneList actionResult) {
+		if (actionResult != null) {
+			selectedLayer.setData(actionResult, operation.getDescription());
+		}
 	}
 
 
@@ -76,13 +85,5 @@ public class GLAExtractExons extends TrackListActionOperationWorker<GeneList> {
 			}
 		}
 		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(GeneList actionResult) {
-		if (actionResult != null) {
-			selectedLayer.setData(actionResult, operation.getDescription());
-		}
 	}
 }

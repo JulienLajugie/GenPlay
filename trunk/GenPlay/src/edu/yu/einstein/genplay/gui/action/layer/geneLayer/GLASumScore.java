@@ -38,7 +38,6 @@ import edu.yu.einstein.genplay.util.Utils;
  * Returns the sum of the scores on the selected chromosomes of the selected {@link GeneLayer}
  * @author Julien Lajugie
  * @author Nicolas Fourel
- * @version 0.1
  */
 public final class GLASumScore extends TrackListActionOperationWorker<Double> {
 
@@ -46,7 +45,8 @@ public final class GLASumScore extends TrackListActionOperationWorker<Double> {
 	private static final String 	ACTION_NAME = "Score Count";		// action name
 	private static final String 	DESCRIPTION =
 			"Return the sum of the scores on the " +
-					"selected chromosomes of the selected layer";		// tooltip
+					"selected chromosomes of the selected layer" + HELP_TOOLTIP_SUFFIX;	// tooltip
+	private static final String		HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Score_Count";
 
 
 	/**
@@ -63,6 +63,7 @@ public final class GLASumScore extends TrackListActionOperationWorker<Double> {
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

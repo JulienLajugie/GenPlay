@@ -45,8 +45,9 @@ public class SCWLAFilter extends TrackListActionOperationWorker<SCWList> {
 	private static final long serialVersionUID = 960963269753754801L;	// generated ID
 	private static final String 	ACTION_NAME = "Filter";				// action name
 	private static final String 	DESCRIPTION =
-			"Filter the selected layer";								// tooltip
-	private AbstractSCWLayer<SCWList> selectedLayer;						// selected layer
+			"Filter the selected layer" + HELP_TOOLTIP_SUFFIX;			// tooltip
+	private static final String		HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Filter";
+	private AbstractSCWLayer<SCWList> selectedLayer;					// selected layer
 
 
 	/**
@@ -63,6 +64,7 @@ public class SCWLAFilter extends TrackListActionOperationWorker<SCWList> {
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

@@ -52,7 +52,8 @@ public class NLACompare2NucleotideLists extends TrackListActionOperationWorker<S
 	private static final long serialVersionUID = -7322522489324602187L;				// generated ID
 	private static final String 	ACTION_NAME = "Compare Sequences"; 				// action name
 	private static final String 	DESCRIPTION =
-			"Creates a track showing the differences between 2 sequence layers";	// tooltip
+			"Creates a track showing the differences between 2 sequence layers" + HELP_TOOLTIP_SUFFIX;	// tooltip
+	private static final String		HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Compare_Sequences";
 	private NucleotideLayer		selectedLayer;										// selected layer
 	private NucleotideLayer		otherLayer;											// other layer
 	private Track				resultTrack;										// track where to add the result
@@ -72,6 +73,7 @@ public class NLACompare2NucleotideLists extends TrackListActionOperationWorker<S
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

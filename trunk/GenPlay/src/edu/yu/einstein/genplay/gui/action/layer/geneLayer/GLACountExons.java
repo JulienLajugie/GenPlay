@@ -38,13 +38,13 @@ import edu.yu.einstein.genplay.util.Utils;
  * Counts the number of exons of the selected {@link GeneLayer}
  * @author Julien Lajugie
  * @author Nicolas Fourel
- * @version 0.1
  */
 public final class GLACountExons extends TrackListActionOperationWorker<Long> {
 
 	private static final long serialVersionUID = -7994020295916154454L;				// generated ID
 	private static final String 	ACTION_NAME = "Count Exons";					// action name
-	private static final String 	DESCRIPTION = "Count the number of exons";		// tooltip
+	private static final String 	DESCRIPTION = "Count the number of exons" + HELP_TOOLTIP_SUFFIX;		// tooltip
+	private static final String		HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Count_Exons";
 
 
 	/**
@@ -61,6 +61,7 @@ public final class GLACountExons extends TrackListActionOperationWorker<Long> {
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

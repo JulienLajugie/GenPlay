@@ -47,14 +47,14 @@ import edu.yu.einstein.genplay.gui.track.Track;
  * Loads a layer from data retrieve from a DAS server
  * @author Julien Lajugie
  * @author Chirag Gorasia
- * @version 0.1
  */
 public class TAAddLayerFromDAS extends TrackListAction {
 
 	private static final long serialVersionUID = -4045220235804063954L;		// generated ID
 	private static final String ACTION_NAME = "Add Layer From DAS Server"; 	// action name
 	private static final String DESCRIPTION = "Add a layer from " +
-			"data retrieved from a DAS server"; 							// tooltip
+			"data retrieved from a DAS server" + HELP_TOOLTIP_SUFFIX; 							// tooltip
+	private static final String	HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Loading_Data_From_a_DAS_Server";
 	private static final int 	MNEMONIC = KeyEvent.VK_D; 					// mnemonic key
 
 
@@ -80,6 +80,7 @@ public class TAAddLayerFromDAS extends TrackListAction {
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
 		putValue(ACCELERATOR_KEY, ACCELERATOR);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

@@ -49,7 +49,8 @@ public final class TAPasteOrDrop extends TrackListActionWorker<Void> {
 
 	private static final long serialVersionUID = 1603320424932972117L; 			// generated ID
 	private static final String ACTION_NAME = "Paste"; 							// action name
-	private static final String DESCRIPTION = "Paste the last copied/cut track";// tooltip
+	private static final String DESCRIPTION = "Paste the last copied/cut track" + HELP_TOOLTIP_SUFFIX;// tooltip
+	private static final String	HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Copying.2C_Cutting_and_Pasting_a_Layer";
 	private static final int 	MNEMONIC = KeyEvent.VK_P; 						// mnemonic key
 
 
@@ -80,6 +81,7 @@ public final class TAPasteOrDrop extends TrackListActionWorker<Void> {
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(ACCELERATOR_KEY, ACCELERATOR);
 		putValue(MNEMONIC_KEY, MNEMONIC);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

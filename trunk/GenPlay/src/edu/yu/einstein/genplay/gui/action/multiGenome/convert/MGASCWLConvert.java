@@ -52,9 +52,10 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 
 	private static final long serialVersionUID = 6498078428524511709L;	// generated ID
 	private static final String 			DESCRIPTION =
-			"Converts the stripes on a variable window track."; 										// tooltip
+			"Converts the stripes on a variable window track" + HELP_TOOLTIP_SUFFIX; // tooltip
 	private static final int 				MNEMONIC = KeyEvent.VK_M; 									// mnemonic key
 	private static		 String 			ACTION_NAME = "Convert into variable window track";			// action name
+	private static final String				HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Convert_into_variable_window_track";
 	private 			 VariantLayer 		selectedLayer;												// selected layer
 
 
@@ -63,8 +64,8 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 	 */
 	public static final String ACTION_KEY = "Multi Genome variable track Convert";
 
-	private ExportEngine exportEngine;
-	private ConvertSCWDialog dialog;
+	private ExportEngine 		exportEngine;
+	private ConvertSCWDialog 	dialog;
 	private boolean 			success;
 
 
@@ -77,6 +78,7 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 
@@ -91,7 +93,6 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 			} catch (Exception e) {
 				ExceptionManager.getInstance().caughtException(e);
 			}
-
 			try {
 				SCWList list = ((MGOBedConvertSingleFile) exportEngine).getSecondList();
 				setTrack(dialog.getSecondAlleleTrack(), list);
@@ -104,38 +105,29 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 
 	@Override
 	protected Boolean processAction() throws Exception {
-
 		ProjectManager projectManager = ProjectManager.getInstance();
 		if (projectManager.isMultiGenomeProject()) {
-
 			// Get layer information
 			selectedLayer = (VariantLayer) getValue("Layer");
-
 			// Create the export settings
 			ExportSettings settings = new ExportSettings(selectedLayer);
-
 			// Create the dialog
 			dialog = new ConvertSCWDialog(settings, selectedLayer);
-
 			// Show the dialog
 			if (dialog.showDialog(getRootPane()) == MultiGenomeTrackActionDialog.APPROVE_OPTION) {
-
 				// Initialize the engine if the export is about only one VCF file
 				int fileNumber = settings.getFileNumber();
 				if (fileNumber == 1) {
 					// Notifies the action
 					notifyActionStart(ACTION_NAME, 1, false);
-
 					exportEngine = new MGOBedConvertSingleFile(dialog.getGenomeName(), dialog.getFirstAlleleTrack(), dialog.getSecondAlleleTrack(), dialog.getDotValue(), dialog.getHeader());
 					exportEngine.initializeEngine(settings.getFileMap(), settings.getVariationMap(), settings.getFilterList(), MGDisplaySettings.getInstance().includeReferences(), MGDisplaySettings.getInstance().includeNoCall());
-
 					try {
 						exportEngine.compute();
 						return true;
 					} catch (Exception e) {
 						ExceptionManager.getInstance().caughtException(e);
 					}
-
 					return true;
 				} else if (fileNumber > 1) {
 					JOptionPane.showMessageDialog(getRootPane(), "Cannot export data from more than one VCF.\nMore support coming soon.", "Export error", JOptionPane.INFORMATION_MESSAGE);
@@ -156,5 +148,4 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 			currentTrack.getLayers().add(newLayer);
 		}
 	}
-
 }

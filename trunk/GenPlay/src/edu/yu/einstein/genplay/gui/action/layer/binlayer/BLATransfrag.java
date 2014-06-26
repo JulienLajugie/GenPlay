@@ -46,7 +46,6 @@ import edu.yu.einstein.genplay.util.Utils;
  * Defines regions separated by gaps of a specified length and computes the average of these regions
  * @author Julien Lajugie
  * @author Chirag Gorasia
- * @version 0.1
  */
 public class BLATransfrag extends TrackListAction {
 
@@ -54,7 +53,8 @@ public class BLATransfrag extends TrackListAction {
 	private static final String 	ACTION_NAME = "Transfrag";			// action name
 	private static final String 	DESCRIPTION =
 			"Define regions separated by gaps of a specified length " +
-					"and compute the average/max/sum of these regions";				// tooltip
+					"and compute the average/max/sum of these regions" + HELP_TOOLTIP_SUFFIX; // tooltip
+	private static final String		HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Transfrag";
 	private BinLayer 				selectedLayer;						// selected layer
 
 
@@ -72,6 +72,7 @@ public class BLATransfrag extends TrackListAction {
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

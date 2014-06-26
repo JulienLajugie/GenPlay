@@ -47,7 +47,8 @@ public final class SCWLACombineCsAndGs extends TrackListActionOperationWorker<SC
 	private static final String 			ACTION_NAME = "CG Methylation Profile";			// action name
 	private static final String 			DESCRIPTION =
 			"Computes the methylation values on CG sequences by combining the value " +
-					"on the C position and the value on the G position";					// tooltip
+					"on the C position and the value on the G position" + HELP_TOOLTIP_SUFFIX;	// tooltip
+	private static final String				HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#CG_Methylation_Profile";
 	private AbstractSCWLayer<SCWList>		selectedLayer;									// selected layer
 	private Layer<NucleotideList>			otherLayer = null;								// other layer
 
@@ -66,6 +67,7 @@ public final class SCWLACombineCsAndGs extends TrackListActionOperationWorker<SC
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

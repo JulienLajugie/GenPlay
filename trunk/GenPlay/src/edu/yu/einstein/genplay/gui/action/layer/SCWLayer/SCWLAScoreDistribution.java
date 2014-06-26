@@ -53,7 +53,8 @@ public final class SCWLAScoreDistribution extends TrackListActionOperationWorker
 	private static final long serialVersionUID = -6665806475919318742L;
 	private static final String 	ACTION_NAME = "Score Distribution Histogram";			// action name
 	private static final String 	DESCRIPTION =
-			"Generate a plot showing the distribution of the scores of the selected layer";	// tooltip
+			"Generate a plot showing the distribution of the scores of the selected layer" + HELP_TOOLTIP_SUFFIX;	// tooltip
+	private static final String		HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Score_Distribution_Histogram";
 	private AbstractSCWLayer<?>[]	selectedLayers;
 	private List<ScatterPlotData> 	scatPlotData;
 	private int 					graphIndicator;
@@ -72,6 +73,7 @@ public final class SCWLAScoreDistribution extends TrackListActionOperationWorker
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

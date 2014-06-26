@@ -52,7 +52,8 @@ public class SCWLATransfrag extends TrackListAction {
 	private static final String 		ACTION_NAME = "Transfrag";			// action name
 	private static final String 		DESCRIPTION =
 			"Define regions separated by gaps of a specified length " +
-					"and compute the average/max/sum of these regions";		// tooltip
+					"and compute the average/max/sum of these regions" + HELP_TOOLTIP_SUFFIX; // tooltip
+	private static final String			HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Transfrag";
 	private AbstractSCWLayer<SCWList>	selectedLayer;						// selected layer
 
 
@@ -70,6 +71,7 @@ public class SCWLATransfrag extends TrackListAction {
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

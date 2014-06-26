@@ -35,14 +35,14 @@ import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
 /**
  * Extract intervals defined relative to genes
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class GLAExtractInterval  extends TrackListActionOperationWorker<GeneList> {
 
 	private static final long serialVersionUID = 2102571378866219218L; // generated ID
 	private static final String 	ACTION_NAME = "Extract Intervals"; // action name
 	private static final String 	DESCRIPTION = "Extract intervals " +
-			"defined relative to genes"; 								// tooltip
+			"defined relative to genes" + HELP_TOOLTIP_SUFFIX;			// tooltip
+	private static final String		HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Extract_Intervals";
 	private GeneLayer 			selectedLayer;							// selected layer
 
 
@@ -60,6 +60,15 @@ public final class GLAExtractInterval  extends TrackListActionOperationWorker<Ge
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
+	}
+
+
+	@Override
+	protected void doAtTheEnd(GeneList actionResult) {
+		if (actionResult != null) {
+			selectedLayer.setData(actionResult, operation.getDescription());
+		}
 	}
 
 
@@ -75,13 +84,5 @@ public final class GLAExtractInterval  extends TrackListActionOperationWorker<Ge
 			}
 		}
 		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(GeneList actionResult) {
-		if (actionResult != null) {
-			selectedLayer.setData(actionResult, operation.getDescription());
-		}
 	}
 }

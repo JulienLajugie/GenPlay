@@ -47,7 +47,8 @@ public class GLAScoreExons  extends TrackListActionOperationWorker<GeneList> {
 	private static final long serialVersionUID = 2102571378866219218L; 		// generated ID
 	private static final String 	ACTION_NAME = "Score Exons";			// action name
 	private static final String 	DESCRIPTION =
-			"Give a score to the exons of the genes from a scored layer";	// tooltip
+			"Give a score to the exons of the genes from a scored layer" + HELP_TOOLTIP_SUFFIX;	// tooltip
+	private static final String		HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Score_Exons";
 	private GeneLayer 			selectedLayer;								// selected layer
 	private Layer<?> 			otherLayer;									// other layer
 
@@ -66,6 +67,7 @@ public class GLAScoreExons  extends TrackListActionOperationWorker<GeneList> {
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

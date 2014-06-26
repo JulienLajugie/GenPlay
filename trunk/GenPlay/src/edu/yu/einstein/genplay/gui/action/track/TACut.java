@@ -48,7 +48,8 @@ public final class TACut extends TrackListAction implements ClipboardOwner{
 
 	private static final long serialVersionUID = 5387375446702872880L;  // generated ID
 	private static final String ACTION_NAME = "Cut"; 					// action name
-	private static final String DESCRIPTION = "Cut the selected track"; // tooltip
+	private static final String DESCRIPTION = "Cut the selected track" + HELP_TOOLTIP_SUFFIX; // tooltip
+	private static final String	HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Copying.2C_Cutting_and_Pasting_a_Layer";
 	private static final int 	MNEMONIC = KeyEvent.VK_U; 				// mnemonic key
 
 
@@ -74,7 +75,12 @@ public final class TACut extends TrackListAction implements ClipboardOwner{
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(ACCELERATOR_KEY, ACCELERATOR);
 		putValue(MNEMONIC_KEY, MNEMONIC);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
+
+
+	@Override
+	public void lostOwnership(Clipboard clipboard, Transferable contents) {}
 
 
 	@Override
@@ -101,10 +107,4 @@ public final class TACut extends TrackListAction implements ClipboardOwner{
 
 		}
 	}
-
-
-	@Override
-	public void lostOwnership(Clipboard clipboard, Transferable contents) {}
-
-
 }

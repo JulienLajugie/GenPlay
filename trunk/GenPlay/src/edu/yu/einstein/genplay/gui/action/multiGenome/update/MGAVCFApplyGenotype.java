@@ -42,15 +42,15 @@ import edu.yu.einstein.genplay.gui.track.layer.variantLayer.VariantLayer;
 
 /**
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class MGAVCFApplyGenotype extends TrackListActionWorker<Boolean> {
 
 	private static final long serialVersionUID = 6498078428524511709L;	// generated ID
 	private static final String 	DESCRIPTION =
-			"Update the genotype of a file using track variations."; 				// tooltip
-	private static final int 				MNEMONIC = KeyEvent.VK_M; 				// mnemonic key
-	private static		 String 			ACTION_NAME = "Apply Genotype";			// action name
+			"Update the genotype of a file using track variations" + HELP_TOOLTIP_SUFFIX; // tooltip
+	private static final int 		MNEMONIC = KeyEvent.VK_M; 				// mnemonic key
+	private static		 String 	ACTION_NAME = "Apply Genotype";			// action name
+	private static final String		HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Apply_Genotype";
 
 
 	/**
@@ -70,51 +70,13 @@ public class MGAVCFApplyGenotype extends TrackListActionWorker<Boolean> {
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
-	}
-
-
-	@Override
-	protected Boolean processAction() throws Exception {
-		ProjectManager projectManager = ProjectManager.getInstance();
-		if (projectManager.isMultiGenomeProject()) {
-
-			// Get layer information
-			VariantLayer selectedLayer = (VariantLayer) getValue("Layer");
-
-			// Create the export settings
-			ExportSettings settings = new ExportSettings(selectedLayer);
-
-			GenotypeVCFDialog dialog = new GenotypeVCFDialog(settings, selectedLayer);
-
-			if (dialog.showDialog(getRootPane()) == MultiGenomeTrackActionDialog.APPROVE_OPTION) {
-				// Create the file to update
-				VCFFile VCFFileToUpdate = dialog.getVCFToGenotype();
-
-				// Create the output file
-				String outputPath = dialog.getOutputFile();
-
-				Map<String, String> genomeNameMap = dialog.getGenomeMap();
-
-				// Create the update engine
-				UpdateEngine engine = new MGOApplyVCFGenotype();
-				engine.initializeEngine(settings.getFileMap(), settings.getVariationMap(), settings.getFilterList(), MGDisplaySettings.getInstance().includeReferences(), MGDisplaySettings.getInstance().includeNoCall());
-				engine.setFileToPhase(VCFFileToUpdate);
-				engine.setPath(outputPath);
-				engine.setGenomeNameMap(genomeNameMap);
-
-				// Notifies the action
-				notifyActionStart(ACTION_NAME, 1, false);
-				engine.compute();
-			}
-		}
-		return false;
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 
 	@Override
 	protected void doAtTheEnd(Boolean actionResult) {
 		success = actionResult;
-
 		if (latch != null) {
 			latch.countDown();
 		}
@@ -129,11 +91,40 @@ public class MGAVCFApplyGenotype extends TrackListActionWorker<Boolean> {
 	}
 
 
+	@Override
+	protected Boolean processAction() throws Exception {
+		ProjectManager projectManager = ProjectManager.getInstance();
+		if (projectManager.isMultiGenomeProject()) {
+			// Get layer information
+			VariantLayer selectedLayer = (VariantLayer) getValue("Layer");
+			// Create the export settings
+			ExportSettings settings = new ExportSettings(selectedLayer);
+			GenotypeVCFDialog dialog = new GenotypeVCFDialog(settings, selectedLayer);
+			if (dialog.showDialog(getRootPane()) == MultiGenomeTrackActionDialog.APPROVE_OPTION) {
+				// Create the file to update
+				VCFFile VCFFileToUpdate = dialog.getVCFToGenotype();
+				// Create the output file
+				String outputPath = dialog.getOutputFile();
+				Map<String, String> genomeNameMap = dialog.getGenomeMap();
+				// Create the update engine
+				UpdateEngine engine = new MGOApplyVCFGenotype();
+				engine.initializeEngine(settings.getFileMap(), settings.getVariationMap(), settings.getFilterList(), MGDisplaySettings.getInstance().includeReferences(), MGDisplaySettings.getInstance().includeNoCall());
+				engine.setFileToPhase(VCFFileToUpdate);
+				engine.setPath(outputPath);
+				engine.setGenomeNameMap(genomeNameMap);
+				// Notifies the action
+				notifyActionStart(ACTION_NAME, 1, false);
+				engine.compute();
+			}
+		}
+		return false;
+	}
+
+
 	/**
 	 * @param latch the latch to set
 	 */
 	public void setLatch(CountDownLatch latch) {
 		this.latch = latch;
 	}
-
 }

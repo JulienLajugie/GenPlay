@@ -49,7 +49,8 @@ public final class MLAApplyMask extends TrackListActionOperationWorker<SCWList> 
 
 	private static final long 				serialVersionUID = 4027173438789911860L; 		// generated ID
 	private static final String 			ACTION_NAME = "Apply Mask";						// action name
-	private static final String 			DESCRIPTION = "Apply mask on layer";			// tooltip
+	private static final String 			DESCRIPTION = "Apply mask on layer" + HELP_TOOLTIP_SUFFIX;	// tooltip
+	private static final String				HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Apply_Mask";
 	private MaskLayer 						selectedLayer;									// selected layer
 	private AbstractSCWLayer<SCWList>		maskedLayer;									// masked layer
 	private Track							resultTrack;									// track where the result layer will be added
@@ -69,6 +70,7 @@ public final class MLAApplyMask extends TrackListActionOperationWorker<SCWList> 
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

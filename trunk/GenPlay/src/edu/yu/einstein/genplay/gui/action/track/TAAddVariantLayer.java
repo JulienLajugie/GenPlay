@@ -45,7 +45,8 @@ public class TAAddVariantLayer extends TrackListAction {
 
 	private static final long serialVersionUID = 5229478480046927796L;
 	private static final String ACTION_NAME = "Add Variant Layer"; 															// action name
-	private static final String DESCRIPTION = "Add a layer displaying multi-genome information such as SNPs and Indels"; 	// tooltip
+	private static final String DESCRIPTION = "Add a layer displaying multi-genome information such as SNPs and Indels" + HELP_TOOLTIP_SUFFIX; 	// tooltip
+	private static final String	HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Add_a_Variant_Layer";
 
 
 	/**
@@ -62,6 +63,7 @@ public class TAAddVariantLayer extends TrackListAction {
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

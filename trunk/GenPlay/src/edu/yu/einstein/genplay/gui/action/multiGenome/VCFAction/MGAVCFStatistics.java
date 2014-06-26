@@ -42,15 +42,15 @@ import edu.yu.einstein.genplay.gui.track.layer.variantLayer.VariantLayer;
 
 /**
  * @author Nicolas Fourel
- * @version 0.1
  */
 public class MGAVCFStatistics extends TrackListActionWorker<VCFFileStatistics> {
 
 	private static final long serialVersionUID = 6498078428524511709L;	// generated ID
 	private static final String 	DESCRIPTION =
-			"Generates statistics for a track."; 									// tooltip
-	private static final int 				MNEMONIC = KeyEvent.VK_M; 					// mnemonic key
-	private static		 String 			ACTION_NAME = "Generate track statistics";	// action name
+			"Generates statistics for a track" + HELP_TOOLTIP_SUFFIX;			// tooltip
+	private static final int 		MNEMONIC = KeyEvent.VK_M; 					// mnemonic key
+	private static		 String 	ACTION_NAME = "Generate track statistics";	// action name
+	private static final String		HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Generate_track_statistics";
 
 
 	/**
@@ -70,6 +70,21 @@ public class MGAVCFStatistics extends TrackListActionWorker<VCFFileStatistics> {
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
+		putValue(HELP_URL_KEY, HELP_URL);
+	}
+
+
+	@Override
+	protected void doAtTheEnd(VCFFileStatistics actionResult) {
+		if (actionResult != null) {
+			actionResult.processStatistics();
+			VariantLayer selectedLayer = (VariantLayer) getValue("Layer");
+			selectedLayer.getGenomeDrawer().setStatistics(actionResult);
+			MGStatisticsDialog dialog = new MGStatisticsDialog(actionResult);
+			dialog.show(getRootPane());
+		} else {
+			System.out.println("No statistic generated");
+		}
 	}
 
 
@@ -78,31 +93,24 @@ public class MGAVCFStatistics extends TrackListActionWorker<VCFFileStatistics> {
 		ProjectManager projectManager = ProjectManager.getInstance();
 		VCFFileStatistics result = null;
 		if (projectManager.isMultiGenomeProject()) {
-
 			// Get layer information
 			VariantLayer selectedLayer = (VariantLayer) getValue("Layer");
 			MultiGenomeDrawer genomeDrawer = selectedLayer.getGenomeDrawer();
-
 			if (genomeDrawer.getStatistics() == null) {
-
 				// Create the export settings
 				ExportSettings settings = new ExportSettings(selectedLayer);
-
 				// Create the operation
 				operation = new MGOVCFStatisticsSingleFile();
 				operation.initializeEngine(settings.getFileMap(), settings.getVariationMap(), settings.getFilterList(), MGDisplaySettings.getInstance().includeReferences(), MGDisplaySettings.getInstance().includeNoCall());
-
 				if (operation.isSingleExport()) {
 					// Notifies the action
 					notifyActionStart(ACTION_NAME, 1, false);
-
 					// Run the operation
 					try {
 						operation.compute();
 					} catch (Exception e) {
 						ExceptionManager.getInstance().caughtException(e);
 					}
-
 					// Return the result
 					result = new VCFFileMixStatistic(operation.getNativeStatistics(), operation.getNewStatistics());
 				} else {
@@ -114,24 +122,4 @@ public class MGAVCFStatistics extends TrackListActionWorker<VCFFileStatistics> {
 		}
 		return result;
 	}
-
-
-	@Override
-	protected void doAtTheEnd(VCFFileStatistics actionResult) {
-
-		if (actionResult != null) {
-			actionResult.processStatistics();
-
-			VariantLayer selectedLayer = (VariantLayer) getValue("Layer");
-
-			selectedLayer.getGenomeDrawer().setStatistics(actionResult);
-
-			MGStatisticsDialog dialog = new MGStatisticsDialog(actionResult);
-			dialog.show(getRootPane());
-		} else {
-			System.out.println("No statistic generated");
-		}
-
-	}
-
 }

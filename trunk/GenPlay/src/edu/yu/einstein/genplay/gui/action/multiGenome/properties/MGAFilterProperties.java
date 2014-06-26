@@ -38,14 +38,14 @@ import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.MGProperties.Propert
  * 
  * @author Nicolas Fourel
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class MGAFilterProperties extends TrackListAction{
 
-	private static final long serialVersionUID = 5992588139324388042L;				// generated ID
-	private static final 	String ACTION_NAME = "Filters";							// action name
-	private static final 	String DESCRIPTION = "Apply Filters"; 					// tooltip
-	private static final 	int 	MNEMONIC = KeyEvent.VK_P; 						// mnemonic key
+	private static final long serialVersionUID = 5992588139324388042L;					// generated ID
+	private static final 	String 	ACTION_NAME = "Filters";								// action name
+	private static final 	String 	DESCRIPTION = "Apply Filters" + HELP_TOOLTIP_SUFFIX;	// tooltip
+	private static final 	String	HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Filters_2";
+	private static final 	int 	MNEMONIC = KeyEvent.VK_P; 							// mnemonic key
 
 
 	/**
@@ -69,6 +69,7 @@ public final class MGAFilterProperties extends TrackListAction{
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

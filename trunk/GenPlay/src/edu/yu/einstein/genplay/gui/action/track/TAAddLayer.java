@@ -72,7 +72,8 @@ public class TAAddLayer extends TrackListAction {
 	public static final String ACTION_KEY = TAAddLayer.class.getName();
 
 	private static final String ACTION_NAME = "Add Layer(s)"; 										// action name
-	private static final String DESCRIPTION = "Add one or multiple layers to the selected track";	// tooltip
+	private static final String DESCRIPTION = "Add one or multiple layers to the selected track" + HELP_TOOLTIP_SUFFIX;	// tooltip
+	private static final String	HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Loading_a_Layer";
 	private static final int 	MNEMONIC = KeyEvent.VK_A; 											// mnemonic key
 
 	private File fileToLoad; // the file to load
@@ -88,6 +89,7 @@ public class TAAddLayer extends TrackListAction {
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(ACCELERATOR_KEY, ACCELERATOR);
 		putValue(MNEMONIC_KEY, MNEMONIC);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 
@@ -102,6 +104,31 @@ public class TAAddLayer extends TrackListAction {
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(ACCELERATOR_KEY, ACCELERATOR);
 		putValue(MNEMONIC_KEY, MNEMONIC);
+	}
+
+
+	/**
+	 * @param extractor an extractor
+	 * @return an array of layer types that can be extracted by the specified extractor
+	 */
+	private LayerType[] getLayerTypes(Extractor extractor) {
+		List<LayerType> typeList = new ArrayList<LayerType>();
+		if (extractor instanceof SCWReader) {
+			typeList.add(LayerType.SCW_LAYER);
+		}
+		if (extractor instanceof GeneReader) {
+			typeList.add(LayerType.GENE_LAYER);
+		}
+		if (extractor instanceof RepeatReader) {
+			typeList.add(LayerType.REPEAT_FAMILY_LAYER);
+		}
+		if (extractor instanceof NucleotideReader) {
+			typeList.add(LayerType.NUCLEOTIDE_LAYER);
+		}
+		if (extractor instanceof SCWReader) {
+			typeList.add(LayerType.MASK_LAYER);
+		}
+		return typeList.toArray(new LayerType[0]);
 	}
 
 
@@ -170,30 +197,5 @@ public class TAAddLayer extends TrackListAction {
 		}
 		// reset the file to load
 		fileToLoad = null;
-	}
-
-
-	/**
-	 * @param extractor an extractor
-	 * @return an array of layer types that can be extracted by the specified extractor
-	 */
-	private LayerType[] getLayerTypes(Extractor extractor) {
-		List<LayerType> typeList = new ArrayList<LayerType>();
-		if (extractor instanceof SCWReader) {
-			typeList.add(LayerType.SCW_LAYER);
-		}
-		if (extractor instanceof GeneReader) {
-			typeList.add(LayerType.GENE_LAYER);
-		}
-		if (extractor instanceof RepeatReader) {
-			typeList.add(LayerType.REPEAT_FAMILY_LAYER);
-		}
-		if (extractor instanceof NucleotideReader) {
-			typeList.add(LayerType.NUCLEOTIDE_LAYER);
-		}
-		if (extractor instanceof SCWReader) {
-			typeList.add(LayerType.MASK_LAYER);
-		}
-		return typeList.toArray(new LayerType[0]);
 	}
 }

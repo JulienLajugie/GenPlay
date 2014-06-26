@@ -44,14 +44,14 @@ import edu.yu.einstein.genplay.util.colors.Colors;
 /**
  * Searches the peaks of a {@link BinLayer}.
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class BLAFindPeaks extends TrackListActionOperationWorker<BinList[]> {
 
 	private static final long serialVersionUID = 1524662321569310278L;  // generated ID
 	private static final String 	ACTION_NAME = "Find Peaks";			// action name
 	private static final String 	DESCRIPTION =
-			"Search the peaks of the selected layer";						// tooltip
+			"Search the peaks of the selected layer" + HELP_TOOLTIP_SUFFIX;		// tooltip
+	private static final String		HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Find_Peaks";
 	private BinLayer 				selectedLayer;						// selected layer
 
 
@@ -69,6 +69,7 @@ public final class BLAFindPeaks extends TrackListActionOperationWorker<BinList[]
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

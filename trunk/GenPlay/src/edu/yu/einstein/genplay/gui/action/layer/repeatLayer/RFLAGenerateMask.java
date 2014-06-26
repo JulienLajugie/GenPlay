@@ -50,7 +50,8 @@ public class RFLAGenerateMask extends TrackListActionOperationWorker<SCWList> {
 
 	private static final long serialVersionUID = -167849335384206182L;  						// generated ID
 	private static final String 	ACTION_NAME = "Convert Into Mask";							// action name
-	private static final String 	DESCRIPTION = "Convert the specified families into a mask";	// tooltip
+	private static final String 	DESCRIPTION = "Convert the specified families into a mask" + HELP_TOOLTIP_SUFFIX;	// tooltip
+	private static final String		HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Convert_Into_Mask";
 	private RepeatLayer				selectedLayer;												// selected layer
 	private Track	 				resultTrack;												// track for the result layer
 	List<String> selectedFamilies;
@@ -68,6 +69,7 @@ public class RFLAGenerateMask extends TrackListActionOperationWorker<SCWList> {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

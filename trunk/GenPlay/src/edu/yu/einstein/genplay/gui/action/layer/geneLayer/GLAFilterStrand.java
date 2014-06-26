@@ -36,14 +36,14 @@ import edu.yu.einstein.genplay.gui.track.layer.GeneLayer;
 /**
  * Removes the genes that are not on the specified strand
  * @author Julien Lajugie
- * @version 0.1
  */
 public class GLAFilterStrand extends TrackListActionOperationWorker<GeneList> {
 
 	private static final long serialVersionUID = -43642801194649520L;	// generated id
 	private static final String 	ACTION_NAME = "Filter Strand"; 		// action name
 	private static final String 	DESCRIPTION = "Remove the genes " +
-			"that are not on the specified strand"; 					// tooltip
+			"that are not on the specified strand" + HELP_TOOLTIP_SUFFIX;	// tooltip
+	private static final String		HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Filter_Strand";
 	private GeneLayer 				selectedLayer;						// selected layer
 
 
@@ -61,6 +61,15 @@ public class GLAFilterStrand extends TrackListActionOperationWorker<GeneList> {
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
+	}
+
+
+	@Override
+	protected void doAtTheEnd(GeneList actionResult) {
+		if (actionResult != null) {
+			selectedLayer.setData(actionResult, operation.getDescription());
+		}
 	}
 
 
@@ -76,13 +85,5 @@ public class GLAFilterStrand extends TrackListActionOperationWorker<GeneList> {
 			}
 		}
 		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(GeneList actionResult) {
-		if (actionResult != null) {
-			selectedLayer.setData(actionResult, operation.getDescription());
-		}
 	}
 }

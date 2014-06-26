@@ -41,7 +41,8 @@ public final class SCWLAShowStatistics extends TrackListAction {
 	private static final long serialVersionUID = -3864460354387970028L;	// generated ID
 	private static final String 	ACTION_NAME = "Show Statistics";	// action name
 	private static final String 	DESCRIPTION =
-			"Show statistics about the selected layer";					// tooltip
+			"Show statistics about the selected layer" + HELP_TOOLTIP_SUFFIX; // tooltip
+	private static final String		HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Show_Statistics";
 
 
 	/**
@@ -58,6 +59,7 @@ public final class SCWLAShowStatistics extends TrackListAction {
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

@@ -31,14 +31,14 @@ import edu.yu.einstein.genplay.gui.track.layer.VersionedLayer;
 /**
  * Resets the selected {@link VersionedLayer}
  * @author Julien Lajugie
- * @version 0.1
  */
 public final class VLAReset extends TrackListActionWorker<Void> {
 
 	private static final long serialVersionUID = 4801183816800208961L;	// generated ID
 	private static final String 	ACTION_NAME = "Reset";				// action name
 	private static final String 	DESCRIPTION =
-			"Reset the selected layer";									// tooltip
+			"Reset the selected layer" + HELP_TOOLTIP_SUFFIX;			// tooltip
+	private static final String		HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Using_the_Undo_.2F_Redo_.2F_Reset_Options";
 
 
 	/**
@@ -55,6 +55,7 @@ public final class VLAReset extends TrackListActionWorker<Void> {
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

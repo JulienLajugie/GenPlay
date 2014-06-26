@@ -36,14 +36,14 @@ import edu.yu.einstein.genplay.gui.track.Track;
 /**
  * Inserts a blank track
  * @author Julien Lajugie
- * @version 0.1
  */
 public class TAInsert extends TrackListAction {
 
 	private static final long serialVersionUID = 775293461948991915L;		// generated ID
 	private static final String ACTION_NAME = "Insert"; 					// action name
 	private static final String DESCRIPTION = "Insert a blank track " +
-			"right above the selected track"; 								// tooltip
+			"right above the selected track" + HELP_TOOLTIP_SUFFIX;			// tooltip
+	private static final String	HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Inserting_a_Track";
 	private static final int 	MNEMONIC = KeyEvent.VK_I; 					// mnemonic key
 
 
@@ -69,6 +69,7 @@ public class TAInsert extends TrackListAction {
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(ACCELERATOR_KEY, ACCELERATOR);
 		putValue(MNEMONIC_KEY, MNEMONIC);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

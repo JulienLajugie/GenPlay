@@ -43,7 +43,8 @@ public final class TADelete extends TrackListAction {
 
 	private static final long serialVersionUID = -832588159357836362L; 		// generated ID
 	private static final String ACTION_NAME = "Delete";						// action name
-	private static final String DESCRIPTION = "Delete the selected track"; 	// tooltip
+	private static final String DESCRIPTION = "Delete the selected track" + HELP_TOOLTIP_SUFFIX; 	// tooltip
+	private static final String	HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Deleting_a_Track";
 	private static final int 	MNEMONIC = KeyEvent.VK_E; 					// mnemonic key
 
 
@@ -69,6 +70,7 @@ public final class TADelete extends TrackListAction {
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(ACCELERATOR_KEY, ACCELERATOR);
 		putValue(MNEMONIC_KEY, MNEMONIC);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

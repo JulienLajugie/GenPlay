@@ -46,9 +46,10 @@ public class MGAVCFExport extends TrackListActionWorker<Boolean> {
 
 	private static final long serialVersionUID = 6498078428524511709L;	// generated ID
 	private static final String 	DESCRIPTION =
-			"Performs the multi genome algorithm"; 										// tooltip
-	private static final int 				MNEMONIC = KeyEvent.VK_M; 				// mnemonic key
-	private static		 String 			ACTION_NAME = "Export as VCF";			// action name
+			"Exports the visible variations into a VCF file" + HELP_TOOLTIP_SUFFIX;	// tooltip
+	private static final int 		MNEMONIC = KeyEvent.VK_M; 				// mnemonic key
+	private static		 String 	ACTION_NAME = "Export as VCF";			// action name
+	private static final String		HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Export_as_VCF";
 
 
 	/**
@@ -72,8 +73,27 @@ public class MGAVCFExport extends TrackListActionWorker<Boolean> {
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
+		putValue(HELP_URL_KEY, HELP_URL);
 		this.file = file;
 		this.settings = settings;
+	}
+
+
+	@Override
+	protected void doAtTheEnd(Boolean actionResult) {
+		success = actionResult;
+
+		if (latch != null) {
+			latch.countDown();
+		}
+	}
+
+
+	/**
+	 * @return true if the action has been correctly finish, false otherwise
+	 */
+	public boolean hasBeenDone () {
+		return success;
 	}
 
 
@@ -112,24 +132,6 @@ public class MGAVCFExport extends TrackListActionWorker<Boolean> {
 
 		}
 		return false;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(Boolean actionResult) {
-		success = actionResult;
-
-		if (latch != null) {
-			latch.countDown();
-		}
-	}
-
-
-	/**
-	 * @return true if the action has been correctly finish, false otherwise
-	 */
-	public boolean hasBeenDone () {
-		return success;
 	}
 
 

@@ -41,7 +41,8 @@ public class SCWLANormalize extends TrackListActionOperationWorker<SCWList> {
 	private static final long serialVersionUID = 3820923997838773226L;	// generated ID
 	private static final String 		ACTION_NAME = "Normalize";		// action name
 	private static final String 		DESCRIPTION =
-			"Normalize the scores of the selected layer";				// tooltip
+			"Normalize the scores of the selected layer" + HELP_TOOLTIP_SUFFIX;	// tooltip
+	private static final String			HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Normalize";
 	private AbstractSCWLayer<SCWList> 	selectedLayer;					// selected layer
 
 
@@ -59,6 +60,7 @@ public class SCWLANormalize extends TrackListActionOperationWorker<SCWList> {
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

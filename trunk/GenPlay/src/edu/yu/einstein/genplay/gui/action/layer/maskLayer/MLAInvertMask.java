@@ -36,13 +36,13 @@ import edu.yu.einstein.genplay.gui.track.layer.MaskLayer;
  * Reverts a mask reverting mask windows by white spaces and white spaces by mask windows.
  * @author Julien Lajugie
  * @author Nicolas Fourel
- * @version 0.1
  */
 public final class MLAInvertMask extends TrackListActionOperationWorker<SCWList> {
 
 	private static final long 				serialVersionUID = 4027173438789911860L; 		// generated ID
 	private static final String 			ACTION_NAME = "Invert Mask";					// action name
-	private static final String 			DESCRIPTION = "Invert the mask layer";			// tooltip
+	private static final String 			DESCRIPTION = "Invert the mask layer" + HELP_TOOLTIP_SUFFIX;	// tooltip
+	private static final String				HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Invert_Mask";
 	private MaskLayer 						selectedLayer;									// selected layer
 
 
@@ -60,6 +60,15 @@ public final class MLAInvertMask extends TrackListActionOperationWorker<SCWList>
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
+	}
+
+
+	@Override
+	protected void doAtTheEnd(SCWList actionResult) {
+		if (actionResult != null) {
+			selectedLayer.setData(actionResult, "Mask Inverted");
+		}
 	}
 
 
@@ -72,13 +81,5 @@ public final class MLAInvertMask extends TrackListActionOperationWorker<SCWList>
 			return operation;
 		}
 		return null;
-	}
-
-
-	@Override
-	protected void doAtTheEnd(SCWList actionResult) {
-		if (actionResult != null) {
-			selectedLayer.setData(actionResult, "Mask Inverted");
-		}
 	}
 }

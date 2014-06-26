@@ -112,10 +112,10 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 	private static final int VERSION_MAJOR = 1;
 
 	/** Minor version of GenPlay */
-	private static final int VERSION_MINOR = 0;
+	private static final int VERSION_MINOR = 1;
 
 	/** Build version of GenPlay */
-	private static final int VERSION_BUILD = 15;
+	private static final int VERSION_BUILD = 0;
 
 	/** GenPlay version */
 	public static final String GENPLAY_VERSION = VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_BUILD;

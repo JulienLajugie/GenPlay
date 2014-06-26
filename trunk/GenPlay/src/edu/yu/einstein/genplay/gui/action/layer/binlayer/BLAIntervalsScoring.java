@@ -44,7 +44,6 @@ import edu.yu.einstein.genplay.util.colors.Colors;
 /**
  * Computes the average, sum or max of the selected layer on intervals defined by another layer
  * @author Julien Lajugie
- * @version 0.1
  */
 public class BLAIntervalsScoring extends TrackListActionOperationWorker<BinList> {
 
@@ -52,8 +51,8 @@ public class BLAIntervalsScoring extends TrackListActionOperationWorker<BinList>
 	private static final String 	ACTION_NAME = "Intervals Scoring";			// action name
 	private static final String 	DESCRIPTION =
 			"Compute the average, the sum or the max of the " +
-					"selected layer on intervals defined by another layer";		// tooltip
-
+					"selected layer on intervals defined by another layer" + HELP_TOOLTIP_SUFFIX; // tooltip
+	private static final String		HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Intervals_Scoring";
 	private BinLayer	 			selectedLayer;		// selected layer
 	private BinLayer				intervalLayer;		// layer defining the intervals
 	private Number 					percentage;			// percentage of the greatest values
@@ -75,6 +74,7 @@ public class BLAIntervalsScoring extends TrackListActionOperationWorker<BinList>
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

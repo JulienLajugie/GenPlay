@@ -43,7 +43,8 @@ public class GLAFilter extends TrackListActionOperationWorker<GeneList> {
 
 	private static final long serialVersionUID = -5807756062510954560L;	// generated id
 	private static final String 	ACTION_NAME = "Filter";		 		// action name
-	private static final String 	DESCRIPTION = "Filter the selected layer";	// tooltip
+	private static final String 	DESCRIPTION = "Filter the selected layer" + HELP_TOOLTIP_SUFFIX;	// tooltip
+	private static final String		HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Filter_2";
 	private GeneLayer 				selectedLayer;						// selected layer
 
 
@@ -61,6 +62,7 @@ public class GLAFilter extends TrackListActionOperationWorker<GeneList> {
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

@@ -39,14 +39,13 @@ import edu.yu.einstein.genplay.util.FileChooser;
 /**
  * Class to Rename Genes
  * @author Chirag Gorasia
- * @version 0.1
  */
-
 public class GLAGeneRenamer extends TrackListActionOperationWorker<GeneList>{
 
 	private static final long serialVersionUID = -2210215854202609520L;
 	private static final String 	ACTION_NAME = "Rename Genes"; // action name
-	private static final String 	DESCRIPTION = "Rename Genes";
+	private static final String 	DESCRIPTION = "Rename Genes" + HELP_TOOLTIP_SUFFIX;
+	private static final String		HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Rename_Genes";
 	private GeneLayer 				selectedLayer;
 
 
@@ -64,6 +63,7 @@ public class GLAGeneRenamer extends TrackListActionOperationWorker<GeneList>{
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 

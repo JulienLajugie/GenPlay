@@ -43,7 +43,8 @@ public final class SCWLAIndex extends TrackListActionOperationWorker<SCWList> {
 	private static final long serialVersionUID = -4566157311251154991L; // generated ID
 	private static final String 		ACTION_NAME = "Index";			// action name
 	private static final String 		DESCRIPTION = "Index the scores of the selected " +
-			"layer between specified minimum and maximum values";		// tooltip
+			"layer between specified minimum and maximum values" + HELP_TOOLTIP_SUFFIX;		// tooltip
+	private static final String			HELP_URL = "http://genplay.einstein.yu.edu/wiki/index.php/Documentation#Index";
 	private AbstractSCWLayer<SCWList>	selectedLayer;					// selected layer
 
 	/**
@@ -60,6 +61,7 @@ public final class SCWLAIndex extends TrackListActionOperationWorker<SCWList> {
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(HELP_URL_KEY, HELP_URL);
 	}
 
 
