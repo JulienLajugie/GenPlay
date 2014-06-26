@@ -76,7 +76,7 @@ public class BLATransfrag extends TrackListAction {
 
 
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
+	public void trackListActionPerformed(ActionEvent arg0) {
 		selectedLayer = (BinLayer) getValue("Layer");
 		if (selectedLayer != null) {
 			final BinList binList = selectedLayer.getData();
@@ -91,12 +91,6 @@ public class BLATransfrag extends TrackListAction {
 							new TrackListActionOperationWorker<GeneList>(){
 								private static final long serialVersionUID = -182674743663404937L;
 								@Override
-								public Operation<GeneList> initializeOperation()
-										throws Exception {
-									// case where the result type is a GeneList
-									return new BLOTransfragGeneList(binList, tfDialog.getGapSize(), operationType);
-								}
-								@Override
 								protected void doAtTheEnd(GeneList actionResult) {
 									if (actionResult != null) {
 										Track selectedTrack = selectedLayer.getTrack();
@@ -106,21 +100,27 @@ public class BLATransfrag extends TrackListAction {
 										selectedTrack.getLayers().remove(selectedTrack);
 									}
 								}
+								@Override
+								public Operation<GeneList> initializeOperation()
+										throws Exception {
+									// case where the result type is a GeneList
+									return new BLOTransfragGeneList(binList, tfDialog.getGapSize(), operationType);
+								}
 							}.actionPerformed(null);
 						} else if (resType == TransfragDialog.GENERATE_SCORED_LIST) {
 							new TrackListActionOperationWorker<BinList>(){
 								private static final long serialVersionUID = -182674743663404937L;
 								@Override
-								public Operation<BinList> initializeOperation()
-										throws Exception {
-									// case where the result type is a GeneList
-									return new BLOTransfrag(binList, tfDialog.getGapSize(), operationType);
-								}
-								@Override
 								protected void doAtTheEnd(BinList actionResult) {
 									if (actionResult != null) {
 										selectedLayer.setData(actionResult, operation.getDescription());
 									}
+								}
+								@Override
+								public Operation<BinList> initializeOperation()
+										throws Exception {
+									// case where the result type is a GeneList
+									return new BLOTransfrag(binList, tfDialog.getGapSize(), operationType);
 								}
 							}.actionPerformed(null);
 						}

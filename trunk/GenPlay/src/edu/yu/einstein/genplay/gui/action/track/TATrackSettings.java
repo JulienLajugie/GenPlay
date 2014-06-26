@@ -85,37 +85,6 @@ public class TATrackSettings extends TrackListAction {
 
 
 	/**
-	 * Shows a dialog to manage the layer settings
-	 */
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		if (MainFrame.getInstance().isLocked()) {
-			return;
-		}
-
-		Track selectedTrack = getTrackListPanel().getSelectedTrack();
-		if (selectedTrack != null) {
-			TrackSettingsDialog dialog = new TrackSettingsDialog();
-			int option = dialog.showDialog(getRootPane(), selectedTrack);
-			if (option == TrackSettingsDialog.APPROVE_OPTION) {
-
-				// Set the track options
-				setTrackOptions(selectedTrack, dialog.getTrackOptions());
-
-				// Set the layer options
-				if (dialog.getLayerOptions() != null) {
-					setLayerOptions(selectedTrack, dialog.getLayerOptions());
-				}
-
-				// Update the track display
-				selectedTrack.repaint();
-			}
-			dialog.dispose();
-		}
-	}
-
-
-	/**
 	 * Set the new layer options
 	 * @param selectedTrack the selected track
 	 * @param layerSettings the layer options
@@ -176,6 +145,37 @@ public class TATrackSettings extends TrackListAction {
 		// track foreground settings
 		foregroundData.setScorePosition(trackOptions.getScorePosition());
 		foregroundData.setScoreColor(trackOptions.getScoreColor());
+	}
+
+
+	/**
+	 * Shows a dialog to manage the layer settings
+	 */
+	@Override
+	public void trackListActionPerformed(ActionEvent arg0) {
+		if (MainFrame.getInstance().isLocked()) {
+			return;
+		}
+
+		Track selectedTrack = getTrackListPanel().getSelectedTrack();
+		if (selectedTrack != null) {
+			TrackSettingsDialog dialog = new TrackSettingsDialog();
+			int option = dialog.showDialog(getRootPane(), selectedTrack);
+			if (option == TrackSettingsDialog.APPROVE_OPTION) {
+
+				// Set the track options
+				setTrackOptions(selectedTrack, dialog.getTrackOptions());
+
+				// Set the layer options
+				if (dialog.getLayerOptions() != null) {
+					setLayerOptions(selectedTrack, dialog.getLayerOptions());
+				}
+
+				// Update the track display
+				selectedTrack.repaint();
+			}
+			dialog.dispose();
+		}
 	}
 
 }

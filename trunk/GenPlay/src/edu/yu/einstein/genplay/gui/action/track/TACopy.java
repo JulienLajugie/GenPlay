@@ -84,7 +84,7 @@ public final class TACopy extends TrackListAction implements ClipboardOwner {
 
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void trackListActionPerformed(ActionEvent e) {
 		final Track selectedTrack = getTrackListPanel().getSelectedTrack();
 		if (selectedTrack != null) {
 			// create image needs to be done on the EDT, that's why the copy class is not a swing worker

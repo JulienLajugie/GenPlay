@@ -76,10 +76,9 @@ public final class MGAFilterProperties extends TrackListAction{
 	 * Shows the Multi Genome Project Properties dialog
 	 */
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
+	public void trackListActionPerformed(ActionEvent arg0) {
 		MGAProperties properties = new MGAProperties();
 		properties.setItemDialog(PropertiesDialog.FILTERS);
 		properties.actionPerformed(arg0);
 	}
-
 }

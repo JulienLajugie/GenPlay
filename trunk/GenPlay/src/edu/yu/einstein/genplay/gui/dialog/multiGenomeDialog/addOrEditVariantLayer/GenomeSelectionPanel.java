@@ -51,7 +51,7 @@ class GenomeSelectionPanel extends JScrollPane {
 	static final String SELECTED_GENOME_PROPERTY_NAME = "selectedGenome";
 
 	/** Dimension of the panel inside this scroll pane */
-	private static final Dimension PANEL_SIZE = new Dimension(200, 100);
+	private static final Dimension PANEL_SIZE = new Dimension(300, 200);
 
 	/** selected genome */
 	private VariantLayerDisplaySettings selectedGenome;
@@ -74,7 +74,7 @@ class GenomeSelectionPanel extends JScrollPane {
 	private void createPanel (final List<VariantLayerDisplaySettings> genomes) {
 		ButtonGroup group = new ButtonGroup();
 		JPanel content = new JPanel(new GridBagLayout());
-		content.setPreferredSize(PANEL_SIZE);
+		setPreferredSize(PANEL_SIZE);
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;

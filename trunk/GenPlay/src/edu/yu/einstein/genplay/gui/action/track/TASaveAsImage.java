@@ -108,7 +108,7 @@ public final class TASaveAsImage extends TrackListAction {
 
 
 	@Override
-	public void actionPerformed(ActionEvent evt) {
+	public void trackListActionPerformed(ActionEvent evt) {
 		Track selectedTrack = getTrackListPanel().getSelectedTrack();
 		if (selectedTrack != null) {
 			FileFilter[] filters = {new FileNameExtensionFilter("PNG file (*.PNG)", "png")};

@@ -250,7 +250,7 @@ public final class MGARefresh extends TrackListAction {
 	 * Shows the Multi Genome Project Properties dialog
 	 */
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
+	public void trackListActionPerformed(ActionEvent arg0) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {		// if it is a multi genome project
 			UpdateThread thread = new UpdateThread();					// if it is approved (OK button), we create the thread running the content of a DoAtTheEnd-like method
 			thread.start();												// we start the thread

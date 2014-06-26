@@ -75,7 +75,7 @@ public class SCWLATransfrag extends TrackListAction {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void trackListActionPerformed(ActionEvent e) {
 		selectedLayer = (AbstractSCWLayer<SCWList>) getValue("Layer");
 		if (selectedLayer != null) {
 			final SCWList scwList = selectedLayer.getData();

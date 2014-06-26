@@ -26,7 +26,6 @@ import java.awt.event.ActionEvent;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CountDownLatch;
 
-import javax.swing.AbstractAction;
 import javax.swing.JRootPane;
 import javax.swing.SwingWorker;
 
@@ -48,7 +47,7 @@ import edu.yu.einstein.genplay.util.Utils;
  * @author Julien Lajugie
  * @param <T> typed of the value returned by the action
  */
-public abstract class TrackListActionWorker<T> extends AbstractAction implements OperationProgressListener, Stoppable {
+public abstract class TrackListActionWorker<T> extends TrackListAction implements OperationProgressListener, Stoppable {
 
 	/**
 	 * Private inner class that extends SwingWorker<T, Void>.
@@ -109,19 +108,6 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 	}
 
 
-	@Override
-	public final void actionPerformed(ActionEvent arg0) {
-		if (!MainFrame.getInstance().isLocked()) {
-			try {
-				worker = new PooledActionWorker();
-				worker.execute();
-			} catch (Exception e) {
-				ExceptionManager.getInstance().caughtException(e);
-			}
-		}
-	}
-
-
 	/**
 	 * Method called at the end of the action.
 	 * Can be extended to define the action to do at the end.
@@ -133,6 +119,7 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 	/**
 	 * @return the {@link JRootPane} of the {@link TrackList}
 	 */
+	@Override
 	protected JRootPane getRootPane() {
 		return MainFrame.getInstance().getTrackListPanel().getRootPane();
 	}
@@ -150,6 +137,7 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 	 * Shortcut for MainFrame.getInstance().getTrackList()
 	 * @return the track list of the project
 	 */
+	@Override
 	protected TrackListPanel getTrackListPanel() {
 		return MainFrame.getInstance().getTrackListPanel();
 	}
@@ -210,5 +198,18 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 		worker.cancel(true);
 		OperationPool.getInstance().stopPool();
 		Utils.garbageCollect();
+	}
+
+
+	@Override
+	public final void trackListActionPerformed(ActionEvent e) {
+		if (!MainFrame.getInstance().isLocked()) {
+			try {
+				worker = new PooledActionWorker();
+				worker.execute();
+			} catch (Exception err) {
+				ExceptionManager.getInstance().caughtException(err);
+			}
+		}
 	}
 }

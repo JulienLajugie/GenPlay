@@ -22,9 +22,15 @@
  ******************************************************************************/
 package edu.yu.einstein.genplay.gui.action;
 
+import java.awt.Component;
+import java.awt.Desktop;
+import java.awt.event.ActionEvent;
+import java.net.URI;
+
 import javax.swing.AbstractAction;
 import javax.swing.JRootPane;
 
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.trackList.TrackListPanel;
 
@@ -37,12 +43,31 @@ public abstract class TrackListAction extends AbstractAction {
 
 	private static final long serialVersionUID = 1383058897700926018L; 		// generated ID
 
+	/** Action key for the URL of the help page of the action */
+	protected static final String HELP_URL_KEY = "HELP_URL_KEY";
+
+	protected static final String HELP_TOOLTIP_SUFFIX = " (alt + click to show help)";
+
 
 	/**
 	 * Constructor
 	 */
 	public TrackListAction() {
 		super();
+	}
+
+
+	/**
+	 * Shows the help page of the action if alt + click was pressed. Process the action otherwise
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void actionPerformed(ActionEvent e) {
+		if ((e != null) && ((e.getModifiers() & ActionEvent.ALT_MASK) == ActionEvent.ALT_MASK)) {
+			showHelp(getRootPane());
+		} else {
+			trackListActionPerformed(e);
+		}
 	}
 
 
@@ -61,4 +86,30 @@ public abstract class TrackListAction extends AbstractAction {
 	protected TrackListPanel getTrackListPanel() {
 		return MainFrame.getInstance().getTrackListPanel();
 	}
+
+
+	/**
+	 * Shows the help page associated with the action
+	 * @param parentComponent parent component of the window that will display the help
+	 */
+	protected void showHelp(Component parentComponent) {
+		String helpURL = (String) getValue(HELP_URL_KEY);
+		if (helpURL != null) {
+			try {
+				if (Desktop.isDesktopSupported()) {
+					URI uri = new URI(helpURL);
+					Desktop.getDesktop().browse(uri);
+				}
+			} catch (Exception e) {
+				ExceptionManager.getInstance().notifyUser(parentComponent, e, "Cannot open Internet Browser.");
+			}
+		}
+	}
+
+
+	/**
+	 * Invoked when an action occurs.
+	 * @param e
+	 */
+	public abstract void trackListActionPerformed(ActionEvent e);
 }

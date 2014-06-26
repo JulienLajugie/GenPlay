@@ -84,7 +84,7 @@ public class MGAGlobalVCFExport extends TrackListAction {
 
 
 	@Override
-	public void actionPerformed(ActionEvent evt) {
+	public void trackListActionPerformed(ActionEvent evt) {
 		new MainExportVCFThread().start();
 	}
 

@@ -244,6 +244,8 @@ class VariantTypeSelectionPanel extends JPanel {
 		gbc.anchor = GridBagConstraints.LINE_START;
 		gbc.insets = new Insets(5, 5, 5, 5);
 		gbc.gridy = 0;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
 
 		VariantType[] types = {VariantType.SNPS, VariantType.INSERTION, VariantType.DELETION};
 

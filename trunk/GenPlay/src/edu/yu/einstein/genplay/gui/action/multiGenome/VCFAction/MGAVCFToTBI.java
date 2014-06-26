@@ -95,7 +95,7 @@ public final class MGAVCFToTBI extends TrackListAction {
 
 
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
+	public void trackListActionPerformed(ActionEvent arg0) {
 		if (ProjectManager.getInstance().isMultiGenomeProject() || loadingPassBy) {		// if it is a multi genome project
 			// Compress the VCF
 			try {

@@ -24,6 +24,7 @@ package edu.yu.einstein.genplay.gui.track.layer.variantLayer;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -175,9 +176,9 @@ class MultiGenomeVariantDrawer implements Serializable {
 				if (currentDrawingAllele == AlleleType.ALLELE02) {
 					g2d.scale(1, -1);
 					letterY *= -1;
-					letterY -= fm.getHeight() / 2d;
+					//letterY -= fm.getHeight() / 2d;	// commented because it was buggy on windows
 				} else {
-					letterY += fm.getHeight() / 2d;
+					//letterY += fm.getHeight() / 2d;	// commented because it was buggy on windows
 				}
 
 				int firstNucleotide = projectWindow.screenToGenomePosition(x) - variant.getStart();	// retrieve the position of the first displayed nucleotide in the variant
@@ -216,8 +217,12 @@ class MultiGenomeVariantDrawer implements Serializable {
 	 * @param text	a text to display
 	 */
 	protected void drawMultiGenomeMask (Graphics g, int height, String text) {
+		Font oldFont = g.getFont();
+		Font newFont = g.getFont().deriveFont(Font.BOLD, 14);
+		g. setFont(newFont);
 		g.setColor(Colors.RED);
 		g.drawString(text, 10, height -5);
+		g. setFont(oldFont);
 	}
 
 

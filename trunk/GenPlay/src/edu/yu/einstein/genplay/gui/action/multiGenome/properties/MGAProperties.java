@@ -86,7 +86,7 @@ public final class MGAProperties extends TrackListAction{
 	 * Shows the Multi Genome Project Properties dialog
 	 */
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
+	public void trackListActionPerformed(ActionEvent arg0) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {		// if it is a multi genome project
 			if (dialog == null){										// and the dialog has not been created,
 				dialog = new PropertiesDialog();						// we create it

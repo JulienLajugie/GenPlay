@@ -106,7 +106,7 @@ public class TAAddLayer extends TrackListAction {
 
 
 	@Override
-	public void actionPerformed(ActionEvent evt) {
+	public void trackListActionPerformed(ActionEvent evt) {
 		if (MainFrame.getInstance().isLocked()) {
 			return;
 		}

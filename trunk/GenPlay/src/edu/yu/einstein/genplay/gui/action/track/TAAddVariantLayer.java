@@ -66,7 +66,7 @@ public class TAAddVariantLayer extends TrackListAction {
 
 
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
+	public void trackListActionPerformed(ActionEvent arg0) {
 		if (MainFrame.getInstance().isLocked()) {
 			return;
 		}

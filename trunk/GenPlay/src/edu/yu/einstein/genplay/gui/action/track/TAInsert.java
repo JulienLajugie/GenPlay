@@ -76,7 +76,7 @@ public class TAInsert extends TrackListAction {
 	 * Inserts a blank track
 	 */
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
+	public void trackListActionPerformed(ActionEvent arg0) {
 		if (MainFrame.getInstance().isLocked()) {
 			return;
 		}

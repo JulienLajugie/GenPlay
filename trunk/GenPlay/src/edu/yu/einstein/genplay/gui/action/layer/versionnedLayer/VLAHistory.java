@@ -64,7 +64,7 @@ public final class VLAHistory extends TrackListAction {
 
 
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
+	public void trackListActionPerformed(ActionEvent arg0) {
 		if (getValue("Layer") instanceof VersionedLayer) {
 			VersionedLayer<?> selectedLayer = (VersionedLayer<?>) getValue("Layer");
 			if (selectedLayer != null) {

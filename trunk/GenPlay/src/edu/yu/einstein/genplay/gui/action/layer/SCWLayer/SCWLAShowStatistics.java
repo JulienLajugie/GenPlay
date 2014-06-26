@@ -62,7 +62,7 @@ public final class SCWLAShowStatistics extends TrackListAction {
 
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void trackListActionPerformed(ActionEvent e) {
 		Layer<?> selectedLayer = (Layer<?>) getValue("Layer");
 		if ((selectedLayer != null) && (selectedLayer.getData() instanceof SCWList)) {
 			SCWList scwList = (SCWList) selectedLayer.getData();

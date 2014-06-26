@@ -68,7 +68,7 @@ public class TAEditVariantLayer extends TrackListAction {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
+	public void trackListActionPerformed(ActionEvent arg0) {
 		final Track selectedTrack = getTrackListPanel().getSelectedTrack();
 		if (selectedTrack != null) {
 			Layer<VariantLayerDisplaySettings> layer = (Layer<VariantLayerDisplaySettings>) getValue("Layer");
