@@ -46,7 +46,7 @@ public abstract class TrackListAction extends AbstractAction {
 	/** Action key for the URL of the help page of the action */
 	protected static final String HELP_URL_KEY = "HELP_URL_KEY";
 
-	protected static final String HELP_TOOLTIP_SUFFIX = " (alt + click to show help)";
+	protected static final String HELP_TOOLTIP_SUFFIX = " (Alt+Click for help)";
 
 
 	/**
